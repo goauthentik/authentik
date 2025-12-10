@@ -238,14 +238,14 @@ class UserSerializer(ModelSerializer):
             and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
             and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
         ):
-            raise ValidationError("Can't change internal service account to other user type.")
+            raise ValidationError(_("Can't change internal service account to other user type."))
         if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
-            raise ValidationError("Setting a user to internal service account is not allowed.")
+            raise ValidationError(_("Setting a user to internal service account is not allowed."))
         return user_type
 
     def validate(self, attrs: dict) -> dict:
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            raise ValidationError("Can't modify internal service account users")
+            raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
 
     class Meta:
@@ -458,14 +458,14 @@ class UsersFilter(FilterSet):
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
+            raise ValidationError(_("filter: failed to parse JSON")) from None
         if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
+            raise ValidationError(_("filter: value must be key:value mapping"))
         qs = {}
         for key, _value in value.items():
             qs[f"attributes__{key}"] = _value
         try:
-            _ = len(queryset.filter(**qs))
+            __ = len(queryset.filter(**qs))
             return queryset.filter(**qs)
         except ValueError:
             return queryset
@@ -550,7 +550,7 @@ class UserViewSet(
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
-            raise ValidationError({"non_field_errors": "No recovery flow set."})
+            raise ValidationError({"non_field_errors": _("No recovery flow set.")})
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
@@ -564,7 +564,7 @@ class UserViewSet(
             )
         except FlowNonApplicableException:
             raise ValidationError(
-                {"non_field_errors": "Recovery flow not applicable to user"}
+                {"non_field_errors": _("Recovery flow not applicable to user")}
             ) from None
         _plan = FlowToken.pickle(plan)
         if for_email:
@@ -755,7 +755,9 @@ class UserViewSet(
         for_user: User = self.get_object()
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")
-            raise ValidationError({"non_field_errors": "User does not have an email address set."})
+            raise ValidationError(
+                {"non_field_errors": _("User does not have an email address set.")}
+            )
         link, token = self._create_recovery_link(for_email=True)
         # Lookup the email stage to assure the current user can access it
         stages = get_objects_for_user(
@@ -763,7 +765,7 @@ class UserViewSet(
         ).filter(pk=request.query_params.get("email_stage"))
         if not stages.exists():
             LOGGER.debug("Email stage does not exist/user has no permissions")
-            raise ValidationError({"non_field_errors": "Email stage does not exist."})
+            raise ValidationError({"non_field_errors": _("Email stage does not exist.")})
         email_stage: EmailStage = stages.first()
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
