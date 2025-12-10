@@ -2,7 +2,7 @@
 name = "ak-guardian"
 version = "3.2.0"
 description = "Model and object permissions for Django"
-requires-python = ">=3.9,<3.14"
+requires-python = ">=3.9,<3.15"
 readme = "README.md"
 license = { text = "BSD-2-Clause" }
 authors = [{ name = "Authentik Security Inc.", email = "hello@goauthentik.io" }]
@@ -28,13 +28,14 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     'Topic :: Security',
 ]
 
 dependencies = [
     "django>=5.2,<6.0",
-    "typing_extensions>=4.12.0; python_version<'3.13'",
+    "typing_extensions>=4.12.0; python_version<'3.15'",
 ]
 
 [project.urls]

@@ -1,3 +1,25 @@
+.pf-c-form {
+    /**
+     * This variable is derived from PatternFly 4, modified to align with our borderless
+     * form controls.
+     * @see {@patternfly/patternfly/components/Form/form.scss}
+     */
+    /* prettier-ignore */
+    --pf-c-form--m-horizontal__group-label--md--PaddingTop: calc(
+        (((((var(
+            --pf-global--FontSize--md) * var(
+            --pf-global--LineHeight--md)) + (2 * var(
+            --pf-global--BorderWidth--sm))) - var(
+            --pf-global--FontSize--md)) / 2) + var(
+            --pf-global--FontSize--md)) - ((((var(
+            --pf-global--FontSize--sm) * var(
+            --pf-global--LineHeight--sm)) - var(
+            --pf-global--FontSize--sm)) / 2) + var(
+            --pf-global--FontSize--sm)) + (var(
+            --pf-global--BorderWidth--sm) * 4)
+    );
+}
+
 .pf-c-form__group {
     column-gap: var(--pf-global--spacer--md);
 }
@@ -151,7 +173,7 @@ fieldset {
         --pf-global--Color--100: var(--pf-global--Color--light-100);
         --pf-global--Color--200: var(--pf-global--Color--light-200);
         --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
-        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+        --pf-global--primary-color--100: var(--pf-global--primary-color--300);
         --pf-global--link--Color: var(--pf-global--link--Color--light);
         --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
         --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);

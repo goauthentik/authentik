@@ -77,9 +77,15 @@ export class AkProviderInput extends AKElement {
 
     render() {
         return html` <ak-form-element-horizontal name=${this.name}>
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-            </div>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
 
             <ak-search-select
                 .fieldID=${this.fieldID}
