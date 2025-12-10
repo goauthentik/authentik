@@ -18431,8 +18431,12 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
-          description: Successfully imported provider
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLProvider'
+          description: ''
         '400':
           description: Bad request
         '403':
