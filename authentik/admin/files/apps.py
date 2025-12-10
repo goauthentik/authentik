@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from django.conf import settings
+
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
 
@@ -12,6 +14,9 @@ class AuthentikFilesConfig(ManagedAppConfig):
 
     @ManagedAppConfig.reconcile_global
     def check_for_media_mount(self):
+        if settings.TEST:
+            return
+
         from authentik.events.models import Event, EventAction
 
         if (
