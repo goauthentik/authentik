@@ -48272,6 +48272,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -52685,6 +52695,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -52747,6 +52767,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:

@@ -92,9 +92,6 @@ throttle:
       device: 20/hour
   default: 1000/second
 
-pagination:
-  page_size: 100
-
 outposts:
   # Placeholders:
   # %(type)s: Outpost type; proxy, ldap, etc
