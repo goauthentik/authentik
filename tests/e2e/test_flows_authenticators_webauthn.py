@@ -100,32 +100,15 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)
 
-    def register_passkey(self):
-        """Register a WebAuthn device configured for passkey (resident key) authentication"""
-        options = VirtualAuthenticatorOptions(
-            protocol=Protocol.CTAP2,
-            transport=Transport.INTERNAL,
-            has_resident_key=True,
-            has_user_verification=True,
-            is_user_verified=True,
-        )
-        self.driver.add_virtual_authenticator(options)
-
-        # Login normally first
-        self.driver.get(self.url("authentik_core:if-flow", flow_slug="default-authentication-flow"))
-        self.login()
-        self.wait_for_url(self.if_user_url("/library"))
-        self.assert_user(self.user)
-
-        # Register WebAuthn device
-        self.driver.get(
-            self.url(
-                "authentik_flows:configure",
-                stage_uuid=AuthenticatorWebAuthnStage.objects.first().stage_uuid,
-            )
-        )
-        self.wait_for_url(self.if_user_url("/library"))
-        self.assertTrue(WebAuthnDevice.objects.filter(user=self.user, confirmed=True).exists())
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint("default/flow-default-authenticator-webauthn-setup.yaml")
+    def test_passkey_login(self):
+        """Test passkey login at identification stage"""
+        self.register()
 
         # Configure identification stage to allow passkey login
         webauthn_validate_stage = AuthenticatorValidateStage.objects.get(
@@ -135,15 +118,6 @@ class TestFlowsAuthenticatorWebAuthn(SeleniumTestCase):
         ident_stage.webauthn_stage = webauthn_validate_stage
         ident_stage.save()
 
-    @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
-    @apply_blueprint("default/flow-default-authenticator-webauthn-setup.yaml")
-    def test_passkey_login(self):
-        """Test passkey login at identification stage"""
-        self.register_passkey()
         self.driver.delete_all_cookies()
 
         # Navigate to login page
