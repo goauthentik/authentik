@@ -7,6 +7,12 @@
     --pf-c-drawer__content--BackgroundColor: transparent;
 }
 
+.pf-c-drawer {
+    .pf-c-drawer__panel {
+        background-color: var(--pf-c-drawer__panel--BackgroundColor);
+    }
+}
+
 /* #region Dark Theme */
 
 [data-theme="dark"] .pf-c-drawer,
