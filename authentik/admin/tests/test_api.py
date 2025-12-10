@@ -22,25 +22,25 @@ class TestAdminAPI(TestCase):
         self.group.save()
         self.client.force_login(self.user)
 
-    def test_version(self):
+    def test_version(self) -> None:
         """Test Version API"""
         response = self.client.get(reverse("authentik_api:admin_version"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
         self.assertEqual(body["version_current"], authentik_version())
 
-    def test_apps(self):
+    def test_apps(self) -> None:
         """Test apps API"""
         response = self.client.get(reverse("authentik_api:apps-list"))
         self.assertEqual(response.status_code, 200)
 
-    def test_models(self):
+    def test_models(self) -> None:
         """Test models API"""
         response = self.client.get(reverse("authentik_api:models-list"))
         self.assertEqual(response.status_code, 200)
 
     @reconcile_app("authentik_outposts")
-    def test_system(self):
+    def test_system(self) -> None:
         """Test system API"""
         response = self.client.get(reverse("authentik_api:admin_system"))
         self.assertEqual(response.status_code, 200)
