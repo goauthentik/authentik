@@ -34947,19 +34947,23 @@ components:
           type: string
           readOnly: true
           nullable: true
+          description: SHA256 fingerprint of the certificate
         fingerprint_sha1:
           type: string
           readOnly: true
           nullable: true
+          description: SHA1 fingerprint of the certificate
         cert_expiry:
           type: string
           format: date-time
           readOnly: true
           nullable: true
+          description: Certificate expiry date
         cert_subject:
           type: string
           readOnly: true
           nullable: true
+          description: Certificate subject as RFC4514 string
         private_key_available:
           type: boolean
           description: Show if this keypair has a private key configured or not
@@ -34969,6 +34973,7 @@ components:
           - $ref: '#/components/schemas/KeyTypeEnum'
           readOnly: true
           nullable: true
+          description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
           type: string
           description: Get URL to download certificate
