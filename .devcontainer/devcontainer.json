@@ -3,12 +3,27 @@
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/ak-root",
+    "containerUser": "authentik",
+    "remoteUser": "authentik",
     "containerEnv": {
-        "LOCAL_PROJECT_DIR": "${localWorkspaceFolder}"
+        "LOCAL_PROJECT_DIR": "/ak-root"
     },
-    "mounts": [
-        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-    ],
+    "features": {
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.24"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "22"
+        },
+        "ghcr.io/devcontainers/features/rust:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "moby": false
+        }
+    },
+    "mounts": [],
     "forwardPorts": [9000, 9443],
     "portsAttributes": {
         "8000": {

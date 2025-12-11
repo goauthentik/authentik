@@ -34,49 +34,22 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
     # python-kadmin-rs and kerberos testing
     clang libkrb5-dev sccache krb5-kdc krb5-admin-server \
     # xmlsec
-    libltdl-dev && \
-    # Install Rust (required for cryptography and other native packages)
-    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    libltdl-dev \
+    # runit (for chpst command used by lifecycle/ak)
+    runit \
+    # sudo (required by devcontainer features)
+    sudo && \
     rm -rf /var/lib/apt/lists/*
-
-# Add Rust to PATH
-ENV PATH="/root/.cargo/bin:$PATH"
 
 # Environment for building native Python packages
 ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
     RUSTUP_PERMIT_COPY_RENAME="true"
 
-# Install Go 1.25
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends wget && \
-    ARCH=$(dpkg --print-architecture) && \
-    wget -q "https://go.dev/dl/go1.25.4.linux-${ARCH}.tar.gz" && \
-    tar -C /usr/local -xzf "go1.25.4.linux-${ARCH}.tar.gz" && \
-    rm "go1.25.4.linux-${ARCH}.tar.gz" && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Node.js 24
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Docker CLI and runit (for chpst command used by lifecycle/ak)
-RUN curl -fsSL https://get.docker.com | sh && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends runit && \
-    rm -rf /var/lib/apt/lists/*
-
-# Create authentik user (matching production, required by lifecycle/ak script)
-RUN adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir -p /certs /media /authentik/.ssh && \
-    chown authentik:authentik /certs /media /authentik/.ssh
-
-# Add Go to PATH and set GOPATH
-ENV PATH="/usr/local/go/bin:/root/go/bin:${PATH}" \
-    GOPATH="/root/go"
-
-# Install golangci-lint for Go linting using official install script
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/go/bin v2.6.1
+# Create authentik user with proper home directory (required for devcontainer features)
+RUN adduser --disabled-password --gecos "" --uid 1000 --home /home/authentik authentik && \
+    mkdir -p /certs /media /ak-root && \
+    chown -R authentik:authentik /certs /media /ak-root /home/authentik && \
+    echo "authentik ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/authentik
 
 # FIPS configuration for Go development
 # Don't set GOFIPS/GOFIPS140 globally to avoid breaking Go tools like docker-compose
@@ -87,5 +60,9 @@ ENV CGO_ENABLED=1
 # Use /tmp instead of /dev/shm for development because go run needs to execute binaries
 ENV TMPDIR=/tmp
 
+# Switch to authentik user
+USER authentik
+
+# Note: Go, Node.js, Rust, and Docker are installed via devcontainer features
 # Note: Python dependencies will be installed via `uv sync` after container starts
 # Note: Source code is mounted at runtime from docker-compose for live editing

@@ -3,6 +3,8 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+    user: authentik
+    privileged: true
     volumes:
       - ../:/ak-root
     entrypoint: []
@@ -11,6 +13,7 @@ services:
       postgresql:
         condition: service_healthy
     environment:
+      LOCAL_PROJECT_DIR: /ak-root
       AUTHENTIK_DEBUG: true
       AUTHENTIK_SECRET_KEY: "devcontainer-secret-key-change-me"
       AUTHENTIK_POSTGRESQL__USER: postgres
