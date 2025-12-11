@@ -86,10 +86,9 @@ class SCIMView(APIView):
         )
 
     def paginate_query(self, query: QuerySet) -> Page:
-        per_page = 50
+        per_page = int(self.request.tenant.pagination_default_page_size)
         start_index = 1
         try:
-            per_page = int(settings.REST_FRAMEWORK["PAGE_SIZE"])
             start_index = int(self.request.query_params.get("startIndex", 1))
         except ValueError:
             pass
