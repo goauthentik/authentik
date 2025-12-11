@@ -16,7 +16,7 @@ class UseTokenView(View):
 
     def get(self, request: HttpRequest, key: str) -> HttpResponse:
         """Check if token exists, log user in and delete token."""
-        tokens = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_RECOVERY)
+        tokens = Token.objects.filter(key=key, intent=TokenIntents.INTENT_RECOVERY)
         if not tokens.exists():
             raise Http404
         token = tokens.first()

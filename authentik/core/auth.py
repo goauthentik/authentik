@@ -81,7 +81,7 @@ class TokenBackend(InbuiltBackend):
             User().set_password(password, request=request)
             return None
 
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             user=user, key=password, intent=TokenIntents.INTENT_APP_PASSWORD
         )
         if not tokens.exists():

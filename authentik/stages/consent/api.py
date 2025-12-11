@@ -48,7 +48,7 @@ class UserConsentViewSet(
 ):
     """UserConsent Viewset"""
 
-    queryset = UserConsent.objects.all()
+    queryset = UserConsent.objects.including_expired().all()
     serializer_class = UserConsentSerializer
     filterset_fields = ["user", "application"]
     ordering = ["application", "expires"]

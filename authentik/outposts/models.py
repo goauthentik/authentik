@@ -409,7 +409,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     def token(self) -> Token:
         """Get/create token for auto-generated user"""
         managed = f"goauthentik.io/outpost/{self.token_identifier}"
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             identifier=self.token_identifier,
             intent=TokenIntents.INTENT_API,
             managed=managed,

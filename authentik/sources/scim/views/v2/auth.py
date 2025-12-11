@@ -33,7 +33,7 @@ class SCIMTokenAuth(BaseAuthentication):
 
     def check_token(self, key: str, source_slug: str) -> Token | None:
         """Check that a token exists, is not expired, and is assigned to the correct source"""
-        token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
+        token = Token.objects.filter(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
         source: SCIMSource = token.scimsource_set.first()
