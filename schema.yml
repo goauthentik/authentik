@@ -29238,6 +29238,11 @@ paths:
         name: show_source_labels
         schema:
           type: boolean
+      - in: query
+        name: webauthn_stage
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -39278,6 +39283,10 @@ components:
         enable_remember_me:
           type: boolean
           default: true
+        passkey_challenge:
+          type: object
+          additionalProperties: {}
+          nullable: true
       required:
       - flow_designation
       - password_fields
@@ -39294,15 +39303,17 @@ components:
           default: ak-stage-identification
         uid_field:
           type: string
-          minLength: 1
+          nullable: true
         password:
           type: string
           nullable: true
         captcha_token:
           type: string
           nullable: true
-      required:
-      - uid_field
+        passkey:
+          type: object
+          additionalProperties: {}
+          nullable: true
     IdentificationStage:
       type: object
       description: IdentificationStage Serializer
@@ -39395,6 +39406,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - component
       - flow_set
@@ -39470,6 +39487,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - name
     IframeLogoutChallenge:
@@ -46742,6 +46765,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
     PatchedInitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
@@ -48744,6 +48773,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -53235,6 +53274,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -53300,6 +53349,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
