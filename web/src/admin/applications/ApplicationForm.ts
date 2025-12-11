@@ -184,7 +184,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     <ak-file-search-input
                         name="metaIcon"
                         label=${msg("Icon")}
-                        value=${ifDefined(this.instance?.metaIcon)}
+                        value=${ifPresent(this.instance?.metaIcon)}
                         .usage=${AdminFileListUsageEnum.Media}
                         help=${msg(
                             "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",

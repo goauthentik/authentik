@@ -40,16 +40,15 @@ export class UserSettingsPromptStage extends PromptStage {
                     name=${prompt.fieldKey}
                     .errorMessages=${errors}
                 >
-                    <div slot="label" class="pf-c-form__group-label">
-                        ${AKLabel(
-                            {
-                                htmlFor: `field-${prompt.fieldKey}`,
-                                required: prompt.required,
-                            },
-                            prompt.label,
-                        )}
-                    </div>
-
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: `field-${prompt.fieldKey}`,
+                            required: prompt.required,
+                        },
+                        prompt.label,
+                    )}
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
             `;

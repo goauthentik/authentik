@@ -165,8 +165,8 @@
     --pf-global--BackgroundColor--dark-200: oklab(0.3659 -0.0025 -0.0061);
     --pf-global--BackgroundColor--dark-300: oklab(0.2585 -0.0027 -0.0066);
     --pf-global--BackgroundColor--dark-400: oklab(0.4369 -0.0024 -0.0058);
-    --pf-global--BackgroundColor--dark-transparent-100: oklab(0.9693 0 -0.00001 / 0.62);
-    --pf-global--BackgroundColor--dark-transparent-200: oklab(0.9693 0 -0.00001 / 0.32);
+    --pf-global--BackgroundColor--dark-transparent-100: oklab(9.693% 0 -0.00001 / 0.62);
+    --pf-global--BackgroundColor--dark-transparent-200: oklab(9.693% 0 -0.00001 / 0.32);
 }
 
 /* #endregion */
@@ -215,6 +215,7 @@
     --pf-global--primary-color--200: oklab(0.3763 -0.0324 -0.1182);
     --pf-global--primary-color--light-100: oklab(0.7706 -0.0485 -0.1012);
     --pf-global--primary-color--dark-100: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--primary-color--300: oklab(0.522 -0.0434 -0.1717);
 }
 
 /* #endregion */

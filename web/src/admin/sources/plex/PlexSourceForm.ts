@@ -62,11 +62,11 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 slug: this.instance.slug,
                 plexSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
-                plexSourceRequest: data,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
+            plexSourceRequest: data,
+        });
     }
 
     async doAuth(): Promise<void> {

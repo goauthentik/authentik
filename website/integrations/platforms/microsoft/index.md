@@ -136,8 +136,7 @@ Connect-MgGraph -Scopes "User.ReadWrite.All"
 $users = Get-MgUser -Filter "endsWith(mail,'@domain.company')" -All
 foreach ($user in $users) {
     if ($user.Mail) {
-        $immutableId = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($user.Mail))
-        Update-MgUser -UserId $user.Id -OnPremisesImmutableId $immutableId
+        Update-MgUser -UserId $user.Id -OnPremisesImmutableId $user.Mail
         Write-Host "Set ImmutableId for $($user.Mail)"
     }
 }

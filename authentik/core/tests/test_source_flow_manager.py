@@ -3,7 +3,7 @@
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls import reverse
-from guardian.utils import get_anonymous_user
+from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action

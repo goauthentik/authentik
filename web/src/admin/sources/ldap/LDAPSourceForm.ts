@@ -1,6 +1,7 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-slug-input";
+import "#components/ak-radio-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -9,6 +10,8 @@ import "#elements/forms/SearchSelect/index";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RadioOption } from "#elements/forms/Radio";
 
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -20,6 +23,7 @@ import {
     LDAPSource,
     LDAPSourceRequest,
     SourcesApi,
+    SyncOutgoingTriggerModeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -27,6 +31,30 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTriggerModeEnum>[] {
+    return [
+        {
+            label: msg("None"),
+            value: SyncOutgoingTriggerModeEnum.None,
+            description: html`${msg("Outgoing syncs will not be triggered.")}`,
+        },
+        {
+            label: msg("Immediate"),
+            value: SyncOutgoingTriggerModeEnum.Immediate,
+            description: html`${msg(
+                "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
+            )}`,
+        },
+        {
+            label: msg("Deferred until end"),
+            value: SyncOutgoingTriggerModeEnum.DeferredEnd,
+            default: true,
+            description: html`${msg(
+                "Outgoing syncs will be triggered at the end of the source synchronization.",
+            )}`,
+        },
+    ];
+}
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     loadInstance(pk: string): Promise<LDAPSource> {
@@ -481,6 +509,14 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             ${msg("Field which contains a unique Identifier.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-radio-input
+                        label=${msg("Outgoing sync trigger mode")}
+                        required
+                        name="type"
+                        .value=${this.instance?.syncOutgoingTriggerMode}
+                        .options=${createSyncOutgoingTriggerModeOptions}
+                    >
+                    </ak-radio-input>
                 </div>
             </ak-form-group>`;
     }

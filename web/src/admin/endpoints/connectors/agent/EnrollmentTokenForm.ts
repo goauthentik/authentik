@@ -23,7 +23,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
     connectorID?: string;
 
     @state()
-    showExpiry = true;
+    protected showExpiry = false;
 
     async loadInstance(pk: string): Promise<EnrollmentToken> {
         const token = await new EndpointsApi(
@@ -31,7 +31,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         ).endpointsAgentsEnrollmentTokensRetrieve({
             tokenUuid: pk,
         });
-        this.showExpiry = token.expiring ?? true;
+        this.showExpiry = token.expiring ?? false;
         return token;
     }
 
@@ -87,7 +87,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.expiring ?? true}
+                        ?checked=${this.instance?.expiring ?? false}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showExpiry = el.checked;

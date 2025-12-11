@@ -12,7 +12,12 @@ from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import CertificateKeyPair
@@ -144,7 +149,7 @@ class TestCrypto(APITestCase):
             ),
             data={"name": cert.name},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
         self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
@@ -162,7 +167,7 @@ class TestCrypto(APITestCase):
             ),
             data={"name": cert.name, "has_key": False},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
         self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
@@ -178,7 +183,7 @@ class TestCrypto(APITestCase):
             ),
             data={"name": cert.name, "include_details": False},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
         self.assertEqual(api_cert["fingerprint_sha1"], None)
@@ -186,15 +191,18 @@ class TestCrypto(APITestCase):
 
     def test_certificate_download(self):
         """Test certificate export (download)"""
-        self.client.force_login(create_test_admin_user())
         keypair = create_test_cert()
+        user = create_test_user()
+        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair_certificate", keypair)
+        self.client.force_login(user)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
                 kwargs={"pk": keypair.pk},
             )
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
@@ -202,20 +210,23 @@ class TestCrypto(APITestCase):
             ),
             data={"download": True},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("Content-Disposition", response)
 
     def test_private_key_download(self):
         """Test private_key export (download)"""
-        self.client.force_login(create_test_admin_user())
         keypair = create_test_cert()
+        user = create_test_user()
+        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair_key", keypair)
+        self.client.force_login(user)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
                 kwargs={"pk": keypair.pk},
             )
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
@@ -223,12 +234,12 @@ class TestCrypto(APITestCase):
             ),
             data={"download": True},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("Content-Disposition", response)
 
     def test_certificate_download_denied(self):
         """Test certificate export (download)"""
-        self.client.logout()
+        self.client.force_login(create_test_user())
         keypair = create_test_cert()
         response = self.client.get(
             reverse(
@@ -248,7 +259,7 @@ class TestCrypto(APITestCase):
 
     def test_private_key_download_denied(self):
         """Test private_key export (download)"""
-        self.client.logout()
+        self.client.force_login(create_test_user())
         keypair = create_test_cert()
         response = self.client.get(
             reverse(
@@ -284,7 +295,7 @@ class TestCrypto(APITestCase):
                 kwargs={"pk": keypair.pk},
             )
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             response.content.decode(),
             [
