@@ -4,13 +4,15 @@ sidebar_label: SSH authentication
 tags: [ssh, authentik Agent]
 ---
 
-It's possible to authenticate SSH connections using authentik credentials between Endpoint Devices with the [authentik Agent](../authentik-agent/index.mdx) installed.
+You can use the [authentik agent](../authentik-agent/index.mdx) to authenticate SSH connections using authentik credentials between endpoint devices.
 
-Currently, this is only supported when the SSH endpoint is a [Linux](../authentik-agent/agent-deployment/linux.md] device, see the [Configure SSH authentication on an Endpoint Device](#configure-SSH-authentication-on-an-Endpoint-Device) section for more details.
+Currently, this is only supported when the SSH endpoint is a [Linux](../authentik-agent/agent-deployment/linux.md) device, see the [Configure SSH authentication on an endpoint device](#configure-SSH-authentication-on-an-endpoint-device) section for more details.
 
 ## Prerequisites
 
-## How to SSH to an Endpoint Device
+(TODO)
+
+## How to SSH to an endpoint device
 
 To SSH to a configured [Linux host](../authentik-agent/agent-deployment/linux.md) using the authentik Agent:
 
@@ -23,7 +25,7 @@ To SSH to a configured [Linux host](../authentik-agent/agent-deployment/linux.md
 2. If not already authentiacted, you will be prompted for authentik credentials.
 3. The SSH session will connect.
 
-## Configure SSH authentication on an Endpoint Device
+## Configure SSH authentication on an endpoint device
 
 If you want a Linux Endpoint Device to support [SSH connections] using authentik credentials, you will need to install the `libpam-authentik` package. This is a PAM Module, which provides token-based and interactive authentication via authentik. It requires `authentik-sysd` to be running.
 

@@ -312,6 +312,7 @@ const items = [
                             "add-secure-apps/flows-stages/stages/captcha/index",
                             "add-secure-apps/flows-stages/stages/deny",
                             "add-secure-apps/flows-stages/stages/email/index",
+                            "add-secure-apps/flows-stages/stages/endpoint/index",
                             "add-secure-apps/flows-stages/stages/identification/index",
                             "add-secure-apps/flows-stages/stages/invitation/index",
                             "add-secure-apps/flows-stages/stages/mtls/index",
@@ -675,7 +676,6 @@ const items = [
             id: "endpoint-devices/index",
         },
         items: [
-            "endpoint-devices/devices-overview",
             {
                 //#endregion
 
@@ -689,7 +689,6 @@ const items = [
                 },
                 items: [
                     "endpoint-devices/authentik-agent/configuration",
-                    "endpoint-devices/authentik-agent/authentik-cli",
                     {
                         //#endregion
 
@@ -708,12 +707,14 @@ const items = [
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
                         ],
                     },
+                    "endpoint-devices/authentik-agent/authentik-cli",
                     {
                         //#endregion
 
                         //#region authentik Agent Release Notes
                         type: "category",
-                        label: "Release Notes",
+                        label: "Release notes",
+                        description: "Release Notes for recent authentik agent versions",
                         collapsed: true,
                         link: {
                             type: "doc",
@@ -721,14 +722,20 @@ const items = [
                         },
                         items: ["endpoint-devices/authentik-agent/release-notes/temp"],
                     },
+                    {
+                        type: "link",
+                        href: "https://github.com/goauthentik/platform",
+                        label: "Development",
+                    },
                 ],
             },
+            "endpoint-devices/manage-devices",
             {
                 //#endregion
 
                 //#region Device Authentication
                 type: "category",
-                label: "Device Authentication",
+                label: "Device authentication",
                 collapsed: true,
                 link: {
                     type: "doc",
@@ -777,7 +784,7 @@ const items = [
 
                 //#region Device Compliance
                 type: "category",
-                label: "Device Compliance",
+                label: "Device compliance",
                 collapsed: true,
                 link: {
                     type: "doc",

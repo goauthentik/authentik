@@ -12,6 +12,8 @@ Currently, the only supported connectors are the [authentik Agent](#authentik-ag
 
 ## Connectors
 
+The following connectors are currently supported:
+
 ### authentik Agent
 
 (TODO) information on how the connector functions
@@ -25,3 +27,11 @@ Currently, the only supported connectors are the [authentik Agent](#authentik-ag
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
 3. (TODO)
+
+## Editing a connector
+
+(TODO)
+
+## Deleting a connector
+
+(TODO)

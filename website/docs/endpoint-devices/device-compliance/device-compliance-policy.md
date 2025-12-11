@@ -13,15 +13,15 @@ However, similar functionality can be achieved with existing stages. The followi
 
 ## Prerequisites
 
-You must have [configured compliance](./configuration.md) in authentik and on the Endpoint device.
+You must have [configured compliance](./configuration.md) in authentik and on the endpoint device.
 
 ## Examples
 
-### Limit authentication to only registered Endpoint Devices
+### Limit authentication to only registered endpoint devices
 
-If your goal is to only allow registered Endpoint Devices, this is achievable by adding an Endpoint stage (add link to endpoint stage) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny.md) to your authentication flow.
+If your goal is to only allow registered endpoint devices, this is achievable by adding an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny.md) to your authentication flow.
 
-#### Create an endpoint stage
+#### Create an Endpoint stage
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages > Flows**.

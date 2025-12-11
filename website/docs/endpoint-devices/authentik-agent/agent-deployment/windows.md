@@ -29,7 +29,7 @@ Follow these steps to install the authentik Agent on your Windows device:
 3. Once the download is complete, install the MSI file.
 4. _(Optional)_ During installation, select [Windows Credential Provider](<#Windows-Credential-Provider-(WCP)>) if you want to log in to the Windows device using authentik credentials.
 
-5. Confirm that authentik Platform is installed by opening a Powershell or Terminal window and entering the following command: `ak`
+5. Confirm that the authentik Agent is installed by opening a Powershell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Configure the authentik Agent
@@ -40,26 +40,28 @@ Follow these steps to install the authentik Agent on your Windows device:
 ak config setup --authentik-url <authentik_FQDN>
 ```
 
-2. A browser will open and direct you to the authentik login page. Once authenticated, Platform will be configured.
+2. A browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
-## Windows Credential Provider (WCP)
+## Windows Credential Provider
 
-Windows Credential Provider is a component of authentik Platform that allows logging in to Windows workstations using authentik credentials.
+Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows workstations using authentik credentials.
 
 It currently only supports local login; RDP login is not supported.
 
 :::warning
 
-- When WCP is enabled, the password of the Windows user account that's used is set to a random string.
+- WCP is currently only tested on Windows 11 and Windows Server 2022.
+- When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
 - WCP can cause issues with user encrypted directories.
 - Support with Active directory has not been confirmed yet.
+- Offline login is currently not supported.
   :::
 
 #### Configure Windows Credential Provider
 
 You'll need to add the following registry entry:
 
-```
+```bash
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\CLSID\{7BCC7941-18BA-4A8E-8E0A-1D0F8E73577A}]
@@ -69,6 +71,6 @@ Windows Registry Editor Version 5.00
 
 ## Logging
 
-authentik Platform primarily outputs logs to Windows Event Viewer.
+The authentik Agent primarily outputs logs to Windows Event Viewer.
 
-The Windows Credential Provider logs to the `wcp.log` file in `C:\Program Files\Authentik Security Inc\wcp`:
+WCP logs to the `wcp.log` file in `C:\Program Files\Authentik Security Inc\wcp`:
