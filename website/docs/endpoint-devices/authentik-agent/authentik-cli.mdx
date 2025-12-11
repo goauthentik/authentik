@@ -1,50 +1,103 @@
 ---
 title: Agent CLI commands
 sidebar_label: Agent CLI commands
-tags: [authentik Agent, authentik cli, ak cli, ak, cli, commands]
+tags: [authentik Agent, authentik cli, ak cli, ak, cli, ak-sysd, commands]
 ---
 
 ## Introduction
 
 (TODO)
 
-## Commands
+## authentik-cli commands
 
-### SSH
+### auth
+
+Commands for authenticating with different CLI applications.
+
+```bash
+ak auth <command>
+```
+
+- `aws` - Authenticate to AWS with the authentik profile.
+- `kubectl` - Authenticate to a Kubernetes Cluster with the authentik profile.
+- `raw` - Authenticate to arbitrary API calls.
+- `vault` - Generate a JWT for authenticating to HashiCorp Vault.
+
+### completion
+
+Generate the autocompletion script for the specified shell.
+
+```bash
+ak completion <command>
+```
+
+- `bash` - Generate the autocompletion script for bash.
+- `fish` - Generate the autocompletion script for fish.
+- `powershell` - Generate the autocompletion script for powershell.
+- `zsh` - Generate the autocompletion script for zsh.
+
+### config
+
+Configure authentik CLI
+
+```bash
+ak config <command>
+```
+
+- `list-profiles` - List profiles (TODO)
+- `setup` - Configure authentik CLI
+
+### help
+
+Output help information about any command.
+
+```bash
+ak help <command>
+```
+
+Where `<command>` is any authentik CLI command, for example: `ak help ssh`
+
+### ssh
 
 ```
 ak ssh <hostname>
 ```
 
-Opens an SSH connection to the target endpoint device.
+Establish an SSH connection with the target endpoint device.
 
-### Troubleshooting
+### system
 
-#### check
-
-```bash
-ak-sysd troubleshoot check
-```
-
-Useful on Linux as there are different components being used.
-
-#### inspect
+Commands for interacting with authentik sessions.
 
 ```bash
-ak-sysd troubleshoot inspect
+ak system <command>
 ```
 
-Outputs the state database that the agent has
-keeps a local cache
+- `status` - Status about the current session.
 
-#### facts
+### whoami
+
+Check user account details for a given profile.
 
 ```bash
-ak-sysd troubleshoot facts
+ak whoami
 ```
 
-Outputs device facts - this is what's sent to authentik for device reporting
+(TODO)
+
+## authentik-sysd commands
+
+### troubleshoot
+
+```bash
+ak-sysd troubleshoot <command>
+```
+
+- `check` - Check status of authentik agent components. Useful on Linux as there are various components being used.
+- `inspect` - Outputs the state database that the agent has. Keeps a local cache.
+- `facts` - Outputs device facts. These are the facts that are sent to authentik for device reporting.
 
 ## Notes
 
-Most of the AK CLI commands have a -v flag for verbose
+Most of the AK CLI commands have a `-v`/`--verbose` flag for verbose output.
+Use the `-h`/`--help` flag to access help information.

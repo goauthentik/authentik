@@ -14,4 +14,4 @@ tags: [device compliance, compliance, configuration]
 
 ## Configuration verification
 
-Verify that the Endpoint Device is reporting facts on the [Devices Overview](../devices-overview.mdx) page.
+Verify that the Endpoint Device is reporting facts on the [Devices](../manage-devices.mdx) page.
