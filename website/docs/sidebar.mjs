@@ -708,6 +708,7 @@ const items = [
                         ],
                     },
                     "endpoint-devices/authentik-agent/authentik-cli",
+                    "endpoint-devices/authentik-agent/development",
                     {
                         //#endregion
 
@@ -721,11 +722,6 @@ const items = [
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
                         items: ["endpoint-devices/authentik-agent/release-notes/temp"],
-                    },
-                    {
-                        type: "link",
-                        href: "https://github.com/goauthentik/platform",
-                        label: "Development",
                     },
                 ],
             },

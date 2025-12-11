@@ -1,10 +1,10 @@
 ---
 title: Configuration
 sidebar_label: Configuration
-tags: [authentik Agent, connector]
+tags: [authentik Agent, connector, configure, configuration]
 ---
 
-To support the deployment of the authentik Agent on Endpoint Devices, you need to configure your authentik deployment. This involves importing the [device code flow](../../add-secure-apps/providers/oauth2/device_code.md), creating an application/provider pair, and creating a [Connector](../device-compliance/connectors.md).
+To support the deployment of the authentik Agent on endpoint devices, you need to configure your authentik deployment. This involves importing the [device code flow](../../add-secure-apps/providers/oauth2/device_code.md), creating an application/provider pair, and creating a [Connector](../device-compliance/connectors.md).
 
 ## Import OAuth device code flow
 
@@ -35,7 +35,7 @@ Alternatively, manually create the flow by following the instructions in the [De
         - Set the **Client ID** to `authentik-cli`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
-            - In addidition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
+            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
     - **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
