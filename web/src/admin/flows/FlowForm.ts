@@ -1,5 +1,6 @@
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -192,26 +193,15 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             </ak-form-element-horizontal>
             <ak-form-group label="${msg("Behavior settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal name="compatibilityMode">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.compatibilityMode ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Compatibility mode")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Increases compatibility with password managers and mobile devices.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="compatibilityMode"
+                        label=${msg("Compatibility mode")}
+                        ?checked=${this.instance?.compatibilityMode ?? false}
+                        help=${msg(
+                            "Increases compatibility with password managers and mobile devices.",
+                        )}
+                    >
+                    </ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Denied action")}
                         required

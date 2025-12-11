@@ -207,26 +207,14 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="showSourceLabels">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.showSourceLabels ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Show sources' labels")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "By default, only icons are shown for sources. Enable this to show their full names.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="showSourceLabels"
+                        label=${msg("Show sources' labels")}
+                        ?checked=${this.instance?.showSourceLabels ?? false}
+                        help=${msg(
+                            "By default, only icons are shown for sources. Enable this to show their full names.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">
