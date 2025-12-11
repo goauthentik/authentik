@@ -46,6 +46,8 @@ type Application struct {
 	outpostName   string
 	sessionName   string
 
+	corsOrigin string
+
 	sessions             sessions.Store
 	proxyConfig          api.ProxyOutpostConfig
 	httpClient           *http.Client
@@ -80,6 +82,18 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL, skipping provider")
 	}
+
+	// Build a URL with just the scheme, host, and port for CORS use
+	corsURL := &url.URL{
+		Scheme: externalHost.Scheme,
+		Host:   externalHost.Host,
+	}
+
+	if err := setUrlPort(corsURL); err != nil {
+		return nil, fmt.Errorf("failed to set CORS origin URL port: %w", err)
+	}
+
+	corsOrigin := strings.ToLower(corsURL.String())
 
 	var ks oidc.KeySet
 	if contains(p.OidcConfiguration.IdTokenSigningAlgValuesSupported, "HS256") {
@@ -138,6 +152,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		endpoint:             endpoint,
 		oauthConfig:          oauth2Config,
 		tokenVerifier:        verifier,
+		corsOrigin:           corsOrigin,
 		proxyConfig:          p,
 		httpClient:           c,
 		publicHostHTTPClient: publicHTTPClient,
@@ -316,4 +331,91 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
+}
+
+func (a *Application) sendCORSPreflightResponse(rw http.ResponseWriter, r *http.Request, options ...string) {
+	a.addCORSHeaders(rw, r)
+
+	// Allow all headers that the client requested
+	requestedHeaders := r.Header.Get("Access-Control-Request-Headers")
+	if requestedHeaders != "" {
+		rw.Header().Set("Access-Control-Allow-Headers", requestedHeaders)
+	}
+
+	// Allow whatever method the client requested
+	requestedMethod := r.Header.Get("Access-Control-Request-Method")
+	if requestedMethod != "" {
+		rw.Header().Set("Access-Control-Allow-Methods", requestedMethod)
+	}
+}
+
+// addCORSHeaders adds headers to the response to allow CORS requests to work properly. Without this, redirect responses
+// to CORS requests will fail in the browser.
+// These should be set both on preflight (OPTIONS) requests and actual authenticated requests.
+func (a *Application) addCORSHeaders(rw http.ResponseWriter, r *http.Request) {
+	origin := r.Header.Get("Origin")
+	if origin != "" {
+		rw.Header().Set("Access-Control-Allow-Origin", origin)
+	}
+
+	rw.Header().Set("Vary", "Origin")
+	rw.Header().Set("Access-Control-Allow-Credentials", "true")
+
+	a.log.WithField("origin", origin).Trace("added CORS headers to response")
+}
+
+// isCORSPreflightRequest returns true if the request is a CORS preflight request, false otherwise.
+// CORS preflight requests should be allowed to pass through unauthenticated.
+func (a *Application) isCORSPreflightRequest(r *http.Request) bool {
+	if r.Method != http.MethodOptions {
+		a.log.WithField("method", r.Method).Trace("not an OPTIONS request, skipping CORS preflight check")
+		return false
+	}
+
+	if !a.isOriginAllowed(r) {
+		a.log.Trace("request origin is not allowed, skipping CORS preflight check")
+		return false
+	}
+
+	return true
+}
+
+// isOriginAllowed checks if the request's Origin header matches the application's configured CORS origin.
+// If the Origin header is not present or is malformed, it returns false.
+func (a *Application) isOriginAllowed(r *http.Request) bool {
+	origin := r.Header.Get("Origin")
+	if origin == "" {
+		a.log.Trace("no origin header present, skipping CORS preflight check")
+		return false
+	}
+
+	// The origin header can be a literal "null" when the request is coming from the same origin, e.g. from
+	// https://app.example.com to https://app.example.com/outpost.goauthentik.io/callback. Because the forward
+	// auth setup requires that the '/outpost.goauthentik.io' path is under the same origin as the application,
+	// and because endpoints under that path are called in a CORS "redirect" chain, same origin requests will
+	// occur. In this case, allow "null" origins to pass through.
+	originString := "null"
+	if origin != "null" {
+		parsedOrigin, err := url.Parse(origin)
+		if err != nil {
+			a.log.WithError(err).WithField("origin", origin).Trace("failed to parse origin header")
+			return false
+		}
+
+		// Ensure that the port is set for comparison
+		if err := setUrlPort(parsedOrigin); err != nil {
+			// This really shouldn't ever happen unless the client uses an unknown protocol
+			a.log.WithError(err).WithField("origin", origin).Trace("failed to set port for origin header")
+			return false
+		}
+
+		originString = strings.ToLower(parsedOrigin.String())
+		if a.corsOrigin != originString {
+			a.log.WithField("origin", origin).WithField("external_host", originString).Trace("origin does not match external host")
+			return false
+		}
+	}
+
+	a.log.WithField("origin", origin).WithField("external_host", originString).Trace("origin matches external host")
+	return true
 }
