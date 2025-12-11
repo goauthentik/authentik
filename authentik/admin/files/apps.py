@@ -1,4 +1,9 @@
+from pathlib import Path
+
+from django.conf import settings
+
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.config import CONFIG
 
 
 class AuthentikFilesConfig(ManagedAppConfig):
@@ -6,3 +11,20 @@ class AuthentikFilesConfig(ManagedAppConfig):
     label = "authentik_admin_files"
     verbose_name = "authentik Files"
     default = True
+
+    @ManagedAppConfig.reconcile_global
+    def check_for_media_mount(self):
+        if settings.TEST:
+            return
+
+        from authentik.events.models import Event, EventAction
+
+        if (
+            CONFIG.get("storage.media.backend", CONFIG.get("storage.backend", "file")) == "file"
+            and Path("/media").exists()
+        ):
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message="/media has been moved to /data/media. "
+                "Check the release notes for migration steps.",
+            ).save()

@@ -13,6 +13,11 @@ class Pagination(pagination.PageNumberPagination):
     page_query_param = "page"
     page_size_query_param = "page_size"
 
+    def get_page_size(self, request):
+        if self.page_size_query_param in request.query_params:
+            return min(super().get_page_size(request), request.tenant.pagination_max_page_size)
+        return request.tenant.pagination_default_page_size
+
     def get_paginated_response(self, data):
         previous_page_number = 0
         if self.page.has_previous():

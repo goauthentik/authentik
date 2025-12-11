@@ -186,17 +186,16 @@ export abstract class HorizontalLightComponent<T>
             role="presentation"
             .errorMessages=${this.errorMessages}
         >
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel(
-                    {
-                        id: this.labelID,
-                        htmlFor: this.fieldID,
-                        required: this.required,
-                    },
-                    this.label || "",
-                )}
-            </div>
-
+            ${AKLabel(
+                {
+                    id: this.labelID,
+                    className: "pf-c-form__group-label",
+                    slot: "label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label || "",
+            )}
             ${this.renderControl()}
             <div id=${this.helpID}>${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;

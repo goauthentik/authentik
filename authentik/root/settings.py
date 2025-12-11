@@ -207,7 +207,6 @@ SPECTACULAR_SETTINGS = {
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
-    "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -260,7 +259,7 @@ MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "django_tenants.middleware.default.DefaultTenantMiddleware",
+    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",

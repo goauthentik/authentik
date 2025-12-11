@@ -114,6 +114,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "connectivity",
             "lookup_groups_from_user",
             "delete_not_found_objects",
+            "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 

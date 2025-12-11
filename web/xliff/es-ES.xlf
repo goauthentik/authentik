@@ -1081,10 +1081,6 @@
   <source>Assign permission to role</source>
   <target>Asignar permiso a un rol</target>
 </trans-unit>
-<trans-unit id="s5ee6f1b84e9ebc69">
-  <source>Assign to new role</source>
-  <target>Asignar a un nuevo rol</target>
-</trans-unit>
 <trans-unit id="sb923723d27df40ba">
   <source>Permission(s)</source>
   <target>Permiso(s)</target>
@@ -1092,18 +1088,6 @@
 <trans-unit id="sc5fb00b25c7f5a02">
   <source>Permission</source>
   <target>Permiso</target>
-</trans-unit>
-<trans-unit id="s4afb26a8fae257e9">
-  <source>Directly assigned</source>
-  <target>Asignado directamente</target>
-</trans-unit>
-<trans-unit id="sd8051c26e155f043">
-  <source>Assign permission to user</source>
-  <target>Asignar permiso a un usuario</target>
-</trans-unit>
-<trans-unit id="sf79f8681e5ffaee2">
-  <source>Assign to new user</source>
-  <target>Asignar a un nuevo usuario</target>
 </trans-unit>
 <trans-unit id="s9fb28be12e2c6317">
   <source>Superuser</source>
@@ -1140,25 +1124,6 @@
   <source>Role doesn't have view permission so description cannot be retrieved.</source>
   <target>El rol no tiene permiso de visualización, por lo que no se puede recuperar la descripción.</target>
 </trans-unit>
-<trans-unit id="s4dcbef0770f0b649">
-  <source>Assigned to user</source>
-</trans-unit>
-<trans-unit id="s1455753daa00f1bc">
-  <source>User doesn't have view permission so description cannot be retrieved.</source>
-  <target>El usuario no tiene permiso de visualización, por lo que no se puede mostrar la descripción.</target>
-</trans-unit>
-<trans-unit id="saabeb4cab074b0b9">
-  <source>User Object Permissions</source>
-  <target>Permisos de Objeto de Usuario</target>
-</trans-unit>
-<trans-unit id="saada50e84c7c646d">
-  <source>Permissions set on users which affect this object.</source>
-  <target>Permisos establecidos para los usuarios que afectan a este objeto.</target>
-</trans-unit>
-<trans-unit id="s8489d5559dda260c">
-  <source>Role Object Permissions</source>
-  <target>Permisos de Objeto de Rol</target>
-</trans-unit>
 <trans-unit id="s37d1b74df205b528">
   <source>Permissions set on roles which affect this object.</source>
   <target>Permisos establecidos en los roles que afectan a este objeto.</target>
@@ -1167,17 +1132,9 @@
   <source>Assigned global permissions</source>
   <target>Permisos globales asignados</target>
 </trans-unit>
-<trans-unit id="sc443bfff8a5dd106">
-  <source>Permissions assigned to this user which affect all object instances of a given type.</source>
-  <target>Permisos asignados a este usuario que afectan a todas las instancias de objetos de un tipo determinado.</target>
-</trans-unit>
 <trans-unit id="s8f85a0e678846080">
   <source>Assigned object permissions</source>
   <target>Permisos de objeto asignados</target>
-</trans-unit>
-<trans-unit id="s3eba09a350b7d6c9">
-  <source>Permissions assigned to this user affecting specific object instances.</source>
-  <target>Permisos asignados a este usuario que afectan a instancias de objetos específicos.</target>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
@@ -3401,9 +3358,6 @@ Si se deja vacío, AuthnContextClassRef se establecerá según los métodos de a
   <source>Parent Group</source>
   <target>Grupo Padre</target>
 </trans-unit>
-<trans-unit id="sb05313d80a8b531f">
-  <source>Select an optional parent group...</source>
-</trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
   <target>Roles</target>
@@ -3781,12 +3735,8 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
 <trans-unit id="sf4ad4d9f8a5c868b">
   <source>Machine-to-machine authentication or other automations.</source>
 </trans-unit>
-<trans-unit id="scab2900019953050">
-  <source>Successfully updated user.</source>
-  <target>Usuario actualizado correctamente.</target>
-</trans-unit>
 <trans-unit id="s3d2a8b86a4f5a810">
-  <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
+  <source>Successfully created user and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
   <target>Usuario creado correctamente y agregado al grupo <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s9c3c272944dcfca3">
@@ -4261,9 +4211,6 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
 </trans-unit>
 <trans-unit id="sf655f75d8e14d5fe">
   <source>Endpoint Device(s)</source>
-</trans-unit>
-<trans-unit id="s57a72ed86464aeb4">
-  <source>No Users bound.</source>
 </trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
@@ -5603,10 +5550,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Group users together and give them permissions based on the membership.</source>
   <target>Agrupe a los usuarios y otorgue permisos en función de la membresía.</target>
 </trans-unit>
-<trans-unit id="s4eb514ebcb80553d">
-  <source>Parent</source>
-  <target>Padre</target>
-</trans-unit>
 <trans-unit id="s62f93cfcb45d5a06">
   <source>Superuser privileges?</source>
   <target>¿Los privilegios de superusuario?</target>
@@ -5716,28 +5659,13 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Add users</source>
   <target>Agregar usuarios</target>
 </trans-unit>
-<trans-unit id="s362bf0ff6d7db6c9">
-  <source>Group User Search</source>
-</trans-unit>
-<trans-unit id="se040a9c3444c727c">
-  <source>Group Users</source>
-</trans-unit>
 <trans-unit id="s7d499be3b781a3ca">
   <source>User(s)</source>
   <target>Usuario (s)</target>
 </trans-unit>
-<trans-unit id="s7220fcf4fec4e0df">
-  <source>Remove Users(s)</source>
-  <target>Eliminar Usuario(s)</target>
-</trans-unit>
 <trans-unit id="s10154dbd4fbc697b">
   <source>removed</source>
   <target>eliminado</target>
-</trans-unit>
-<trans-unit id="s5d7748b1d2363478">
-  <source>Are you sure you want to remove the selected users from the group <x id="0" equiv-text="${this.targetGroup?.name}"/>?</source>
-  <target>¿Estás seguro de que deseas eliminar a los usuarios seleccionados del grupo
-        <x id="0" equiv-text="${this.targetGroup?.name}"/>?</target>
 </trans-unit>
 <trans-unit id="sf466142da6a65052">
   <source>Impersonate</source>
@@ -6161,10 +6089,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Create Role</source>
   <target>Crear Rol</target>
 </trans-unit>
-<trans-unit id="sedb57bf4b42a8e40">
-  <source>Unknown Initial Permissions mode</source>
-  <target>Modo de permisos iniciales desconocidos</target>
-</trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
   <target>Permisos iniciales actualizados exitosamente.</target>
@@ -6176,10 +6100,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
 <trans-unit id="s5c5f240cbb6d0bae">
   <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
   <target>Cuando un usuario con el rol seleccionado crea un objeto, los permisos iniciales se aplicarán a ese objeto.</target>
-</trans-unit>
-<trans-unit id="sbf27294eef56ac81">
-  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
-  <target>Los permisos iniciales se pueden colocar en el usuario que crea el objeto o en el rol seleccionado en el campo anterior.</target>
 </trans-unit>
 <trans-unit id="s93f04537efda1b24">
   <source>Available Permissions</source>
@@ -6214,7 +6134,7 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <target>Información de Rol</target>
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
-  <source>Role <x id="0" equiv-text="${this._role.name}"/></source>
+  <source>Role <x id="0" equiv-text="${this.targetRole.name}"/></source>
 </trans-unit>
 <trans-unit id="s7a322c89298dd27c">
   <source>Successfully updated invitation.</source>
@@ -7773,10 +7693,6 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
   <source>Create Stage binding</source>
   <target>Crear Vínculo de Etapa</target>
 </trans-unit>
-<trans-unit id="scc2e420c54dc8089">
-  <source>Bind existing stage</source>
-  <target>Vincular etapa existente</target>
-</trans-unit>
 <trans-unit id="s30d1f50f476c3f48">
   <source>Flow Overview</source>
   <target>Descripción general del flujo</target>
@@ -8487,9 +8403,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s2de7890b100c4f4c">
   <source>Flags</source>
-</trans-unit>
-<trans-unit id="sf0b34d32a602aee8">
-  <source>Modify flags to opt into new authentik behaviours early.</source>
 </trans-unit>
 <trans-unit id="s33f85f24c0f5f008">
   <source>Save</source>
@@ -9278,9 +9191,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s610fced3957d0471">
   <source>Select an authentication method</source>
 </trans-unit>
-<trans-unit id="s1213df84313e1937">
-  <source>No authentication methods available.</source>
-</trans-unit>
 <trans-unit id="s958cedec1cb3fc52">
   <source>Select a configuration stage</source>
 </trans-unit>
@@ -9742,6 +9652,192 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
+</trans-unit>
+<trans-unit id="s184c3b30bebb2dd8">
+  <source>Assign role permissions</source>
+</trans-unit>
+<trans-unit id="s11a2ac9f2bd811d8">
+  <source>Delete Object Permission</source>
+</trans-unit>
+<trans-unit id="s78aa910bcb26034d">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="sc8f73affccb6ae4d">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="scf9ebad133d2d561">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="sa84d68ec57e21b0f">
+  <source>Permissions on this object</source>
+</trans-unit>
+<trans-unit id="s4d83e4891c19ff14">
+  <source>Permissions assigned to this role affecting specific object instances.</source>
+</trans-unit>
+<trans-unit id="s3e07daaacb10f38a">
+  <source>Parents</source>
+</trans-unit>
+<trans-unit id="s74636eae90c1a208">
+  <source>Available Groups</source>
+</trans-unit>
+<trans-unit id="s66d795717763ca54">
+  <source>Selected Groups</source>
+</trans-unit>
+<trans-unit id="sab46a062a503d9bb">
+  <source>A group recursively inherits every role from its ancestors.</source>
+</trans-unit>
+<trans-unit id="sb75f1413fcfbd4bd">
+  <source>User updated.</source>
+</trans-unit>
+<trans-unit id="s13625030f6501a5f">
+  <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+</trans-unit>
+<trans-unit id="s31dc80daa773a5dc">
+  <source>User created and added to role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+</trans-unit>
+<trans-unit id="sd1d84a93a9a8dd44">
+  <source>User created.</source>
+</trans-unit>
+<trans-unit id="sc5f2f9b4dce504d6">
+  <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+</trans-unit>
+<trans-unit id="s2b6c1190a54a0932">
+  <source>Show MDM configuration</source>
+</trans-unit>
+<trans-unit id="sb4f4c6c72acfa253">
+  <source>Hide MDM configuration</source>
+</trans-unit>
+<trans-unit id="s4a7ec7687e560e6a">
+  <source>Is Primary user</source>
+</trans-unit>
+<trans-unit id="se14ede3bc78d9599">
+  <source>Primary</source>
+</trans-unit>
+<trans-unit id="sc67ff7b2278e81e4">
+  <source>Remove User(s)</source>
+</trans-unit>
+<trans-unit id="s76e10cbcb80c3a64">
+  <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
+</trans-unit>
+<trans-unit id="s85835da8c3bd6198">
+  <source>Are you sure you want to remove the selected users?</source>
+</trans-unit>
+<trans-unit id="s86f283ed16448157">
+  <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
+</trans-unit>
+<trans-unit id="sa373520de40e9d44">
+  <source>Assign User to Groups</source>
+</trans-unit>
+<trans-unit id="sed582fb69fd1eed8">
+  <source>Successfully added user to role(s).</source>
+</trans-unit>
+<trans-unit id="s78daaa3ef4325cac">
+  <source>Roles to add</source>
+</trans-unit>
+<trans-unit id="sca5f586369a597a4">
+  <source>Add role</source>
+</trans-unit>
+<trans-unit id="sd8b8f59ad30971f7">
+  <source>Remove from Role(s)</source>
+</trans-unit>
+<trans-unit id="s5fcb76c89d17698c">
+  <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+</trans-unit>
+<trans-unit id="sf4ed596f6b160b84">
+  <source>Add Role</source>
+</trans-unit>
+<trans-unit id="s1d6a69c054342126">
+  <source>Add to existing role</source>
+</trans-unit>
+<trans-unit id="sbf5a46ac69b2ca56">
+  <source>Add new role</source>
+</trans-unit>
+<trans-unit id="s3b4ad8abf4f08c35">
+  <source>Hide managed roles</source>
+</trans-unit>
+<trans-unit id="sb5e95aaacac5d929">
+  <source>Bind existing Stage</source>
+</trans-unit>
+<trans-unit id="s7dcfe418b8d601f6">
+  <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
+</trans-unit>
+<trans-unit id="sbaeb8266aac13639">
+  <source>Buffer PolicyAccessVew requests</source>
+</trans-unit>
+<trans-unit id="se20d0be2cece3841">
+  <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
+</trans-unit>
+<trans-unit id="s8aa73079812f56b2">
+  <source>Refresh other flow tabs upon authentication</source>
+</trans-unit>
+<trans-unit id="s696386b762cd516c">
+  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+</trans-unit>
+<trans-unit id="s1af2337b6d11d4c6">
+  <source>Data export ready</source>
+</trans-unit>
+<trans-unit id="scdeb093efb1ac2f2">
+  <source>Data export requested successfully</source>
+</trans-unit>
+<trans-unit id="se5a360179bd5937e">
+  <source>You will receive a notification once the data is ready</source>
+</trans-unit>
+<trans-unit id="sd0fcaa6952729a9a">
+  <source>Data Exports</source>
+</trans-unit>
+<trans-unit id="s1d1d961d6f3550e5">
+  <source>Manage past data exports.</source>
+</trans-unit>
+<trans-unit id="s8cddef7d8dac7f87">
+  <source>Data type</source>
+</trans-unit>
+<trans-unit id="s3783e647280eb968">
+  <source>Requested by</source>
+</trans-unit>
+<trans-unit id="s2d119c0d85bde088">
+  <source>Creation date</source>
+</trans-unit>
+<trans-unit id="s5033dab8c17f05f2">
+  <source>Completed</source>
+</trans-unit>
+<trans-unit id="s21c76a0f6cae7920">
+  <source>Row actions</source>
+</trans-unit>
+<trans-unit id="s97aa774d38013957">
+  <source>Data export(s)</source>
+</trans-unit>
+<trans-unit id="s694b2e2c53d2d85d">
+  <source>Query parameters</source>
+</trans-unit>
+<trans-unit id="s145aca905bbc68a4">
+  <source>SAML metadata XML file to import provider settings from.</source>
+</trans-unit>
+<trans-unit id="s0d748f6fb237da48">
+  <source>Configure SAML Provider from Metadata</source>
+</trans-unit>
+<trans-unit id="sb541f02499d73b4e">
+  <source>Outgoing syncs will not be triggered.</source>
+</trans-unit>
+<trans-unit id="s967b3abf2608649a">
+  <source>Immediate</source>
+</trans-unit>
+<trans-unit id="sba0b0ee7c8b8f04a">
+  <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+</trans-unit>
+<trans-unit id="sd3dfc2a1c3647e77">
+  <source>Deferred until end</source>
+</trans-unit>
+<trans-unit id="secd492de6e1ae305">
+  <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+</trans-unit>
+<trans-unit id="s0c476074a4fc4d95">
+  <source>Outgoing sync trigger mode</source>
+</trans-unit>
+<trans-unit id="s4bb6f209647072f4">
+  <source>Successfully connected source</source>
+</trans-unit>
+<trans-unit id="sf3ad0b5ebe730780">
+  <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
 </trans-unit>
 </body>
 </file>

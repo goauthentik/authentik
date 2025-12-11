@@ -34,18 +34,12 @@ class SessionStore(SessionBase):
 
     def _get_session_from_db(self):
         try:
-            return (
-                self.model.objects.select_related(
-                    "authenticatedsession",
-                    "authenticatedsession__user",
-                )
-                .prefetch_related(
-                    "authenticatedsession__user__groups",
-                )
-                .get(
-                    session_key=self.session_key,
-                    expires__gt=timezone.now(),
-                )
+            return self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+            ).get(
+                session_key=self.session_key,
+                expires__gt=timezone.now(),
             )
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -54,18 +48,12 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return (
-                await self.model.objects.select_related(
-                    "authenticatedsession",
-                    "authenticatedsession__user",
-                )
-                .prefetch_related(
-                    "authenticatedsession__user__groups",
-                )
-                .aget(
-                    session_key=self.session_key,
-                    expires__gt=timezone.now(),
-                )
+            return await self.model.objects.select_related(
+                "authenticatedsession",
+                "authenticatedsession__user",
+            ).aget(
+                session_key=self.session_key,
+                expires__gt=timezone.now(),
             )
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
