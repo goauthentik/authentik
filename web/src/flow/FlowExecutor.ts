@@ -253,6 +253,9 @@ export class FlowExecutor
 
     #websocketHandler = (e: CustomEvent<WSMessage>) => {
         if (e.detail.message_type === "session.authenticated") {
+            if (!document.hidden) {
+                return;
+            }
             console.debug("authentik/ws: Reloading after session authenticated event");
             window.location.reload();
         }
