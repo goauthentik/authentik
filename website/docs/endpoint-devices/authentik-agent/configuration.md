@@ -36,7 +36,7 @@ Alternatively, manually create the flow by following the instructions in the [De
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
-    - **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
 
