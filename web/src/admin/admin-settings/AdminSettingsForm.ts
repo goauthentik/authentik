@@ -26,7 +26,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
-const DEFAULT_PAGE_DEFAULT = 20;
+const DEFAULT_PAGE_SIZE = 20;
 const DEFAULT_PAGE_MAX = 100;
 
 @customElement("ak-admin-settings-form")
@@ -251,7 +251,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Pagination: default page size")}
                 required
                 name="paginationDefaultPageSize"
-                value="${settings.paginationDefaultPageSize ?? DEFAULT_PAGE_DEFAULT}"
+                value="${settings.paginationDefaultPageSize ?? DEFAULT_PAGE_SIZE}"
                 help=${msg("Default page size for API requests not specifying a page size.")}
             ></ak-number-input>
             <ak-number-input
