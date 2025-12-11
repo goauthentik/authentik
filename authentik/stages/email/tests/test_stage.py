@@ -19,7 +19,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.stages.consent.stage import SESSION_KEY_CONSENT_TOKEN
+from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
@@ -174,7 +174,7 @@ class TestEmailStage(FlowTestCase):
                     kwargs={"flow_slug": self.flow.slug},
                 ),
                 data={
-                    "token": self.client.session[SESSION_KEY_CONSENT_TOKEN],
+                    "token": self.get_flow_plan().context[PLAN_CONTEXT_CONSENT_TOKEN],
                 },
                 follow=True,
             )

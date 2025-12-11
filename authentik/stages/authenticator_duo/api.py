@@ -9,7 +9,7 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, IntegerField
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -21,9 +21,11 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.flows.api.stages import StageSerializer
+from authentik.flows.auth import FlowActive
+from authentik.flows.planner import FlowPlan
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
+from authentik.stages.authenticator_duo.stage import PLAN_CONTEXT_DUO_ENROLL
 
 LOGGER = get_logger()
 
@@ -84,14 +86,20 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             ),
         },
     )
-    @action(methods=["POST"], detail=True, permission_classes=[IsAuthenticated])
+    @action(
+        methods=["POST"],
+        detail=True,
+        authentication_classes=[FlowActive],
+        permission_classes=[AllowAny],
+    )
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check enrollment status of user details in current session"""
         stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()
         if not stage:
             raise Http404
         client = stage.auth_client()
-        enroll = self.request.session.get(SESSION_KEY_DUO_ENROLL)
+        plan: FlowPlan = request.auth
+        enroll = plan.context.get(PLAN_CONTEXT_DUO_ENROLL)
         if not enroll:
             return Response(status=400)
         status = client.enroll_status(enroll["user_id"], enroll["activation_code"])
