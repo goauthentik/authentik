@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-10 23:02+0000\n"
+"POT-Creation-Date: 2025-12-11 14:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3959,6 +3959,10 @@ msgid "Identification Stages"
 msgstr ""
 
 #: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr ""
+
+#: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
 msgstr ""
 
@@ -4360,6 +4364,14 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Default token length"
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
 msgstr ""
 
 #: authentik/tenants/models.py
