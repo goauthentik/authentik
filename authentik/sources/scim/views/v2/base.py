@@ -3,7 +3,6 @@
 from typing import Any
 from uuid import UUID
 
-from django.conf import settings
 from django.core.paginator import Page, Paginator
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
