@@ -21,12 +21,14 @@ It currently only supports local login; RDP login is not supported.
 
 ## Prerequisites
 
-You need to deploy the authentik Agent including the WCP component on the Windows device, see [Deploy the authentik Agent on Windows](../../authentik-agent/agent-deployment/windows.md) for more details.
+You need to have deployed the authentik Agent including the WCP component on the Windows device, see [Deploy the authentik Agent on Windows](../../authentik-agent/agent-deployment/windows.md) for more details.
 
 ## How it works
 
 (TODO)
 
-## How to log in
+## How to log in to a Windows device
 
-(TODO)
+1. On the Windows login screen, click the authentik icon (TODO screenshot).
+2. A browser window will open and prompt you for your authentik credentials.
+3. Once authenticated, you will be logged in to the Windows device.

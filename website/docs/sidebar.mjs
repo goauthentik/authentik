@@ -669,7 +669,7 @@ const items = [
 
         //#region Endpoint Devices
         type: "category",
-        label: "Endpoint Devices",
+        label: "Endpoint Devices (Early Preview)",
         collapsed: true,
         link: {
             type: "doc",

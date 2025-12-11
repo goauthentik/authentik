@@ -10,7 +10,8 @@ Currently, this is only supported when the SSH endpoint is a [Linux](../authenti
 
 ## Prerequisites
 
-(TODO)
+- [authentik Agent needs to be deployed](../authentik-agent/agent-deployment/index.mdx) on both endpoint devices; the source and the SSH target.
+- The target device needs to be configured, see the [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section below.
 
 ## How to SSH to an endpoint device
 
@@ -23,16 +24,16 @@ To SSH to a configured [Linux host](../authentik-agent/agent-deployment/linux.md
     ```
 
 2. If not already authentiacted, you will be prompted for authentik credentials.
-3. The SSH session will connect.
+3. Once authenticated, the SSH session will connect.
 
 ## Configure SSH authentication on an endpoint device
 
-If you want a Linux Endpoint Device to support [SSH connections] using authentik credentials, you will need to install the `libpam-authentik` package. This is a PAM Module, which provides token-based and interactive authentication via authentik. It requires `authentik-sysd` to be running.
+If you want a Linux Endpoint Device to support accepting SSH connections using authentik credentials, you will need to install the `libpam-authentik` package in addition the authentik Agent. This is a PAM Module, which provides token-based and interactive authentication via authentik.
 
-Authentication is only possible if the Linux device is aware of the authentik user which is authenticating. This can be achieved in one of two ways:
+Authentication is only possible if the Linux device is aware of the authentik user which is attempting to authenticate. This can be achieved in one of two ways:
 
-1. Provision user accounts - Create users on the Linux device with usernames that match authentik users that need to authenticate to the device. This can be done manually or via automation tools like Ansible.
-2. `libnss-authentik` - This is a package that can be installed on the Linux device. It is an NSS module that makes the Linux device aware of authetnik users. Similar to adding a Linux device to an Active Directory or LDAP domain.
+1. **Provision user accounts** - Create users on the Linux device with usernames that match authentik users that need to authenticate to the device. This can be done manually or via automation tools like Ansible.
+2. **`libnss-authentik`** - This is a package that can be installed on the Linux device. It is an NSS module that makes the Linux device aware of authentik users. Similar to adding a Linux device to an Active Directory or LDAP domain.
 
 ### Install the `libpam-authentik` package _(required)_
 

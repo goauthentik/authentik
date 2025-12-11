@@ -31,4 +31,10 @@ If your goal is to only allow registered endpoint devices, this is achievable by
 
 #### Create a deny stage
 
-6. Create a deny stage (TODO)
+6. On the **Stage Bindings** tab, click **Create and bind stage**.
+7. Select **Deny Stage** as the stage type and configure the following settings:
+    - **Name**: provide a name for the stage
+    - **Deny message**: provide a message explaining why access was denied
+8. Click **Next**.
+9. Select the **Order** for the stage. Ensure that this number is higher than the Endpoint stage created in the previous section.
+10. Click **Finish**.

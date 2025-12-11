@@ -7,9 +7,11 @@ tags: [device compliance, compliance, browser extension, extension]
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-The authentik browser extension is currently available on Chrome-based and Firefox-based browsers, and is required for device compliance functionality.
+The authentik browser extension is required for device compliance functionality, and is currently available for Chrome-based and Firefox-based browsers.
 
-(TODO) Explain how the extension functions
+The browser extension connects to the [authentik Agent](../authentik-agent/index.mdx). It supplies [device facts](./device-reporting.md#device-facts) that [stages](../../add-secure-apps/flows-stages/stages/index.md) and [policies](../../customize/policies/index.md) can use during execution of authentik [flows](../../add-secure-apps/flows-stages/flow/index.md). This enables device compliance functionality such as limiting access to applications based on operating system, see [device compliance policy](./device-compliance-policy.md) for more details.
+
+(TODO) Explain how the extension functions in more detail
 
 ## Deploy the authentik browser extension
 

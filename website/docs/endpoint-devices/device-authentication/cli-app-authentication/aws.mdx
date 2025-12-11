@@ -31,10 +31,16 @@ To support the integration of authentik Agent with AWS CLI, you need to create a
 
 3. Click **Submit** to save the new application and provider.
 
-### Add backchannel provider
-
-(TODO) add authentik-cli application as federated OIDC provider to AWS provider
-
-## Usage
+## How to authenticate to AWS CLI with the authentik Agent
 
 (TODO)
+
+```bash
+ak auth aws
+```
+
+Flags:
+-c, --client-id string Client ID
+-h, --help help for aws
+-e, --region string Region (default "eu-central-1")
+-r, --role-arn string Role ARN
