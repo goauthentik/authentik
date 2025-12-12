@@ -8,7 +8,7 @@ To support the deployment of the authentik Agent on endpoint devices, you need t
 
 ## Import OAuth device code flow
 
-(TODO) Intro sentence
+The OAuth device code flow enables secure authentication for input-limited objects like CLI tools and is required for the authentik Agent to function.
 
 If you have already deployed the authentik OAuth device code flow, skip to the next section.
 
@@ -24,7 +24,7 @@ Alternatively, manually create the flow by following the instructions in the [De
 
 ## Create an application and provider in authentik for CLI
 
-(TODO) Intro sentence
+The authentik agent requires an OAuth application/provider pair to be created. This is used for authentication purposes.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -42,11 +42,17 @@ Alternatively, manually create the flow by following the instructions in the [De
 
 ## Create the authentik Agent connector
 
-(TODO) Intro sentence
+The authentik Agent connector allows device information to be reported to authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Endpoint Devices** > **Connectors**, click **Create**, and configure the following settings:
-    - **Name** - provide a descriptive name (e.g. `authentik Agent`)
-    - **blah** -
+2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+3. Select **Agent Connector** as the agent type and click **Next**.
+4. Configure he following required settings:
+    - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)
+    - **Refresh interval**: select how often the agent will attempt to update it's configuration.
+    - **Enabled**: toggle to enable the connector.
+5. Click **Finish**.
 
 ## Configuration verification
+
+(TODO)

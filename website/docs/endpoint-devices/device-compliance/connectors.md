@@ -26,12 +26,23 @@ The following connectors are currently supported:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
-3. (TODO)
+3. Select the connector type and click **Next**, and configure the following required settings:
+    - **Connector name**: provide a descriptive name for the connector.
+    - **Refresh interval**: select how often the agent will attempt to update it's configuration.
+    - **Enabled**: enable or disable the connector.
+4. Click **Finish**.
 
 ## Editing a connector
 
-(TODO)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the connector that you wish to edit.
+4. Update any settings that you want to change.
+5. Click **Update**.
 
 ## Deleting a connector
 
-(TODO)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Select the connector that you wish to delete.
+4. Click **Delete**.
