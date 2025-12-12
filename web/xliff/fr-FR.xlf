@@ -10087,6 +10087,27 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
 </trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

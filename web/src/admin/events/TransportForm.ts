@@ -1,4 +1,5 @@
 import "#components/ak-hidden-text-input";
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
@@ -95,26 +96,15 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="sendOnce">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.sendOnce ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Send once")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Only send notification once, for example when sending a webhook into a chat channel.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="sendOnce"
+                label=${msg("Send once")}
+                ?checked=${this.instance?.sendOnce ?? false}
+                help=${msg(
+                    "Only send notification once, for example when sending a webhook into a chat channel.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
                     @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {

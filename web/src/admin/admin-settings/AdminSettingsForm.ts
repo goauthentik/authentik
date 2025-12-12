@@ -271,7 +271,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-switch-input
                         name="flags.policiesBufferedAccessView"
                         ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
-                        label=${msg("Buffer PolicyAccessVew requests")}
+                        label=${msg("Buffer PolicyAccessView requests")}
                         help=${msg(
                             "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
                         )}
