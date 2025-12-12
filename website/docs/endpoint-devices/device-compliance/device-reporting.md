@@ -43,4 +43,4 @@ To search for event logs matching a specific endpoint device:
 2. Navigate to **Events** > **Logs**.
 3. In the search bar, enter: `context.device.name = "<device_name>"`
 
-    For more information on advanced search, see [Advanced queries for event logs](../../sys-mgmt/events/logging-events.md#advanced-queries-for-event-logs).
+    For more information on searching the events logs, see [Logging events](../../sys-mgmt/events/logging-events.md).
