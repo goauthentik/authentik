@@ -4,7 +4,7 @@ sidebar_label: Linux
 tags: [authentik Agent, linux, deploy, packages]
 ---
 
-## What does it do
+## What can it do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
 - Authorize Sudo elevation, see [Sudo authorization](../../device-authentication/sudo-authorization.md).

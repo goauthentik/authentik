@@ -4,7 +4,7 @@ sidebar_label: Configuration
 tags: [authentik Agent, connector, configure, configuration]
 ---
 
-To support the deployment of the authentik Agent on endpoint devices, you need to configure your authentik deployment. This involves importing the [device code flow](../../add-secure-apps/providers/oauth2/device_code.md), creating an application/provider pair, and creating a [Connector](../device-compliance/connectors.md).
+To support the deployment of the authentik Agent on devices, you first need to configure your authentik deployment. This involves importing the [Device code flow](../../add-secure-apps/providers/oauth2/device_code.md), creating an OAuth application/provider pair, and creating a [Connector](../device-compliance/connectors.md).
 
 ## Import OAuth device code flow
 
@@ -24,7 +24,7 @@ Alternatively, manually create the flow by following the instructions in the [De
 
 ## Create an application and provider in authentik for CLI
 
-The authentik agent requires an OAuth application/provider pair to be created. This is used for authentication purposes.
+The authentik agent requires an OAuth application/provider pair to handle authentication.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -42,7 +42,7 @@ The authentik agent requires an OAuth application/provider pair to be created. T
 
 ## Create the authentik Agent connector
 
-The authentik Agent connector allows device information to be reported to authentik.
+The authentik Agent [Connector](../device-compliance/connectors.md) allows device information to be reported to authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.

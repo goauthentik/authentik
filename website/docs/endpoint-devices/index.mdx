@@ -23,19 +23,21 @@ During this early preview stage, short trial licenses are available for testers.
 
 Endpoint devices are end-user devices or servers that are registered with authentik.
 
-There are two purposes for registration: [Device Authentication](./device-authentication/index.mdx) and [Device Compliance](./device-compliance/index.mdx).
+There are two purposes for registration: [Device authentication](./device-authentication/index.mdx) and [Device compliance](./device-compliance/index.mdx).
 
 Devices can be registered by installing the [authentik Agent](./authentik-agent/index.mdx) which supports:
 
-- [Device Compliance](./device-compliance/index.mdx) by reporting information about Endpoint Devices to authentik
+- [Device compliance](./device-compliance/index.mdx) by reporting information about endpoint devices to authentik
 - [Local device login](./device-authentication/local-device-login/index.mdx) with authentik credentials
-- [Connecting via SSH to Endpoint Devices](./device-authentication/ssh-authentication.mdx) with authentik credentials
+- [Connecting via SSH to endpoint devices](./device-authentication/ssh-authentication.mdx) with authentik credentials
 - [Sudo authorization](./device-authentication/sudo-authorization.md) with authentik credentials
 - [Authenticating to CLI applications](./device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials
 
-Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services like Fleet. This allows for device information to be reported to authentik for [Device Compliance](./device-compliance/index.mdx) purposes.
+Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services like Fleet. This allows for device information to be reported to authentik for [Device compliance](./device-compliance/index.mdx) purposes.
 
 ## Features overview
+
+(TODO) Jens to confirm OSS vs Enterprise
 
 | Feature                                   | Linux          | Windows        | macOS            | Status                                                                                              |
 | ----------------------------------------- | -------------- | -------------- | ---------------- | --------------------------------------------------------------------------------------------------- |
@@ -46,12 +48,12 @@ Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik t
 | **Advanced device compliance**            | :ak-enterprise | :ak-enterprise | :ak-enterprise   | In development.                                                                                     |
 | **Connectors** (Fleet, Entra, Intune etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise   | The Fleet connector is available. Other connectors are in development.                              |
 
-## Important considerations
-
 ## How to provide feedback and report bugs
 
 Report issues via our [GitHub](https://github.com/goauthentik/authentik/issues). Please include as much information as possible to assist us in troubleshooting.
 
-For more information, pick a topic below:
+## More information
+
+For more information refer to each of the topics below:
 
 <DocCardList />

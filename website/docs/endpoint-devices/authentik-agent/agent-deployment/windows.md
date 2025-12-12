@@ -4,7 +4,7 @@ sidebar_label: Windows
 tags: [authentik Agent, windows]
 ---
 
-## What does it do
+## What can it do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
