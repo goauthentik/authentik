@@ -23,6 +23,7 @@ type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
     blankable?: boolean;
+    readOnly?: boolean;
     query?: string;
     objects?: T[];
     selectedObject: T | null;
@@ -86,6 +87,25 @@ export abstract class SearchSelectBase<T>
     public blankable?: boolean;
 
     /**
+<<<<<<< HEAD
+=======
+     * Whether or not the component allows creating custom values not in the list
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean })
+    public creatable?: boolean;
+
+    /**
+     * Prevent user interaction while still rendering the current value.
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
+
+    /**
+>>>>>>> 126310138 (web/admin: fix read-only provider selection for application form (#18768))
      * An initial string to filter the search contents,
      * and the value of the input which further serves to restrict the search.
      * @property
@@ -225,6 +245,8 @@ export abstract class SearchSelectBase<T>
     }
 
     #searchListener = (event: InputEvent) => {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).rawValue;
 
         if (!value) {
@@ -239,6 +261,8 @@ export abstract class SearchSelectBase<T>
     };
 
     private onSelect(event: InputEvent) {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).value;
 
         if (!value) {
@@ -337,6 +361,7 @@ export abstract class SearchSelectBase<T>
             .options=${options}
             value=${ifPresent(value)}
             ?blankable=${this.blankable}
+            ?readonly=${this.readOnly}
             label=${ifPresent(this.label)}
             name=${ifPresent(this.name)}
             placeholder=${ifPresent(this.placeholder)}
