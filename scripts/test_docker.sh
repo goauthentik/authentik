@@ -28,6 +28,6 @@ if [[ -v BUILD ]]; then
 fi
 
 docker compose up --no-start
-docker compose start postgresql s3
+docker compose start postgresql
 docker compose run -u root server test-all
 docker compose down -v
