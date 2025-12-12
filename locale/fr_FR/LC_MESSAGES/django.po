@@ -285,11 +285,11 @@ msgstr "Désactiver le statut super-utilisateur"
 
 #: authentik/core/models.py
 msgid "Group Parentage Node"
-msgstr "Nœud de descendance du groupe"
+msgstr "Nœud d'ascendance du groupe"
 
 #: authentik/core/models.py
 msgid "Group Parentage Nodes"
-msgstr "Nœuds de descendance du groupe"
+msgstr "Nœuds d'ascendance du groupe"
 
 #: authentik/core/models.py
 msgid "User's display name."
