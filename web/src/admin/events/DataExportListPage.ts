@@ -21,6 +21,9 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
     protected override searchEnabled = true;
+    protected override emptyStateMessage = msg(
+        "To create a data export, navigate to Directory > Users or to Events > Logs.",
+    );
     public pageTitle = msg("Data Exports");
     public pageDescription = msg("Manage past data exports.");
     public pageIcon = "pf-icon pf-icon-export";
