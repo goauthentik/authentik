@@ -99,6 +99,9 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
+        const providerFromInstance = this.instance?.provider;
+        const providerValue = providerFromInstance ?? this.provider;
+        const providerPrefilled = !this.instance && this.provider !== undefined;
 
         return html`
             ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
@@ -134,9 +137,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             <ak-provider-search-input
                 name="provider"
                 label=${msg("Provider")}
-                value=${ifPresent(this.instance?.provider)}
+                .value=${providerValue}
+                .readOnly=${providerPrefilled}
+                ?blankable=${!providerPrefilled}
                 help=${msg("Select a provider that this application should use.")}
-                blankable
             ></ak-provider-search-input>
             <ak-backchannel-providers-input
                 name="backchannelProviders"
