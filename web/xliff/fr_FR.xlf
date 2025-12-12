@@ -7404,6 +7404,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s69bc087c166b4177">
   <source>Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.</source>
+  <target>Flux utilisé par un utilisateur authentifié pour configurer son mot de passe. S'il est vide, l'utilisateur ne sera pas en mesure de changer son mot de passe.</target>
 </trans-unit>
 <trans-unit id="s77994108c886b965">
   <source>Failed attempts before cancel</source>
@@ -8973,6 +8974,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+  <target>Appareils point de terminaison</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -9273,6 +9275,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
   <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+  <target>Continuer avec <x id="0" equiv-text="${source.name}"/></target>
 </trans-unit>
 <trans-unit id="sc4eedb434536bdb4">
   <source>Need an account?</source>
@@ -9288,6 +9291,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s05a941e4b4bfca9f">
   <source>Additional actions</source>
+  <target>Actions additionnelles</target>
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
@@ -9312,6 +9316,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s53dddf1733e26c98">
   <source>Login sources</source>
+  <target>Sources de connexion</target>
 </trans-unit>
 <trans-unit id="s85366fac18679f28">
   <source>Forgot password?</source>
@@ -9657,6 +9662,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa00a53efc9c70de5">
   <source>Please wait while the content is loading</source>
+  <target>Merci de patienter pendant que le contenu charge</target>
 </trans-unit>
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
@@ -9664,6 +9670,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
+  <target>application</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
   <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
@@ -9687,6 +9694,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
+  <target>Non groupé</target>
 </trans-unit>
 <trans-unit id="s1cf2298d92c327a6">
   <source>My Applications</source>
@@ -9702,15 +9710,19 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa4fb160e26323b02">
   <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <target>Application <x id="0" equiv-text="${count}"/> trouvée pour &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
   <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <target>Applications <x id="0" equiv-text="${count}"/> trouvées pour &amp;quot;<x id="1" equiv-text="${query}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sb1d445efd39638d4">
   <source><x id="0" equiv-text="${count}"/> application available</source>
+  <target><x id="0" equiv-text="${count}"/> application disponible</target>
 </trans-unit>
 <trans-unit id="sddbc2a3be190464b">
   <source><x id="0" equiv-text="${count}"/> applications available</source>
+  <target><x id="0" equiv-text="${count}"/> applications disponibles</target>
 </trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
@@ -9718,9 +9730,11 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+  <target>Liste d'applications</target>
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
+  <target>Erreur lors de la récupération des applications.</target>
 </trans-unit>
 <trans-unit id="s06c92148da82be0d">
   <source>Change your password</source>
@@ -9797,390 +9811,519 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s6cd96061d397f7b5">
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
+  <target>Via <x id="0" equiv-text="${event.context.device.name}"/></target>
 </trans-unit>
 <trans-unit id="sb7ff80582ccd9348">
   <source>reference will be left dangling</source>
+  <target>la référence restera orpheline</target>
 </trans-unit>
 <trans-unit id="s0b7ddc0168e79ea2">
   <source>Failed to fetch files</source>
+  <target>Erreur de récupération des fichiers</target>
 </trans-unit>
 <trans-unit id="sdc4f1cfd587212b4">
   <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
+  <target>Vous pouvez également saisir une URL (https://...), une icône Font Awesome (fa://fa-icon-name), ou téléverser un nouveau fichier.</target>
 </trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+  <target>Sélectionnez parmi les fichiers téléversés, ou saisissez une icône Font Awesome (fa://fa-icon-name) ou une URL.</target>
 </trans-unit>
 <trans-unit id="s87616130c08b117c">
   <source>This type is deprecated.</source>
+  <target>Ce type est déprécié.</target>
 </trans-unit>
 <trans-unit id="s40f4c2223ce87751">
   <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+  <target>Aucun connecteur configuré. Accédez aux connecteurs dans la barre latérale et créez d'abord un connecteur.</target>
 </trans-unit>
 <trans-unit id="s70c2cd89201ecca9">
   <source>Home directory</source>
+  <target>Dossier personnel</target>
 </trans-unit>
 <trans-unit id="sb171d638b8af660d">
   <source>Successfully updated agent connector.</source>
+  <target>Agent du connecter mis à jour avec succès.</target>
 </trans-unit>
 <trans-unit id="s81c9554908463f94">
   <source>Successfully created agent connector.</source>
+  <target>Agent du connecteur créé avec succès.</target>
 </trans-unit>
 <trans-unit id="s306dd51d3be07bc7">
   <source>Device compliance settings</source>
+  <target>Paramètres de conformité des appareils</target>
 </trans-unit>
 <trans-unit id="sc2966702517b7af5">
   <source>Challenge certificate</source>
+  <target>Certificat d'attestation</target>
 </trans-unit>
 <trans-unit id="s051588c63fedab5f">
   <source>Challenge idle timeout</source>
+  <target>Délai d'inactivité de l'attestation</target>
 </trans-unit>
 <trans-unit id="s4c70d7629e29ac2d">
   <source>Duration the flow executor will wait before continuing without a response.</source>
+  <target>Délai pendant lequel l'exécuteur de flux attendra avant de continuer sans réponse.</target>
 </trans-unit>
 <trans-unit id="se3c7fb54006d9e98">
   <source>Trigger check-in on device</source>
+  <target>Déclencher un check-in sur l'appareil</target>
 </trans-unit>
 <trans-unit id="se0a747f4db08e87f">
   <source>Configure how devices connect with authentik and ingest external device data.</source>
+  <target>Configurez la manière dont les appareils se connectent avec authentik et ingèrent les données des appareils externes.</target>
 </trans-unit>
 <trans-unit id="s114f2b310ef163ff">
   <source>Stage which associates the currently used device with the current session.</source>
+  <target>Étape qui associe l'appareil actuellement utilisé à la session en cours.</target>
 </trans-unit>
 <trans-unit id="s8290d08ab5a49ed0">
   <source>Connector</source>
+  <target>Connecteur</target>
 </trans-unit>
 <trans-unit id="s5e8eefcbbeffd4d5">
   <source>Device optional</source>
+  <target>Appareil facultatif</target>
 </trans-unit>
 <trans-unit id="s51b09bba5dcc19b0">
   <source>If no device was provided, this stage will succeed and continue to the next stage.</source>
+  <target>Si aucun appareil n'a été fourni, cette étape réussira et passera à l'étape suivante.</target>
 </trans-unit>
 <trans-unit id="s5f58e358343a5514">
   <source>Device required</source>
+  <target>Appareil requis</target>
 </trans-unit>
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
+  <target>Si aucun appareil n'a été fourni, cette étape arrêtera l'exécution du flux.</target>
 </trans-unit>
 <trans-unit id="s506c7d2e87f6770e">
   <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
+  <target>Le nom de fichier ne peut contenir que des lettres, des chiffres, des points, des traits d'union et des traits de soulignement</target>
 </trans-unit>
 <trans-unit id="s3a3d5b2575cd32ea">
   <source>File uploaded successfully</source>
+  <target>Fichier téléversé avec succès</target>
 </trans-unit>
 <trans-unit id="sd3775ef947e0de32">
   <source>File Name</source>
+  <target>Nom du fichier</target>
 </trans-unit>
 <trans-unit id="s1afc99a84a890514">
   <source>Type an optional custom file name...</source>
+  <target>Entrer un nom de fichier facultatif...</target>
 </trans-unit>
 <trans-unit id="sb40e2763045466ea">
   <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
+  <target>Renommez éventuellement le fichier (sans l'extension). Laissez vide pour conserver le nom de fichier d'origine.</target>
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>Fichiers</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
+  <target>Gérer les fichiers téléversés.</target>
 </trans-unit>
 <trans-unit id="saad01178f02a6a23">
   <source>file</source>
+  <target>fichier</target>
 </trans-unit>
 <trans-unit id="s69f800801812a5f0">
   <source>files</source>
+  <target>fichiers</target>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
+  <target>Téléverser</target>
 </trans-unit>
 <trans-unit id="sa32e9d0a108ee802">
   <source>Upload File</source>
+  <target>Téléverser un fichier</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
+  <target>Échec de validation de l'appareil.</target>
 </trans-unit>
 <trans-unit id="se99d25eb70c767ef">
   <source>Verifying your device...</source>
+  <target>Vérification de votre appareil...</target>
 </trans-unit>
 <trans-unit id="s5c85e53f1d3747d0">
   <source>Service Provider Config cache timeout</source>
+  <target>Délai d'expiration du cache de ServiceProviderConfig</target>
 </trans-unit>
 <trans-unit id="s5fca9f7853a54584">
   <source>Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.</source>
+  <target>Durée de mise en cache pour les réponses ServiceProviderConfig. Définissez minutes=0 pour désactiver la mise en cache.</target>
 </trans-unit>
 <trans-unit id="s89a2859207d766fe">
   <source>JWTs signed by the selected providers can be used to authenticate to devices.</source>
+  <target>Les JWTs signés par les fournisseurs sélectionnés peuvent être utilisés pour s'authentifier auprès des appareils.</target>
 </trans-unit>
 <trans-unit id="s18b4f9093a0008b3">
   <source>the reCAPTCHA admin console</source>
+  <target>la console d'administration reCAPTCHA</target>
 </trans-unit>
 <trans-unit id="s200b0a3b5133280d">
   <source>Google Cloud reCAPTCHA Enterprise</source>
+  <target>Google Cloud reCAPTCHA Enterprise</target>
 </trans-unit>
 <trans-unit id="sa31bb688b2e7b492">
   <source>the hCaptcha dashboard</source>
+  <target>le tableau de bord hCaptcha</target>
 </trans-unit>
 <trans-unit id="s678ebab4940155c3">
   <source>the Cloudflare dashboard</source>
+  <target>le tableau de bord Cloudflare</target>
 </trans-unit>
 <trans-unit id="h67148561b42485e7">
   <source>Site key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
+  <target>Clé de site de votre fournisseur CAPTCHA. Récupérez les clés depuis <x id="0" equiv-text="${anchor}"/></target>
 </trans-unit>
 <trans-unit id="sc57fbc2c02769dc5">
   <source>Site key from your CAPTCHA provider.</source>
+  <target>Clé de site de votre fournisseur CAPTCHA.</target>
 </trans-unit>
 <trans-unit id="h98bbd5c4c133577c">
   <source>Secret key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
+  <target>Clé secrete de votre fournisseur CAPTCHA. Récupérez les clés depuis <x id="0" equiv-text="${anchor}"/></target>
 </trans-unit>
 <trans-unit id="s2ca00d57e90d053e">
   <source>Secret key from your CAPTCHA provider.</source>
+  <target>Clé secrete de votre fournisseur CAPTCHA.</target>
 </trans-unit>
 <trans-unit id="s77c1f57b676529ff">
   <source>Select a CAPTCHA provider. URLs and settings will be automatically configured, but can be customized below.</source>
+  <target>Sélectionnez un fournisseur de CAPTCHA. Les URL et les paramètres seront configurés automatiquement, mais peuvent être personnalisés ci-dessous.</target>
 </trans-unit>
 <trans-unit id="s988e1dfd2b962e4f">
   <source>Score Configuration</source>
+  <target>Paramètres de score</target>
 </trans-unit>
 <trans-unit id="s83d396fed4b71e29">
   <source>This CAPTCHA provider does not support scoring. Score thresholds will be ignored.</source>
+  <target>Ce fournisseur de CAPTCHA ne prend pas en charge le système de score. Les seuils de score seront ignorés.</target>
 </trans-unit>
 <trans-unit id="s5b29d7a77c92758e">
   <source>Score Minimum Threshold</source>
+  <target>Seuil minimum du score</target>
 </trans-unit>
 <trans-unit id="sfb4f2529b0b36889">
   <source>Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.</source>
+  <target>Score minimum requis pour continuer. Les scores plus bas indiquent un comportement plus suspect.</target>
 </trans-unit>
 <trans-unit id="sf578722c6d349838">
   <source>Score Maximum Threshold</source>
+  <target>Seuil maximum du score</target>
 </trans-unit>
 <trans-unit id="s66fe9ce730db1f7b">
   <source>Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.</source>
+  <target>Score maximum autorisé pour continuer. Définir à -1 pour désactiver la vérification de la limite supérieure.</target>
 </trans-unit>
 <trans-unit id="s1f412e69817ebb7f">
   <source>Error on Invalid Score</source>
+  <target>Erreur sur score invalide</target>
 </trans-unit>
 <trans-unit id="sbfc0f211f5f7c96f">
   <source>When enabled and the score is outside the threshold, the user will not be able to continue. When disabled, the user can continue and the score can be used in policies.</source>
+  <target>Si activé et que le score résultant est hors des seuils, l'utilisateur ne pourra pas continuer. Si désactivé, l'utilisateur pourra continuer et le score pourra être utilisé dans des politiques.</target>
 </trans-unit>
 <trans-unit id="s74982e57a1d8896c">
   <source>Advanced Settings</source>
+  <target>Paramètres avancés</target>
 </trans-unit>
 <trans-unit id="s27bfe23deaaf0c2f">
   <source>JavaScript URL</source>
+  <target>URL JavaScript</target>
 </trans-unit>
 <trans-unit id="s22f10cb634a6d1e5">
   <source>URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.</source>
+  <target>URL pour récupérer la bibliothèque JavaScript CAPTCHA. Défini automatiquement en fonction du fournisseur sélectionné mais peut être personnalisé.</target>
 </trans-unit>
 <trans-unit id="s83c66d5a3edc1b03">
   <source>API Verification URL</source>
+  <target>URL de l'API de vérification</target>
 </trans-unit>
 <trans-unit id="s47028bbf2c2cce0c">
   <source>URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.</source>
+  <target>URL utilisée pour valider la réponse CAPTCHA côté serveur. Définie automatiquement selon le fournisseur sélectionné mais peut être personnalisée.</target>
 </trans-unit>
 <trans-unit id="s7fed8c29d9963f53">
   <source>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</source>
+  <target>Cette étape vérifie la session actuelle de l'utilisateur auprès d'un service CAPTCHA pour prévenir les abus automatisés.</target>
 </trans-unit>
 <trans-unit id="s9b8e5c6f87ca887e">
   <source>CAPTCHA Provider</source>
+  <target>Fournisseur CAPTCHA</target>
 </trans-unit>
 <trans-unit id="sab1ddd059633b9aa">
   <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
+  <target>Activez cette option si le CAPTCHA nécessite une interaction de l'utilisateur (cliquer sur une case à cocher, résoudre des puzzles, etc.). Requis pour reCAPTCHA v2, le mode interactif hCaptcha et Cloudflare Turnstile.</target>
 </trans-unit>
 <trans-unit id="s8d94e51441d0ce0c">
   <source>Flow Examples</source>
+  <target>Exemples de flux</target>
 </trans-unit>
 <trans-unit id="s49ae82ba527f8e01">
   <source>Type an outpost name...</source>
+  <target>Entrer un nom d'avant-poste...</target>
 </trans-unit>
 <trans-unit id="s574ed5d3a52d45c8">
   <source>Outpost Name</source>
+  <target>Nom d'avant-poste</target>
 </trans-unit>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
+  <target>Configuration de l'avant-poste</target>
 </trans-unit>
 <trans-unit id="s184c3b30bebb2dd8">
   <source>Assign role permissions</source>
+  <target>Attribuer les permissions des rôles</target>
 </trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
+  <target>Supprimer la permission d'objet</target>
 </trans-unit>
 <trans-unit id="s78aa910bcb26034d">
   <source>Global and object permission</source>
+  <target>Permission globale et d'objet</target>
 </trans-unit>
 <trans-unit id="sc8f73affccb6ae4d">
   <source>Global permission</source>
+  <target>Permission globale</target>
 </trans-unit>
 <trans-unit id="scf9ebad133d2d561">
   <source>Object permission</source>
+  <target>Permission d'objet</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
+  <target>Permissions sur cet objet</target>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
+  <target>Permissions assignées à ce rôle qui affectent des instances d'objet spécifiques.</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
+  <target>Parents</target>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>Groupes disponibles</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>Groupes sélectionnés</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
+  <target>Un groupe hérite récursivement de chaque rôle de ses ancêtres.</target>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>Utilisateur mis à jour.</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+  <target>Utilisateur créé et ajouté au groupe <x id="0" equiv-text="${this.targetGroup.name}"/></target>
 </trans-unit>
 <trans-unit id="s31dc80daa773a5dc">
   <source>User created and added to role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+  <target>Utilisateur créé et ajouté au rôle <x id="0" equiv-text="${this.targetRole.name}"/></target>
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>Utilisateur créé.</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
   <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+  <target> <x id="0" equiv-text="${filename}"/> téléchargé avec succès !</target>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
+  <target>Montrer la configuration MDM</target>
 </trans-unit>
 <trans-unit id="sb4f4c6c72acfa253">
   <source>Hide MDM configuration</source>
+  <target>Cacher la configuration MDM</target>
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
+  <target>Est l'utilisateur primaire</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
+  <target>Primaire</target>
 </trans-unit>
 <trans-unit id="sc67ff7b2278e81e4">
   <source>Remove User(s)</source>
+  <target>Retirer le(s) utilisateur(s)</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
+  <target>Êtes-vous sûr de vouloir retirer les utilisateurs sélectionnés de <x id="0" equiv-text="${targetLabel}"/>?</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
+  <target>Êtes-vous sûr de vouloir retirer les utilisateurs sélectionnés ?</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</source>
+  <target>Cet utilisateur sera ajouté au rôle &amp;quot;<x id="0" equiv-text="${this.targetRole.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="sa373520de40e9d44">
   <source>Assign User to Groups</source>
+  <target>Ajouter l'utilisateur aux groupes</target>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
+  <target>L'utilisateur a été ajouté avec succès au(x) rôle(s).</target>
 </trans-unit>
 <trans-unit id="s78daaa3ef4325cac">
   <source>Roles to add</source>
+  <target>Rôles à ajouter</target>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
+  <target>Ajouter un rôle</target>
 </trans-unit>
 <trans-unit id="sd8b8f59ad30971f7">
   <source>Remove from Role(s)</source>
+  <target>Retirer du/des rôle(s)</target>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+  <target>Êtes-vous sûr de vouloir retirer l'utilisateur <x id="0" equiv-text="${this.targetUser?.username}"/> des rôles suivants ?</target>
 </trans-unit>
 <trans-unit id="sf4ed596f6b160b84">
   <source>Add Role</source>
+  <target>Ajouter un rôle</target>
 </trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
+  <target>Ajouter à un rôle existant</target>
 </trans-unit>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
+  <target>Ajouter un nouveau rôle</target>
 </trans-unit>
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
+  <target>Cacher les rôles gérés</target>
 </trans-unit>
 <trans-unit id="sb5e95aaacac5d929">
   <source>Bind existing Stage</source>
+  <target>Lier une étape existante</target>
 </trans-unit>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
+  <target>Options vous permettent d'activer de nouvelles fonctionnalités et comportements dans authentik en avance.</target>
 </trans-unit>
 <trans-unit id="sbaeb8266aac13639">
   <source>Buffer PolicyAccessVew requests</source>
+  <target>Mise en mémoire tampon des requêtes PolicyAccessView</target>
 </trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
+  <target>Lorsque cette option est activée, les demandes d'autorisation d'application parallèles seront mises en mémoire tampon au lieu d'entrer en conflit avec d'autres flux.</target>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
+  <target>Actualiser les autres onglets de flux lors de l'authentification</target>
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+  <target>Lorsque cette option est activée, les autres onglets de flux d'une session s'actualiseront après une authentification réussie.</target>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
+  <target>Export de données terminé</target>
 </trans-unit>
 <trans-unit id="scdeb093efb1ac2f2">
   <source>Data export requested successfully</source>
+  <target>Export de données demandé avec succès</target>
 </trans-unit>
 <trans-unit id="se5a360179bd5937e">
   <source>You will receive a notification once the data is ready</source>
+  <target>Vous recevrez une notification lorsque les données seront prêtes</target>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
+  <target>Exports de données</target>
 </trans-unit>
 <trans-unit id="s1d1d961d6f3550e5">
   <source>Manage past data exports.</source>
+  <target>Gérez les exports de données passés.</target>
 </trans-unit>
 <trans-unit id="s8cddef7d8dac7f87">
   <source>Data type</source>
+  <target>Type de données</target>
 </trans-unit>
 <trans-unit id="s3783e647280eb968">
   <source>Requested by</source>
+  <target>Demandé par</target>
 </trans-unit>
 <trans-unit id="s2d119c0d85bde088">
   <source>Creation date</source>
+  <target>Date de création</target>
 </trans-unit>
 <trans-unit id="s5033dab8c17f05f2">
   <source>Completed</source>
+  <target>Terminé</target>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
+  <target>Actions de ligne</target>
 </trans-unit>
 <trans-unit id="s97aa774d38013957">
   <source>Data export(s)</source>
+  <target>Export(s) de données</target>
 </trans-unit>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
+  <target>Paramètres de requête</target>
 </trans-unit>
 <trans-unit id="s145aca905bbc68a4">
   <source>SAML metadata XML file to import provider settings from.</source>
+  <target>Fichier XML de métadonnées SAML pour importer les paramètres du fournisseur.</target>
 </trans-unit>
 <trans-unit id="s0d748f6fb237da48">
   <source>Configure SAML Provider from Metadata</source>
+  <target>Configurer le fournisseur SAML depuis des métadonnées</target>
 </trans-unit>
 <trans-unit id="sb541f02499d73b4e">
   <source>Outgoing syncs will not be triggered.</source>
+  <target>Les synchronisation sortantes ne seront pas démarrées.</target>
 </trans-unit>
 <trans-unit id="s967b3abf2608649a">
   <source>Immediate</source>
+  <target>Immédiatement</target>
 </trans-unit>
 <trans-unit id="sba0b0ee7c8b8f04a">
   <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+  <target>Les synchronisation sortantes seront démarrées immédiatement pour chaque objet mis à jour. Cela peut créer beaucoup de tâches en arrière plan, et donc n'est pas recommandé</target>
 </trans-unit>
 <trans-unit id="sd3dfc2a1c3647e77">
   <source>Deferred until end</source>
+  <target>Reporté jusqu'à la fin</target>
 </trans-unit>
 <trans-unit id="secd492de6e1ae305">
   <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+  <target>Les synchronisation sortantes seront démarrées à la fin de la synchronisation de la source.</target>
 </trans-unit>
 <trans-unit id="s0c476074a4fc4d95">
   <source>Outgoing sync trigger mode</source>
+  <target>Mode de démarrage des synchronisations sortantes</target>
 </trans-unit>
 <trans-unit id="s4bb6f209647072f4">
   <source>Successfully connected source</source>
+  <target>Source connectée avec succès</target>
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+  <target>Erreur de connexion de la source : <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></target>
 </trans-unit>
 </body>
 </file>
