@@ -62,10 +62,14 @@ Where `<version>` matches the target Kubernetes version specified in your config
 An example `kubeadm_config.yml` is available on the [authentik Platform GitHub repository](https://github.com/BeryJu/infrastructure/blob/main/roles/beryjuio_kube/templates/kubeadm_config.yml#L11-L20).
 :::
 
-## How to authenticate to kubectl with the authentik Agent
+## Authenticate to kubectl with the authentik Agent
 
-(TODO)
+To authenticate to kubectl with the authentik agent, use the following command:
 
 ```bash
 ak auth kubectl
 ```
+
+Flags:
+-c, --client-id string Client ID
+-h, --help help for kubectl
