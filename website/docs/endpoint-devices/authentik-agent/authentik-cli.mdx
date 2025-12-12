@@ -53,7 +53,7 @@ Output help information about any command.
 ak help <command>
 ```
 
-Where `<command>` is any authentik CLI command, for example: `ak help ssh`
+Where `<command>` is any authentik CLI command you want help with, for example: `ak help ssh`
 
 ### ssh
 
@@ -84,6 +84,45 @@ ak whoami
 (TODO)
 
 ## authentik-sysd commands
+
+### agent
+
+Used to run the authentik system agent
+
+```bash
+ak-sysd agent <command>
+```
+
+(TODO)
+
+### completion
+
+Generate the autocomlpetion script for the specified shell.
+
+```bash
+ak-sysd completion <command>
+```
+
+- `bash` - Generate the autocompletion script for bash.
+- `fish` - Generate the autocompletion script for fish.
+- `powershell` - Generate the autocompletion script for powershell.
+- `zsh` - Generate the autocompletion script for zsh.
+
+### domains
+
+```bash
+ak-sysd domains <command>
+```
+
+- `join` - Join an authentik domain, for example `ak-sysd domains join <name_for_authentik_domain> -a <authentik_URL>`
+
+### help
+
+```bash
+ak-sysd help <command>
+```
+
+Where `<command>` is any authentik CLI command you want help with, for example: `ak-sysd help domains`
 
 ### troubleshoot
 

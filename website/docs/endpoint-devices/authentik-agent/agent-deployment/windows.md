@@ -32,7 +32,9 @@ Follow these steps to install the authentik Agent on your Windows device:
 5. Confirm that the authentik Agent is installed by opening a Powershell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Configure the authentik Agent
+## Configure the authentik Agent to support authentication
+
+To enable [device authentication features](../../device-authentication/index.mdx), you must connect the device to an authentik deployment. To do so, follow these steps:
 
 1. Open a Terminal session and run the following command:
 
@@ -41,6 +43,30 @@ ak config setup --authentik-url <authentik_FQDN>
 ```
 
 2. A browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
+
+## Configure the authentik Agent to support device compliance
+
+To enable [device compliance features](../../device-compliance/index.mdx), you must join the device to an authentik domain. This can be done via the CLI or by editing a configuration file.
+
+### CLI
+
+1. Open a Terminal session and run the following command:
+
+```sh
+ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
+```
+
+- `name_for_authentik_domain` is the name that will be used to identify the authenitk deployment on the device.
+- `authentik_FQDN` is the fully qualified domain name of the authentik deployment.
+
+2. (TODO)
+
+### Configuration file
+
+1. Create the following file: (TODO) windows filepath
+2. Paste the following values into the file:
+
+(TODO) JSON codeblock
 
 ## Windows Credential Provider
 
