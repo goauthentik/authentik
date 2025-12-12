@@ -25,14 +25,21 @@ When a device registered with authentik reports its [device facts](#device-facts
 
 Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more. These facts can then be used to make policy decisions. For example, you can create a policy that only allows Endpoint Devices that are running a recent OS version to access an application.
 
-### Basic device facts
-
-(TODO)
-
 ### Advanced device facts :ak-enterprise
 
-(TODO)
+This feature is still in development and will be announced soon.
 
-## Devices in event logs
+## Endpoint devices in event logs
 
-(TODO)
+Authentication events involving endpoint devices are included in the event logs. For example:
+
+(TODO) add screenshot of device in event log
+
+### Search for an endpoint device in the event logs :ak-enterprise
+
+To search for event logs matching a specific endpoint device:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Events** > **Logs**.
+3. In the search bar, enter: `context.device.name = <device_name>`
+   For more information on advanced search, see [Advanced queries for event logs](../../sys-mgmt/events/logging-events/#tell-me-more)

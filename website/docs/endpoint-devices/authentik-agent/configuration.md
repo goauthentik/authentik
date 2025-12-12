@@ -51,6 +51,8 @@ The authentik Agent connector allows device information to be reported to authen
     - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)
     - **Refresh interval**: select how often the agent will attempt to update it's configuration.
     - **Enabled**: toggle to enable the connector.
+    - Under **Authentication settings**:
+        - **Federated OIDC Providers**: add the `authentik-cli` provider that you created in the previous section.
 5. Click **Finish**.
 
 ## Configuration verification
