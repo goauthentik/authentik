@@ -31,7 +31,7 @@ This feature is still in development and will be announced soon.
 
 ## Endpoint devices in event logs
 
-Authentication events involving endpoint devices are included in the event logs. For example:
+Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.md). For example:
 
 (TODO) add screenshot of device in event log
 
@@ -41,5 +41,6 @@ To search for event logs matching a specific endpoint device:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Events** > **Logs**.
-3. In the search bar, enter: `context.device.name = <device_name>`
-   For more information on advanced search, see [Advanced queries for event logs](../../sys-mgmt/events/logging-events/#tell-me-more)
+3. In the search bar, enter: `context.device.name = "<device_name>"`
+
+    For more information on advanced search, see [Advanced queries for event logs](../../sys-mgmt/events/logging-events.md#advanced-queries-for-event-logs).
