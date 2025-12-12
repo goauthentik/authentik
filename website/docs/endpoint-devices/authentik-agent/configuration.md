@@ -54,7 +54,3 @@ The authentik Agent connector allows device information to be reported to authen
     - Under **Authentication settings**:
         - **Federated OIDC Providers**: add the `authentik-cli` provider that you created in the previous section.
 5. Click **Finish**.
-
-## Configuration verification
-
-(TODO)

@@ -24,7 +24,7 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 Follow these steps to install the authentik Agent on your Windows device:
 
-1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page. (TODO - naming)
+1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page.
 2. Under **Desktop packages** click on **Windows** to download the Windows MSI file.
 3. Once the download is complete, install the MSI file.
 4. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.

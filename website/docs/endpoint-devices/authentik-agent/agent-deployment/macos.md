@@ -21,7 +21,7 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 Follow these steps to install the authentik Agent on your macOS device:
 
-1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page. (TODO)
+1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page.
 2. Under **Desktop packages** click on **macOS** to download the macOS package.
 3. Once the download is complete, attempt to install the package. Default Apple security settings should block the install.
    This can be avoided by Option + Right Clicking the package and clicking **Open**.
