@@ -8,6 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
 from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.password.models import PasswordStage
 
@@ -53,6 +54,19 @@ class IdentificationStage(Stage):
             (
                 "When set, adds functionality exactly like a Captcha stage, but baked into the "
                 "Identification stage."
+            ),
+        ),
+    )
+
+    webauthn_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, and conditional WebAuthn is available, allow the user to use their "
+                "passkey as a first factor."
             ),
         ),
     )

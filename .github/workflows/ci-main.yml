@@ -201,7 +201,7 @@ jobs:
         run: |
           docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b

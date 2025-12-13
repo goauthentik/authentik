@@ -167,7 +167,9 @@ export class Lexer {
                         if (Array.isArray(token)) {
                             this.tokens = token.slice(1);
                             return token[0];
-                        } else return token;
+                        }
+
+                        return token;
                     }
                 } else {
                     if (this.index !== index) this.remove = 0;
