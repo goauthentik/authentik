@@ -23,6 +23,7 @@ type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
     blankable?: boolean;
+    readOnly?: boolean;
     query?: string;
     objects?: T[];
     selectedObject: T | null;
@@ -92,6 +93,14 @@ export abstract class SearchSelectBase<T>
      */
     @property({ type: Boolean })
     public creatable?: boolean;
+
+    /**
+     * Prevent user interaction while still rendering the current value.
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
 
     /**
      * An initial string to filter the search contents,
@@ -254,6 +263,8 @@ export abstract class SearchSelectBase<T>
     }
 
     #searchListener = (event: InputEvent) => {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).rawValue;
 
         if (!value) {
@@ -277,6 +288,8 @@ export abstract class SearchSelectBase<T>
     };
 
     private onSelect(event: InputEvent) {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).value;
 
         if (!value) {
@@ -381,6 +394,7 @@ export abstract class SearchSelectBase<T>
             .options=${options}
             value=${ifPresent(value)}
             ?blankable=${this.blankable}
+            ?readonly=${this.readOnly}
             label=${ifPresent(this.label)}
             name=${ifPresent(this.name)}
             placeholder=${ifPresent(this.placeholder)}
