@@ -8048,10 +8048,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Send notification to event user</source>
   <target>Envoyer la notification à l'utilisateur associé à l'événement</target>
 </trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Lorsque cette option est activée, une notification sera envoyée à l'utilisateur qui a déclenché l'événement en plus des utilisateurs du groupe ci-dessus. L'utilisateur associé à l'événement sera toujours le premier utilisateur. Pour envoyer une notification uniquement à l'utilisateur de l'événement, activez l'option "Envoyer une seule fois" dans le transport de notification.</target>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
   <target>Transports</target>
@@ -8240,10 +8236,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="se9b1fec72ffd8f48">
   <source>Local</source>
   <target>Local</target>
-</trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
-  <target>Si activé, utiliser la connexion locale. Intégration Docker socket/Kubernetes requise.</target>
 </trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
@@ -10009,9 +10001,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
-</trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
@@ -10107,6 +10096,18 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 </body>
 </file>
