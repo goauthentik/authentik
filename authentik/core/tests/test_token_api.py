@@ -183,16 +183,16 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(len(body["results"]), 1)
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
 
-    def test_list_admin(self):
-        """Test Token List (Test with admin auth)"""
+    def test_list_with_permission(self):
+        """Test Token List (Test with `view_token` permission)"""
         Token.objects.all().delete()
-        self.client.force_login(self.admin)
         token_should: Token = Token.objects.create(
             identifier="test", expiring=False, user=self.user
         )
         token_should_not: Token = Token.objects.create(
             identifier="test-2", expiring=False, user=get_anonymous_user()
         )
+        self.user.assign_perms_to_managed_role("authentik_core.view_token")
         response = self.client.get(reverse("authentik_api:token-list"))
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 2)
