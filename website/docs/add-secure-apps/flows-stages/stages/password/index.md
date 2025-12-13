@@ -8,6 +8,8 @@ This is a generic password prompt which authenticates the current `pending_user`
 
 There are two different ways to configure passwordless authentication; you can follow the instructions [here](../authenticator_validate/index.mdx#passwordless-authentication) to allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), or dynamically skip the password stage depending on the users device, which is documented here.
 
+If you want users to be able to pick a passkey from the browser's passkey/autofill UI without entering a username first, configure **Passkey autofill (WebAuthn conditional UI)** in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This is separate from configuring a dedicated passwordless flow.
+
 Depending on what kind of device you want to require the user to have:
 
 #### WebAuthn

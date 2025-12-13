@@ -26,6 +26,42 @@ The CAPTCHA stage you use must be configured to use the "Invisible" mode, otherw
 
 To run a CAPTCHA process in the background while the user is entering their identification, a CAPTCHA stage can be selected here. If a CAPTCHA stage is selected in the Identification stage, the CAPTCHA stage should not be bound to the flow.
 
+## Passkey autofill (WebAuthn conditional UI):ak-version[2025.12]
+
+When configured, the Identification stage can offer passkey login directly from the browser's passkey/autofill UI (also known as "conditional UI"). This allows a user to select a passkey without first typing their username.
+
+authentik will automatically fall back to the regular username/password flow when passkey autofill is not available.
+
+### Requirements
+
+- **HTTPS** is required for WebAuthn (except on `localhost`).
+- **Browser support** for WebAuthn conditional mediation is required.
+- Users must have a compatible **discoverable credential / resident key** (most passkeys created by platform authenticators and password managers are discoverable).
+
+### Configuration
+
+1. Create (or reuse) an [Authenticator validation stage](../authenticator_validate/index.mdx) that allows the **WebAuthn** device class.
+2. In the Identification stage, set **WebAuthn Authenticator Validation Stage** to the Authenticator validation stage from step 1.
+3. Ensure users have enrolled a passkey/WebAuthn device (for example using the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.mdx)).
+
+### Notes
+
+- The passkey prompt is triggered by the browser when the user focuses the username field.
+- If a user has multiple passkeys, the browser will show a picker.
+- If passkey login is used, the flow context will have `auth_method` set to `auth_webauthn_pwl`.
+- In the default authentication flow blueprint, authentik skips the MFA validation stage after passkey login using an expression policy. If you want passkey login to still require an additional factor, disable or adjust that policy binding on the MFA stage.
+
+### Troubleshooting
+
+- **No passkey prompt appears**
+    - Ensure the Identification stage has **WebAuthn Authenticator Validation Stage** set.
+    - Ensure you're using **HTTPS** (except on `localhost`).
+    - Check browser support for conditional UI.
+
+- **Passkey prompt appears, but login falls back to username/password**
+    - Ensure the referenced Authenticator validation stage allows the **WebAuthn** device class.
+    - Ensure the user has a valid, confirmed WebAuthn device enrolled.
+
 ## Enrollment/Recovery Flow
 
 These fields specify if and which flows are linked on the form. The enrollment flow is linked as `Need an account? Sign up.`, and the recovery flow is linked as `Forgot username or password?`.
