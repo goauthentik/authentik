@@ -51,6 +51,11 @@ export class NavigationButtons extends WithSession(AKElement) {
         Styles,
     ];
 
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.refreshNotifications();
+    }
+
     protected async refreshNotifications(): Promise<void> {
         const { currentUser } = this;
 
