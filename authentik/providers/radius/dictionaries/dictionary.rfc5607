@@ -1,0 +1,33 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 5607.
+#	http://www.ietf.org/rfc/rfc5607.txt
+#
+#	$Id$
+#
+
+VALUE	Service-Type			Framed-Management	18
+
+ATTRIBUTE	Framed-Management			133	integer
+
+VALUE	Framed-Management		SNMP			1
+VALUE	Framed-Management		Web-Based		2
+VALUE	Framed-Management		Netconf			3
+VALUE	Framed-Management		FTP			4
+VALUE	Framed-Management		TFTP			5
+VALUE	Framed-Management		SFTP			6
+VALUE	Framed-Management		RCP			7
+VALUE	Framed-Management		SCP			8
+
+ATTRIBUTE	Management-Transport-Protection		134	integer
+
+VALUE	Management-Transport-Protection	No-Protection		1
+VALUE	Management-Transport-Protection	Integrity-Protection	2
+VALUE	Management-Transport-Protection	Integrity-Confidentiality-Protection 3
+
+ATTRIBUTE	Management-Policy-Id			135	string
+
+ATTRIBUTE	Management-Privilege-Level		136	integer
