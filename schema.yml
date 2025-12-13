@@ -4729,11 +4729,6 @@ paths:
           type: boolean
         description: Only return certificate-key pairs with keys
       - in: query
-        name: include_details
-        schema:
-          type: boolean
-          default: true
-      - in: query
         name: key_type
         schema:
           type: array
@@ -34992,25 +34987,25 @@ components:
           type: string
         fingerprint_sha256:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA256)
           readOnly: true
+          nullable: true
+          description: SHA256 fingerprint of the certificate
         fingerprint_sha1:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA1)
           readOnly: true
+          nullable: true
+          description: SHA1 fingerprint of the certificate
         cert_expiry:
           type: string
           format: date-time
-          nullable: true
-          description: Get certificate expiry
           readOnly: true
+          nullable: true
+          description: Certificate expiry date
         cert_subject:
           type: string
-          nullable: true
-          description: Get certificate subject as full rfc4514
           readOnly: true
+          nullable: true
+          description: Certificate subject as RFC4514 string
         private_key_available:
           type: boolean
           description: Show if this keypair has a private key configured or not
@@ -35018,8 +35013,9 @@ components:
         key_type:
           allOf:
           - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
           readOnly: true
+          nullable: true
+          description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
           type: string
           description: Get URL to download certificate

@@ -1,7 +1,8 @@
 """authentik crypto models"""
 
+from base64 import urlsafe_b64encode
 from binascii import hexlify
-from hashlib import md5
+from hashlib import md5, sha512
 from ssl import PEM_FOOTER, PEM_HEADER
 from textwrap import wrap
 from uuid import uuid4
@@ -47,6 +48,39 @@ def fingerprint_sha256(cert: Certificate) -> str:
     return hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8")
 
 
+def detect_key_type(certificate: Certificate) -> str | None:
+    """Detect the key algorithm type by parsing the certificate's public key"""
+    try:
+        public_key = certificate.public_key()
+        if isinstance(public_key, RSAPublicKey):
+            return KeyType.RSA
+        if isinstance(public_key, EllipticCurvePublicKey):
+            return KeyType.EC
+        if isinstance(public_key, DSAPublicKey):
+            return KeyType.DSA
+        if isinstance(public_key, Ed25519PublicKey):
+            return KeyType.ED25519
+        if isinstance(public_key, Ed448PublicKey):
+            return KeyType.ED448
+    except (ValueError, TypeError, AttributeError) as exc:
+        LOGGER.warning("Failed to detect key type", exc=exc)
+    return None
+
+
+def generate_key_id(key_data: str) -> str:
+    """Generate Key ID using SHA512 + urlsafe_b64encode."""
+    if not key_data:
+        return ""
+    return urlsafe_b64encode(sha512(key_data.encode("utf-8")).digest()).decode("utf-8").rstrip("=")
+
+
+def generate_key_id_legacy(key_data: str) -> str:
+    """Generate Key ID using MD5 (legacy format for backwards compatibility)."""
+    if not key_data:
+        return ""
+    return md5(key_data.encode("utf-8")).hexdigest()  # nosec
+
+
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     """CertificateKeyPair that can be used for signing or encrypting if `key_data`
     is set, otherwise it can be used to verify remote data."""
@@ -61,6 +95,41 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         ),
         blank=True,
         default="",
+    )
+    key_type = models.CharField(
+        max_length=16,
+        choices=KeyType.choices,
+        null=True,
+        blank=True,
+        help_text=_("Key algorithm type detected from the certificate's public key"),
+    )
+    cert_expiry = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text=_("Certificate expiry date"),
+    )
+    cert_subject = models.TextField(
+        null=True,
+        blank=True,
+        help_text=_("Certificate subject as RFC4514 string"),
+    )
+    fingerprint_sha256 = models.CharField(
+        max_length=95,
+        null=True,
+        blank=True,
+        help_text=_("SHA256 fingerprint of the certificate"),
+    )
+    fingerprint_sha1 = models.CharField(
+        max_length=59,
+        null=True,
+        blank=True,
+        help_text=_("SHA1 fingerprint of the certificate"),
+    )
+    kid = models.CharField(
+        max_length=128,
+        null=True,
+        blank=True,
+        help_text=_("Key ID generated from private key"),
     )
 
     _cert: Certificate | None = None
@@ -105,41 +174,6 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 LOGGER.warning(exc)
                 return None
         return self._private_key
-
-    @property
-    def fingerprint_sha256(self) -> str:
-        """Get SHA256 Fingerprint of certificate_data"""
-        return fingerprint_sha256(self.certificate)
-
-    @property
-    def fingerprint_sha1(self) -> str:
-        """Get SHA1 Fingerprint of certificate_data"""
-        return hexlify(self.certificate.fingerprint(hashes.SHA1()), ":").decode("utf-8")  # nosec
-
-    @property
-    def kid(self):
-        """Get Key ID used for JWKS"""
-        return (
-            md5(self.key_data.encode("utf-8"), usedforsecurity=False).hexdigest()
-            if self.key_data
-            else ""
-        )  # nosec
-
-    @property
-    def key_type(self) -> str | None:
-        """Get the key algorithm type from the certificate's public key"""
-        public_key = self.certificate.public_key()
-        if isinstance(public_key, RSAPublicKey):
-            return KeyType.RSA
-        if isinstance(public_key, EllipticCurvePublicKey):
-            return KeyType.EC
-        if isinstance(public_key, DSAPublicKey):
-            return KeyType.DSA
-        if isinstance(public_key, Ed25519PublicKey):
-            return KeyType.ED25519
-        if isinstance(public_key, Ed448PublicKey):
-            return KeyType.ED448
-        return None
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"
