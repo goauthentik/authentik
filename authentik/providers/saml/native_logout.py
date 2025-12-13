@@ -21,6 +21,7 @@ class NativeLogoutChallenge(Challenge):
     component = CharField(default="ak-provider-saml-native-logout")
     post_url = CharField(required=False)
     saml_request = CharField(required=False)
+    saml_response = CharField(required=False)
     relay_state = CharField(required=False)
     provider_name = CharField(required=False)
     binding = CharField(required=False)

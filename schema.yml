@@ -18115,6 +18115,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sign_logout_response
+        schema:
+          type: boolean
+      - in: query
         name: sign_response
         schema:
           type: boolean
@@ -41540,6 +41544,8 @@ components:
           type: string
         saml_request:
           type: string
+        saml_response:
+          type: string
         relay_state:
           type: string
         provider_name:
@@ -48318,6 +48324,8 @@ components:
           type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -51620,6 +51628,8 @@ components:
           type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -51819,6 +51829,8 @@ components:
         sign_response:
           type: boolean
         sign_logout_request:
+          type: boolean
+        sign_logout_response:
           type: boolean
         sp_binding:
           allOf:

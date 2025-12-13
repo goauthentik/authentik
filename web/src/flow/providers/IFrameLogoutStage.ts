@@ -28,6 +28,8 @@ interface LogoutStatus {
 interface LogoutURLData {
     url: string;
     saml_request?: string;
+    saml_response?: string;
+    relay_state?: string;
     provider_name?: string;
     binding?: string;
 }
@@ -167,7 +169,10 @@ export class IFrameLogoutStage extends BaseStage<
         });
 
         // Handle based on binding type
-        if (logoutData.binding === SAMLBindingsEnum.Redirect || !logoutData.saml_request) {
+        if (
+            logoutData.binding === SAMLBindingsEnum.Redirect ||
+            (!logoutData.saml_request && !logoutData.saml_response)
+        ) {
             // For REDIRECT binding, just navigate the iframe to the URL
             iframe.src = logoutData.url;
         } else {
@@ -177,12 +182,29 @@ export class IFrameLogoutStage extends BaseStage<
             form.action = logoutData.url;
             form.target = iframe.name;
 
-            // Add SAML request
-            const samlInput = document.createElement("input");
-            samlInput.type = "hidden";
-            samlInput.name = "SAMLRequest";
-            samlInput.value = logoutData.saml_request;
-            form.appendChild(samlInput);
+            // Add SAML request OR response (depending on which is present)
+            if (logoutData.saml_request) {
+                const samlInput = document.createElement("input");
+                samlInput.type = "hidden";
+                samlInput.name = "SAMLRequest";
+                samlInput.value = logoutData.saml_request;
+                form.appendChild(samlInput);
+            } else if (logoutData.saml_response) {
+                const samlInput = document.createElement("input");
+                samlInput.type = "hidden";
+                samlInput.name = "SAMLResponse";
+                samlInput.value = logoutData.saml_response;
+                form.appendChild(samlInput);
+            }
+
+            // Add RelayState if present
+            if (logoutData.relay_state) {
+                const relayInput = document.createElement("input");
+                relayInput.type = "hidden";
+                relayInput.name = "RelayState";
+                relayInput.value = logoutData.relay_state;
+                form.appendChild(relayInput);
+            }
 
             // Add to document and submit
             document.body.appendChild(form);
