@@ -56,6 +56,7 @@ class TestFlowInspector(APITestCase):
                     "layout": "stacked",
                 },
                 "flow_designation": "authentication",
+                "passkey_challenge": None,
                 "password_fields": False,
                 "primary_action": "Log in",
                 "sources": [],

@@ -7,15 +7,20 @@ import {
 import { globalAK } from "#common/global";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { Config, Configuration, CurrentBrand, RootApi } from "@goauthentik/api";
+import { Configuration, CurrentBrand } from "@goauthentik/api";
 
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
-export function config(): Promise<Config> {
-    if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
-    }
-    return globalConfigPromise;
-}
+const { locale, api, brand } = globalAK();
+
+export const DEFAULT_CONFIG = new Configuration({
+    basePath: `${api.base}api/v3`,
+    middleware: [
+        new CSRFMiddleware(),
+        new EventMiddleware(),
+        new LoggingMiddleware(brand),
+        new SentryMiddleware(),
+        new LocaleMiddleware(locale),
+    ],
+});
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
@@ -33,17 +38,6 @@ export function brandSetFavicon(brand: CurrentBrand) {
         relIcon.href = brand.brandingFavicon;
     });
 }
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-        new SentryMiddleware(),
-        new LocaleMiddleware(),
-    ],
-});
 
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or

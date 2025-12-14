@@ -19,10 +19,14 @@ import {
     CoreApi,
     instanceOfValidationError,
     type ModelRequest,
+    PoliciesApi,
     type PolicyBinding,
     ProviderModelEnum,
+    ProvidersApi,
+    type ProvidersSamlImportMetadataCreateRequest,
     ProxyMode,
     type ProxyProviderRequest,
+    type SAMLProvider,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     type TransactionPolicyBindingRequest,
@@ -100,6 +104,56 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     @state()
     state: SubmitStates = "reviewing";
 
+    async sendSAMLMetadataImport() {
+        const providerData = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest;
+        const providersApi = new ProvidersApi(DEFAULT_CONFIG);
+        const coreApi = new CoreApi(DEFAULT_CONFIG);
+        const policiesApi = new PoliciesApi(DEFAULT_CONFIG);
+
+        try {
+            // Step 1: Import SAML metadata to create the provider
+            const createdProvider = (await providersApi.providersSamlImportMetadataCreate({
+                file: providerData.file,
+                name: providerData.name,
+                authorizationFlow: providerData.authorizationFlow || "",
+                invalidationFlow: providerData.invalidationFlow || "",
+            })) as unknown as SAMLProvider;
+
+            // Step 2: Create the application linked to the provider
+            const appData = cleanApplication(this.wizard.app);
+            appData.provider = createdProvider.pk;
+
+            const createdApp = await coreApi.coreApplicationsCreate({
+                applicationRequest: appData,
+            });
+
+            // Step 3: Create policy bindings
+            for (const binding of this.wizard.bindings ?? []) {
+                const bindingData = cleanBinding(binding);
+                await policiesApi.policiesBindingsCreate({
+                    policyBindingRequest: {
+                        ...bindingData,
+                        target: createdApp.pk,
+                    },
+                });
+            }
+
+            this.dispatchCustomEvent(EVENT_REFRESH);
+            this.state = "submitted";
+        } catch (error) {
+            const parsedError = await parseAPIResponseError(error);
+
+            if (!instanceOfValidationError(parsedError)) {
+                showAPIErrorMessage(parsedError);
+                this.state = "reviewing";
+                return;
+            }
+
+            this.handleUpdate({ errors: parsedError });
+            this.state = "reviewing";
+        }
+    }
+
     async send() {
         const app = this.wizard.app;
         const provider = this.wizard.provider as ModelRequest;
@@ -110,6 +164,13 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         if (provider === undefined) {
             throw new Error("Reached the submit state with the provider undefined");
+        }
+
+        this.state = "running";
+
+        // Special case for SAML metadata import - use a two-step process
+        if (this.wizard.providerModel === "samlproviderimportmodel") {
+            return this.sendSAMLMetadataImport();
         }
 
         // Stringly-based API. Not the best, but it works. Just be aware that it is
@@ -132,8 +193,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             provider,
             policyBindings: (this.wizard.bindings ?? []).map(cleanBinding),
         };
-
-        this.state = "running";
 
         return new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({

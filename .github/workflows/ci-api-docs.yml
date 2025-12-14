@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: website/package.json
           cache: "npm"
@@ -41,7 +41,7 @@ jobs:
       - working-directory: website/
         name: Install Dependencies
         run: npm ci
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+      - uses: actions/cache@a7833574556fa59680c1b7cb190c1735db73ebf0 # v4
         with:
           path: |
             ${{ github.workspace }}/website/api/.docusaurus
@@ -71,7 +71,7 @@ jobs:
         with:
           name: api-docs
           path: website/api/build
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: website/package.json
           cache: "npm"

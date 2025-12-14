@@ -17,11 +17,11 @@ export class ChipGroup extends AKElement {
         PFChipGroup,
         PFButton,
         css`
-            ::slotted(*) {
-                margin: 0 2px;
-            }
             .pf-c-chip-group {
                 margin-bottom: 8px;
+            }
+            .pf-c-chip-group__list {
+                gap: var(--pf-global--spacer--xs);
             }
         `,
     ];
@@ -42,9 +42,9 @@ export class ChipGroup extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-chip-group">
+        return html`<div class="pf-c-chip-group" part="chip-group">
             <div class="pf-c-chip-group__main">
-                <ul class="pf-c-chip-group__list" role="list">
+                <ul class="pf-c-chip-group__list">
                     <slot></slot>
                 </ul>
             </div>

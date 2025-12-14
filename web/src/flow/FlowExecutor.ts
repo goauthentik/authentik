@@ -11,16 +11,23 @@ import "#flow/stages/RedirectStage";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import {
+    EVENT_FLOW_ADVANCE,
+    EVENT_FLOW_INSPECTOR_TOGGLE,
+    EVENT_WS_MESSAGE,
+} from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
-import { WebsocketClient } from "#common/ws";
+import { formatLocaleOptions, PseudoLocale, TargetLocale } from "#common/ui/locale/definitions";
+import { setSessionLocale } from "#common/ui/locale/utils";
+import { WebsocketClient, WSMessage } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLocale } from "#elements/mixins/locale";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { renderImage } from "#elements/utils/images";
@@ -43,6 +50,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -55,7 +63,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    extends WithCapabilitiesConfig(WithBrandConfig(WithLocale(Interface)))
     implements StageHost
 {
     static readonly DefaultLayout: FlowLayoutEnum =
@@ -154,16 +162,28 @@ export class FlowExecutor
         });
     }
 
+    #websocketHandler = (e: CustomEvent<WSMessage>) => {
+        if (e.detail.message_type === "session.authenticated") {
+            if (!document.hidden) {
+                return;
+            }
+            console.debug("authentik/ws: Reloading after session authenticated event");
+            window.location.reload();
+        }
+    };
+
     public connectedCallback(): void {
         super.connectedCallback();
 
         window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+        window.addEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
         window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
+        window.removeEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
 
         WebsocketClient.close();
     }
@@ -465,6 +485,51 @@ export class FlowExecutor
         </button>`;
     }
 
+    #localeChangeListener = (event: Event) => {
+        const select = event.target as HTMLSelectElement;
+        const locale = select.value as TargetLocale;
+
+        this.locale = locale;
+
+        setSessionLocale(locale);
+    };
+
+    protected renderLocaleSelector() {
+        const { locale } = this;
+        let localeOptions = formatLocaleOptions();
+
+        if (!this.can(CapabilitiesEnum.CanDebug)) {
+            localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
+        }
+
+        const options = repeat(
+            localeOptions,
+            ([_locale, code]) => code,
+            ([label, code]) =>
+                html`<option value=${code} ?selected=${code === locale}>${label}</option>`,
+        );
+
+        return html`<div class="locale-selector">
+            <label
+                for="locale-selector"
+                aria-label=${msg("Select language", {
+                    id: "language-selector-label",
+                    desc: "Label for the language selection dropdown",
+                })}
+            >
+                <i class="fa fa-globe" aria-hidden="true"></i>
+            </label>
+            <select
+                id="locale-selector"
+                @change=${this.#localeChangeListener}
+                class="pf-c-form-control"
+                name="locale"
+            >
+                ${options}
+            </select>
+        </div>`;
+    }
+
     //#endregion
 
     //#region Render
@@ -476,7 +541,9 @@ export class FlowExecutor
     public override render(): TemplateResult {
         const { component } = this.challenge || {};
 
-        return html`<header class="pf-c-login__header">${this.renderInspectorButton()}</header>
+        return html`<header class="pf-c-login__header">
+                ${this.renderLocaleSelector()} ${this.renderInspectorButton()}
+            </header>
             <main
                 data-layout=${this.layout}
                 class="pf-c-login__main"

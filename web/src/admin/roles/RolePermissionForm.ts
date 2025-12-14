@@ -25,10 +25,8 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     @state()
     permissionsToAdd: Permission[] = [];
 
-    @property()
-    roleUuid?: string;
-
-    async load(): Promise<void> {}
+    @property({ type: String })
+    public roleUuid: string | null = null;
 
     loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
@@ -39,8 +37,11 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     async send(data: RolePermissionAssign) {
+        if (!this.roleUuid) {
+            return;
+        }
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
-            uuid: this.roleUuid || "",
+            uuid: this.roleUuid,
             permissionAssignRequest: {
                 permissions: data.permissions,
             },

@@ -70,6 +70,7 @@ class FileManager:
         self,
         name: str | None,
         request: HttpRequest | Request | None = None,
+        use_cache: bool = True,
     ) -> str:
         """
         Get URL for accessing the file.

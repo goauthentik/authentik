@@ -4,6 +4,7 @@ from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.tenants.flags import Flag
 
 GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
@@ -20,6 +21,12 @@ HIST_FLOWS_PLAN_TIME = Histogram(
     "Duration to build a plan for a flow",
     ["flow_slug"],
 )
+
+
+class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others"):
+
+    default = False
+    visibility = "public"
 
 
 class AuthentikFlowsConfig(ManagedAppConfig):

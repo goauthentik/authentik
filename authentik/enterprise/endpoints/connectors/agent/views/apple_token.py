@@ -24,6 +24,7 @@ from authentik.endpoints.connectors.agent.models import (
 from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.id_token import IDToken
@@ -125,7 +126,13 @@ class TokenView(View):
         return device_user, decoded
 
     def create_auth_session(self, user: User):
-        event = Event.new(EventAction.LOGIN).from_http(self.request, user=user)
+        event = Event.new(
+            EventAction.LOGIN,
+            app="authentik.endpoints.connectors.agent",
+            **{
+                PLAN_CONTEXT_DEVICE: self.device_connection.device,
+            },
+        ).from_http(self.request, user=user)
         store = SessionStore()
         store[SESSION_LOGIN_EVENT] = event
         store.save()

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 00:11+0000\n"
+"POT-Creation-Date: 2025-12-12 15:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,10 +185,6 @@ msgstr ""
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 
-#: authentik/core/api/groups.py
-msgid "Cannot set group as parent of itself."
-msgstr ""
-
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -257,11 +253,19 @@ msgid "Disable superuser status"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr ""
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/providers/saml/models.py authentik/rbac/models.py
+#: authentik/providers/saml/models.py
 msgid "User"
 msgstr ""
 
@@ -560,6 +564,14 @@ msgstr ""
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pairs"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
 msgstr ""
 
 #: authentik/crypto/tasks.py
@@ -913,6 +925,27 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr ""
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
 msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
@@ -1278,6 +1311,10 @@ msgstr ""
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
+msgstr ""
+
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
@@ -2781,6 +2818,10 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr ""
 
@@ -3040,6 +3081,14 @@ msgid "Reddit OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
 msgstr ""
 
@@ -3253,6 +3302,10 @@ msgstr ""
 msgid "SCIM Source Property Mappings"
 msgstr ""
 
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr ""
+
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
 msgstr ""
@@ -3297,11 +3350,11 @@ msgstr ""
 msgid "Group Telegram Source Connections"
 msgstr ""
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Authentication date is too old"
 msgstr ""
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
 msgstr ""
 
@@ -3906,6 +3959,10 @@ msgid "Identification Stages"
 msgstr ""
 
 #: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr ""
+
+#: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
 msgstr ""
 
@@ -4310,6 +4367,14 @@ msgid "Default token length"
 msgstr ""
 
 #: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr ""
+
+#: authentik/tenants/models.py
 msgid "Tenant"
 msgstr ""
 
@@ -4323,6 +4388,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Domains"
+msgstr ""
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
 msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py

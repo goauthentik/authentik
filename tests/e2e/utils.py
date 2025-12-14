@@ -23,8 +23,10 @@ from docker.models.containers import Container
 from docker.models.networks import Network
 from selenium import webdriver
 from selenium.common.exceptions import (
+    DetachedShadowRootException,
     NoSuchElementException,
     NoSuchShadowRootException,
+    StaleElementReferenceException,
     TimeoutException,
     WebDriverException,
 )
@@ -326,18 +328,23 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
         while attempts < SHADOW_ROOT_RETRIES:
             try:
+                host = container.find_element(By.CSS_SELECTOR, selector)
                 return host.shadow_root
-            except NoSuchShadowRootException:
+            except (
+                NoSuchElementException,
+                NoSuchShadowRootException,
+                DetachedShadowRootException,
+                StaleElementReferenceException,
+            ):
                 attempts += 1
                 sleep(0.2)
-                # re-find host in case it was re-attached
-                try:
-                    host = container.find_element(By.CSS_SELECTOR, selector)
-                except NoSuchElementException:
-                    # loop and retry finding host
-                    pass
 
-        inner_html = host.get_attribute("innerHTML") or "<no host>"
+        inner_html = "<no host>"
+        if host is not None:
+            try:
+                inner_html = host.get_attribute("innerHTML") or "<no host>"
+            except (DetachedShadowRootException, StaleElementReferenceException):
+                inner_html = "<stale host>"
 
         raise RuntimeError(
             f"Failed to obtain shadow root for {selector} after {attempts} attempts. "

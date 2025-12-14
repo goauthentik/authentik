@@ -59,3 +59,22 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
 3. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
    :::
+
+## Export events :ak-enterprise
+
+You can export your authentik instance's events to a CSV file. To generate a data export, follow these steps:
+
+1. Log in to authentik as an administrator and navigate to **Events > Logs**.
+2. Set a [search query](#tell-me-more) as well as the ordering, as needed. The data export will honor these settings.
+3. Click **Export** above the event list.
+4. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the notification drawer.
+5. In the notification, click **Download**.
+
+6. Log in to authentik as an administrator and open the authentik Admin interface.
+7. Navigate to **Events** > **Logs**.
+8. Set a [search query](#tell-me-more) as well as the ordering for the data export.
+9. Click **Export** above the event list.
+10. The export is processed in the background and after it's ready, you will receive a notification in the notification drawer.
+11. In the notification, click **Download**.
+
+To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.

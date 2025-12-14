@@ -9,7 +9,6 @@ from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
 from django.urls import reverse
 from django.utils.timezone import now
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
@@ -194,8 +193,8 @@ class TestCrypto(APITestCase):
         """Test certificate export (download)"""
         keypair = create_test_cert()
         user = create_test_user()
-        assign_perm("view_certificatekeypair", user, keypair)
-        assign_perm("view_certificatekeypair_certificate", user, keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair_certificate", keypair)
         self.client.force_login(user)
         response = self.client.get(
             reverse(
@@ -218,8 +217,8 @@ class TestCrypto(APITestCase):
         """Test private_key export (download)"""
         keypair = create_test_cert()
         user = create_test_user()
-        assign_perm("view_certificatekeypair", user, keypair)
-        assign_perm("view_certificatekeypair_key", user, keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair_key", keypair)
         self.client.force_login(user)
         response = self.client.get(
             reverse(
