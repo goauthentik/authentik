@@ -2,10 +2,12 @@ import "#elements/LoadingOverlay";
 import "#elements/buttons/SpinnerButton/index";
 
 import { EVENT_REFRESH } from "#common/constants";
+import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -33,12 +35,20 @@ export class ModalForm extends ModalButton {
         const form = this.querySelector<Form>("[slot=form]");
 
         if (!form) {
-            throw new Error(msg("No form found"));
+            showMessage({
+                level: MessageLevel.error,
+                message: msg("No form found"),
+            });
+            return;
         }
 
         if (!(form instanceof Form)) {
             console.warn("authentik/forms: form inside the form slot is not a Form", form);
-            throw new Error(msg("Element inside the form slot is not a Form"));
+            showMessage({
+                level: MessageLevel.error,
+                message: msg("Element inside the form slot is not a Form"),
+            });
+            return;
         }
 
         if (!form.reportValidity()) {
@@ -61,7 +71,7 @@ export class ModalForm extends ModalButton {
             .then(() => {
                 if (this.closeAfterSuccessfulSubmit) {
                     this.open = false;
-                    form?.reset();
+                    form.reset();
 
                     // TODO: We may be fetching too frequently.
                     // Repeat dispatching will prematurely abort refresh listeners and cause several fetches and re-renders.
@@ -76,11 +86,9 @@ export class ModalForm extends ModalButton {
                 this.loading = false;
                 this.locked = false;
             })
-            .catch((error: unknown) => {
+            .catch(() => {
                 this.loading = false;
                 this.locked = false;
-
-                throw error;
             });
     };
 
