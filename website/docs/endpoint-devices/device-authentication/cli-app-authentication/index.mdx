@@ -6,13 +6,13 @@ tags: [authentik Agent, authentik cli, kubernetes, k8s, aws, cli]
 
 import DocCardList from "@theme/DocCardList";
 
-The authentik agent can also be used to authenticate to CLI applications like [`aws`](./aws.mdx) and [`kubectl`](./k8s.mdx).
+The authentik Agent can also be used to authenticate to CLI applications like [`aws`](./aws.mdx) and [`kubectl`](./k8s.mdx).
 
 ## How CLI authentication works
 
-The initial step is that authentik-agent and authentik-cli request an authentik token from the [authentik-cli OAuth Provider](../../authentik-agent/configuration.md#create-an-application-and-provider-in-authentik-for-cli) and exchange it for a token from the specified k8s or AWS provider.
+The initial step is that `authentik-agent` and `authentik-cli` request an authentik token from the [authentik-cli OAuth Provider](../../authentik-agent/configuration.md#create-an-application-and-provider-in-authentik-for-cli) and exchange it for a token from the specified Kubernetes or AWS provider.
 
-This token will then be cached until it's expired. This improves performance because a new token isn't requested for each authentication.
+This token will then be cached until it expires. This improves performance because a new token isn't requested for each authentication.
 
 ## More information
 

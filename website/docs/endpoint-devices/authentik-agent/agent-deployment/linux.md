@@ -81,4 +81,4 @@ ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 
 ## Logging
 
-All authenik Agent related logs are outputted to the Linux system logging service, `syslog`.
+All authentik Agent related logs output to the Linux system logging service, `syslog`.

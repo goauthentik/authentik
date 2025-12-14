@@ -18,11 +18,11 @@ To support the integration of authentik Agent with AWS CLI, you need to create a
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. `authentik-kubernetes`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name (e.g. `authentik-aws-cli`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
-        - Set the **Client ID** to `authentik-kubernetes`.
+        - Set the **Client ID** to `authentik-aws-cli`.
         - Select any available signing key.
         - Under **Machine-to-Machine authentication settings** add the `authentik-cli` provider as a **Federated OIDC Provider**.
     - **Configure Bindings** _(optional)_: you can create a [binding](../../../../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
@@ -31,7 +31,7 @@ To support the integration of authentik Agent with AWS CLI, you need to create a
 
 ## Authenticate to AWS CLI with the authentik Agent
 
-To authenticate to AWS CLI with the authentik agent, use the following command:
+To authenticate to the AWS CLI with the authentik agent, use the following command:
 
 ```bash
 ak auth aws

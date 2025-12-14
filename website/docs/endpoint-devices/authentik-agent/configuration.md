@@ -17,8 +17,8 @@ If you have already deployed the authentik OAuth device code flow, skip to the n
 3. Navigate to **Flows and Stages** > **Flows**.
 4. Click **Import**
 5. Select the downloaded blueprint and click **Import**.
-6. Navigate to System > Brands and click the Edit icon on the default brand.
-7. Set Default code flow to the newly created device code flow and click Update.
+6. Navigate to **System** > **Brands** and click the **Edit** icon on the default brand.
+7. Set **Default code flow** to the newly created device code flow and click **Update**.
 
 Alternatively, manually create the flow by following the instructions in the [Device code flow documentation](../../add-secure-apps/providers/oauth2/device_code.md#create-and-apply-a-device-code-flow).
 
@@ -47,9 +47,9 @@ The authentik Agent [Connector](../device-compliance/connectors.md) allows devic
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
 3. Select **Agent Connector** as the agent type and click **Next**.
-4. Configure he following required settings:
+4. Configure the following required settings:
     - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)
-    - **Refresh interval**: select how often the agent will attempt to update it's configuration.
+    - **Refresh interval**: select how often the agent will attempt to update its configuration.
     - **Enabled**: toggle to enable the connector.
     - Under **Authentication settings**:
         - **Federated OIDC Providers**: add the `authentik-cli` provider that you created in the previous section.
