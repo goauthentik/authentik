@@ -19,11 +19,11 @@ These facts are shown on the [Devices](../manage-devices.mdx) page and are also 
 
 ## Device check-in
 
-When a device registered with authentik reports its [device facts](#device-facts), this is called a **Device check-in**. These check-ins occur on a regular configurable schedule and can also be set to occur whenever a device is associated with an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md).
+When a device registered with authentik reports its [device facts](#device-facts), this is called a device check-in. These check-ins occur on a regular configurable schedule and can also be set to occur whenever a device is associated with an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md).
 
 ## Device facts
 
-Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more. These facts can then be used to make policy decisions. For example, you can create a policy that only allows Endpoint Devices that are running a recent OS version to access an application.
+Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more. These facts can are supplied to authentik flows via the [authentik browser extension](browser-extension.mdx) to be used in making policy decisions. For example, you can create a policy that only allows endpoint devices that are running a recent OS version to access an application.
 
 ### Advanced device facts :ak-enterprise
 
