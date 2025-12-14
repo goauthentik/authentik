@@ -2,12 +2,10 @@ import "#elements/LoadingOverlay";
 import "#elements/buttons/SpinnerButton/index";
 
 import { EVENT_REFRESH } from "#common/constants";
-import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
-import { showMessage } from "#elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -35,20 +33,12 @@ export class ModalForm extends ModalButton {
         const form = this.querySelector<Form>("[slot=form]");
 
         if (!form) {
-            showMessage({
-                level: MessageLevel.error,
-                message: msg("No form found"),
-            });
-            return;
+            throw new Error(msg("No form found"));
         }
 
         if (!(form instanceof Form)) {
             console.warn("authentik/forms: form inside the form slot is not a Form", form);
-            showMessage({
-                level: MessageLevel.error,
-                message: msg("Element inside the form slot is not a Form"),
-            });
-            return;
+            throw new Error(msg("Element inside the form slot is not a Form"));
         }
 
         if (!form.reportValidity()) {
@@ -146,7 +136,16 @@ export class ModalForm extends ModalButton {
                 ${this.showSubmitButton
                     ? html`<button
                           type="button"
-                          @click=${this.#confirm}
+                          @click=${() => {
+                              this.#confirm().catch((error: unknown) => {
+                                  this.loading = false;
+                                  this.locked = false;
+                                  console.error(
+                                      "authentik/forms: modal form submission failed",
+                                      error,
+                                  );
+                              });
+                          }}
                           class="pf-c-button pf-m-primary"
                           aria-description=${msg("Submit action")}
                       >
