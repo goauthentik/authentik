@@ -1,9 +1,10 @@
 .pf-c-drawer__body {
-    height: 100dvh;
+    max-height: 100dvh;
 }
 
 :host {
     background-color: var(--pf-c-notification-drawer--BackgroundColor);
+    --pf-c-drawer__panel--BackgroundColor: var(--pf-global--BackgroundColor--150) !important;
 }
 
 .pf-c-notification-drawer__body {

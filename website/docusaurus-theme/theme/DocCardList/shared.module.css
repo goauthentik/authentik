@@ -1,0 +1,122 @@
+.errorState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ifm-color-danger);
+}
+
+.loadingState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryShort {
+    margin-bottom: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.glossaryShortMissing {
+    font-style: italic;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryLong {
+    color: var(--ifm-color-emphasis-700);
+}
+
+.glossaryLongMissing {
+    font-style: italic;
+    color: var(--ifm-color-secondary);
+}
+
+.glossaryLong p {
+    margin-bottom: 0.75rem;
+}
+
+.glossaryLong p:last-child {
+    margin-bottom: 0;
+}
+
+.expandButton {
+    background: none;
+    border: none;
+    color: var(--ifm-color-primary);
+    font-size: 0.85rem;
+    padding: 0;
+    margin-top: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.expandButton:hover {
+    color: var(--ifm-color-primary-dark);
+    text-decoration: underline;
+}
+
+.cardContainer {
+    contain: layout style;
+    /* When visiting an anchor. So the title is not hidden.  */
+    scroll-margin-top: 120px;
+}
+
+.compactCard {
+    border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.compactCard .card__header {
+    padding: 0.75rem 1rem 0.5rem 1rem;
+}
+
+.compactCard .card__body {
+    padding: 0 1rem 0.75rem 1rem;
+}
+
+.compactCard {
+    border-color: var(--ifm-color-emphasis-400);
+}
+
+.anchorLink {
+    margin-left: 0.5rem;
+    color: var(--ifm-color-primary);
+    text-decoration: none;
+    font-weight: normal;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.anchorLink:hover {
+    text-decoration: none;
+    color: var(--ifm-color-primary-dark);
+    opacity: 1;
+}
+
+.anchorLink svg {
+    display: block;
+}
+
+.authentikBadge {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: lowercase;
+    background-color: var(--ifm-color-primary-lightest);
+    color: var(--ifm-color-primary-darkest);
+    border-radius: 0.25rem;
+    vertical-align: middle;
+    border: 1px solid var(--ifm-color-primary-light);
+}
+
+@media (max-width: 768px) {
+    .glossaryShort {
+        font-size: 1rem;
+    }
+}

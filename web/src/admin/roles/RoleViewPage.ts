@@ -1,4 +1,5 @@
 import "#admin/groups/RelatedGroupList";
+import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
@@ -14,7 +15,7 @@ import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
+import { RbacApi, RbacPermissionsAssignedByRolesListModelEnum, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -38,12 +39,12 @@ export class RoleViewPage extends AKElement {
                 uuid: id,
             })
             .then((role) => {
-                this._role = role;
+                this.targetRole = role;
             });
     }
 
     @state()
-    _role?: Role;
+    targetRole?: Role;
 
     static styles = [
         PFBase,
@@ -68,8 +69,8 @@ export class RoleViewPage extends AKElement {
     constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
-            if (!this._role?.pk) return;
-            this.roleId = this._role?.pk;
+            if (!this.targetRole?.pk) return;
+            this.roleId = this.targetRole?.pk;
         });
     }
 
@@ -85,12 +86,12 @@ export class RoleViewPage extends AKElement {
     }
 
     render() {
-        if (!this._role) {
+        if (!this.targetRole) {
             return nothing;
         }
 
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -106,8 +107,8 @@ export class RoleViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Role Info")}</div>
                             <div class="pf-c-card__body">
                                 ${renderDescriptionList([
-                                    [msg("Name"), this._role.name],
-                                    [msg("Edit"), this.renderUpdateControl(this._role)],
+                                    [msg("Name"), this.targetRole.name],
+                                    [msg("Edit"), this.renderUpdateControl(this.targetRole)],
                                 ])}
                             </div>
                         </div>
@@ -117,7 +118,7 @@ export class RoleViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Changelog")}</div>
                             <div class="pf-c-card__body">
                                 <ak-object-changelog
-                                    targetModelPk=${this._role.pk}
+                                    targetModelPk=${this.targetRole.pk}
                                     targetModelApp="authentik_rbac"
                                     targetModelName="role"
                                 >
@@ -126,14 +127,29 @@ export class RoleViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-related-list .targetRole=${this.targetRole}>
+                            </ak-user-related-list>
+                        </div>
+                    </div>
+                </section>
                 <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
-                    objectPk=${this._role.pk}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
+                    objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
@@ -143,7 +159,7 @@ export class RoleViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             icon: "fa fa-lock",
-            header: this._role?.name ? msg(str`Role ${this._role.name}`) : msg("Role"),
+            header: this.targetRole?.name ? msg(str`Role ${this.targetRole.name}`) : msg("Role"),
         });
     }
 }

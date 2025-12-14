@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
@@ -126,42 +127,20 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="evaluateOnPlan">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.evaluateOnPlan ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when flow is planned")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies during the Flow planning process.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="reEvaluatePolicies">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.reEvaluatePolicies ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when stage is run")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies before the Stage is presented to the user.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="evaluateOnPlan"
+                label=${msg("Evaluate when flow is planned")}
+                ?checked=${this.instance?.evaluateOnPlan ?? false}
+                help=${msg("Evaluate policies during the Flow planning process.")}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="reEvaluatePolicies"
+                label=${msg("Evaluate when stage is run")}
+                ?checked=${this.instance?.reEvaluatePolicies ?? true}
+                help=${msg("Evaluate policies before the Stage is presented to the user.")}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Invalid response behavior")}
                 required

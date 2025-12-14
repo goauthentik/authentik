@@ -1,4 +1,5 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -6,7 +7,6 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { dateTimeLocal } from "#common/temporal";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
@@ -88,7 +88,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(this.instance?.fixedData ?? {})}"
                 >
                 </ak-codemirror>
@@ -98,24 +98,12 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="singleUse">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.singleUse ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Single use")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("When enabled, the invitation will be deleted after usage.")}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="singleUse"
+                label=${msg("Single use")}
+                ?checked=${this.instance?.singleUse ?? true}
+                help=${msg("When enabled, the invitation will be deleted after usage.")}
+            ></ak-switch-input>`;
     }
 }
 

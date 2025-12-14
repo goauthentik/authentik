@@ -2,30 +2,39 @@
 
 /* compatibility-mode-fix */
 .pf-c-login.pf-c-login {
-    --ak-login--padding-max: 8dvw;
+    --ak-login--PaddingMax: 8dvw;
     --ak-login--padding: clamp(
         var(--pf-global--spacer--md),
         var(--pf-global--spacer--2xl),
-        var(--ak-login--padding-max)
+        var(--ak-login--PaddingMax)
     );
 
-    --ak-login--header-min-height: var(--pf-global--spacer--lg);
-    --ak-login--header-max-height: clamp(0, 45%, 15dvh);
+    --ak-login__main--brand-PaddingMin: var(--pf-global--spacer--xs);
+    --ak-login__main--brand-PaddingIdeal: 5rem;
+    --ak-login__main--brand-PaddingMax: 15dvh;
 
-    --ak-login--footer-padding-block: var(--pf-global--spacer--md);
+    --ak-login__footer--PaddingBlock: var(--pf-global--spacer--md);
 
-    --ak-login--max-width: 35rem;
-    --ak-login--main-column-width: minmax(
-        min(100dvw, var(--ak-login--max-width)),
-        var(--ak-login--max-width)
+    --ak-login--MaxWidth: 35rem;
+
+    --ak-login__main-ColumnWidth: minmax(
+        min(100%, var(--ak-login--MaxWidth)),
+        var(--ak-login--MaxWidth)
     );
 
     --pf-c-login__main-body--PaddingBottom: 0;
+
+    --ak-login__main--footer-PaddingMin: var(--pf-global--spacer--xs);
+    --ak-login__main--footer-PaddingIdeal: 3rem;
+    --ak-login__main--footer-PaddingMax: 9dvh;
+
     --pf-c-login__main-footer--PaddingBottom: clamp(
-        var(--pf-global--spacer--xs),
-        6dvw,
-        var(--pf-global--spacer--xl)
+        var(--ak-login__main--footer-PaddingMin),
+        var(--ak-login__main--footer-PaddingIdeal),
+        var(--ak-login__main--footer-PaddingMax)
     );
+
+    --pf-c-login__main-footer-band--BackgroundColor: transparent;
 
     flex: 1 1 auto;
 
@@ -43,7 +52,7 @@
 
     grid-template-columns:
         1fr
-        [main] var(--ak-login--main-column-width)
+        [main] var(--ak-login__main-ColumnWidth)
         1fr;
 
     grid-template-areas:
@@ -80,9 +89,13 @@
     }
 }
 
+.ak-c-placeholder {
+    grid-area: main;
+}
+
 [data-theme="dark"] .pf-c-login,
 :host([theme="dark"]) .pf-c-login {
-    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--150);
+    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--100);
 }
 
 /* #region Page Header */
@@ -118,13 +131,14 @@
 .pf-c-login__main {
     --pf-c-login__container--PaddingLeft: 0 !important;
     --pf-c-login__container--PaddingRight: 0 !important;
+    box-shadow: var(--pf-global--BoxShadow--md);
 
     grid-area: main;
     margin: 0;
 
     position: relative;
-    max-width: var(--ak-login--max-width);
-    min-height: calc(var(--ak-login--max-width) * 0.8);
+    max-width: var(--ak-login--MaxWidth);
+    min-height: calc(var(--ak-login--MaxWidth) * 0.8);
 
     display: flex;
     flex-flow: column;
@@ -133,6 +147,10 @@
     .slotted-content {
         position: relative;
         flex: 1 1 auto;
+    }
+
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        box-shadow: none;
     }
 }
 
@@ -150,16 +168,17 @@
 }
 
 .pf-c-login__main-header.pf-c-brand {
-    --ak-login--main-padding-block-start: clamp(
-        var(--pf-global--spacer--xs),
-        7dvw,
-        var(--pf-global--spacer--2xl)
+    --ak-login__main-padding-block-start: clamp(
+        var(--ak-login__main--brand-PaddingMin),
+        var(--ak-login__main--brand-PaddingIdeal),
+        var(--ak-login__main--brand-PaddingMax)
     );
 
     padding-inline: calc(var(--ak-login--padding) / 4);
     padding-block-start: calc(
-        var(--ak-login--main-padding-block-start) - var(--ak-login--footer-padding-block)
+        var(--ak-login__main-padding-block-start) - var(--ak-login__footer--PaddingBlock)
     );
+    padding-bottom: var(--pf-global--spacer--xs);
 
     padding-block-end: calc(var(--ak-login--padding) / 2);
 
@@ -168,8 +187,20 @@
 
     .branding-logo {
         display: block;
-        width: clamp(75%, calc(var(--ak-login--max-width) / 2), 90%);
+        width: clamp(75%, calc(var(--ak-login--MaxWidth) / 2), 90%);
         min-height: 4rem;
+    }
+
+    /* Ensure Font Awesome logos scale similarly to image logos */
+    .branding-logo.font-awesome,
+    .branding-logo.fas,
+    .branding-logo.far,
+    .branding-logo.fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(3rem, 8vw, 5rem);
+        line-height: 1;
     }
 }
 
@@ -180,24 +211,13 @@
 
 /* #endregion */
 
-/* #region Main Footer */
-
-.pf-c-login__main-footer-band {
-    @media (max-width: 35rem) or (max-height: 17.5rem) {
-        --pf-c-login__main-footer-band--BackgroundColor: transparent !important;
-    }
-}
-
-[data-theme="dark"] .pf-c-login__main-footer-band,
-:host([theme="dark"]) .pf-c-login__main-footer-band {
-    --pf-c-login__main-footer-band--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
-}
-
-/* #endregion */
-
 /* #region Layout variations */
 
 @media (min-width: 70rem) and (min-height: 17.5rem) {
+    .pf-c-login__main[data-layout^="sidebar"] {
+        box-shadow: none;
+    }
+
     .pf-c-login[data-layout="content_left"],
     .pf-c-login[data-layout="content_right"] {
         display: flex;
@@ -218,8 +238,13 @@
 
     .pf-c-login[data-layout="sidebar_left"],
     .pf-c-login[data-layout="sidebar_right"] {
-        --ak-login--max-width: 36rem;
+        --ak-login--MaxWidth: 36rem;
         --ak-login--background-color-overlay: var(--pf-c-login__main--BackgroundColor);
+
+        &::before {
+            box-shadow: var(--pf-global--BoxShadow--md);
+        }
+
         .pf-c-login__main {
             height: 100%;
             justify-content: normal;
@@ -234,7 +259,7 @@
     }
 
     .pf-c-login[data-layout="sidebar_left"] {
-        grid-template-columns: [main footer] var(--ak-login--main-column-width) repeat(2, 1fr);
+        grid-template-columns: [main footer] var(--ak-login__main-ColumnWidth) repeat(2, 1fr);
 
         grid-template-areas:
             "header . ."
@@ -243,16 +268,12 @@
     }
 
     .pf-c-login[data-layout="sidebar_right"] {
-        grid-template-columns: repeat(2, 1fr) var(--ak-login--main-column-width) [main footer];
+        grid-template-columns: repeat(2, 1fr) var(--ak-login__main-ColumnWidth) [main footer];
 
         grid-template-areas:
             ". . header"
             ". . main  "
             ". . footer";
-    }
-
-    .pf-c-login__main-footer-band {
-        --pf-c-login__main-footer-band--BackgroundColor: transparent !important;
     }
 }
 
@@ -260,7 +281,6 @@
 
 .pf-c-login__footer {
     --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
-    min-height: var(--pf-global--spacer--2xl);
     grid-area: footer;
     flex: 0 0 auto;
     display: flex;
@@ -268,19 +288,15 @@
     align-self: end;
     justify-content: center;
     padding-inline: var(--pf-global--spacer--2xl);
-    padding-block: var(--ak-login--footer-padding-block) !important;
-
-    ul.pf-c-list.pf-m-inline {
-        justify-content: center;
-        padding: 0;
-        padding-block-start: calc(var(--pf-global--spacer--xs) / 2);
-
-        column-gap: var(--pf-global--spacer--xl);
-        row-gap: var(--pf-global--spacer--md);
-    }
+    padding-block: var(--ak-login__footer--PaddingBlock) !important;
+    min-height: calc((var(--ak-login__footer--PaddingBlock) * 2) + 1rem);
+    line-height: var(--pf-global--LineHeight--md);
+    min-height: calc(
+        (var(--ak-login__footer--PaddingBlock) * 2) + (var(--pf-global--LineHeight--md) * 1rem)
+    );
 
     @media (max-width: 35rem) {
-        color: var(--pf-global--Color--300);
+        color: var(--pf-global--Color--200);
     }
 }
 

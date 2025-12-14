@@ -8,6 +8,7 @@ import {
     MatchingModeEnum,
     OAuth2Provider,
     ProviderModelEnum,
+    ProvidersSamlImportMetadataCreateRequest,
     ProxyMode,
     ProxyProvider,
     RACProvider,
@@ -34,6 +35,15 @@ function renderSAMLOverview(rawProvider: OneOfProvider) {
         [msg("ACS URL"), provider.acsUrl],
         [msg("Audience"), provider.audience || "-"],
         [msg("Issuer"), provider.urlIssuer],
+    ]);
+}
+
+function renderSAMLImportOverview(rawProvider: OneOfProvider) {
+    const provider = rawProvider as ProvidersSamlImportMetadataCreateRequest;
+
+    return renderSummary("SAML", provider.name, [
+        [msg("Authorization flow"), provider.authorizationFlow ?? "-"],
+        [msg("Invalidation flow"), provider.invalidationFlow ?? "-"],
     ]);
 }
 
@@ -149,6 +159,7 @@ const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1
 
 export const providerRenderers = new Map([
     [providerName(ProviderModelEnum.AuthentikProvidersSamlSamlprovider), renderSAMLOverview],
+    ["samlproviderimportmodel", renderSAMLImportOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersScimScimprovider), renderSCIMOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersRadiusRadiusprovider), renderRadiusOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersRacRacprovider), renderRACOverview],

@@ -4,16 +4,16 @@ from collections.abc import Iterator
 from copy import copy
 
 from django.core.cache import cache
-from django.db.models import QuerySet
+from django.db.models import Case, QuerySet
+from django.db.models.expressions import When
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
-from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -23,19 +23,13 @@ from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.lib.utils.file import (
-    FilePathSerializer,
-    FileUploadSerializer,
-    set_file,
-    set_file_url,
-)
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult
-from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
@@ -58,14 +52,26 @@ class ApplicationSerializer(ModelSerializer):
         source="backchannel_providers", required=False, read_only=True, many=True
     )
 
-    meta_icon = ReadOnlyField(source="get_meta_icon")
+    meta_icon_url = ReadOnlyField(source="get_meta_icon")
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
         user = None
+        user_data = None
+
         if "request" in self.context:
             user = self.context["request"].user
-        return app.get_launch_url(user)
+
+        # Cache serialized user data to avoid N+1 when formatting launch URLs
+        # for multiple applications. UserSerializer accesses user.ak_groups which
+        # would otherwise trigger a query for each application.
+        if user is not None:
+            if "_cached_user_data" not in self.context:
+                # Prefetch groups to avoid N+1
+                self.context["_cached_user_data"] = UserSerializer(instance=user).data
+            user_data = self.context["_cached_user_data"]
+
+        return app.get_launch_url(user, user_data=user_data)
 
     def validate_slug(self, slug: str) -> str:
         if slug in Application.reserved_slugs:
@@ -95,13 +101,13 @@ class ApplicationSerializer(ModelSerializer):
             "open_in_new_tab",
             "meta_launch_url",
             "meta_icon",
+            "meta_icon_url",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",
             "group",
         ]
         extra_kwargs = {
-            "meta_icon": {"read_only": True},
             "backchannel_providers": {"required": False},
         }
 
@@ -158,11 +164,26 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 applications.append(application)
         return applications
 
+    def _expand_applications(self, applications: list[Application]) -> QuerySet[Application]:
+        """
+        Re-fetch with proper prefetching for serialization
+        Cached applications don't have prefetched relationships, causing N+1 queries
+        during serialization when get_provider() is called
+        """
+        if not applications:
+            return self.get_queryset().none()
+        pks = [app.pk for app in applications]
+        return (
+            self.get_queryset()
+            .filter(pk__in=pks)
+            .order_by(Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(pks)]))
+        )
+
     def _filter_applications_with_launch_url(
-        self, paginated_apps: Iterator[Application]
+        self, applications: QuerySet[Application]
     ) -> list[Application]:
         applications = []
-        for app in paginated_apps:
+        for app in applications:
             if app.get_launch_url():
                 applications.append(app)
         return applications
@@ -262,6 +283,8 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             except ValueError as exc:
                 raise ValidationError from exc
             allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
+            allowed_applications = self._expand_applications(allowed_applications)
+
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
 
@@ -280,50 +303,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                     allowed_applications,
                     timeout=86400,
                 )
+        allowed_applications = self._expand_applications(allowed_applications)
 
         if only_with_launch_url == "true":
             allowed_applications = self._filter_applications_with_launch_url(allowed_applications)
 
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
-
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request={
-            "multipart/form-data": FileUploadSerializer,
-        },
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-        parser_classes=(MultiPartParser,),
-    )
-    def set_icon(self, request: Request, slug: str):
-        """Set application icon"""
-        app: Application = self.get_object()
-        return set_file(request, app, "meta_icon")
-
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request=FilePathSerializer,
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-    )
-    def set_icon_url(self, request: Request, slug: str):
-        """Set application icon (as URL)"""
-        app: Application = self.get_object()
-        return set_file_url(request, app, "meta_icon")

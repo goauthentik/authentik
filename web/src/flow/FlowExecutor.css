@@ -1,8 +1,53 @@
 @import "../styles/authentik/components/Login/login.css";
 
+:host {
+    display: flex;
+    min-height: 100dvh;
+    flex-flow: column nowrap;
+}
+
 .inspector-toggle {
     position: absolute;
     top: 1rem;
     right: 1rem;
     z-index: 100;
+}
+
+.locale-selector {
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-start: 1rem;
+    z-index: 100;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: var(--pf-global--spacer--sm);
+    padding-inline-start: var(--pf-global--spacer--sm);
+    padding-block: var(--pf-global--spacer--xs);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    border-style: solid;
+    border-color: transparent;
+    border-width: thin;
+
+    &:has(select:hover) {
+        cursor: pointer;
+        border-color: var(--pf-global--Color--100);
+    }
+
+    select {
+        background-color: transparent;
+        color: var(--pf-global--Color--100);
+
+        border: none;
+
+        &:focus {
+            outline: none;
+        }
+
+        appearance: base-select;
+
+        &::picker-icon {
+            color: transparent;
+        }
+    }
 }
