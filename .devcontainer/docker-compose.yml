@@ -12,15 +12,8 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+    env_file: .env
     environment:
-      LOCAL_PROJECT_DIR: /ak-root
-      AUTHENTIK_DEBUG: true
-      AUTHENTIK_SECRET_KEY: "devcontainer-secret-key-change-me"
-      AUTHENTIK_POSTGRESQL__USER: postgres
-      AUTHENTIK_POSTGRESQL__PASSWORD: postgres
-      AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__NAME: authentik
-      AUTHENTIK_LOG_LEVEL: debug
       PATH: "/ak-root/.venv/bin:${PATH}"
     ports:
       - "9000:9000"
@@ -37,19 +30,14 @@ services:
       start_period: 20s
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: authentik
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST_AUTH_METHOD: trust
+    env_file: .env
     command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
 
   s3:
     image: docker.io/zenko/cloudserver
+    env_file: .env
     environment:
       REMOTE_MANAGEMENT_DISABLE: "1"
-      SCALITY_ACCESS_KEY_ID: accessKey1
-      SCALITY_SECRET_ACCESS_KEY: secretKey1
     ports:
       - "8020:8000"
     volumes:
