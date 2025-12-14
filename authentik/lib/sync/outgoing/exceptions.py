@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from authentik.lib.sentry import SentryIgnoredException
 
 
@@ -8,22 +10,43 @@ class BaseSyncException(SentryIgnoredException):
 class TransientSyncException(BaseSyncException):
     """Transient sync exception which may be caused by network blips, etc"""
 
+    def __init__(self, response=None):
+        super().__init__()
+        self.response = response
+
+    def __str__(self):
+        if self.response is not None:
+            if hasattr(self.response, "json"):
+                try:
+                    return f"Network error: {self.response.json()}"
+                except JSONDecodeError:
+                    pass
+            if hasattr(self.response, "text"):
+                return f"Network error: {self.response.text}"
+            return f"Network error: {self.response}"
+        return "Network error communicating with remote system"
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class NotFoundSyncException(BaseSyncException):
     """Exception when an object was not found in the remote system"""
 
-    def __init__(self, response=None, message: str | None = None):
+    def __init__(self, response=None):
         super().__init__()
         self.response = response
-        self.message = message
 
     def __str__(self):
         if self.response is not None:
+            if hasattr(self.response, "json"):
+                try:
+                    return f"Object not found: {self.response.json()}"
+                except JSONDecodeError:
+                    pass
             if hasattr(self.response, "text"):
-                return f"Not found: {self.response.text}"
-            return f"Not found: {self.response}"
-        if self.message:
-            return f"Not found: {self.message}"
+                return f"Object not found: {self.response.text}"
+            return f"Object not found: {self.response}"
         return "Object not found in remote system"
 
     def __repr__(self):
@@ -33,18 +56,20 @@ class NotFoundSyncException(BaseSyncException):
 class ObjectExistsSyncException(BaseSyncException):
     """Exception when an object already exists in the remote system"""
 
-    def __init__(self, response=None, message: str | None = None):
+    def __init__(self, response=None):
         super().__init__()
         self.response = response
-        self.message = message
 
     def __str__(self):
         if self.response is not None:
+            if hasattr(self.response, "json"):
+                try:
+                    return f"Object exists: {self.response.json()}"
+                except JSONDecodeError:
+                    pass
             if hasattr(self.response, "text"):
                 return f"Object exists: {self.response.text}"
             return f"Object exists: {self.response}"
-        if self.message:
-            return f"Object exists: {self.message}"
         return "Object exists in remote system"
 
     def __repr__(self):
@@ -54,21 +79,21 @@ class ObjectExistsSyncException(BaseSyncException):
 class BadRequestSyncException(BaseSyncException):
     """Exception when invalid data was sent to the remote system"""
 
-    def __init__(self, message: str | None = None, response=None):
+    def __init__(self, response=None):
         super().__init__()
-        self.message = message
         self.response = response
 
     def __str__(self):
-        parts = []
-        if self.message:
-            parts.append(self.message)
         if self.response is not None:
+            if hasattr(self.response, "json"):
+                try:
+                    return f"Bad request: {self.response.json()}"
+                except JSONDecodeError:
+                    pass
             if hasattr(self.response, "text"):
-                parts.append(str(self.response.text))
-            else:
-                parts.append(str(self.response))
-        return "Bad request: " + " - ".join(parts) if parts else "Bad request to remote system"
+                return f"Bad request: {self.response.text}"
+            return f"Bad request: {self.response}"
+        return "Bad request to remote system"
 
     def __repr__(self):
         return self.__str__()
