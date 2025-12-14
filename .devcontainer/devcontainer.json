@@ -5,6 +5,7 @@
     "workspaceFolder": "/ak-root",
     "containerUser": "authentik",
     "remoteUser": "authentik",
+    "shutdownAction": "stopCompose",
     "containerEnv": {
         "LOCAL_PROJECT_DIR": "/ak-root"
     },

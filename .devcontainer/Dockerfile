@@ -60,9 +60,4 @@ ENV CGO_ENABLED=1
 # Use /tmp instead of /dev/shm for development because go run needs to execute binaries
 ENV TMPDIR=/tmp
 
-# Switch to authentik user
 USER authentik
-
-# Note: Go, Node.js, Rust, and Docker are installed via devcontainer features
-# Note: Python dependencies will be installed via `uv sync` after container starts
-# Note: Source code is mounted at runtime from docker-compose for live editing

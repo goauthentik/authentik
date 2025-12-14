@@ -56,11 +56,6 @@ services:
       - s3-data:/usr/src/app/localData
       - s3-metadata:/usr/src/app/localMetadata
 
-  spotlight:
-    image: ghcr.io/getsentry/spotlight:latest
-    ports:
-      - "8969:8969"
-
 volumes:
   postgres-data:
   s3-data:
