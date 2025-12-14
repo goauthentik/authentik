@@ -2,6 +2,7 @@ import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import { WithLocale } from "#elements/mixins/locale";
 import { FocusTarget } from "#elements/utils/focus";
 
 import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
@@ -56,13 +57,15 @@ export interface ResponseErrorsChallenge {
 export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
-> extends AKElement {
+> extends WithLocale(AKElement) {
     static shadowRootOptions: ShadowRootInit = {
         ...LitElement.shadowRootOptions,
         delegatesFocus: true,
     };
 
-    protected host!: StageHost;
+    // TODO: Should have a property but this needs some refactoring first.
+    // @property({ attribute: false })
+    public host!: StageHost;
 
     @property({ attribute: false })
     public challenge!: Tin;

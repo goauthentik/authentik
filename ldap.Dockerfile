@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.3-trixie@sha256:7534a6264850325fcce93e47b87a0e3fddd96b308440245e6ab1325fa8a44c91 AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.5-trixie@sha256:5d35fb8d28b9095d123b7d96095bbf3750ff18be0a87e5a21c9cffc4351fbf96 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -31,7 +31,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:9b4cedf932e97194f1825124830f2eec14254d90162dad28f97e505971543115
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:07f41ce3f15b2bb5eb5bcd4e6efc0cb42bb7e5609e7244f636da1a91166817ca
 
 ARG VERSION
 ARG GIT_BUILD_HASH

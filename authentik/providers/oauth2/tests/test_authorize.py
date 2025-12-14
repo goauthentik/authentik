@@ -672,6 +672,7 @@ class TestAuthorize(OAuthTestCase):
         parsed = OAuthAuthorizationParams.from_request(request)
         self.assertNotIn(SCOPE_OFFLINE_ACCESS, parsed.scope)
 
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
     def test_ui_locales(self):
         """Test OIDC ui_locales authorization"""
         flow = create_test_flow()
@@ -698,6 +699,7 @@ class TestAuthorize(OAuthTestCase):
         parsed = parse_qs(urlparse(response.url).query)
         self.assertEqual(parsed["locale"], ["fr"])
 
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
     def test_ui_locales_invalid(self):
         """Test OIDC ui_locales authorization"""
         flow = create_test_flow()

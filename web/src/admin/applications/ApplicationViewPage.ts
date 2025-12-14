@@ -21,7 +21,7 @@ import {
     Application,
     CoreApi,
     OutpostsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -35,6 +35,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -49,6 +50,7 @@ export class ApplicationViewPage extends AKElement {
         PFButton,
         PFDescriptionList,
         PFGrid,
+        PFFlex,
         PFCard,
     ];
 
@@ -94,8 +96,8 @@ export class ApplicationViewPage extends AKElement {
                 if (
                     app.providerObj &&
                     [
-                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                     ].includes(app.providerObj.metaModelName)
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
@@ -129,9 +131,25 @@ export class ApplicationViewPage extends AKElement {
         return html`<main>
             <ak-tabs>
                 ${this.missingOutpost
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${msg("Warning: Application is not used by any Outpost.")}
-                      </div>`
+                    ? html`
+                          <div
+                              slot="header"
+                              class="pf-c-banner pf-m-warning"
+                              role="status"
+                              aria-live="polite"
+                          >
+                              <div class="pf-l-flex pf-m-space-items-sm">
+                                  <div class="pf-l-flex__item">
+                                      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                  </div>
+                                  <div class="pf-l-flex__item">
+                                      ${msg("Warning: Application is not used by any Outpost.", {
+                                          id: "application.outpost.missing.warning",
+                                      })}
+                                  </div>
+                              </div>
+                          </div>
+                      `
                     : nothing}
                 <section
                     role="tabpanel"
@@ -326,11 +344,29 @@ export class ApplicationViewPage extends AKElement {
                     id="page-app-entitlements"
                     aria-label="${msg("Application entitlements")}"
                 >
-                    <div slot="header" class="pf-c-banner pf-m-info">
-                        ${msg("Application entitlements are in preview.")}
-                        <a href="mailto:hello+feature/app-ent@goauthentik.io"
-                            >${msg("Send us feedback!")}</a
-                        >
+                    <div
+                        slot="header"
+                        class="pf-c-banner pf-m-info"
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <div class="pf-l-flex pf-m-space-items-sm">
+                            <div class="pf-l-flex__item">
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                            </div>
+                            <div class="pf-l-flex__item">
+                                ${msg("Application entitlements are in preview.", {
+                                    id: "application.entitlements.preview.info",
+                                })}
+                            </div>
+                            <div class="pf-l-flex__item">
+                                <a href="mailto:hello+feature/app-ent@goauthentik.io"
+                                    >${msg("Send us feedback!", {
+                                        id: "preview.send-us-feedback",
+                                    })}</a
+                                >
+                            </div>
+                        </div>
                     </div>
                     <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <div class="pf-c-card">
@@ -371,7 +407,7 @@ export class ApplicationViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -383,7 +419,7 @@ export class ApplicationViewPage extends AKElement {
         setPageDetails({
             header: this.application?.name ?? msg("Loading application..."),
             description: this.application?.metaPublisher,
-            icon: this.application?.metaIcon,
+            icon: this.application?.metaIconUrl,
         });
     }
 }

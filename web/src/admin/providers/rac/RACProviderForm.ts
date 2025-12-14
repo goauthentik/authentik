@@ -1,5 +1,6 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -52,12 +53,14 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                 />
             </ak-form-element-horizontal>
 
@@ -95,28 +98,15 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="deleteTokenOnDisconnect">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.deleteTokenOnDisconnect ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Delete authorization on disconnect")}</span
-                    >
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="deleteTokenOnDisconnect"
+                label=${msg("Delete authorization on disconnect")}
+                ?checked=${this.instance?.deleteTokenOnDisconnect ?? false}
+                help=${msg(
+                    "When enabled, connection authorizations will be deleted when a client disconnects. This will force clients with flaky internet connections to re-authorize the endpoint.",
+                )}
+            >
+            </ak-switch-input>
 
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">

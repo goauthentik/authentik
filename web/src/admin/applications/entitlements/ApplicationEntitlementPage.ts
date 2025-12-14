@@ -18,7 +18,7 @@ import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 import {
     ApplicationEntitlement,
     CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -36,6 +36,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     expandable = true;
 
     order = "order";
+
+    protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
@@ -91,7 +93,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplicationentitlement}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplicationentitlement}
                     objectPk=${item.pbmUuid}
                 >
                 </ak-rbac-object-permission-modal>`,

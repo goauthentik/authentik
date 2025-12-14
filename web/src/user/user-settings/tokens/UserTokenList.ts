@@ -10,7 +10,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { intentToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
-import { me } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -35,12 +34,18 @@ export class UserTokenList extends Table<Token> {
     order = "expires";
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+        let { currentUser } = this;
+
+        if (!currentUser) {
+            currentUser = (await this.refreshSession()).user;
+        }
+
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ...(await this.defaultEndpointConfig()),
             managed: "",
             // The user might have access to other tokens that aren't for their user
             // but only show tokens for their user here
-            userUsername: (await me()).user.username,
+            userUsername: currentUser.username,
         });
     }
 

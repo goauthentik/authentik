@@ -9,16 +9,15 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { me } from "#common/users";
 
 import { AKElement } from "#elements/Base";
+import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
     LDAPProvider,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SessionUser,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -39,15 +38,12 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-ldap-view")
-export class LDAPProviderViewPage extends AKElement {
+export class LDAPProviderViewPage extends WithSession(AKElement) {
     @property({ type: Number })
     providerID?: number;
 
     @state()
     provider?: LDAPProvider;
-
-    @state()
-    me?: SessionUser;
 
     static styles: CSSResult[] = [
         PFBase,
@@ -69,9 +65,6 @@ export class LDAPProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
-        me().then((user) => {
-            this.me = user;
-        });
     }
 
     fetchProvider(id: number) {
@@ -90,8 +83,8 @@ export class LDAPProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -125,7 +118,7 @@ export class LDAPProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -136,6 +129,7 @@ export class LDAPProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`
             ${
                 this.provider?.outpostSet.length < 1
@@ -219,9 +213,7 @@ export class LDAPProviderViewPage extends AKElement {
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value=${`cn=${
-                                        this.me?.user.username
-                                    },ou=users,${this.provider?.baseDn?.toLowerCase()}`}
+                                    value=${`cn=${this.currentUser?.username},ou=users,${this.provider?.baseDn?.toLowerCase()}`}
                                 />
                             </div>
                             <div class="pf-c-form__group">

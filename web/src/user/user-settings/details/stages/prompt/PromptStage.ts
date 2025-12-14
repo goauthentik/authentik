@@ -40,16 +40,15 @@ export class UserSettingsPromptStage extends PromptStage {
                     name=${prompt.fieldKey}
                     .errorMessages=${errors}
                 >
-                    <div slot="label" class="pf-c-form__group-label">
-                        ${AKLabel(
-                            {
-                                htmlFor: `field-${prompt.fieldKey}`,
-                                required: prompt.required,
-                            },
-                            prompt.label,
-                        )}
-                    </div>
-
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: `field-${prompt.fieldKey}`,
+                            required: prompt.required,
+                        },
+                        prompt.label,
+                    )}
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
             `;
@@ -61,7 +60,9 @@ export class UserSettingsPromptStage extends PromptStage {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
-                    <button type="submit" class="pf-c-button pf-m-primary">${msg("Save")}</button>
+                    <button name="continue" type="submit" class="pf-c-button pf-m-primary">
+                        ${msg("Save")}
+                    </button>
                     ${this.host.brand?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"

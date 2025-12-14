@@ -29,8 +29,8 @@ function stringify(obj: unknown): string {
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
-    @property()
-    flowSlug?: string;
+    @property({ type: String, attribute: "slug", useDefault: true })
+    public flowSlug: string = window.location.pathname.split("/")[3];
 
     @property({ attribute: false })
     state?: FlowInspection;
@@ -80,8 +80,9 @@ export class FlowInspector extends AKElement {
         if (!stage) {
             return stage;
         }
-        delete stage.flowSet;
-        return stage;
+        const conciseStage = { ...stage };
+        conciseStage.flowSet = [];
+        return conciseStage;
     }
 
     protected renderHeader() {
@@ -93,7 +94,7 @@ export class FlowInspector extends AKElement {
                 <div class="pf-c-notification-drawer__header-action-close">
                     <button
                         @click=${() => {
-                            this.dispatchEvent(
+                            window.dispatchEvent(
                                 new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
                                     bubbles: true,
                                     composed: true,

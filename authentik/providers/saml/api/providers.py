@@ -23,6 +23,7 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -313,17 +314,15 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             "multipart/form-data": SAMLProviderImportSerializer,
         },
         responses={
-            204: OpenApiResponse(description="Successfully imported provider"),
+            201: SAMLProviderSerializer,
             400: OpenApiResponse(description="Bad request"),
         },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
-    def import_metadata(self, request: Request) -> Response:
+    @validate(SAMLProviderImportSerializer)
+    def import_metadata(self, request: Request, body: SAMLProviderImportSerializer) -> Response:
         """Create provider from SAML Metadata"""
-        data = SAMLProviderImportSerializer(data=request.data)
-        if not data.is_valid():
-            raise ValidationError(data.errors)
-        file = data.validated_data["file"]
+        file = body.validated_data["file"]
         # Validate syntax first
         try:
             fromstring(file.read())
@@ -332,17 +331,18 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         file.seek(0)
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
-            metadata.to_provider(
-                data.validated_data["name"],
-                data.validated_data["authorization_flow"],
-                data.validated_data["invalidation_flow"],
+            provider = metadata.to_provider(
+                body.validated_data["name"],
+                body.validated_data["authorization_flow"],
+                body.validated_data["invalidation_flow"],
             )
+            # Return the created provider for use in workflows like the application wizard
+            return Response(SAMLProviderSerializer(provider).data, status=201)
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
                 _("Failed to import Metadata: {messages}".format_map({"messages": str(exc)})),
             ) from None
-        return Response(status=204)
 
     @permission_required(
         "authentik_providers_saml.view_samlprovider",

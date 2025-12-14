@@ -21,11 +21,11 @@ To create or edit a brand, follow these steps:
 
 The brand settings define the visual identity of the brand, including:
 
-- **Branding title**: Displayed in the browser tab (document title) and throughout the UI;
-- **Logo**: Appears in the sidebar/header;
+- **Branding title**: Displayed in the browser tab (document title) and throughout the UI.
+- **Logo**: Displayed in the upper-left corner.
 
     :::info
-    Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
+    The placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
     :::
 
 - **Favicon**: Shown on the browser tab.
