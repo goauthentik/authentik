@@ -29,7 +29,7 @@ Follow these steps to install the authentik Agent on your Windows device:
 3. Once the download is complete, install the MSI file.
 4. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
 
-5. Confirm that the authentik Agent is installed by opening a Powershell or Terminal window and entering the following command: `ak`
+5. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device authentication
@@ -56,7 +56,7 @@ To enable [device compliance features](../../device-compliance/index.mdx), you m
 ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 ```
 
-- `name_for_authentik_domain` is the name that will be used to identify the authenitk deployment on the device.
+- `name_for_authentik_domain` is the name that will be used to identify the authentik deployment on the device.
 - `authentik_FQDN` is the fully qualified domain name of the authentik deployment.
 
 2. (TODO)
@@ -99,4 +99,4 @@ Windows Registry Editor Version 5.00
 
 The authentik Agent primarily outputs logs to Windows Event Viewer.
 
-WCP logs to the `wcp.log` file in `C:\Program Files\Authentik Security Inc\wcp`:
+WCP logs to the `wcp.log` file in `C:\Program Files\Authentik Security Inc\wcp`.

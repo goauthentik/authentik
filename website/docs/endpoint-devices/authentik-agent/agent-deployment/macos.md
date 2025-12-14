@@ -4,7 +4,7 @@ sidebar_label: macOS
 tags: [authentik Agent, mac, macos, deploy]
 ---
 
-## What can it do
+## What it can do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
 - Authorize Sudo elevation, see [Sudo authorization](../../device-authentication/sudo-authorization.md). (TODO - needs testing)
@@ -25,7 +25,8 @@ Follow these steps to install the authentik Agent on your macOS device:
 2. Under **Desktop packages** click on **macOS** to download the macOS package.
 3. Once the download is complete, attempt to install the package. Default Apple security settings should block the install.
    This can be avoided by Option + Right Clicking the package and clicking **Open**.
-   Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine ~/Downloads/authentik\ agent\ installer.pkg`.
+   Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"
+`.
 4. If prompted, enter your login password and click OK. You should now be able to install the package.
 5. Continue through the installation wizard steps.
 6. Confirm that the authentik Agent is installed by opening a Terminal window and entering the following command: `ak`
@@ -55,7 +56,7 @@ To enable [device compliance features](../../device-compliance/index.mdx), you m
 ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 ```
 
-- `name_for_authentik_domain` is the name that will be used to identify the authenitk deployment on the device.
+- `name_for_authentik_domain` is the name that will be used to identify the authentik deployment on the device.
 - `authentik_FQDN` is the fully qualified domain name of the authentik deployment.
 
 2. (TODO)
@@ -69,4 +70,4 @@ ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 
 ## Logging
 
-The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for the relevant authentik Agent component .e.g. `==sysd`.
+The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for the relevant authentik Agent component (for example, `==sysd`).

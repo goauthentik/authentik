@@ -67,7 +67,7 @@ To enable [device compliance features](../../device-compliance/index.mdx) and th
 ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 ```
 
-- `name_for_authentik_domain` is the name that will be used to identify the authenitk deployment on the device.
+- `name_for_authentik_domain` is the name that will be used to identify the authentik deployment on the device.
 - `authentik_FQDN` is the fully qualified domain name of the authentik deployment.
 
 2. (TODO)
