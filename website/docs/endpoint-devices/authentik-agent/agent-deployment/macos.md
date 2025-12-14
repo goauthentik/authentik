@@ -24,9 +24,8 @@ Follow these steps to install the authentik Agent on your macOS device:
 1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page.
 2. Under **Desktop packages** click on **macOS** to download the macOS package.
 3. Once the download is complete, attempt to install the package. Default Apple security settings should block the install.
-   This can be avoided by Option + Right Clicking the package and clicking **Open**.
-   Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"
-`.
+    - This can be avoided by Option + Right Clicking the package and clicking **Open**.
+    - Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"`
 4. If prompted, enter your login password and click OK. You should now be able to install the package.
 5. Continue through the installation wizard steps.
 6. Confirm that the authentik Agent is installed by opening a Terminal window and entering the following command: `ak`

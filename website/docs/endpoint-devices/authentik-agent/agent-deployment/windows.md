@@ -36,7 +36,7 @@ Follow these steps to install the authentik Agent on your Windows device:
 
 To enable [device authentication features](../../device-authentication/index.mdx), you must connect the device to an authentik deployment. To do so, follow these steps:
 
-1. Open a Terminal session and run the following command:
+1. Open a Terminal and run the following command:
 
 ```sh
 ak config setup --authentik-url <authentik_FQDN>
@@ -76,7 +76,6 @@ It currently only supports local login; RDP login is not supported.
 
 :::warning
 
-- WCP is currently only tested on Windows 11 and Windows Server 2022.
 - When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
 - WCP can cause issues with user encrypted directories.
 - Support with Active directory has not been confirmed yet.
@@ -85,15 +84,24 @@ It currently only supports local login; RDP login is not supported.
 
 #### Configure Windows Credential Provider
 
-You'll need to add the following registry entry:
+You'll need to add a registry entry for WCP to work:
 
-```bash
+1. On the Windows device, open the Notepad application
+2. Paste the following block of text into Notepad:
+
+```powershell
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\CLSID\{7BCC7941-18BA-4A8E-8E0A-1D0F8E73577A}]
-"URL"="https://authentik.company"       ; authentik URL
-"ClientID"="authentik-cli"              ; Client ID
+"URL"="https://authentik.company"
+"ClientID"="authentik-cli"
 ```
+
+Where `URL` is the FQDN of your authentik deployment and `ClientID` is the Client ID of the [`authentik-cli` provider](../configuration.md#create-an-application-and-provider-in-authentik-for-cli).
+
+3. Save the file as `authentik.reg` and ensure that **Save as type** is set to **All Files**.
+4. Locale the `authentik.reg` file in File Explorer, right-click it and select **Merge**.
+5. Approve the admin prompt.
 
 ## Logging
 
