@@ -57,8 +57,8 @@ export class LicenseContextController implements ReactiveController {
             });
     };
 
-    #refreshListener = (event: Event) => {
-        this.#abortController?.abort(event.type);
+    #refreshListener = (_event: Event) => {
+        this.#abortController?.abort();
         this.#fetch();
     };
 
@@ -80,7 +80,7 @@ export class LicenseContextController implements ReactiveController {
         }
 
         if (!currentUser && this.#abortController) {
-            this.#abortController.abort("session-invalidated");
+            this.#abortController.abort();
         }
     }
 }

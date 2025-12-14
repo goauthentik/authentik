@@ -16,9 +16,10 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 // Same regex is used in the backend as well
 const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/source
-// This is perfect for the "pattern" attribute
-const VALID_FILE_NAME_PATTERN_STRING = VALID_FILE_NAME_PATTERN.source;
+
+// Note: browsers compile `pattern` using the new `v` RegExp flag (Unicode sets). Under `/v`,
+// both `/` and `-` must be escaped inside character classes.
+const VALID_FILE_NAME_PATTERN_STRING = "^[a-zA-Z0-9._\\/\\-]+$";
 
 function assertValidFileName(fileName: string): void {
     if (!VALID_FILE_NAME_PATTERN.test(fileName)) {
@@ -87,23 +88,19 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
         assertValidFileName(finalName);
 
-        return api
-            .adminFileCreate({
-                file: this.selectedFile,
-                name: finalName,
-                usage: this.usage,
-            })
-            .then(() => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: msg("File uploaded successfully"),
-                });
+        await api.adminFileCreate({
+            file: this.selectedFile,
+            name: finalName,
+            usage: this.usage,
+        });
 
-                this.reset();
-            })
-            .finally(() => {
-                this.clearFileInput();
-            });
+        showMessage({
+            level: MessageLevel.success,
+            message: msg("File uploaded successfully"),
+        });
+
+        this.reset();
+        this.clearFileInput();
     }
 
     renderForm() {
