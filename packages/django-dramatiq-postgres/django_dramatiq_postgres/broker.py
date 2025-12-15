@@ -529,3 +529,7 @@ class _PostgresConsumer(Consumer):
                     conn.close()
                 except DATABASE_ERRORS:
                     pass
+            try:
+                connections.close_all()
+            except DATABASE_ERRORS:
+                pass
