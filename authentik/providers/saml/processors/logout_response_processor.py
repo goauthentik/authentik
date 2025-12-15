@@ -123,13 +123,6 @@ class LogoutResponseProcessor:
         separator = "&" if "?" in self.destination else "?"
         return f"{self.destination}{separator}{urlencode(params)}"
 
-    def get_post_form_data(self, status: str = "Success") -> dict:
-        """Get form data for POST binding"""
-        return {
-            "SAMLResponse": self.encode_post(status),
-            "RelayState": self.relay_state or "",
-        }
-
     def _add_signature(self, element: Element):
         """Add signature placeholder to element"""
         sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
