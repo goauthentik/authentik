@@ -6,9 +6,8 @@ from authentik.lib.sentry import SentryIgnoredException
 class BaseSyncException(SentryIgnoredException):
     """Base class for all sync exceptions"""
 
-
-class TransientSyncException(BaseSyncException):
-    """Transient sync exception which may be caused by network blips, etc"""
+    error_prefix = "Sync error"
+    error_default = "Error communicating with remote system"
 
     def __init__(self, response=None):
         super().__init__()
@@ -18,85 +17,44 @@ class TransientSyncException(BaseSyncException):
         if self.response is not None:
             if hasattr(self.response, "json"):
                 try:
-                    return f"Network error: {self.response.json()}"
+                    return f"{self.error_prefix}: {self.response.json()}"
                 except JSONDecodeError:
                     pass
             if hasattr(self.response, "text"):
-                return f"Network error: {self.response.text}"
-            return f"Network error: {self.response}"
-        return "Network error communicating with remote system"
+                return f"{self.error_prefix}: {self.response.text}"
+            return f"{self.error_prefix}: {self.response}"
+        return self.error_default
 
     def __repr__(self):
         return self.__str__()
+
+
+class TransientSyncException(BaseSyncException):
+    """Transient sync exception which may be caused by network blips, etc"""
+
+    error_prefix = "Network error"
+    error_default = "Network error communicating with remote system"
 
 
 class NotFoundSyncException(BaseSyncException):
     """Exception when an object was not found in the remote system"""
 
-    def __init__(self, response=None):
-        super().__init__()
-        self.response = response
-
-    def __str__(self):
-        if self.response is not None:
-            if hasattr(self.response, "json"):
-                try:
-                    return f"Object not found: {self.response.json()}"
-                except JSONDecodeError:
-                    pass
-            if hasattr(self.response, "text"):
-                return f"Object not found: {self.response.text}"
-            return f"Object not found: {self.response}"
-        return "Object not found in remote system"
-
-    def __repr__(self):
-        return self.__str__()
+    error_prefix = "Object not found"
+    error_default = "Object not found in remote system"
 
 
 class ObjectExistsSyncException(BaseSyncException):
     """Exception when an object already exists in the remote system"""
 
-    def __init__(self, response=None):
-        super().__init__()
-        self.response = response
-
-    def __str__(self):
-        if self.response is not None:
-            if hasattr(self.response, "json"):
-                try:
-                    return f"Object exists: {self.response.json()}"
-                except JSONDecodeError:
-                    pass
-            if hasattr(self.response, "text"):
-                return f"Object exists: {self.response.text}"
-            return f"Object exists: {self.response}"
-        return "Object exists in remote system"
-
-    def __repr__(self):
-        return self.__str__()
+    error_prefix = "Object exists"
+    error_default = "Object exists in remote system"
 
 
 class BadRequestSyncException(BaseSyncException):
     """Exception when invalid data was sent to the remote system"""
 
-    def __init__(self, response=None):
-        super().__init__()
-        self.response = response
-
-    def __str__(self):
-        if self.response is not None:
-            if hasattr(self.response, "json"):
-                try:
-                    return f"Bad request: {self.response.json()}"
-                except JSONDecodeError:
-                    pass
-            if hasattr(self.response, "text"):
-                return f"Bad request: {self.response.text}"
-            return f"Bad request: {self.response}"
-        return "Bad request to remote system"
-
-    def __repr__(self):
-        return self.__str__()
+    error_prefix = "Bad request"
+    error_default = "Bad request to remote system"
 
 
 class DryRunRejected(BaseSyncException):
