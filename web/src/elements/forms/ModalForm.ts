@@ -61,7 +61,7 @@ export class ModalForm extends ModalButton {
             .then(() => {
                 if (this.closeAfterSuccessfulSubmit) {
                     this.open = false;
-                    form.reset();
+                    form?.reset();
 
                     // TODO: We may be fetching too frequently.
                     // Repeat dispatching will prematurely abort refresh listeners and cause several fetches and re-renders.
@@ -76,9 +76,11 @@ export class ModalForm extends ModalButton {
                 this.loading = false;
                 this.locked = false;
             })
-            .catch(() => {
+            .catch((error: unknown) => {
                 this.loading = false;
                 this.locked = false;
+
+                throw error;
             });
     };
 

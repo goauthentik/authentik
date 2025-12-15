@@ -54,8 +54,8 @@ export class VersionContextController implements ReactiveController {
             });
     };
 
-    #refreshListener = (_event: Event) => {
-        this.#abortController?.abort();
+    #refreshListener = (event: Event) => {
+        this.#abortController?.abort(event.type);
         this.#fetch();
     };
 
@@ -77,7 +77,7 @@ export class VersionContextController implements ReactiveController {
         }
 
         if (!currentUser && this.#abortController) {
-            this.#abortController.abort();
+            this.#abortController.abort("session-invalidated");
         }
     }
 }

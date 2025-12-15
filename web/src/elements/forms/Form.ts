@@ -180,32 +180,6 @@ function reportInvalidFields(
     return invalidFields;
 }
 
-// The API client's `instanceOfValidationError` is not a runtime guard (it always returns true),
-// so we also check that the error has the shape of a validation error before mapping fields.
-function isValidationErrorLike(error: unknown): error is ValidationError {
-    if (!error || typeof error !== "object") {
-        return false;
-    }
-
-    const record = error as Record<string, unknown>;
-
-    if (Array.isArray(record.nonFieldErrors)) {
-        return true;
-    }
-
-    if (typeof record.code === "string") {
-        return true;
-    }
-
-    for (const value of Object.values(record)) {
-        if (Array.isArray(value)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 //#endregion
 
 //#region Form
@@ -409,7 +383,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
                 const parsedError = await parseAPIResponseError(error);
 
-                if (instanceOfValidationError(parsedError) && isValidationErrorLike(parsedError)) {
+                if (instanceOfValidationError(parsedError)) {
                     const invalidFields = reportInvalidFields(
                         parsedError,
                         this.renderRoot.querySelectorAll("ak-form-element-horizontal"),
