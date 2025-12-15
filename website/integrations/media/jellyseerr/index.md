@@ -21,7 +21,7 @@ To support the integration of Jellyseerr with authentik, you need to create an a
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (`Jellyseerr`), a slug (`jellyseerr`), an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value as it will be required later.
+    - **Application**: provide a descriptive name, a slug, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value as it will be required later.
     - **Choose a Provider type**: OAuth2/OpenID
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
@@ -34,7 +34,7 @@ To support the integration of Jellyseerr with authentik, you need to create an a
 ## Jellyseerr configuration
 
 :::info
-Jellyseer OAuth support is currently in preview, please make sure to use the `preview-OIDC` docker tag.
+Jellyseer OAuth support is currently in preview, please make sure to use the `preview-OIDC` Docker tag.
 :::
 
 1. Log in to Jellyseerr with an administrator account.
