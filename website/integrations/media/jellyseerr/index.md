@@ -42,7 +42,7 @@ Jellyseer OAuth support is currently in preview, please make sure to use the `pr
 3. Toggle on **Enable OpenID Connect Sign-In** and click on the cogwheel icon next to it.
 4. Click **Add OpenID Connect Provider** and configure the following settings:
     - **Provider Name**: `authentik`
-    - **Logo**: `https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/authentik.svg`
+    - **Logo**: `https://authentik.company/static/dist/assets/icons/icon.svg`
     - **Issuer URL**: `https://authentik.company/application/o/jellyseerr/`
     - **Client ID**: Client ID from provider
     - **Client Secret**: Client Secret from provider
