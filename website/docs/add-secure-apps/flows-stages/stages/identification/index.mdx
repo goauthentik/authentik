@@ -30,13 +30,14 @@ To run a CAPTCHA process in the background while the user is entering their iden
 
 When configured, the Identification stage can offer passkey login directly from the browser's passkey/autofill UI (also known as "conditional UI"). This allows a user to select a passkey without first typing their username.
 
-authentik will automatically fall back to the regular username/password flow when passkey autofill is not available.
+authentik will automatically fall back to the normal identification flow when passkey autofill is not available.
 
 ### Requirements
 
 - **HTTPS** is required for WebAuthn (except on `localhost`).
 - **Browser support** for WebAuthn conditional mediation is required.
-- Users must have a compatible **discoverable credential / resident key** (most passkeys created by platform authenticators and password managers are discoverable).
+- Users must have a compatible **discoverable credential (aka resident key)** (most passkeys created by platform authenticators and password managers are discoverable).
+- **Correct domain**: users must access authentik using the same hostname the passkey was created for.
 
 ### Configuration
 
@@ -57,6 +58,7 @@ authentik will automatically fall back to the regular username/password flow whe
     - Ensure the Identification stage has **WebAuthn Authenticator Validation Stage** set.
     - Ensure you're using **HTTPS** (except on `localhost`).
     - Check browser support for conditional UI.
+    - Ensure the login page is not embedded in an iframe as some browsers block conditional UI outside top-level browsing contexts.
 
 - **Passkey prompt appears, but login falls back to username/password**
     - Ensure the referenced Authenticator validation stage allows the **WebAuthn** device class.

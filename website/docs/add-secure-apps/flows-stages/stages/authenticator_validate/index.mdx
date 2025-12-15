@@ -36,7 +36,7 @@ Firefox has some known issues regarding TouchID (see https://bugzilla.mozilla.or
 
 Passwordless authentication currently only supports WebAuthn devices, which provides for the use of passkeys, security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
 
-If you want users to authenticate with a passkey directly from the browser's passkey/autofill UI on the **Identification** screen ("conditional UI" / passkey autofill), configure it in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This requires a **discoverable credential / resident key**.
+If you want users to authenticate with a passkey via the browser's built-in passkey/autofill UI on the **Identification** screen ("conditional UI" / passkey autofill), configure it in the [Identification stage](../identification/index.mdx#passkey-autofill-webauthn-conditional-ui). This requires a **discoverable credential (aka resident key)**.
 
 To configure passwordless authentication, create a new Flow with the designation set to _Authentication_.
 
