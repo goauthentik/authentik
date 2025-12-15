@@ -14,7 +14,7 @@
             "version": "1.24"
         },
         "ghcr.io/devcontainers/features/node:1": {
-            "version": "22"
+            "version": "24"
         },
         "ghcr.io/devcontainers/features/rust:1": {
             "version": "latest"
