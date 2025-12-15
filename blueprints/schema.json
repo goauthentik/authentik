@@ -9999,10 +9999,7 @@
                     "description": "Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added."
                 },
                 "issuer": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": "string",
                     "title": "Issuer",
                     "description": "Also known as EntityID"
                 },

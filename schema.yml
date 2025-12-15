@@ -48254,7 +48254,6 @@ components:
             left empty, no audience restriction will be added.
         issuer:
           type: string
-          nullable: true
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string
@@ -51560,7 +51559,6 @@ components:
             left empty, no audience restriction will be added.
         issuer:
           type: string
-          nullable: true
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string
@@ -51762,7 +51760,6 @@ components:
             left empty, no audience restriction will be added.
         issuer:
           type: string
-          nullable: true
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string

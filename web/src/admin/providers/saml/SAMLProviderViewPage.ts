@@ -389,9 +389,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               class="pf-c-form-control"
                                               readonly
                                               type="text"
-                                              value="${ifDefined(
-                                                  this.provider?.urlIssuer
-                                              )}"
+                                              value="${ifDefined(this.provider?.urlIssuer)}"
                                           />
                                       </div>
                                       <div class="pf-c-form__group">

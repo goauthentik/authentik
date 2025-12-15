@@ -6,6 +6,7 @@ from types import GeneratorType
 
 import xmlsec
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
@@ -143,13 +144,12 @@ class AssertionProcessor:
         if self.provider.issuer:
             return self.provider.issuer
 
-        # Otherwise, build off of request if application is linked
-        application = getattr(self.provider, "application", None)
-        if self.http_request and application:
-            return self.http_request.build_absolute_uri(f"/application/saml/{application.slug}/")
-
-        # Return default if unable to generate url
-        return "authentik"
+        return self.http_request.build_absolute_uri(
+            reverse(
+                "authentik_providers_saml:base",
+                kwargs={"application_slug": self.provider.application.slug},
+            )
+        )
 
     def get_issuer(self) -> Element:
         """Get Issuer Element"""

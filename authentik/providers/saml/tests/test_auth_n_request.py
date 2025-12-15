@@ -9,6 +9,7 @@ from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
     create_test_admin_user,
@@ -97,6 +98,11 @@ class TestAuthNRequest(TestCase):
         )
         self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         self.provider.save()
+        Application.objects.create(
+            name="test-app",
+            slug="test-app",
+            provider=self.provider,
+        )
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",

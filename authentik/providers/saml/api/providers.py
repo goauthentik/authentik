@@ -93,7 +93,12 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "authentik"
         request: HttpRequest = self._context["request"]._request
         try:
-            return request.build_absolute_uri(f"/application/saml/{instance.application.slug}/")
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:base",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
         except Provider.application.RelatedObjectDoesNotExist:
             return "authentik"
 
