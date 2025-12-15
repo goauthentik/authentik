@@ -5,11 +5,11 @@ services:
     restart: never
     network_mode: none
     volumes:
-      - ../../:/local
+      - ${LOCAL_PROJECT_DIR:-../../}:/local
 
   gen:
     image: docker.io/openapitools/openapi-generator-cli:v7.16.0
     restart: never
     network_mode: none
     volumes:
-      - ../../:/local
+      - ${LOCAL_PROJECT_DIR:-../../}:/local

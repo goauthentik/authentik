@@ -38,14 +38,14 @@ function check_if_root {
     chown -R authentik:authentik /media /certs "${PROMETHEUS_MULTIPROC_DIR}"
     chmod ug+rwx /media
     chmod ug+rx /certs
-    exec chpst -u authentik:$GROUP env HOME=/authentik $1
+    exec chpst -u authentik:$GROUP env HOME=/authentik PATH="$PATH" $1
 }
 
 function run_authentik {
     if [[ -x "$(command -v authentik)" ]]; then
         exec authentik $@
     else
-        exec go run -v ./cmd/server/ $@
+        exec env GOFIPS140=latest CGO_ENABLED=1 go run -v ./cmd/server/ $@
     fi
 }
 
