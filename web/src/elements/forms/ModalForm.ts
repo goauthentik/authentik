@@ -136,16 +136,7 @@ export class ModalForm extends ModalButton {
                 ${this.showSubmitButton
                     ? html`<button
                           type="button"
-                          @click=${() => {
-                              this.#confirm().catch((error: unknown) => {
-                                  this.loading = false;
-                                  this.locked = false;
-                                  console.error(
-                                      "authentik/forms: modal form submission failed",
-                                      error,
-                                  );
-                              });
-                          }}
+                          @click=${this.#confirm}
                           class="pf-c-button pf-m-primary"
                           aria-description=${msg("Submit action")}
                       >
