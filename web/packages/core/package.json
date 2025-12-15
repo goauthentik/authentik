@@ -44,7 +44,7 @@
     },
     "dependencies": {
         "@goauthentik/tsconfig": "^1.0.5",
-        "@types/node": "^25.0.0",
+        "@types/node": "^25.0.2",
         "@types/semver": "^7.7.1",
         "semver": "^7.7.3",
         "typescript": "^5.9.3"
