@@ -79,8 +79,7 @@ class SAMLProvider(Provider):
     )
     issuer = models.TextField(
         blank=True,
-        null=True,
-        default=None,
+        default="",
         help_text=_("Also known as EntityID"),
     )
     sls_url = models.TextField(
