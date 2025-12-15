@@ -8,15 +8,17 @@ from typing import Any
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
 from authentik.endpoints.models import Device
+from authentik.events.middleware import audit_ignore
 from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
@@ -32,9 +34,14 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
-from authentik.lib.utils.reflection import all_subclasses
+from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.authenticator_validate.challenge import (
+    get_webauthn_challenge_without_user,
+    validate_challenge_webauthn,
+)
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
     CaptchaChallenge,
@@ -42,7 +49,11 @@ from authentik.stages.captcha.stage import (
 )
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
-from authentik.stages.password.stage import authenticate
+from authentik.stages.password.stage import (
+    PLAN_CONTEXT_METHOD,
+    PLAN_CONTEXT_METHOD_ARGS,
+    authenticate,
+)
 
 
 class LoginChallengeMixin:
@@ -97,24 +108,52 @@ class IdentificationChallenge(Challenge):
     show_source_labels = BooleanField()
     enable_remember_me = BooleanField(required=False, default=True)
 
+    passkey_challenge = JSONDictField(required=False, allow_null=True)
+
     component = CharField(default="ak-stage-identification")
 
 
 class IdentificationChallengeResponse(ChallengeResponse):
     """Identification challenge"""
 
-    uid_field = CharField()
+    uid_field = CharField(required=False, allow_blank=True, allow_null=True)
     password = CharField(required=False, allow_blank=True, allow_null=True)
     captcha_token = CharField(required=False, allow_blank=True, allow_null=True)
+    passkey = JSONDictField(required=False, allow_null=True)
     component = CharField(default="ak-stage-identification")
 
     pre_user: User | None = None
+    passkey_device: WebAuthnDevice | None = None
+
+    def _validate_passkey_response(self, passkey: dict) -> WebAuthnDevice:
+        """Validate passkey/WebAuthn response for passwordless authentication"""
+        # Get the webauthn_stage from the current IdentificationStage
+        current_stage: IdentificationStage = IdentificationStage.objects.get(
+            pk=self.stage.executor.current_stage.pk
+        )
+        return validate_challenge_webauthn(
+            passkey, self.stage, self.stage.get_pending_user(), current_stage.webauthn_stage
+        )
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        """Validate that user exists, and optionally their password and captcha token"""
-        uid_field = attrs["uid_field"]
+        """Validate that user exists, and optionally their password, captcha token, or passkey"""
         current_stage: IdentificationStage = self.stage.executor.current_stage
         client_ip = ClientIPMiddleware.get_client_ip(self.stage.request)
+
+        # Check if this is a passkey authentication
+        passkey = attrs.get("passkey")
+        if passkey:
+            device = self._validate_passkey_response(passkey)
+            self.passkey_device = device
+            self.pre_user = device.user
+            # Set backend so password stage policy knows user is already authenticated
+            self.pre_user.backend = class_to_path(IdentificationStageView)
+            return attrs
+
+        # Standard username/password flow
+        uid_field = attrs.get("uid_field")
+        if not uid_field:
+            raise ValidationError(_("No identification data provided."))
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
@@ -231,6 +270,19 @@ class IdentificationStageView(ChallengeStageView):
             return _("Log in")
         return _("Continue")
 
+    def get_passkey_challenge(self) -> dict | None:
+        """Generate a WebAuthn challenge for passkey/conditional UI authentication"""
+        # Refresh from DB to get the latest configuration
+        current_stage: IdentificationStage = IdentificationStage.objects.get(
+            pk=self.executor.current_stage.pk
+        )
+        if not current_stage.webauthn_stage:
+            self.logger.debug("No webauthn_stage configured")
+            return None
+        challenge = get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
+        self.logger.debug("Generated passkey challenge", challenge=challenge)
+        return challenge
+
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
@@ -255,6 +307,7 @@ class IdentificationStageView(ChallengeStageView):
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
                 "enable_remember_me": current_stage.enable_remember_me,
+                "passkey_challenge": self.get_passkey_challenge(),
             }
         )
         # If the user has been redirected to us whilst trying to access an
@@ -307,6 +360,24 @@ class IdentificationStageView(ChallengeStageView):
     def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = response.pre_user
         current_stage: IdentificationStage = self.executor.current_stage
+
+        # Handle passkey authentication
+        if response.passkey_device:
+            self.logger.debug("Passkey authentication successful", user=response.pre_user)
+            self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
+            self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
+            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
+                {
+                    "device": response.passkey_device,
+                    "device_type": response.passkey_device.device_type,
+                }
+            )
+            # Update device last_used
+            with audit_ignore():
+                response.passkey_device.last_used = now()
+                response.passkey_device.save()
+            return self.executor.stage_ok()
+
         if not current_stage.show_matched_user:
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = (
                 response.validated_data.get("uid_field")

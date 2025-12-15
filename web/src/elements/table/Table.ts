@@ -102,6 +102,11 @@ export abstract class Table<T extends object>
     protected abstract row(item: T): SlottedTemplateResult[];
 
     /**
+     * Customize the "No objects found" message.
+     */
+    protected emptyStateMessage = msg("No objects found.");
+
+    /**
      * The total number of defined and additional columns in the table.
      */
     #columnCount = 0;
@@ -198,36 +203,15 @@ export abstract class Table<T extends object>
      */
     #itemKeys = new WeakMap<T, string | number>();
 
+    /**
+     * A mapping of item keys to selected items.
+     */
     @property({ attribute: false })
+    public selectedMap = new Map<string | number, T>();
+
     public get selectedElements(): T[] {
-        const items = this.data?.results ?? [];
-
-        return items.filter((item) => {
-            const itemKey = this.#itemKeys.get(item);
-
-            if (!itemKey) return false;
-
-            return this.#selectedElements.has(itemKey);
-        });
+        return Array.from(this.selectedMap.values());
     }
-
-    public set selectedElements(value: Iterable<T>) {
-        const nextSelected = new Map<string | number, T>();
-
-        for (const item of value) {
-            const itemKey = hasPrimaryKey(item) ? item.pk : JSON.stringify(item);
-
-            this.#itemKeys.set(item, itemKey);
-
-            if (this.#selectedElements.has(itemKey)) {
-                nextSelected.set(itemKey, item);
-            }
-        }
-
-        this.#selectedElements = nextSelected;
-    }
-
-    #selectedElements = new Map<string | number, T>();
 
     @property({ type: Boolean })
     public paginated = true;
@@ -346,8 +330,8 @@ export abstract class Table<T extends object>
                 this.expandedElements = nextExpanded;
 
                 if (this.clearOnRefresh) {
-                    if (this.#selectedElements.size) {
-                        this.#selectedElements.clear();
+                    if (this.selectedMap.size) {
+                        this.selectedMap = new Map();
 
                         const selectAllCheckbox = this.#selectAllCheckboxRef.value;
 
@@ -389,7 +373,7 @@ export abstract class Table<T extends object>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span>${this.emptyStateMessage}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -517,9 +501,11 @@ export abstract class Table<T extends object>
             this.expandedElements.delete(itemKey);
         } else {
             this.expandedElements.add(itemKey);
+
             requestAnimationFrame(() => {
                 currentTarget?.scrollIntoView({
                     behavior: "smooth",
+                    block: "center",
                 });
             });
         }
@@ -533,7 +519,7 @@ export abstract class Table<T extends object>
         const { target } = event ?? {};
 
         const itemKey = this.#itemKeys.get(item);
-        const selected = !!(itemKey && this.#selectedElements.has(itemKey));
+        const selected = !!(itemKey && this.selectedMap.has(itemKey));
         let checked: boolean;
 
         if (target instanceof HTMLInputElement) {
@@ -551,22 +537,22 @@ export abstract class Table<T extends object>
 
         if (itemKey) {
             if (checked) {
-                this.#selectedElements.set(itemKey, item);
+                this.selectedMap.set(itemKey, item);
             } else {
-                this.#selectedElements.delete(itemKey);
+                this.selectedMap.delete(itemKey);
             }
+
+            this.requestUpdate("selectedMap");
         }
 
         const selectAllCheckbox = this.#selectAllCheckboxRef.value;
         const pageItemCount = this.data?.results?.length ?? 0;
-        const selectedCount = this.#selectedElements.size;
+        const selectedCount = this.selectedMap.size;
 
         if (selectAllCheckbox) {
             selectAllCheckbox.checked = pageItemCount !== 0 && selectedCount !== 0;
             selectAllCheckbox.indeterminate = selectedCount !== 0 && selectedCount < pageItemCount;
         }
-
-        this.requestUpdate();
     }
 
     //#region Grouping
@@ -580,16 +566,15 @@ export abstract class Table<T extends object>
 
         const itemKey = this.#itemKeys.get(item);
         const expanded = !!(itemKey && this.expandedElements.has(itemKey));
-        const selected = !!(itemKey && this.#selectedElements.has(itemKey));
+        const selected = !!(itemKey && this.selectedMap.has(itemKey));
 
-        const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
-
-        const selectItem = this.#selectItemListener.bind(this, item);
-
-        const renderCheckbox = () => {
+        const memoizedCheckbox = guard([this.checkbox, item, selected], () => {
             if (!this.checkbox) {
                 return nothing;
             }
+
+            const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
+            const selectItem = this.#selectItemListener.bind(this, item);
 
             return html`<td class="pf-c-table__check" role="presentation" @click=${selectItem}>
                 <label aria-label="${msg(str`Select "${rowLabel}" row`)}"
@@ -600,14 +585,13 @@ export abstract class Table<T extends object>
                         @click=${(event: PointerEvent) => event.stopPropagation()}
                 /></label>
             </td>`;
-        };
+        });
 
-        const expandItem = this.#toggleExpansion.bind(this, itemKey);
-
-        const renderExpansion = () => {
+        const memoizedExpansion = guard([this.expandable, itemKey, expanded], () => {
             if (!this.expandable) {
                 return nothing;
             }
+            const expandItem = this.#toggleExpansion.bind(this, itemKey);
 
             return html`<td
                 class="pf-c-table__toggle pf-m-pressable"
@@ -627,7 +611,7 @@ export abstract class Table<T extends object>
                     </div>
                 </button>
             </td>`;
-        };
+        });
 
         let expansionContent: SlottedTemplateResult = nothing;
 
@@ -657,8 +641,7 @@ export abstract class Table<T extends object>
                     "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
                 })}"
             >
-                ${guard([this.checkbox, selected], renderCheckbox)}
-                ${guard([this.expandable, expanded], renderExpansion)}
+                ${memoizedCheckbox} ${memoizedExpansion}
                 ${this.row(item).map((cell, columnIndex) => {
                     const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
@@ -787,9 +770,10 @@ export abstract class Table<T extends object>
 
         checkbox.indeterminate = false;
 
+        const nextSelected = new Map<string | number, T>();
+
         if (checkbox.checked) {
             const items = this.data?.results || [];
-            const nextSelected = new Map<string | number, T>();
 
             for (const item of items) {
                 const itemKey = this.#itemKeys.get(item);
@@ -798,13 +782,9 @@ export abstract class Table<T extends object>
                     nextSelected.set(itemKey, item);
                 }
             }
-
-            this.#selectedElements = nextSelected;
-        } else {
-            this.#selectedElements.clear();
         }
 
-        this.requestUpdate();
+        this.selectedMap = nextSelected;
     };
 
     /**
@@ -813,7 +793,7 @@ export abstract class Table<T extends object>
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const selectedCount = this.#selectedElements.size;
+        const selectedCount = this.selectedMap.size;
         const pageItemCount = this.data?.results?.length ?? 0;
 
         const checked = pageItemCount !== 0 && selectedCount === pageItemCount;
@@ -851,9 +831,14 @@ export abstract class Table<T extends object>
     }
 
     protected renderChipGroup(): TemplateResult {
-        return html`<ak-chip-group>
-            ${Array.from(this.#selectedElements.values(), (item) => {
-                return html`<ak-chip>${this.renderSelectedChip(item)}</ak-chip>`;
+        return html`<ak-chip-group
+            exportparts="chip-group:selected-chip-group"
+            class="selected-chips"
+        >
+            ${Array.from(this.selectedMap.values(), (item) => {
+                return html`<ak-chip exportparts="chip:selected-chip"
+                    >${this.renderSelectedChip(item)}</ak-chip
+                >`;
             })}
         </ak-chip-group>`;
     }

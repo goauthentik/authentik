@@ -87,7 +87,7 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
 1. For the next step, you will need an exchange key. To generate this key, use the following command:
 
     ```bash
-    openssl rand -hex 32
+    openssl rand -hex 64
     ```
 
 2. Copy the downloaded metadata file to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.

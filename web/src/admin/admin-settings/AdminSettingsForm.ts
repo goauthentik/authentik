@@ -26,6 +26,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
+const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_MAX = 100;
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
@@ -245,6 +247,20 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
+            <ak-number-input
+                label=${msg("Pagination: default page size")}
+                required
+                name="paginationDefaultPageSize"
+                value="${settings.paginationDefaultPageSize ?? DEFAULT_PAGE_SIZE}"
+                help=${msg("Default page size for API requests not specifying a page size.")}
+            ></ak-number-input>
+            <ak-number-input
+                label=${msg("Pagination: maximum page size")}
+                required
+                name="paginationMaxPageSize"
+                value="${settings.paginationMaxPageSize ?? DEFAULT_PAGE_MAX}"
+                help=${msg("Maximum page size for API requests.")}
+            ></ak-number-input>
             <ak-form-group
                 label=${msg("Flags")}
                 description=${msg(
@@ -255,7 +271,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-switch-input
                         name="flags.policiesBufferedAccessView"
                         ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
-                        label=${msg("Buffer PolicyAccessVew requests")}
+                        label=${msg("Buffer PolicyAccessView requests")}
                         help=${msg(
                             "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
                         )}

@@ -69,9 +69,14 @@ export class FlowImportForm extends Form<Flow> {
 
     renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal name="flow">
-                <div slot="label" class="pf-c-form__group-label">
-                    ${AKLabel({ htmlFor: "flow" }, msg("Flow"))}
-                </div>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "flow",
+                    },
+                    msg("Flow"),
+                )}
 
                 <input
                     type="file"

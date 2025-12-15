@@ -13,6 +13,7 @@ import { Provider, ProvidersAllListRequest, ProvidersApi } from "@goauthentik/ap
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: Provider) => item.name;
 const renderValue = (item: Provider | undefined) => item?.pk;
@@ -53,6 +54,9 @@ export class AkProviderInput extends AKElement {
     @property({ type: Number })
     value?: number;
 
+    @property({ type: Boolean, attribute: "readonly" })
+    readOnly = false;
+
     @property({ type: Boolean })
     required = false;
 
@@ -76,11 +80,21 @@ export class AkProviderInput extends AKElement {
     };
 
     render() {
-        return html` <ak-form-element-horizontal name=${this.name}>
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-            </div>
+        const readOnlyValue = this.readOnly && typeof this.value === "number";
 
+        return html` <ak-form-element-horizontal name=${this.name}>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
+            ${readOnlyValue
+                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                : nothing}
             <ak-search-select
                 .fieldID=${this.fieldID}
                 .selected=${this.#selected}
@@ -88,7 +102,9 @@ export class AkProviderInput extends AKElement {
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .groupBy=${doGroupBy}
-                ?blankable=${!!this.blankable}
+                ?blankable=${readOnlyValue ? false : !!this.blankable}
+                ?readonly=${this.readOnly}
+                name=${ifDefined(readOnlyValue ? undefined : this.name)}
             >
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}

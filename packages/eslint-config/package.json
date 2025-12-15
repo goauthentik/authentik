@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/eslint-config",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "authentik's ESLint config",
     "license": "MIT",
     "scripts": {
@@ -14,20 +14,20 @@
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "import": "./index.js",
-            "types": "./out/index.d.ts"
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
         },
         "./react-config": {
-            "import": "./lib/react-config.js",
-            "types": "./out/lib/react-config.d.ts"
+            "types": "./out/lib/react-config.d.ts",
+            "import": "./lib/react-config.js"
         },
         "./javascript-config": {
-            "import": "./lib/javascript-config.js",
-            "types": "./out/lib/javascript-config.d.ts"
+            "types": "./out/lib/javascript-config.d.ts",
+            "import": "./lib/javascript-config.js"
         },
         "./typescript-config": {
-            "import": "./lib/typescript-config.js",
-            "types": "./out/lib/typescript-config.d.ts"
+            "types": "./out/lib/typescript-config.d.ts",
+            "import": "./lib/typescript-config.js"
         }
     },
     "dependencies": {
@@ -42,15 +42,15 @@
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
         "@types/eslint": "^9.6.1",
-        "@types/node": "^24.10.1",
+        "@types/node": "^25.0.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.47.0"
+        "typescript-eslint": "^8.49.0"
     },
     "peerDependencies": {
         "react": "^18.0.0 || ^19.0.0",
         "react-dom": "^18.0.0 || ^19.0.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.47.0"
+        "typescript-eslint": "^8.49.0"
     },
     "engines": {
         "node": ">=24",
