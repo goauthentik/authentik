@@ -44,8 +44,8 @@ Jellyseer OAuth support is currently in preview, please make sure to use the `pr
     - **Provider Name**: `authentik`
     - **Logo**: `https://authentik.company/static/dist/assets/icons/icon.svg`
     - **Issuer URL**: `https://authentik.company/application/o/jellyseerr/`
-    - **Client ID**: Client ID from provider
-    - **Client Secret**: Client Secret from provider
+    - **Client ID**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
     - Under **Advanced Settings**:
         - **Scopes**: `openid profile email groups`
         - **Allow New Users**: Enabled
