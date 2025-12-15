@@ -72,18 +72,19 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        assertValidFileName(this.selectedFile.name);
-
         const api = new AdminApi(DEFAULT_CONFIG);
         const customName = typeof data.name === "string" ? data.name.trim() : "";
 
         // If custom name provided, validate and append original extension
+        // Only validate the original filename if no custom name is provided
         let finalName = this.selectedFile.name;
         if (customName) {
             assertValidFileName(customName);
             const ext = getFileExtension(this.selectedFile.name);
             finalName =
                 ext && !hasBasenameExtension(customName) ? `${customName}${ext}` : customName;
+        } else {
+            assertValidFileName(this.selectedFile.name);
         }
 
         assertValidFileName(finalName);
