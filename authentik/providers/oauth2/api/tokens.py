@@ -62,7 +62,7 @@ class AuthorizationCodeViewSet(
 ):
     """AuthorizationCode Viewset"""
 
-    queryset = AuthorizationCode.objects.all()
+    queryset = AuthorizationCode.objects.including_expired().all()
     serializer_class = ExpiringBaseGrantModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
@@ -88,7 +88,7 @@ class RefreshTokenViewSet(
 ):
     """RefreshToken Viewset"""
 
-    queryset = RefreshToken.objects.all()
+    queryset = RefreshToken.objects.including_expired().all()
     serializer_class = TokenModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
@@ -114,7 +114,7 @@ class AccessTokenViewSet(
 ):
     """AccessToken Viewset"""
 
-    queryset = AccessToken.objects.all()
+    queryset = AccessToken.objects.including_expired().all()
     serializer_class = TokenModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]

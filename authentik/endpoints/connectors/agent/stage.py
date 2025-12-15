@@ -51,11 +51,11 @@ class EndpointAgentChallengeResponse(ChallengeResponse):
         except PyJWTError as exc:
             self.stage.logger.warning("Could not parse response", exc=exc)
             raise ValidationError("Invalid challenge response") from None
-        device = Device.filter_not_expired(identifier=raw["iss"]).first()
+        device = Device.objects.filter(identifier=raw["iss"]).first()
         if not device:
             self.stage.logger.warning("Could not find device for challenge")
             raise ValidationError("Invalid challenge response")
-        for token in DeviceToken.filter_not_expired(
+        for token in DeviceToken.objects.filter(
             device__device=device,
             device__connector=self.stage.executor.current_stage.connector,
         ).values_list("key", flat=True):

@@ -50,7 +50,7 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-        device = Device.filter_not_expired(name=request.query_params.get("device")).first()
+        device = Device.objects.filter(name=request.query_params.get("device")).first()
         if not device:
             LOGGER.warning("Couldn't find device")
             return None

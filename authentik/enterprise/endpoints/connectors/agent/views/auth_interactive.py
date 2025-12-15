@@ -30,7 +30,7 @@ class AgentInteractiveAuth(EnterprisePolicyAccessView):
 
     def resolve_provider_application(self):
         auth_token = (
-            DeviceAuthenticationToken.filter_not_expired(identifier=self.kwargs["token_uuid"])
+            DeviceAuthenticationToken.objects.filter(identifier=self.kwargs["token_uuid"])
             .prefetch_related()
             .first()
         )

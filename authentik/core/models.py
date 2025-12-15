@@ -14,7 +14,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Q, QuerySet, options
+from django.db.models import Manager, Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -1047,11 +1047,23 @@ class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("group", "source"),)
 
 
+class ExpiringManager(Manager):
+    """Manager for expiring objects which filters out expired objects by default"""
+
+    def get_queryset(self):
+        return QuerySet(self.model, using=self._db).exclude(expires__lt=now(), expiring=True)
+
+    def including_expired(self):
+        return QuerySet(self.model, using=self._db)
+
+
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
     expires = models.DateTimeField(default=None, null=True)
     expiring = models.BooleanField(default=True)
+
+    objects = ExpiringManager()
 
     class Meta:
         abstract = True
@@ -1067,14 +1079,6 @@ class ExpiringModel(models.Model):
         to bulk deleting objects, but classes like Token() need to change
         values instead of being deleted."""
         return self.delete(*args, **kwargs)
-
-    @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet["Self"]:
-        """Filer for tokens which are not expired yet or are not expiring,
-        and match filters in `kwargs`"""
-        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
-            obj.delete()
-        return cls.objects.filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
