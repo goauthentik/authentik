@@ -39,7 +39,7 @@ To enable [device authentication features](../../device-authentication/index.mdx
 1. Open a Terminal and run the following command:
 
 ```sh
-ak config setup --authentik-url <authentik_FQDN>
+ak config setup --authentik-url https://authentik.company
 ```
 
 2. A browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
@@ -53,11 +53,11 @@ To enable [device compliance features](../../device-compliance/index.mdx), you m
 1. Open a Terminal session and run the following command:
 
 ```sh
-ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
+ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 ```
 
-- `name_for_authentik_domain` is the name that will be used to identify the authentik deployment on the device.
-- `authentik_FQDN` is the fully qualified domain name of the authentik deployment.
+- `deployment_name` is the name that will be used to identify the authentik deployment on the device.
+- `https://authentik.company` is the fully qualified domain name of the authentik deployment.
 
 2. (TODO)
 

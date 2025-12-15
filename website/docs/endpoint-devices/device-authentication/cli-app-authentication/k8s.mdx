@@ -55,7 +55,7 @@ Run the following command to apply the changes to an existing Kubernetes cluster
 :::warning
 This command will restart the API server. Plan accordingly for production environments.
 :::
-  
+
 ```sh
 kubeadm upgrade apply <version> --config=kubeadm_config.yml
 ```
@@ -74,6 +74,7 @@ To authenticate to kubectl with the authentik agent, use the following command:
 ak auth kubectl
 ```
 
-Flags:
--c, --client-id string Client ID
--h, --help help for kubectl
+**Available flags:**
+
+- `-c, --client-id <string>` - Client ID
+- `-h, --help` - Display help information

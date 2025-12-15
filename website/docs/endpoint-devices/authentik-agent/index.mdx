@@ -21,7 +21,7 @@ The authentik Agent consists of several components:
 
 | Platform                  | Component                           | Description                                                                                                                                                                                                                                          | Dependencies                         |
 | ------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| **Linux, macOS, Windows** | `authentik-cli`                     | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                                            | `authentik-agent`                    |
+| **Linux, macOS, Windows** | `authentik-cli`                     | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                                        | `authentik-agent`                    |
 | **Linux, macOS, Windows** | `authentik-agent`                   | User service.                                                                                                                                                                                                                                        | `authentik-sysd`                     |
 | **Linux, macOS, Windows** | `authentik-sysd`                    | System service.                                                                                                                                                                                                                                      | None                                 |
 | **Linux only**            | `libpam-authentik`                  | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](../device-authentication/ssh-authentication.mdx) and [local device login](../device-authentication/local-device-login/index.mdx).             | `authentik-sysd`                     |
@@ -30,7 +30,7 @@ The authentik Agent consists of several components:
 
 ## Technical information
 
-All authentik Agent components communicate via gRPC and system sockets.
+All authentik Agent components communicate via gRPC and Unix domain sockets.
 
 - `sys.sock` for general communication
 - `sys-ctrl.sock` for "domain" join
