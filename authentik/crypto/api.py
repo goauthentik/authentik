@@ -19,7 +19,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
     ChoiceField,
-    DateTimeField,
     IntegerField,
     SerializerMethodField,
 )
