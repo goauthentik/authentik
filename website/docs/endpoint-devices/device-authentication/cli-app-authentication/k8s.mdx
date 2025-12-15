@@ -4,7 +4,7 @@ sidebar_label: Kubernetes
 tags: [authentik Agent, authentik cli, kubernetes, k8s, kubectl, cli]
 ---
 
-You can use the authentik Agent to authenticate to `kubectl` CLI with authentik credentials.
+You can use the authentik Agent to authenticate to `kubectl` with authentik credentials.
 
 ## Prerequisites
 
@@ -52,6 +52,10 @@ Add the following `extraArgs` to your `kubeadm_config.yml` file:
 
 Run the following command to apply the changes to an existing Kubernetes cluster:
 
+:::warning
+This command will restart the API server. Plan accordingly for production environments.
+:::
+  
 ```sh
 kubeadm upgrade apply <version> --config=kubeadm_config.yml
 ```

@@ -4,9 +4,9 @@ sidebar_label: SSH authentication
 tags: [ssh, authentik Agent]
 ---
 
-You can use the [authentik agent](../authentik-agent/index.mdx) to authenticate SSH connections using authentik credentials between endpoint devices.
+You can use the [authentik Agent](../authentik-agent/index.mdx) to authenticate SSH connections ubetween endpoint devices using authentik credentials.
 
-Currently, this is only supported when the SSH endpoint is a [Linux](../authentik-agent/agent-deployment/linux.md) device, see the [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section for more details.
+Currently, only [Linux](../authentik-agent/agent-deployment/linux.md) devices can serve as SSH endpoints. See  [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section for more details.
 
 ## Prerequisites
 
@@ -19,16 +19,14 @@ To SSH to a configured [Linux host](../authentik-agent/agent-deployment/linux.md
 
 1. Open a Terminal session and run the following command:
 
-    ```
-    ak ssh <hostname>
-    ```
+ak ssh <hostname>
 
-2. If not already authentiacted, you will be prompted for authentik credentials.
+2. If not already authenticated, you will be prompted for authentik credentials.
 3. Once authenticated, the SSH session will connect.
 
 ## Configure SSH authentication on an endpoint device
 
-If you want a Linux Endpoint Device to support accepting SSH connections using authentik credentials, you will need to install the `libpam-authentik` package in addition the authentik Agent. This is a PAM Module, which provides token-based and interactive authentication via authentik.
+If you want a Linux Endpoint Device to support accepting SSH connections using authentik credentials, you will need to install the `libpam-authentik` package in addition to the authentik Agent. This is a PAM Module, which provides token-based and interactive authentication via authentik.
 
 Authentication is only possible if the Linux device is aware of the authentik user which is attempting to authenticate. This can be achieved in one of two ways:
 

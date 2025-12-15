@@ -19,7 +19,7 @@ When you run a sudo command on an endpoint device, you will either be prompted f
 
 ## Configure sudo authorization on an endpoint device
 
-If you want a Linux Endpoint Device to support authorizing using authentik credentials, you will need to install the `libpam-authentik` package in addition the authentik Agent. This is a PAM Module, which provides token-based and interactive authentication via authentik.
+If you want a Linux Endpoint Device to support authorizing using authentik credentials, you will need to install the `libpam-authentik` package in addition to the authentik Agent. This is a PAM Module, which provides token-based and interactive authentication via authentik.
 
 Authorization is only possible if the Linux device is aware of the authentik user which is attempting to authorize. This can be achieved in one of two ways:
 

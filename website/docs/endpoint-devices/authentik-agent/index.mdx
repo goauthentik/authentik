@@ -7,7 +7,7 @@ import DocCardList from "@theme/DocCardList";
 
 ## What is the authentik Agent?
 
-The authentik Agent is a service that can be installed on Linux, macOS, and Windows. It supports the following features:
+The authentik Agent is a service that can be installed on Linux, macOS, and Windows devices. It provides the folllowing capabilities:
 
 - [Device Compliance](../device-compliance/index.mdx) by reporting information about Endpoint Devices to authentik
 - [Local device login](../device-authentication/local-device-login/index.mdx) with authentik credentials
@@ -17,11 +17,11 @@ The authentik Agent is a service that can be installed on Linux, macOS, and Wind
 
 ## authentik Agent components
 
-The authentik Agent consists of several components for different purposes.
+The authentik Agent consists of several components:
 
 | Platform                  | Component                           | Description                                                                                                                                                                                                                                          | Dependencies                         |
 | ------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| **Linux, macOS, Windows** | `authentik-cli`                     | Provides commands for interacting with `authentik-agent`.                                                                                                                                                                                            | `authentik-agent`                    |
+| **Linux, macOS, Windows** | `authentik-cli`                     | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                                            | `authentik-agent`                    |
 | **Linux, macOS, Windows** | `authentik-agent`                   | User service.                                                                                                                                                                                                                                        | `authentik-sysd`                     |
 | **Linux, macOS, Windows** | `authentik-sysd`                    | System service.                                                                                                                                                                                                                                      | None                                 |
 | **Linux only**            | `libpam-authentik`                  | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](../device-authentication/ssh-authentication.mdx) and [local device login](../device-authentication/local-device-login/index.mdx).             | `authentik-sysd`                     |

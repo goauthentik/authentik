@@ -4,11 +4,11 @@ sidebar_label: AWS
 tags: [authentik Agent, authentik cli, aws, cli]
 ---
 
-You can use the authentik Agent to authenticate to AWS CLI with authentik credentials.
+You can use the authentik Agent to authenticate to the AWS CLI with authentik credentials.
 
 ## Prerequisites
 
-- The device that you're using must have the [authentik Agent deployed on it](../../authentik-agent/agent-deployment/index.mdx).
+- The [authentik Agent deployed on it](../../authentik-agent/agent-deployment/index.mdx) must be deployed on your device.
 
 ## authentik configuration
 
@@ -37,8 +37,8 @@ To authenticate to the AWS CLI with the authentik agent, use the following comma
 ak auth aws
 ```
 
-Flags:
--c, --client-id string Client ID
--e, --region string Region (default "eu-central-1")
--r, --role-arn string Role ARN
--h, --help help for aws
+**Available flags:**
+- `-c, --client-id <string>` - Client ID
+- `-e, --region <string>` - AWS region (default: `eu-central-1`)
+- `-r, --role-arn <string>` - IAM Role ARN
+- `-h, --help` - Display help information

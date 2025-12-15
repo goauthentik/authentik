@@ -4,7 +4,7 @@ sidebar_label: Windows
 tags: [authentik Agent, device login, device authentication, windows credential provider, wcp]
 ---
 
-## Windows (Windows Credential Provider)
+## Windows Credential Provider
 
 Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows devices using authentik credentials.
 
