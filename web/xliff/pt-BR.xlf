@@ -8043,10 +8043,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Send notification to event user</source>
   <target>Enviar notificação para o usuário do evento</target>
 </trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Quando ativado, a notificação será enviada ao usuário que acionou o evento, além de quaisquer usuários no grupo acima. O usuário do evento será sempre o primeiro usuário; para enviar uma notificação apenas ao usuário do evento, ative 'Enviar uma vez' no transporte de notificação.</target>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
   <target>Transportes</target>
@@ -8232,10 +8228,6 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
 <trans-unit id="se9b1fec72ffd8f48">
   <source>Local</source>
   <target>Local</target>
-</trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
-  <target>Se ativado, use a conexão local. Requer integração com Docker socket/Kubernetes.</target>
 </trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
@@ -9992,9 +9984,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
-</trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
@@ -10003,6 +9992,105 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+</trans-unit>
+<trans-unit id="s1af2337b6d11d4c6">
+  <source>Data export ready</source>
+</trans-unit>
+<trans-unit id="scdeb093efb1ac2f2">
+  <source>Data export requested successfully</source>
+</trans-unit>
+<trans-unit id="se5a360179bd5937e">
+  <source>You will receive a notification once the data is ready</source>
+</trans-unit>
+<trans-unit id="sd0fcaa6952729a9a">
+  <source>Data Exports</source>
+</trans-unit>
+<trans-unit id="s1d1d961d6f3550e5">
+  <source>Manage past data exports.</source>
+</trans-unit>
+<trans-unit id="s8cddef7d8dac7f87">
+  <source>Data type</source>
+</trans-unit>
+<trans-unit id="s3783e647280eb968">
+  <source>Requested by</source>
+</trans-unit>
+<trans-unit id="s2d119c0d85bde088">
+  <source>Creation date</source>
+</trans-unit>
+<trans-unit id="s5033dab8c17f05f2">
+  <source>Completed</source>
+</trans-unit>
+<trans-unit id="s21c76a0f6cae7920">
+  <source>Row actions</source>
+</trans-unit>
+<trans-unit id="s97aa774d38013957">
+  <source>Data export(s)</source>
+</trans-unit>
+<trans-unit id="s694b2e2c53d2d85d">
+  <source>Query parameters</source>
+</trans-unit>
+<trans-unit id="s145aca905bbc68a4">
+  <source>SAML metadata XML file to import provider settings from.</source>
+</trans-unit>
+<trans-unit id="s0d748f6fb237da48">
+  <source>Configure SAML Provider from Metadata</source>
+</trans-unit>
+<trans-unit id="sb541f02499d73b4e">
+  <source>Outgoing syncs will not be triggered.</source>
+</trans-unit>
+<trans-unit id="s967b3abf2608649a">
+  <source>Immediate</source>
+</trans-unit>
+<trans-unit id="sba0b0ee7c8b8f04a">
+  <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+</trans-unit>
+<trans-unit id="sd3dfc2a1c3647e77">
+  <source>Deferred until end</source>
+</trans-unit>
+<trans-unit id="secd492de6e1ae305">
+  <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+</trans-unit>
+<trans-unit id="s0c476074a4fc4d95">
+  <source>Outgoing sync trigger mode</source>
+</trans-unit>
+<trans-unit id="s4bb6f209647072f4">
+  <source>Successfully connected source</source>
+</trans-unit>
+<trans-unit id="sf3ad0b5ebe730780">
+  <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 </body>
 </file>

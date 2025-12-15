@@ -27,6 +27,19 @@ export function checkWebAuthnSupport() {
 }
 
 /**
+ * Check if the browser supports WebAuthn conditional UI (passkey autofill)
+ */
+export async function isConditionalMediationAvailable(): Promise<boolean> {
+    if (
+        typeof window.PublicKeyCredential !== "undefined" &&
+        typeof window.PublicKeyCredential.isConditionalMediationAvailable === "function"
+    ) {
+        return await window.PublicKeyCredential.isConditionalMediationAvailable();
+    }
+    return false;
+}
+
+/**
  * Transforms items in the credentialCreateOptions generated on the server
  * into byte arrays expected by the navigator.credentials.create() call
  */

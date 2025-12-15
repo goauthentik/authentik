@@ -18,6 +18,7 @@ import {
     IdentificationStage,
     Stage,
     StagesApi,
+    StagesAuthenticatorValidateListRequest,
     StagesCaptchaListRequest,
     StagesPasswordListRequest,
     UserFieldsEnum,
@@ -192,6 +193,42 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     ></ak-switch-input>
                 </div>
             </ak-form-group>
+            <ak-form-group label="${msg("Passkey settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("WebAuthn Authenticator Validation Stage")}
+                        name="webauthnStage"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                                const args: StagesAuthenticatorValidateListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const stages = await new StagesApi(
+                                    DEFAULT_CONFIG,
+                                ).stagesAuthenticatorValidateList(args);
+                                return stages.results;
+                            }}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.webauthnStage}
+                            blankable
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group label="${msg("Source settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Sources")} required name="sources">
@@ -207,26 +244,14 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="showSourceLabels">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.showSourceLabels ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Show sources' labels")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "By default, only icons are shown for sources. Enable this to show their full names.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="showSourceLabels"
+                        label=${msg("Show sources' labels")}
+                        ?checked=${this.instance?.showSourceLabels ?? false}
+                        help=${msg(
+                            "By default, only icons are shown for sources. Enable this to show their full names.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Flow settings")}">

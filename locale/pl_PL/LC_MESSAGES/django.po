@@ -4,11 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Bartosz Karpiński, 2023
-# Michał Jastrzębski, 2024
-# Tomci 12 <drizztes@gmail.com>, 2024
 # Marc Schmitt, 2025
-# Bartosz Ostafin, 2025
 # Darek “NeroPcStation” NeroPcStation <dareknowacki2001@gmail.com>, 2025
 # Jens L. <jens@goauthentik.io>, 2025
 # 
@@ -17,15 +13,56 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
+"POT-Creation-Date: 2025-12-10 23:02+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
-"Language-Team: Polish (https://app.transifex.com/authentik/teams/119923/pl/)\n"
+"Language-Team: Polish (Poland) (https://app.transifex.com/authentik/teams/119923/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pl_PL\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot be empty"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid ""
+"File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
+"hyphens (-), underscores (_), and forward slashes (/)"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot contain duplicate /"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "Absolute paths are not allowed"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "Parent directory references ('..') are not allowed"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+msgid "Paths cannot start with '.'"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr ""
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr ""
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -162,10 +199,6 @@ msgstr ""
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 
-#: authentik/core/api/groups.py
-msgid "Cannot set group as parent of itself."
-msgstr ""
-
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -238,11 +271,19 @@ msgid "Disable superuser status"
 msgstr "Wyłącz status superużytkownika"
 
 #: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr "Wyświetlana nazwa użytkownika."
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/providers/saml/models.py authentik/rbac/models.py
+#: authentik/providers/saml/models.py
 msgid "User"
 msgstr "Użytkownik"
 
@@ -563,6 +604,14 @@ msgstr "Para certyfikat-klucz"
 msgid "Certificate-Key Pairs"
 msgstr "Pary certyfikat-klucz"
 
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
+msgstr ""
+
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
 msgstr ""
@@ -659,6 +708,14 @@ msgstr ""
 
 #: authentik/endpoints/models.py
 msgid "Device access groups"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stage"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stages"
 msgstr ""
 
 #: authentik/endpoints/tasks.py
@@ -909,6 +966,27 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr "Pobierz"
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
 msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
@@ -1304,6 +1382,10 @@ msgstr ""
 msgid "Invalid next URL"
 msgstr "Nieprawidłowy następny adres URL"
 
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
+msgstr ""
+
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
 msgstr ""
@@ -1643,7 +1725,7 @@ msgstr "Nieprawidłowe hasło."
 #: authentik/policies/password/models.py
 #, python-brace-format
 msgid "Password exists on {count} online lists."
-msgstr ""
+msgstr "Hasło istnieje na {count} listach online."
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -2588,6 +2670,12 @@ msgid "Alter authentik behavior for vendor-specific SCIM implementations."
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid ""
+"Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
+"disable."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "SCIM Provider"
 msgstr "Dostawca SCIM"
 
@@ -2670,6 +2758,14 @@ msgstr "Może wyświetlać ustawienia systemu"
 #: authentik/rbac/models.py
 msgid "Can edit system settings"
 msgstr "Może edytować ustawienia systemu"
+
+#: authentik/rbac/models.py
+msgid "Can view media files"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can manage media files"
+msgstr ""
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
@@ -2899,6 +2995,10 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Źródło LDAP"
 
@@ -3092,6 +3192,14 @@ msgid "Discord OAuth Sources"
 msgstr "Źródła Discord OAuth"
 
 #: authentik/sources/oauth/models.py
+msgid "Slack OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
 msgstr "Źródło Patreon OAuth"
 
@@ -3154,6 +3262,14 @@ msgstr "Źródło Reddit OAuth"
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Sources"
 msgstr "Źródła Reddit OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
@@ -3386,6 +3502,10 @@ msgstr ""
 msgid "SCIM Source Property Mappings"
 msgstr ""
 
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr ""
+
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
 msgstr ""
@@ -3430,11 +3550,11 @@ msgstr ""
 msgid "Group Telegram Source Connections"
 msgstr ""
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Authentication date is too old"
 msgstr ""
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
 msgstr ""
 
@@ -4550,6 +4670,10 @@ msgstr "Domena"
 #: authentik/tenants/models.py
 msgid "Domains"
 msgstr "Domeny"
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
+msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channel"

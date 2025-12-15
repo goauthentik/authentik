@@ -615,6 +615,7 @@ const items = [
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
+                            "users-sources/sources/social-logins/wechat/index",
                         ],
                     },
                 ],

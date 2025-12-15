@@ -63,7 +63,12 @@ class FileBackend(ManageableBackend):
                 rel_path = full_path.relative_to(self.base_path)
                 yield str(rel_path)
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Get URL for accessing the file."""
         expires_in = timedelta_from_string(
             CONFIG.get(
@@ -72,21 +77,28 @@ class FileBackend(ManageableBackend):
             )
         )
 
-        prefix = CONFIG.get("web.path", "/")[:-1]
-        path = f"{self.usage.value}/{connection.schema_name}/{name}"
-        token = jwt.encode(
-            payload={
-                "path": path,
-                "exp": now() + expires_in,
-                "nbf": now() - timedelta(seconds=15),
-            },
-            key=sha256(f"{settings.SECRET_KEY}:{self.usage}".encode()).hexdigest(),
-            algorithm="HS256",
-        )
-        url = f"{prefix}/files/{path}?token={token}"
-        if request is None:
-            return url
-        return request.build_absolute_uri(url)
+        def _file_url(name: str, request: HttpRequest | None) -> str:
+            prefix = CONFIG.get("web.path", "/")[:-1]
+            path = f"{self.usage.value}/{connection.schema_name}/{name}"
+            token = jwt.encode(
+                payload={
+                    "path": path,
+                    "exp": now() + expires_in,
+                    "nbf": now() - timedelta(seconds=15),
+                },
+                key=sha256(f"{settings.SECRET_KEY}:{self.usage}".encode()).hexdigest(),
+                algorithm="HS256",
+            )
+            url = f"{prefix}/files/{path}?token={token}"
+            if request is None:
+                return url
+            return request.build_absolute_uri(url)
+
+        if use_cache:
+            timeout = int(expires_in.total_seconds())
+            return self._cache_get_or_set(name, request, _file_url, timeout)
+        else:
+            return _file_url(name, request)
 
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to local filesystem."""

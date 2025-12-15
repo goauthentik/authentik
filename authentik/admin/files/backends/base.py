@@ -1,10 +1,13 @@
-from collections.abc import Generator, Iterator
+from collections.abc import Callable, Generator, Iterator
+from typing import cast
 
+from django.core.cache import cache
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.admin.files.usage import FileUsage
 
+CACHE_PREFIX = "goauthentik.io/admin/files"
 LOGGER = get_logger()
 
 
@@ -53,13 +56,19 @@ class Backend:
         """
         raise NotImplementedError
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """
         Get URL for accessing the file.
 
         Args:
             file_path: Relative file path
             request: Optional Django HttpRequest for fully qualifed URL building
+            use_cache: whether to retrieve the URL from cache
 
         Returns:
             URL to access the file (may be relative or absolute depending on backend)
@@ -132,3 +141,22 @@ class ManageableBackend(Backend):
             True if file exists, False otherwise
         """
         raise NotImplementedError
+
+    def _cache_get_or_set(
+        self,
+        name: str,
+        request: HttpRequest | None,
+        default: Callable[[str, HttpRequest | None], str],
+        timeout: int,
+    ) -> str:
+        timeout_ignore = 60
+        timeout = int(timeout * 0.67)
+        if timeout < timeout_ignore:
+            timeout = 0
+
+        request_key = "None"
+        if request is not None:
+            request_key = f"{request.build_absolute_uri('/')}"
+        cache_key = f"{CACHE_PREFIX}/{self.name}/{self.usage}/{request_key}/{name}"
+
+        return cast(str, cache.get_or_set(cache_key, lambda: default(name, request), timeout))

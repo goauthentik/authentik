@@ -4,83 +4,64 @@
 <!-- #region Locales -->
 <trans-unit id="en">
   <source>English</source>
-  <target>英语</target>
 </trans-unit>
 <trans-unit id="pseudo-LOCALE">
   <source>Pseudolocale</source>
-  <target>伪语言</target>
 </trans-unit>
 <trans-unit id="cs-CZ">
   <source>Czech</source>
-  <target>捷克语</target>
 </trans-unit>
 <trans-unit id="de-DE">
   <source>German</source>
-  <target>德语</target>
 </trans-unit>
 <trans-unit id="es-ES">
   <source>Spanish</source>
-  <target>西班牙语</target>
 </trans-unit>
 <trans-unit id="fi-FI">
   <source>Finnish</source>
-  <target>芬兰语</target>
 </trans-unit>
 <trans-unit id="fr-FR">
   <source>French</source>
-  <target>法语</target>
 </trans-unit>
 <trans-unit id="it-IT">
   <source>Italian</source>
-  <target>意大利语</target>
 </trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
-  <target>日语</target>
 </trans-unit>
 <trans-unit id="ko-KR">
   <source>Korean</source>
-  <target>韩语</target>
 </trans-unit>
 <trans-unit id="nl-NL">
   <source>Dutch</source>
-  <target>荷兰语</target>
 </trans-unit>
 <trans-unit id="pl-PL">
   <source>Polish</source>
-  <target>波兰语</target>
 </trans-unit>
 <trans-unit id="pt-BR">
   <source>Portuguese</source>
-  <target>葡萄牙语</target>
 </trans-unit>
 <trans-unit id="ru-RU">
   <source>Russian</source>
-  <target>俄语</target>
 </trans-unit>
 <trans-unit id="tr-TR">
   <source>Turkish</source>
-  <target>土耳其语</target>
 </trans-unit>
 <trans-unit id="zh-Hans">
   <source>Chinese Simplified</source>
-  <target>简体中文</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
   <source>Chinese Traditional</source>
-  <target>繁体中文</target>
 </trans-unit>
 <!-- #endregion -->
 
 <!-- #region Locale selector  -->
 <trans-unit id="locale-auto-detect-option">
   <source>Auto-detect</source>
-  <target>自动检测</target>
   <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
 </trans-unit>
 <trans-unit id="language-selector-label">
   <source>Select language</source>
-  <target>选择语言</target>
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
@@ -3838,7 +3819,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s3d2a8b86a4f5a810">
   <source>Successfully created user and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
-  <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s9c3c272944dcfca3">
   <source>Successfully created user.</source>
@@ -5742,6 +5722,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="se6a13beff646557b">
   <source>Successfully updated <x id="0" equiv-text="${this.objectLabel} ${this.getObjectDisplayName()}"/></source>
+  <target>成功更新 <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></target>
 </trans-unit>
 <trans-unit id="s14401ff4a0cba208">
   <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
@@ -6296,7 +6277,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
   <source>Role <x id="0" equiv-text="${this.targetRole.name}"/></source>
-  <target>角色 <x id="0" equiv-text="${this._role.name}"/></target>
 </trans-unit>
 <trans-unit id="s7a322c89298dd27c">
   <source>Successfully updated invitation.</source>
@@ -8030,10 +8010,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Send notification to event user</source>
   <target>发送通知给事件用户</target>
 </trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>启用时，通知不仅会发送给触发事件的用户，还会发送到组中的任何用户。事件用户将总是第一个用户，要只向事件用户发送通知，则需要在通知传输中启用“发送一次”。</target>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
   <target>传输</target>
@@ -8223,10 +8199,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Local</source>
   <target>本地</target>
 </trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
-  <target>如果启用，请使用本地连接。需要 Docker Socket/Kubernetes 集成。</target>
-</trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
   <target>Docker URL</target>
@@ -8365,6 +8337,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sef50d248448e0df1">
   <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
+  <target>是（
+        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>）</target>
 </trans-unit>
 <trans-unit id="s33aa05f435c29753">
   <source>Update Certificate-Key Pair</source>
@@ -9982,9 +9956,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
-</trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
@@ -9993,6 +9964,105 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+</trans-unit>
+<trans-unit id="s1af2337b6d11d4c6">
+  <source>Data export ready</source>
+</trans-unit>
+<trans-unit id="scdeb093efb1ac2f2">
+  <source>Data export requested successfully</source>
+</trans-unit>
+<trans-unit id="se5a360179bd5937e">
+  <source>You will receive a notification once the data is ready</source>
+</trans-unit>
+<trans-unit id="sd0fcaa6952729a9a">
+  <source>Data Exports</source>
+</trans-unit>
+<trans-unit id="s1d1d961d6f3550e5">
+  <source>Manage past data exports.</source>
+</trans-unit>
+<trans-unit id="s8cddef7d8dac7f87">
+  <source>Data type</source>
+</trans-unit>
+<trans-unit id="s3783e647280eb968">
+  <source>Requested by</source>
+</trans-unit>
+<trans-unit id="s2d119c0d85bde088">
+  <source>Creation date</source>
+</trans-unit>
+<trans-unit id="s5033dab8c17f05f2">
+  <source>Completed</source>
+</trans-unit>
+<trans-unit id="s21c76a0f6cae7920">
+  <source>Row actions</source>
+</trans-unit>
+<trans-unit id="s97aa774d38013957">
+  <source>Data export(s)</source>
+</trans-unit>
+<trans-unit id="s694b2e2c53d2d85d">
+  <source>Query parameters</source>
+</trans-unit>
+<trans-unit id="s145aca905bbc68a4">
+  <source>SAML metadata XML file to import provider settings from.</source>
+</trans-unit>
+<trans-unit id="s0d748f6fb237da48">
+  <source>Configure SAML Provider from Metadata</source>
+</trans-unit>
+<trans-unit id="sb541f02499d73b4e">
+  <source>Outgoing syncs will not be triggered.</source>
+</trans-unit>
+<trans-unit id="s967b3abf2608649a">
+  <source>Immediate</source>
+</trans-unit>
+<trans-unit id="sba0b0ee7c8b8f04a">
+  <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+</trans-unit>
+<trans-unit id="sd3dfc2a1c3647e77">
+  <source>Deferred until end</source>
+</trans-unit>
+<trans-unit id="secd492de6e1ae305">
+  <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+</trans-unit>
+<trans-unit id="s0c476074a4fc4d95">
+  <source>Outgoing sync trigger mode</source>
+</trans-unit>
+<trans-unit id="s4bb6f209647072f4">
+  <source>Successfully connected source</source>
+</trans-unit>
+<trans-unit id="sf3ad0b5ebe730780">
+  <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 </body>
 </file>
