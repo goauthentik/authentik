@@ -69,4 +69,4 @@ ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 
 ## Logging
 
-The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for the relevant authentik Agent component (for example, `==sysd`).
+The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for authentik-related processes such as `authentik-agent` or `authentik-sysd`.

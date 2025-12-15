@@ -4,14 +4,14 @@ sidebar_label: Windows
 tags: [authentik Agent, windows]
 ---
 
-## What can it do
+## What it can do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 
-:::info Windows Versions
-The authentik Agent is currently only tested on Windows 11 and Windows Server 2022.
+:::warn Supported Windows Versions
+The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
 :::
 
 ## Prerequisites
@@ -86,7 +86,7 @@ It currently only supports local login; RDP login is not supported.
 
 You'll need to add a registry entry for WCP to work:
 
-1. On the Windows device, open the Notepad application
+1. On the Windows device, open the Notepad application.
 2. Paste the following block of text into Notepad:
 
 ```powershell
@@ -100,11 +100,11 @@ Windows Registry Editor Version 5.00
 Where `URL` is the FQDN of your authentik deployment and `ClientID` is the Client ID of the [`authentik-cli` provider](../configuration.md#create-an-application-and-provider-in-authentik-for-cli).
 
 3. Save the file as `authentik.reg` and ensure that **Save as type** is set to **All Files**.
-4. Locale the `authentik.reg` file in File Explorer, right-click it and select **Merge**.
+4. Locate the `authentik.reg` file in File Explorer, right-click it and select **Merge**.
 5. Approve the admin prompt.
 
 ## Logging
 
 The authentik Agent primarily outputs logs to Windows Event Viewer.
 
-WCP logs to the `wcp.log` file in `C:\Program Files\Authentik Security Inc\wcp`.
+WCP logs to the `wcp.log` located in `C:\Program Files\Authentik Security Inc\wcp`.

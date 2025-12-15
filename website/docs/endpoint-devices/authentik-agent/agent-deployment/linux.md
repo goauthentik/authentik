@@ -4,9 +4,9 @@ sidebar_label: Linux
 tags: [authentik Agent, linux, deploy, packages]
 ---
 
-## What can it do
+## What it can do
 
-- Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
+- Retrieves information about the host and reports it to authentik, see [Device Compliance](../../device-compliance/index.mdx).
 - Authorize Sudo elevation, see [Sudo authorization](../../device-authentication/sudo-authorization.md).
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
@@ -15,7 +15,7 @@ tags: [authentik Agent, linux, deploy, packages]
 
 You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
 
-## Install the authentik Agent in Linux
+## Install the authentik Agent on Linux
 
 (TODO - guide via UI)
 
@@ -40,22 +40,24 @@ sudo apt update
 sudo apt install authentik-cli authentik-agent authentik-sysd
 ```
 
-4. Confirm that the authentik Agent is installed by entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+4. Confirm that the authentik Agent is installed:
+```sh
+ak
+You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device authentication
 
-To enable [device authentication features](../../device-authentication/index.mdx), you must connect the device to an authentik deployment. To do so, follow these steps:
+To enable [device authentication features](../../device-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
 
 1. Open a Terminal session and run the following command:
 
 ```sh
-ak config setup --authentik-url <authentik_FQDN>
+ak config setup --authentik-url https://authentik.company
 ```
 
 2. A browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
-## Enable device compliance and accepting SSH connections
+## Enable device compliance and SSH access
 
 To enable [device compliance features](../../device-compliance/index.mdx) and the device [accepting SSH connections](../../device-authentication/ssh-authentication.mdx), you must join the device to an authentik domain. This can be done via the CLI or by editing a configuration file.
 
@@ -64,11 +66,11 @@ To enable [device compliance features](../../device-compliance/index.mdx) and th
 1. Open a Terminal session and run the following command:
 
 ```sh
-ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
+ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 ```
 
-- `name_for_authentik_domain` is the name that will be used to identify the authentik deployment on the device.
-- `authentik_FQDN` is the fully qualified domain name of the authentik deployment.
+- `deployment_name` is the name that will be used to identify the authentik deployment on the device.
+- `https://authentik.company` is the fully qualified domain name of the authentik deployment.
 
 2. (TODO)
 
@@ -81,4 +83,4 @@ ak-sysd domains join <name_for_authentik_domain> -a <authentik_FQDN>
 
 ## Logging
 
-All authentik Agent related logs output to the Linux system logging service, `syslog`.
+authentik Agent logs are available via the system journal (`systemd`) or `syslog`, depending on the distribution.
