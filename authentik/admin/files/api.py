@@ -240,7 +240,7 @@ class FileUsedByView(APIView):
             for field in fields:
                 q |= Q(**{field: params.get("name")})
 
-            objs = get_objects_for_user(request.user, f"{app}.view_{model_name}", model)
+            objs = get_objects_for_user(request.user, f"{app}.view_{model_name}", model.objects.all())
             objs = objs.filter(q)
             for obj in objs:
                 serializer = UsedBySerializer(
