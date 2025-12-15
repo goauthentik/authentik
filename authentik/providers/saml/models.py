@@ -323,7 +323,7 @@ class SAMLSession(SerializerModel, ExpiringModel):
     name_id = models.TextField(help_text=_("SAML NameID value for this session"))
     name_id_format = models.TextField(default="", blank=True, help_text=_("SAML NameID format"))
     issuer = models.TextField(
-        default="", blank=True, help_text=_("SAML Issuer used for this session")
+        default=None, null=True, help_text=_("SAML Issuer used for this session")
     )
     created = models.DateTimeField(auto_now_add=True)
 
