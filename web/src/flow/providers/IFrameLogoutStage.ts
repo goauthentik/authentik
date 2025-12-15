@@ -5,6 +5,7 @@ import { BaseStage } from "#flow/stages/base";
 import {
     FlowChallengeResponseRequest,
     IframeLogoutChallenge,
+    LogoutURL,
     SAMLBindingsEnum,
 } from "@goauthentik/api";
 
@@ -20,30 +21,26 @@ import PFProgress from "@patternfly/patternfly/components/Progress/progress.css"
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+enum LogoutStatusStatus {
+    Pending = "pending",
+    Success = "success",
+    Error = "error",
+}
+
 interface LogoutStatus {
     providerName: string;
-    status: "pending" | "success" | "error";
+    status: LogoutStatusStatus;
 }
 
-interface LogoutURLData {
-    url: string;
-    saml_request?: string;
-    saml_response?: string;
-    relay_state?: string;
-    provider_name?: string;
-    binding?: string;
-}
-
-function renderStatusIcon(status: string): TemplateResult | typeof nothing {
+function renderStatusIcon(status: LogoutStatusStatus): TemplateResult | typeof nothing {
     switch (status) {
-        case "pending":
+        case LogoutStatusStatus.Pending:
             return html`<i class="fas fa-spinner pf-c-spinner status-icon status-pending"></i>`;
-        case "success":
+        case LogoutStatusStatus.Success:
             return html`<i class="fas fa-check-circle status-icon status-success"></i>`;
-        case "error":
+        case LogoutStatusStatus.Error:
             return html`<i class="fas fa-times-circle status-icon status-error"></i>`;
     }
-    return nothing;
 }
 
 @customElement("ak-provider-iframe-logout")
@@ -114,12 +111,12 @@ export class IFrameLogoutStage extends BaseStage<
         super.firstUpdated(changedProperties);
 
         // Initialize status tracking
-        const logoutUrls = this.challenge.logoutUrls as LogoutURLData[];
+        const logoutUrls = this.challenge.logoutUrls ?? [];
 
         this.logoutStatuses = logoutUrls.map(
             (url): LogoutStatus => ({
-                providerName: url.provider_name || msg("Unknown Provider"),
-                status: "pending",
+                providerName: url.providerName || msg("Unknown Provider"),
+                status: LogoutStatusStatus.Pending,
             }),
         );
 
@@ -129,7 +126,7 @@ export class IFrameLogoutStage extends BaseStage<
 
     protected async performLogouts(): Promise<void> {
         // Create iframes for each logout URL
-        (this.challenge.logoutUrls as LogoutURLData[] | undefined)?.forEach((logoutData, index) => {
+        this.challenge.logoutUrls?.forEach((logoutData, index) => {
             this.createLogoutIframe(logoutData, index);
         });
 
@@ -142,7 +139,7 @@ export class IFrameLogoutStage extends BaseStage<
         }, 6000); // 6 seconds (5 second timeout + 1 second buffer)
     }
 
-    protected createLogoutIframe(logoutData: LogoutURLData, index: number): void {
+    protected createLogoutIframe(logoutData: LogoutURL, index: number): void {
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         iframe.name = `saml-logout-${index}`;
@@ -171,7 +168,7 @@ export class IFrameLogoutStage extends BaseStage<
         // Handle based on binding type
         if (
             logoutData.binding === SAMLBindingsEnum.Redirect ||
-            (!logoutData.saml_request && !logoutData.saml_response)
+            (!logoutData.samlRequest && !logoutData.samlResponse)
         ) {
             // For REDIRECT binding, just navigate the iframe to the URL
             iframe.src = logoutData.url;
@@ -183,26 +180,26 @@ export class IFrameLogoutStage extends BaseStage<
             form.target = iframe.name;
 
             // Add SAML request OR response (depending on which is present)
-            if (logoutData.saml_request) {
+            if (logoutData.samlRequest) {
                 const samlInput = document.createElement("input");
                 samlInput.type = "hidden";
                 samlInput.name = "SAMLRequest";
-                samlInput.value = logoutData.saml_request;
+                samlInput.value = logoutData.samlRequest;
                 form.appendChild(samlInput);
-            } else if (logoutData.saml_response) {
+            } else if (logoutData.samlResponse) {
                 const samlInput = document.createElement("input");
                 samlInput.type = "hidden";
                 samlInput.name = "SAMLResponse";
-                samlInput.value = logoutData.saml_response;
+                samlInput.value = logoutData.samlResponse;
                 form.appendChild(samlInput);
             }
 
             // Add RelayState if present
-            if (logoutData.relay_state) {
+            if (logoutData.relayState) {
                 const relayInput = document.createElement("input");
                 relayInput.type = "hidden";
                 relayInput.name = "RelayState";
-                relayInput.value = logoutData.relay_state;
+                relayInput.value = logoutData.relayState;
                 form.appendChild(relayInput);
             }
 
@@ -220,7 +217,7 @@ export class IFrameLogoutStage extends BaseStage<
         const statuses = [...this.logoutStatuses];
         statuses[index] = {
             ...statuses[index],
-            status: success ? "success" : "error",
+            status: success ? LogoutStatusStatus.Success : LogoutStatusStatus.Error,
         };
         this.logoutStatuses = statuses;
 
