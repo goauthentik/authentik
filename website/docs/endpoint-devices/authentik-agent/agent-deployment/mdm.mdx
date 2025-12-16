@@ -10,14 +10,38 @@ authentik Agent can be deployed at scale to multiple devices via Mobile Device M
 
 You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
 
+## Create an enrollment token
+
+If you have already created have an enrollment token, skip to the next section.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Enrollment Tokens**, click **Create**, and configure the following settings:
+    - **Token name**: provide a descriptive name for the token
+    - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
+    - **Expiring _(optional)_**: set whether or not the enrollment token will expire
+5. Click **Create**.
+6. Under **Setup**, click **Linux** to download the authentik Agent installer.
+
 ## Windows
 
-(TODO)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
+5. Click **Windows** and then click either **Download** or **Copy** to obtain your SyncML MDM configuration snippet.
+   This SyncML snippet can be used by Microsoft Intune, Microsoft Endpoint Manager and other MDM tools to deploy the changes required to support the authentik Agent.
 
-## Linux
-
-(TODO)
+    (TODO)
 
 ## macOS
 
-(TODO)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
+5. Click **macOS** and then click either **Download** or **Copy** to obtain your MDM policy.
+   This policy can be used by Apple Business Manager, Fleet, and other MDM tools to deploy the changes required to support the authentik Agent.
+
+    (TODO)

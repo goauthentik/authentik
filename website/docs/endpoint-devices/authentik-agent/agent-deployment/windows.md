@@ -18,7 +18,9 @@ The authentik Agent is currently only tested on Windows 11 and Windows Server 20
 
 You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
 
-## Install the authentik Agent
+## Create an enrollment token
+
+If you have already created have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-windows).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
@@ -27,16 +29,18 @@ You must [configure your authentik deployment](../configuration.md) to support t
     - **Token name**: provide a descriptive name for the token
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether or not the enrollment token will expire
-5.
+5. Click **Create**.
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance).
 
-Follow these steps to install the authentik Agent on your Windows device:
+## Install the authentik Agent on Windows
 
-1. Open the [authentik Platform Packages](https://pkg.goauthentik.io) page.
-2. Under **Desktop packages** click on **Windows** to download the Windows MSI file.
-3. Once the download is complete, install the MSI file.
-4. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
-
-5. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Setup**, click **Windows** to download the authentik Agent installer.
+5. Once the download is complete, install the MSI file.
+6. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
+7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device authentication
@@ -66,7 +70,8 @@ ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 - `deployment_name` is the name that will be used to identify the authentik deployment on the device.
 - `https://authentik.company` is the fully qualified domain name of the authentik deployment.
 
-2. (TODO)
+2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
+3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
 
 ### Configuration file
 
