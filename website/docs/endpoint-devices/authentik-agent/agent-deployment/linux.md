@@ -27,7 +27,7 @@ If you have already created have an enrollment token, skip to the [next section]
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether or not the enrollment token will expire
 5. Click **Create**.
-6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance).
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance-and-ssh-access).
 
 ## Install the authentik Agent on Linux
 
