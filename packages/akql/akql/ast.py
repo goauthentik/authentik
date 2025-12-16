@@ -72,3 +72,8 @@ class Logical(Operator):
 
 class Comparison(Operator):
     pass
+
+
+class Variable(Node):
+    def __init__(self, name: str):
+        self.name = name

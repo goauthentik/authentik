@@ -2,8 +2,9 @@ import re
 from decimal import Decimal
 
 from ply import yacc
+from ply.yacc import LRParser
 
-from .ast import Comparison, Const, Expression, List, Logical, Name
+from .ast import Comparison, Const, Expression, List, Logical, Name, Variable
 from .exceptions import DjangoQLParserError
 from .lexer import DjangoQLLexer
 
@@ -27,6 +28,8 @@ def unescape(value):
 
 
 class DjangoQLParser:
+    yacc: LRParser
+
     def __init__(self, debug=False, **kwargs):
         self.default_lexer = DjangoQLLexer()
         self.tokens = self.default_lexer.tokens
@@ -35,7 +38,9 @@ class DjangoQLParser:
             kwargs["write_tables"] = False
         self.yacc = yacc.yacc(module=self, **kwargs)
 
-    def parse(self, input=None, lexer=None, **kwargs):  # noqa: A002
+    def parse(
+        self, input=None, lexer: DjangoQLLexer | None = None, **kwargs
+    ) -> Expression:  # noqa: A002
         lexer = lexer or self.default_lexer
         return self.yacc.parse(input=input, lexer=lexer, **kwargs)
 
@@ -60,6 +65,10 @@ class DjangoQLParser:
                    | name comparison_equality boolean_value
                    | name comparison_equality none
                    | name comparison_in_list const_list_value
+                   | name comparison_number variable
+                   | name comparison_string variable
+                   | name comparison_equality variable
+                   | name comparison_in_list variable
         """
         p[0] = Expression(left=p[1], operator=p[2], right=p[3])
 
@@ -139,6 +148,12 @@ class DjangoQLParser:
                     | boolean_value
         """
         p[0] = p[1]
+
+    def p_variable(self, p):
+        """
+        variable : VARIABLE
+        """
+        p[0] = Variable(name=unescape(p[1]))
 
     def p_number_int(self, p):
         """
