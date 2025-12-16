@@ -35,7 +35,7 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
     code = CharField()
     component = CharField(default="ak-stage-authenticator-totp")
 
-    def validate_code(self, code: int) -> int:
+    def validate_code(self, code: str) -> str:
         """Validate totp code"""
         if not self.device:
             raise ValidationError(_("Code does not match"))
