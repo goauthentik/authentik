@@ -4,9 +4,9 @@ from decimal import Decimal
 from ply import yacc
 from ply.yacc import LRParser, YaccProduction
 
-from .ast import Comparison, Const, Expression, List, Logical, Name, Variable
-from .exceptions import DjangoQLParserError
-from .lexer import DjangoQLLexer
+from akql.ast import Comparison, Const, Expression, List, Logical, Name, Variable
+from akql.exceptions import DjangoQLParserError
+from akql.lexer import DjangoQLLexer
 
 unescape_pattern = re.compile(
     "(" + DjangoQLLexer.re_escaped_char + "|" + DjangoQLLexer.re_escaped_unicode + ")",

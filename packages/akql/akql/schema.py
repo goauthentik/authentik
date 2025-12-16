@@ -12,8 +12,8 @@ from django.db.models import ManyToManyRel, ManyToOneRel, Model, Q
 from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
 
-from .ast import Comparison, Const, List, Logical, Name, Node
-from .exceptions import DjangoQLSchemaError
+from akql.ast import Comparison, Const, List, Logical, Name, Node
+from akql.exceptions import DjangoQLSchemaError
 
 
 class DjangoQLField:
@@ -546,7 +546,7 @@ class DjangoQLSchema:
         return DjangoQLField
 
     def as_dict(self):
-        from .serializers import DjangoQLSchemaSerializer
+        from akql.serializers import DjangoQLSchemaSerializer
 
         warnings.warn(
             "DjangoQLSchema.as_dict() is deprecated and will be removed in "

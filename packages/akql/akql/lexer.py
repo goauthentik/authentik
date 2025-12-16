@@ -1,7 +1,7 @@
 from ply import lex
 from ply.lex import TOKEN, Lexer, LexToken
 
-from .exceptions import DjangoQLLexerError
+from akql.exceptions import DjangoQLLexerError
 
 
 class DjangoQLLexer:

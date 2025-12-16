@@ -1,6 +1,6 @@
-from .ast import Logical
-from .parser import DjangoQLParser
-from .schema import DjangoQLField, DjangoQLSchema
+from akql.ast import Logical
+from akql.parser import DjangoQLParser
+from akql.schema import DjangoQLField, DjangoQLSchema
 
 
 def build_filter(expr, schema_instance):

@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from .schema import RelationField
+from akql.schema import RelationField
 
 
 class DjangoQLSchemaSerializer:
