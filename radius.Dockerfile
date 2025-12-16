@@ -31,7 +31,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/radius ./cmd/radius
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:c10cd2c64a1e90c676be05cf9342d89e582cf17c8099bea50742d75224a9b8b2
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:2f19fc114923ec0842329bf638cb155e597c4be9c8119a3db038ffc3fede9228
 
 ARG VERSION
 ARG GIT_BUILD_HASH
