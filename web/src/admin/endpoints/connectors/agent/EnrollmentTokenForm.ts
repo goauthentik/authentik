@@ -83,7 +83,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                 ></ak-endpoints-device-group-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Select a device access group for the device to be added to upon enrollment.",
+                        "Select a device access group to be added to upon enrollment.",
                     )}
                 </p>
             </ak-form-element-horizontal>
