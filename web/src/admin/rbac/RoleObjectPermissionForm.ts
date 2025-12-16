@@ -71,40 +71,52 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         if (!this.modelPermissions) {
             return nothing;
         }
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Role")} name="role">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Role[]> => {
-                        const args: RbacRolesListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
-                        return roles.results;
-                    }}
-                    .renderElement=${(role: Role): string => {
-                        return role.name;
-                    }}
-                    .value=${(role: Role | undefined): string | undefined => {
-                        return role?.pk;
-                    }}
-                >
-                </ak-search-select>
-            </ak-form-element-horizontal>
-            ${this.modelPermissions?.results
-                .filter((perm) => {
-                    const [_app, model] = this.model?.split(".") || "";
-                    return perm.codename !== `add_${model}`;
-                })
-                .map((perm) => {
-                    return html`<ak-switch-input
-                        name="permissions.${perm.codename}"
-                        label=${perm.name}
-                    ></ak-switch-input>`;
-                })}
-        </form>`;
+        return html` <span slot="body"
+                >${msg("Stuff will go in here as soon as I <b>write</b> it wow")}</span
+            >
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-form-element-horizontal label=${msg("Role")} name="role">
+                    <ak-search-select
+                        .fetchObjects=${async (query?: string): Promise<Role[]> => {
+                            const args: RbacRolesListRequest = {
+                                ordering: "name",
+                            };
+                            if (query !== undefined) {
+                                args.search = query;
+                            }
+                            const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                            return roles.results;
+                        }}
+                        .renderElement=${(role: Role): string => {
+                            return role.name;
+                        }}
+                        .value=${(role: Role | undefined): string | undefined => {
+                            return role?.pk;
+                        }}
+                    >
+                    </ak-search-select>
+                </ak-form-element-horizontal>
+                ${this.modelPermissions?.results
+                    .filter((perm) => {
+                        const [_app, model] = this.model?.split(".") || "";
+                        return perm.codename !== `add_${model}`;
+                    })
+                    .map((perm) => {
+                        return html` <ak-form-element-horizontal
+                            name="permissions.${perm.codename}"
+                        >
+                            <label class="pf-c-switch">
+                                <input class="pf-c-switch__input" type="checkbox" />
+                                <span class="pf-c-switch__toggle">
+                                    <span class="pf-c-switch__toggle-icon">
+                                        <i class="fas fa-check" aria-hidden="true"></i>
+                                    </span>
+                                </span>
+                                <span class="pf-c-switch__label">${perm.name}</span>
+                            </label>
+                        </ak-form-element-horizontal>`;
+                    })}
+            </form>`;
     }
 }
 
