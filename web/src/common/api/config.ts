@@ -7,26 +7,20 @@ import {
 import { globalAK } from "#common/global";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { Config, Configuration, CurrentBrand, RootApi } from "@goauthentik/api";
+import { Configuration, CurrentBrand } from "@goauthentik/api";
+
+const { locale, api, brand } = globalAK();
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
+    basePath: `${api.base}api/v3`,
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
+        new LoggingMiddleware(brand),
         new SentryMiddleware(),
-        new LocaleMiddleware(),
+        new LocaleMiddleware(locale),
     ],
 });
-
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
-export function config(): Promise<Config> {
-    if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
-    }
-    return globalConfigPromise;
-}
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
