@@ -14,9 +14,9 @@ unescape_pattern = re.compile(
 )
 
 
-def unescape_repl(m):
+def unescape_repl(m: re.Match[str]) -> str:
     contents = m.group(1)
-    if len(contents) == 2:
+    if len(contents) == 2:  # noqa
         return contents[1]
     else:
         return contents.encode("utf8").decode("unicode_escape")
@@ -128,20 +128,14 @@ class AKQLParser:
                                    | ENDSWITH
                                    | NOT ENDSWITH
         """
-        if len(p) == 2:
-            p[0] = Comparison(operator=p[1])
-        else:
-            p[0] = Comparison(operator=f"{p[1]} {p[2]}")
+        p[0] = Comparison(operator=" ".join(p[1:]))
 
     def p_comparison_in_list(self, p: YaccProduction):
         """
         comparison_in_list : IN
                            | NOT IN
         """
-        if len(p) == 2:
-            p[0] = Comparison(operator=p[1])
-        else:
-            p[0] = Comparison(operator=f"{p[1]} {p[2]}")
+        p[0] = Comparison(operator=" ".join(p[1:]))
 
     def p_const_value(self, p: YaccProduction):
         """
@@ -224,8 +218,6 @@ class AKQLParser:
             self.raise_syntax_error("Unexpected end of input")
         else:
             fragment = str(token.value)
-            if len(fragment) > 20:
-                fragment = fragment[:17] + "..."
             self.raise_syntax_error(
                 f"Syntax error at {repr(fragment)}",
                 token=token,

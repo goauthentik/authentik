@@ -1,9 +1,8 @@
 """QL search"""
 
-from akql.ast import Name
 from akql.exceptions import AKQLError
 from akql.queryset import apply_search
-from akql.schema import AKQLSchema, JSONSearchField
+from akql.schema import AKQLSchema
 from django.apps import apps
 from django.db.models import QuerySet
 from drf_spectacular.plumbing import ResolvedComponent, build_object_type
@@ -18,25 +17,6 @@ AUTOCOMPLETE_SCHEMA = ResolvedComponent(
     type=ResolvedComponent.SCHEMA,
     schema=build_object_type(additionalProperties={}),
 )
-
-
-class BaseSchema(AKQLSchema):
-    """Base Schema which deals with JSON Fields"""
-
-    def resolve_name(self, name: Name):
-        model = self.model_label(self.current_model)
-        root_field = name.parts[0]
-        field = self.models[model].get(root_field)
-        # If the query goes into a JSON field, return the root
-        # field as the JSON field will do the rest
-        if isinstance(field, JSONSearchField):
-            # This is a workaround; build_filter will remove the right-most
-            # entry in the path as that is intended to be the same as the field
-            # however for JSON that is not the case
-            if name.parts[-1] != root_field:
-                name.parts.append(root_field)
-            return field
-        return super().resolve_name(name)
 
 
 class QLSearch(SearchFilter):
@@ -57,12 +37,12 @@ class QLSearch(SearchFilter):
         params = params.replace("\x00", "")  # strip null characters
         return params
 
-    def get_schema(self, request: Request, view) -> BaseSchema:
+    def get_schema(self, request: Request, view) -> AKQLSchema:
         ql_fields = []
         if hasattr(view, "get_ql_fields"):
             ql_fields = view.get_ql_fields()
 
-        class InlineSchema(BaseSchema):
+        class InlineSchema(AKQLSchema):
             def get_fields(self, model):
                 return ql_fields or []
 

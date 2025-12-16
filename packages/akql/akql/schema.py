@@ -252,15 +252,19 @@ class DateTimeField(AKQLField):
     def get_lookup_value(self, value):
         if not value:
             return None
-        mask = "%Y-%m-%d"
-        if len(value) > 10:
-            mask += " %H:%M"
-        if len(value) > 16:
-            mask += ":%S"
-        dt = datetime.strptime(value, mask)
-        if settings.USE_TZ:
-            dt = dt.replace(tzinfo=get_current_timezone())
-        return dt
+        for format in [
+            "%Y-%m-%d",
+            "%Y-%m-%d  %H:%M",
+            "%Y-%m-%d  %H:%M:%S",
+        ]:
+            try:
+                dt = datetime.strptime(value, format)
+                if settings.USE_TZ:
+                    dt = dt.replace(tzinfo=get_current_timezone())
+                return dt
+            except ValueError:
+                pass
+        return None
 
     def get_lookup(self, path, operator, value):
         search = "__".join(path + [self.get_lookup_name()])
@@ -477,13 +481,14 @@ class AKQLSchema:
 
             model_fields = OrderedDict()
             for field in self.get_fields(model):
+                field_instance = field
                 if not isinstance(field, AKQLField):
-                    field = self.get_field_instance(model, field)
-                if not field:
+                    field_instance = self.get_field_instance(model, field)
+                if not field_instance:
                     continue
-                if isinstance(field, RelationField):
-                    open_set.append(field.related_model)
-                model_fields[field.name] = field
+                if isinstance(field_instance, RelationField):
+                    open_set.append(field_instance.related_model)
+                model_fields[field_instance.name] = field_instance
 
             result[model_label] = model_fields
             closed_set.add(model_label)
@@ -558,7 +563,19 @@ class AKQLSchema:
     def resolve_name(self, name):
         assert isinstance(name, Name)
         model = self.model_label(self.current_model)
-        field = None
+
+        root_field = name.parts[0]
+        field = self.models[model].get(root_field)
+        # If the query goes into a JSON field, return the root
+        # field as the JSON field will do the rest
+        if isinstance(field, JSONSearchField):
+            # This is a workaround; build_filter will remove the right-most
+            # entry in the path as that is intended to be the same as the field
+            # however for JSON that is not the case
+            if name.parts[-1] != root_field:
+                name.parts.append(root_field)
+            return field
+
         for name_part in name.parts:
             field = self.models[model].get(name_part)
             if not field:

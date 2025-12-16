@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from akql.schema import RelationField
+from akql.schema import JSONSearchField, RelationField
 
 
 class AKQLSchemaSerializer:
@@ -23,6 +23,8 @@ class AKQLSchemaSerializer:
         }
         if isinstance(field, RelationField):
             result["relation"] = field.relation
+        if isinstance(field, JSONSearchField):
+            result["relation"] = field.relation()
         return result
 
     def serialize_field_options(self, field):

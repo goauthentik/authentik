@@ -15,12 +15,6 @@ class AKQLSchemaSerializer(AKQLSchemaSerializer):
                 serialization["models"].update(field.get_nested_options())
         return serialization
 
-    def serialize_field(self, field):
-        result = super().serialize_field(field)
-        if isinstance(field, JSONSearchField):
-            result["relation"] = field.relation()
-        return result
-
 
 def postprocess_schema_search_autocomplete(result, generator: SchemaGenerator, **kwargs):
     generator.registry.register_on_missing(AUTOCOMPLETE_SCHEMA)
