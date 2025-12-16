@@ -69,9 +69,7 @@ ak config setup --authentik-url https://authentik.company
 
 ## Enable device compliance and SSH access
 
-To enable [device compliance features](../../device-compliance/index.mdx) and the device [accepting SSH connections](../../device-authentication/ssh-authentication.mdx), you must join the device to an authentik domain. This can be done via the CLI or by editing a configuration file.
-
-### CLI
+To enable [device compliance features](../../device-compliance/index.mdx) and the device [accepting SSH connections](../../device-authentication/ssh-authentication.mdx), you must join the device to an authentik domain.
 
 1. Open a Terminal session and run the following command:
 
@@ -84,13 +82,6 @@ ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
-
-### Configuration file
-
-1. Create the following file: `/etc/authentik/domains/ak.json`
-2. Paste the following values into the file:
-
-(TODO) JSON codeblock
 
 ## Logging
 
