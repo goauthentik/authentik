@@ -15,6 +15,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import CFragmentsIcon from "@carbon/icons/svg/32/fragments.svg";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -27,6 +28,7 @@ import { Provider, ProvidersApi } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { carbonIcon } from "#components/ak-page-navbar";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
@@ -38,7 +40,7 @@ export class ProviderListPage extends TablePage<Provider> {
         "Provide support for protocols like SAML and OAuth to assigned applications.",
     );
 
-    public pageIcon = "pf-icon pf-icon-integration";
+    public pageIcon = carbonIcon(CFragmentsIcon);
 
     override checkbox = true;
     override clearOnRefresh = true;

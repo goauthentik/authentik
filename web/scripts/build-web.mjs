@@ -75,7 +75,7 @@ const BASE_ESBUILD_OPTIONS = {
         ".woff2": "file",
         ".jpg": "file",
         ".png": "file",
-        ".svg": "file",
+        ".svg": "text",
     },
     plugins: [
         {
