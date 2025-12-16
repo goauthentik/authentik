@@ -3,7 +3,7 @@ from collections import OrderedDict
 from akql.schema import RelationField
 
 
-class DjangoQLSchemaSerializer:
+class AKQLSchemaSerializer:
     def serialize(self, schema):
         models = {}
         for model_label, fields in schema.models.items():
@@ -27,19 +27,3 @@ class DjangoQLSchemaSerializer:
 
     def serialize_field_options(self, field):
         return list(field.get_options("")) if field.suggest_options else None
-
-
-class SuggestionsAPISerializer(DjangoQLSchemaSerializer):
-    def __init__(self, suggestions_api_url):
-        self.suggestions_api_url = suggestions_api_url
-
-    def serialize(self, schema):
-        result = super().serialize(schema)
-        result["suggestions_api_url"] = self.suggestions_api_url
-        return result
-
-    def serialize_field_options(self, field):
-        if field.async_options:
-            return field.suggest_options
-        else:
-            return field.get_options("")

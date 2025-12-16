@@ -1,10 +1,10 @@
 from ply import lex
 from ply.lex import TOKEN, Lexer, LexToken
 
-from akql.exceptions import DjangoQLLexerError
+from akql.exceptions import AKQLLexerError
 
 
-class DjangoQLLexer:
+class AKQLLexer:
     _lexer: Lexer
 
     def __init__(self, **kwargs):
@@ -169,7 +169,7 @@ class DjangoQLLexer:
         return t
 
     def t_error(self, t: LexToken):
-        raise DjangoQLLexerError(
+        raise AKQLLexerError(
             message=f"Illegal character {repr(t.value[0])}",
             value=t.value,
             line=t.lineno,

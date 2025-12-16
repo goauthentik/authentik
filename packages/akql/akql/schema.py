@@ -12,11 +12,11 @@ from django.db.models import ManyToManyRel, ManyToOneRel, Model, Q
 from django.db.models.fields.related import ForeignObjectRel
 from django.utils.timezone import get_current_timezone
 
-from akql.ast import Comparison, Const, List, Logical, Name, Node
-from akql.exceptions import DjangoQLSchemaError
+from akql.ast import Comparison, Const, List, Logical, Name, Node, Variable
+from akql.exceptions import AKQLSchemaError
 
 
-class DjangoQLField:
+class AKQLField:
     """
     Abstract searchable field
     """
@@ -143,7 +143,7 @@ class DjangoQLField:
 
     def validate(self, value):
         if not self.nullable and value is None:
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 f"Field {self.name} is not nullable, " "can't compare it to None",
             )
         if value is not None and type(value) not in self.value_types:
@@ -159,7 +159,7 @@ class DjangoQLField:
                     "be compared to {possible_values}, "
                     "but not to {value}"
                 )
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 msg.format(
                     field=self.name,
                     field_type=self.type,
@@ -169,7 +169,7 @@ class DjangoQLField:
             )
 
 
-class IntField(DjangoQLField):
+class IntField(AKQLField):
     type = "int"
     value_types = [int]
     value_types_description = "integer numbers"
@@ -181,13 +181,13 @@ class IntField(DjangoQLField):
         return super().validate(self.get_lookup_value(value))
 
 
-class FloatField(DjangoQLField):
+class FloatField(AKQLField):
     type = "float"
     value_types = [int, float, Decimal]
     value_types_description = "floating point numbers"
 
 
-class StrField(DjangoQLField):
+class StrField(AKQLField):
     type = "str"
     value_types = [str]
     value_types_description = "strings"
@@ -207,13 +207,13 @@ class StrField(DjangoQLField):
         )
 
 
-class BoolField(DjangoQLField):
+class BoolField(AKQLField):
     type = "bool"
     value_types = [bool]
     value_types_description = "True or False"
 
 
-class DateField(DjangoQLField):
+class DateField(AKQLField):
     type = "date"
     value_types = [str]
     value_types_description = 'dates in "YYYY-MM-DD" format'
@@ -223,7 +223,7 @@ class DateField(DjangoQLField):
         try:
             self.get_lookup_value(value)
         except ValueError as exc:
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 f'Field "{self.name}" can be compared to dates in '
                 f'"YYYY-MM-DD" format, but not to {repr(value)}',
             ) from exc
@@ -234,7 +234,7 @@ class DateField(DjangoQLField):
         return datetime.strptime(value, "%Y-%m-%d").date()
 
 
-class DateTimeField(DjangoQLField):
+class DateTimeField(AKQLField):
     type = "datetime"
     value_types = [str]
     value_types_description = 'timestamps in "YYYY-MM-DD HH:MM" format'
@@ -244,7 +244,7 @@ class DateTimeField(DjangoQLField):
         try:
             self.get_lookup_value(value)
         except ValueError as exc:
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 f'Field "{self.name}" can be compared to timestamps in '
                 f'"YYYY-MM-DD HH:MM" format, but not to {repr(value)}',
             ) from exc
@@ -283,7 +283,7 @@ class DateTimeField(DjangoQLField):
         return ~q if invert else q
 
 
-class RelationField(DjangoQLField):
+class RelationField(AKQLField):
     type = "relation"
 
     def __init__(self, model, name, related_model, nullable=False, suggest_options=False):
@@ -297,7 +297,7 @@ class RelationField(DjangoQLField):
 
     @property
     def relation(self):
-        return DjangoQLSchema.model_label(self.related_model)
+        return AKQLSchema.model_label(self.related_model)
 
 
 class JSONSearchField(StrField):
@@ -419,22 +419,22 @@ class ChoiceSearchField(StrField):
         return result
 
 
-class DjangoQLSchema:
+class AKQLSchema:
     include = ()  # models to include into introspection
     exclude = ()  # models to exclude from introspection
     suggest_options = None
 
     def __init__(self, model):
         if not inspect.isclass(model) or not issubclass(model, models.Model):
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 "Schema must be initialized with a subclass of Django model",
             )
         if self.include and self.exclude:
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 "Either include or exclude can be specified, but not both",
             )
         if self.excluded(model):
-            raise DjangoQLSchemaError(
+            raise AKQLSchemaError(
                 f"{model} can't be used with {self.__class__} because it's excluded from it",
             )
         self.current_model = model
@@ -477,7 +477,7 @@ class DjangoQLSchema:
 
             model_fields = OrderedDict()
             for field in self.get_fields(model):
-                if not isinstance(field, DjangoQLField):
+                if not isinstance(field, AKQLField):
                     field = self.get_field_instance(model, field)
                 if not field:
                     continue
@@ -543,17 +543,17 @@ class DjangoQLSchema:
             return DateTimeField
         elif isinstance(field, models.DateField):
             return DateField
-        return DjangoQLField
+        return AKQLField
 
     def as_dict(self):
-        from akql.serializers import DjangoQLSchemaSerializer
+        from akql.serializers import AKQLSchemaSerializer
 
         warnings.warn(
             "DjangoQLSchema.as_dict() is deprecated and will be removed in "
             "future releases. Please use DjangoQLSchemaSerializer instead.",
             stacklevel=2,
         )
-        return DjangoQLSchemaSerializer().serialize(self)
+        return AKQLSchemaSerializer().serialize(self)
 
     def resolve_name(self, name):
         assert isinstance(name, Name)
@@ -562,7 +562,7 @@ class DjangoQLSchema:
         for name_part in name.parts:
             field = self.models[model].get(name_part)
             if not field:
-                raise DjangoQLSchemaError(
+                raise AKQLSchemaError(
                     "Unknown field: {}. Possible choices are: {}".format(
                         name_part,
                         ", ".join(sorted(self.models[model].keys())),
@@ -584,14 +584,14 @@ class DjangoQLSchema:
             return
         assert isinstance(node.left, Name)
         assert isinstance(node.operator, Comparison)
-        assert isinstance(node.right, Const | List)
+        assert isinstance(node.right, Const | List | Variable)
 
         # Check that field and value types are compatible
         field = self.resolve_name(node.left)
         value = node.right.value
         if field is None:
             if value is not None:
-                raise DjangoQLSchemaError(
+                raise AKQLSchemaError(
                     f"Related model {node.left.value} can be compared to None only, but not to "
                     f"{type(value).__name__}",
                 )

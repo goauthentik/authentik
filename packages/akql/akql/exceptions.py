@@ -1,4 +1,4 @@
-class DjangoQLError(Exception):
+class AKQLError(Exception):
     def __init__(self, message=None, value=None, line=None, column=None):
         self.value = value
         self.line = line
@@ -16,17 +16,17 @@ class DjangoQLError(Exception):
             return message
 
 
-class DjangoQLSyntaxError(DjangoQLError):
+class AKQLSyntaxError(AKQLError):
     pass
 
 
-class DjangoQLLexerError(DjangoQLSyntaxError):
+class AKQLLexerError(AKQLSyntaxError):
     pass
 
 
-class DjangoQLParserError(DjangoQLSyntaxError):
+class AKQLParserError(AKQLSyntaxError):
     pass
 
 
-class DjangoQLSchemaError(DjangoQLError):
+class AKQLSchemaError(AKQLError):
     pass

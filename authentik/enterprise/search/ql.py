@@ -1,9 +1,9 @@
-"""DjangoQL search"""
+"""QL search"""
 
 from akql.ast import Name
-from akql.exceptions import DjangoQLError
+from akql.exceptions import AKQLError
 from akql.queryset import apply_search
-from akql.schema import DjangoQLSchema, JSONSearchField
+from akql.schema import AKQLSchema, JSONSearchField
 from django.apps import apps
 from django.db.models import QuerySet
 from drf_spectacular.plumbing import ResolvedComponent, build_object_type
@@ -20,7 +20,7 @@ AUTOCOMPLETE_SCHEMA = ResolvedComponent(
 )
 
 
-class BaseSchema(DjangoQLSchema):
+class BaseSchema(AKQLSchema):
     """Base Schema which deals with JSON Fields"""
 
     def resolve_name(self, name: Name):
@@ -40,7 +40,7 @@ class BaseSchema(DjangoQLSchema):
 
 
 class QLSearch(SearchFilter):
-    """rest_framework search filter which uses DjangoQL"""
+    """rest_framework search filter which uses AKQL"""
 
     def __init__(self):
         super().__init__()
@@ -75,6 +75,6 @@ class QLSearch(SearchFilter):
             return self._fallback.filter_queryset(request, queryset, view)
         try:
             return apply_search(queryset, search_query, schema=schema)
-        except DjangoQLError as exc:
+        except AKQLError as exc:
             LOGGER.debug("Failed to parse search expression", exc=exc)
             return self._fallback.filter_queryset(request, queryset, view)

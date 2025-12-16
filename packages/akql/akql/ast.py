@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from akql.parser import DjangoQLParser
+    from akql.parser import AKQLParser
 
 
 class Node:
@@ -82,10 +82,10 @@ class Comparison(Operator):
 
 class Variable(Node):
 
-    def __init__(self, name: str, parser: "DjangoQLParser"):
+    def __init__(self, name: str, parser: "AKQLParser"):
         self.name = name
         self.parser = parser
 
     @property
     def value(self) -> Any:
-        pass
+        return self.parser.context.get(self.name)

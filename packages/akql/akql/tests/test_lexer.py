@@ -1,12 +1,12 @@
 from django.test import TestCase
 
-from akql.lexer import DjangoQLLexer
+from akql.lexer import AKQLLexer
 
 
 class TestLexer(TestCase):
 
     def test_lexer_simple(self):
-        lexer = DjangoQLLexer().input('foo = "bar"')
+        lexer = AKQLLexer().input('foo = "bar"')
         tokens = list(str(t) for t in lexer)
         self.assertEqual(
             tokens,

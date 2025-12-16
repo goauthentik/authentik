@@ -34,9 +34,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/ak-guardian"
-Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/ak-guardian"
-Repository = "https://github.com/goauthentik/authentik/tree/main/packages/ak-guardian"
+Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/akql"
+Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/akql"
+Repository = "https://github.com/goauthentik/authentik/tree/main/packages/akql"
 
 [build-system]
 requires = ["hatchling"]

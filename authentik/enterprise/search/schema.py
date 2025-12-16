@@ -1,11 +1,11 @@
 from akql.schema import JSONSearchField
-from akql.serializers import DjangoQLSchemaSerializer
+from akql.serializers import AKQLSchemaSerializer
 from drf_spectacular.generators import SchemaGenerator
 
 from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA
 
 
-class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
+class AKQLSchemaSerializer(AKQLSchemaSerializer):
     def serialize(self, schema):
         serialization = super().serialize(schema)
         for _, fields in schema.models.items():

@@ -1,13 +1,13 @@
 from django.test import TestCase
 
 from akql.ast import Comparison, Const, Expression, Name, Variable
-from akql.parser import DjangoQLParser
+from akql.parser import AKQLParser
 
 
 class TestParser(TestCase):
 
     def test_parser_simple(self):
-        ast = DjangoQLParser().parse('foo = "bar"')
+        ast = AKQLParser().parse('foo = "bar"')
         self.assertEqual(
             ast,
             Expression(
@@ -18,7 +18,7 @@ class TestParser(TestCase):
         )
 
     def test_parser_variable(self):
-        parser = DjangoQLParser()
+        parser = AKQLParser()
         ast = parser.parse("foo = $bar")
         self.assertEqual(
             ast,

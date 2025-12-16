@@ -1,15 +1,16 @@
 import re
 from decimal import Decimal
+from typing import Any
 
 from ply import yacc
 from ply.yacc import LRParser, YaccProduction
 
 from akql.ast import Comparison, Const, Expression, List, Logical, Name, Variable
-from akql.exceptions import DjangoQLParserError
-from akql.lexer import DjangoQLLexer
+from akql.exceptions import AKQLParserError
+from akql.lexer import AKQLLexer
 
 unescape_pattern = re.compile(
-    "(" + DjangoQLLexer.re_escaped_char + "|" + DjangoQLLexer.re_escaped_unicode + ")",
+    "(" + AKQLLexer.re_escaped_char + "|" + AKQLLexer.re_escaped_unicode + ")",
 )
 
 
@@ -27,19 +28,21 @@ def unescape(value):
     return re.sub(unescape_pattern, unescape_repl, value)
 
 
-class DjangoQLParser:
+class AKQLParser:
     yacc: LRParser
+    context: dict[str, Any]
 
-    def __init__(self, debug=False, **kwargs):
-        self.default_lexer = DjangoQLLexer()
+    def __init__(self, debug=False, context: dict[str, Any] | None = None, **kwargs):
+        self.default_lexer = AKQLLexer()
         self.tokens = self.default_lexer.tokens
         kwargs["debug"] = debug
         if "write_tables" not in kwargs:
             kwargs["write_tables"] = False
+        self.context = context or {}
         self.yacc = yacc.yacc(module=self, **kwargs)
 
     def parse(
-        self, input=None, lexer: DjangoQLLexer | None = None, **kwargs
+        self, input=None, lexer: AKQLLexer | None = None, **kwargs
     ) -> Expression:  # noqa: A002
         lexer = lexer or self.default_lexer
         return self.yacc.parse(input=input, lexer=lexer, **kwargs)
@@ -230,13 +233,13 @@ class DjangoQLParser:
 
     def raise_syntax_error(self, message, token=None):
         if token is None:
-            raise DjangoQLParserError(message)
+            raise AKQLParserError(message)
         lexer = token.lexer
         if callable(getattr(lexer, "find_column", None)):
             column = lexer.find_column(token)
         else:
             column = None
-        raise DjangoQLParserError(
+        raise AKQLParserError(
             message=message,
             value=token.value,
             line=token.lineno,
