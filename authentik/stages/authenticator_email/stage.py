@@ -6,7 +6,7 @@ from django.http.request import QueryDict
 from django.template.exceptions import TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, CharField, IntegerField
+from rest_framework.fields import BooleanField, CharField
 
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -47,7 +47,7 @@ class AuthenticatorEmailChallengeResponse(ChallengeResponse):
 
     device: EmailDevice
 
-    code = IntegerField(required=False)
+    code = CharField(required=False)
     email = CharField(required=False)
 
     component = CharField(default="ak-stage-authenticator-email")
