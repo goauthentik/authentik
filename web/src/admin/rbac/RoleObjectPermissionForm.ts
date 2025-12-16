@@ -72,7 +72,9 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             return nothing;
         }
         return html` <span slot="body"
-                >${msg("Stuff will go in here as soon as I <b>write</b> it wow")}</span
+                >${msg(
+                    "Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.",
+                )}</span
             >
             <form class="pf-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${msg("Role")} name="role">
