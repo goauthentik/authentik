@@ -95,7 +95,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             >
             </ak-rbac-role-object-permission-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Assign role permissions")}
+                ${msg("Assign Object Permission")}
             </button>
         </ak-forms-modal>`;
     }
