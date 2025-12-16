@@ -18,12 +18,13 @@ class TestParser(TestCase):
         )
 
     def test_parser_variable(self):
-        ast = DjangoQLParser(write_tables=True).parse("foo = $bar")
+        parser = DjangoQLParser()
+        ast = parser.parse("foo = $bar")
         self.assertEqual(
             ast,
             Expression(
                 left=Name(parts=["foo"]),
                 operator=Comparison(operator="="),
-                right=Variable(name="$bar"),
+                right=Variable(name="$bar", parser=parser),
             ),
         )

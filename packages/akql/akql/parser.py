@@ -2,7 +2,7 @@ import re
 from decimal import Decimal
 
 from ply import yacc
-from ply.yacc import LRParser
+from ply.yacc import LRParser, YaccProduction
 
 from .ast import Comparison, Const, Expression, List, Logical, Name, Variable
 from .exceptions import DjangoQLParserError
@@ -46,19 +46,19 @@ class DjangoQLParser:
 
     start = "expression"
 
-    def p_expression_parens(self, p):
+    def p_expression_parens(self, p: YaccProduction):
         """
         expression : PAREN_L expression PAREN_R
         """
         p[0] = p[2]
 
-    def p_expression_logical(self, p):
+    def p_expression_logical(self, p: YaccProduction):
         """
         expression : expression logical expression
         """
         p[0] = Expression(left=p[1], operator=p[2], right=p[3])
 
-    def p_expression_comparison(self, p):
+    def p_expression_comparison(self, p: YaccProduction):
         """
         expression : name comparison_number number
                    | name comparison_string string
@@ -72,27 +72,27 @@ class DjangoQLParser:
         """
         p[0] = Expression(left=p[1], operator=p[2], right=p[3])
 
-    def p_name(self, p):
+    def p_name(self, p: YaccProduction):
         """
         name : NAME
         """
         p[0] = Name(parts=p[1].split("."))
 
-    def p_logical(self, p):
+    def p_logical(self, p: YaccProduction):
         """
         logical : AND
                 | OR
         """
         p[0] = Logical(operator=p[1])
 
-    def p_comparison_number(self, p):
+    def p_comparison_number(self, p: YaccProduction):
         """
         comparison_number : comparison_equality
                           | comparison_greater_less
         """
         p[0] = p[1]
 
-    def p_comparison_string(self, p):
+    def p_comparison_string(self, p: YaccProduction):
         """
         comparison_string : comparison_equality
                           | comparison_greater_less
@@ -100,14 +100,14 @@ class DjangoQLParser:
         """
         p[0] = p[1]
 
-    def p_comparison_equality(self, p):
+    def p_comparison_equality(self, p: YaccProduction):
         """
         comparison_equality : EQUALS
                             | NOT_EQUALS
         """
         p[0] = Comparison(operator=p[1])
 
-    def p_comparison_greater_less(self, p):
+    def p_comparison_greater_less(self, p: YaccProduction):
         """
         comparison_greater_less : GREATER
                                 | GREATER_EQUAL
@@ -116,7 +116,7 @@ class DjangoQLParser:
         """
         p[0] = Comparison(operator=p[1])
 
-    def p_comparison_string_specific(self, p):
+    def p_comparison_string_specific(self, p: YaccProduction):
         """
         comparison_string_specific : CONTAINS
                                    | NOT_CONTAINS
@@ -130,7 +130,7 @@ class DjangoQLParser:
         else:
             p[0] = Comparison(operator=f"{p[1]} {p[2]}")
 
-    def p_comparison_in_list(self, p):
+    def p_comparison_in_list(self, p: YaccProduction):
         """
         comparison_in_list : IN
                            | NOT IN
@@ -140,7 +140,7 @@ class DjangoQLParser:
         else:
             p[0] = Comparison(operator=f"{p[1]} {p[2]}")
 
-    def p_const_value(self, p):
+    def p_const_value(self, p: YaccProduction):
         """
         const_value : number
                     | string
@@ -149,68 +149,68 @@ class DjangoQLParser:
         """
         p[0] = p[1]
 
-    def p_variable(self, p):
+    def p_variable(self, p: YaccProduction):
         """
         variable : VARIABLE
         """
-        p[0] = Variable(name=unescape(p[1]))
+        p[0] = Variable(name=unescape(p[1]), parser=self)
 
-    def p_number_int(self, p):
+    def p_number_int(self, p: YaccProduction):
         """
         number : INT_VALUE
         """
         p[0] = Const(value=int(p[1]))
 
-    def p_number_float(self, p):
+    def p_number_float(self, p: YaccProduction):
         """
         number : FLOAT_VALUE
         """
         p[0] = Const(value=Decimal(p[1]))
 
-    def p_string(self, p):
+    def p_string(self, p: YaccProduction):
         """
         string : STRING_VALUE
         """
         p[0] = Const(value=unescape(p[1]))
 
-    def p_none(self, p):
+    def p_none(self, p: YaccProduction):
         """
         none : NONE
         """
         p[0] = Const(value=None)
 
-    def p_boolean_value(self, p):
+    def p_boolean_value(self, p: YaccProduction):
         """
         boolean_value : true
                       | false
         """
         p[0] = p[1]
 
-    def p_true(self, p):
+    def p_true(self, p: YaccProduction):
         """
         true : TRUE
         """
         p[0] = Const(value=True)
 
-    def p_false(self, p):
+    def p_false(self, p: YaccProduction):
         """
         false : FALSE
         """
         p[0] = Const(value=False)
 
-    def p_const_list_value(self, p):
+    def p_const_list_value(self, p: YaccProduction):
         """
         const_list_value : PAREN_L const_value_list PAREN_R
         """
         p[0] = List(items=p[2])
 
-    def p_const_value_list(self, p):
+    def p_const_value_list(self, p: YaccProduction):
         """
         const_value_list : const_value_list COMMA const_value
         """
         p[0] = p[1] + [p[3]]
 
-    def p_const_value_list_single(self, p):
+    def p_const_value_list_single(self, p: YaccProduction):
         """
         const_value_list : const_value
         """

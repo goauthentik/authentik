@@ -1,5 +1,3 @@
-from django.db.models import QuerySet
-
 from .ast import Logical
 from .parser import DjangoQLParser
 from .schema import DjangoQLField, DjangoQLSchema
@@ -38,10 +36,3 @@ def apply_search(queryset, search, schema=None):
     schema_instance = schema(queryset.model)
     schema_instance.validate(ast)
     return queryset.filter(build_filter(ast, schema_instance))
-
-
-class DjangoQLQuerySet(QuerySet):
-    djangoql_schema = None
-
-    def djangoql(self, search, schema=None):
-        return apply_search(self, search, schema=schema or self.djangoql_schema)
