@@ -71,7 +71,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         if (!this.modelPermissions) {
             return nothing;
         }
-        return html` <span slot="body"
+        return html`<span
                 >${msg(
                     "Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.",
                 )}</span
