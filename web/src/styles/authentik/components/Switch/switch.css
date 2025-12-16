@@ -1,4 +1,5 @@
 .pf-c-switch {
+    --pf-c-form__helper-text--MarginTop--base: var(--pf-global--spacer--sm);
     --pf-c-switch__input--focus__toggle--OutlineWidth: 0;
 
     &:hover {

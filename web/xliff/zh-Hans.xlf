@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
 <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <!-- #region Locales -->
@@ -601,7 +601,7 @@
   <target>清除搜索</target>
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
-  <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
   <target>按“<x id="0" equiv-text="${label}"/>”排序</target>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
@@ -613,7 +613,7 @@
   <target>拉取对象失败。</target>
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
-  <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
   <target>选择“<x id="0" equiv-text="${rowLabel}"/>”行</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
@@ -848,9 +848,9 @@
   <target>未找到</target>
 </trans-unit>
 <trans-unit id="saa0e2675da69651b">
-  <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-  <target>未找到 URL &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
+  <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+  <target>未找到 URL "
+        <x id="0" equiv-text="${this.url}"/>"。</target>
 </trans-unit>
 <trans-unit id="s58cd9c2fe836d9c6">
   <source>Return home</source>
@@ -1157,11 +1157,11 @@
   <target>关闭</target>
 </trans-unit>
 <trans-unit id="sc08c153234510246">
-  <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
   <target>更新“<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>”的权限</target>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
-  <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
   <target>打开“<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>”权限模式</target>
 </trans-unit>
 <trans-unit id="se8dca0132c66ae03">
@@ -1920,8 +1920,8 @@
   <target>如果未指定显式重定向 URI，则将保存第一个成功使用的重定向 URI。</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
 </trans-unit>
 <trans-unit id="s62f7c59b0606a8d6">
   <source>Authorization flow</source>
@@ -3020,7 +3020,7 @@
         <x id="0" equiv-text="${item.verboseName}"/></target>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
   <target>编辑“<x id="0" equiv-text="${item.name}"/>”提供程序</target>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
@@ -3116,8 +3116,8 @@
   <target>选择要添加到应用的提供程序</target>
 </trans-unit>
 <trans-unit id="sa90b7809586c35ce">
-  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-  <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
+  <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+  <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
 </trans-unit>
 <trans-unit id="s0410779cb47de312">
   <source>Path template for users created. Use placeholders like `%(slug)s` to insert the source slug.</source>
@@ -3236,7 +3236,7 @@
   <target>警告：提供程序未被任何应用程序使用。</target>
 </trans-unit>
 <trans-unit id="scbf29ce484222325">
-  <source/>
+  <source></source>
 </trans-unit>
 <trans-unit id="sdbc08adee233f180">
   <source>Update OAuth2 Provider</source>
@@ -4084,7 +4084,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>应用程序</target>
 </trans-unit>
 <trans-unit id="sf07bfbe5316e7cc7">
-  <source>Application icon for &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>“<x id="0" equiv-text="${item.name}"/>”的应用程序图标</target>
 </trans-unit>
 <trans-unit id="sa347e31efbb60be2">
@@ -4092,11 +4092,11 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>更新应用程序</target>
 </trans-unit>
 <trans-unit id="s037f22187581bf8f">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>编辑“<x id="0" equiv-text="${item.name}"/>”</target>
 </trans-unit>
 <trans-unit id="sdb3b903354fbfb17">
-  <source>Open &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Open "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>打开“<x id="0" equiv-text="${item.name}"/>”</target>
 </trans-unit>
 <trans-unit id="s1f7698c061c208c9">
@@ -4168,7 +4168,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>创建授权</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
   <target>获取应用程序“<x id="0" equiv-text="${this.applicationSlug}"/>”失败。</target>
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
@@ -5677,7 +5677,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>组</target>
 </trans-unit>
 <trans-unit id="s79683026e49e4866">
-  <source>View details of group &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>View details of group "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>查看“<x id="0" equiv-text="${item.name}"/>”组的详情</target>
 </trans-unit>
 <trans-unit id="s416a540b16275f2e">
@@ -5890,7 +5890,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>新建用户</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>此用户将会被添加到组 “<x id="0" equiv-text="${this.targetGroup.name}"/>”。</target>
 </trans-unit>
 <trans-unit id="s0051b0d8e6decea6">
@@ -5930,19 +5930,19 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>未命名</target>
 </trans-unit>
 <trans-unit id="s326ee20bba2564a0">
-  <source>Collapse &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Collapse "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>收起“<x id="0" equiv-text="${itemLabel}"/>”</target>
 </trans-unit>
 <trans-unit id="s27df1f36ba8e269f">
-  <source>Expand &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Expand "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>展开“<x id="0" equiv-text="${itemLabel}"/>”</target>
 </trans-unit>
 <trans-unit id="sf2b5d3236e6f1ab3">
-  <source>Select &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Select "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>选择“<x id="0" equiv-text="${itemLabel}"/>”</target>
 </trans-unit>
 <trans-unit id="sb7c2715df863a6ce">
-  <source>Items of &quot;<x id="0" equiv-text="${itemLabel}"/>&quot;</source>
+  <source>Items of "<x id="0" equiv-text="${itemLabel}"/>"</source>
   <target>“<x id="0" equiv-text="${itemLabel}"/>”的项目</target>
 </trans-unit>
 <trans-unit id="sca7cfe2bef51b2a5">
@@ -6098,7 +6098,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <x id="0" equiv-text="${source.component}"/></target>
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
-  <source>&quot;<x id="0" equiv-text="${source.title}"/>&quot; source</source>
+  <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -6971,7 +6971,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>不可移除的身份验证器，例如 TouchID 或 Windows Hello</target>
 </trans-unit>
 <trans-unit id="sdf1d8edef27236f0">
-  <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+  <source>A "roaming" authenticator, like a YubiKey</source>
   <target>像 YubiKey 这样的“漫游”身份验证器</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
@@ -7139,7 +7139,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>如果输入了有效的用户名/电子邮箱，并且启用了此选项，则会显示用户的用户名和头像。否则，将显示用户输入的文本。</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
+  <source>Enable "Remember me on this device"</source>
   <target>启用“在此设备上记住我”</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
@@ -7286,7 +7286,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>为用户提供“显示密码”按钮。</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/>（“<x id="1" equiv-text="${p.fieldKey}"/>”，类型为 <x id="2" equiv-text="${p.type}"/>）</target>
 </trans-unit>
 <trans-unit id="s5170f9ef331949c0">
@@ -7390,7 +7390,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>保持登录偏移量</target>
 </trans-unit>
 <trans-unit id="s1608b2f94fa0dbd4">
-  <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+  <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
   <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
@@ -7764,7 +7764,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>更新流程</target>
 </trans-unit>
 <trans-unit id="s5d90aeadfcb34286">
-  <source>Execute &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>执行“<x id="0" equiv-text="${item.name}"/>”</target>
 </trans-unit>
 <trans-unit id="sc4fdeccf14be5378">
@@ -7772,7 +7772,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>执行</target>
 </trans-unit>
 <trans-unit id="saa25eac2952d918d">
-  <source>Export &quot;<x id="0" equiv-text="${item.name}"/>&quot;</source>
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
   <target>导出“<x id="0" equiv-text="${item.name}"/>”</target>
 </trans-unit>
 <trans-unit id="s293aa6a6446fb153">
@@ -7858,7 +7858,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>执行流程</target>
 </trans-unit>
 <trans-unit id="s61e5043203e94d0a">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; normally</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" normally</source>
   <target>正常执行“<x id="0" equiv-text="${this.flow.name}"/>”</target>
 </trans-unit>
 <trans-unit id="s9ff3121d30f88d52">
@@ -7866,7 +7866,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>正常</target>
 </trans-unit>
 <trans-unit id="s02eb960c270a837e">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; as current user</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" as current user</source>
   <target>以当前用户身份执行“<x id="0" equiv-text="${this.flow.name}"/>”</target>
 </trans-unit>
 <trans-unit id="saf579a36a54c92e1">
@@ -7874,7 +7874,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>当前用户</target>
 </trans-unit>
 <trans-unit id="sd149e44e50455923">
-  <source>Execute &quot;<x id="0" equiv-text="${this.flow.name}"/>&quot; with inspector</source>
+  <source>Execute "<x id="0" equiv-text="${this.flow.name}"/>" with inspector</source>
   <target>附加检视器执行“<x id="0" equiv-text="${this.flow.name}"/>”</target>
 </trans-unit>
 <trans-unit id="s45c530a48bcf74ad">
@@ -8009,10 +8009,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
   <target>发送通知给事件用户</target>
-</trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>启用时，通知不仅会发送给触发事件的用户，还会发送到组中的任何用户。事件用户将总是第一个用户，要只向事件用户发送通知，则需要在通知传输中启用“发送一次”。</target>
 </trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
@@ -8202,10 +8198,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se9b1fec72ffd8f48">
   <source>Local</source>
   <target>本地</target>
-</trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
-  <target>如果启用，请使用本地连接。需要 Docker Socket/Kubernetes 集成。</target>
 </trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
@@ -8639,11 +8631,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>更新蓝图</target>
 </trans-unit>
 <trans-unit id="s08d24327ec788e78">
-  <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
   <target>编辑“<x id="0" equiv-text="${item.name}"/>”蓝图</target>
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
-  <source>Apply &quot;<x id="0" equiv-text="${item.name}"/>&quot; blueprint</source>
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
   <target>应用“<x id="0" equiv-text="${item.name}"/>”蓝图</target>
 </trans-unit>
 <trans-unit id="sb8f855b49234b81b">
@@ -9530,7 +9522,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>application</source>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
-  <source>Actions for &quot;<x id="0" equiv-text="${applicationName}"/>&quot;</source>
+  <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -9563,10 +9555,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>搜索未返回结果。</target>
 </trans-unit>
 <trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
 </trans-unit>
 <trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
 </trans-unit>
 <trans-unit id="sb1d445efd39638d4">
   <source><x id="0" equiv-text="${count}"/> application available</source>
@@ -9926,7 +9918,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Are you sure you want to remove the selected users?</source>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
-  <source>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</source>
+  <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
 </trans-unit>
 <trans-unit id="sa373520de40e9d44">
   <source>Assign User to Groups</source>
@@ -9963,9 +9955,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
 </trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
@@ -10041,6 +10030,39 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 </body>
 </file>

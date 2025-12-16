@@ -102,6 +102,11 @@ export abstract class Table<T extends object>
     protected abstract row(item: T): SlottedTemplateResult[];
 
     /**
+     * Customize the "No objects found" message.
+     */
+    protected emptyStateMessage = msg("No objects found.");
+
+    /**
      * The total number of defined and additional columns in the table.
      */
     #columnCount = 0;
@@ -368,7 +373,7 @@ export abstract class Table<T extends object>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span>${this.emptyStateMessage}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>

@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -89,26 +90,12 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="createUsersAsInactive">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.createUsersAsInactive ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Create users as inactive")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Mark newly created users as inactive.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="createUsersAsInactive"
+                        label=${msg("Create users as inactive")}
+                        ?checked=${this.instance?.createUsersAsInactive ?? true}
+                        help=${msg("Mark newly created users as inactive.")}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal label=${msg("User type")} name="userType">
                         <ak-radio
                             .options=${[

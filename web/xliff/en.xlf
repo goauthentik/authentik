@@ -6085,9 +6085,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
 </trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
 </trans-unit>
@@ -6226,9 +6223,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se9b1fec72ffd8f48">
   <source>Local</source>
-</trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
 </trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
@@ -7632,9 +7626,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
-</trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
@@ -7709,6 +7700,39 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
 </trans-unit>
 </body>
 </file>

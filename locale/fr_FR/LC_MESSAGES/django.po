@@ -26,42 +26,48 @@ msgstr ""
 #, python-brace-format
 msgid "File size ({file.size}B) exceeds maximum allowed "
 msgstr ""
+"La taille du fichier ({file.size}B) dépasse la taille maximum autorisée "
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot be empty"
-msgstr ""
+msgstr "Le nom du fichier ne peut pas être vide"
 
 #: authentik/admin/files/validation.py
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
 "hyphens (-), underscores (_), and forward slashes (/)"
 msgstr ""
+"Le nom de fichier ne peut contenir que des lettres (a-z, A-Z), des chiffres "
+"(0-9), des points (.), des traits d'union (-), des traits de soulignement "
+"(_) et des barres obliques (/)"
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot contain duplicate /"
-msgstr ""
+msgstr "Le nom de fichier ne peut pas continuer des / dupliquées"
 
 #: authentik/admin/files/validation.py
 msgid "Absolute paths are not allowed"
-msgstr ""
+msgstr "Les chemins absolus ne sont pas autorisés"
 
 #: authentik/admin/files/validation.py
 msgid "Parent directory references ('..') are not allowed"
-msgstr ""
+msgstr "Les références au répertoire parent ('..') ne sont pas autorisées"
 
 #: authentik/admin/files/validation.py
 msgid "Paths cannot start with '.'"
-msgstr ""
+msgstr "Les chemins ne peuvent pas commencer par '.'"
 
 #: authentik/admin/files/validation.py
 #, python-brace-format
 msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
-msgstr ""
+msgstr "Nom du fichier trop long (maximum {MAX_FILE_NAME_LENGTH} caractères)"
 
 #: authentik/admin/files/validation.py
 #, python-brace-format
 msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
 msgstr ""
+"Composant du chemin trop long (maximum {MAX_PATH_COMPONENT_LENGTH} "
+"caractères)"
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -279,11 +285,11 @@ msgstr "Désactiver le statut super-utilisateur"
 
 #: authentik/core/models.py
 msgid "Group Parentage Node"
-msgstr ""
+msgstr "Nœud de parenté du groupe"
 
 #: authentik/core/models.py
 msgid "Group Parentage Nodes"
-msgstr ""
+msgstr "Nœuds de parenté du groupe"
 
 #: authentik/core/models.py
 msgid "User's display name."
@@ -440,6 +446,9 @@ msgid ""
 "When enabled, this source will be displayed as a prominent button on the "
 "login page, instead of a small icon."
 msgstr ""
+"Lorsque cette option est activée, cette source s'affichera sous la forme "
+"d'un bouton bien visible sur la page de connexion, plutôt qu'une petite "
+"icône."
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
@@ -579,23 +588,23 @@ msgstr "ecdsa"
 
 #: authentik/crypto/models.py
 msgid "RSA"
-msgstr ""
+msgstr "RSA"
 
 #: authentik/crypto/models.py
 msgid "Elliptic Curve"
-msgstr ""
+msgstr "Elliptic Curve"
 
 #: authentik/crypto/models.py
 msgid "DSA"
-msgstr ""
+msgstr "DSA"
 
 #: authentik/crypto/models.py
 msgid "Ed25519"
-msgstr ""
+msgstr "Ed25519"
 
 #: authentik/crypto/models.py
 msgid "Ed448"
-msgstr ""
+msgstr "Ed448"
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
@@ -619,11 +628,11 @@ msgstr "Paires de clé/certificat"
 
 #: authentik/crypto/models.py
 msgid "View Certificate-Key pair's certificate"
-msgstr ""
+msgstr "Voir le certificat de la paire de clé/certificat"
 
 #: authentik/crypto/models.py
 msgid "View Certificate-Key pair's private key"
-msgstr ""
+msgstr "Voir la clé privée de la paire de clé/certificat"
 
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
@@ -633,23 +642,23 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Selected platform not supported"
-msgstr ""
+msgstr "La plateforme sélectionnée n'est pas supportée"
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Token is expired"
-msgstr ""
+msgstr "Le jeton est périmé"
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Invalid token for connector"
-msgstr ""
+msgstr "Jeton invalide pour le connecteur"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connector"
-msgstr ""
+msgstr "Connecteur d'agent"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connectors"
-msgstr ""
+msgstr "Connecteurs d'agent"
 
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
@@ -663,27 +672,27 @@ msgstr "Jetons d'appareil"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Token"
-msgstr ""
+msgstr "Jeton d'enregistrement"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Tokens"
-msgstr ""
+msgstr "Jetons d'enregistrement"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Device authentication token"
-msgstr ""
+msgstr "Jeton d'authentification d'appareil"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Device authentication tokens"
-msgstr ""
+msgstr "Jetons d'authentification d'appareil"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Nonce"
-msgstr ""
+msgstr "Nonce Apple"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Nonces"
-msgstr ""
+msgstr "Nonces Apple"
 
 #: authentik/endpoints/models.py
 msgid "Device"
@@ -691,51 +700,51 @@ msgstr "Appareil"
 
 #: authentik/endpoints/models.py
 msgid "Devices"
-msgstr ""
+msgstr "Appareils"
 
 #: authentik/endpoints/models.py
 msgid "Device User binding"
-msgstr ""
+msgstr "Liaison d'appareil et utilisateur"
 
 #: authentik/endpoints/models.py
 msgid "Device User bindings"
-msgstr ""
+msgstr "Liaisons d'appareil et utilisateur"
 
 #: authentik/endpoints/models.py
 msgid "Device connection"
-msgstr ""
+msgstr "Connexion d'appareil"
 
 #: authentik/endpoints/models.py
 msgid "Device connections"
-msgstr ""
+msgstr "Connexions d'appareil"
 
 #: authentik/endpoints/models.py
 msgid "Device fact snapshot"
-msgstr ""
+msgstr "Instantané des données de l'appareil"
 
 #: authentik/endpoints/models.py
 msgid "Device fact snapshots"
-msgstr ""
+msgstr "Instantanés des données de l'appareil"
 
 #: authentik/endpoints/models.py
 msgid "Device access group"
-msgstr ""
+msgstr "Groupe d'accès aux appareils"
 
 #: authentik/endpoints/models.py
 msgid "Device access groups"
-msgstr ""
+msgstr "Groupes d'accès aux appareils"
 
 #: authentik/endpoints/models.py
 msgid "Endpoint Stage"
-msgstr ""
+msgstr "Étape de point de terminaison"
 
 #: authentik/endpoints/models.py
 msgid "Endpoint Stages"
-msgstr ""
+msgstr "Étapes de point de terminaison"
 
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
-msgstr ""
+msgstr "Points de terminaison de synchronisation."
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
@@ -1004,16 +1013,16 @@ msgstr "Envoye un événement SSF."
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Export"
-msgstr ""
+msgstr "Export de données"
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Exports"
-msgstr ""
+msgstr "Exports de données"
 
 #: authentik/enterprise/reports/models.py
 #, python-brace-format
 msgid "{model_verbose_name} export generated successfully"
-msgstr ""
+msgstr "{model_verbose_name} export généré avec succès"
 
 #: authentik/enterprise/reports/models.py
 msgid "Download"
@@ -1021,7 +1030,7 @@ msgstr "Télécharger"
 
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
-msgstr ""
+msgstr "Générer un export de données."
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
@@ -1427,7 +1436,7 @@ msgstr "Jetons du flux"
 
 #: authentik/flows/templates/if/flow.html
 msgid "Site footer"
-msgstr ""
+msgstr "Pied de page du site"
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
@@ -1435,15 +1444,15 @@ msgstr "URL suivante invalide"
 
 #: authentik/lib/sync/incoming/models.py
 msgid "When to trigger sync for outgoing providers"
-msgstr ""
+msgstr "Quand démarrer la synchronisation pour les fournisseurs sortants"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
-msgstr ""
+msgstr "Contrôle le nombre d'objets synchronisés dans une seule tâche"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Timeout for synchronization of a single page"
-msgstr ""
+msgstr "Délai d'attente pour la synchronisation d'une seule page"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
@@ -2780,6 +2789,8 @@ msgid ""
 "Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
 "disable."
 msgstr ""
+"Durée de mise en cache pour les réponses ServiceProviderConfig. Définissez "
+"minutes=0 pour désactiver la mise en cache."
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -2872,11 +2883,11 @@ msgstr "Peut modifier les réglages système"
 
 #: authentik/rbac/models.py
 msgid "Can view media files"
-msgstr ""
+msgstr "Peut voir les fichiers média"
 
 #: authentik/rbac/models.py
 msgid "Can manage media files"
-msgstr ""
+msgstr "Peut gérer les fichiers média"
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
@@ -3130,7 +3141,7 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
@@ -3330,11 +3341,11 @@ msgstr "Sources d'OAuth Discord"
 
 #: authentik/sources/oauth/models.py
 msgid "Slack OAuth Source"
-msgstr ""
+msgstr "Source d'OAuth Slack"
 
 #: authentik/sources/oauth/models.py
 msgid "Slack OAuth Sources"
-msgstr ""
+msgstr "Sources d'OAuth Slack"
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
@@ -3402,11 +3413,11 @@ msgstr "Sources d'OAuth Reddit"
 
 #: authentik/sources/oauth/models.py
 msgid "WeChat OAuth Source"
-msgstr ""
+msgstr "Source d'OAuth WeChat"
 
 #: authentik/sources/oauth/models.py
 msgid "WeChat OAuth Sources"
-msgstr ""
+msgstr "Sources d'OAuth WeChat"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
@@ -3645,7 +3656,7 @@ msgstr "Mappages de propriété source SCIM"
 
 #: authentik/sources/telegram/api/source.py
 msgid "This Telegram account is already connected to another user."
-msgstr ""
+msgstr "Ce compte Telegram est déjà connecté à un autre utilisateur."
 
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
@@ -4852,7 +4863,7 @@ msgstr "Domaines"
 
 #: packages/ak-guardian/guardian/models.py
 msgid "object ID"
-msgstr ""
+msgstr "ID d'objet"
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channel"

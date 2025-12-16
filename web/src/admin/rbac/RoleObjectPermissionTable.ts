@@ -95,7 +95,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             >
             </ak-rbac-role-object-permission-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Assign role permissions")}
+                ${msg("Assign Object Permission")}
             </button>
         </ak-forms-modal>`;
     }
@@ -135,9 +135,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             const assignedToModel = item.modelPermissions.some(
                 (uperm) => uperm.codename === perm.codename,
             );
-            const assignedToObject = item.objectPermissions.some(
-                (uperm) => uperm.codename === perm.codename,
-            );
+            const assignedToObject = item.objectPermissions
+                .filter((uperm) => uperm.objectPk === this.objectPk)
+                .some((uperm) => uperm.codename === perm.codename);
 
             let tooltip: string | null = null;
             if (assignedToModel && assignedToObject) {

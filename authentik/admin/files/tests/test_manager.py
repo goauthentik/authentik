@@ -1,10 +1,16 @@
 """Test file service layer"""
 
+from unittest import skipUnless
+
 from django.http import HttpRequest
 from django.test import TestCase
 
 from authentik.admin.files.manager import FileManager
-from authentik.admin.files.tests.utils import FileTestFileBackendMixin, FileTestS3BackendMixin
+from authentik.admin.files.tests.utils import (
+    FileTestFileBackendMixin,
+    FileTestS3BackendMixin,
+    s3_test_server_available,
+)
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 
@@ -81,6 +87,7 @@ class TestResolveFileUrlFileBackend(FileTestFileBackendMixin, TestCase):
         self.assertEqual(result, "http://example.com/files/media/public/test.png")
 
 
+@skipUnless(s3_test_server_available(), "S3 test server not available")
 class TestResolveFileUrlS3Backend(FileTestS3BackendMixin, TestCase):
     @CONFIG.patch("storage.media.s3.custom_domain", "s3.test:8080/test")
     @CONFIG.patch("storage.media.s3.secure_urls", False)

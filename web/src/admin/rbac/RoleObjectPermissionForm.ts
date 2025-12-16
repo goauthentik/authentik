@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#components/ak-toggle-group";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -98,17 +99,10 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                     return perm.codename !== `add_${model}`;
                 })
                 .map((perm) => {
-                    return html` <ak-form-element-horizontal name="permissions.${perm.codename}">
-                        <label class="pf-c-switch">
-                            <input class="pf-c-switch__input" type="checkbox" />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${perm.name}</span>
-                        </label>
-                    </ak-form-element-horizontal>`;
+                    return html`<ak-switch-input
+                        name="permissions.${perm.codename}"
+                        label=${perm.name}
+                    ></ak-switch-input>`;
                 })}
         </form>`;
     }
