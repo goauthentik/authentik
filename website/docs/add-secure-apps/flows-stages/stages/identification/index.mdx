@@ -42,13 +42,9 @@ authentik will automatically fall back to the normal identification flow when pa
 ### Configuration
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-
 2. Navigate to **Flows and Stages** > **Stages** and either create or edit an [Authenticator validation stage](../authenticator_validate/index.mdx) that allows the **WebAuthn** device class.
-
 3. Navigate to **Flows and Stages** > **Stages** and edit your Identification stage. Under **Passkey settings** set **WebAuthn Authenticator Validation Stage** to the Authenticator validation stage from step 2.
-
 4. Click **Update** to save the changes.
-
 5. Ensure users have enrolled a passkey/WebAuthn device (for example using the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.mdx)).
 
 ### Notes
