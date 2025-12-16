@@ -1,10 +1,9 @@
 """Identification stage logic"""
 
 from dataclasses import asdict
-from random import SystemRandom
-from time import sleep
 from typing import Any
 
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpResponse
@@ -161,8 +160,8 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 op="authentik.stages.identification.validate_invalid_wait",
                 name="Sleep random time on invalid user identifier",
             ):
-                # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
-                sleep(0.030 * SystemRandom().randint(3, 7))
+                # hash a random password on invalid identifier, same as with a valid identifier
+                make_password(None)
             # Log in a similar format to Event.new(), but we don't want to create an event here
             # as this stage is mostly used by unauthenticated users with very high rate limits
             self.stage.logger.info(
