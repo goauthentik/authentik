@@ -48,13 +48,19 @@ class QLSearch(SearchFilter):
 
         return InlineSchema
 
+    def get_search_context(self, request: Request):
+        return {
+            "$ak_user": request.user.pk,
+        }
+
     def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
         search_query = self.get_search_terms(request)
         schema = self.get_schema(request, view)
         if len(search_query) == 0 or not self.enabled:
             return self._fallback.filter_queryset(request, queryset, view)
+        context = self.get_search_context(request)
         try:
-            return apply_search(queryset, search_query, schema=schema)
+            return apply_search(queryset, search_query, context=context, schema=schema)
         except AKQLError as exc:
             LOGGER.debug("Failed to parse search expression", exc=exc)
             return self._fallback.filter_queryset(request, queryset, view)
