@@ -5,15 +5,16 @@ tags: [authentik Agent, connector, configure, configuration]
 ---
 
 Before deploying the authentik Agent, configure your authentik deployment. This involves:
+
 - Importing the [Device code flow](../../add-secure-apps/providers/oauth2/device_code.md)
 - Creating an OAuth application and provider
 - Creating a [Connector](../device-compliance/connectors.md)
 
 ## Import OAuth device code flow
 
-The OAuth device code flow enables secure authentication for input-limited objects like CLI tools and is required for the authentik Agent to function.
+The OAuth device code flow enables secure authentication for input-limited clients like CLI tools and is required for the authentik Agent to function.
 
-If you have already deployed the authentik OAuth device code flow, skip to the next section.
+If you have already deployed the authentik OAuth device code flow, skip to the [next section](#create-an-application-and-provider-in-authentik-for-cli).
 
 1. Download the [device code flow blueprint file](https://raw.githubusercontent.com/goauthentik/platform/refs/heads/main/hack/authentik/blueprints/oauth2-device-code.yaml).
 2. Log in to authentik as an administrator and open the authentik Admin interface.

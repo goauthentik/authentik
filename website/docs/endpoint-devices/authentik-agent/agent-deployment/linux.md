@@ -41,7 +41,8 @@ sudo apt install authentik-cli authentik-agent authentik-sysd
 ```
 
 4. Confirm that the authentik Agent is installed:
-```sh
+
+````sh
 ak
 You should see a response that starts with: `authentik CLI v<version_number>`
 
@@ -53,9 +54,9 @@ To enable [device authentication features](../../device-authentication/index.mdx
 
 ```sh
 ak config setup --authentik-url https://authentik.company
-```
+````
 
-2. A browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
+2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
 ## Enable device compliance and SSH access
 

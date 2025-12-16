@@ -4,4 +4,6 @@ sidebar_label: Linux
 tags: [authentik Agent, device login, device authentication, linux]
 ---
 
-Local device login is currently only supported on Windows. The functionality should be supported on Linux, however configuration and testing with the various Linux login managers (SDDM, GDM etc) and integration with the various PAM implementations has not been completed.
+Local device login is currently only supported on Windows.
+
+Linux support is possible but not yet implemented. Configuration and testing with various Linux login managers (SDDM, GDM, etc.) and PAM implementations is pending.
