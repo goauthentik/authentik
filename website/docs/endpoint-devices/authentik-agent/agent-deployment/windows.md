@@ -20,7 +20,14 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 ## Install the authentik Agent
 
-(TODO - guide via UI)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Enrollment Tokens**, click **Create**, and configure the following settings:
+    - **Token name**: provide a descriptive name for the token
+    - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
+    - **Expiring _(optional)_**: set whether or not the enrollment token will expire
+5.
 
 Follow these steps to install the authentik Agent on your Windows device:
 
