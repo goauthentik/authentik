@@ -33,6 +33,16 @@ from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
+PARTIAL_USER_SERIALIZER_MODEL_FIELDS = [
+    "pk",
+    "username",
+    "name",
+    "is_active",
+    "last_login",
+    "email",
+    "attributes",
+]
+
 
 class PartialUserSerializer(ModelSerializer):
     """Partial User Serializer, does not include child relations."""
@@ -42,16 +52,7 @@ class PartialUserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            "pk",
-            "username",
-            "name",
-            "is_active",
-            "last_login",
-            "email",
-            "attributes",
-            "uid",
-        ]
+        fields = PARTIAL_USER_SERIALIZER_MODEL_FIELDS + ["uid"]
 
 
 class RelatedGroupSerializer(ModelSerializer):
@@ -262,7 +263,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         base_qs = Group.objects.all().prefetch_related("roles")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
-            base_qs = base_qs.prefetch_related("users")
+            # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation
+            # time
+            base_qs = base_qs.prefetch_related(
+                Prefetch(
+                    "users",
+                    queryset=User.objects.all().only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS),
+                )
+            )
         else:
             base_qs = base_qs.prefetch_related(
                 Prefetch("users", queryset=User.objects.all().only("id"))
