@@ -7,7 +7,6 @@ tags: [authentik Agent, mac, macos, deploy]
 ## What it can do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
-- Authorize Sudo elevation, see [Sudo authorization](../../device-authentication/sudo-authorization.md). (TODO - needs testing)
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 

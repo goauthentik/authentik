@@ -25,7 +25,10 @@ You need to have deployed the authentik Agent including the WCP component on the
 
 ## How it works
 
-(TODO)
+- The system agent requests an authentication and authorization URL from authentik, using its token.
+- This URL is opened in a browser which also injects the device token information, allowing authenitk to know that the login request is executed on the same machine.
+- The end user logs in normally using the standard authentik interface and flows
+- Once finished, the browser is redirect to a well-defined location and uses the token it receives to finish authentication and authorization through the system agent
 
 ## How to log in to a Windows device
 

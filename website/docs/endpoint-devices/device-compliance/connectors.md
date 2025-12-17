@@ -8,7 +8,7 @@ Connectors allow device information to be reported to authentik.
 
 They can be used standalone or alongside the [authentik Agent](../authentik-agent/index.mdx).
 
-Currently, the only supported connectors are the [authentik Agent](#authentik-agent) and [Fleet](#fleet)
+Currently, the only supported connectors is the [authentik Agent](#authentik-agent)
 
 ## Connectors
 
@@ -16,11 +16,8 @@ The following connectors are currently supported:
 
 ### authentik Agent
 
-(TODO) information on how the connector functions
-
-### Fleet
-
-(TODO) information on how the connector functions
+- Unlike other connectors, the agent connector is used by the agent directly compared to other connectors talking to separate systems and APIs to integrate with other agents. Hence the functionality of the agent connector behaves differently than other connectors.
+- the agent connector mainly holds configuration for the agent itself, as well as implementing certain platform specific protocols like Apple's Platform SSO.
 
 ## Adding a connector
 

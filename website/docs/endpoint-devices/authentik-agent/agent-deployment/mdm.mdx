@@ -4,7 +4,7 @@ sidebar_label: MDM
 tags: [authentik Agent, mdm, fleet, deploy]
 ---
 
-authentik Agent can be deployed at scale to multiple devices via Mobile Device Management (MDM) tools. (TODO)
+authentik Agent can be deployed at scale to multiple devices via Mobile Device Management (MDM) tools.
 
 ## Prerequisites
 
@@ -32,8 +32,9 @@ If you have already created have an enrollment token, skip to the next section.
 4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
 5. Click **Windows** and then click either **Download** or **Copy** to obtain your SyncML MDM configuration snippet.
    This SyncML snippet can be used by Microsoft Intune, Microsoft Endpoint Manager and other MDM tools to deploy the changes required to support the authentik Agent.
-
-    (TODO)
+    - list registry keys
+      HKLM/SOFTWARE/authentik Security Inc./Platform/ManagedConfig/RegistrationToken
+      HKLM/SOFTWARE/authentik Security Inc./Platform/ManagedConfig/URL
 
 ## macOS
 
@@ -43,5 +44,3 @@ If you have already created have an enrollment token, skip to the next section.
 4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
 5. Click **macOS** and then click either **Download** or **Copy** to obtain your MDM policy.
    This policy can be used by Apple Business Manager, Fleet, and other MDM tools to deploy the changes required to support the authentik Agent.
-
-    (TODO)

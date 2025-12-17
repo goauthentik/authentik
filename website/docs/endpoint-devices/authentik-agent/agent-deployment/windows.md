@@ -85,27 +85,6 @@ It currently only supports local login; RDP login is not supported.
 - Offline login is currently not supported.
   :::
 
-#### Configure Windows Credential Provider
-
-You'll need to add a registry entry for WCP to work:
-
-1. On the Windows device, open the Notepad application.
-2. Paste the following block of text into Notepad:
-
-```powershell
-Windows Registry Editor Version 5.00
-
-[HKEY_CLASSES_ROOT\CLSID\{7BCC7941-18BA-4A8E-8E0A-1D0F8E73577A}]
-"URL"="https://authentik.company"
-"ClientID"="authentik-cli"
-```
-
-Where `URL` is the FQDN of your authentik deployment and `ClientID` is the Client ID of the [`authentik-cli` provider](../configuration.md#create-an-application-and-provider-in-authentik-for-cli).
-
-3. Save the file as `authentik.reg` and ensure that **Save as type** is set to **All Files**.
-4. Locate the `authentik.reg` file in File Explorer, right-click it and select **Merge**.
-5. Approve the admin prompt.
-
 ## Logging
 
 The authentik Agent primarily outputs logs to Windows Event Viewer.
