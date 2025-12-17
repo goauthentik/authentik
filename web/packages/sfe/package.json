@@ -26,7 +26,7 @@
         "formdata-polyfill": "^2025.11.0",
         "globby": "16.0.0",
         "jquery": "^3.7.1",
-        "rollup": "^4.53.3",
+        "rollup": "^4.53.5",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
