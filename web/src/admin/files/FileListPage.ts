@@ -128,13 +128,9 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         }
         return super.renderEmpty(
             html`<ak-empty-state icon=${this.pageIcon}
-                ><span
-                    >${msg("Configured file backend does not support file management.")}</span
-                >
+                ><span>${msg("Configured file backend does not support file management.")}</span>
                 <div slot="body">
-                    ${msg(
-                        "Please ensure the data folder is mounted or S3 storage is configured.",
-                    )}
+                    ${msg("Please ensure the data folder is mounted or S3 storage is configured.")}
                 </div>
                 <div slot="primary">
                     <a
@@ -145,7 +141,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
                     >
                 </div>
             </ak-empty-state>`,
-            );
+        );
     }
 
     protected renderObjectCreate() {
