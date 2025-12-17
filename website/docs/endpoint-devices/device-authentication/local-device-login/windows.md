@@ -32,6 +32,9 @@ You need to have deployed the authentik Agent including the WCP component on the
 
 ## How to log in to a Windows device
 
-1. On the Windows login screen, click the authentik icon (TODO screenshot).
+1. On the Windows login screen, click the authentik icon:
+
+![Windows login screen](authentik-login.png)
+
 2. A browser window will open and prompt you for your authentik credentials.
 3. Once authenticated, you will be logged in to the Windows device.

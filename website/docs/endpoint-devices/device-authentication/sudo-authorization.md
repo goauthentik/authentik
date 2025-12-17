@@ -4,20 +4,14 @@ sidebar_label: Sudo authorization
 tags: [sudo, authentik Agent]
 ---
 
-You can use the [authentik Agent](../authentik-agent/index.mdx) to authorize sudo elevation on Linux endpoint devices.
+You can use the [authentik Agent](../authentik-agent/index.mdx) to authorize sudo elevation when connected to a [Linux endpoint device via SSH](./ssh-authentication.mdx).
 
-When you run a sudo command on an endpoint device, you will either be prompted for your authentik credentials or, if you are already connected via [SSH using the authentik agent](./ssh-authentication.mdx), sudo will be authorized automatically.
+When you run a sudo command in this situation, the sudo authorization will be handled by the authentik Agent.
 
 ## Prerequisites
 
 - [authentik Agent needs to be deployed](../authentik-agent/agent-deployment/index.mdx) on the device.
 - Sudo authorization needs to be configured on the device, see the [Configure sudo authorization on an endpoint device](#configure-sudo-authorization-on-an-endpoint-device) section below.
-
-## How to authorize sudo on an endpoint device
-
-- needs ak-agent, ak-sysd
-- only with `ak ssh`
-  (TODO)
 
 ## Configure sudo authorization on an endpoint device
 

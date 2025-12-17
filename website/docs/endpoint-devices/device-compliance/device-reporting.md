@@ -33,7 +33,7 @@ This feature is still in development and will be announced soon.
 
 Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.md). For example:
 
-(TODO) add screenshot of device in event log
+![Example of device authentication event](device-event-example.png)
 
 ### Search for an endpoint device in the event logs :ak-enterprise
 
