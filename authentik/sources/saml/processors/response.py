@@ -83,7 +83,8 @@ class ResponseProcessor:
 
         # Decrypt if encryption key is set
         if self._source.encryption_kp:
-            if err := self._decrypt_response():
+            err = self._decrypt_response()
+            if err != "":
                 raise InvalidEncryption(f"SAML Response decryption failed: {err}")
 
         # Verify signatures for Assertion
@@ -137,7 +138,7 @@ class ResponseProcessor:
         try:
             decrypted_assertion = encryption_context.decrypt(encrypted_data)
         except xmlsec.Error as exc:
-            return("Decryption failed")
+            return(f"Decryption failed : {exc}")
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
