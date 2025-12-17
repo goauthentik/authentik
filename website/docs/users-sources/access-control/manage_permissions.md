@@ -50,7 +50,7 @@ To assign or remove _object_ permissions for a specific role:
 2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page, then click the **Permissions on this object** tab
 4. To assign permissions that another _role_ has on this specific role:
-    1. Click **Assign role permissions**.
+    1. Click **Assign Object Permission**.
     2. In the **Role** drop-down, select the role object.
     3. Use the toggles to set which permissions on that selected role object you want to grant to the specific role.
     4. Click **Assign** to save your settings and close the box.
