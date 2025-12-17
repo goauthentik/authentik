@@ -23,8 +23,8 @@ class TestAgentConnector(APITestCase):
         res = self.connector.controller(self.connector).generate_mdm_config(
             OSFamily.macOS, request, self.token
         )
-        self.assertIsNotNone(res)
-        data = loads(res, fmt=PlistFormat.FMT_XML)
+        self.assertIsNotNone(res.validated_data)
+        data = loads(res.validated_data["config"], fmt=PlistFormat.FMT_XML)
         self.assertEqual(data["PayloadContent"][0]["RegistrationToken"], self.token.key)
         self.assertEqual(data["PayloadContent"][0]["URL"], "http://testserver/")
 
@@ -33,7 +33,8 @@ class TestAgentConnector(APITestCase):
         res = self.connector.controller(self.connector).generate_mdm_config(
             OSFamily.windows, request, self.token
         )
-        self.assertIsNotNone(res)
-        fromstring(f"<root>{res}</root>")
-        self.assertIn(self.token.key, res)
-        self.assertIn("http://testserver/", res)
+        self.assertIsNotNone(res.validated_data)
+        config = res.validated_data["config"]
+        fromstring(f"<root>{config}</root>")
+        self.assertIn(self.token.key, config)
+        self.assertIn("http://testserver/", config)

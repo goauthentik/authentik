@@ -145,6 +145,9 @@ class TestSAMLProviderAPI(APITestCase):
 
     def test_import_success(self):
         """Test metadata import (success case)"""
+        name = generate_id()
+        authorization_flow = create_test_flow(FlowDesignation.AUTHORIZATION)
+        invalidation_flow = create_test_flow(FlowDesignation.INVALIDATION)
         with TemporaryFile() as metadata:
             metadata.write(load_fixture("fixtures/simple.xml").encode())
             metadata.seek(0)
@@ -152,14 +155,18 @@ class TestSAMLProviderAPI(APITestCase):
                 reverse("authentik_api:samlprovider-import-metadata"),
                 {
                     "file": metadata,
-                    "name": generate_id(),
-                    "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
-                    "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
+                    "name": name,
+                    "authorization_flow": authorization_flow.pk,
+                    "invalidation_flow": invalidation_flow.pk,
                 },
                 format="multipart",
             )
-        self.assertEqual(204, response.status_code)
-        # We don't test the actual object being created here, that has its own tests
+        self.assertEqual(201, response.status_code)
+        body = response.json()
+        self.assertIn("pk", body)
+        self.assertEqual(body["name"], name)
+        self.assertEqual(body["authorization_flow"], str(authorization_flow.pk))
+        self.assertEqual(body["invalidation_flow"], str(invalidation_flow.pk))
 
     def test_import_failed(self):
         """Test metadata import (invalid xml)"""

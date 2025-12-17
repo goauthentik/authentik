@@ -192,6 +192,7 @@ class MTLSStageView(ChallengeStageView):
         self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
             {"certificate": self._cert_to_dict(cert)}
         )
+        self.executor.plan.context[PLAN_CONTEXT_CERTIFICATE] = self._cert_to_dict(cert)
 
     def enroll_prepare_user(self, cert: Certificate):
         self.executor.plan.context.setdefault(PLAN_CONTEXT_PROMPT, {})

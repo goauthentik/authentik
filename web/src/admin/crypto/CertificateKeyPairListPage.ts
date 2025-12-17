@@ -17,7 +17,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     CertificateKeyPair,
     CryptoApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -45,9 +45,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
-            await this.defaultEndpointConfig(),
-        );
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+            ...(await this.defaultEndpointConfig()),
+        });
     }
 
     protected columns: TableColumn[] = [
@@ -125,7 +125,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCryptoCertificatekeypair}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCryptoCertificatekeypair}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

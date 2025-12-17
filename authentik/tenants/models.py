@@ -113,6 +113,16 @@ class Tenant(TenantMixin, SerializerModel):
         default=DEFAULT_TOKEN_LENGTH,
         validators=[MinValueValidator(1)],
     )
+
+    pagination_default_page_size = models.PositiveIntegerField(
+        help_text=_("Default page size for API responses, if no size was requested."),
+        default=20,
+    )
+    pagination_max_page_size = models.PositiveIntegerField(
+        help_text=_("Maximum page size"),
+        default=100,
+    )
+
     flags = models.JSONField(default=dict)
 
     def save(self, *args, **kwargs):

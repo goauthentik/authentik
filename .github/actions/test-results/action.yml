@@ -8,15 +8,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
+    - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
       with:
         flags: ${{ inputs.flags }}
         use_oidc: true
-    - uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1
+    - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
       with:
         flags: ${{ inputs.flags }}
-        file: unittest.xml
         use_oidc: true
+        report_type: test_results
     - name: PostgreSQL Logs
       shell: bash
       run: |

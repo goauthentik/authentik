@@ -20,7 +20,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ProvidersApi,
     RACProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -136,7 +136,7 @@ export class RACProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacRacprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacRacprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
