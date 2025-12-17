@@ -37,7 +37,7 @@ services:
     - ${COMPOSE_PORT_HTTPS:-9443}:9443
     restart: unless-stopped
     volumes:
-    - ./media:/data/media
+    - ./data:/data
     - ./custom-templates:/templates
   worker:
     command: worker
@@ -57,7 +57,7 @@ services:
     user: root
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - ./media:/data/media
+    - ./data:/data
     - ./certs:/certs
     - ./custom-templates:/templates
 volumes:

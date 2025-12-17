@@ -91,6 +91,20 @@ export class DataExportListPage extends TablePage<DataExport> {
             </div>
         </dl>`;
     }
+
+    protected renderEmpty(_inner?: TemplateResult): TemplateResult {
+        return super.renderEmpty(
+            html`<ak-empty-state icon=${this.pageIcon}
+                ><span
+                    >${msg(
+                        html`To create a data export, navigate to
+                            <a href="#/identity/users">Directory > Users</a> or to
+                            <a href="#/events/log">Events > Logs</a>.`,
+                    )}</span
+                >
+            </ak-empty-state>`,
+        );
+    }
 }
 
 declare global {

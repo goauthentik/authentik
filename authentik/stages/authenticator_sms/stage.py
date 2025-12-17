@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, CharField, IntegerField
+from rest_framework.fields import BooleanField, CharField
 
 from authentik.flows.challenge import (
     Challenge,
@@ -38,7 +38,7 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
 
     device: SMSDevice
 
-    code = IntegerField(required=False)
+    code = CharField(required=False)
     phone_number = CharField(required=False)
 
     component = CharField(default="ak-stage-authenticator-sms")
