@@ -161,7 +161,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 name="Sleep random time on invalid user identifier",
             ):
                 # hash a random password on invalid identifier, same as with a valid identifier
-                make_password(None)
+                make_password(make_password(None))
             # Log in a similar format to Event.new(), but we don't want to create an event here
             # as this stage is mostly used by unauthenticated users with very high rate limits
             self.stage.logger.info(
