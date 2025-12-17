@@ -96,7 +96,7 @@ class ResponseProcessor:
         # Verify signatures for Response
         if self._source.verification_kp and self._source.signed_response:
             sig_errors = []
-        # Support both signature placements
+            # Support both signature placements
             signed_candidate = [self._root]
             if self._source.encryption_kp:
                 signed_candidate.append(root_copy)
@@ -107,9 +107,7 @@ class ResponseProcessor:
                 else:
                     sig_errors.append(resp_error)
             if resp_error != "":
-                raise InvalidSignature(
-                    f"SAML Response signature invalid: {' '.join(sig_errors)}"
-                )
+                raise InvalidSignature(f"SAML Response signature invalid: {' '.join(sig_errors)}")
 
         self._verify_request_id()
         self._verify_status()
@@ -127,18 +125,18 @@ class ResponseProcessor:
 
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
-            return("No EncryptedAssertion node")
+            return "No EncryptedAssertion node"
 
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
         if encrypted_data is None:
-            return("No EncryptedData node")
+            return "No EncryptedData node"
 
         try:
             decrypted_assertion = encryption_context.decrypt(encrypted_data)
         except xmlsec.Error as exc:
-            return(f"Decryption failed : {exc}")
+            return f"Decryption failed : {exc}"
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
