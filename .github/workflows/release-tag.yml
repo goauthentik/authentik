@@ -49,8 +49,12 @@ jobs:
   test:
     name: Pre-release test
     runs-on: ubuntu-latest
+    needs:
+      - check-inputs
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        with:
+          ref: "version-${{ needs.check-inputs.outputs.major_version }}"
       - run: make test-docker
   bump-authentik:
     name: Bump authentik version
