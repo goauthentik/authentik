@@ -33586,7 +33586,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-email
         code:
-          type: integer
+          type: string
+          minLength: 1
         email:
           type: string
           minLength: 1
@@ -33833,7 +33834,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-sms
         code:
-          type: integer
+          type: string
+          minLength: 1
         phone_number:
           type: string
           minLength: 1
@@ -34107,7 +34109,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-totp
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     AuthenticatorTOTPStage:
