@@ -13,7 +13,7 @@ tags:
     ]
 ---
 
-Endpoint Devices registered with authentik via a connector, such as the [authentik Agent](./connectors.md#authentik-agent) or [Fleet](./connectors.md#fleet), regularly [check-in](#device-check-in) with authentik and report their [device facts](#device-facts).
+Endpoint Devices registered with authentik via a connector, such as the [authentik Agent](./connectors.md#authentik-agent) connector, regularly [check-in](#device-check-in) with authentik and report their [device facts](#device-facts).
 
 These facts are shown on the [Devices](../manage-devices.mdx) page and are also accessible to policies and can be used to make policy decisions. See [Device Compliance Policy](./device-compliance-policy.md) for more details.
 
