@@ -1,6 +1,7 @@
 """authentik saml source processor"""
 
 from base64 import b64decode
+from copy import deepcopy
 from time import mktime
 from typing import TYPE_CHECKING, Any
 
@@ -76,40 +77,43 @@ class ResponseProcessor:
         # Check if response is compressed, b64 decode it
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
+        root_copy = deepcopy(self._root)
 
         sig_errors = []
-        if self._source.verification_kp and self._source.signed_response:
-            resp_error = self._verify_signed("/samlp:Response")
-            if resp_error == "":
-                self.response_signature_verified = True
-            else:
-                self.response_signature_verified = False
-                sig_errors.append(resp_error)
 
+        # Decrypt if encryption key is set
         if self._source.encryption_kp:
-            self._decrypt_response()
+            if err := self._decrypt_response():
+                raise InvalidEncryption(f"SAML Response decryption failed: {err}")
 
+        # Verify signatures for Assertion
         if self._source.verification_kp and self._source.signed_assertion:
-            assert_error = self._verify_signed("/samlp:Response/saml:Assertion")
+            assert_error = self._verify_signed(self._root, "/samlp:Response/saml:Assertion")
             if assert_error != "":
                 raise InvalidSignature(f"Assertion signature invalid: {assert_error}")
 
+        # Verify signatures for Response
         if self._source.verification_kp and self._source.signed_response:
-            if self.response_signature_verified is False:
-                post_error = self._verify_signed("/samlp:Response")
-                if post_error == "":
-                    self.response_signature_verified = True
+            sig_errors = []
+        # Support both signature placements
+            signed_candidate = [self._root]
+            if self._source.encryption_kp:
+                signed_candidate.append(root_copy)
+            for root in signed_candidate:
+                resp_error = self._verify_signed(root, "/samlp:Response")
+                if resp_error == "":
+                    break
                 else:
-                    self.response_signature_verified = False
-                    sig_errors.append(post_error)
-                    raise InvalidSignature(
-                        f"SAML Response signature invalid: {'; '.join(sig_errors)}"
-                    )
+                    sig_errors.append(resp_error)
+            if resp_error != "":
+                raise InvalidSignature(
+                    f"SAML Response signature invalid: {' '.join(sig_errors)}"
+                )
 
         self._verify_request_id()
         self._verify_status()
 
-    def _decrypt_response(self):
+    def _decrypt_response(self) -> str:
         """Decrypt SAMLResponse EncryptedAssertion Element"""
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
@@ -122,14 +126,18 @@ class ResponseProcessor:
 
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
-            raise InvalidEncryption()
+            return("No EncryptedAssertion node")
+
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
+        if encrypted_data is None:
+            return("No EncryptedData node")
+
         try:
             decrypted_assertion = encryption_context.decrypt(encrypted_data)
         except xmlsec.Error as exc:
-            raise InvalidEncryption() from exc
+            return("Decryption failed")
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
@@ -137,10 +145,11 @@ class ResponseProcessor:
             index_of,
             decrypted_assertion,
         )
+        return ""
 
-    def _verify_signed(self, xpath: str) -> str:
+    def _verify_signed(self, root, xpath: str) -> str:
         """Verify SAML Response's Signature"""
-        nodes = self._root.xpath(xpath, namespaces=NS_MAP)
+        nodes = root.xpath(xpath, namespaces=NS_MAP)
         if len(nodes) != 1:
             return f"no-node:{xpath}"
         node = nodes[0]
@@ -151,7 +160,7 @@ class ResponseProcessor:
             return f"{xpath}: multiple-signatures ({len(sigs)})"
         sig = sigs[0]
 
-        xmlsec.tree.add_ids(self._root, ["ID"])
+        xmlsec.tree.add_ids(root, ["ID"])
         ctx = xmlsec.SignatureContext()
         key = xmlsec.Key.from_memory(
             self._source.verification_kp.certificate_data,
