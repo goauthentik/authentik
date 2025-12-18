@@ -10,6 +10,7 @@ import { applicationWizardProvidersContext } from "./ContextIdentity.js";
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { assertEveryPresent } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 
@@ -31,9 +32,6 @@ const freshWizardState = (): ApplicationWizardState => ({
     bindings: [],
     errors: {},
 });
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isTypeCreateArray = (v: any): v is TypeCreate[] => Array.isArray(v) && !v.includes(undefined);
 
 type ExtractProviderName<T extends string> = T extends `${string}.${infer Name}` ? Name : never;
 
@@ -74,11 +72,10 @@ export class AkApplicationWizardMain extends AKElement {
             const providersInOrder = providerTypePriority.map((name) =>
                 providerNameToProviderMap.get(name),
             );
-            if (!isTypeCreateArray(providersInOrder)) {
-                throw new Error(
-                    "Provider priority list includes name for which no provider model was returned.",
-                );
-            }
+            assertEveryPresent<TypeCreate>(
+                providersInOrder,
+                "Provider priority list includes name for which no provider model was returned.",
+            );
             this.wizardProviderProvider.setValue(providersInOrder);
         });
     }
