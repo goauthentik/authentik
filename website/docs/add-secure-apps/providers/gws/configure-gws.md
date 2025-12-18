@@ -61,12 +61,31 @@ The main steps to configure your Google Workspace organization are:
     - `https://www.googleapis.com/auth/admin.directory.group.member`
     - `https://www.googleapis.com/auth/admin.directory.domain.readonly`
 
-## Select email address for the Delegated Subject
+## Select a user for the Delegated Subject
 
-The Delegated Subject email address is a required field when creating the provider in authentik.
+Delegated Subject is a required field when creating the Google Workspace provider in authentik. This field must be populated with the email address of a Google Workspace user with [suitable permissions](#delegated-subject-permissions).
 
-1. Open to the main Admin console page, and navigate to **Directory** > **Users**.
-2. You can either select an existing user's email address or **Add new user** and define the user and email address to use as the Delegated Subject.
+1. In the sidebar navigate to **Directory** > **Users**.
+2. Either select an existing user's email address or **Add new user** and define the user and email address to use as the Delegated Subject.
 3. Take note of this email address as it will be required when creating the Google Workspace provider in authentik.
+
+### Delegated Subject permissions
+
+:::warning
+We do not recommend using an administrator account for the Delegated Subject user. A custom role should be used instead, see the [Google Admin Console documenation](https://support.google.com/a/answer/2406043?hl=en) for more details.
+:::
+
+The Delagated Subject user requires the following permissions:
+
+#### Admin console privilieges
+
+- Users
+- Groups
+
+#### Admin API privileges
+
+- Domain management
+- Users
+- Groups
 
 Now that you have configured your Google Workspace organization, you are ready to [create a Google Workspace provider](./create-gws-provider.md).
