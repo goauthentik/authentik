@@ -7,7 +7,6 @@ import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
 
 import { applicationWizardProvidersContext } from "./ContextIdentity.js";
-import { providerTypePriority } from "./steps/ProviderChoices.js";
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -16,6 +15,7 @@ import { AKElement } from "#elements/Base";
 
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
+import type { TypeCreate } from "@goauthentik/api";
 import { ProvidersApi, ProxyMode } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
@@ -31,6 +31,20 @@ const freshWizardState = (): ApplicationWizardState => ({
     bindings: [],
     errors: {},
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isTypeCreateArray = (v: any): v is TypeCreate[] => Array.isArray(v) && !v.includes(undefined);
+
+export const providerTypePriority = [
+    "oauth2provider",
+    "samlprovider",
+    "samlproviderimportmodel",
+    "racprovider",
+    "proxyprovider",
+    "radiusprovider",
+    "ldapprovider",
+    "scimprovider",
+];
 
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
@@ -50,19 +64,18 @@ export class AkApplicationWizardMain extends AKElement {
     connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
-            const wizardReadyProviders = Object.keys(providerTypePriority);
-            this.wizardProviderProvider.setValue(
-                providerTypes
-                    .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
-                    .map((providerType) => ({
-                        ...providerType,
-                    }))
-                    .sort(
-                        (a, b) =>
-                            providerTypePriority[a.modelName] - providerTypePriority[b.modelName],
-                    )
-                    .reverse(),
+            const providerNameToProviderMap = new Map(
+                providerTypes.map((providerType) => [providerType.modelName, providerType]),
             );
+            const providersInOrder = providerTypePriority.map((name) =>
+                providerNameToProviderMap.get(name),
+            );
+            if (!isTypeCreateArray(providersInOrder)) {
+                throw new Error(
+                    "Provider priority list includes name for which no provider model was returned.",
+                );
+            }
+            this.wizardProviderProvider.setValue(providersInOrder);
         });
     }
 
