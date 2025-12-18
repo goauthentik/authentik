@@ -7,14 +7,17 @@ from cryptography.x509 import load_pem_x509_certificate
 from django.db import migrations, models
 
 from authentik.crypto.signals import extract_certificate_metadata
+from authentik.lib.migrations import progress_bar
 
 
 def backfill_certificate_metadata(apps, schema_editor):  # noqa: ARG001
     """Backfill certificate metadata and kid for existing records."""
 
+    db_alias = schema_editor.connection.alias
     CertificateKeyPair = apps.get_model("authentik_crypto", "CertificateKeyPair")
 
-    for cert in CertificateKeyPair.objects.all():
+    print("\nStoring extra data about certificates, this might take a couple of minutes...")
+    for cert in progress_bar(CertificateKeyPair.objects.using(db_alias).all()):
         updated_fields = []
 
         if cert.certificate_data:
@@ -47,7 +50,7 @@ def backfill_certificate_metadata(apps, schema_editor):  # noqa: ARG001
             updated_fields.append("kid")
 
         if updated_fields:
-            cert.save(update_fields=updated_fields)
+            cert.save(update_fields=updated_fields, using=db_alias)
 
 
 class Migration(migrations.Migration):
