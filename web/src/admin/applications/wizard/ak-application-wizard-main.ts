@@ -7,7 +7,7 @@ import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
 
 import { applicationWizardProvidersContext } from "./ContextIdentity.js";
-import { providerTypePriority } from "./steps/ProviderChoices.js";
+import { providerTypeRenderers } from "./steps/ProviderChoices.js";
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -50,16 +50,18 @@ export class AkApplicationWizardMain extends AKElement {
     connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
-            const wizardReadyProviders = Object.keys(providerTypePriority);
+            const wizardReadyProviders = Object.keys(providerTypeRenderers);
             this.wizardProviderProvider.setValue(
                 providerTypes
                     .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
                     .map((providerType) => ({
                         ...providerType,
+                        renderer: providerTypeRenderers[providerType.modelName].render,
                     }))
                     .sort(
                         (a, b) =>
-                            providerTypePriority[a.modelName] - providerTypePriority[b.modelName],
+                            providerTypeRenderers[a.modelName].order -
+                            providerTypeRenderers[b.modelName].order,
                     )
                     .reverse(),
             );

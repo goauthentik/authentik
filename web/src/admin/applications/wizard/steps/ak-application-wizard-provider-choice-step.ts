@@ -5,6 +5,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/wizard/TypeCreateWizardPage";
 
 import { applicationWizardProvidersContext } from "../ContextIdentity.js";
+import { type LocalTypeCreate } from "./ProviderChoices.js";
 
 import { bound } from "#elements/decorators/bound";
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -14,7 +15,7 @@ import type { NavigableButton, WizardButton } from "#components/ak-wizard/types"
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 
-import type { TypeCreate } from "@goauthentik/api";
+import { TypeCreate } from "@goauthentik/api";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
@@ -29,7 +30,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     failureMessage = "";
 
     @consume({ context: applicationWizardProvidersContext, subscribe: true })
-    public providerModelsList!: TypeCreate[];
+    public providerModelsList!: LocalTypeCreate[];
 
     get buttons(): WizardButton[] {
         return [
@@ -54,7 +55,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     }
 
     @bound
-    onSelect(ev: CustomEvent<TypeCreate>) {
+    onSelect(ev: CustomEvent<LocalTypeCreate>) {
         ev.stopPropagation();
         const detail: TypeCreate = ev.detail;
         this.handleUpdate({ providerModel: detail.modelName });
@@ -73,7 +74,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
                           name="selectProviderType"
                           layout=${TypeCreateWizardPageLayouts.grid}
                           .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
-                          @select=${(ev: CustomEvent<TypeCreate>) => {
+                          @select=${(ev: CustomEvent<LocalTypeCreate>) => {
                               this.handleUpdate(
                                   {
                                       ...this.wizard,
