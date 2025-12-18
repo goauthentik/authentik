@@ -15,11 +15,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
-import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
@@ -28,6 +25,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
+
+import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, RbacApi, Role, User } from "@goauthentik/api";
 
@@ -326,78 +325,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Update password")}</span>
-                            <span slot="header">
-                                ${msg(str`Update ${item.name || item.username}'s password`)}
-                            </span>
-                            <ak-user-password-form
-                                username=${item.username}
-                                email=${ifDefined(item.email)}
-                                slot="form"
-                                .instancePk=${item.pk}
-                            ></ak-user-password-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Set password")}
-                            </button>
-                        </ak-forms-modal>
-                        ${this.brand.flowRecovery
-                            ? html`
-                                  <ak-action-button
-                                      class="pf-m-secondary"
-                                      .apiRequest=${() => {
-                                          return new CoreApi(DEFAULT_CONFIG)
-                                              .coreUsersRecoveryCreate({
-                                                  id: item.pk,
-                                              })
-                                              .then((rec) => {
-                                                  showMessage({
-                                                      level: MessageLevel.success,
-                                                      message: msg(
-                                                          "Successfully generated recovery link",
-                                                      ),
-                                                      description: rec.link,
-                                                  });
-                                              })
-                                              .catch(async (error: unknown) => {
-                                                  const parsedError =
-                                                      await parseAPIResponseError(error);
-
-                                                  showMessage({
-                                                      level: MessageLevel.error,
-                                                      message: pluckErrorDetail(parsedError),
-                                                  });
-                                              });
-                                      }}
-                                  >
-                                      ${msg("Copy recovery link")}
-                                  </ak-action-button>
-                                  ${item.email
-                                      ? html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                            <span slot="submit"> ${msg("Send link")} </span>
-                                            <span slot="header">
-                                                ${msg("Send recovery link to user")}
-                                            </span>
-                                            <ak-user-reset-email-form slot="form" .user=${item}>
-                                            </ak-user-reset-email-form>
-                                            <button
-                                                slot="trigger"
-                                                class="pf-c-button pf-m-secondary"
-                                            >
-                                                ${msg("Email recovery link")}
-                                            </button>
-                                        </ak-forms-modal>`
-                                      : html`<span
-                                            >${msg(
-                                                "Recovery link cannot be emailed, user has no email address saved.",
-                                            )}</span
-                                        >`}
-                              `
-                            : html` <p>
-                                  ${msg(
-                                      "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
-                                  )}
-                              </p>`}
+                        ${renderRecoveryButtons({
+                            user: item,
+                            brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                        })}
                     </div>
                 </dd>
             </div>
