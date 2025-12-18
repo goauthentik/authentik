@@ -148,7 +148,7 @@ gen-build:  ## Extract the schema from the database
 		uv run ak spectacular --file schema.yml
 
 gen-compose:
-	uv run scripts/generate_docker_compose.py
+	uv run scripts/generate_compose.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
@@ -156,7 +156,7 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
 	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
-	docker compose -f scripts/api/docker-compose.yml run --rm --user "${UID}:${GID}" diff \
+	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \
 		/local/schema-old.yml \
@@ -179,7 +179,7 @@ gen-clean-go:  ## Remove generated API client for Go
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker compose -f scripts/api/docker-compose.yml run --rm --user "${UID}:${GID}" gen \
+	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
 		generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
@@ -300,7 +300,7 @@ docs-api-clean: ## Clean generated API documentation
 
 docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
-	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
 	BUILD=true ${PWD}/scripts/test_docker.sh
