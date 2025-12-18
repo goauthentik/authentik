@@ -30,7 +30,6 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -87,6 +86,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.uuid import is_uuid_valid
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -752,29 +752,32 @@ class UserViewSet(
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery_email(self, request: Request, pk: int) -> Response:
         """Send an email with a temporary link that a user can use to recover their account"""
-        for_user: User = self.get_object()
-        if for_user.email == "":
+        user: User = self.get_object()
+        if not user.email:
             LOGGER.debug("User doesn't have an email address")
             raise ValidationError(
                 {"non_field_errors": _("User does not have an email address set.")}
             )
-        link, token = self._create_recovery_link(for_email=True)
-        # Lookup the email stage to assure the current user can access it
-        stages = get_objects_for_user(
-            request.user, "authentik_stages_email.view_emailstage"
-        ).filter(pk=request.query_params.get("email_stage"))
-        if not stages.exists():
-            LOGGER.debug("Email stage does not exist/user has no permissions")
+        email_stage_uuid = request.query_params.get("email_stage", "")
+        if not is_uuid_valid(email_stage_uuid) or not (
+            email_stage := EmailStage.objects.filter(pk=email_stage_uuid).first()
+        ):
+            LOGGER.debug("Email stage does not exist")
             raise ValidationError({"non_field_errors": _("Email stage does not exist.")})
-        email_stage: EmailStage = stages.first()
+        if not request.user.has_perm("authentik_stages_email.view_emailstage", email_stage):
+            LOGGER.debug("User has no view access to email stage")
+            raise ValidationError(
+                {"non_field_errors": _("User has no view access to email stage.")}
+            )
+        link, token = self._create_recovery_link(for_email=True)
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
-            to=[(for_user.name, for_user.email)],
+            to=[(user.name, user.email)],
             template_name=email_stage.template,
-            language=for_user.locale(request),
+            language=user.locale(request),
             template_context={
                 "url": link,
-                "user": for_user,
+                "user": user,
                 "expires": token.expires,
             },
         )

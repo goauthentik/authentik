@@ -132,8 +132,10 @@ class TestUsersAPI(APITestCase):
         self.client.force_login(self.admin)
         self.user.email = ""
         self.user.save()
+        stage = EmailStage.objects.create(name="email")
         response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
+            + f"?email_stage={stage.pk}"
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
@@ -143,6 +145,7 @@ class TestUsersAPI(APITestCase):
         self.user.save()
         response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
+            + f"?email_stage={stage.pk}"
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
