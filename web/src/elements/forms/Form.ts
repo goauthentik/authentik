@@ -193,7 +193,7 @@ function reportInvalidFields(
  * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
  * will not render at all if it's not actually in the viewport?[2]
  *
- * @element ak-form
+ * @class Form
  *
  * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires eventname - description
