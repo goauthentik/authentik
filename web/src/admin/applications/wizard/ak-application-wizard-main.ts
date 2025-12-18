@@ -16,7 +16,7 @@ import { AKElement } from "#elements/Base";
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
 import type { TypeCreate } from "@goauthentik/api";
-import { ProvidersApi, ProxyMode } from "@goauthentik/api";
+import { ProviderModelEnum, ProvidersApi, ProxyMode } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
 import { html } from "lit";
@@ -35,7 +35,11 @@ const freshWizardState = (): ApplicationWizardState => ({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isTypeCreateArray = (v: any): v is TypeCreate[] => Array.isArray(v) && !v.includes(undefined);
 
-export const providerTypePriority = [
+type ExtractProviderName<T extends string> = T extends `${string}.${infer Name}` ? Name : never;
+
+type ProviderModelNameEnum = ExtractProviderName<ProviderModelEnum> | "samlproviderimportmodel";
+
+export const providerTypePriority: ProviderModelNameEnum[] = [
     "oauth2provider",
     "samlprovider",
     "samlproviderimportmodel",
@@ -65,14 +69,14 @@ export class AkApplicationWizardMain extends AKElement {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             const providerNameToProviderMap = new Map(
-                providerTypes.map((providerType) => [providerType.modelName, providerType]),
+                providerTypes.map((providerType) => [providerType.modelName, providerType])
             );
             const providersInOrder = providerTypePriority.map((name) =>
-                providerNameToProviderMap.get(name),
+                providerNameToProviderMap.get(name)
             );
             if (!isTypeCreateArray(providersInOrder)) {
                 throw new Error(
-                    "Provider priority list includes name for which no provider model was returned.",
+                    "Provider priority list includes name for which no provider model was returned."
                 );
             }
             this.wizardProviderProvider.setValue(providersInOrder);
