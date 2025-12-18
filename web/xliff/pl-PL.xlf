@@ -4064,12 +4064,6 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
 </trans-unit>
-<trans-unit id="s76ea179414f2b2a5">
-  <source>Disk size</source>
-</trans-unit>
-<trans-unit id="s25e7a078391a3ec3">
-  <source>Disk usage</source>
-</trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
 </trans-unit>
@@ -9474,6 +9468,21 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s813faec5ff1d32d1">
   <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
+</trans-unit>
+<trans-unit id="s54af3ec70642782c">
+  <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
+</trans-unit>
+<trans-unit id="sb3be65525dd1f92c">
+  <source>Assign object permissions to role</source>
+</trans-unit>
+<trans-unit id="sbcd108b66363075c">
+  <source>Device access group</source>
+</trans-unit>
+<trans-unit id="s325acae04cdcac57">
+  <source>Primary disk size</source>
+</trans-unit>
+<trans-unit id="sb4a957846c89fca1">
+  <source>Primary disk usage</source>
 </trans-unit>
 </body>
 </file>
