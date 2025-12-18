@@ -4,13 +4,18 @@ import type { TypeCreate } from "@goauthentik/api";
 
 export type LocalTypeCreate = TypeCreate;
 
-export const providerTypePriority: Record<string, number> = {
-    oauth2provider: 95,
-    samlprovider: 90,
-    samlproviderimportmodel: 85,
-    racprovider: 80,
-    proxyprovider: 75,
-    radiusprovider: 70,
-    ldapprovider: 65,
-    scimprovider: 60,
-};
+const providerPriority = [
+    "oauth2provider",
+    "samlprovider",
+    "samlproviderimportmodel",
+    "racprovider",
+    "proxyprovider",
+    "radiusprovider",
+    "ldapprovider",
+    "scimprovider",
+];
+
+export const providerTypePriority: Record<string, number> = providerPriority.reduce(
+    (acc, name, index) => ({ ...acc, [name]: 95 - index * 5 }),
+    {} satisfies Record<string, number>,
+);
