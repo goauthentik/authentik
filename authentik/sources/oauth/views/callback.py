@@ -95,6 +95,8 @@ class OAuthCallback(OAuthClientMixin, View):
         """Return unique identifier from the profile info."""
         if "id" in info:
             return info["id"]
+        if "sub" in info:
+            return info["sub"]
         return None
 
     def handle_login_failure(self, reason: str) -> HttpResponse:
