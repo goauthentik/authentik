@@ -1,28 +1,17 @@
 """Convenient shortcuts to manage or check object permissions."""
 
-from collections.abc import Callable
-from functools import lru_cache, partial
+from functools import lru_cache
 from typing import Any, TypeVar
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import (
-    AutoField,
-    BigIntegerField,
-    BooleanField,
     Count,
-    Field,
-    ForeignKey,
-    IntegerField,
     Model,
-    PositiveIntegerField,
-    PositiveSmallIntegerField,
     QuerySet,
-    SmallIntegerField,
     UUIDField,
 )
-from django.db.models.expressions import Case, F, Func, Value, When
-from django.db.models.functions import Cast
+from django.db.models.expressions import RawSQL
 
 from guardian.core import ObjectPermissionChecker
 from guardian.ctypes import get_content_type
@@ -296,68 +285,23 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
             .filter(object_pk_count__gte=len(codenames))
         )
 
-    # object_pk is a varchar, while the queryset's pk is probably an integer or a uuid, so we cast
-    cast_object_pk = _cast_object_pk(queryset)
-    if cast_object_pk is not None:
-        perms_queryset = perms_queryset.annotate(
-            cast_object_pk=cast_object_pk(expression=F(pk_field))
-        )
-        pk_field = "cast_object_pk"
-
-    return queryset.filter(pk__in=perms_queryset.values_list(pk_field, flat=True))
-
-
-# See https://www.postgresql.org/docs/16/functions-info.html#FUNCTIONS-INFO-VALIDITY
-class RegexpLike(Func):
-    function = "regexp_like"
-    arity = 3
-    output_field = BooleanField()
-
-
-def _safe_cast(expression: F, *, output_field: Field, default: Value, regexp: str):
-    return Case(
-        When(
-            RegexpLike(expression, Value(regexp), Value("i")),
-            then=Cast(expression, output_field=output_field),
-        ),
-        default=default,
-    )
-
-
-def _cast_object_pk(queryset) -> Callable | None:
+    # pk is either UUID or an integer type, while object_pk is a varchar
     pk = queryset.model._meta.pk
-
-    if isinstance(pk, ForeignKey):
-        return _cast_object_pk(pk.target_field)
-
-    if isinstance(  # noqa: UP038
-        pk,
-        (
-            IntegerField,
-            AutoField,
-            BigIntegerField,
-            PositiveIntegerField,
-            PositiveSmallIntegerField,
-            SmallIntegerField,
-        ),
-    ):
-        return partial(
-            _safe_cast,
-            output_field=BigIntegerField(),
-            regexp="^[0-9]+$",
-            default=Value(-1, output_field=BigIntegerField()),
-        )
-
     if isinstance(pk, UUIDField):
-        return partial(
-            _safe_cast,
-            output_field=UUIDField(),
-            regexp="^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            # We require a default value to safely cast to UUID. This is a completely random value.
-            # If this happens to be the pk of some object, we got infinitely unlucky.
-            # The security risk this imposes is negligible: comparable to an adversary guessing an
-            # email token.
-            default=Value("3adf9dbf-8292-434b-a188-bb6b32898efd", output_field=UUIDField()),
-        )
+        cast_type = "uuid"
+    else:
+        cast_type = "bigint"
 
-    return None
+    # The raw subquery is done to ensure that casting only takes place after the WHERE clause of
+    # `perms_queryset` is ran. Otherwise, the query planner may decide to cast every `object_pk`,
+    # which breaks (for example) if it tries to cast an integer to a UUID. In such a case, the WHERE
+    # of `perms_queryset` will remove any integer.
+    perms_subquery_sql, perms_subquery_params = perms_queryset.query.sql_with_params()
+    subquery = RawSQL(
+        f"""
+        SELECT ("permission_subquery"."object_pk")::{cast_type} as "object_pk"
+        FROM ({perms_subquery_sql}) "permission_subquery"
+    """,
+        perms_subquery_params,
+    )
+    return queryset.filter(pk__in=subquery)
