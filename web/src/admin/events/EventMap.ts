@@ -82,6 +82,23 @@ export class EventMap extends AKElement {
         `,
     ];
 
+    constructor() {
+        super();
+        // @ts-expect-error OpenLayers does not provide a map of event names to event types
+        this.addEventListener("feature-selected", (ev: CustomEvent<{ feature: Feature }>) => {
+            const eventId = ev.detail.feature.getId();
+            this.dispatchEvent(
+                new CustomEvent("select-event", {
+                    composed: true,
+                    bubbles: true,
+                    detail: {
+                        eventId: eventId,
+                    },
+                }),
+            );
+        });
+    }
+
     updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {
             return;
@@ -144,20 +161,7 @@ export class EventMap extends AKElement {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <ak-map>
-                <ol-select
-                    @feature-selected=${(ev: CustomEvent<{ feature: Feature }>) => {
-                        const eventId = ev.detail.feature.getId();
-                        this.dispatchEvent(
-                            new CustomEvent("select-event", {
-                                composed: true,
-                                bubbles: true,
-                                detail: {
-                                    eventId: eventId,
-                                },
-                            }),
-                        );
-                    }}
-                ></ol-select>
+                <ol-select></ol-select>
                 <ol-layer-openstreetmap></ol-layer-openstreetmap>
                 <ol-layer-vector></ol-layer-vector>
             </ak-map>

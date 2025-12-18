@@ -60,6 +60,10 @@ export interface PageHeaderInit {
  *
  * Internally, this component listens for the `ak-page-header` event, which is
  * dispatched by the `ak-page-header` component.
+ *
+ * @event ak-page-nav-menu-toggle
+ * @event ak-page-details-update
+ *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
