@@ -42,6 +42,14 @@ The main steps to configure your Google Workspace organization are as follows:
 2. Click the **Keys** tab at top of the page, then click **Add Key** > **Create new key**.
 3. Select JSON as the key type, then click **Create**.
    A pop-up displays with the private key. The key can be saved to your computer as a JSON file. This key will be required when creating the Google Workspace provider in authentik.
+
+    :::info Allow key creation
+    By default, the Google Cloud organization policy `iam.disableSerivceAccountKeyCreation` prevents creating service account keys. To allow key creation:
+    1. Navigate to **IAM & Admin** > **Organization Policies** and select the **Disable service account key creation** policy.
+    2. Click **Manage policy** and disable the policy.
+    3. Click **Set policy** to save your changes.
+       :::
+
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
 5. Copy the **Client ID** (under **Domain-wide delegation**), and then click **View Google Workspace Admin Console**.
 6. Log in to the Admin Console, and then navigate to **Security** > **Access and data control** > **API controls**.
