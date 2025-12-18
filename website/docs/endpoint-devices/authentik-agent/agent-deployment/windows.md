@@ -14,6 +14,20 @@ tags: [authentik Agent, windows]
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
 :::
 
+## Windows Credential Provider
+
+Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows workstations using authentik credentials.
+
+It currently only supports local login; RDP login is not supported.
+
+:::warning
+
+- When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
+- WCP can cause issues with user encrypted directories.
+- Support with Active directory has not been confirmed yet.
+- Offline login is currently not supported.
+  :::
+
 ## Prerequisites
 
 You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
@@ -70,20 +84,6 @@ ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
-
-## Windows Credential Provider
-
-Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows workstations using authentik credentials.
-
-It currently only supports local login; RDP login is not supported.
-
-:::warning
-
-- When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
-- WCP can cause issues with user encrypted directories.
-- Support with Active directory has not been confirmed yet.
-- Offline login is currently not supported.
-  :::
 
 ## Logging
 
