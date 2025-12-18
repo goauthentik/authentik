@@ -1,5 +1,4 @@
 import "#components/ak-nav-buttons";
-import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/messages/MessageContainer";
@@ -23,7 +22,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { ifPresent } from "#elements/utils/attributes";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
@@ -61,7 +60,6 @@ if (process.env.NODE_ENV === "development") {
 // trusts that we actually used it. Hence the double ignore below:
 
 @customElement("ak-interface-user-presentation")
-// @ts-ignore
 class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) {
     static styles = [
         PFDisplay,
@@ -124,8 +122,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
 
         const backgroundStyles = this.uiConfig.theme.background;
 
-        return html`<ak-locale-context>
-            <ak-enterprise-status interface="user"></ak-enterprise-status>
+        return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
                 <div class="background-wrapper" style=${ifPresent(backgroundStyles)}>
                     ${!backgroundStyles
@@ -135,11 +132,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
-                            <img
-                                class="pf-c-brand"
-                                src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                                alt="${this.brandingTitle}"
-                            />
+                            ${renderImage(this.brandingLogo, this.brandingTitle, "pf-c-brand")}
                         </a>
                     </div>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
@@ -179,8 +172,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                         </div>
                     </div>
                 </div>
-            </div>
-        </ak-locale-context>`;
+            </div>`;
     }
 }
 

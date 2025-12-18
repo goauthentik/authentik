@@ -250,12 +250,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
             this.client.sendMouseState(mouseState);
         };
-        // @ts-ignore
+        // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
             this.container?.focus();
             handler(ev.state);
         });
-        // @ts-ignore
+        // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.on("mousemove", (ev: Guacamole.Mouse.Event) => {
             handler(ev.state, true);
         });

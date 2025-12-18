@@ -21,7 +21,7 @@ runs:
         sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libkrb5-dev krb5-kdc krb5-user krb5-admin-server
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244 # v5
+      uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -35,7 +35,7 @@ runs:
       run: uv sync --all-extras --dev --frozen
     - name: Setup node
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v4
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v4
       with:
         node-version-file: web/package.json
         cache: "npm"

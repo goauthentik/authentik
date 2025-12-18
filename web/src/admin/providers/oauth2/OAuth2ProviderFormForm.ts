@@ -23,6 +23,8 @@ import { ascii_letters, digits, randomString } from "#common/utils";
 import { RadioOption } from "#elements/forms/Radio";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
@@ -157,12 +159,19 @@ export function renderForm({
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal
-            name="authorizationFlow"
-            label=${msg("Authorization flow")}
-            required
-        >
+        <ak-form-element-horizontal name="authorizationFlow" required>
+            ${AKLabel(
+                {
+                    className: "pf-c-form__group-label",
+                    slot: "label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization flow"),
+            )}
+
             <ak-flow-search
+                id="authorizationFlow"
                 label=${msg("Authorization flow")}
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}

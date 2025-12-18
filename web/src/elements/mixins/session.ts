@@ -1,12 +1,17 @@
 import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { createUIConfig, DefaultUIConfig, UIConfig } from "#common/ui/config";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
+import { me } from "#common/users";
 
+import { AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
+import { kAKLocale, LocaleContext, LocaleContextValue } from "#elements/mixins/locale";
 import { createMixin } from "#elements/types";
 
-import type { SessionUser, UserSelf } from "@goauthentik/api";
+import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
+
+import { setUser } from "@sentry/browser";
 
 import { consume, createContext } from "@lit/context";
-import { property } from "lit/decorators.js";
 
 /**
  * The Lit context for the application configuration.
@@ -58,6 +63,13 @@ export interface SessionMixin {
      * Whether the current session is impersonating another user.
      */
     readonly impersonating: boolean;
+
+    /**
+     * Refresh the current session information.
+     *
+     * @param requestInit Optional parameters to pass to the fetch call.
+     */
+    refreshSession(requestInit?: RequestInit): Promise<SessionUser>;
 }
 
 /**
@@ -86,6 +98,20 @@ export const WithSession = createMixin<SessionMixin>(
         subscribe = true,
     }) => {
         abstract class SessionProvider extends SuperClass implements SessionMixin {
+            #log = console.debug.bind(console, `authentik/session`);
+
+            @consume({
+                context: AuthentikConfigContext,
+                subscribe,
+            })
+            public readonly [kAKConfig]!: Readonly<Config>;
+
+            @consume({
+                context: LocaleContext,
+                subscribe,
+            })
+            public [kAKLocale]!: LocaleContextValue;
+
             #data: APIResult<Readonly<SessionUser>> = {
                 loading: true,
                 error: null,
@@ -97,7 +123,6 @@ export const WithSession = createMixin<SessionMixin>(
                 context: SessionContext,
                 subscribe,
             })
-            @property({ attribute: false })
             public set session(nextResult: APIResult<SessionUser>) {
                 this.#data = nextResult;
                 if (isAPIResultReady(nextResult)) {
@@ -125,6 +150,33 @@ export const WithSession = createMixin<SessionMixin>(
 
             public get impersonating(): boolean {
                 return !!this.originalUser;
+            }
+
+            public refreshSession(requestInit?: RequestInit): Promise<SessionUser> {
+                this.#log("Fetching session...");
+
+                return me(requestInit).then((session) => {
+                    const localeHint: string | undefined = session.user.settings.locale;
+
+                    if (localeHint) {
+                        const locale = autoDetectLanguage(localeHint);
+                        this.#log(`Activating user's configured locale '${locale}'`);
+                        this[kAKLocale]?.setLocale(locale);
+                    }
+
+                    const config = this[kAKConfig];
+
+                    if (config?.errorReporting.sendPii) {
+                        this.#log("Sentry with PII enabled.");
+
+                        setUser({ email: session.user.email });
+                    }
+
+                    this.#log("Fetched session", session);
+                    this.session = session;
+
+                    return session;
+                });
             }
         }
 

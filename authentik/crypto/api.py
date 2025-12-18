@@ -1,7 +1,5 @@
 """Crypto API Views"""
 
-from datetime import datetime
-
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509 import load_pem_x509_certificate
@@ -15,18 +13,17 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
     extend_schema,
-    extend_schema_field,
 )
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
     ChoiceField,
-    DateTimeField,
     IntegerField,
     SerializerMethodField,
 )
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
@@ -42,7 +39,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair, KeyType
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
+from authentik.rbac.filters import SecretKeyFilter
 
 LOGGER = get_logger()
 
@@ -50,58 +47,14 @@ LOGGER = get_logger()
 class CertificateKeyPairSerializer(ModelSerializer):
     """CertificateKeyPair Serializer"""
 
-    fingerprint_sha256 = SerializerMethodField()
-    fingerprint_sha1 = SerializerMethodField()
-
-    cert_expiry = SerializerMethodField()
-    cert_subject = SerializerMethodField()
     private_key_available = SerializerMethodField()
-    key_type = SerializerMethodField()
 
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
 
-    @property
-    def _should_include_details(self) -> bool:
-        request: Request = self.context.get("request", None)
-        if not request:
-            return True
-        return str(request.query_params.get("include_details", "true")).lower() == "true"
-
-    def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> str | None:
-        "Get certificate Hash (SHA256)"
-        if not self._should_include_details:
-            return None
-        return instance.fingerprint_sha256
-
-    def get_fingerprint_sha1(self, instance: CertificateKeyPair) -> str | None:
-        "Get certificate Hash (SHA1)"
-        if not self._should_include_details:
-            return None
-        return instance.fingerprint_sha1
-
-    def get_cert_expiry(self, instance: CertificateKeyPair) -> datetime | None:
-        "Get certificate expiry"
-        if not self._should_include_details:
-            return None
-        return DateTimeField().to_representation(instance.certificate.not_valid_after_utc)
-
-    def get_cert_subject(self, instance: CertificateKeyPair) -> str | None:
-        """Get certificate subject as full rfc4514"""
-        if not self._should_include_details:
-            return None
-        return instance.certificate.subject.rfc4514_string()
-
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
-
-    @extend_schema_field(ChoiceField(choices=KeyType.choices, allow_null=True))
-    def get_key_type(self, instance: CertificateKeyPair) -> str | None:
-        """Get the key algorithm type from the certificate's public key"""
-        if not self._should_include_details:
-            return None
-        return instance.key_type
 
     def get_certificate_download_url(self, instance: CertificateKeyPair) -> str:
         """Get URL to download certificate"""
@@ -174,6 +127,11 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "managed": {"read_only": True},
             "key_data": {"write_only": True},
             "certificate_data": {"write_only": True},
+            "fingerprint_sha256": {"read_only": True},
+            "fingerprint_sha1": {"read_only": True},
+            "cert_expiry": {"read_only": True},
+            "cert_subject": {"read_only": True},
+            "key_type": {"read_only": True},
         }
 
 
@@ -215,17 +173,12 @@ class CertificateKeyPairFilter(FilterSet):
         return queryset.exclude(key_data__exact="")
 
     def filter_key_type(self, queryset, name, value):  # pragma: no cover
-        """Filter certificates by key type using the public key from the certificate"""
+        """Filter certificates by key type using the stored database field"""
         if not value:
             return queryset
 
         # value is a list of KeyType enum values from MultipleChoiceFilter
-        filtered_pks = []
-        for cert in queryset:
-            if cert.key_type in value:
-                filtered_pks.append(cert.pk)
-
-        return queryset.filter(pk__in=filtered_pks)
+        return queryset.filter(key_type__in=value)
 
     class Meta:
         model = CertificateKeyPair
@@ -262,7 +215,6 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
                     "Can be specified multiple times (e.g. '?key_type=rsa&key_type=ec')"
                 ),
             ),
-            OpenApiParameter("include_details", bool, default=True),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -292,6 +244,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    @permission_required("view_certificatekeypair_certificate")
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -302,7 +255,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    @action(detail=True, pagination_class=None, permission_classes=[IsAuthenticated])
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
@@ -323,6 +276,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             return response
         return Response(CertificateDataSerializer({"data": certificate.certificate_data}).data)
 
+    @permission_required("view_certificatekeypair_key")
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -333,7 +287,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
+    @action(detail=True, pagination_class=None, permission_classes=[IsAuthenticated])
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()

@@ -236,7 +236,7 @@ class LDAPSyncTests(TestCase):
             membership_sync.sync_full()
             group: Group = Group.objects.filter(name="test-group").first()
             self.assertIsNotNone(group)
-            self.assertEqual(group.parent, parent_group)
+            self.assertEqual(group.parents.first(), parent_group)
 
     def test_sync_groups_openldap(self):
         """Test group sync"""

@@ -1,4 +1,5 @@
 import "#admin/common/ak-license-notice";
+import "#elements/Alert";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WizardPage } from "#elements/wizard/WizardPage";
@@ -190,6 +191,11 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         <span id="${inputID}-description" class="pf-c-radio__description"
                             >${type.description}
                             ${disabled ? html`<ak-license-notice></ak-license-notice>` : nothing}
+                            ${type.deprecated
+                                ? html`<ak-alert class="pf-c-radio__description" inline plain>
+                                      ${msg("This type is deprecated.")}
+                                  </ak-alert>`
+                                : nothing}
                         </span>
                     </div>`;
                 })}
@@ -203,7 +209,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             case TypeCreateWizardPageLayouts.list:
                 return this.renderList();
             default:
-                throw new Error(`Unknown layout: ${this.layout}`) as never;
+                throw new TypeError(`Unknown layout: ${this.layout}`);
         }
     }
 }

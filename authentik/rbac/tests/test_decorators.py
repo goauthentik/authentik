@@ -1,6 +1,5 @@
 """test decorators api"""
 
-from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -42,8 +41,8 @@ class TestAPIDecorators(APITestCase):
 
     def test_obj_perm_global(self):
         """Test object perm successful (global)"""
-        assign_perm("authentik_core.view_application", self.user)
-        assign_perm("authentik_events.view_event", self.user)
+        self.user.assign_perms_to_managed_role("authentik_core.view_application")
+        self.user.assign_perms_to_managed_role("authentik_events.view_event")
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
@@ -51,9 +50,9 @@ class TestAPIDecorators(APITestCase):
 
     def test_obj_perm_scoped(self):
         """Test object perm successful (scoped)"""
-        assign_perm("authentik_events.view_event", self.user)
+        self.user.assign_perms_to_managed_role("authentik_events.view_event")
         app = Application.objects.create(name=generate_id(), slug=generate_id())
-        assign_perm("authentik_core.view_application", self.user, app)
+        self.user.assign_perms_to_managed_role("authentik_core.view_application", app)
         request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 200)
@@ -61,7 +60,7 @@ class TestAPIDecorators(APITestCase):
     def test_other_perm_denied(self):
         """Test other perm denied"""
         app = Application.objects.create(name=generate_id(), slug=generate_id())
-        assign_perm("authentik_core.view_application", self.user, app)
+        self.user.assign_perms_to_managed_role("authentik_core.view_application", app)
         request = self.request_factory.get("", user=self.user)
         response = MVS.as_view({"get": "test"})(request, slug=app.slug)
         self.assertEqual(response.status_code, 403)

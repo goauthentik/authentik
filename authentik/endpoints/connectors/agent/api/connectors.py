@@ -5,10 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import (
-    CharField,
-    ChoiceField,
-)
+from rest_framework.fields import ChoiceField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -26,6 +23,7 @@ from authentik.endpoints.connectors.agent.auth import (
     AgentAuth,
     AgentEnrollmentAuth,
 )
+from authentik.endpoints.connectors.agent.controller import MDMConfigResponseSerializer
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
@@ -50,6 +48,8 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "nss_uid_offset",
             "nss_gid_offset",
             "challenge_key",
+            "challenge_idle_timeout",
+            "challenge_trigger_check_in",
             "jwt_federation_providers",
         ]
 
@@ -70,11 +70,6 @@ class MDMConfigSerializer(PassiveSerializer):
         if token.connector != self.context["connector"]:
             raise ValidationError(_("Invalid token for connector"))
         return token
-
-
-class MDMConfigResponseSerializer(PassiveSerializer):
-
-    config = CharField(required=True)
 
 
 class AgentConnectorViewSet(
@@ -106,7 +101,7 @@ class AgentConnectorViewSet(
             raise PermissionDenied()
         ctrl = connector.controller(connector)
         payload = ctrl.generate_mdm_config(data.validated_data["platform"], request, token)
-        return Response({"config": payload})
+        return Response(payload.validated_data)
 
     @extend_schema(
         request=EnrollSerializer(),
@@ -133,6 +128,7 @@ class AgentConnectorViewSet(
             device=device,
             connector=token.connector,
         )
+        DeviceToken.objects.filter(device=connection).delete()
         token = DeviceToken.objects.create(device=connection, expiring=False)
         return Response(
             {

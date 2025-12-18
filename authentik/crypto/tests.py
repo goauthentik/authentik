@@ -12,10 +12,15 @@ from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import CertificateKeyPair, generate_key_id, generate_key_id_legacy
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
@@ -144,7 +149,7 @@ class TestCrypto(APITestCase):
             ),
             data={"name": cert.name},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
         self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
@@ -162,39 +167,45 @@ class TestCrypto(APITestCase):
             ),
             data={"name": cert.name, "has_key": False},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
         self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
         self.assertEqual(api_cert["fingerprint_sha256"], cert.fingerprint_sha256)
 
-    def test_list_without_details(self):
-        """Test API List (no details)"""
+    def test_list_always_includes_details(self):
+        """Test API List always includes certificate details"""
         cert = create_test_cert()
         self.client.force_login(create_test_admin_user())
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-list",
             ),
-            data={"name": cert.name, "include_details": False},
+            data={"name": cert.name},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
-        self.assertEqual(api_cert["fingerprint_sha1"], None)
-        self.assertEqual(api_cert["fingerprint_sha256"], None)
+        # All details should now always be included
+        self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
+        self.assertEqual(api_cert["fingerprint_sha256"], cert.fingerprint_sha256)
+        self.assertIsNotNone(api_cert["cert_expiry"])
+        self.assertIsNotNone(api_cert["cert_subject"])
 
     def test_certificate_download(self):
         """Test certificate export (download)"""
-        self.client.force_login(create_test_admin_user())
         keypair = create_test_cert()
+        user = create_test_user()
+        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair_certificate", keypair)
+        self.client.force_login(user)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
                 kwargs={"pk": keypair.pk},
             )
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
@@ -202,20 +213,23 @@ class TestCrypto(APITestCase):
             ),
             data={"download": True},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("Content-Disposition", response)
 
     def test_private_key_download(self):
         """Test private_key export (download)"""
-        self.client.force_login(create_test_admin_user())
         keypair = create_test_cert()
+        user = create_test_user()
+        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("view_certificatekeypair_key", keypair)
+        self.client.force_login(user)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
                 kwargs={"pk": keypair.pk},
             )
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
@@ -223,12 +237,12 @@ class TestCrypto(APITestCase):
             ),
             data={"download": True},
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         self.assertIn("Content-Disposition", response)
 
     def test_certificate_download_denied(self):
         """Test certificate export (download)"""
-        self.client.logout()
+        self.client.force_login(create_test_user())
         keypair = create_test_cert()
         response = self.client.get(
             reverse(
@@ -248,7 +262,7 @@ class TestCrypto(APITestCase):
 
     def test_private_key_download_denied(self):
         """Test private_key export (download)"""
-        self.client.logout()
+        self.client.force_login(create_test_user())
         keypair = create_test_cert()
         response = self.client.get(
             reverse(
@@ -284,7 +298,7 @@ class TestCrypto(APITestCase):
                 kwargs={"pk": keypair.pk},
             )
         )
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
         self.assertJSONEqual(
             response.content.decode(),
             [
@@ -415,3 +429,114 @@ class TestCrypto(APITestCase):
             self.assertEqual(
                 1, final_count, "Should not create duplicate cert for same private key"
             )
+
+    def test_metadata_extraction_with_cert_and_key(self):
+        """Test that metadata is extracted when creating keypair with certificate and key"""
+        cert = create_test_cert()
+
+        # Verify all metadata fields are populated
+        self.assertIsNotNone(cert.key_type)
+        self.assertIsNotNone(cert.cert_expiry)
+        self.assertIsNotNone(cert.cert_subject)
+        self.assertIsNotNone(cert.fingerprint_sha256)
+        self.assertIsNotNone(cert.fingerprint_sha1)
+
+        # Verify kid is generated using SHA512 for new records
+        self.assertIsNotNone(cert.kid)
+        self.assertEqual(cert.kid, generate_key_id(cert.key_data))
+
+    def test_metadata_extraction_without_key(self):
+        """Test that metadata is extracted when creating keypair without private key"""
+        builder = CertificateBuilder(generate_id())
+        builder.build(subject_alt_names=[], validity_days=3)
+
+        # Create keypair with only certificate, no key
+        cert = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=builder.certificate,
+            key_data="",
+        )
+
+        # Verify certificate metadata fields are populated
+        self.assertIsNotNone(cert.key_type)
+        self.assertIsNotNone(cert.cert_expiry)
+        self.assertIsNotNone(cert.cert_subject)
+        self.assertIsNotNone(cert.fingerprint_sha256)
+        self.assertIsNotNone(cert.fingerprint_sha1)
+
+        # Verify kid is empty when no key_data
+        self.assertEqual(cert.kid, None)
+
+    def test_metadata_extraction_invalid_cert(self):
+        """Test that invalid certificate data doesn't crash, just skips metadata"""
+        cert = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data="invalid certificate data",
+            key_data="",
+        )
+
+        # Verify metadata fields are None for invalid cert
+        self.assertIsNone(cert.key_type)
+        self.assertIsNone(cert.cert_expiry)
+        self.assertIsNone(cert.cert_subject)
+        self.assertIsNone(cert.fingerprint_sha256)
+        self.assertIsNone(cert.fingerprint_sha1)
+        self.assertIsNone(cert.kid)
+
+    def test_kid_legacy_preservation(self):
+        """Test that legacy MD5 kid is preserved when key_data hasn't changed"""
+        cert = create_test_cert()
+
+        # Simulate a legacy MD5 kid (as if backfilled from old system)
+        legacy_kid = generate_key_id_legacy(cert.key_data)
+        CertificateKeyPair.objects.filter(pk=cert.pk).update(kid=legacy_kid)
+        cert.refresh_from_db()
+        self.assertEqual(cert.kid, legacy_kid)
+
+        # Save the cert again (e.g., name change) - kid should be preserved
+        cert.name = generate_id()
+        cert.save()
+        cert.refresh_from_db()
+
+        self.assertEqual(cert.kid, legacy_kid)
+
+    def test_kid_regenerated_on_key_change(self):
+        """Test that kid is regenerated when key_data changes"""
+        cert = create_test_cert()
+        original_kid = cert.kid
+
+        # Generate a new key and update the keypair
+        builder = CertificateBuilder(generate_id())
+        builder.build(subject_alt_names=[], validity_days=3)
+
+        cert.key_data = builder.private_key
+        cert.certificate_data = builder.certificate
+        cert.save()
+        cert.refresh_from_db()
+
+        # Kid should be regenerated for the new key
+        self.assertNotEqual(cert.kid, original_kid)
+        self.assertEqual(cert.kid, generate_key_id(cert.key_data))
+
+    def test_kid_regenerated_on_key_change_from_legacy(self):
+        """Test that kid is regenerated from legacy MD5 when key_data changes"""
+        cert = create_test_cert()
+
+        # Simulate a legacy MD5 kid
+        legacy_kid = generate_key_id_legacy(cert.key_data)
+        CertificateKeyPair.objects.filter(pk=cert.pk).update(kid=legacy_kid)
+        cert.refresh_from_db()
+        self.assertEqual(cert.kid, legacy_kid)
+
+        # Generate a new key and update the keypair
+        builder = CertificateBuilder(generate_id())
+        builder.build(subject_alt_names=[], validity_days=3)
+
+        cert.key_data = builder.private_key
+        cert.certificate_data = builder.certificate
+        cert.save()
+        cert.refresh_from_db()
+
+        # Kid should now be SHA512 for the new key
+        self.assertNotEqual(cert.kid, legacy_kid)
+        self.assertEqual(cert.kid, generate_key_id(cert.key_data))
