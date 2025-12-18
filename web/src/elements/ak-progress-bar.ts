@@ -18,6 +18,9 @@ export class ProgressBar extends AKElement {
     static styles = [
         PFProgress,
         css`
+            .pf-c-progress {
+                overflow: hidden;
+            }
             .pf-c-progress.pf-m-indeterminate {
                 --pf-c-progress__bar--Height: 2px;
                 --pf-c-progress--GridGap: 0;
