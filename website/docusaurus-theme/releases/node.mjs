@@ -58,6 +58,10 @@ export function collectReleaseFiles(releasesParentDirectory) {
         const { frontMatter } = parseFileContentFrontMatter(fileContent);
 
         latestRelease.frontMatter = frontMatter;
+
+        if (latestRelease.frontMatter.beta) {
+            latestRelease.name += " (Release Candidate)";
+        }
     }
 
     return releaseFiles;
@@ -73,7 +77,13 @@ export function createReleaseSidebarEntries(releaseFiles) {
     /**
      * @type {SidebarItemConfig[]}
      */
-    let sidebarEntries = releaseFiles.map((fileEntry) => fileEntry.path);
+    let sidebarEntries = releaseFiles.map((fileEntry) => {
+        return {
+            type: "doc",
+            id: fileEntry.path,
+            label: fileEntry.name,
+        };
+    });
 
     if (releaseFiles.length > SUPPORTED_RELEASE_COUNT) {
         // Then we add the rest of the releases as a category.
