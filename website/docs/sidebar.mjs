@@ -840,6 +840,7 @@ const items = [
                     id: "developer-docs/setup/index",
                 },
                 items: [
+                    "developer-docs/setup/devcontainer",
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
                     "developer-docs/setup/debugging",

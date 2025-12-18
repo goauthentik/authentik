@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    user: authentik
+    privileged: true
+    volumes:
+      - ../:/ak-root
+    entrypoint: []
+    command: sleep infinity
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      PATH: "/ak-root/.venv/bin:${PATH}"
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+
+  postgresql:
+    image: docker.io/library/postgres:16
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d authentik -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file: .env
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+
+  s3:
+    image: docker.io/zenko/cloudserver
+    env_file: .env
+    environment:
+      REMOTE_MANAGEMENT_DISABLE: "1"
+    ports:
+      - "8020:8000"
+    volumes:
+      - s3-data:/usr/src/app/localData
+      - s3-metadata:/usr/src/app/localMetadata
+
+volumes:
+  postgres-data:
+  s3-data:
+  s3-metadata:

@@ -53,7 +53,7 @@ help:  ## Show this help
 	@echo ""
 
 go-test:
-	go test -timeout 0 -v -race -cover ./...
+	GOFIPS140=latest CGO_ENABLED=1 go test -timeout 0 -v -race -cover ./...
 
 test: ## Run the server tests and produce a coverage report (locally)
 	$(KRB_PATH) uv run coverage run manage.py test --keepdb $(or $(filter-out $@,$(MAKECMDGOALS)),authentik)

@@ -1,0 +1,68 @@
+{
+    "name": "authentik",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/ak-root",
+    "containerUser": "authentik",
+    "remoteUser": "authentik",
+    "shutdownAction": "stopCompose",
+    "containerEnv": {
+        "LOCAL_PROJECT_DIR": "/ak-root"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.24"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "24"
+        },
+        "ghcr.io/devcontainers/features/rust:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "moby": false
+        }
+    },
+    "mounts": [],
+    "forwardPorts": [9000, 9443],
+    "portsAttributes": {
+        "8000": {
+            "onAutoForward": "ignore"
+        },
+        "3963": {
+            "onAutoForward": "ignore"
+        },
+        "35151": {
+            "onAutoForward": "ignore"
+        },
+        "9901": {
+            "onAutoForward": "ignore"
+        }
+    },
+    "postCreateCommand": "bash .devcontainer/setup.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "EditorConfig.EditorConfig",
+                "bashmish.es6-string-css",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "golang.go",
+                "Gruntfuggly.todo-tree",
+                "ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-python.pylint",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "redhat.vscode-yaml",
+                "Tobermory.es6-string-html",
+                "charliermarsh.ruff"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/ak-root/.venv/bin/python",
+                "python.terminal.activateEnvironment": true
+            }
+        }
+    }
+}
