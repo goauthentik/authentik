@@ -308,15 +308,16 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
 
 
 # See https://www.postgresql.org/docs/16/functions-info.html#FUNCTIONS-INFO-VALIDITY
-class PgInputIsValid(Func):
-    function = "pg_input_is_valid"
+class RegexpLike(Func):
+    function = "regexp_like"
+    arity = 3
     output_field = BooleanField()
 
 
-def _safe_cast(expression: F, *, output_field: Field, default: Value, pg_type: str):
+def _safe_cast(expression: F, *, output_field: Field, default: Value, regexp: str):
     return Case(
         When(
-            PgInputIsValid(expression, Value(pg_type)),
+            RegexpLike(expression, Value(regexp), Value("i")),
             then=Cast(expression, output_field=output_field),
         ),
         default=default,
@@ -343,7 +344,7 @@ def _cast_object_pk(queryset) -> Callable | None:
         return partial(
             _safe_cast,
             output_field=BigIntegerField(),
-            pg_type="bigint",
+            regexp="^[0-9]+$",
             default=Value(-1, output_field=BigIntegerField()),
         )
 
@@ -351,7 +352,7 @@ def _cast_object_pk(queryset) -> Callable | None:
         return partial(
             _safe_cast,
             output_field=UUIDField(),
-            pg_type="uuid",
+            regexp="^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
             # We require a default value to safely cast to UUID. This is a completely random value.
             # If this happens to be the pk of some object, we got infinitely unlucky.
             # The security risk this imposes is negligible: comparable to an adversary guessing an
