@@ -7,6 +7,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import (
     Count,
+    ForeignKey,
     Model,
     QuerySet,
     UUIDField,
@@ -287,10 +288,15 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
 
     # pk is either UUID or an integer type, while object_pk is a varchar
     pk = queryset.model._meta.pk
-    if isinstance(pk, UUIDField):
-        cast_type = "uuid"
-    else:
-        cast_type = "bigint"
+
+    def _cast_type(pk):
+        if isinstance(pk, ForeignKey):
+            return _cast_type(pk.target_field)
+        if isinstance(pk, UUIDField):
+            return "uuid"
+        return "bigint"
+
+    cast_type = _cast_type(pk)
 
     # The raw subquery is done to ensure that casting only takes place after the WHERE clause of
     # `perms_queryset` is ran. Otherwise, the query planner may decide to cast every `object_pk`,
