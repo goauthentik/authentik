@@ -1,3 +1,4 @@
+import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
@@ -866,6 +867,11 @@ export abstract class Table<T extends object>
         `;
     }
 
+    protected renderLoadingBar() {
+        if (!this.loading) return nothing;
+        return html`<ak-progress-bar indeterminate></ak-progress-bar>`;
+    }
+
     protected renderTable(): TemplateResult {
         const totalItemCount = this.data?.pagination.count ?? -1;
 
@@ -877,7 +883,9 @@ export abstract class Table<T extends object>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
+        return html`${this.renderLoadingBar()}${this.needChipGroup
+                ? this.renderChipGroup()
+                : nothing}
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
