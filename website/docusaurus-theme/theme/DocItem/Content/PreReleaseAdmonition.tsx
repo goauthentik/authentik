@@ -2,29 +2,21 @@ import Link from "@docusaurus/Link";
 import { ThemeClassNames } from "@docusaurus/theme-common";
 import Translate from "@docusaurus/Translate";
 import Admonition from "@theme/Admonition";
-import type { Props } from "@theme/ContentVisibility/Unlisted";
 import ExternalLinkIcon from "@theme/Icon/ExternalLink";
-import clsx from "clsx";
 import React from "react";
 
-export const PreReleaseAdmonition: React.FC<Props> = ({ className }) => {
+export const PreReleaseAdmonition: React.FC = () => {
     return (
         <Admonition
             type="info"
-            title={
-                <Translate
-                    id="theme.contentVisibility.unlistedBanner.preRelease.title"
-                    description="The unlisted content banner title"
-                >
-                    Pre-Release Documentation
-                </Translate>
-            }
-            className={clsx(className, ThemeClassNames.common.unlistedBanner)}
+            title={null}
+            icon={null}
+            className={ThemeClassNames.common.unlistedBanner}
         >
             <p>
                 <Translate
-                    id="theme.contentVisibility.unlistedBanner.preRelease.message"
-                    description="The unlisted content banner message"
+                    id="theme.preReleaseAdmonition.message"
+                    description="The beta content banner message"
                     values={{
                         releasesLink: (
                             <Link
@@ -32,7 +24,7 @@ export const PreReleaseAdmonition: React.FC<Props> = ({ className }) => {
                                 target="_blank"
                             >
                                 <Translate
-                                    id="theme.contentVisibility.unlistedBanner.githubReleasesLinkLabel"
+                                    id="theme.githubReleasesLinkLabelAdmonition"
                                     description="The link label to the GitHub releases page"
                                 >
                                     GitHub releases
@@ -49,7 +41,7 @@ export const PreReleaseAdmonition: React.FC<Props> = ({ className }) => {
             <p>
                 <Link to="/install-config/beta/">
                     <Translate
-                        id="theme.contentVisibility.unlistedBanner.preRelease.betaTestingLinkLabel"
+                        id="theme.preReleaseAdmonition.betaTestingLinkLabel"
                         description="The link label to the beta testing documentation"
                     >
                         Read more about beta testing

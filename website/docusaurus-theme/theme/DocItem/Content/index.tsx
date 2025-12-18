@@ -88,7 +88,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         authentik_preview,
     } = frontMatter;
 
-    const preReleaseDoc = frontMatter.unlisted && metadata.id.startsWith("releases");
+    const preReleaseDoc = frontMatter.beta && metadata.id.startsWith("releases");
 
     useBadgeLinterEffect();
 
@@ -122,7 +122,6 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         );
     }
 
-    console.debug(`Rendering DocItemContent for ${id}`, { frontMatter });
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
             {syntheticTitle ? (

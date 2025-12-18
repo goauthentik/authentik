@@ -78,11 +78,11 @@ export const VersionDropdown = memo<VersionDropdownProps>((props) => {
                     let label = semVer;
                     const frontmatter = frontMatterRecord[semVer];
 
-                    if (frontmatter?.unlisted || frontmatter?.draft) {
+                    if (frontmatter?.draft) {
                         return null;
                     }
 
-                    if (idx === 0) {
+                    if (idx === 0 && !frontmatter?.beta) {
                         label += " (Current Release)";
                     }
 

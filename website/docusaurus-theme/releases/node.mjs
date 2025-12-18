@@ -58,6 +58,10 @@ export function collectReleaseFiles(releasesParentDirectory) {
         const { frontMatter } = parseFileContentFrontMatter(fileContent);
 
         latestRelease.frontMatter = frontMatter;
+
+        if (latestRelease.frontMatter.beta) {
+            latestRelease.name += " (Release Candidate)";
+        }
     }
 
     return releaseFiles;
