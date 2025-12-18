@@ -147,7 +147,7 @@ class FlowExecutorView(APIView):
                 token.delete()
         if not isinstance(plan, FlowPlan):
             return None
-        if existing_plan := self.request.session[SESSION_KEY_PLAN]:
+        if existing_plan := self.request.session.get(SESSION_KEY_PLAN):
             plan.context.update(existing_plan.context)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)

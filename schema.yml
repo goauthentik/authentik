@@ -26211,7 +26211,7 @@ paths:
       tags:
       - stages
       security:
-      - authentik: []
+      - {}
       responses:
         '200':
           content:
