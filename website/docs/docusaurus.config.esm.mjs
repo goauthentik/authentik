@@ -2,7 +2,7 @@
  * @file Docusaurus Documentation config.
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
  * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
