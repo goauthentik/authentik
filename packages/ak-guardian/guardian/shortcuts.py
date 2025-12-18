@@ -310,10 +310,10 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
     ).query.sql_with_params()
     subquery = RawSQL(
         f"""
-        SELECT ("permission_subquery"."object_pk")::{cast_type} as "object_pk"
-        FROM ({perms_subquery_sql}) "permission_subquery"
-        OFFSET 0
-    """,
+            SELECT ("permission_subquery"."object_pk")::{cast_type} as "object_pk"
+            FROM ({perms_subquery_sql}) "permission_subquery"
+            OFFSET 0
+        """,  # nosec
         perms_subquery_params,
     )
     return queryset.filter(pk__in=subquery)
