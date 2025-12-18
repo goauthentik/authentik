@@ -26,18 +26,25 @@ pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
 # to prevent SAML-related tests from failing and ensure correct pip dependency compilation
-# These functions are only evaluated when called in specific targets
-LIBXML2_EXISTS = $(shell brew list libxml2 2> /dev/null)
-KRB5_EXISTS = $(shell brew list krb5 2> /dev/null)
-
-LIBXML2_LDFLAGS = -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
-LIBXML2_CPPFLAGS = -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
-LIBXML2_PKG_CONFIG = $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
-
-KRB_PATH =
-
-ifneq ($(KRB5_EXISTS),)
-	KRB_PATH = PATH="$(shell brew --prefix krb5)/sbin:$(shell brew --prefix krb5)/bin:$$PATH"
+ifeq ($(UNAME), Darwin)
+# Only add for brew users who installed libxmlsec1
+	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
+	ifdef BREW_EXISTS
+		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		ifdef LIBXML2_EXISTS
+			_pref = $(shell brew --prefix libxml2)
+			BREW_LDFLAGS := -L${_pref}/lib $(LDFLAGS)
+			BREW_CPPFLAGS := -I${_pref}/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH := ${_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
+		ifdef KRB5_EXISTS
+			_pref = $(shell brew --prefix krb5)
+			BREW_LDFLAGS := -L${_pref}/lib $(LDFLAGS)
+			BREW_CPPFLAGS := -I${_pref}/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH := ${_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+	endif
 endif
 
 all: lint-fix lint gen web test  ## Lint, build, and test everything
