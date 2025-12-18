@@ -1,3 +1,4 @@
+import "#admin/groups/MemberSelectModal";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
