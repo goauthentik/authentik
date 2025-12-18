@@ -25,10 +25,10 @@ export class AutosubmitStage extends BaseStage<
 
     static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
-    firstUpdated(changed: PropertyValues<this>): void {
-        super.firstUpdated(changed);
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
 
-        if (this.challenge.url !== undefined) {
+        if (changed.has("challenge") && this.challenge.url !== undefined) {
             console.debug("authentik/flow/stages/autosubmit: submitting");
             this.form?.submit();
         }
