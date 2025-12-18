@@ -1,16 +1,17 @@
 """Convenient shortcuts to manage or check object permissions."""
 
+from collections.abc import Callable
 from functools import lru_cache, partial
 from typing import Any, TypeVar
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.db import connection
 from django.db.models import (
     AutoField,
     BigIntegerField,
-    CharField,
+    BooleanField,
     Count,
+    Field,
     ForeignKey,
     IntegerField,
     Model,
@@ -20,8 +21,8 @@ from django.db.models import (
     SmallIntegerField,
     UUIDField,
 )
-from django.db.models.expressions import Value
-from django.db.models.functions import Cast, Replace
+from django.db.models.expressions import Case, F, Func, Value, When
+from django.db.models.functions import Cast
 
 from guardian.core import ObjectPermissionChecker
 from guardian.ctypes import get_content_type
@@ -296,19 +297,37 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
         )
 
     # object_pk is a varchar, while the queryset's pk is probably an integer or a uuid, so we cast
-    handle_pk_field = _handle_pk_field(queryset)
-    if handle_pk_field is not None:
-        perms_queryset = perms_queryset.annotate(obj_pk=handle_pk_field(expression=pk_field))
-        pk_field = "obj_pk"
+    cast_object_pk = _cast_object_pk(queryset)
+    if cast_object_pk is not None:
+        perms_queryset = perms_queryset.annotate(
+            cast_object_pk=cast_object_pk(expression=F(pk_field))
+        )
+        pk_field = "cast_object_pk"
 
     return queryset.filter(pk__in=perms_queryset.values_list(pk_field, flat=True))
 
 
-def _handle_pk_field(queryset):
+# See https://www.postgresql.org/docs/16/functions-info.html#FUNCTIONS-INFO-VALIDITY
+class PgInputIsValid(Func):
+    function = "pg_input_is_valid"
+    output_field = BooleanField()
+
+
+def _safe_cast(expression: F, *, output_field: Field, default: Value, pg_type: str):
+    return Case(
+        When(
+            PgInputIsValid(expression, Value(pg_type)),
+            then=Cast(expression, output_field=output_field),
+        ),
+        default=default,
+    )
+
+
+def _cast_object_pk(queryset) -> Callable | None:
     pk = queryset.model._meta.pk
 
     if isinstance(pk, ForeignKey):
-        return _handle_pk_field(pk.target_field)
+        return _cast_object_pk(pk.target_field)
 
     if isinstance(  # noqa: UP038
         pk,
@@ -321,16 +340,23 @@ def _handle_pk_field(queryset):
             SmallIntegerField,
         ),
     ):
-        return partial(Cast, output_field=BigIntegerField())
+        return partial(
+            _safe_cast,
+            output_field=BigIntegerField(),
+            pg_type="bigint",
+            default=Value(-1, output_field=BigIntegerField()),
+        )
 
     if isinstance(pk, UUIDField):
-        if connection.features.has_native_uuid_field:
-            return partial(Cast, output_field=UUIDField())
         return partial(
-            Replace,
-            text=Value("-"),
-            replacement=Value(""),
-            output_field=CharField(),
+            _safe_cast,
+            output_field=UUIDField(),
+            pg_type="uuid",
+            # We require a default value to safely cast to UUID. This is a completely random value.
+            # If this happens to be the pk of some object, we got infinitely unlucky.
+            # The security risk this imposes is negligible: comparable to an adversary guessing an
+            # email token.
+            default=Value("3adf9dbf-8292-434b-a188-bb6b32898efd", output_field=UUIDField()),
         )
 
     return None
