@@ -21,7 +21,7 @@ def error_on_duplicate_group_name(apps: Apps, schema_editor: BaseDatabaseSchemaE
     AuthentikGroup = apps.get_model("authentik_core", "Group")
 
     duplicates = (
-        AuthentikGroup.objects.values("name")
+        AuthentikGroup.objects.using(db_alias).values("name")
         .annotate(Count("name"))
         .filter(name__count__gt=1)
         .order_by("-name__count", "name")
