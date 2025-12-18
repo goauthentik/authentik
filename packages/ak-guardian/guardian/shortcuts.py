@@ -298,6 +298,7 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
 
     cast_type = _cast_type(pk)
 
+    perms_queryset = perms_queryset.values_list(pk_field, flat=True)
     # The raw subquery is done to ensure that casting only takes place after the WHERE clause of
     # `perms_queryset` is ran. Otherwise, the query planner may decide to cast every `object_pk`,
     # which breaks (for example) if it tries to cast an integer to a UUID. In such a case, the WHERE
@@ -305,12 +306,10 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
     # However, the subquery might get optimized out by the query planner, which would cause the same
     # cast issue as before. To prevent the subquery from being collapsed in the query below, we add
     # OFFSET 0.
-    perms_subquery_sql, perms_subquery_params = perms_queryset.values_list(
-        pk_field, flat=True
-    ).query.sql_with_params()
+    perms_subquery_sql, perms_subquery_params = perms_queryset.query.sql_with_params()
     subquery = RawSQL(
         f"""
-            SELECT ("permission_subquery"."object_pk")::{cast_type} as "object_pk"
+            SELECT ("permission_subquery"."{pk_field}")::{cast_type} as "object_pk"
             FROM ({perms_subquery_sql}) "permission_subquery"
             OFFSET 0
         """,  # nosec
