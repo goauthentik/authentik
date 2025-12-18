@@ -54,7 +54,7 @@ class InbuiltBackend(ModelBackendNoAuthz):
         return user
 
     def set_method(self, method: str, request: HttpRequest | None, **kwargs):
-        """Set method data on current flow, if possbiel"""
+        """Set method data on current flow, if possible"""
         if not request:
             return
         # Since we can't directly pass other variables to signals, and we want to log the method
