@@ -9,7 +9,7 @@ Your Google Workspace organization must be configured before you [create a Googl
 
 ## Configuring your Google Workspace Organization
 
-The main steps to configure your Google Workspace organization are as follows:
+The main steps to configure your Google Workspace organization are:
 
 1. [Create a Google Cloud project](#create-a-google-cloud-project)
 2. [Create a service account](#create-a-service-account)
