@@ -48,6 +48,9 @@ class FlowTestCase(APITestCase):
             self.assertEqual(raw_response[key], expected)
         return raw_response
 
+    def get_flow_plan(self) -> FlowPlan | None:
+        return self.client.session.get(SESSION_KEY_PLAN)
+
     def assertStageRedirects(self, response: HttpResponse, to: str) -> dict[str, Any]:
         """Wrapper around assertStageResponse that checks for a redirect"""
         return self.assertStageResponse(response, component="xak-flow-redirect", to=to)

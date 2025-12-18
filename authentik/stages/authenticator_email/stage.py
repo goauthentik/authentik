@@ -26,7 +26,7 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
-SESSION_KEY_EMAIL_DEVICE = "authentik/stages/authenticator_email/email_device"
+PLAN_CONTEXT_EMAIL_DEVICE = "goauthentik.io/stages/authenticator_email/email_device"
 PLAN_CONTEXT_EMAIL = "email"
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
@@ -79,7 +79,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
         if EmailDevice.objects.filter(Q(email=email), stage=stage.pk).exists():
             raise ValidationError(_("Invalid email"))
 
-        device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
+        device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
 
         try:
             message = TemplateEmailMessage(
@@ -116,9 +116,9 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             self.logger.debug("got email from plan context")
             return context.get(PLAN_CONTEXT_PROMPT, {}).get(PLAN_CONTEXT_EMAIL)
         # Check device for email
-        if SESSION_KEY_EMAIL_DEVICE in self.request.session:
+        if PLAN_CONTEXT_EMAIL_DEVICE in self.executor.plan.context:
             self.logger.debug("got email from device in session")
-            device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
+            device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
             if device.email == "":
                 return None
             return device.email
@@ -135,7 +135,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     def get_response_instance(self, data: QueryDict) -> ChallengeResponse:
         response = super().get_response_instance(data)
-        response.device = self.request.session[SESSION_KEY_EMAIL_DEVICE]
+        response.device = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
         return response
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -147,11 +147,11 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             return self.executor.stage_invalid(
                 _("The user already has an email address registered for MFA.")
             )
-        if SESSION_KEY_EMAIL_DEVICE not in self.request.session:
+        if PLAN_CONTEXT_EMAIL_DEVICE not in self.executor.plan.context:
             device = EmailDevice(user=user, confirmed=False, stage=stage, name="Email Device")
             valid_secs: int = timedelta_from_string(stage.token_expiry).total_seconds()
             device.generate_token(valid_secs=valid_secs, commit=False)
-            self.request.session[SESSION_KEY_EMAIL_DEVICE] = device
+            self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE] = device
             if email := self._has_email():
                 device.email = email
                 try:
@@ -165,16 +165,16 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                     self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}).pop(
                         PLAN_CONTEXT_EMAIL, None
                     )
-                    self.request.session.pop(SESSION_KEY_EMAIL_DEVICE, None)
+                    self.executor.plan.context.pop(PLAN_CONTEXT_EMAIL_DEVICE, None)
                     self.logger.warning("failed to send email to pre-set address", exc=exc)
                     return self.get(request, *args, **kwargs)
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Email Token is validated by challenge"""
-        device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
+        device: EmailDevice = self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
         if not device.confirmed:
             return self.challenge_invalid(response)
         device.save()
-        del self.request.session[SESSION_KEY_EMAIL_DEVICE]
+        del self.executor.plan.context[PLAN_CONTEXT_EMAIL_DEVICE]
         return self.executor.stage_ok()
