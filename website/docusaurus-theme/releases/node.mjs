@@ -73,7 +73,14 @@ export function createReleaseSidebarEntries(releaseFiles) {
     /**
      * @type {SidebarItemConfig[]}
      */
-    let sidebarEntries = releaseFiles.map((fileEntry) => fileEntry.path);
+    let sidebarEntries = releaseFiles.map((fileEntry) => {
+        return {
+            type: "doc",
+            id: fileEntry.path,
+            label: fileEntry.name,
+            key: `release-${fileEntry.name}`,
+        };
+    });
 
     if (releaseFiles.length > SUPPORTED_RELEASE_COUNT) {
         // Then we add the rest of the releases as a category.
