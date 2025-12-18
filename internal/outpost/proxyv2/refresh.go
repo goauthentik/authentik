@@ -28,7 +28,7 @@ func (ps *ProxyServer) Refresh() error {
 		return err
 	}
 	ps.log.WithField("count", len(providers)).Debug("Fetched providers")
-	if len(providers) == 0 {
+	if len(providers) == 0 && !ps.akAPI.IsEmbedded() {
 		ps.log.Warning("No providers assigned to this outpost, check outpost configuration in authentik")
 	}
 	for i, p := range providers {

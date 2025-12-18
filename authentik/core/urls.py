@@ -28,8 +28,8 @@ from authentik.core.views.interface import (
 )
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
-from authentik.root.messages.consumer import MessageConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
+from authentik.root.ws.consumer import MessageConsumer
 from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [

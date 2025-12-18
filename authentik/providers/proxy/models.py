@@ -179,11 +179,13 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def __str__(self):
         return f"Proxy Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
-        required_models = [self]
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
+        required = [self]
         if self.certificate is not None:
-            required_models.append(self.certificate)
-        return required_models
+            required.append(("view_certificatekeypair", self.certificate))
+            required.append(("view_certificatekeypair_certificate", self.certificate))
+            required.append(("view_certificatekeypair_key", self.certificate))
+        return required
 
     class Meta:
         verbose_name = _("Proxy Provider")

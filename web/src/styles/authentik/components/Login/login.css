@@ -18,7 +18,7 @@
     --ak-login--MaxWidth: 35rem;
 
     --ak-login__main-ColumnWidth: minmax(
-        min(100dvw, var(--ak-login--MaxWidth)),
+        min(100%, var(--ak-login--MaxWidth)),
         var(--ak-login--MaxWidth)
     );
 
@@ -89,6 +89,10 @@
     }
 }
 
+.ak-c-placeholder {
+    grid-area: main;
+}
+
 [data-theme="dark"] .pf-c-login,
 :host([theme="dark"]) .pf-c-login {
     --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--100);
@@ -127,6 +131,7 @@
 .pf-c-login__main {
     --pf-c-login__container--PaddingLeft: 0 !important;
     --pf-c-login__container--PaddingRight: 0 !important;
+    box-shadow: var(--pf-global--BoxShadow--md);
 
     grid-area: main;
     margin: 0;
@@ -143,8 +148,9 @@
         position: relative;
         flex: 1 1 auto;
     }
-    @media (min-width: 35rem) and (min-height: 17.5rem) {
-        box-shadow: var(--pf-global--BoxShadow--md);
+
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        box-shadow: none;
     }
 }
 
@@ -183,6 +189,18 @@
         display: block;
         width: clamp(75%, calc(var(--ak-login--MaxWidth) / 2), 90%);
         min-height: 4rem;
+    }
+
+    /* Ensure Font Awesome logos scale similarly to image logos */
+    .branding-logo.font-awesome,
+    .branding-logo.fas,
+    .branding-logo.far,
+    .branding-logo.fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(3rem, 8vw, 5rem);
+        line-height: 1;
     }
 }
 

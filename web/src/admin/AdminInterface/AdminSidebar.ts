@@ -19,6 +19,14 @@ export type SidebarEntry = [
 ];
 
 /**
+ * Recursively renders a collection of sidebar entries.
+ */
+export function renderSidebarItems(entries: readonly SidebarEntry[]) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
+}
+
+/**
  * Recursively renders a sidebar entry.
  */
 export function renderSidebarItem([
@@ -44,13 +52,6 @@ export function renderSidebarItem([
     </ak-sidebar-item>`;
 }
 
-/**
- * Recursively renders a collection of sidebar entries.
- */
-export function renderSidebarItems(entries: readonly SidebarEntry[]) {
-    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
-}
-
 // prettier-ignore
 export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { "?expanded": true }, [
@@ -63,16 +64,23 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
         ["/outpost/outposts", msg("Outposts")]]
     ],
+    [null, msg("Endpoint Devices"), null, [
+        ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
+        ["/endpoints/groups", msg("Device access groups")],
+        ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`]],
+    ]],
     [null, msg("Events"), null, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
         ["/events/rules", msg("Notification Rules")],
-        ["/events/transports", msg("Notification Transports")]]
+        ["/events/transports", msg("Notification Transports")],
+        ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
     [null, msg("Customization"), null, [
         ["/policy/policies", msg("Policies")],
         ["/core/property-mappings", msg("Property Mappings")],
         ["/blueprints/instances", msg("Blueprints")],
-        ["/policy/reputation", msg("Reputation scores")]]
+        ["/files", msg("Files")],
+        ["/policy/reputation", msg("Reputation scores")]],
     ],
     [null, msg("Flows and Stages"), null, [
         ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],

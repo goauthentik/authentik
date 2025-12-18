@@ -1,25 +1,33 @@
+import "#admin/common/ak-license-notice";
+
+import { WithCapabilitiesConfig } from "../mixins/capabilities";
+import { WithLicenseSummary } from "../mixins/license";
+
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/sidebar/SidebarItem.css";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 export interface SidebarItemProperties {
-    path?: string;
+    path?: string | null;
     activeWhen?: string[];
-    expanded?: boolean;
+    expanded?: boolean | null;
+    enterprise?: boolean;
 }
 
 @customElement("ak-sidebar-item")
-export class SidebarItem extends AKElement {
+export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKElement)) {
     static styles: CSSResult[] = [
         // ---
         PFPage,
@@ -27,27 +35,30 @@ export class SidebarItem extends AKElement {
         Styles,
     ];
 
-    @property()
-    public path?: string;
+    @property({ type: String })
+    public path: string | null = null;
 
     @property({ type: String })
-    public label?: string;
+    public label: string | null = null;
 
     activeMatchers: RegExp[] = [];
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, useDefault: false })
     public expanded = false;
 
-    @property({ type: Boolean })
-    public current?: boolean;
+    @property({ type: Boolean, useDefault: false })
+    public current = false;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, attribute: "absolute-link", useDefault: false })
     public isAbsoluteLink = false;
 
-    @property({ type: Boolean })
-    public highlight?: boolean;
+    @property({ type: Boolean, useDefault: false })
+    public highlight = false;
 
     public parent?: SidebarItem;
+
+    @property({ type: Boolean })
+    public enterprise = false;
 
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
@@ -126,12 +137,13 @@ export class SidebarItem extends AKElement {
     renderWithChildren() {
         return html`<li
             part="list-item-expandable"
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifPresent(this.label)}
             role="heading"
             ${ref(this.#listRef)}
             class="pf-c-nav__item pf-m-expandable ${this.expanded ? "pf-m-expanded" : ""}"
         >
             <button
+                part="button button-with-children"
                 class="pf-c-nav__link"
                 aria-label=${this.expanded
                     ? msg(str`Collapse ${this.label}`)
@@ -168,7 +180,7 @@ export class SidebarItem extends AKElement {
         return html`<li
             part="list-item"
             role="presentation"
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifPresent(this.label)}
             class="pf-c-nav__item pf-m-expandable ${this.expanded ? "pf-m-expanded" : ""}"
         >
             ${this.label}
@@ -176,6 +188,7 @@ export class SidebarItem extends AKElement {
                 aria-label=${this.expanded
                     ? msg(str`Collapse ${this.label}`)
                     : msg(str`Expand ${this.label}`)}
+                part="button button-with-path-and-children"
                 class="pf-c-nav__link"
                 aria-expanded=${this.expanded ? "true" : "false"}
                 type="button"
@@ -197,14 +210,25 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
+    renderEnterpriseRequired() {
+        return html`<a href="#/enterprise/licenses" class="pf-c-nav__link">
+            ${this.label}
+            <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
+        </a>`;
+    }
+
     renderWithPath() {
+        if (this.enterprise && !this.hasEnterpriseLicense) {
+            if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
+            return this.renderEnterpriseRequired();
+        }
         return html`
             <a
-                part="link"
+                part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
                 href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
-                aria-current=${ifDefined(this.current ? "page" : undefined)}
+                aria-current=${ifPresent(this.current ? "page" : undefined)}
             >
                 ${this.label}
             </a>
@@ -223,7 +247,7 @@ export class SidebarItem extends AKElement {
         return html`<li
             part="list-item"
             role="presentation"
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifPresent(this.label)}
             class="pf-c-nav__item"
         >
             ${this.path ? this.renderWithPath() : this.renderWithLabel()}

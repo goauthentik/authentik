@@ -91,7 +91,8 @@ export abstract class ModalButton extends AKElement {
     /**
      * Show the modal.
      */
-    public show = (): void => {
+    public show = (event?: PointerEvent): void => {
+        event?.preventDefault();
         this.open = true;
 
         this.dispatchEvent(new ModalShowEvent(this));

@@ -21,8 +21,8 @@ jobs:
   lint-golint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6
         with:
           go-version-file: "go.mod"
       - name: Prepare and generate API
@@ -34,7 +34,7 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@0a35821d5c230e903fcfe077583637dea1b27b47 # v8
+        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v8
         with:
           version: latest
           args: --timeout 5000s --verbose
@@ -42,8 +42,8 @@ jobs:
   test-unittest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6
         with:
           go-version-file: "go.mod"
       - name: Setup authentik env
@@ -86,7 +86,7 @@ jobs:
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
@@ -145,13 +145,13 @@ jobs:
         goos: [linux]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6
+      - uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: web/package.json
           cache: "npm"

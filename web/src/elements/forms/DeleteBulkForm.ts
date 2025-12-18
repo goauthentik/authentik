@@ -110,6 +110,9 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
                     case UsedByActionEnum.SetNull:
                         consequence = msg("reference will be set to an empty value");
                         break;
+                    case UsedByActionEnum.LeftDangling:
+                        consequence = msg("reference will be left dangling");
+                        break;
                 }
                 return html`<li>${msg(str`${ub.name} (${consequence})`)}</li>`;
             })}

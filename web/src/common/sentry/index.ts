@@ -41,7 +41,7 @@ function beforeSend(
     return event;
 }
 
-export function configureSentry(canDoPpi = false): void {
+export function configureSentry(): void {
     const cfg = globalAK().config;
     const debug = cfg.capabilities.includes(CapabilitiesEnum.CanDebug);
 

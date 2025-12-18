@@ -10,14 +10,14 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         if: ${{ env.GH_APP_ID != '' }}
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
         env:
           GH_APP_ID: ${{ secrets.GH_APP_ID }}
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         if: ${{ steps.app-token.outcome != 'skipped' }}
         with:
           fetch-depth: 0

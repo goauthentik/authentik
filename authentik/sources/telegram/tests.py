@@ -9,9 +9,10 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 
-from authentik.core.tests.utils import create_test_flow
+from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
+from authentik.sources.telegram.models import UserTelegramSourceConnection
 from authentik.sources.telegram.stage import TelegramChallengeResponse
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -183,3 +184,23 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
                 "authentik_core:if-flow", kwargs={"flow_slug": self.source.enrollment_flow.slug}
             ),
         )
+
+    def test_connect_user(self):
+        user = create_test_user("testuser")
+        user2 = create_test_user("testuser2")
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("authentik_api:telegramsource-connect-user", args=[self.source.slug]),
+            self._make_valid_response(),
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(
+            UserTelegramSourceConnection.objects.filter(user=user, source=self.source).exists()
+        )
+        self.client.logout()
+        self.client.force_login(user2)
+        response = self.client.post(
+            reverse("authentik_api:telegramsource-connect-user", args=[self.source.slug]),
+            self._make_valid_response(),
+        )
+        self.assertEqual(response.status_code, 403)

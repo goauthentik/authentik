@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-trixie-slim@sha256:45babd1b4ce0349fb12c4e24bf017b90b96d52806db32e001e3013f341bef0fe AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.2.1-trixie@sha256:ccfd9da46058b24d485214e14b8d38761665553cc47fb943155e2685b4fb5914 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -6,6 +6,7 @@ WORKDIR /work/website
 
 RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
+    --mount=type=bind,target=/work/website/vendored/detect-package-manager,src=./website/vendored/detect-package-manager \
     --mount=type=bind,target=/work/website/docusaurus-theme/package.json,src=./website/docusaurus-theme/package.json \
     --mount=type=bind,target=/work/website/api/package.json,src=./website/api/package.json \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
@@ -21,6 +22,6 @@ COPY ./SECURITY.md /work/
 
 RUN npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:553f64aecdc31b5bf944521731cd70e35da4faed96b2b7548a3d8e2598c52a42
+FROM docker.io/library/nginx:1.29-trixie@sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

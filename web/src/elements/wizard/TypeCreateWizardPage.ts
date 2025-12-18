@@ -1,4 +1,5 @@
 import "#admin/common/ak-license-notice";
+import "#elements/Alert";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WizardPage } from "#elements/wizard/WizardPage";
@@ -13,6 +14,7 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -43,6 +45,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         PFGrid,
         PFRadio,
         PFCard,
+        PFPage,
         css`
             .pf-c-card__header-main img {
                 max-height: 2em;
@@ -50,6 +53,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             }
             :host([theme="dark"]) .pf-c-card__header-main img {
                 filter: invert(1);
+            }
+            .pf-c-page__main-section {
+                margin-bottom: 2rem;
             }
         `,
     ];
@@ -148,44 +154,52 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderList(): TemplateResult {
-        return html`<form
-            ${ref(this.formRef)}
-            class="pf-c-form pf-m-horizontal"
-            role="radiogroup"
-            aria-label=${msg("Select a provider type")}
-        >
-            ${this.types.map((type) => {
-                const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
-                const inputID = `${type.component}-${type.modelName}`;
-                const selected = this.selectedType === type;
+        return html`${this.hasSlotted("above-form")
+                ? html`<div class="pf-c-page__main-section"><slot name="above-form"></slot></div>`
+                : nothing}
+            <form
+                ${ref(this.formRef)}
+                class="pf-c-form pf-m-horizontal"
+                role="radiogroup"
+                aria-label=${msg("Select a provider type")}
+            >
+                ${this.types.map((type) => {
+                    const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
+                    const inputID = `${type.component}-${type.modelName}`;
+                    const selected = this.selectedType === type;
 
-                return html`<div class="pf-c-radio">
-                    <input
-                        class="pf-c-radio__input"
-                        type="radio"
-                        name="type"
-                        id=${`${inputID}`}
-                        aria-label=${type.name}
-                        aria-describedby=${`${inputID}-description`}
-                        @change=${() => {
-                            this.#selectDispatch(type);
-                        }}
-                        ?disabled=${disabled}
-                    />
-                    <label
-                        aria-selected="${selected ? "true" : "false"}"
-                        aria-labelledby="${inputID}"
-                        class="pf-c-radio__label"
-                        for="${inputID}"
-                        >${type.name}</label
-                    >
-                    <span id="${inputID}-description" class="pf-c-radio__description"
-                        >${type.description}
-                        ${disabled ? html`<ak-license-notice></ak-license-notice>` : nothing}
-                    </span>
-                </div>`;
-            })}
-        </form>`;
+                    return html`<div class="pf-c-radio">
+                        <input
+                            class="pf-c-radio__input"
+                            type="radio"
+                            name="type"
+                            id=${`${inputID}`}
+                            aria-label=${type.name}
+                            aria-describedby=${`${inputID}-description`}
+                            @change=${() => {
+                                this.#selectDispatch(type);
+                            }}
+                            ?disabled=${disabled}
+                        />
+                        <label
+                            aria-selected="${selected ? "true" : "false"}"
+                            aria-labelledby="${inputID}"
+                            class="pf-c-radio__label"
+                            for="${inputID}"
+                            >${type.name}</label
+                        >
+                        <span id="${inputID}-description" class="pf-c-radio__description"
+                            >${type.description}
+                            ${disabled ? html`<ak-license-notice></ak-license-notice>` : nothing}
+                            ${type.deprecated
+                                ? html`<ak-alert class="pf-c-radio__description" inline plain>
+                                      ${msg("This type is deprecated.")}
+                                  </ak-alert>`
+                                : nothing}
+                        </span>
+                    </div>`;
+                })}
+            </form>`;
     }
 
     render(): TemplateResult {
@@ -195,7 +209,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             case TypeCreateWizardPageLayouts.list:
                 return this.renderList();
             default:
-                throw new Error(`Unknown layout: ${this.layout}`) as never;
+                throw new TypeError(`Unknown layout: ${this.layout}`);
         }
     }
 }

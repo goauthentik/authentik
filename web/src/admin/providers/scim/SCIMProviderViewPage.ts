@@ -22,7 +22,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMProvider,
 } from "@goauthentik/api";
 
@@ -155,7 +155,7 @@ export class SCIMProviderViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersScimScimprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersScimScimprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -229,6 +229,18 @@ export class SCIMProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         ${this.provider.url}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">
+                                        ${msg("Service Provider Config cache timeout")}
+                                    </span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.serviceProviderConfigCacheTimeout}
                                     </div>
                                 </dd>
                             </div>

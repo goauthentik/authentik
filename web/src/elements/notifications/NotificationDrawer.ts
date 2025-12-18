@@ -88,6 +88,14 @@ export class NotificationDrawer extends WithSession(AKElement) {
             });
     }
 
+    protected renderHyperlink(item: Notification) {
+        if (!item.hyperlink) {
+            return nothing;
+        }
+
+        return html`<small><a href=${item.hyperlink}>${item.hyperlinkLabel}</a></small>`;
+    }
+
     #renderItem = (item: Notification): TemplateResult => {
         const label = actionToLabel(item.event?.action);
         const level = severityToLevel(item.severity);
@@ -144,6 +152,7 @@ export class NotificationDrawer extends WithSession(AKElement) {
                     ${formatElapsedTime(item.created!)}
                 </pf-tooltip></small
             >
+            ${this.renderHyperlink(item)}
         </li>`;
     };
 

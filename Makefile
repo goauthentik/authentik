@@ -9,6 +9,13 @@ NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	SED_INPLACE = sed -i ''
+else
+	SED_INPLACE = sed -i
+endif
+
 GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
 GEN_API_GO = gen-go-api
@@ -119,8 +126,8 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
-	sed -i 's/^version = ".*"/version = "$(version)"/' pyproject.toml
-	sed -i 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
+	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' pyproject.toml
+	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
 	npm version --no-git-tag-version --allow-same-version $(version)
 	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
@@ -155,8 +162,8 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 		/local/schema-old.yml \
 		/local/schema.yml
 	rm schema-old.yml
-	sed -i 's/{/&#123;/g' diff.md
-	sed -i 's/}/&#125;/g' diff.md
+	$(SED_INPLACE) 's/{/&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
 gen-clean-ts:  ## Remove generated API client for TypeScript
@@ -196,11 +203,12 @@ endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
 	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
-gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
+gen-client-go:  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
 ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
 else
+	cd ${PWD}/${GEN_API_GO} && git reset --hard
 	cd ${PWD}/${GEN_API_GO} && git pull
 endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}

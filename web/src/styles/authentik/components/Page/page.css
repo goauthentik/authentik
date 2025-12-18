@@ -42,7 +42,7 @@ ak-tabs::part(row) {
 
 [data-theme="dark"] .pf-c-page,
 :host([theme="dark"]) .pf-c-page {
-    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--200) !important;
+    --pf-c-page--BackgroundColor: var(--pf-global--BackgroundColor--200);
 
     /**
      * Lighten the main section background to contrast page content.
