@@ -6358,6 +6358,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
+                },
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Attributes"
                 }
             },
             "required": []
@@ -6546,7 +6551,8 @@
                     "title": "Token"
                 },
                 "headers_mapping": {
-                    "type": "integer",
+                    "type": "string",
+                    "format": "uuid",
                     "title": "Headers mapping",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
