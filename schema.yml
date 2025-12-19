@@ -48253,7 +48253,6 @@ components:
             left empty, no audience restriction will be added.
         issuer:
           type: string
-          minLength: 1
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string
@@ -51647,6 +51646,10 @@ components:
           type: string
           description: Get metadata download URL
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
         url_sso_post:
           type: string
           description: Get SSO Post URL
@@ -51680,6 +51683,7 @@ components:
       - name
       - pk
       - url_download_metadata
+      - url_issuer
       - url_slo_post
       - url_slo_redirect
       - url_sso_init
@@ -51755,7 +51759,6 @@ components:
             left empty, no audience restriction will be added.
         issuer:
           type: string
-          minLength: 1
           description: Also known as EntityID
         assertion_valid_not_before:
           type: string

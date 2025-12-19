@@ -10000,7 +10000,6 @@
                 },
                 "issuer": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Issuer",
                     "description": "Also known as EntityID"
                 },
