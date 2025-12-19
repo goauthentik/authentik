@@ -27,7 +27,7 @@ If the proxied application requires usage of the "Authorization" header, the set
 
 ### Receiving HTTP Basic authentication
 
-Proxy providers can receive HTTP basic authentication credentials. The password is expected to be an _App password_, as the credentials are used internally with the [OAuth2 machine-to-machine authentication flow](../oauth2/client_credentials.mdx).
+Proxy providers can receive HTTP basic authentication credentials. The password is expected to be an _App password_, as the credentials are used internally with the [OAuth2 machine-to-machine authentication flow](../oauth2/machine_to_machine.mdx).
 
 Access control is done with the policies bound to the application being accessed.
 
@@ -41,7 +41,7 @@ Starting with authentik 2023.2, logging in with the reserved username `goauthent
 
 ### Receiving HTTP Bearer authentication
 
-Proxy providers can receive HTTP bearer authentication credentials. The token is expected to be a JWT token issued for the proxy provider. This is described [here](../oauth2/client_credentials.mdx), using the _client_id_ value shown in the admin interface. Both static and JWT authentication methods are supported.
+Proxy providers can receive HTTP bearer authentication credentials. The token is expected to be a JWT token issued for the proxy provider. This is described [here](../oauth2/machine_to_machine.mdx), using the _client_id_ value shown in the admin interface. Both static and JWT authentication methods are supported.
 
 Access control is done with the policies bound to the application being accessed.
 
