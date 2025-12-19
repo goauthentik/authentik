@@ -58,7 +58,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           context: .
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
         id: attest
         if: true
         with:
@@ -124,7 +124,7 @@ jobs:
           file: lifecycle/container/${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           context: .
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
         id: attest
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}
