@@ -58,7 +58,7 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
 
     //#region Render
 
-    public override renderVisible(): TemplateResult {
+    protected override render(): TemplateResult {
         const elementName = this.type;
         if (!elementName) {
             throw new TypeError("No element name provided");
@@ -67,8 +67,6 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
         if (!this.innerElement) {
             this.innerElement = document.createElement(elementName);
         }
-
-        this.innerElement.viewportCheck = this.viewportCheck;
 
         for (const [key, value] of Object.entries(this.args)) {
             this.innerElement.setAttribute(key, String(value));

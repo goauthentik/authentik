@@ -120,13 +120,13 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<div class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+        return html`<div class="ak-modal__header">
                 <div class="pf-c-content">
                     <h1 id="modal-title" class="pf-c-title pf-m-2xl">${msg("Select users")}</h1>
                 </div>
             </div>
-            <div class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</div>
-            <fieldset class="pf-c-modal-box__footer">
+            <div class="ak-modal__body">${this.renderTable()}</div>
+            <fieldset class="ak-modal__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${() => {

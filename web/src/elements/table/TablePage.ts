@@ -145,7 +145,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         </button>`;
     }
 
-    render() {
+    protected override render(): unknown {
         return html` ${this.renderSectionBefore?.()}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">

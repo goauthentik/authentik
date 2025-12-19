@@ -28,7 +28,10 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     protected override searchEnabled = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal
+                close-label=${msg("Close")}
+                ?closeAfterSuccessfulSubmit=${false}
+            >
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form

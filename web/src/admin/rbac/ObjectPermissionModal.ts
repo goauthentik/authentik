@@ -67,7 +67,7 @@ export class ObjectPermissionModal extends AKElement {
 
     render(): TemplateResult {
         return html`
-            <ak-forms-modal .showSubmitButton=${false} cancelText=${msg("Close")}>
+            <ak-forms-modal .showSubmitButton=${false} close-label=${msg("Close")}>
                 <span slot="header"
                     >${msg(str`Update "${this.label || "object"}" Permissions`)}</span
                 >

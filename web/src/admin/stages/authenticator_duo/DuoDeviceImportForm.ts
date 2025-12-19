@@ -6,7 +6,7 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { MessageLevel } from "#common/messages";
 
-import { ModalForm } from "#elements/forms/ModalForm";
+import { FormsModal } from "#elements/forms/ModalForm";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { showMessage } from "#elements/messages/MessageContainer";
 
@@ -102,7 +102,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                                     level: MessageLevel.info,
                                     message: msg(str`Successfully imported ${res.count} devices.`),
                                 });
-                                const modal = this.parentElement as ModalForm;
+                                const modal = this.parentElement as FormsModal;
                                 modal.open = false;
                             });
                     }}

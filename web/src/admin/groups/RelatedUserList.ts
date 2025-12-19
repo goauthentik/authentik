@@ -248,7 +248,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update User")}</span>
-                    <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
+                    <ak-user-form pk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
@@ -490,7 +490,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     <li role="presentation">
                         <ak-forms-modal
                             .closeAfterSuccessfulSubmit=${false}
-                            .cancelText=${msg("Close")}
+                            .close-label=${msg("Close")}
                         >
                             <span slot="submit">${msg("Create Service Account")}</span>
                             <span slot="header">${msg("New Service Account")}</span>

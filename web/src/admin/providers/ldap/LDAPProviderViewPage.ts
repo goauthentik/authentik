@@ -184,7 +184,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                         <ak-forms-modal>
                             <span slot="submit">${msg("Update")}</span>
                             <span slot="header">${msg("Update LDAP Provider")}</span>
-                            <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
+                            <ak-provider-ldap-form pk=${this.provider.pk}>
                             </ak-provider-ldap-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
                                 ${msg("Edit")}

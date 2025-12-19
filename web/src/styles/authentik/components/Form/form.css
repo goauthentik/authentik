@@ -110,7 +110,7 @@ fieldset {
     &:has(legend.sr-only:not(.more-contrast-only)) {
         border-width: 0;
 
-        &:not(.pf-c-modal-box__footer) {
+        &:not(.ak-modal__footer) {
             --ak-legend-padding-inline-base: 0;
             --ak-legend-margin-inline-base: 0;
         }
@@ -133,21 +133,6 @@ fieldset {
     &.pf-c-login__main-footer-band {
         & > *:last-child {
             padding-block-end: var(--pf-c-login__main-footer-band-item--PaddingTop);
-        }
-    }
-
-    &.pf-c-modal-box__footer {
-        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
-        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
-        border-inline: none;
-        border-block-end: none;
-
-        --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
-            --pf-c-modal-box__footer--c-button--MarginRight
-        );
-
-        & > ak-spinner-button:not(:last-child) {
-            margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
         }
     }
 }

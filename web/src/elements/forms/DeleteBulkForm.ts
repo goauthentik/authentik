@@ -2,14 +2,18 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
-import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { AKModal } from "#elements/modals/ak-modal";
+import { renderModal } from "#elements/modals/utils";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
-import { SlottedTemplateResult } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
+
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
@@ -19,6 +23,8 @@ import { until } from "lit/directives/until.js";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 type BulkDeleteMetadata = { key: string; value: string }[];
+
+//#region Delete Objects Table
 
 @customElement("ak-delete-objects-table")
 export class DeleteObjectsTable<T extends object> extends Table<T> {
@@ -120,28 +126,38 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     }
 }
 
+//#endregion
+
+//#region Delete Bulk Form
+
 @customElement("ak-forms-delete-bulk")
-export class DeleteBulkForm<T> extends ModalButton {
+export class DeleteBulkForm<T> extends AKModal {
+    public get headline() {
+        return this.actionLabel ? this.actionLabel : msg(str`Delete ${this.objectLabel}`);
+    }
+
+    //#region Properties
+
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: Iterable<T> = [];
 
-    @property()
-    objectLabel?: string;
+    @property({ type: String, attribute: "object-label" })
+    public objectLabel?: string;
 
-    @property()
-    actionLabel?: string;
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel?: string;
 
-    @property()
-    actionSubtext?: string;
+    @property({ type: String, attribute: "action-subtext" })
+    public actionSubtext?: string;
 
-    @property()
-    buttonLabel = msg("Delete");
+    @property({ type: String, attribute: "button-label" })
+    public buttonLabel = msg("Delete");
 
     /**
      * Action shown in messages, for example `deleted` or `removed`
      */
-    @property()
-    action = msg("deleted");
+    @property({ type: String })
+    public action = msg("deleted");
 
     @property({ attribute: false })
     metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
@@ -157,95 +173,113 @@ export class DeleteBulkForm<T> extends ModalButton {
     };
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: (item: T) => Promise<unknown>;
+    public delete!: (item: T) => Promise<unknown>;
 
-    async confirm(): Promise<void> {
-        try {
-            await Promise.all(
-                this.objects.map((item) => {
-                    return this.delete(item);
-                }),
-            );
-            this.onSuccess();
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            this.open = false;
-        } catch (e) {
-            this.onError(e as Error);
-            throw e;
-        }
-    }
+    //#endregion
 
-    onSuccess(): void {
-        showMessage({
-            message: msg(str`Successfully deleted ${this.objects.length} ${this.objectLabel}`),
-            level: MessageLevel.success,
-        });
-    }
+    protected confirm = async (): Promise<void> => {
+        const deletedItems = Array.from(this.objects, (item) => this.delete(item));
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
-            level: MessageLevel.error,
-        });
-    }
+        return Promise.all(deletedItems)
+            .then(() => {
+                showMessage({
+                    message: msg(
+                        str`Successfully deleted ${deletedItems.length} ${this.objectLabel}`,
+                    ),
+                    level: MessageLevel.success,
+                });
 
-    renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
-                        ${this.actionLabel
-                            ? this.actionLabel
-                            : msg(str`Delete ${this.objectLabel}`)}
-                    </h1>
-                </div>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+                this.open = false;
+            })
+            .catch(async (error) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                const detail = pluckErrorDetail(parsedError);
+
+                showMessage({
+                    message: msg(str`Failed to delete ${this.objectLabel}: ${detail}`),
+                    level: MessageLevel.error,
+                });
+            });
+    };
+
+    protected override render(): TemplateResult {
+        const objectCount = Array.from(this.objects).length;
+
+        return html`<div class="ak-modal__body">
                 <form class="pf-c-form pf-m-horizontal">
                     <p class="pf-c-title">
-                        ${this.actionSubtext
-                            ? this.actionSubtext
-                            : msg(
-                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`,
-                              )}
+                        ${this.actionSubtext ||
+                        msg(
+                            str`Are you sure you want to delete ${objectCount} ${this.objectLabel}?`,
+                        )}
                     </p>
                     <slot name="notice"></slot>
                 </form>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">
+            </div>
+            <div class="ak-modal__body">
                 <ak-delete-objects-table
                     .objects=${this.objects}
                     .usedBy=${this.usedBy}
                     .metadata=${this.metadata}
                 >
                 </ak-delete-objects-table>
-            </section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-danger"
-                >
-                    ${this.buttonLabel} </ak-spinner-button
-                >&nbsp;
-                <ak-spinner-button
-                    .callAction=${async () => {
-                        this.open = false;
-                    }}
-                    class="pf-m-secondary"
+            </div>
+            <fieldset class="ak-modal__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+
+                <ak-spinner-button .callAction=${this.confirm} class="pf-m-danger">
+                    ${this.buttonLabel}
+                </ak-spinner-button>
+                <button
+                    type="button"
+                    class="pf-c-button pf-m-secondary"
+                    @click=${this.closeListener}
                 >
                     ${msg("Cancel")}
-                </ak-spinner-button>
-            </footer>`;
+                </button>
+            </fieldset>`;
     }
+}
+
+//#endregion
+
+/**
+ * Props for DeleteBulkForm component.
+ */
+export type DeleteBulkFormProps<T = unknown> = LitPropertyRecord<DeleteBulkForm<T>>;
+
+/**
+ * Render a DeleteBulkForm modal.
+ *
+ * @see {@linkcode renderDeleteBulkFormModal} for rendering the modal directly.
+ *
+ * @param props Properties to pass to the DeleteBulkForm component.
+ * @returns A TemplateResult rendering the DeleteBulkForm component.
+ */
+export function renderDeleteBulkForm<T = unknown>(props: DeleteBulkFormProps<T>): TemplateResult {
+    return html`<ak-forms-delete-bulk ${spread(props)}></ak-forms-delete-bulk>`;
+}
+
+/**
+ * Render and display a DeleteBulkForm modal.
+ *
+ * @param props Properties to pass to the DeleteBulkForm component.
+ * @returns A promise that resolves when the modal is closed.
+ */
+export function renderDeleteBulkFormModal<T = unknown>(
+    props: DeleteBulkFormProps<T>,
+): Promise<void> {
+    return renderModal(renderDeleteBulkForm<T>(props));
 }
 
 declare global {

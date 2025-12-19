@@ -299,7 +299,7 @@ export abstract class WizardStep extends AKElement {
 
     render() {
         return this.wizardStepState.currentStep === this.getAttribute("slot")
-            ? html` <div class="pf-c-modal-box ak-wizard-box">
+            ? html` <div class="ak-modal ak-wizard-box">
                   <div class="pf-c-wizard">
                       <header class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
                           ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}

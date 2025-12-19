@@ -108,7 +108,7 @@ export class TokenListPage extends TablePage<Token> {
                     ? html`<ak-forms-modal>
                           <span slot="submit">${msg("Update")}</span>
                           <span slot="header">${msg("Update Token")}</span>
-                          <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
+                          <ak-token-form pk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">
                               <pf-tooltip position="top" content=${msg("Edit")}>
                                   <i class="fas fa-edit" aria-hidden="true"></i>

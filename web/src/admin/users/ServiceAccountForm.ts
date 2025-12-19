@@ -8,7 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
-import { ModalForm } from "#elements/forms/ModalForm";
+import { FormsModal } from "#elements/forms/ModalForm";
 
 import {
     CoreApi,
@@ -61,7 +61,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             userServiceAccountRequest: data,
         });
         this.result = result;
-        (this.parentElement as ModalForm).showSubmitButton = false;
+        (this.parentElement as FormsModal).showSubmitButton = false;
         if (this.targetGroup) {
             await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
                 groupUuid: this.targetGroup.pk,
@@ -84,7 +84,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     reset(): void {
         super.reset();
         this.result = null;
-        (this.parentElement as ModalForm).showSubmitButton = true;
+        (this.parentElement as FormsModal).showSubmitButton = true;
     }
 
     renderForm(): TemplateResult {

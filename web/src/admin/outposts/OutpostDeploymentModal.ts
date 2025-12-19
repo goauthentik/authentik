@@ -17,10 +17,10 @@ export class OutpostDeploymentModal extends ModalButton {
     outpost?: Outpost;
 
     renderModalInner(): TemplateResult {
-        return html`<div class="pf-c-modal-box__header">
+        return html`<div class="ak-modal__header">
                 <h1 class="pf-c-title pf-m-2xl">${msg("Outpost Deployment Info")}</h1>
             </div>
-            <div class="pf-c-modal-box__body">
+            <div class="ak-modal__body">
                 <p>
                     <a
                         target="_blank"
@@ -89,7 +89,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         : nothing}
                 </form>
             </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
+            <footer class="ak-modal__footer pf-m-align-left">
                 <button
                     class="pf-c-button pf-m-primary"
                     @click=${() => {

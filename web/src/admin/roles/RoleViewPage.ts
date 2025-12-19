@@ -79,7 +79,7 @@ export class RoleViewPage extends AKElement {
             <ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Role")}</span>
-                <ak-role-form slot="form" .instancePk=${role.pk}> </ak-role-form>
+                <ak-role-form pk=${role.pk}> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Edit")}</button>
             </ak-forms-modal>
         </div>`;

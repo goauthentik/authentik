@@ -223,7 +223,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update License")}</span>
-                    <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
+                    <ak-enterprise-license-form pk=${item.licenseUuid}>
                     </ak-enterprise-license-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>

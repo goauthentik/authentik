@@ -9,7 +9,9 @@ import "./ApplicationWizardHint.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { renderDeleteBulkFormModal } from "#elements/forms/DeleteBulkForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { renderModal } from "#elements/modals/utils";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -22,7 +24,8 @@ import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -42,31 +45,44 @@ export const applicationListStyle = css`
     }
 `;
 
+function renderEditApplicationForm(applicationSlug: string | null): Promise<void> {
+    return renderModal(
+        html`<ak-forms-modal>
+            <ak-application-form pk=${applicationSlug}></ak-application-form>
+        </ak-forms-modal>`,
+    );
+}
+
+function renderCreateApplicationForm(): Promise<void> {
+    return renderModal(
+        html`<ak-forms-modal>
+            <span slot="submit">${msg("Create")}</span>
+            <span slot="header">${msg("Create Application")}</span>
+            <ak-application-form></ak-application-form>
+        </ak-forms-modal>`,
+    );
+}
+// function renderCreateApplicationForm2(): Promise<void> {
+//     return FormsModal.html`<ak-application-form></ak-application-form>`
+// }
+
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
+    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
+
+    //#region Protected Properties
+
+    @state()
+    protected activeApplicationSlug: string | null = null;
+
     protected override searchEnabled = true;
-    public pageTitle = msg("Applications");
-    public get pageDescription() {
-        return msg(
-            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
-        );
-    }
-    public pageIcon = "pf-icon pf-icon-applications";
 
-    checkbox = true;
-    clearOnRefresh = true;
-
-    @property()
-    order = "name";
-
-    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
     }
-
-    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
@@ -76,6 +92,41 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         [msg("Provider Type")],
         [msg("Actions"), null, msg("Row Actions")],
     ];
+
+    //#endregion
+
+    //#region Public Properties
+
+    public pageTitle = msg("Applications");
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public get pageDescription() {
+        return msg(
+            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+        );
+    }
+    public pageIcon = "pf-icon pf-icon-applications";
+
+    @property({ type: String })
+    public order = "name";
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override firstUpdated(): void {
+        super.firstUpdated();
+
+        const createForm = getURLParam("createForm", false);
+
+        if (createForm) {
+            renderCreateApplicationForm();
+        }
+    }
+
+    //#region Render
 
     protected renderSidebarAfter(): TemplateResult {
         return html`<aside
@@ -90,26 +141,34 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </aside>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
-        return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application(s)")}
-            .objects=${this.selectedElements}
-            .usedBy=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
-                    slug: item.slug,
-                });
-            }}
-            .delete=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
-                    slug: item.slug,
-                });
-            }}
-        >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
-            </button>
-        </ak-forms-delete-bulk>`;
+    renderToolbarSelected(): SlottedTemplateResult {
+        return guard(
+            [this.selectedMap.size],
+            () =>
+                html` <button
+                    ?disabled=${!this.selectedMap.size}
+                    type="button"
+                    class="pf-c-button pf-m-danger"
+                    @click=${() => {
+                        const api = new CoreApi(DEFAULT_CONFIG);
+
+                        return renderDeleteBulkFormModal<Application>({
+                            ".objectLabel": msg("Application(s)"),
+                            ".objects": this.selectedElements,
+                            ".usedBy": (item) =>
+                                api.coreApplicationsUsedByList({
+                                    slug: item.slug,
+                                }),
+                            ".delete": (item: Application) =>
+                                api.coreApplicationsDestroy({
+                                    slug: item.slug,
+                                }),
+                        });
+                    }}
+                >
+                    ${msg("Delete")}
+                </button>`,
+        );
     }
 
     row(item: Application): SlottedTemplateResult[] {
@@ -131,21 +190,17 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Application")}</span>
-                    <ak-application-form slot="form" .instancePk=${item.slug}>
-                    </ak-application-form>
-                    <button
-                        slot="trigger"
-                        class="pf-c-button pf-m-plain"
-                        aria-label=${msg(str`Edit "${item.name}"`)}
-                    >
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <button
+                    type="button"
+                    class="pf-c-button pf-m-plain"
+                    value=${item.pk}
+                    @click=${renderEditApplicationForm.bind(null, item.slug)}
+                    aria-label=${msg(str`Edit "${item.name}"`)}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit")} trigger="mouseenter">
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 ${item.launchUrl
                     ? html`<a
                           href=${item.launchUrl}
@@ -162,25 +217,25 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
-                <button
-                    slot="trigger"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="start-application-wizard"
-                >
-                    ${msg("Create with Provider")}
-                </button>
-            </ak-application-wizard>
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Application")}</span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>`;
+    renderObjectCreate() {
+        // return html`<ak-application-wizard .open=${getURLParam("createWizard", false)}>
+        //         <button
+        //             slot="trigger"
+        //             class="pf-c-button pf-m-primary"
+        //             data-ouia-component-id="start-application-wizard"
+        //         >
+        //             ${msg("Create with Provider")}
+        //         </button>
+        //     </ak-application-wizard>
+        return html`
+            <button @click=${renderCreateApplicationForm} class="pf-c-button pf-m-primary">
+                ${msg("Create")}
+            </button>
+        `;
     }
 
     renderToolbar(): TemplateResult {
+        if (Date.now()) return super.renderToolbar();
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared application cache")}
@@ -202,6 +257,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 <div slot="modal"></div>
             </ak-forms-confirm>`;
     }
+
+    //#endregion
 }
 
 declare global {

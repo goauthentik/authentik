@@ -91,7 +91,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Notification Rule")}</span>
-                    <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
+                    <ak-event-rule-form pk=${item.pk}> </ak-event-rule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

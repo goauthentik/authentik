@@ -1,10 +1,13 @@
+import "#elements/modals/ak-modal";
+
 import { SlottedTemplateResult } from "../types.js";
 
 import { PFSize } from "#common/enums";
 
-import { AKElement } from "#elements/Base";
-import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
+import { AKModal } from "#elements/modals/ak-modal";
+import { isInteractiveElement } from "#elements/utils/interactivity";
+import { isInvokerElement } from "#elements/utils/invokers";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -16,11 +19,9 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export const MODAL_BUTTON_STYLES = css`
     :host {
@@ -31,7 +32,7 @@ export const MODAL_BUTTON_STYLES = css`
         cursor: initial;
         user-select: text;
     }
-    .pf-c-modal-box > .pf-c-button + * {
+    .ak-modal > .pf-c-button + * {
         margin-right: 0;
     }
     /* fix multiple selects height */
@@ -41,20 +42,9 @@ export const MODAL_BUTTON_STYLES = css`
 `;
 
 @customElement("ak-modal-button")
-export abstract class ModalButton extends AKElement {
-    @property()
-    public size: PFSize = PFSize.Large;
-
-    @property({ type: Boolean })
-    public open = false;
-
-    @property({ type: Boolean })
-    public locked = false;
-
+export abstract class ModalButton extends AKModal {
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
-        PFModalBox,
         PFForm,
         PFTitle,
         PFFormControl,
@@ -68,11 +58,22 @@ export abstract class ModalButton extends AKElement {
             .locked {
                 overflow-y: hidden !important;
             }
-            .pf-c-modal-box.pf-m-xl {
-                --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+            .ak-modal.pf-m-xl {
+                --ak-modal--Width: calc(1.5 * var(--ak-modal--m-lg--lg--MaxWidth));
             }
         `,
     ];
+
+    //#region Properties
+
+    @property()
+    public size: PFSize = PFSize.Large;
+
+    @property({ type: Boolean })
+    public locked = false;
+    //#endregion
+
+    //#region Public Methods
 
     public resetForms(): void {
         this.querySelectorAll<Form>("[slot=form]").forEach((form) => {
@@ -88,27 +89,17 @@ export abstract class ModalButton extends AKElement {
         this.open = false;
     };
 
-    /**
-     * Show the modal.
-     */
-    public show = (event?: PointerEvent): void => {
-        event?.preventDefault();
-        this.open = true;
+    //#endregion
 
-        this.dispatchEvent(new ModalShowEvent(this));
-
-        this.querySelectorAll<AKElement>("*").forEach((child) => {
-            child.requestUpdate?.();
-        });
-    };
-
-    #closeListener = () => {
-        this.dispatchEvent(new ModalHideEvent(this));
-    };
+    // #region Listeners
 
     #backdropListener = (event: PointerEvent) => {
         event.stopPropagation();
     };
+
+    //#endregion
+
+    //#region Render
 
     /**
      * @abstract
@@ -124,14 +115,13 @@ export abstract class ModalButton extends AKElement {
         return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
             <div class="pf-l-bullseye" role="presentation">
                 <div
-                    class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
+                    class="ak-modal ${this.size} ${this.locked ? "locked" : ""}"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="modal-title"
                     aria-describedby="modal-description"
                 >
                     <button
-                        @click=${this.#closeListener}
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-label=${msg("Close dialog")}
@@ -144,12 +134,55 @@ export abstract class ModalButton extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
-        return html` <slot name="trigger" @click=${this.show}></slot>
-            ${this.open ? this.renderModal() : nothing}`;
+    public render(): TemplateResult | null {
+        return html` ${this.open ? this.renderModal() : nothing} ${this.triggerSlotElement} `;
+    }
+
+    protected override shouldRenderModalContent() {
+        return true;
     }
 
     //#endregion
+
+    //#region Lifecycle
+
+    protected triggerSlotElement: HTMLSlotElement;
+    protected triggerButtonElement: HTMLElement | null = null;
+
+    protected slotChangeListener = () => {
+        if (this.triggerButtonElement) {
+            this.triggerButtonElement.removeEventListener("click", this.showListener);
+        }
+
+        const assignedElements = this.triggerSlotElement.assignedElements({
+            flatten: true,
+        });
+
+        const triggerButtonElement = assignedElements.find((element) =>
+            isInteractiveElement(element, false),
+        );
+
+        if (!triggerButtonElement) {
+            return;
+        }
+
+        this.triggerButtonElement = triggerButtonElement;
+
+        if (isInvokerElement(this.triggerButtonElement)) {
+            this.triggerButtonElement.commandForElement = this.parentElement;
+            this.triggerButtonElement.command = "show-modal";
+        } else {
+            this.triggerButtonElement.addEventListener("click", this.showListener);
+        }
+    };
+
+    constructor() {
+        super();
+        this.triggerSlotElement = document.createElement("slot");
+
+        this.triggerSlotElement.name = "trigger";
+        this.triggerSlotElement.addEventListener("slotchange", this.slotChangeListener);
+    }
 }
 
 declare global {

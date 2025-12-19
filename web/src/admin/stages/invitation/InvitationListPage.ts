@@ -127,7 +127,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             html` <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Invitation")}</span>
-                    <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
+                    <ak-invitation-form pk=${item.pk}> </ak-invitation-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

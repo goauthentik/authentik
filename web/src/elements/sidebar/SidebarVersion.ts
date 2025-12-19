@@ -1,12 +1,9 @@
 import { globalAK } from "#common/global";
-import { rootInterface } from "#common/theme";
 import { DefaultBrand } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithVersion } from "#elements/mixins/version";
-
-import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
 
 import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
@@ -50,15 +47,14 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
         if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
+
+        // ${commandForElementRef("about-authentik")}
         return html`<button
             part="trigger"
             role="contentinfo"
             aria-label=${msg("Open about dialog")}
             class="pf-c-button pf-m-plain"
-            @click=${() => {
-                const int = rootInterface<AdminInterface>();
-                int?.aboutModal?.show();
-            }}
+            command="show-modal"
         >
             <p
                 role="heading"

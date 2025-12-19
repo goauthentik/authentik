@@ -50,7 +50,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     @property({ attribute: false })
     plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    protected override createDefaultInstance(): PlexSource {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;

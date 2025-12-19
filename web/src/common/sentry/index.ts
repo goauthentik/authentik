@@ -45,7 +45,7 @@ export function configureSentry(): void {
     const cfg = globalAK().config;
     const debug = cfg.capabilities.includes(CapabilitiesEnum.CanDebug);
 
-    if (!cfg.errorReporting?.enabled && !debug) {
+    if (Date.now() || (!cfg.errorReporting?.enabled && !debug)) {
         return;
     }
 

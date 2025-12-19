@@ -3,37 +3,49 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { EVENT_REFRESH } from "#common/constants";
 
-import { ModalButton } from "#elements/buttons/ModalButton";
-import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
+import { AKModal } from "#elements/modals/ak-modal";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+/**
+ * Modal specifically designed to host forms.
+ */
 @customElement("ak-forms-modal")
-export class ModalForm extends ModalButton {
+export class FormsModal extends AKModal {
     //#region Properties
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, attribute: "close-after-submit", useDefault: true })
     public closeAfterSuccessfulSubmit = true;
 
-    @property({ type: Boolean })
+    /**
+     * @deprecated
+     */
+    @property({ type: Boolean, attribute: "show-submit", useDefault: true })
     public showSubmitButton = true;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, useDefault: true })
     public loading = false;
 
-    @property({ type: String })
-    public cancelText = msg("Cancel");
+    public override closeLabel = msg("Cancel");
 
     //#endregion
 
+    public get form(): Form | null {
+        const form = this.#defaultSlot.assignedElements().find((el) => el instanceof Form);
+
+        return form ?? null;
+    }
+
+    //#region Private Methods
+
     #confirm = async (): Promise<void> => {
-        const form = this.querySelector<Form>("[slot=form]");
+        const { form } = this;
 
         if (!form) {
-            throw new Error(msg("No form found"));
+            throw new TypeError(msg("No form found"));
         }
 
         if (!(form instanceof Form)) {
@@ -43,13 +55,11 @@ export class ModalForm extends ModalButton {
 
         if (!form.reportValidity()) {
             this.loading = false;
-            this.locked = false;
 
             return;
         }
 
         this.loading = true;
-        this.locked = true;
 
         const formPromise = form.submit(
             new SubmitEvent("submit", {
@@ -72,93 +82,66 @@ export class ModalForm extends ModalButton {
                         }),
                     );
                 }
-
-                this.loading = false;
-                this.locked = false;
             })
-            .catch((error: unknown) => {
+            .finally(() => {
                 this.loading = false;
-                this.locked = false;
-
-                throw error;
             });
     };
 
-    #cancel = (): void => {
-        const defaultInvoked = this.dispatchEvent(new ModalHideEvent(this));
+    //#endregion
 
-        if (defaultInvoked) {
-            this.resetForms();
-        }
-    };
+    //#region Lifecycle
 
-    #refreshListener = (e: Event): void => {
-        // if the modal should stay open after successful submit, prevent EVENT_REFRESH from bubbling
-        // to the parent components (which would cause table refreshes that destroy the modal)
-        if (!this.closeAfterSuccessfulSubmit) {
-            e.stopPropagation();
-        }
-    };
+    #defaultSlot = this.ownerDocument.createElement("slot");
 
-    #scrollListener = () => {
-        window.dispatchEvent(
-            new CustomEvent("scroll", {
-                bubbles: true,
-            }),
-        );
-    };
-
-    override connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+
+        // this.addEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-    override disconnectedCallback(): void {
-        super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+    //#endregion
+
+    //#region Rendering
+
+    protected renderFormActions(): TemplateResult {
+        return html`<fieldset class="ak-modal__footer">
+            <legend class="sr-only">${msg("Form actions")}</legend>
+            ${this.showSubmitButton
+                ? html`<button
+                      type="button"
+                      @click=${this.#confirm}
+                      class="pf-c-button pf-m-primary"
+                      aria-description=${msg("Submit action")}
+                  >
+                      <slot name="submit"></slot>
+                  </button>`
+                : nothing}
+            <button
+                type="button"
+                aria-description=${msg("Cancel action")}
+                @click=${this.closeListener}
+                class="pf-c-button pf-m-secondary"
+            >
+                ${this.closeLabel}
+            </button>
+        </fieldset>`;
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override render(): TemplateResult {
         return html`${this.loading
                 ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
                 : nothing}
-            <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">
-                        <slot name="header"></slot>
-                    </h1>
-                </div>
-            </section>
             <slot name="above-form"></slot>
-            <section class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>
-                <slot name="form"></slot>
-            </section>
-            <fieldset class="pf-c-modal-box__footer">
-                <legend class="sr-only">${msg("Form actions")}</legend>
-                ${this.showSubmitButton
-                    ? html`<button
-                          type="button"
-                          @click=${this.#confirm}
-                          class="pf-c-button pf-m-primary"
-                          aria-description=${msg("Submit action")}
-                      >
-                          <slot name="submit"></slot>
-                      </button>`
-                    : nothing}
-                <button
-                    type="button"
-                    aria-description=${msg("Cancel action")}
-                    @click=${this.#cancel}
-                    class="pf-c-button pf-m-secondary"
-                >
-                    ${this.cancelText}
-                </button>
-            </fieldset>`;
+            <div class="ak-modal__body">${this.#defaultSlot}</div>
+            ${this.renderFormActions()}`;
     }
+
+    //#endregion
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-forms-modal": ModalForm;
+        "ak-forms-modal": FormsModal;
     }
 }

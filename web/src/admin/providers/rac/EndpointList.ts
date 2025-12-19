@@ -90,8 +90,7 @@ export class EndpointListPage extends Table<Endpoint> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Endpoint")}</span>
-                    <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
-                    </ak-rac-endpoint-form>
+                    <ak-rac-endpoint-form pk=${item.pk}> </ak-rac-endpoint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

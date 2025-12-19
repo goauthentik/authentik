@@ -14,8 +14,6 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export abstract class WizardForm extends Form {
-    viewportCheck = false;
-
     @property({ attribute: false })
     nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
 

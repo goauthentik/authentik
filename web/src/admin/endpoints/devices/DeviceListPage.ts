@@ -136,8 +136,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Device")}</span>
-                <ak-endpoints-device-form slot="form" .instancePk=${item.deviceUuid}>
-                </ak-endpoints-device-form>
+                <ak-endpoints-device-form pk=${item.deviceUuid}> </ak-endpoints-device-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>

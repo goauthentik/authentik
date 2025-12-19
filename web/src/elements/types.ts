@@ -1,6 +1,7 @@
 import { OwnPropertyRecord, Writeable } from "#common/types";
 
 import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
+import { DirectiveResult } from "lit/async-directive.js";
 
 //#region HTML Helpers
 
@@ -238,5 +239,10 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
  * - A TemplateResult, which will be rendered as HTML.
  * - `nothing` or `null`, which will not be rendered.
  */
-export type SlottedTemplateResult = string | TemplateResult | typeof nothing | null;
+export type SlottedTemplateResult =
+    | string
+    | TemplateResult
+    | typeof nothing
+    | null
+    | DirectiveResult;
 export type Spread = { [key: string]: unknown };

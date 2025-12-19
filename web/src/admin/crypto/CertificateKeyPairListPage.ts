@@ -116,8 +116,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Certificate-Key Pair")}</span>
-                    <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
-                    </ak-crypto-certificate-form>
+                    <ak-crypto-certificate-form pk=${item.pk}> </ak-crypto-certificate-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

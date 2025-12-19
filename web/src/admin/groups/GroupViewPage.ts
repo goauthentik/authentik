@@ -147,8 +147,7 @@ export class GroupViewPage extends AKElement {
                                 <ak-forms-modal>
                                     <span slot="submit">${msg("Update")}</span>
                                     <span slot="header">${msg("Update Group")}</span>
-                                    <ak-group-form slot="form" .instancePk=${this.group.pk}>
-                                    </ak-group-form>
+                                    <ak-group-form pk=${this.group.pk}> </ak-group-form>
                                     <button slot="trigger" class="pf-m-primary pf-c-button">
                                         ${msg("Edit")}
                                     </button>

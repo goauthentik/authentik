@@ -267,7 +267,7 @@ export class UserListPage extends WithBrandConfig(
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update User")}</span>
-                    <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
+                    <ak-user-form pk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
@@ -394,7 +394,7 @@ export class UserListPage extends WithBrandConfig(
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
             </ak-forms-modal>
-            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
+            <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .close-label=${msg("Close")}>
                 <span slot="submit">${msg("Create Service Account")}</span>
                 <span slot="header">${msg("New Service Account")}</span>
                 <ak-user-service-account-form slot="form"> </ak-user-service-account-form>

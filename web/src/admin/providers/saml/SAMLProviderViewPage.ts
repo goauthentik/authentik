@@ -364,7 +364,7 @@ export class SAMLProviderViewPage extends AKElement {
                         <ak-forms-modal>
                             <span slot="submit">${msg("Update")}</span>
                             <span slot="header">${msg("Update SAML Provider")}</span>
-                            <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
+                            <ak-provider-saml-form pk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
                                 ${msg("Edit")}

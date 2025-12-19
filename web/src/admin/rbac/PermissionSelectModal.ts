@@ -58,13 +58,13 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+        return html`<section class="ak-modal__header">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select permissions to assign")}</h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
-            <footer class="pf-c-modal-box__footer">
+            <section class="ak-modal__body">${this.renderTable()}</section>
+            <footer class="ak-modal__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm(this.selectedElements).then(() => {

@@ -82,8 +82,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Notification Transport")}</span>
-                    <ak-event-transport-form slot="form" .instancePk=${item.pk}>
-                    </ak-event-transport-form>
+                    <ak-event-transport-form pk=${item.pk}> </ak-event-transport-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

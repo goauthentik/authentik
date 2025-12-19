@@ -150,7 +150,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             <ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${user.pk}> </ak-user-form>
+                <ak-user-form pk=${user.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-m-primary pf-c-button pf-m-block">
                     ${msg("Edit")}
                 </button>

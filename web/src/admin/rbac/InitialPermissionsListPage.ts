@@ -77,8 +77,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Initial Permissions")}</span>
-                    <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
-                    </ak-initial-permissions-form>
+                    <ak-initial-permissions-form pk=${item.pk}> </ak-initial-permissions-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

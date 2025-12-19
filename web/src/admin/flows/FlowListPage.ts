@@ -88,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
             html` <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Flow")}</span>
-                    <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
+                    <ak-flow-form pk=${item.slug}> </ak-flow-form>
                     <button
                         slot="trigger"
                         class="pf-c-button pf-m-plain"

@@ -918,7 +918,7 @@ export abstract class Table<T extends object>
             ${guard([this.paginated, this.lastRefreshedAt], renderBottomPagination)}`;
     }
 
-    render(): TemplateResult {
+    protected render(): unknown {
         return this.renderTable();
     }
 }

@@ -158,7 +158,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
-                    <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
+                    <ak-blueprint-form pk=${item.pk}> </ak-blueprint-form>
                     <button
                         slot="trigger"
                         class="pf-c-button pf-m-plain"

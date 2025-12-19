@@ -127,7 +127,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Group")}</span>
-                <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
+                <ak-group-form pk=${item.groupObj?.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit Group")}
                 </button>
@@ -136,7 +136,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update User")}</span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
+                <ak-user-form pk=${item.userObj?.pk}> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit User")}
                 </button>

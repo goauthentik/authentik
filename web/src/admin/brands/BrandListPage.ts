@@ -81,7 +81,7 @@ export class BrandListPage extends TablePage<Brand> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Brand")}</span>
-                    <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
+                    <ak-brand-form pk=${item.brandUuid}> </ak-brand-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

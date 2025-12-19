@@ -56,8 +56,7 @@ export class UserApplicationTable extends Table<Application> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Application")}</span>
-                    <ak-application-form slot="form" .instancePk=${item.slug}>
-                    </ak-application-form>
+                    <ak-application-form pk=${item.slug}> </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

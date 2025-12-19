@@ -28,7 +28,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
         });
     }
 
-    get defaultInstance() {
+    protected override createDefaultInstance() {
         return {
             authMode: SCIMAuthenticationModeEnum.Token,
         } as SCIMProvider;
@@ -37,7 +37,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     renderForm() {
         return renderForm({
             update: this.requestUpdate.bind(this),
-            provider: this.instance,
+            provider: this.instance || {},
         });
     }
 }

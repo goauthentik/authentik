@@ -34,19 +34,19 @@ export class UserActiveForm extends UserDeleteForm {
 
     override renderModalInner(): TemplateResult {
         const objName = this.getFormattedObjectName();
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+        return html`<section class="ak-modal__header">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg(str`Update ${this.objectLabel}`)}</h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-m-light">
+            <section class="ak-modal__body">
                 <form class="pf-c-form pf-m-horizontal">
                     <p>
                         ${msg(str`Are you sure you want to update ${this.objectLabel}${objName}?`)}
                     </p>
                 </form>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <footer class="ak-modal__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();

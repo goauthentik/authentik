@@ -50,12 +50,12 @@ export class ConfigModal extends ModalButton {
     }
 
     renderModalInner() {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+        return html`<section class="ak-modal__header">
                 <div class="pf-c-content">
                     <h1 id="modal-title" class="pf-c-title pf-m-2xl">${msg("Connector setup")}</h1>
                 </div>
             </section>
-            <div class="pf-c-modal-box__body">
+            <div class="ak-modal__body">
                 <ak-expand
                     text-closed=${msg("Show MDM configuration")}
                     text-open=${msg("Hide MDM configuration")}
@@ -67,7 +67,7 @@ export class ConfigModal extends ModalButton {
                     ></ak-codemirror>
                 </ak-expand>
             </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
+            <footer class="ak-modal__footer pf-m-align-left">
                 <ak-action-button
                     class="pf-m-primary"
                     .apiRequest=${() => {

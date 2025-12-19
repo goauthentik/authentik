@@ -28,7 +28,7 @@ export class Wizard extends ModalButton {
         ...super.styles,
         PFWizard,
         css`
-            .pf-c-modal-box {
+            .ak-modal {
                 height: 75%;
             }
         `,

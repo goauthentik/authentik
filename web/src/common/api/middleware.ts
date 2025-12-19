@@ -36,7 +36,9 @@ export class LoggingMiddleware implements Middleware {
         if (context.response.status >= 400) {
             style = "color: red; font-weight: bold;";
         }
-        console.debug(msg, style, "");
+        if (!Date.now()) {
+            console.debug(msg, style, "");
+        }
         return Promise.resolve(context.response);
     }
 }
