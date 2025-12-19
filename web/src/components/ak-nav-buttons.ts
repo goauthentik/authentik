@@ -1,4 +1,7 @@
+import "#elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
