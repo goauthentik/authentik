@@ -10,7 +10,17 @@
         margin-inline-end: 0.5em;
     }
 }
+.svg-icon {
+    fill: var(--pf-c-content--Color);
+    vertical-align: sub;
+
+    &:has(+ span) {
+        margin-inline-end: 0.5em;
+    }
+}
+
 .pf-icon,
+.svg-icon,
 .fa,
 .fas {
     &.pf-m-success {

@@ -2,7 +2,7 @@ import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { setPageDetails } from "#components/ak-page-navbar";
+import { setPageDetails, svgIcon } from "#components/ak-page-navbar";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -51,7 +51,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
      * The icon to display in the page header.
      * @abstract
      */
-    public abstract pageIcon: string;
+    public abstract pageIcon: string | svgIcon;
 
     //#endregion
 
