@@ -687,3 +687,5 @@ class TestProviderSAML(SeleniumTestCase):
             [self.user.email],
             f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
         )
+        # Wait for background tasks to complete before teardown to avoid TRUNCATE failures
+        sleep(3)
