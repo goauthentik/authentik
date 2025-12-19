@@ -1,3 +1,6 @@
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";

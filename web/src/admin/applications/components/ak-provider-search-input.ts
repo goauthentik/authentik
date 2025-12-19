@@ -1,3 +1,4 @@
+import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

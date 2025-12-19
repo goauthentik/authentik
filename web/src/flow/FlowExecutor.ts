@@ -1,3 +1,4 @@
+import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";

@@ -1,3 +1,4 @@
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
