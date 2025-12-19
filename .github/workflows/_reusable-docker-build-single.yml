@@ -85,6 +85,7 @@ jobs:
         id: push
         with:
           context: .
+          file: lifecycle/container/Dockerfile
           push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}

@@ -34,7 +34,7 @@ const releaseEnvironment = prepareReleaseEnvironment();
 
 const files = [
     // ---
-    resolve(authentikModulePath, "docker-compose.yml"),
+    resolve(authentikModulePath, "lifecycle/container/compose.yml"),
 ];
 
 await Promise.all(

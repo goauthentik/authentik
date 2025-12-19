@@ -199,7 +199,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
         with:

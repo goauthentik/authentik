@@ -50,13 +50,13 @@ runs:
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
       with:
-        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/docker-compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
+        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker compose -f .github/actions/setup/docker-compose.yml up -d
+        docker compose -f .github/actions/setup/compose.yml up -d
         cd web && npm i
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}

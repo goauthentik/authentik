@@ -17,7 +17,7 @@ RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.js
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
-COPY ./docker-compose.yml /work/
+COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
 RUN npm run build

@@ -121,7 +121,7 @@ jobs:
           build-args: |
             VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
-          file: ${{ matrix.type }}.Dockerfile
+          file: lifecycle/container/${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           context: .
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
