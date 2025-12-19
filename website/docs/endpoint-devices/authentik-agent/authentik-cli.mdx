@@ -1,0 +1,140 @@
+---
+title: Agent CLI commands
+sidebar_label: Agent CLI commands
+tags: [authentik Agent, authentik cli, ak cli, ak, cli, ak-sysd, commands]
+---
+
+The following commands are available when interacting with the authentik Agent via the command line.
+
+:::info Flags
+Most of the CLI commands have a `-v`/`--verbose` flag for verbose output.
+Use the `-h`/`--help` flag to access help information.
+:::
+
+## authentik-cli commands
+
+### auth
+
+Commands for authenticating with different CLI applications.
+
+```bash
+ak auth <command>
+```
+
+- `aws` - Authenticate to AWS with the authentik profile.
+- `kubectl` - Authenticate to a Kubernetes Cluster with the authentik profile.
+- `raw` - Authenticate to arbitrary API calls.
+- `vault` - Generate a JWT for authenticating to HashiCorp Vault.
+
+### completion
+
+Generate the autocompletion script for the specified shell.
+
+```bash
+ak completion <command>
+```
+
+- `bash` - Generate the autocompletion script for bash.
+- `fish` - Generate the autocompletion script for fish.
+- `powershell` - Generate the autocompletion script for PowerShell.
+- `zsh` - Generate the autocompletion script for zsh.
+
+### config
+
+Configure authentik CLI
+
+```bash
+ak config <command>
+```
+
+- `list-profiles` - List profiles that are enabled on the device. Each profile is associated with a separate authentik deployment.
+- `setup` - Configure authentik CLI.
+
+### help
+
+Output help information about any command.
+
+```bash
+ak help <command>
+```
+
+Where `<command>` is any authentik CLI command you want help with, for example: `ak help ssh`
+
+### ssh
+
+Establish an SSH connection with the target endpoint device.
+
+```bash
+ak ssh <hostname>
+```
+
+### system
+
+Commands for interacting with authentik sessions.
+
+```bash
+ak system <command>
+```
+
+- `status` - Status about the current session.
+
+### whoami
+
+Check user account details for a given profile.
+
+```bash
+ak whoami
+```
+
+## authentik-sysd commands
+
+### agent
+
+Used to run the authentik system agent
+
+```bash
+ak-sysd agent
+```
+
+`-d` for debug
+`--disable-component` to disable a component, can be used multiple times.
+TODO @BeryJu document the ids of components
+
+### completion
+
+Generate the autocompletion script for the specified shell.
+
+```bash
+ak-sysd completion <command>
+```
+
+- `bash` - Generate the autocompletion script for bash.
+- `fish` - Generate the autocompletion script for fish.
+- `powershell` - Generate the autocompletion script for powershell.
+- `zsh` - Generate the autocompletion script for zsh.
+
+### domains
+
+```bash
+ak-sysd domains <command>
+```
+
+- `join` - Join an authentik domain, for example `ak-sysd domains join <name_for_authentik_domain> -a <authentik_URL>`
+
+### help
+
+```bash
+ak-sysd help <command>
+```
+
+Where `<command>` is any authentik CLI command you want help with, for example: `ak-sysd help domains`
+
+### troubleshoot
+
+```bash
+ak-sysd troubleshoot <command>
+```
+
+- `check` - Check status of authentik agent components. Useful on Linux as there are various components being used.
+- `inspect` - Outputs the state database that the agent has.
+- `facts` - Outputs device facts. These are the facts that are sent to authentik for device reporting.

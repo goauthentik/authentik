@@ -1,6 +1,7 @@
 import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-number-input";
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#admin/common/ak-flow-search/ak-flow-search";
@@ -78,21 +79,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
             </ak-text-input>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            >
+            </ak-switch-input>
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -120,23 +112,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
-                    <ak-form-element-horizontal name="authTerminateSessionOnExpiry">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.authTerminateSessionOnExpiry ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Terminate authenticated sessions on token expiry")}</span
-                            >
-                        </label>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="authTerminateSessionOnExpiry"
+                        label=${msg("Terminate authenticated sessions on token expiry")}
+                        ?checked=${this.instance?.authTerminateSessionOnExpiry ?? true}
+                    >
+                    </ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Federated OIDC Providers")}
                         name="jwtFederationProviders"
@@ -188,23 +169,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
-                    <ak-form-element-horizontal name="challengeTriggerCheckIn">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.challengeTriggerCheckIn ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Trigger check-in on device")}</span
-                            >
-                        </label>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="challengeTriggerCheckIn"
+                        label=${msg("Trigger check-in on device")}
+                        ?checked=${this.instance?.challengeTriggerCheckIn ?? true}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Unix settings")}">

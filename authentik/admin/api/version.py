@@ -37,7 +37,7 @@ class VersionSerializer(PassiveSerializer):
 
     def get_version_latest(self, _) -> str:
         """Get latest version from cache"""
-        if get_current_tenant().schema_name == get_public_schema_name():
+        if get_current_tenant().schema_name != get_public_schema_name():
             return authentik_version()
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:  # pragma: no cover

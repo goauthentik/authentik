@@ -1,3 +1,4 @@
+import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -120,9 +121,15 @@ export class AKFileSearchInput extends AKElement {
 
     render() {
         return html` <ak-form-element-horizontal name=${ifDefined(this.name ?? undefined)}>
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-            </div>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
 
             <ak-search-select
                 style="width: 100%;"

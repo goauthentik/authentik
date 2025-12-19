@@ -1,3 +1,4 @@
+import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
@@ -100,6 +101,11 @@ export abstract class Table<T extends object>
      * @abstract
      */
     protected abstract row(item: T): SlottedTemplateResult[];
+
+    /**
+     * Customize the "No objects found" message.
+     */
+    protected emptyStateMessage = msg("No objects found.");
 
     /**
      * The total number of defined and additional columns in the table.
@@ -368,7 +374,7 @@ export abstract class Table<T extends object>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span>${this.emptyStateMessage}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -826,9 +832,14 @@ export abstract class Table<T extends object>
     }
 
     protected renderChipGroup(): TemplateResult {
-        return html`<ak-chip-group>
+        return html`<ak-chip-group
+            exportparts="chip-group:selected-chip-group"
+            class="selected-chips"
+        >
             ${Array.from(this.selectedMap.values(), (item) => {
-                return html`<ak-chip>${this.renderSelectedChip(item)}</ak-chip>`;
+                return html`<ak-chip exportparts="chip:selected-chip"
+                    >${this.renderSelectedChip(item)}</ak-chip
+                >`;
             })}
         </ak-chip-group>`;
     }
@@ -856,6 +867,11 @@ export abstract class Table<T extends object>
         `;
     }
 
+    protected renderLoadingBar() {
+        if (!this.loading) return nothing;
+        return html`<ak-progress-bar indeterminate></ak-progress-bar>`;
+    }
+
     protected renderTable(): TemplateResult {
         const totalItemCount = this.data?.pagination.count ?? -1;
 
@@ -867,7 +883,9 @@ export abstract class Table<T extends object>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
+        return html`${this.renderLoadingBar()}${this.needChipGroup
+                ? this.renderChipGroup()
+                : nothing}
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table

@@ -175,7 +175,7 @@ class Connector(ScheduledModel, SerializerModel):
         ]
 
 
-class DeviceAccessGroup(AttributesMixin, PolicyBindingModel):
+class DeviceAccessGroup(AttributesMixin, SerializerModel, PolicyBindingModel):
 
     name = models.TextField(unique=True)
 

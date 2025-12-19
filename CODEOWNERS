@@ -16,10 +16,8 @@ go.sum                                  @goauthentik/backend
 # Infrastructure
 .github/                                @goauthentik/infrastructure
 lifecycle/aws/                          @goauthentik/infrastructure
-Dockerfile                              @goauthentik/infrastructure
-*Dockerfile                             @goauthentik/infrastructure
+lifecycle/container/                    @goauthentik/infrastructure
 .dockerignore                           @goauthentik/infrastructure
-docker-compose.yml                      @goauthentik/infrastructure
 Makefile                                @goauthentik/infrastructure
 .editorconfig                           @goauthentik/infrastructure
 CODEOWNERS                              @goauthentik/infrastructure
@@ -28,8 +26,10 @@ packages/django-channels-postgres       @goauthentik/backend
 packages/django-postgres-cache          @goauthentik/backend
 packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
-packages/package.json                   @goauthentik/backend @goauthentik/frontend
-packages/package-lock.json              @goauthentik/backend @goauthentik/frontend
+package.json                            @goauthentik/frontend
+package-lock.json                       @goauthentik/frontend
+packages/package.json                   @goauthentik/frontend
+packages/package-lock.json              @goauthentik/frontend
 packages/docusaurus-config              @goauthentik/frontend
 packages/esbuild-plugin-live-reload     @goauthentik/frontend
 packages/eslint-config                  @goauthentik/frontend

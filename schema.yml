@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.12.0-rc1
+  version: 2026.2.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4499,6 +4499,145 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/export/:
+    post:
+      operationId: core_users_export_create
+      description: |-
+        Create a data export for this data type. Note that the export is generated asynchronously:
+        this method returns a `DataExport` object that will initially have `completed=false` as well
+        as the permanent URL to that object in the `Location` header.
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
+        contain a URL to download
+      parameters:
+      - in: query
+        name: attributes
+        schema:
+          type: string
+        description: Attributes
+      - in: query
+        name: date_joined
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
+        name: groups_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: groups_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: is_superuser
+        schema:
+          type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__lt
+        schema:
+          type: string
+          format: date-time
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - in: query
+        name: path
+        schema:
+          type: string
+      - in: query
+        name: path_startswith
+        schema:
+          type: string
+      - in: query
+        name: roles_by_name
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: roles_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: type
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - external
+            - internal
+            - internal_service_account
+            - service_account
+        explode: true
+        style: form
+      - in: query
+        name: username
+        schema:
+          type: string
+      - in: query
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/impersonate_end/:
     get:
       operationId: core_users_impersonate_end_retrieve
@@ -4589,11 +4728,6 @@ paths:
         schema:
           type: boolean
         description: Only return certificate-key pairs with keys
-      - in: query
-        name: include_details
-        schema:
-          type: boolean
-          default: true
       - in: query
         name: key_type
         schema:
@@ -6700,6 +6834,7 @@ paths:
             - configuration_error
             - custom_
             - email_sent
+            - export_ready
             - flow_execution
             - impersonation_ended
             - impersonation_started
@@ -6935,6 +7070,108 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /events/events/export/:
+    post:
+      operationId: events_events_export_create
+      description: |-
+        Create a data export for this data type. Note that the export is generated asynchronously:
+        this method returns a `DataExport` object that will initially have `completed=false` as well
+        as the permanent URL to that object in the `Location` header.
+        You can poll that URL until `completed=true`, at which point the `file_url` property will
+        contain a URL to download
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - export_ready
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -6985,6 +7222,7 @@ paths:
             - configuration_error
             - custom_
             - email_sent
+            - export_ready
             - flow_execution
             - impersonation_ended
             - impersonation_started
@@ -10644,6 +10882,7 @@ paths:
           - configuration_error
           - custom_
           - email_sent
+          - export_ready
           - flow_execution
           - impersonation_ended
           - impersonation_started
@@ -18377,8 +18616,12 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
-          description: Successfully imported provider
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLProvider'
+          description: ''
         '400':
           description: Bad request
         '403':
@@ -19762,6 +20005,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_endpoints.deviceaccessgroup
           - authentik_endpoints.deviceuserbinding
           - authentik_endpoints.endpointstage
           - authentik_endpoints_connectors_agent.agentconnector
@@ -19808,6 +20052,7 @@ paths:
           - authentik_providers_ssf.ssfprovider
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
+          - authentik_reports.dataexport
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
           - authentik_sources_kerberos.kerberossourcepropertymapping
@@ -20256,6 +20501,76 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reports/exports/:
+    get:
+      operationId: reports_exports_list
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - reports
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDataExportList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reports/exports/{id}/:
+    get:
+      operationId: reports_exports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Data Export.
+        required: true
+      tags:
+      - reports
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: reports_exports_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Data Export.
+        required: true
+      tags:
+      - reports
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -24296,6 +24611,39 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /sources/telegram/{slug}/connect_user/:
+    post:
+      operationId: sources_telegram_connect_user_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramAuthRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTelegramSourceConnection'
+          description: ''
+        '403':
+          description: Access denied
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
   /sources/telegram/{slug}/used_by/:
     get:
       operationId: sources_telegram_used_by_list
@@ -26054,7 +26402,7 @@ paths:
       tags:
       - stages
       security:
-      - authentik: []
+      - {}
       responses:
         '200':
           content:
@@ -29076,6 +29424,11 @@ paths:
         name: show_source_labels
         schema:
           type: boolean
+      - in: query
+        name: webauthn_stage
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -32879,6 +33232,7 @@ components:
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
+      - authentik.enterprise.reports
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
@@ -33298,6 +33652,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33316,6 +33671,7 @@ components:
       - api_hostname
       - client_id
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33352,10 +33708,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33421,7 +33773,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-email
         code:
-          type: integer
+          type: string
+          minLength: 1
         email:
           type: string
           minLength: 1
@@ -33456,6 +33809,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33499,6 +33853,7 @@ components:
           type: string
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33511,10 +33866,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33594,6 +33945,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33608,6 +33960,7 @@ components:
       required:
       - component
       - credentials
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33620,10 +33973,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33672,7 +34021,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-sms
         code:
-          type: integer
+          type: string
+          minLength: 1
         phone_number:
           type: string
           minLength: 1
@@ -33707,6 +34057,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33741,6 +34092,7 @@ components:
       - account_sid
       - auth
       - component
+      - flow_set
       - from_number
       - meta_model_name
       - name
@@ -33755,10 +34107,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33864,6 +34212,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33882,6 +34231,7 @@ components:
           minimum: 0
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -33894,10 +34244,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -33950,7 +34296,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-totp
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     AuthenticatorTOTPStage:
@@ -33984,6 +34331,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -33997,6 +34345,7 @@ components:
       required:
       - component
       - digits
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34009,10 +34358,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -34057,6 +34402,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         not_configured_action:
           $ref: '#/components/schemas/NotConfiguredActionEnum'
         device_classes:
@@ -34092,6 +34438,7 @@ components:
           readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34105,10 +34452,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         not_configured_action:
           $ref: '#/components/schemas/NotConfiguredActionEnum'
         device_classes:
@@ -34263,6 +34606,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         configure_flow:
           type: string
           format: uuid
@@ -34296,6 +34640,7 @@ components:
       required:
       - component
       - device_type_restrictions_obj
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34308,10 +34653,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -34724,6 +35065,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         public_key:
           type: string
           description: Public key, acquired your captcha Provider.
@@ -34747,6 +35089,7 @@ components:
             in the context for policy decisions
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -34760,10 +35103,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         public_key:
           type: string
           minLength: 1
@@ -34843,25 +35182,25 @@ components:
           type: string
         fingerprint_sha256:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA256)
           readOnly: true
+          nullable: true
+          description: SHA256 fingerprint of the certificate
         fingerprint_sha1:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA1)
           readOnly: true
+          nullable: true
+          description: SHA1 fingerprint of the certificate
         cert_expiry:
           type: string
           format: date-time
-          nullable: true
-          description: Get certificate expiry
           readOnly: true
+          nullable: true
+          description: Certificate expiry date
         cert_subject:
           type: string
-          nullable: true
-          description: Get certificate subject as full rfc4514
           readOnly: true
+          nullable: true
+          description: Certificate subject as RFC4514 string
         private_key_available:
           type: boolean
           description: Show if this keypair has a private key configured or not
@@ -34869,8 +35208,9 @@ components:
         key_type:
           allOf:
           - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
           readOnly: true
+          nullable: true
+          description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
           type: string
           description: Get URL to download certificate
@@ -35190,6 +35530,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         mode:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
@@ -35198,6 +35539,7 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -35216,10 +35558,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
@@ -35229,6 +35567,22 @@ components:
           description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
+    ContentType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - id
+      - model
     ContextualFlowInfo:
       type: object
       description: Contextual flow information for a challenge
@@ -35564,6 +35918,45 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
+    DataExport:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        requested_by:
+          allOf:
+          - $ref: '#/components/schemas/RequestedBy'
+          readOnly: true
+        requested_on:
+          type: string
+          format: date-time
+          readOnly: true
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        query_params:
+          type: object
+          additionalProperties: {}
+        file_url:
+          type: string
+          readOnly: true
+        completed:
+          type: boolean
+          readOnly: true
+      required:
+      - completed
+      - content_type
+      - file_url
+      - id
+      - query_params
+      - requested_by
+      - requested_on
     DeliveryMethodEnum:
       enum:
       - https://schemas.openid.net/secevent/risc/delivery-method/push
@@ -35606,10 +35999,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         deny_message:
           type: string
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -35622,10 +36017,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
       required:
@@ -36418,10 +36809,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         throw_error:
           type: boolean
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -36434,10 +36827,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         throw_error:
           type: boolean
       required:
@@ -36578,6 +36967,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -36623,6 +37013,7 @@ components:
             further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -36635,10 +37026,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -36963,6 +37350,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         connector:
           type: string
           format: uuid
@@ -36976,6 +37364,7 @@ components:
       - component
       - connector
       - connector_obj
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -36988,10 +37377,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         connector:
           type: string
           format: uuid
@@ -37168,6 +37553,7 @@ components:
       - model_deleted
       - email_sent
       - update_available
+      - export_ready
       - custom_
       type: string
     EventMatcherPolicy:
@@ -37943,45 +38329,6 @@ components:
       - name
       - pk
       - policybindingmodel_ptr_id
-      - slug
-      - title
-    FlowSetRequest:
-      type: object
-      description: Stripped down flow serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        slug:
-          type: string
-          minLength: 1
-          description: Visible in the URL.
-          pattern: ^[-a-zA-Z0-9_]+$
-        title:
-          type: string
-          minLength: 1
-          description: Shown as the Title in Flow pages.
-        designation:
-          allOf:
-          - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        compatibility_mode:
-          type: boolean
-          description: Enable compatibility mode, increases compatibility with password
-            managers on mobile devices.
-        layout:
-          $ref: '#/components/schemas/FlowLayoutEnum'
-        denied_action:
-          allOf:
-          - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
-      required:
-      - designation
-      - name
       - slug
       - title
     FlowStageBinding:
@@ -39216,6 +39563,10 @@ components:
         enable_remember_me:
           type: boolean
           default: true
+        passkey_challenge:
+          type: object
+          additionalProperties: {}
+          nullable: true
       required:
       - flow_designation
       - password_fields
@@ -39232,15 +39583,17 @@ components:
           default: ak-stage-identification
         uid_field:
           type: string
-          minLength: 1
+          nullable: true
         password:
           type: string
           nullable: true
         captcha_token:
           type: string
           nullable: true
-      required:
-      - uid_field
+        passkey:
+          type: object
+          additionalProperties: {}
+          nullable: true
     IdentificationStage:
       type: object
       description: IdentificationStage Serializer
@@ -39272,6 +39625,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         user_fields:
           type: array
           items:
@@ -39332,8 +39686,15 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -39346,10 +39707,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_fields:
           type: array
           items:
@@ -39410,6 +39767,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - name
     IframeLogoutChallenge:
@@ -39610,6 +39973,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         continue_flow_without_invitation:
           type: boolean
           description: If this flag is set, this Stage will jump to the next Stage
@@ -39617,6 +39981,7 @@ components:
             when no invitation is given.
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -39629,10 +39994,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         continue_flow_without_invitation:
           type: boolean
           description: If this flag is set, this Stage will jump to the next Stage
@@ -39778,6 +40139,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - component
       - connectivity
@@ -39962,6 +40327,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - name
       - realm
@@ -40486,6 +40855,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - base_dn
       - component
@@ -40700,6 +41073,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - base_dn
       - name
@@ -41233,6 +41610,7 @@ components:
       - authentik_core.token
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
+      - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
       - authentik_endpoints_connectors_agent.agentconnector
       - authentik_endpoints_connectors_agent.agentdeviceuserbinding
@@ -41336,6 +41714,7 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
+      - authentik_reports.dataexport
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
@@ -41371,6 +41750,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         mode:
           $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
@@ -41388,6 +41768,7 @@ components:
       required:
       - cert_attribute
       - component
+      - flow_set
       - meta_model_name
       - mode
       - name
@@ -41402,10 +41783,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
@@ -41566,6 +41943,13 @@ components:
         body:
           type: string
           readOnly: true
+        hyperlink:
+          type: string
+          nullable: true
+          maxLength: 4096
+        hyperlink_label:
+          type: string
+          nullable: true
         created:
           type: string
           format: date-time
@@ -41583,6 +41967,13 @@ components:
       type: object
       description: Notification Serializer
       properties:
+        hyperlink:
+          type: string
+          nullable: true
+          maxLength: 4096
+        hyperlink_label:
+          type: string
+          nullable: true
         event:
           $ref: '#/components/schemas/EventRequest'
         seen:
@@ -43003,6 +43394,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConsentStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedDataExportList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataExport'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -45337,6 +45743,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         backends:
           type: array
           items:
@@ -45361,6 +45768,7 @@ components:
       required:
       - backends
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -45373,10 +45781,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         backends:
           type: array
           items:
@@ -45504,10 +45908,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45538,10 +45938,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45595,10 +45991,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45617,10 +46009,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45661,10 +46049,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45688,10 +46072,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45709,10 +46089,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         not_configured_action:
           $ref: '#/components/schemas/NotConfiguredActionEnum'
         device_classes:
@@ -45749,10 +46125,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         configure_flow:
           type: string
           format: uuid
@@ -45871,10 +46243,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         public_key:
           type: string
           minLength: 1
@@ -45941,10 +46309,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/ConsentStageModeEnum'
         consent_expire_in:
@@ -45959,10 +46323,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         deny_message:
           type: string
     PatchedDeviceAccessGroupRequest:
@@ -46081,10 +46441,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         throw_error:
           type: boolean
     PatchedDuoDeviceRequest:
@@ -46112,10 +46468,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -46227,10 +46579,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         connector:
           type: string
           format: uuid
@@ -46687,10 +47035,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_fields:
           type: array
           items:
@@ -46751,6 +47095,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
     PatchedInitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
@@ -46796,10 +47146,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         continue_flow_without_invitation:
           type: boolean
           description: If this flag is set, this Stage will jump to the next Stage
@@ -46929,6 +47275,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -47163,6 +47513,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -47246,10 +47600,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/StageModeEnum'
         certificate_authorities:
@@ -47268,6 +47618,13 @@ components:
       type: object
       description: Notification Serializer
       properties:
+        hyperlink:
+          type: string
+          nullable: true
+          maxLength: 4096
+        hyperlink_label:
+          type: string
+          nullable: true
         event:
           $ref: '#/components/schemas/EventRequest'
         seen:
@@ -47687,10 +48044,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         backends:
           type: array
           items:
@@ -47899,10 +48252,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         fields:
           type: array
           items:
@@ -48132,10 +48481,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         keep_context:
           type: boolean
         mode:
@@ -48758,6 +49103,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -48775,10 +49130,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         source:
           type: string
           format: uuid
@@ -48962,10 +49313,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
       description: User source connection
@@ -48997,10 +49344,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         session_duration:
           type: string
           minLength: 1
@@ -49037,10 +49380,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserOAuthSourceConnectionRequest:
       type: object
       description: User source connection
@@ -49162,10 +49501,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_creation_mode:
           $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
@@ -49915,6 +50250,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         fields:
           type: array
           items:
@@ -49928,6 +50264,7 @@ components:
       required:
       - component
       - fields
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -49940,10 +50277,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         fields:
           type: array
           items:
@@ -50177,6 +50510,7 @@ components:
       - slack
       - twitch
       - twitter
+      - wechat
       type: string
     ProxyMode:
       enum:
@@ -51052,6 +51386,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         keep_context:
           type: boolean
         mode:
@@ -51064,6 +51399,7 @@ components:
           nullable: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - mode
       - name
@@ -51082,10 +51418,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         keep_context:
           type: boolean
         mode:
@@ -51251,6 +51583,22 @@ components:
           minimum: -2147483648
       required:
       - name
+    RequestedBy:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - pk
+      - username
     ResidentKeyRequirementEnum:
       enum:
       - discouraged
@@ -53256,6 +53604,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -53321,6 +53679,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -53525,6 +53893,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         source:
           type: string
           format: uuid
@@ -53534,6 +53903,7 @@ components:
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -53547,10 +53917,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         source:
           type: string
           format: uuid
@@ -53637,8 +54003,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -53780,6 +54148,12 @@ components:
           readOnly: true
       required:
       - messages
+    SyncOutgoingTriggerModeEnum:
+      enum:
+      - none
+      - immediate
+      - deferred_end
+      type: string
     SyncStatus:
       type: object
       description: Provider/source sync status
@@ -53981,14 +54355,9 @@ components:
       - warning
       - error
       type: string
-    TelegramChallengeResponseRequest:
+    TelegramAuthRequest:
       type: object
-      description: Base class for all challenge responses
       properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-source-telegram
         id:
           type: integer
         first_name:
@@ -54013,6 +54382,42 @@ components:
           type: string
           minLength: 1
           maxLength: 64
+      required:
+      - auth_date
+      - hash
+      - id
+    TelegramChallengeResponseRequest:
+      type: object
+      description: Base class for all challenge responses
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        username:
+          type: string
+          minLength: 1
+          maxLength: 255
+        photo_url:
+          type: string
+          format: uri
+          minLength: 1
+        auth_date:
+          type: integer
+        hash:
+          type: string
+          minLength: 1
+          maxLength: 64
+        component:
+          type: string
+          minLength: 1
+          default: ak-source-telegram
       required:
       - auth_date
       - hash
@@ -54859,8 +55264,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -54873,10 +55280,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
     UserFieldsEnum:
@@ -55052,6 +55455,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         session_duration:
           type: string
           description: 'Determines how long a session lasts. Default of 0 means that
@@ -55080,6 +55484,7 @@ components:
             (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -55092,10 +55497,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         session_duration:
           type: string
           minLength: 1
@@ -55158,8 +55559,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -55172,10 +55575,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
     UserMatchingModeEnum:
@@ -55717,6 +56116,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+          readOnly: true
         user_creation_mode:
           $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:
@@ -55733,6 +56133,7 @@ components:
           type: string
       required:
       - component
+      - flow_set
       - meta_model_name
       - name
       - pk
@@ -55745,10 +56146,6 @@ components:
         name:
           type: string
           minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
         user_creation_mode:
           $ref: '#/components/schemas/UserCreationModeEnum'
         create_users_as_inactive:

@@ -73,20 +73,19 @@ jobs:
           mkdir -p ./gen-ts-api
           mkdir -p ./gen-go-api
       - name: Setup node
-        if: ${{ !inputs.release }}
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: generate ts client
-        if: ${{ !inputs.release }}
         run: make gen-client-ts
       - name: Build Docker Image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
         id: push
         with:
           context: .
+          file: lifecycle/container/Dockerfile
           push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
@@ -97,7 +96,7 @@ jobs:
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
           cache-to: ${{ steps.ev.outputs.cacheTo }}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:
