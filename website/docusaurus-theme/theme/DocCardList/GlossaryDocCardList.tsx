@@ -127,14 +127,14 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
                 <div className="card__header">
                     <h3 className="margin-vert--none" aria-label={termName || "Glossary term"}>
                         {termName || "Glossary term"}
-                        {isAuthentikSpecific && (
+                        {isAuthentikSpecific ? (
                             <span
                                 className={sharedStyles.authentikBadge}
                                 title="authentik-specific term"
                             >
                                 authentik specific
                             </span>
-                        )}
+                        ) : null}
                         <a
                             href={`?${anchorId}`}
                             className={sharedStyles.anchorLink}
@@ -166,7 +166,7 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
                             : "Short description not provided."}
                     </div>
 
-                    {hasLongDescription && (
+                    {hasLongDescription ? (
                         <>
                             <button
                                 className={sharedStyles.expandButton}
@@ -175,15 +175,15 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
                             >
                                 {isExpanded ? "▼ Hide details" : "▶ Show details"}
                             </button>
-                            {isExpanded && (
+                            {isExpanded ? (
                                 <div className={sharedStyles.glossaryLong}>
                                     {longParagraphs.map((paragraph, index) => (
                                         <p key={index}>{renderMarkdown(paragraph)}</p>
                                     ))}
                                 </div>
-                            )}
+                            ) : null}
                         </>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </article>
@@ -223,6 +223,7 @@ export default function GlossaryDocCardList({
                 return () => clearTimeout(timeoutId);
             }
         }
+        return undefined;
     }, []);
 
     // Build term cache to avoid repeated useDocById calls with error handling
@@ -304,38 +305,37 @@ export default function GlossaryDocCardList({
                         ))}
                     </>
                 );
-            } else {
-                // Alphabetical view: group terms by first letter A-Z
-                const termsByAlphabet = groupByFirstLetter(filteredTerms);
-                return (
-                    <>
-                        {termsByAlphabet.map(([letter, letterTerms]) => (
-                            <div
-                                key={letter}
-                                className={glossaryStyles.simplifiedSection}
-                                id={`letter-${letter}`}
-                            >
-                                <h2 className={glossaryStyles.sectionTitle}>{letter}</h2>
-                                <section className={clsx("row")}>
-                                    {letterTerms.map((term) => {
-                                        // Use pre-cached sidebar item lookup
-                                        const sidebarItem = glossaryPool.find(
-                                            (item) => item.docId === term.id,
-                                        );
-                                        return sidebarItem && sidebarItem.docId ? (
-                                            <GlossaryTermCard
-                                                key={term.id}
-                                                item={sidebarItem}
-                                                termCache={termCache}
-                                            />
-                                        ) : null;
-                                    })}
-                                </section>
-                            </div>
-                        ))}
-                    </>
-                );
             }
+            // Alphabetical view: group terms by first letter A-Z
+            const termsByAlphabet = groupByFirstLetter(filteredTerms);
+            return (
+                <>
+                    {termsByAlphabet.map(([letter, letterTerms]) => (
+                        <div
+                            key={letter}
+                            className={glossaryStyles.simplifiedSection}
+                            id={`letter-${letter}`}
+                        >
+                            <h2 className={glossaryStyles.sectionTitle}>{letter}</h2>
+                            <section className={clsx("row")}>
+                                {letterTerms.map((term) => {
+                                    // Use pre-cached sidebar item lookup
+                                    const sidebarItem = glossaryPool.find(
+                                        (item) => item.docId === term.id,
+                                    );
+                                    return sidebarItem && sidebarItem.docId ? (
+                                        <GlossaryTermCard
+                                            key={term.id}
+                                            item={sidebarItem}
+                                            termCache={termCache}
+                                        />
+                                    ) : null;
+                                })}
+                            </section>
+                        </div>
+                    ))}
+                </>
+            );
         },
         [glossaryPool, termCache],
     );

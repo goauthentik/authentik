@@ -7,7 +7,7 @@ import ViewToggle from "../../components/Glossary/ViewToggle";
 import { extractAvailableTags, type GlossaryHelperTerm } from "../utils/glossaryUtils";
 
 import clsx from "clsx";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 /**
  * Props for GlossaryHelper component
@@ -30,26 +30,11 @@ export interface GlossaryHelperProps {
  */
 export const GlossaryHelper: React.FC<GlossaryHelperProps> = ({ terms, children, className }) => {
     const [filter, setFilter] = useState(""); // Text search filter for alphabetical view
-    const [filteredTerms, setFilteredTerms] = useState<GlossaryHelperTerm[]>(terms); // Currently visible terms
     const [selectedTags, setSelectedTags] = useState<string[]>([]); // Selected tag filters for categorized view
     const [isSimplifiedView, setIsSimplifiedView] = useState(true); // false = categorized, true = alphabetical
 
-    // Pre-computed groupings for the two view modes
-    const termsByTag = React.useMemo(
-        () => groupByTag<GlossaryHelperTerm>(filteredTerms),
-        [filteredTerms],
-    );
-
-    const termsByAlphabet = React.useMemo(
-        () => groupByFirstLetter<GlossaryHelperTerm>(filteredTerms),
-        [filteredTerms],
-    );
-
-    // Extract all unique tags from terms for the tag filter bar
-    const availableTags = React.useMemo(() => extractAvailableTags(terms), [terms]);
-
-    // Apply filters based on current view mode and user selections
-    useEffect(() => {
+    // Apply filters based on current view mode and user selections using useMemo instead of useEffect
+    const filteredTerms = React.useMemo(() => {
         let result = terms;
 
         // Text search filter
@@ -71,8 +56,22 @@ export const GlossaryHelper: React.FC<GlossaryHelperProps> = ({ terms, children,
             );
         }
 
-        setFilteredTerms(result);
+        return result;
     }, [filter, selectedTags, terms, isSimplifiedView]);
+
+    // Pre-computed groupings for the two view modes
+    const _termsByTag = React.useMemo(
+        () => groupByTag<GlossaryHelperTerm>(filteredTerms),
+        [filteredTerms],
+    );
+
+    const termsByAlphabet = React.useMemo(
+        () => groupByFirstLetter<GlossaryHelperTerm>(filteredTerms),
+        [filteredTerms],
+    );
+
+    // Extract all unique tags from terms for the tag filter bar
+    const availableTags = React.useMemo(() => extractAvailableTags(terms), [terms]);
 
     /**
      * Toggles tag selection for filtering in categorized view
@@ -107,16 +106,18 @@ export const GlossaryHelper: React.FC<GlossaryHelperProps> = ({ terms, children,
             <FilterInput value={filter} onChange={setFilter} onClear={clearFilter} />
 
             {/* Alphabetical view controls */}
-            {isSimplifiedView && <AlphaNav letters={termsByAlphabet.map(([letter]) => letter)} />}
+            {isSimplifiedView ? (
+                <AlphaNav letters={termsByAlphabet.map(([letter]) => letter)} />
+            ) : null}
 
             {/* Tags view controls */}
-            {!isSimplifiedView && (
+            {!isSimplifiedView ? (
                 <SectionNav
                     availableTags={availableTags}
                     selectedTags={selectedTags}
                     onToggleTag={toggleTag}
                 />
-            )}
+            ) : null}
 
             {/* Render area - delegates to children via render prop pattern */}
             <div className={styles.termList}>

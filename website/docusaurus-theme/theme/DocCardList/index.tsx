@@ -16,6 +16,9 @@ import type { Props } from "@theme/DocCardList";
 import clsx from "clsx";
 import React, { ReactNode, useMemo } from "react";
 
+// Constant empty array to avoid creating new array on each render
+const EMPTY_SIDEBAR_ITEMS: PropSidebarItem[] = [];
+
 // Type aliases for clarity
 type SidebarDocLike = Extract<PropSidebarItem, { type: "link" }>;
 
@@ -63,27 +66,31 @@ export default function DocCardList(props: Props): ReactNode {
     const pathname = useLocation()?.pathname ?? "";
     const isGlossary = isGlossaryPath(pathname);
 
-    const siblings = useCurrentSidebarSiblings() ?? [];
+    const sidebarSiblings = useCurrentSidebarSiblings();
+    const siblings = sidebarSiblings ?? EMPTY_SIDEBAR_ITEMS;
+
+    // Extract glossary terms from sidebar structure (always computed, but only used for glossary pages)
+    const glossaryPool = useMemo<SidebarDocLike[]>(() => {
+        const terms: SidebarDocLike[] = [];
+
+        // Recursively process sidebar items to find glossary terms
+        const processItem = (item: PropSidebarItem) => {
+            if (isGlossaryItem(item) && item.type === "link") {
+                terms.push(item as SidebarDocLike);
+            } else if (item.type === "category" && item.items) {
+                item.items.forEach(processItem);
+            }
+        };
+
+        siblings.forEach(processItem);
+        return terms;
+    }, [siblings]);
+
+    // Standard documentation card items (always computed, but only used for non-glossary pages)
+    const baseItems = useMemo(() => filterDocCardListItems(items ?? siblings), [items, siblings]);
 
     // For glossary pages, delegate to specialized GlossaryDocCardList component
     if (isGlossary) {
-        // Extract glossary terms from sidebar structure
-        const glossaryPool = useMemo<SidebarDocLike[]>(() => {
-            const terms: SidebarDocLike[] = [];
-
-            // Recursively process sidebar items to find glossary terms
-            const processItem = (item: PropSidebarItem) => {
-                if (isGlossaryItem(item) && item.type === "link") {
-                    terms.push(item as SidebarDocLike);
-                } else if (item.type === "category" && item.items) {
-                    item.items.forEach(processItem);
-                }
-            };
-
-            siblings.forEach(processItem);
-            return terms;
-        }, [siblings]);
-
         return (
             <ErrorBoundary>
                 <GlossaryDocCardList glossaryPool={glossaryPool} className={className} />
@@ -92,8 +99,6 @@ export default function DocCardList(props: Props): ReactNode {
     }
 
     // Standard documentation card rendering for non-glossary pages
-    const baseItems = useMemo(() => filterDocCardListItems(items ?? siblings), [items, siblings]);
-
     return (
         <section className={clsx("row", className)}>
             {baseItems.map((item, idx) => (
