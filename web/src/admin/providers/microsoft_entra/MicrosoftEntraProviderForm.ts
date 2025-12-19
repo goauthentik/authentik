@@ -1,3 +1,4 @@
+import "#components/ak-radio-input";
 import "#components/ak-hidden-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";

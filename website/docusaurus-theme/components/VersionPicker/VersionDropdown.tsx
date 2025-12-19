@@ -1,6 +1,10 @@
 import "./styles.css";
 
-import { createVersionURL, parseBranchSemVer } from "#components/VersionPicker/utils.ts";
+import {
+    createVersionURL,
+    normalizeReleaseName,
+    parseBranchSemVer,
+} from "#components/VersionPicker/utils.ts";
 
 import type {
     AKReleaseFrontMatter,
@@ -74,15 +78,17 @@ export const VersionDropdown = memo<VersionDropdownProps>((props) => {
                     </>
                 ) : null}
 
-                {visibleReleases.map((semVer, idx) => {
+                {visibleReleases.map((releaseName, idx) => {
+                    const semVer = normalizeReleaseName(releaseName);
+
                     let label = semVer;
                     const frontmatter = frontMatterRecord[semVer];
 
-                    if (frontmatter?.unlisted || frontmatter?.draft) {
+                    if (frontmatter?.draft) {
                         return null;
                     }
 
-                    if (idx === 0) {
+                    if (idx === 0 && !frontmatter?.beta) {
                         label += " (Current Release)";
                     }
 

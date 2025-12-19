@@ -1,3 +1,4 @@
+import "#components/ak-radio-input";
 import "#elements/CodeMirror";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";

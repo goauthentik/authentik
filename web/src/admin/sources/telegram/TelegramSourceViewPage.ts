@@ -1,3 +1,8 @@
+import "#elements/Tabs";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/events/ObjectChangelog";
+import "#elements/forms/ModalForm";
+import "#admin/policies/BoundPoliciesList";
 import "#admin/sources/telegram/TelegramSourceForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

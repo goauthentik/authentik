@@ -1,3 +1,5 @@
+import "#flow/FormStatic";
+
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";

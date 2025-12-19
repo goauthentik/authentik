@@ -1,3 +1,5 @@
+import "#elements/forms/HorizontalFormElement";
+
 import { AKElement } from "#elements/Base";
 
 import { IDGenerator } from "@goauthentik/core/id";

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from yaml import safe_dump
 
 from authentik import authentik_version
@@ -42,7 +44,7 @@ base = {
             "image": authentik_image,
             "ports": ["${COMPOSE_PORT_HTTP:-9000}:9000", "${COMPOSE_PORT_HTTPS:-9443}:9443"],
             "restart": "unless-stopped",
-            "volumes": ["./media:/data/media", "./custom-templates:/templates"],
+            "volumes": ["./data:/data", "./custom-templates:/templates"],
         },
         "worker": {
             "command": "worker",
@@ -62,7 +64,7 @@ base = {
             "user": "root",
             "volumes": [
                 "/var/run/docker.sock:/var/run/docker.sock",
-                "./media:/data/media",
+                "./data:/data",
                 "./certs:/certs",
                 "./custom-templates:/templates",
             ],
@@ -75,5 +77,5 @@ base = {
     },
 }
 
-with open("docker-compose.yml", "w") as _compose:
+with open("lifecycle/container/compose.yml", "w") as _compose:
     safe_dump(base, _compose)
