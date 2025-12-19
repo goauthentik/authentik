@@ -2,6 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#admin/endpoints/DeviceAccessGroupForm";
 import "#admin/policies/BoundPoliciesList";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -42,7 +43,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
             html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Group")}</span>
-                <ak-endpoints-device-access-groups-form slot="form" pk=${item.pbmUuid}>
+                <ak-endpoints-device-access-groups-form slot="form" .instancePk=${item.pbmUuid}>
                 </ak-endpoints-device-access-groups-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
