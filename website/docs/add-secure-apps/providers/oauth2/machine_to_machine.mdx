@@ -24,7 +24,7 @@ sequenceDiagram
 
 All user account types; internal, external and service account, can be used for authentication. These can be created manually beforehand or [automatically during authentication](#automatic-service-account-creation).
 
-authentik treats a grant type of `password` the same as `client_credentials` to support applications which rely on a password grant. Scopes must be defined and have to match what's available on the corresponding provider.
+authentik treats a grant type of `password` the same as `client_credentials` to support applications which rely on a password grant. Scopes, if required, must be defined in the request, and follow the same behaviour as other OAuth requests.
 
 ### Example request
 
@@ -78,7 +78,7 @@ The automatically generated service account will follow this naming scheme: `ak-
 
 ### JWT authentication
 
-For both externally and authentik issued JWTs, authenti will create a service account which is based on the provider name and the subject claim of the token that authentik is given. You many end up with multiple service accounts depending on the tokens that are provided to authentik. These service accounts will expire and be deleted based on the expiry claim of the token that authentik is given.
+For both externally and authentik issued JWTs, authentik will create a service account which is based on the provider name and the subject claim of the token that authentik is given. You many end up with multiple service accounts depending on the tokens that are provided to authentik. These service accounts will expire and be deleted based on the expiry claim (if set) of the token that authentik is given.
 
 #### Externally issued JWTs
 
@@ -115,7 +115,7 @@ Other information that's available in the policy expression context:
 - `request.context["oauth_grant_type"]` - the grant type
 - `request.context["oauth_code_verifier"]` - a string or none
 
-If you're authorizing with a JWT, then `request.context["oauth_JWT"]` is available which is the parsed JWT.
+If you're authorizing with a JWT, then `request.context["oauth_jwt"]` is available which is the parsed JWT as a dictionary.
 
 #### authentik-issued JWTs:ak-version[2024.12]
 
@@ -150,7 +150,7 @@ Other information that's available in the policy expression context:
 - `request.context["oauth_grant_type"]` - the grant type
 - `request.context["oauth_code_verifier"]` - a string or none
 
-If you're authorizing with a JWT, then `request.context["oauth_JWT"]` is available which is the parsed JWT.
+If you're authorizing with a JWT, then `request.context["oauth_jwt"]` is available which is the parsed JWT as a dictionary.
 
 ## Troubleshooting
 
@@ -164,7 +164,7 @@ However, more detailed error information can be obtained from the authentik serv
 
 To use the OAuth introspection endpoint to obtain more information on a token, you must first to authenticate to it.
 
-You are only able to introspect a token from the same provider that was used to authenticate, or you must configure any other provider which tokens need to be introspected as a federated OIDC provider on the authenticating provider.
+You are only able to introspect a token from the same provider that was used to authenticate, or you must exchange the token for a token from the provider as describe above.
 
 ### Event logging
 
@@ -173,5 +173,5 @@ All of these authentication methods will create a login event in the event logs,
 | Scenario                                                                                                      | Authentication Method | Authentication Arguments                     |
 | ------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------- |
 | [Static authentication using credentials](#static-authentication)                                             | `token`               | Dictionary containing the token identifier   |
-| [Static authentication and automatically generating the service account](#automatic-service-account-creation) | `oauth_client_secret` | `none`                                       |
+| [Static authentication and automatically generating the service account](#automatic-service-account-creation) | `oauth_client_secret` | N/A                                       |
 | [JWT authentication](#jwt-authentication)                                                                     | `JWT`                 | Parsed JWT + reference to source or provider |
