@@ -210,9 +210,6 @@ class MetricsMiddleware(Middleware):
         return [worker_metrics]
 
     def before_worker_boot(self, broker: Broker, worker: Any) -> None:
-        if Conf().test:
-            return
-
         from prometheus_client import Counter, Gauge, Histogram
 
         self.total_messages = Counter(
