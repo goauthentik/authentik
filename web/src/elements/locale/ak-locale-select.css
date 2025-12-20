@@ -1,0 +1,51 @@
+:host {
+    cursor: pointer;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    user-select: none;
+    gap: var(--pf-global--spacer--sm);
+    padding-inline: var(--pf-global--spacer--sm);
+    padding-block: var(--pf-global--spacer--xs);
+    border-radius: var(--pf-global--BorderRadius--sm);
+    border-style: solid;
+    border-color: transparent;
+    border-width: thin;
+    overflow: hidden;
+}
+
+select {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    color: inherit;
+    position: relative;
+
+    border: none;
+
+    @media not (prefers-contrast: more) {
+        &:focus {
+            outline: none;
+        }
+    }
+
+    appearance: base-select;
+
+    &::picker-icon {
+        /* Browser compatibility */
+        color: transparent;
+        display: none;
+    }
+}
+
+label {
+    background-color: var(--ak-c-locale-select--label--BackgroundColor, transparent);
+    color: var(--ak-c-locale-select--label--Color, inherit);
+    cursor: pointer;
+
+    .icon {
+        display: block;
+        height: var(--pf-global--FontSize--xl);
+        fill: currentColor;
+    }
+}

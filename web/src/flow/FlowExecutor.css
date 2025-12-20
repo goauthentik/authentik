@@ -8,46 +8,64 @@
 
 .inspector-toggle {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    inset-inline-end: var(--pf-global--spacer--md);
+    inset-block-start: var(--pf-global--spacer--md);
     z-index: 100;
+    filter: var(--ak-global--background-contrast-Filter);
 }
 
-.locale-selector {
-    position: absolute;
-    inset-block-start: 1rem;
-    inset-inline-start: 1rem;
-    z-index: 100;
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    gap: var(--pf-global--spacer--sm);
-    padding-inline-start: var(--pf-global--spacer--sm);
-    padding-block: var(--pf-global--spacer--xs);
-    border-radius: var(--pf-global--BorderRadius--sm);
-    border-style: solid;
-    border-color: transparent;
-    border-width: thin;
+[part="locale-select"] {
+    --ak-c-flow-executor__locale-select--Padding: var(--pf-global--spacer--md);
 
-    &:has(select:hover) {
-        cursor: pointer;
-        border-color: var(--pf-global--Color--100);
+    position: absolute;
+    inset-block-start: var(--ak-c-flow-executor__locale-select--Padding);
+    inset-inline-start: var(--ak-c-flow-executor__locale-select--Padding);
+    z-index: 100;
+
+    color: var(--pf-global--Color--light-100);
+
+    &:hover {
+        background-color: var(
+            --ak-c-flow-executor__locale-select--BackgroundColor--hover,
+            transparent
+        );
     }
 
-    select {
-        background-color: transparent;
-        color: var(--pf-global--Color--100);
+    filter: var(--ak-global--background-contrast-Filter);
 
-        border: none;
+    grid-area: header;
 
-        &:focus {
-            outline: none;
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        color: var(--ak-global--background-contrast);
+        filter: none;
+
+        &::part(select) {
+            font-size: var(--pf-global--FontSize--sm);
         }
+    }
 
-        appearance: base-select;
+    /* At least a third of the card cut-off is available. */
+    @media (max-width: 52.5rem) and (min-height: 35rem) {
+        grid-area: main;
+    }
 
-        &::picker-icon {
-            color: transparent;
+    @media (min-width: 46.66rem) and (min-height: 35rem) {
+        --ak-c-flow-executor__locale-select--BackgroundColor--hover: var(
+            --pf-global--BackgroundColor--150
+        );
+    }
+
+    /* Card is fully masked to mobile background. */
+    @media (max-width: 35rem) {
+        grid-row: header;
+    }
+
+    /* An awkward but possible layout when on mobile landscape. */
+    @media (max-height: 35rem) or (max-width: 52.5rem) {
+        --ak-c-flow-executor__locale-select--BackgroundColor--hover: transparent;
+
+        &::part(select) {
+            opacity: 0;
         }
     }
 }
