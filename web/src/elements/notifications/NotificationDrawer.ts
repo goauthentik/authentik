@@ -2,12 +2,18 @@ import "#elements/EmptyState";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "#common/constants";
+import {
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_REFRESH,
+    EVENT_WS_MESSAGE,
+    WS_MSG_TYPE_NOTIFICATION,
+} from "#common/constants";
 import { globalAK } from "#common/global";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
 import { formatElapsedTime } from "#common/temporal";
 import { isGuest } from "#common/users";
+import { WSMessage } from "#common/ws";
 
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
@@ -15,7 +21,7 @@ import { WithSession } from "#elements/mixins/session";
 import { PaginatedResponse } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { EventsApi, Notification } from "@goauthentik/api";
+import { EventsApi, Notification, NotificationFromJSON } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -64,9 +70,36 @@ export class NotificationDrawer extends WithSession(AKElement) {
         `,
     ];
 
+    #onWSMessage = (
+        e: CustomEvent<
+            WSMessage & {
+                data: unknown;
+            }
+        >,
+    ) => {
+        if (e.detail.message_type !== WS_MSG_TYPE_NOTIFICATION) {
+            return;
+        }
+        const notification = NotificationFromJSON(e.detail.data);
+        showMessage({
+            level: MessageLevel.info,
+            message: actionToLabel(notification.event?.action) ?? notification.body,
+            description: html`${notification.body}${notification.hyperlink
+                ? html`<a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
+                : nothing}`,
+        });
+    };
+
     connectedCallback(): void {
         super.connectedCallback();
         this.refreshNotifications();
+        this.#onWSMessage = this.#onWSMessage.bind(this);
+        window.addEventListener(EVENT_WS_MESSAGE, this.#onWSMessage as EventListener);
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWSMessage as EventListener);
     }
 
     protected async refreshNotifications(): Promise<void> {
@@ -85,6 +118,7 @@ export class NotificationDrawer extends WithSession(AKElement) {
             .then((r) => {
                 this.notifications = r;
                 this.unread = r.results.length;
+                this.requestUpdate();
             });
     }
 
