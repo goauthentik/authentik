@@ -84,8 +84,14 @@ export class NotificationDrawer extends WithSession(AKElement) {
         showMessage({
             level: MessageLevel.info,
             message: actionToLabel(notification.event?.action) ?? notification.body,
-            description: html`${notification.body}${notification.hyperlink
-                ? html`<a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
+            description: html`${notification.body}
+            ${notification.hyperlink
+                ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
+                : nothing}
+            ${notification.event
+                ? html`<br /><a href="#/events/log/${notification.event.pk}"
+                          >${msg("View details...")}</a
+                      >`
                 : nothing}`,
         });
     };
