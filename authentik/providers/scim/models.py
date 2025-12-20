@@ -13,7 +13,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -22,7 +22,7 @@ from authentik.providers.scim.clients.auth import SCIMTokenAuth
 LOGGER = get_logger()
 
 
-class SCIMProviderUser(SerializerModel):
+class SCIMProviderUser(InternallyManagedMixin, SerializerModel):
     """Mapping of a user and provider to a SCIM user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -44,7 +44,7 @@ class SCIMProviderUser(SerializerModel):
         return f"SCIM Provider User {self.user_id} to {self.provider_id}"
 
 
-class SCIMProviderGroup(SerializerModel):
+class SCIMProviderGroup(InternallyManagedMixin, SerializerModel):
     """Mapping of a group and provider to a SCIM user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
