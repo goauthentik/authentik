@@ -11,17 +11,6 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-class WeChatOAuthRedirect(OAuthRedirect):
-    """WeChat OAuth2 Redirect"""
-
-    def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
-        # WeChat (Weixin) for Websites official documentation requires 'snsapi_login'
-        # as the *only* scope for the QR code-based login flow.
-        # Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html (Step 1)  # noqa: E501
-        return {
-            "scope": ["snsapi_login"],
-        }
-
 
 class WeChatOAuth2Client(OAuth2Client):
     """
@@ -46,7 +35,7 @@ class WeChatOAuth2Client(OAuth2Client):
         if not code:
             return None
 
-        token_url = self.get_access_token_url()
+        token_url = self.source.source_type.access_token_url
         params = {
             "appid": self.get_client_id(),
             "secret": self.get_client_secret(),
@@ -82,7 +71,7 @@ class WeChatOAuth2Client(OAuth2Client):
         This API call requires both the 'access_token' and the 'openid'
         (which was returned during the token exchange).
         """
-        profile_url = self.get_profile_url()
+        profile_url = self.source.source_type.profile_url
         params = {
             "access_token": token.get("access_token"),
             "openid": token.get("openid"),
@@ -116,11 +105,29 @@ class WeChatOAuth2Client(OAuth2Client):
         args["appid"] = args.pop("client_id")
         return args
 
+
+class WeChatOAuthRedirect(OAuthRedirect):
+    """WeChat OAuth2 Redirect"""
+
+    client_class = WeChatOAuth2Client
+
+    def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
+        # WeChat (Weixin) for Websites official documentation requires 'snsapi_login'
+        # as the *only* scope for the QR code-based login flow.
+        # Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html (Step 1)  # noqa: E501
+        return {
+            "scope": ["snsapi_login"],
+        }
+
+
 class WeChatOAuth2Callback(OAuthCallback):
     """WeChat OAuth2 Callback"""
 
     # Specify our custom Client to handle the non-standard WeChat flow
     client_class = WeChatOAuth2Client
+
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
+        return info.get("unionid", info.get("openid"))
 
 
 @registry.register()
