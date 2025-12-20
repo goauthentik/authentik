@@ -3,13 +3,11 @@
 from typing import Any
 
 from requests.exceptions import RequestException
-
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
-
 
 
 class WeChatOAuth2Client(OAuth2Client):
