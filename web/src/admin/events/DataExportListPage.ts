@@ -4,10 +4,12 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
+import "#components/ak-status-label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -65,12 +67,14 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     row(item: DataExport): SlottedTemplateResult[] {
         return [
-            html`${item.contentType.model}`,
+            html`${item.contentType.verboseNamePlural}`,
             html`<a href="#/identity/users/${item.requestedBy.pk}"
                 >${item.requestedBy.username}</a
             >`,
             Timestamp(item.requestedOn),
-            html`${item.completed ? msg("Yes") : msg("No")}`,
+            html`${item.completed
+                ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
+                : html`<ak-label color=${PFColor.Grey}>${msg("Queued")}</ak-label>`}`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">
