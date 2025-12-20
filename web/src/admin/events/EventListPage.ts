@@ -16,7 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
-import { Event, EventsApi } from "@goauthentik/api";
+import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -123,15 +123,14 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     protected renderToolbar(): TemplateResult {
         return html`${super.renderToolbar()}
             <ak-reports-export-button
-                .createExport=${this.#createExport}
+                .createExport=${async (params: EventsEventsExportCreateRequest) => {
+                    return await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate(params);
+                }}
+                .exportParams=${async () => {
+                    return this.defaultEndpointConfig();
+                }}
             ></ak-reports-export-button>`;
     }
-
-    #createExport = async () => {
-        await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate({
-            ...(await this.defaultEndpointConfig()),
-        });
-    };
 }
 
 declare global {
