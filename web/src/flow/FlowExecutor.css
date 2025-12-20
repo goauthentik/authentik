@@ -33,7 +33,6 @@
     }
 
     &::part(select) {
-        transition: opacity 0.2s ease-in-out;
     }
 
     filter: var(--ak-global--background-contrast-Filter);
@@ -49,12 +48,10 @@
     }
 
     @media (width <= 61.25rem) and (height <= 61.25rem) and (not (prefers-contrast: more)) {
-        &::part(select) {
-            opacity: 0;
-        }
+        --ak-c-flow-executor__locale-select--select--Opacity: 0;
 
-        &:hover::part(select) {
-            opacity: 1;
+        &:hover {
+            --ak-c-flow-executor__locale-select--select--Opacity: 1;
         }
     }
 

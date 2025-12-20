@@ -14,7 +14,7 @@
     overflow: hidden;
 }
 
-select {
+[part="select"] {
     display: flex;
     align-items: center;
     background-color: transparent;
@@ -33,6 +33,8 @@ select {
 
     appearance: none;
     appearance: base-select;
+    transition: opacity 0.2s ease-in-out;
+    opacity: var(--ak-c-flow-executor__locale-select--select--Opacity, 1);
 
     &::picker-icon {
         /* Browser compatibility */
@@ -41,7 +43,7 @@ select {
     }
 }
 
-label {
+[part="label"] {
     background-color: var(--ak-c-locale-select--label--BackgroundColor, transparent);
     color: var(--ak-c-locale-select--label--Color, inherit);
     cursor: pointer;
