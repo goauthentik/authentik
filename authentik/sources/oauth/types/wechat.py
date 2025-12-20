@@ -30,7 +30,7 @@ class WeChatOAuth2Client(OAuth2Client):
     Handles the non-standard parts of the WeChat OAuth2 flow.
     """
 
-    def get_access_token(self, redirect_uri: str, code: str) -> dict[str, Any]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """
         Get access token from WeChat.
 
@@ -38,6 +38,14 @@ class WeChatOAuth2Client(OAuth2Client):
         unlike the standard OAuth2 POST request. The AppID (client_id)
         and AppSecret (client_secret) are passed as URL query parameters.
         """
+        if not self.check_application_state():
+            self.logger.warning("Application state check failed.")
+            return {"error": "State check failed."}
+
+        code = self.get_request_arg("code", None)
+        if not code:
+            return None
+
         token_url = self.get_access_token_url()
         params = {
             "appid": self.get_client_id(),
@@ -47,13 +55,12 @@ class WeChatOAuth2Client(OAuth2Client):
         }
 
         # Send the GET request using the base class's session handler
-        response = self.do_request("get", token_url, params=params)
-
         try:
+            response = self.do_request("get", token_url, params=params)
             response.raise_for_status()
         except RequestException as exc:
             self.logger.warning("Unable to fetch wechat token", exc=exc)
-            raise exc
+            return None
 
         data = response.json()
 
@@ -64,11 +71,11 @@ class WeChatOAuth2Client(OAuth2Client):
                 errcode=data.get("errcode"),
                 errmsg=data.get("errmsg"),
             )
-            raise RequestException(data.get("errmsg"))
+            return None
 
         return data
 
-    def get_profile_info(self, token: dict[str, Any]) -> dict[str, Any]:
+    def get_profile_info(self, token: dict[str, Any]) -> dict[str, Any] | None:
         """
         Get Userinfo from WeChat.
 
@@ -88,7 +95,7 @@ class WeChatOAuth2Client(OAuth2Client):
             response.raise_for_status()
         except RequestException as exc:
             self.logger.warning("Unable to fetch wechat userinfo", exc=exc)
-            raise exc
+            return None
 
         data = response.json()
 
@@ -99,7 +106,7 @@ class WeChatOAuth2Client(OAuth2Client):
                 errcode=data.get("errcode"),
                 errmsg=data.get("errmsg"),
             )
-            raise RequestException(data.get("errmsg"))
+            return None
 
         return data
 
