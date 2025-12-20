@@ -196,7 +196,8 @@ You can export your authentik instance's user data to a CSV file. To generate a 
 2. Navigate to **Directory** > **Users** and click **Export**.
 3. Set a [search query](#tell-me-more) as well as the ordering for the data export.
 4. Click **Export** above the event list.
-5. The export is processed in the background and after it's ready, you will receive a notification in the Admin interface's notification area.
-6. In the notification, click **Download**.
+5. Confirm the export parameters in the confirmation dialog.
+6. The export is processed in the background and after it's ready, you will receive a notification in the Admin interface's notification area.
+7. In the notification, click **Download**.
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
