@@ -7,6 +7,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from yaml import safe_load
 
+from authentik.lib.config import CONFIG
+
 
 def file_hash(path: str) -> str:
     with open(path) as _f:
@@ -36,7 +38,12 @@ class TestSchemaGeneration(APITestCase):
         api_file = "schema.yml"
         before_blueprint = file_hash(blueprint_file)
         before_api = file_hash(api_file)
-        call_command("build_schema")
+        with (
+            CONFIG.patch("debug", True),
+            CONFIG.patch("tenants.enabled", True),
+            CONFIG.patch("outposts.disable_embedded_outpost", True),
+        ):
+            call_command("build_schema")
         after_blueprint = file_hash(blueprint_file)
         after_api = file_hash(api_file)
 
