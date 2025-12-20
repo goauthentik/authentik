@@ -17,9 +17,9 @@ def build_session_group(session_key: str):
     ).hexdigest()
 
 
-def build_device_group(session_key: str):
+def build_device_group(device_id: str):
     return sha256(
-        f"{connection.schema_name}/group_client_device_{str(session_key)}".encode()
+        f"{connection.schema_name}/group_client_device_{str(device_id)}".encode()
     ).hexdigest()
 
 
