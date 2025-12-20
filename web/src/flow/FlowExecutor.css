@@ -45,8 +45,18 @@
     }
 
     /* At least a third of the card cut-off is available. */
-    @media (max-width: 52.5rem) and (min-height: 35rem) {
+    @media (max-width: 61.25rem) and (max-height: 52.5rem) {
         grid-area: main;
+    }
+
+    @media (max-width: 61.25rem) and (not (prefers-contrast: more)) {
+        &::part(select) {
+            opacity: 0.25;
+        }
+
+        &:hover::part(select) {
+            opacity: 1;
+        }
     }
 
     @media (min-width: 46.66rem) and (min-height: 35rem) {
@@ -63,9 +73,5 @@
     /* An awkward but possible layout when on mobile landscape. */
     @media (max-height: 35rem) or (max-width: 52.5rem) {
         --ak-c-flow-executor__locale-select--BackgroundColor--hover: transparent;
-
-        &::part(select) {
-            opacity: 0;
-        }
     }
 }
