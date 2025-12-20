@@ -23,12 +23,15 @@ select {
 
     border: none;
 
+    padding-inline-start: 1.75em !important;
+
     @media not (prefers-contrast: more) {
         &:focus {
             outline: none;
         }
     }
 
+    appearance: none;
     appearance: base-select;
 
     &::picker-icon {
@@ -42,6 +45,7 @@ label {
     background-color: var(--ak-c-locale-select--label--BackgroundColor, transparent);
     color: var(--ak-c-locale-select--label--Color, inherit);
     cursor: pointer;
+    position: absolute;
 
     .icon {
         display: block;

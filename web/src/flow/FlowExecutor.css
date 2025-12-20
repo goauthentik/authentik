@@ -11,7 +11,6 @@
     inset-inline-end: var(--pf-global--spacer--md);
     inset-block-start: var(--pf-global--spacer--md);
     z-index: 100;
-    filter: var(--ak-global--background-contrast-Filter);
 }
 
 [part="locale-select"] {
@@ -24,6 +23,8 @@
 
     color: var(--pf-global--Color--light-100);
 
+    /* Browser compatibility */
+    &:has(select:hover),
     &:hover {
         background-color: var(
             --ak-c-flow-executor__locale-select--BackgroundColor--hover,
@@ -31,27 +32,25 @@
         );
     }
 
+    &::part(select) {
+        transition: opacity 0.2s ease-in-out;
+    }
+
     filter: var(--ak-global--background-contrast-Filter);
 
     grid-area: header;
 
-    @media (max-width: 35rem) or (max-height: 17.5rem) {
+    /* At least a third of the card cut-off is available. */
+    @media (width <= 61.25rem) and (height <= 61.25rem) {
         color: var(--ak-global--background-contrast);
         filter: none;
 
-        &::part(select) {
-            font-size: var(--pf-global--FontSize--sm);
-        }
-    }
-
-    /* At least a third of the card cut-off is available. */
-    @media (max-width: 61.25rem) and (max-height: 52.5rem) {
         grid-area: main;
     }
 
-    @media (max-width: 61.25rem) and (not (prefers-contrast: more)) {
+    @media (width <= 61.25rem) and (height <= 61.25rem) and (not (prefers-contrast: more)) {
         &::part(select) {
-            opacity: 0.25;
+            opacity: 0;
         }
 
         &:hover::part(select) {
@@ -59,19 +58,19 @@
         }
     }
 
-    @media (min-width: 46.66rem) and (min-height: 35rem) {
+    @media (width >= 61.25rem) {
         --ak-c-flow-executor__locale-select--BackgroundColor--hover: var(
             --pf-global--BackgroundColor--150
         );
     }
 
     /* Card is fully masked to mobile background. */
-    @media (max-width: 35rem) {
+    @media (width <= 35rem) {
         grid-row: header;
     }
 
     /* An awkward but possible layout when on mobile landscape. */
-    @media (max-height: 35rem) or (max-width: 52.5rem) {
+    @media (height <= 35rem) or (width <= 52.5rem) {
         --ak-c-flow-executor__locale-select--BackgroundColor--hover: transparent;
     }
 }
