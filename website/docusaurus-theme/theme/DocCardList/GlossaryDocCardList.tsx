@@ -31,7 +31,7 @@ interface TermCache {
         tags: string[];
         shortDescription: string;
         longDescription: string;
-        isAuthentikSpecific: boolean;
+        authentikSpecific: boolean;
     };
 }
 
@@ -54,52 +54,121 @@ function splitParagraphs(text: string): string[] {
 }
 
 /**
- * Converts backticks to code elements
+ * Highlights matching search terms in text
  */
-function renderMarkdown(text: string): (string | React.ReactElement)[] {
+function highlightText(
+    text: string,
+    searchFilter: string,
+    keyPrefix: string,
+): (string | React.ReactElement)[] {
+    if (!searchFilter) return [text];
+
+    const escaped = searchFilter.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`(${escaped})`, "gi");
+    const matches = text.split(regex);
+
+    return matches.map((part, i) => {
+        if (part.toLowerCase() === searchFilter.toLowerCase()) {
+            return (
+                <mark key={`${keyPrefix}-${i}`} className={sharedStyles.searchHighlight}>
+                    {part}
+                </mark>
+            );
+        }
+        return part;
+    });
+}
+
+/**
+ * Converts backticks to code elements and highlights search matches
+ */
+function renderMarkdown(
+    text: string,
+    searchFilter: string = "",
+    keyPrefix: string = "md",
+): (string | React.ReactElement)[] {
     const parts: (string | React.ReactElement)[] = [];
     const regex = /`([^`]+)`/g;
     let lastIndex = 0;
     let match;
 
     while ((match = regex.exec(text)) !== null) {
-        // Add text before the match
+        // Add text before the match (with highlighting)
         if (match.index > lastIndex) {
-            parts.push(text.substring(lastIndex, match.index));
+            const textBefore = text.substring(lastIndex, match.index);
+            parts.push(...highlightText(textBefore, searchFilter, `${keyPrefix}-${lastIndex}`));
         }
-        // Add the code element
-        parts.push(<code key={match.index}>{match[1]}</code>);
+        // Add the code element (with highlighting inside)
+        const codeContent = highlightText(
+            match[1] ?? "",
+            searchFilter,
+            `${keyPrefix}-code-${match.index}`,
+        );
+        parts.push(<code key={`${keyPrefix}-${match.index}`}>{codeContent}</code>);
         lastIndex = regex.lastIndex;
     }
 
-    // Add remaining text
+    // Add remaining text (with highlighting)
     if (lastIndex < text.length) {
-        parts.push(text.substring(lastIndex));
+        const remaining = text.substring(lastIndex);
+        parts.push(...highlightText(remaining, searchFilter, `${keyPrefix}-${lastIndex}`));
     }
 
-    return parts.length > 0 ? parts : [text];
+    return parts.length > 0 ? parts : highlightText(text, searchFilter, keyPrefix);
 }
 
 /**
  * Renders a single glossary term as a card with title, short description, and long description.
  */
-function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache: TermCache }) {
-    const [isExpanded, setIsExpanded] = React.useState(false);
+function GlossaryTermCard({
+    item,
+    termCache,
+    searchFilter = "",
+}: {
+    item: SidebarDocLike;
+    termCache: TermCache;
+    searchFilter?: string;
+}) {
+    // Check if search matches ONLY in long description (not visible in title/short)
+    // Only auto-expand if the match wouldn't be visible without expanding
+    const cachedData = item.docId ? termCache[item.docId] : null;
+    const shouldAutoExpand = React.useMemo(() => {
+        if (!searchFilter) return false;
+        const lowerFilter = searchFilter.toLowerCase();
+        const matchesTitle = cachedData?.termName?.toLowerCase().includes(lowerFilter);
+        const matchesShort = cachedData?.shortDescription?.toLowerCase().includes(lowerFilter);
+        const matchesLong = cachedData?.longDescription?.toLowerCase().includes(lowerFilter);
+        return matchesLong && !matchesTitle && !matchesShort;
+    }, [searchFilter, cachedData]);
 
-    // Ensure item has a valid docId before accessing cache
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    const userToggledRef = React.useRef(false);
+
+    // Auto-expand only when match is exclusively in long description (not visible otherwise)
+    // Once user manually toggles, never auto-control this term again
+    React.useEffect(() => {
+        if (userToggledRef.current) {
+            return;
+        }
+        if (shouldAutoExpand) {
+            setIsExpanded(true);
+        } else if (!searchFilter) {
+            setIsExpanded(false);
+        }
+    }, [shouldAutoExpand, searchFilter]);
+
+    // Ensure item has a valid docId and cached data before rendering
     if (!item.docId) {
         console.error(`DocCardList: glossary item missing docId:`, item);
         return null;
     }
-
-    const cachedData = termCache[item.docId];
 
     if (!cachedData) {
         console.error(`DocCardList: no cached data found for glossary term '${item.docId}'.`);
         return null;
     }
 
-    const { termName, tags, shortDescription, longDescription, isAuthentikSpecific } = cachedData;
+    const { termName, tags, shortDescription, longDescription, authentikSpecific } = cachedData;
     const longParagraphs = splitParagraphs(longDescription);
     const hasLongDescription = longParagraphs.length > 0;
 
@@ -126,8 +195,8 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
             <div className={clsx("card margin-bottom--md", sharedStyles.compactCard)}>
                 <div className="card__header">
                     <h3 className="margin-vert--none" aria-label={termName || "Glossary term"}>
-                        {termName || "Glossary term"}
-                        {isAuthentikSpecific ? (
+                        {highlightText(termName || "Glossary term", searchFilter, "term")}
+                        {authentikSpecific ? (
                             <span
                                 className={sharedStyles.authentikBadge}
                                 title="authentik-specific term"
@@ -162,7 +231,7 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
                         )}
                     >
                         {shortDescription
-                            ? renderMarkdown(shortDescription)
+                            ? renderMarkdown(shortDescription, searchFilter, "short")
                             : "Short description not provided."}
                     </div>
 
@@ -170,15 +239,28 @@ function GlossaryTermCard({ item, termCache }: { item: SidebarDocLike; termCache
                         <>
                             <button
                                 className={sharedStyles.expandButton}
-                                onClick={() => setIsExpanded(!isExpanded)}
+                                onClick={() => {
+                                    setIsExpanded(!isExpanded);
+                                    userToggledRef.current = true;
+                                }}
                                 aria-expanded={isExpanded}
+                                aria-controls={`${anchorId}-details`}
                             >
                                 {isExpanded ? "▼ Hide details" : "▶ Show details"}
                             </button>
                             {isExpanded ? (
-                                <div className={sharedStyles.glossaryLong}>
+                                <div
+                                    id={`${anchorId}-details`}
+                                    className={sharedStyles.glossaryLong}
+                                >
                                     {longParagraphs.map((paragraph, index) => (
-                                        <p key={index}>{renderMarkdown(paragraph)}</p>
+                                        <p key={index}>
+                                            {renderMarkdown(
+                                                paragraph,
+                                                searchFilter,
+                                                `long-${index}`,
+                                            )}
+                                        </p>
                                     ))}
                                 </div>
                             ) : null}
@@ -199,31 +281,29 @@ export default function GlossaryDocCardList({
 }: GlossaryDocCardListProps): ReactNode {
     // Handle query parameter links on mount and ensure scroll to target
     React.useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
         const queryString = window.location.search;
         if (queryString && queryString.length > 1) {
             const termId = queryString.substring(1); // Remove the '?'
+            const element = document.getElementById(termId);
 
-            // Function to scroll to element
-            const scrollToTerm = () => {
-                const element = document.getElementById(termId);
-                if (element) {
-                    element.scrollIntoView({ behavior: "smooth", block: "start" });
-                    return true;
-                }
-                return false;
-            };
-
-            // Try immediately
-            if (!scrollToTerm()) {
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "start" });
+            } else {
                 // If not found, try after a delay to allow DOM to render
-                const timeoutId = setTimeout(() => {
-                    scrollToTerm();
+                timeoutId = setTimeout(() => {
+                    document.getElementById(termId)?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
                 }, 100);
-
-                return () => clearTimeout(timeoutId);
             }
         }
-        return undefined;
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+        };
     }, []);
 
     // Build term cache to avoid repeated useDocById calls with error handling
@@ -246,12 +326,18 @@ export default function GlossaryDocCardList({
                     tags: safeStringArrayExtract(sidebarProps.tags),
                     shortDescription: safeStringExtract(sidebarProps.shortDescription),
                     longDescription: safeStringExtract(sidebarProps.longDescription),
-                    isAuthentikSpecific: safeBooleanExtract(sidebarProps.isAuthentikSpecific),
+                    authentikSpecific: safeBooleanExtract(sidebarProps.authentikSpecific),
                 };
             });
 
         return cache;
     }, [glossaryPool]);
+
+    // O(1) lookup map for sidebar items by docId
+    const sidebarItemMap = useMemo(
+        () => new Map(glossaryPool.map((item) => [item.docId, item])),
+        [glossaryPool],
+    );
 
     // Transform cached data to standardized GlossaryHelperTerm format
     const glossaryTerms = useMemo<GlossaryHelperTerm[]>(() => {
@@ -269,7 +355,7 @@ export default function GlossaryDocCardList({
                     shortDefinition: cached.shortDescription,
                     fullDefinition: cached.longDescription || undefined,
                     tags: cached.tags.length > 0 ? cached.tags : undefined,
-                    isAuthentikSpecific: cached.isAuthentikSpecific,
+                    authentikSpecific: cached.authentikSpecific,
                 };
             })
             .filter((term): term is NonNullable<typeof term> => term !== null);
@@ -277,67 +363,59 @@ export default function GlossaryDocCardList({
 
     // Optimized render function with memoized term lookup
     const renderTerms = useCallback(
-        (filteredTerms: GlossaryHelperTerm[], viewMode: "categorized" | "alphabetical") => {
+        (
+            filteredTerms: GlossaryHelperTerm[],
+            viewMode: "categorized" | "alphabetical",
+            searchFilter: string,
+        ) => {
             if (viewMode === "categorized") {
                 // Categorized view: group terms by their tags into sections
                 const termsByTag = groupByTag(filteredTerms);
-                return (
-                    <>
-                        {termsByTag.map(([tag, tagTerms]) => (
-                            <div key={tag} className={glossaryStyles.section}>
-                                <h2 className={glossaryStyles.sectionTitle}>{formatTag(tag)}</h2>
-                                <section className={clsx("row")}>
-                                    {tagTerms.map((term) => {
-                                        // Use pre-cached sidebar item lookup
-                                        const sidebarItem = glossaryPool.find(
-                                            (item) => item.docId === term.id,
-                                        );
-                                        return sidebarItem && sidebarItem.docId ? (
-                                            <GlossaryTermCard
-                                                key={term.id}
-                                                item={sidebarItem}
-                                                termCache={termCache}
-                                            />
-                                        ) : null;
-                                    })}
-                                </section>
-                            </div>
-                        ))}
-                    </>
-                );
+                return termsByTag.map(([tag, tagTerms]) => (
+                    <div key={tag} className={glossaryStyles.section}>
+                        <h2 className={glossaryStyles.sectionTitle}>{formatTag(tag)}</h2>
+                        <section className={clsx("row")}>
+                            {tagTerms.map((term) => {
+                                const sidebarItem = sidebarItemMap.get(term.id);
+                                return sidebarItem ? (
+                                    <GlossaryTermCard
+                                        key={term.id}
+                                        item={sidebarItem}
+                                        termCache={termCache}
+                                        searchFilter={searchFilter}
+                                    />
+                                ) : null;
+                            })}
+                        </section>
+                    </div>
+                ));
             }
             // Alphabetical view: group terms by first letter A-Z
             const termsByAlphabet = groupByFirstLetter(filteredTerms);
-            return (
-                <>
-                    {termsByAlphabet.map(([letter, letterTerms]) => (
-                        <div
-                            key={letter}
-                            className={glossaryStyles.simplifiedSection}
-                            id={`letter-${letter}`}
-                        >
-                            <h2 className={glossaryStyles.sectionTitle}>{letter}</h2>
-                            <section className={clsx("row")}>
-                                {letterTerms.map((term) => {
-                                    // Use pre-cached sidebar item lookup
-                                    const sidebarItem = glossaryPool.find(
-                                        (item) => item.docId === term.id,
-                                    );
-                                    return sidebarItem && sidebarItem.docId ? (
-                                        <GlossaryTermCard
-                                            key={term.id}
-                                            item={sidebarItem}
-                                            termCache={termCache}
-                                        />
-                                    ) : null;
-                                })}
-                            </section>
-                        </div>
-                    ))}
-                </>
-            );
+            return termsByAlphabet.map(([letter, letterTerms]) => (
+                <div
+                    key={letter}
+                    className={glossaryStyles.simplifiedSection}
+                    id={`letter-${letter}`}
+                >
+                    <h2 className={glossaryStyles.sectionTitle}>{letter}</h2>
+                    <section className={clsx("row")}>
+                        {letterTerms.map((term) => {
+                            const sidebarItem = sidebarItemMap.get(term.id);
+                            return sidebarItem ? (
+                                <GlossaryTermCard
+                                    key={term.id}
+                                    item={sidebarItem}
+                                    termCache={termCache}
+                                    searchFilter={searchFilter}
+                                />
+                            ) : null;
+                        })}
+                    </section>
+                </div>
+            ));
         },
-        [glossaryPool, termCache],
+        [sidebarItemMap, termCache],
     );
 
     return (

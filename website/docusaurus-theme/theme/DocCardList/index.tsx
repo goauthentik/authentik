@@ -35,12 +35,12 @@ function hasOwnProperty<T extends object, K extends PropertyKey>(
 /**
  * Generates stable React keys from sidebar items, with fallback to index
  */
-function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number) {
+function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number): string | number {
     if (typeof item === "object" && item !== null) {
         const match = ["docId", "id", "href", "label"].find(
             (name) => hasOwnProperty(item, name) && typeof item[name] === "string",
         );
-        return match ? item[match] : idx;
+        return match ? ((item as Record<string, unknown>)[match] as string) : idx;
     }
     return idx;
 }
