@@ -49,7 +49,7 @@ To support the integration of Cloudflare Access with authentik, you need to crea
 
 ## Cloudflare Access configuration
 
-1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Intergrations** > **Identity provider**.
+1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Integrations** > **Identity provider**.
 2. Click **Add an identity provider**, and then select **OpenID Connect**.
 3. From the authentik provider you created earlier, copy the following details and paste them into the corresponding fields:
     - **Client ID** > App ID
