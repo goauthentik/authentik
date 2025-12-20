@@ -110,6 +110,11 @@ class WeChatOAuth2Client(OAuth2Client):
 
         return data
 
+    def get_redirect_args(self) -> dict[str, str]:
+        """Get request parameters for redirect url."""
+        args = super().get_redirect_args()
+        args["appid"] = args.pop("client_id")
+        return args
 
 class WeChatOAuth2Callback(OAuthCallback):
     """WeChat OAuth2 Callback"""
