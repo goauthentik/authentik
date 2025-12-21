@@ -57,7 +57,7 @@ class QLTest(APITestCase):
         )
         self.assertEqual(res.status_code, 200)
         content = loads(res.content)
-        self.assertGreaterEqual(content["pagination"]["count"], 1)
+        self.assertEqual(content["pagination"]["count"], 1)
         self.assertEqual(content["results"][0]["username"], self.user.username)
 
     def test_search_json(self):

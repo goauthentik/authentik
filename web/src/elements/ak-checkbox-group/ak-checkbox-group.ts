@@ -1,9 +1,9 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AkControlElement } from "#elements/AkControlElement";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues } from "@lit/reactive-element";
-import { TemplateResult, css, html } from "lit";
+import { css, html, TemplateResult } from "lit";
 import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -79,20 +79,18 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
-    static get styles() {
-        return [
-            PFBase,
-            PFForm,
-            PFCheck,
-            css`
-                .pf-c-form__group-control {
-                    padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                    );
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFForm,
+        PFCheck,
+        css`
+            .pf-c-form__group-control {
+                padding-top: calc(
+                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
+                );
+            }
+        `,
+    ];
 
     static get formAssociated() {
         return true;

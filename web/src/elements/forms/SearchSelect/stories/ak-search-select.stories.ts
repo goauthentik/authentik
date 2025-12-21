@@ -1,13 +1,16 @@
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select";
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
-import { type ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
-import { Meta } from "@storybook/web-components";
-
-import { TemplateResult, html } from "lit";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#elements/forms/SearchSelect/ak-search-select-ez";
 
 import { sampleData } from "./sampleData.js";
+
+import { groupBy } from "#common/utils";
+
+import { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import { type ISearchSelectApi } from "#elements/forms/SearchSelect/ak-search-select-ez";
+
+import { Meta } from "@storybook/web-components";
+
+import { html, TemplateResult } from "lit";
 
 type Sample = { name: string; pk: string; season: string[] };
 
@@ -44,7 +47,7 @@ const metadata: Meta<SearchSelect<Sample>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -92,7 +95,7 @@ export const GroupedAndEz = () => {
     const config: ISearchSelectApi<Sample> = {
         fetchObjects: getSamples,
         renderElement: (sample: Sample) => sample.name,
-        value: (sample: Sample | undefined) => sample?.pk ?? "",
+        value: (sample: Sample | null) => sample?.pk ?? "",
         groupBy: (samples: Sample[]) =>
             groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
     };

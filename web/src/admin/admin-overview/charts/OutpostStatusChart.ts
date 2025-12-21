@@ -1,17 +1,23 @@
+import "#elements/forms/ConfirmationForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart } from "#elements/charts/Chart";
 import { actionToColor } from "#elements/charts/EventChart";
-import { SummarizedSyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
-import "@goauthentik/elements/forms/ConfirmationForm";
+
+import { SummarizedSyncStatus } from "#admin/admin-overview/charts/SyncStatusChart";
+
+import { EventActions, OutpostsApi } from "@goauthentik/api";
+
 import { ChartData, ChartOptions } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
-import { EventActions, OutpostsApi } from "@goauthentik/api";
-
 @customElement("ak-admin-status-chart-outpost")
 export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
+    public override ariaLabel = msg("Outpost status chart");
+
     getChartType(): string {
         return "doughnut";
     }

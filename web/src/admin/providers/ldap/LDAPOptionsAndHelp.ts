@@ -1,7 +1,7 @@
+import { LDAPAPIAccessMode } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { html } from "lit";
-
-import { LDAPAPIAccessMode } from "@goauthentik/api";
 
 export const bindModeOptions = [
     {

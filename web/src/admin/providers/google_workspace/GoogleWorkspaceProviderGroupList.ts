@@ -1,12 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncObjectForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     GoogleWorkspaceProviderGroup,
@@ -15,6 +14,10 @@ import {
     SyncObjectModelEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-provider-google-workspace-groups-list")
 export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProviderGroup> {
     @property({ type: Number })
@@ -22,9 +25,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
 
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -73,11 +74,17 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: GoogleWorkspaceProviderGroup): string {
+        return item.groupObj.name;
     }
 
-    row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
+
+    row(item: GoogleWorkspaceProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -87,11 +94,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     }
 
     renderExpanded(item: GoogleWorkspaceProviderGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html` <pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

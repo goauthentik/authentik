@@ -1,17 +1,17 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { DualSelectEventType, DualSelectPair } from "../types.js";
+import { listStyles, selectedPaneStyles } from "./styles.js";
+
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-import { listStyles, selectedPaneStyles } from "./styles.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { DualSelectEventType, DualSelectPair } from "../types";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
@@ -57,7 +57,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
      * moved (removed) if the user so requests.
      */
     @state()
-    public toMove: Set<string> = new Set();
+    public toMove: Set<string | number> = new Set();
 
     //#endregion
 
@@ -88,7 +88,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     //#region Event Listeners
 
-    #clickListener = (key: string): void => {
+    #clickListener = (key: string | number): void => {
         if (this.toMove.has(key)) {
             this.toMove.delete(key);
         } else {
@@ -105,7 +105,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
         this.requestUpdate();
     };
 
-    #moveListener = (key: string): void => {
+    #moveListener = (key: string | number): void => {
         this.toMove.delete(key);
 
         this.dispatchCustomEvent(DualSelectEventType.RemoveOne, key);

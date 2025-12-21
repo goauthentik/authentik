@@ -142,7 +142,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
     def test_register_restricted_device_type_deny(self):
         """Test registration with restricted devices (fail)"""
-        webauthn_mds_import.delay(force=True).get()
+        webauthn_mds_import.send(force=True)
         self.stage.device_type_restrictions.set(
             WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
@@ -205,7 +205,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
     def test_register_restricted_device_type_allow(self):
         """Test registration with restricted devices (allow)"""
-        webauthn_mds_import.delay(force=True).get()
+        webauthn_mds_import.send(force=True)
         self.stage.device_type_restrictions.set(
             WebAuthnDeviceType.objects.filter(description="iCloud Keychain")
         )
@@ -254,8 +254,8 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
     def test_register_restricted_device_type_allow_unknown(self):
         """Test registration with restricted devices (allow, unknown device type)"""
-        webauthn_mds_import.delay(force=True).get()
-        WebAuthnDeviceType.objects.filter(description="iCloud Keychain").delete()
+        webauthn_mds_import.send(force=True)
+        WebAuthnDeviceType.objects.filter(aaguid="fbfc3007-154e-4ecc-8c0b-6e020557d7bd").delete()
         self.stage.device_type_restrictions.set(
             WebAuthnDeviceType.objects.filter(aaguid=UNKNOWN_DEVICE_TYPE_AAGUID)
         )

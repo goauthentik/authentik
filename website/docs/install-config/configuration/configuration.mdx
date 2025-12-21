@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker compose run --rm worker dump_config
+    docker compose run --rm worker ak dump_config
     ```
 
   </TabItem>
@@ -65,38 +65,76 @@ To check if your config has been applied correctly, you can run the following co
 
 ## PostgreSQL Settings
 
-- `AUTHENTIK_POSTGRESQL__HOST`: Hostname of your PostgreSQL Server
-- `AUTHENTIK_POSTGRESQL__NAME`: Database name
-- `AUTHENTIK_POSTGRESQL__USER`: Database user
-- `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
-- `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
-- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer. Deprecated, see below
-- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool. Deprecated, see below
-- `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `"verify-ca"`
-- `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
-- `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
-- `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
-- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Database connection lifetime. Defaults to `0` (no persistent connections). Can be set to `null` for unlimited persistent connections. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-max-age) for more details.
-- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Existing persistent database connections will be health checked before they are reused if set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details.
-- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disable server side cursors when set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#disable-server-side-cursors) for more details.
+authentik requires a PostgreSQL database to store its configuration and data. Below are the settings to configure the database connection.
 
-The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+### Connection settings
+
+- `AUTHENTIK_POSTGRESQL__HOST`: Hostname or IP address of your PostgreSQL server.
+- `AUTHENTIK_POSTGRESQL__PORT`: Port on which PostgreSQL is listening. Defaults to the standard PostgreSQL port `5432`.
+- `AUTHENTIK_POSTGRESQL__USER`: Username that authentik will use to authenticate with PostgreSQL.
+- `AUTHENTIK_POSTGRESQL__PASSWORD`: Password for PostgreSQL authentication. If not set, it defaults to the value of the `POSTGRES_PASSWORD` environment variable (this fallback is specific to the default Docker Compose setup).
+- `AUTHENTIK_POSTGRESQL__NAME`: The name of the database for authentik to use.
+
+:::info Hot-reloading
+The `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__PORT`, `AUTHENTIK_POSTGRESQL__USER`, and `AUTHENTIK_POSTGRESQL__PASSWORD` settings support hot-reloading and can be changed without restarting authentik. However, adding or removing read replicas requires a restart.
+:::
+
+### SSL/TLS settings
+
+Configure SSL/TLS to secure the connection to your PostgreSQL server.
+
+- `AUTHENTIK_POSTGRESQL__SSLMODE`: Controls the SSL verification mode. Defaults to `verify-ca`.
+    - `disable`: No SSL is used.
+    - `allow`: Use SSL if available, but don't perform verification.
+    - `prefer`: Attempt an SSL connection first, fall back to non-SSL if it fails.
+    - `require`: Require an SSL connection, but without certificate verification.
+    - `verify-ca`: Require SSL and verify that the server certificate is signed by a trusted CA.
+    - `verify-full`: Require SSL, verify the CA, and verify that the server hostname matches the certificate.
+
+- `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: Path to the CA certificate file for verifying the server's certificate. Required for `verify-ca` and `verify-full` modes.
+
+- `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to the client SSL certificate file. Required if the PostgreSQL server is configured for mutual TLS and requires client certificates.
+
+- `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to the private key for the client certificate (`SSLCERT`).
+
+For more details, see [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable/ref/databases/#postgresql-connection-settings) or the [PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
+
+### Connection management
+
+These settings control connection persistence and behavior, which is particularly important when using a connection pooler like PgBouncer.
+
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: The maximum age of a database connection in seconds.
+    - `0` (default): Connections are closed after each request.
+    - greater than `0`: Enables persistent connections, with the value defining the maximum lifetime.
+    - `None`: Unlimited persistence. Use with caution, especially with connection poolers.
+      See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections) for more details.
+
+- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Enables health checks on persistent connections before reuse. Defaults to `false`. This helps prevent errors from stale connections that may have been terminated by the database or a pooler. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for details.
+
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors. Defaults to `false`. Server-side cursors can improve performance for large result sets but are incompatible with connection poolers in transaction pooling mode (like PgBouncer). **Set this to `true` if you use a transaction-based pooler or encounter cursor-related errors.** See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/databases/#transaction-pooling-and-server-side-cursors) for more details.
+
+### Advanced Settings
 
 - `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA` :ak-version[2024.12]
 
-    The name of the schema used by default in the database. Defaults to `public`.
+    The name of the database schema for authentik to use. Defaults to `public`.
 
-    It is only supported to change this value before the initial start of authentik.
+    This can only be set before authentik is started for the first time. If you specify a custom schema, it must already exist in the database, and the user that authentik connects with must have permissions to access it. The `search_path` for the database user must also be configured to include this schema.
 
-    When setting this value to any non-standard value, the schema must already exist in the database, and the user authentik connects with must have access to it. Additionally the `search_path` of the authentik database must be set to include this schema.
+- `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
-### Read replicas
+    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    - Parameters passed with this setting will override those passed with other settings.
+    - These parameters are not applied to read replicas.
+    - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
 
-You can configure additional read replica databases that are used only for read operations. To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add additional settings for each replica, replacing the default `0` with a unique value for each additional replica.
+### Read Replicas
 
-If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica.
+You can configure additional read replica databases to distribute database load and improve performance. When read replicas are configured, authentik automatically routes query operations between the primary database (for writes) and read replica databases (for queries). By default, the primary database won't be used for queries when read replicas are available. If you want the primary database to also handle queries, add it as a read replica.
 
-The same PostgreSQL settings as described above are used for each read replica.
+To configure authentik to use read replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple read replicas, add settings for each one by using a unique index starting from `0` (e.g., `0`, `1`, `2`, etc.).
+
+The same PostgreSQL settings as described above are used for each read replica. For example, for the first read replica (index `0`):
 
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`
@@ -110,93 +148,304 @@ The same PostgreSQL settings as described above are used for each read replica.
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTIONS`
 
-### Using a PostgreSQL connection pooler (PgBouncer or PgPool)
+Additionally, you can set arbitrary connection parameters on all read replicas with:
 
-When your PostgreSQL database(s) are running behind a connection pooler, like PgBouncer or PgPool, two settings need to be overridden:
+- `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
 
-- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`
+    Arbitrary `libpq` parameter key words for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    - Parameters passed with this setting will override those passed with other settings.
+    - Parameter key words should be formatted as a base64-encoded JSON dictionary.
 
-    A connection pooler running in session pool mode (PgBouncer default) can be incompatible with unlimited persistent connections enabled by setting this to `null`: If the connection from the connection pooler to the database server is dropped, the connection pooler will wait for the client to disconnect before releasing the connection; however this will **never** happen as authentik is configured to keep the connection to the connection pooler forever.
+### Using a PostgreSQL Connection Pooler
 
-    To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or update this setting to a value lower than any timeouts that may cause the connection to the database to be dropped (up to `0`).
+When your PostgreSQL databases are running behind a connection pooler (like PgBouncer or PgPool), you need to adjust several settings to ensure compatibility:
 
-- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`:
 
-    Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `true`.
+    A connection pooler running in session pool mode (which is the default for PgBouncer) can be incompatible with unlimited persistent connections (`null` setting). When the connection from the pooler to the database is dropped, the pooler will wait for the client to disconnect before releasing the connection. However, this will _never_ happen as authentik keeps the connection indefinitely.
 
-Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS` to perform health checks on persistent database connections before they are reused.
+    To address this incompatibility, either configure the connection pooler to run in transaction pool mode or set this value lower than any timeout that might cause the connection to be dropped (down to `0` to disable persistent connections).
 
-## Redis Settings
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`:
 
-- `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
-- `AUTHENTIK_REDIS__PORT`: Redis server port when not using configuration URL
-- `AUTHENTIK_REDIS__DB`: Redis server database when not using configuration URL
-- `AUTHENTIK_REDIS__USERNAME`: Redis server username when not using configuration URL
-- `AUTHENTIK_REDIS__PASSWORD`: Redis server password when not using configuration URL
-- `AUTHENTIK_REDIS__TLS`: Redis server connection using TLS when not using configuration URL
-- `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL. Defaults to `"none"`. Allowed values are `"none"` and `"required"`.
-- `AUTHENTIK_REDIS__TLS_CA_CERT`: Path to the Redis server TLS CA root when not using configuration URL. Defaults to `null`.
+    When using a connection pooler in transaction pool mode (e.g., PgPool, or PgBouncer in transaction or statement pool mode), you must set this option to `true`. This is required because server-side cursors maintain state across multiple queries, which is incompatible with transaction-based pooling where connections may change between queries.
 
-## Result Backend Settings
+### Deprecated Settings
 
-- `AUTHENTIK_RESULT_BACKEND__URL`: Result backend configuration URL, uses [the Redis Settings](#redis-settings) by default
+- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
+- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjusts the database configuration to support connections to a Pgpool connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
 
 ## Cache Settings
 
-- `AUTHENTIK_CACHE__URL`: Cache configuration URL, uses [the Redis Settings](#redis-settings) by default
 - `AUTHENTIK_CACHE__TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
 - `AUTHENTIK_CACHE__TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
 - `AUTHENTIK_CACHE__TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
-- `AUTHENTIK_CACHE__TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
-    :::info
-    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
-    :::
+## Worker settings
 
-## Channel Layer Settings (inter-instance communication)
+##### `AUTHENTIK_WORKER__PROCESSES`
 
-- `AUTHENTIK_CHANNEL__URL`: Channel layers configuration URL, uses [the Redis Settings](#redis-settings) by default
+Configure how many worker processes should be started for Dramatiq to use. In environments where scaling with multiple replicas of the authentik worker is not possible, this number can be increased to handle higher loads.
 
-## Broker Settings
+Defaults to 1. In environments where scaling with multiple replicas of the authentik worker is not possible, this number can be increased to handle higher loads.
 
-- `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to Redis using [the respective settings](#redis-settings)
-- `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64-encoded broker transport options
+##### `AUTHENTIK_WORKER__THREADS`
 
-    :::info
-    `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
-    :::
+Configure how many Dramatiq threads are started per worker. In environments where scaling with multiple replicas of the authentik worker is not possible, this number can be increased to handle higher loads.
+
+Defaults to 2. A value below 2 threads is not recommended, unless you have multiple worker replicas.
+
+##### `AUTHENTIK_WORKER__CONSUMER_LISTEN_TIMEOUT`
+
+Configure how long a worker waits for a PostgreSQL `LISTEN` notification.
+
+Defaults to `seconds=30`.
+
+##### `AUTHENTIK_WORKER__TASK_MAX_RETRIES`
+
+Configure how many times a failing task will be retried before abandoning.
+
+Defaults to 5.
+
+##### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
+
+Configure the default duration a task can run for before it is aborted. Some tasks will override this setting based on other settings, such as LDAP source synchronization tasks.
+
+Defaults to `minutes=10`.
+
+##### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
+
+Configure the interval at which old tasks are cleaned up.
+
+Defaults to `days=1`.
+
+##### `AUTHENTIK_WORKER__TASK_EXPIRATION`
+
+Configure how long tasks are kept in the database before they are deleted.
+
+Defaults to `days=30`.
+
+##### `AUTHENTIK_WORKER__SCHEDULER_INTERVAL`
+
+Configure how often the task scheduler runs.
+
+Defaults to `seconds=60`.
 
 ## Listen Settings
 
-- `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Applies to Server and Proxy outpost)
-- `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Applies to Server and Proxy outpost)
-- `AUTHENTIK_LISTEN__LDAP`: Listening address:port (e.g. `0.0.0.0:3389`) for LDAP (Applies to LDAP outpost)
-- `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (Applies to LDAP outpost)
-- `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (Applies to All)
-- `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (Applies to All)
-- `AUTHENTIK_LISTEN__DEBUG_PY`: Listening address:port (e.g. `0.0.0.0:9901`) for Python debugging server (Applies to Server, see [Debugging](../../developer-docs/setup/debugging.md))
-- `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of comma-separated CIDRs that proxy headers should be accepted from (Applies to Server)
+##### `AUTHENTIK_LISTEN__HTTP`
 
-    Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
+Listening address:port for HTTP.
 
-    Requests directly coming from one an address within a CIDR specified here are able to set proxy headers, such as `X-Forwarded-For`. Requests coming from other addresses will not be able to set these headers.
+Applies to the Server, the Worker, and Proxy outposts.
 
-## Media Storage Settings
+Defaults to `0.0.0.0:9000`.
+
+##### `AUTHENTIK_LISTEN__HTTPS`
+
+Listening address:port for HTTPS.
+
+Applies to the Server and Proxy outposts.
+
+Defaults to `0.0.0.0:9443`.
+
+##### `AUTHENTIK_LISTEN__LDAP`
+
+Listening address:port for LDAP.
+
+Applies to LDAP outposts.
+
+Defaults to `0.0.0.0:3389`.
+
+##### `AUTHENTIK_LISTEN__LDAPS`
+
+Listening address:port for LDAPS.
+
+Applies to LDAP outposts.
+
+Defaults to `0.0.0.0:6636`.
+
+##### `AUTHENTIK_LISTEN__METRICS`
+
+Listening address:port for Prometheus metrics.
+
+Applies to all.
+
+Defaults to `0.0.0.0:9300`.
+
+##### `AUTHENTIK_LISTEN__DEBUG`
+
+Listening address:port for Go Debugging metrics.
+
+Applies to all, except the worker.
+
+Defaults to `0.0.0.0:9900`.
+
+##### `AUTHENTIK_LISTEN__DEBUG_PY`
+
+Listening address:port for Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
+
+Applies to the Server and the Worker.
+
+Defaults to `0.0.0.0:9901`.
+
+##### `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`
+
+List of comma-separated CIDRs that proxy headers should be accepted from.
+
+Applies to the Server.
+
+Requests directly coming from one an address within a CIDR specified here are able to set proxy headers, such as `X-Forwarded-For`. Requests coming from other addresses will not be able to set these headers.
+
+Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
+
+## Storage settings
+
+These settings affect where files are stored. By default, they are stored on disk in the `/data` directory of the authentik container. S3 storage is also supported.
+
+#### `AUTHENTIK_STORAGE__BACKEND`
+
+This parameter defines where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/data` directory in the container. For `s3`, see below.
+
+Defaults to `file`.
+
+### File storage backend settings
+
+#### `AUTHENTIK_STORAGE__FILE__PATH`
+
+Where to store files on disk.
+
+Defaults to `/data`.
+
+#### `AUTHENTIK_STORAGE__FILE__URL_EXPIRY`
+
+How long generated URLs for file access are valid for.
+
+Defaults to `minutes=15`.
+
+### S3 storage backend settings
+
+#### `AUTHENTIK_STORAGE__S3__REGION`
+
+S3 region where the bucket has been created. May be omitted depending on which S3 provider you use.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__ENDPOINT`
+
+Endpoint to use to talk to the S3 storage provider. Overrides the previous region and use_ssl settings.
+
+Must be a valid URL in the form of `https://s3.provider`.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__USE_SSL`
+
+Whether to use HTTPS when talking to the S3 storage providers.
+
+Defaults to `true`.
+
+#### `AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE`
+
+Configure the addressing style used to address a bucket.
+
+Valid values are `auto` and `path`.
+
+Defaults to `auto`.
+
+#### `AUTHENTIK_STORAGE__S3__SESSION_PROFILE`
+
+Profile to use when using AWS SDK authentication.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__ACCESS_KEY`
+
+Access key to authenticate to S3. May be omitted if using AWS SDK authentication.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__SECRET_KEY`
+
+Secret key to authenticate to S3. May be omitted if using AWS SDK authentication.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__SECURITY_TOKEN`
+
+Security token to authenticate to S3. May be omitted.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__BUCKET_NAME`
+
+Name of the bucket to use to store files.
+
+#### `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN`
+
+Domain to use to create URLs for users. Mainly useful for non-AWS providers.
+
+May include a port. Must include the bucket.
+
+Example: `s3.company:8080/authentik-data`.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__SECURE_URLS`
+
+Whether URLs created use HTTPS or HTTP.
+
+Defaults to `true`.
+
+#### `AUTHENTIK_STORAGE__S3__URL_EXPIRY`
+
+How long generated URLs for file access are valid for.
+
+Defaults to `minutes=15`.
+
+### Media storage settings
+
+These settings affect where media files are stored. Those files include applications and sources icons.
+
+#### `AUTHENTIK_STORAGE__MEDIA__BACKEND`
+
+Overrides [`AUTHENTIK_STORAGE__BACKEND`](#authentik_storage__backend)
+
+#### `AUTHENTIK_STORAGE__MEDIA__FILE__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
+
+#### `AUTHENTIK_STORAGE__MEDIA__S3__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
 
 These settings affect where media files are stored. Those files include applications and sources icons. By default, they are stored on disk in the `/media` directory of the authentik container. S3 storage is also supported.
 
-- `AUTHENTIK_STORAGE__MEDIA__BACKEND`: Where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/media` directory in the container. For `s3`, see below.
-- `AUTHENTIK_STORAGE__MEDIA__S3__REGION`: S3 region where the bucket has been created. May be omitted depending on which S3 provider you use. No default.
-- `AUTHENTIK_STORAGE__MEDIA__S3__USE_SSL`: Whether to use HTTPS when talking to the S3 storage providers. Defaults to `true`.
-- `AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT`: Endpoint to use to talk to the S3 storage provider. Override the previous region and use_ssl settings. Must be a valid URL in the form of `https://s3.provider`. No default.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE`: Profile to use when using AWS SDK authentication. No default. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY`: Access key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY`: Secret key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SECURITY_TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME`: Name of the bucket to use to store files.
-- `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
+### Reports storage settings
+
+These settings affect where CSV reports are stored.
+
+#### `AUTHENTIK_STORAGE__REPORTS__BACKEND`
+
+Overrides [`AUTHENTIK_STORAGE__BACKEND`](#authentik_storage__backend)
+
+#### `AUTHENTIK_STORAGE__REPORTS__FILE__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
+
+#### `AUTHENTIK_STORAGE__REPORTS__S3__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__S3__[...]`](#s3-storage-backend-settings) settings.
 
 ## authentik Settings
 
@@ -346,7 +595,7 @@ Defaults to `null`.
 
 ### `AUTHENTIK_REPUTATION__EXPIRY`
 
-Configure how long reputation scores should be saved for in seconds. Note that this is different than [`AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`](#redis-settings), as reputation is saved to the database every 5 minutes.
+Configure how long reputation scores should be saved for in seconds.
 
 Defaults to `86400`.
 
@@ -360,7 +609,7 @@ If you are running a version earlier than 2025.4, you can configure if the sessi
 
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
-Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md) for session validity.
 
 Defaults to `days=1`.
 
@@ -376,12 +625,6 @@ Configure how many gunicorn threads a worker processes should have (see https://
 
 Defaults to 4.
 
-### `AUTHENTIK_WORKER__CONCURRENCY`
-
-Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
-
-Defaults to 2.
-
 ### `AUTHENTIK_WEB__PATH`
 
 :::info
@@ -394,7 +637,7 @@ Defaults to `/`.
 
 ## System settings:ak-version[2024.2]
 
-Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.
+Additional settings are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
 ## Custom python settings
 

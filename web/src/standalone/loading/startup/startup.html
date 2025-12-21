@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noindex" />
+        <meta name="color-scheme" content="light dark" />
+
+        <title>authentik</title>
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            html {
+                font-size: 100%;
+            }
+
+            body {
+                font-size: clamp(16px, 3dvw, 20px);
+                background-color: #000;
+                background-color: Canvas;
+                color: #fff;
+                color: CanvasText;
+                font-family: system-ui, ui-sans-serif, sans-serif;
+                text-align: center;
+                display: grid;
+                place-content: center;
+                place-items: center;
+                min-height: 100dvh;
+                margin: 0;
+                padding-block: 0 6em;
+                padding-inline: 0.5em;
+            }
+
+            .logo {
+                height: 3.5em;
+                max-width: 90dvw;
+            }
+
+            .container {
+                position: absolute;
+                left: 0;
+                top: 50%;
+                right: 0;
+                bottom: 0;
+                z-index: -1;
+                overflow: hidden;
+            }
+
+            .container canvas {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <svg
+            class="logo"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1000 144.29"
+            aria-label="authentik"
+            aria-role="heading"
+            aria-level="1"
+            preserveAspectRatio="xMidYMid meet"
+        >
+            <path
+                fill="currentColor"
+                d="M106 41.08h25.39v101.2H106v-10.7a50 50 0 0 1-14.92 10.19 41.84 41.84 0 0 1-16.21 3.11q-19.61 0-33.91-15.21T26.64 91.86q0-23.43 13.85-38.41t33.63-15a42.78 42.78 0 0 1 17.09 3.44A46.82 46.82 0 0 1 106 52.24ZM79.29 61.91a25.65 25.65 0 0 0-19.56 8.33q-7.78 8.33-7.79 21.34t7.93 21.58a25.66 25.66 0 0 0 19.51 8.47 26.15 26.15 0 0 0 19.84-8.33q7.88-8.33 7.88-21.81 0-13.2-7.88-21.39t-19.93-8.19ZM168.39 41.08h25.67v48.74q0 14.22 2 19.76a17.24 17.24 0 0 0 6.29 8.61 18.06 18.06 0 0 0 10.65 3.07 18.6 18.6 0 0 0 10.77-3 17.7 17.7 0 0 0 6.57-8.88q1.59-4.36 1.59-18.7v-49.6h25.39V84q0 26.51-4.18 36.27a39.6 39.6 0 0 1-15.07 18.28q-10 6.38-25.3 6.37-16.65 0-26.93-7.44t-14.48-20.78q-3-9.21-3-33.49ZM297.3 3.78h25.39v37.3h15.07v21.85h-15.07v79.35H297.3V62.93h-13V41.08h13ZM362.86 2h25.21v49.3a57.74 57.74 0 0 1 15-9.63 38.56 38.56 0 0 1 15.25-3.21 34.36 34.36 0 0 1 25.39 10.42q8.83 9 8.84 26.51v66.88h-25V97.91q0-17.58-1.68-23.81t-5.71-9.3a16.07 16.07 0 0 0-10-3.07 18.85 18.85 0 0 0-13.26 5.11q-5.53 5.11-7.67 14-1.12 4.56-1.12 20.84v40.65h-25.25ZM589.91 99h-81.58q1.77 10.78 9.44 17.16t19.58 6.37a33.86 33.86 0 0 0 24.46-10l21.4 10a50.54 50.54 0 0 1-19.16 16.79q-11.16 5.44-26.51 5.44-23.82 0-38.79-15t-15-37.63q0-23.16 14.93-38.46t37.44-15.3q23.91 0 38.88 15.3t15 40.42Zm-25.4-20a25.48 25.48 0 0 0-9.92-13.77A28.81 28.81 0 0 0 537.4 60a30.42 30.42 0 0 0-18.64 5.95q-5 3.72-9.31 13.12ZM621.89 41.08h25.39v10.37q8.64-7.29 15.65-10.13a37.82 37.82 0 0 1 14.35-2.85A34.77 34.77 0 0 1 702.83 49q8.82 8.94 8.82 26.42v66.88h-25.11V98q0-18.12-1.63-24.06a16.44 16.44 0 0 0-5.66-9.06 15.8 15.8 0 0 0-10-3.11 18.73 18.73 0 0 0-13.23 5.15q-5.49 5.08-7.62 14.22-1.12 4.74-1.12 20.54v40.6h-25.39ZM750.71 3.78h25.39v37.3h15.07v21.85H776.1v79.35h-25.39V62.93h-13V41.08h13ZM826.09-.6a15.55 15.55 0 0 1 11.45 4.84A16.08 16.08 0 0 1 842.31 16a15.87 15.87 0 0 1-4.72 11.58 15.34 15.34 0 0 1-11.32 4.79 15.6 15.6 0 0 1-11.55-4.88 16.35 16.35 0 0 1-4.72-11.9 15.57 15.57 0 0 1 4.73-11.44A15.53 15.53 0 0 1 826.09-.6ZM813.39 41.08h25.39v101.2h-25.39zM873.47 2h25.39v80.8l37.39-41.72h31.89l-43.59 48.5 48.81 52.7h-31.53l-43-46.64v46.64h-25.36Z"
+            />
+        </svg>
+
+        <p>Server is starting up. Refreshing in a few seconds...</p>
+
+        <div class="container" aria-hidden="true">
+            <canvas id="waves-canvas"></canvas>
+        </div>
+
+        <script type="text/javascript">
+            "use strict";
+
+            let timeoutID = -1;
+
+            function checkStatus() {
+                console.log("Checking server status...");
+
+                return fetch(window.location.href, {
+                    method: "HEAD",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            console.log("Server is ready! Reloading...");
+                            clearTimeout(timeoutID);
+                            window.location.reload();
+                            return;
+                        }
+
+                        if (response.status === 503) {
+                            throw new Error("Server is still starting up...");
+                        }
+                    })
+                    .catch((error) => {
+                        console.warn(`Checking server status failed: ${error}`);
+                        timeoutID = setTimeout(checkStatus, 2000);
+                    });
+            }
+
+            const queryParams = new URLSearchParams(window.location.search);
+
+            if (window.location.origin.startsWith("http") && !queryParams.has("debug")) {
+                console.log("Checking server status...");
+                checkStatus();
+            }
+        </script>
+
+        <script type="module">
+            import("/static/dist/standalone/loading/wave-boi.mjs")
+                .then(({ WavesCanvas }) => {
+                    function drawAnimation() {
+                        const canvas = document.getElementById("waves-canvas");
+                        const waves = new WavesCanvas(canvas);
+                        waves.play();
+                    }
+
+                    if (document.readyState === "loading") {
+                        document.addEventListener("DOMContentLoaded", drawAnimation);
+                    } else {
+                        drawAnimation();
+                    }
+                })
+                .catch((error) => {
+                    console.debug("Skipping waves canvas:", error);
+                });
+        </script>
+    </body>
+</html>

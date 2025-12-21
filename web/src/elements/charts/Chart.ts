@@ -1,34 +1,39 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import "#elements/EmptyState";
+import "chartjs-adapter-date-fns";
+
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { formatElapsedTime } from "#common/temporal";
+
+import { AKElement } from "#elements/Base";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
 import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import {
+    ArcElement,
+    BarController,
+    BarElement,
     Chart,
     ChartConfiguration,
     ChartData,
     ChartOptions,
+    DoughnutController,
     Filler,
+    Legend,
+    LinearScale,
+    LineController,
     LineElement,
     Plugin,
     PointElement,
     Tick,
+    TimeScale,
+    TimeSeriesScale,
+    Tooltip,
 } from "chart.js";
-import { Legend, Tooltip } from "chart.js";
-import { BarController, DoughnutController, LineController } from "chart.js";
-import { ArcElement, BarElement } from "chart.js";
-import { LinearScale, TimeScale, TimeSeriesScale } from "chart.js";
-import "chartjs-adapter-date-fns";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -39,6 +44,8 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
+    public role = "figure";
+
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
@@ -53,31 +60,29 @@ export abstract class AKChart<T> extends AKElement {
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                .container {
-                    height: 100%;
-                    width: 100%;
+    static styles: CSSResult[] = [
+        css`
+            .container {
+                height: 100%;
+                width: 100%;
 
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: relative;
-                }
-                .container > span {
-                    position: absolute;
-                    font-size: 2.5rem;
-                }
-                canvas {
-                    width: 100px;
-                    height: 100px;
-                    z-index: 1;
-                    cursor: crosshair;
-                }
-            `,
-        ];
-    }
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .container > span {
+                position: absolute;
+                font-size: 2.5rem;
+            }
+            canvas {
+                width: 100px;
+                height: 100px;
+                z-index: 1;
+                cursor: crosshair;
+            }
+        `,
+    ];
 
     connectedCallback(): void {
         super.connectedCallback();
@@ -205,9 +210,13 @@ export abstract class AKChart<T> extends AKElement {
                               <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `
-                    : html`${this.chart ? html`` : html`<ak-empty-state loading></ak-empty-state>`}`}
-                ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
-                <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
+                    : html`${this.chart ? nothing : html`<ak-empty-state loading></ak-empty-state>`}`}
+                ${this.centerText ? html` <span>${this.centerText}</span> ` : nothing}
+                <canvas
+                    role="img"
+                    aria-label=${msg("Chart")}
+                    style="${!this.chart ? "display: none;" : ""}"
+                ></canvas>
             </div>
         `;
     }

@@ -103,7 +103,7 @@ class PasswordPolicy(Policy):
         if self.amount_lowercase > 0 and len(RE_LOWER.findall(password)) < self.amount_lowercase:
             LOGGER.debug("password failed", check="static", reason="amount_lowercase")
             return PolicyResult(False, self.error_message)
-        if self.amount_uppercase > 0 and len(RE_UPPER.findall(password)) < self.amount_lowercase:
+        if self.amount_uppercase > 0 and len(RE_UPPER.findall(password)) < self.amount_uppercase:
             LOGGER.debug("password failed", check="static", reason="amount_uppercase")
             return PolicyResult(False, self.error_message)
         if self.amount_symbols > 0:

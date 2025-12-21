@@ -1,17 +1,19 @@
-import { EVENT_MESSAGE } from "@goauthentik/common/constants";
-import "@goauthentik/elements/messages/MessageContainer";
-import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
-
-import { TemplateResult, html } from "lit";
-
+import "#elements/messages/MessageContainer";
 import "../ak-list-select.js";
+
 import { ListSelect } from "../ak-list-select.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 
+import { EVENT_MESSAGE } from "#common/constants";
+
+import { Meta, StoryObj } from "@storybook/web-components";
+import { kebabCase } from "change-case";
+
+import { html, TemplateResult } from "lit";
+
 const longGoodForYouPairs = {
     grouped: false,
-    options: sampleData.map(({ produce }) => [slug(produce), produce]),
+    options: sampleData.map(({ produce }) => [kebabCase(produce), produce]),
 };
 
 const metadata: Meta<ListSelect> = {
@@ -54,10 +56,7 @@ const container = (testItem: TemplateResult) => {
         );
     }, 250);
 
-    return html` <div
-        style="background: #fff; padding: 2em; position: relative"
-        id="the-main-event"
-    >
+    return html` <div style="padding: 2em; position: relative" id="the-main-event">
         <style>
             li {
                 display: block;

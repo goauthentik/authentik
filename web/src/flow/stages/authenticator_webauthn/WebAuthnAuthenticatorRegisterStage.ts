@@ -1,14 +1,23 @@
+import "#elements/EmptyState";
+import "#flow/components/ak-flow-card";
+import "#flow/FormStatic";
+
 import {
     Assertion,
     checkWebAuthnSupport,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
-} from "@goauthentik/common/helpers/webauthn";
-import "@goauthentik/elements/EmptyState";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+} from "#common/helpers/webauthn";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    AuthenticatorWebAuthnChallenge,
+    AuthenticatorWebAuthnChallengeResponseRequest,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -18,11 +27,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    AuthenticatorWebAuthnChallenge,
-    AuthenticatorWebAuthnChallengeResponseRequest,
-} from "@goauthentik/api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
@@ -41,26 +45,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFFormControl,
-            PFForm,
-            PFTitle,
-            PFButton,
-            // FIXME: this is technically duplicate with ../authenticator_validate/base.ts
-            css`
-                .pf-c-form__group.pf-m-action {
-                    display: flex;
-                    gap: 16px;
-                    margin-top: 0;
-                    margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
-                    flex-direction: column;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton];
 
     async register(): Promise<void> {
         if (!this.challenge) {
@@ -129,49 +114,45 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge?.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
-                        <span
-                            >${this.registerRunning
-                                ? msg("Registering...")
-                                : this.registerMessage || msg("Failed to register")}
-                        </span>
-                    </ak-empty-state>
-                    ${this.challenge?.responseErrors
-                        ? html`<p class="pf-m-block">
-                              ${this.challenge.responseErrors.response[0].string}
-                          </p>`
-                        : nothing}
-                    <div class="pf-c-form__group pf-m-action">
-                        ${!this.registerRunning
-                            ? html` <button
-                                  class="pf-c-button pf-m-primary pf-m-block"
-                                  @click=${() => {
-                                      this.registerWrapper();
-                                  }}
-                                  type="button"
-                              >
-                                  ${msg("Retry registration")}
-                              </button>`
-                            : nothing}
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form">
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
+                >
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
                     </div>
-                </form>
-            </div>`;
+                </ak-form-static>
+                <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
+                    <span
+                        >${this.registerRunning
+                            ? msg("Registering...")
+                            : this.registerMessage || msg("Failed to register")}
+                    </span>
+                </ak-empty-state>
+                ${this.challenge?.responseErrors
+                    ? html`<p>${this.challenge.responseErrors.response[0].string}</p>`
+                    : nothing}
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    ${!this.registerRunning
+                        ? html` <button
+                              class="pf-c-button pf-m-primary pf-m-block"
+                              @click=${() => {
+                                  this.registerWrapper();
+                              }}
+                              type="button"
+                          >
+                              ${msg("Retry registration")}
+                          </button>`
+                        : nothing}
+                </fieldset>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

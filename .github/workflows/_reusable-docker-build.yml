@@ -1,0 +1,105 @@
+---
+# Re-usable workflow for a multi-architecture build
+name: Reusable - Multi-arch container build
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        required: true
+        type: string
+      registry_dockerhub:
+        default: false
+        type: boolean
+      registry_ghcr:
+        default: true
+        type: boolean
+      release:
+        default: false
+        type: boolean
+    outputs: {}
+
+jobs:
+  build-server-amd64:
+    uses: ./.github/workflows/_reusable-docker-build-single.yml
+    secrets: inherit
+    with:
+      image_name: ${{ inputs.image_name }}
+      image_arch: amd64
+      runs-on: ubuntu-latest
+      registry_dockerhub: ${{ inputs.registry_dockerhub }}
+      registry_ghcr: ${{ inputs.registry_ghcr }}
+      release: ${{ inputs.release }}
+  build-server-arm64:
+    uses: ./.github/workflows/_reusable-docker-build-single.yml
+    secrets: inherit
+    with:
+      image_name: ${{ inputs.image_name }}
+      image_arch: arm64
+      runs-on: ubuntu-22.04-arm
+      registry_dockerhub: ${{ inputs.registry_dockerhub }}
+      registry_ghcr: ${{ inputs.registry_ghcr }}
+      release: ${{ inputs.release }}
+  get-tags:
+    runs-on: ubuntu-latest
+    needs:
+      - build-server-amd64
+      - build-server-arm64
+    outputs:
+      tags: ${{ steps.ev.outputs.imageTagsJSON }}
+      shouldPush: ${{ steps.ev.outputs.shouldPush }}
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
+        with:
+          image-name: ${{ inputs.image_name }}
+  merge-server:
+    runs-on: ubuntu-latest
+    if: ${{ needs.get-tags.outputs.shouldPush == 'true' }}
+    needs:
+      - get-tags
+      - build-server-amd64
+      - build-server-arm64
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
+        with:
+          image-name: ${{ inputs.image_name }}
+      - name: Login to Docker Hub
+        if: ${{ inputs.registry_dockerhub }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        with:
+          username: ${{ secrets.DOCKER_CORP_USERNAME }}
+          password: ${{ secrets.DOCKER_CORP_PASSWORD }}
+      - name: Login to GitHub Container Registry
+        if: ${{ inputs.registry_ghcr }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2
+        id: build
+        with:
+          tags: ${{ matrix.tag }}
+          sources: |
+            ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-amd64.outputs.image-digest }}
+            ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-arm64.outputs.image-digest }}
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
+        id: attest
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true

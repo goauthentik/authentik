@@ -1,19 +1,30 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/ak-mdx";
-import type { Replacer } from "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/proxy/ProxyProviderForm";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import type { Replacer } from "#elements/ak-mdx/index";
+import { AKElement } from "#elements/Base";
+import { getURLParam } from "#elements/router/RouteMatch";
+import { formatSlug } from "#elements/router/utils";
+import { SlottedTemplateResult } from "#elements/types";
+
+import {
+    ProvidersApi,
+    ProxyMode,
+    ProxyProvider,
+    RbacPermissionsAssignedByRolesListModelEnum,
+} from "@goauthentik/api";
+
 import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
 import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
@@ -24,7 +35,7 @@ import MDTraefikStandalone from "~docs/add-secure-apps/providers/proxy/_traefik_
 import MDHeaderAuthentication from "~docs/add-secure-apps/providers/proxy/header_authentication.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -38,13 +49,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ProvidersApi,
-    ProxyMode,
-    ProxyProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
@@ -80,26 +84,24 @@ export class ProxyProviderViewPage extends AKElement {
     @state()
     provider?: ProxyProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFList,
-            PFForm,
-            PFFormControl,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-            css`
-                :host(:not([theme="dark"])) .ak-markdown-section {
-                    background-color: var(--pf-c-card--BackgroundColor);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFList,
+        PFForm,
+        PFFormControl,
+        PFCard,
+        PFDescriptionList,
+        PFBanner,
+        css`
+            :host(:not([theme="dark"])) .ak-markdown-section {
+                background-color: var(--pf-c-card--BackgroundColor);
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -182,55 +184,78 @@ export class ProxyProviderViewPage extends AKElement {
         ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
             ${servers.map((server) => {
-                return html`<section
+                return html`<div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-${formatSlug(server.label)}"
-                    data-tab-title="${server.label}"
+                    id="page-${formatSlug(server.label)}"
+                    aria-label="${server.label}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >
                     <ak-mdx .url=${server.md} .replacers=${replacers}></ak-mdx>
-                </section>`;
+                </div>`;
             })}</ak-tabs
         >`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
-        return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
-                ${this.renderTabOverview()}
-            </section>
-            <section slot="page-authentication" data-tab-title="${msg("Authentication")}">
-                ${this.renderTabAuthentication()}
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-authentication"
+                    id="page-authentication"
+                    aria-label="${msg("Authentication")}"
+                >
+                    ${this.renderTabAuthentication()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
-    renderTabAuthentication(): TemplateResult {
+    renderTabAuthentication(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
@@ -259,12 +284,12 @@ export class ProxyProviderViewPage extends AKElement {
         </div>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`${this.provider?.assignedApplicationName
-                ? html``
+                ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
@@ -272,7 +297,7 @@ export class ProxyProviderViewPage extends AKElement {
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by any Outpost.")}
                   </div>`
-                : html``}
+                : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -356,8 +381,8 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update Proxy Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update Proxy Provider")}</span>
                             <ak-provider-proxy-form
                                 slot="form"
                                 .instancePk=${this.provider.pk || 0}

@@ -1,5 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { BasePagination, DualSelectEventType } from "../types.js";
+
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -8,8 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { BasePagination, DualSelectEventType } from "../types.js";
 
 @customElement("ak-pagination")
 export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKElement) {
@@ -26,6 +26,10 @@ export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKEl
 
                 .pf-c-pagination__nav-control .pf-c-button:disabled {
                     color: var(--pf-c-button--disabled--Color);
+                }
+
+                .pf-c-options-menu__toggle {
+                    color: var(--ak-dark-foreground);
                 }
             }
         `,

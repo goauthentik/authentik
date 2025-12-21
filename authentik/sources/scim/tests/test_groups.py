@@ -75,7 +75,9 @@ class TestSCIMGroups(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceGroup.objects.filter(source=self.source, id=ext_id).exists())
+        self.assertTrue(
+            SCIMSourceGroup.objects.filter(source=self.source, external_id=ext_id).exists()
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
@@ -86,6 +88,7 @@ class TestSCIMGroups(APITestCase):
         """Test group create"""
         user = create_test_user()
         ext_id = generate_id()
+        name = generate_id()
         response = self.client.post(
             reverse(
                 "authentik_sources_scim:v2-groups",
@@ -95,7 +98,7 @@ class TestSCIMGroups(APITestCase):
             ),
             data=dumps(
                 {
-                    "displayName": generate_id(),
+                    "displayName": name,
                     "externalId": ext_id,
                     "members": [{"value": str(user.uuid)}],
                 }
@@ -104,11 +107,21 @@ class TestSCIMGroups(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceGroup.objects.filter(source=self.source, id=ext_id).exists())
+        connection = SCIMSourceGroup.objects.filter(source=self.source, external_id=ext_id).first()
+        self.assertIsNotNone(connection)
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
             ).exists()
+        )
+        connection.refresh_from_db()
+        self.assertEqual(
+            connection.attributes,
+            {
+                "displayName": name,
+                "externalId": ext_id,
+                "members": [{"value": str(user.uuid)}],
+            },
         )
 
     def test_group_create_members_empty(self):
@@ -126,7 +139,9 @@ class TestSCIMGroups(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceGroup.objects.filter(source=self.source, id=ext_id).exists())
+        self.assertTrue(
+            SCIMSourceGroup.objects.filter(source=self.source, external_id=ext_id).exists()
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
@@ -136,7 +151,9 @@ class TestSCIMGroups(APITestCase):
     def test_group_create_duplicate(self):
         """Test group create (duplicate)"""
         group = Group.objects.create(name=generate_id())
-        existing = SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        existing = SCIMSourceGroup.objects.create(
+            source=self.source, group=group, external_id=uuid4()
+        )
         ext_id = generate_id()
         response = self.client.post(
             reverse(
@@ -165,7 +182,9 @@ class TestSCIMGroups(APITestCase):
     def test_group_update(self):
         """Test group update"""
         group = Group.objects.create(name=generate_id())
-        existing = SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        existing = SCIMSourceGroup.objects.create(
+            source=self.source, group=group, external_id=uuid4()
+        )
         ext_id = generate_id()
         response = self.client.put(
             reverse(
@@ -205,12 +224,49 @@ class TestSCIMGroups(APITestCase):
             },
         )
 
-    def test_group_patch_add(self):
+    def test_group_patch_modify(self):
+        """Test group patch"""
+        group = Group.objects.create(name=generate_id())
+        connection = SCIMSourceGroup.objects.create(
+            source=self.source,
+            group=group,
+            external_id=uuid4(),
+            attributes={"displayName": group.name, "members": []},
+        )
+        response = self.client.patch(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={"source_slug": self.source.slug, "group_id": group.pk},
+            ),
+            data=dumps(
+                {
+                    "Operations": [
+                        {
+                            "op": "Add",
+                            "value": {"externalId": "d85051cb-0557-4aa1-98ca-51eabcee4d40"},
+                        }
+                    ]
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        connection = SCIMSourceGroup.objects.filter(id="d85051cb-0557-4aa1-98ca-51eabcee4d40")
+        self.assertIsNotNone(connection)
+
+    def test_group_patch_member_add(self):
         """Test group patch"""
         user = create_test_user()
-
+        other_user = create_test_user()
         group = Group.objects.create(name=generate_id())
-        SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        group.users.add(other_user)
+        connection = SCIMSourceGroup.objects.create(
+            source=self.source,
+            group=group,
+            external_id=uuid4(),
+            attributes={"displayName": group.name, "members": [{"value": str(other_user.uuid)}]},
+        )
         response = self.client.patch(
             reverse(
                 "authentik_sources_scim:v2-groups",
@@ -222,7 +278,7 @@ class TestSCIMGroups(APITestCase):
                         {
                             "op": "Add",
                             "path": "members",
-                            "value": {"value": str(user.uuid)},
+                            "value": [{"value": str(user.uuid)}],
                         }
                     ]
                 }
@@ -230,16 +286,33 @@ class TestSCIMGroups(APITestCase):
             content_type=SCIM_CONTENT_TYPE,
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
-        self.assertEqual(response.status_code, second=200)
+        self.assertEqual(response.status_code, 200, response.content)
         self.assertTrue(group.users.filter(pk=user.pk).exists())
+        self.assertTrue(group.users.filter(pk=other_user.pk).exists())
+        connection.refresh_from_db()
+        self.assertEqual(
+            connection.attributes,
+            {
+                "displayName": group.name,
+                "members": sorted(
+                    [{"value": str(other_user.uuid)}, {"value": str(user.uuid)}],
+                    key=lambda u: u["value"],
+                ),
+            },
+        )
 
-    def test_group_patch_remove(self):
+    def test_group_patch_member_remove(self):
         """Test group patch"""
         user = create_test_user()
 
         group = Group.objects.create(name=generate_id())
         group.users.add(user)
-        SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        connection = SCIMSourceGroup.objects.create(
+            source=self.source,
+            group=group,
+            external_id=uuid4(),
+            attributes={"displayName": group.name, "members": []},
+        )
         response = self.client.patch(
             reverse(
                 "authentik_sources_scim:v2-groups",
@@ -251,7 +324,7 @@ class TestSCIMGroups(APITestCase):
                         {
                             "op": "remove",
                             "path": "members",
-                            "value": {"value": str(user.uuid)},
+                            "value": [{"value": str(user.uuid)}],
                         }
                     ]
                 }
@@ -259,13 +332,21 @@ class TestSCIMGroups(APITestCase):
             content_type=SCIM_CONTENT_TYPE,
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
-        self.assertEqual(response.status_code, second=200)
+        self.assertEqual(response.status_code, 200, response.content)
         self.assertFalse(group.users.filter(pk=user.pk).exists())
+        connection.refresh_from_db()
+        self.assertEqual(
+            connection.attributes,
+            {
+                "displayName": group.name,
+                "members": [],
+            },
+        )
 
     def test_group_delete(self):
         """Test group delete"""
         group = Group.objects.create(name=generate_id())
-        SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        SCIMSourceGroup.objects.create(source=self.source, group=group, external_id=uuid4())
         response = self.client.delete(
             reverse(
                 "authentik_sources_scim:v2-groups",

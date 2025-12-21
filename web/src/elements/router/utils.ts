@@ -1,6 +1,7 @@
 /**
  * @file Utilities for working with the client-side page router.
  */
+
 import { kebabCase } from "change-case";
 
 /**
@@ -13,7 +14,7 @@ export type RouteInterfaceName = "user" | "admin" | "flow" | "unknown";
 /**
  * Read the current interface route parameter from the URL.
  *
- * @param location - The location object to read the pathname from. Defaults to `window.location`.
+ * @param location The location object to read the pathname from. Defaults to `window.location`.
  * @returns The name of the current interface, or "unknown" if not found.
  *
  * @category Routing
@@ -50,7 +51,7 @@ export function isUserRoute(location: Pick<URL, "pathname"> = window.location): 
  * The input is converted to lowercase and non-alphanumeric characters are
  * replaced with a hyphen. Trailing whitespace and hyphens are removed.
  *
- * @param input - The input string to format.
+ * @param input The input string to format.
  *
  * @category Routing
  *
@@ -67,7 +68,7 @@ export function formatSlug(input: string): string {
 /**
  * Predicate to determine if the input is a valid route slug.
  *
- * @param input - The input string to check.
+ * @param input The input string to check.
  */
 export function isSlug(input: string): boolean {
     return kebabCase(input) === input;

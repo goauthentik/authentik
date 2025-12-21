@@ -4,9 +4,11 @@ import re
 import time
 import zipfile
 
-import requests
+from requests import RequestException
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+
+from authentik.lib.utils.http import get_http_session
 
 
 class Conformance:
@@ -17,7 +19,7 @@ class Conformance:
         if not api_url_base.endswith("/"):
             api_url_base += "/"
         self.api_url_base = api_url_base
-        self.session = requests.Session()
+        self.session = get_http_session()
         self.session.verify = verify_ssl
         retries = Retry(
             total=5,
@@ -70,7 +72,7 @@ class Conformance:
                 if ret is not None:
                     raise Exception(f"exporthtml returned corrupt zip file: {ret}")
                 return full_path
-            except Exception as e:
+            except RequestException as e:
                 print(f"requests {url} exception {e} caught - retrying")
                 time.sleep(1)
         raise Exception(f"exporthtml for {plan_id} failed even after retries")

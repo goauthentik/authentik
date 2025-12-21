@@ -1,16 +1,17 @@
-import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
-
-import { LitElement, TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-
-import { TableSortEvent } from "../TableColumn.js";
 import "../ak-simple-table.js";
+
 import { SimpleTable } from "../ak-simple-table.js";
-import { KeyBy } from "../types";
-import type { TableRow } from "../types";
+import { TableSortEvent } from "../TableColumn.js";
+import type { TableRow } from "../types.js";
+import { KeyBy } from "../types.js";
 import { convertContent } from "../utils.js";
 import { nutritionDbUSDA } from "./sample_nutrition_db.js";
+
+import { Meta, StoryObj } from "@storybook/web-components";
+import { kebabCase } from "change-case";
+
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 const metadata: Meta<SimpleTable> = {
     title: "Elements / Table / SimpleTable",
@@ -44,7 +45,7 @@ export default metadata;
 type Story = StoryObj;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -124,7 +125,7 @@ export const TableWithSorting: Story = {
 };
 
 const rowContent: TableRow[] = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => ({
-    key: slug(name),
+    key: kebabCase(name),
     content: [name, calories, protein, fiber, sugar].map((a) => html`${a}`),
 }));
 

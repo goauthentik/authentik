@@ -1,23 +1,25 @@
+import "#admin/applications/wizard/ak-wizard-title";
+import "#elements/EmptyState";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/wizard/TypeCreateWizardPage";
+
+import { applicationWizardProvidersContext } from "../ContextIdentity.js";
+
+import { bound } from "#elements/decorators/bound";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
-import "@goauthentik/elements/EmptyState.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/elements/forms/FormGroup.js";
-import "@goauthentik/elements/forms/HorizontalFormElement.js";
-import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
-import "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
+import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+
+import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+
+import type { TypeCreate } from "@goauthentik/api";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { TypeCreate } from "@goauthentik/api";
-
-import { applicationWizardProvidersContext } from "../ContextIdentity";
-import { type LocalTypeCreate } from "./ProviderChoices.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
@@ -27,7 +29,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     failureMessage = "";
 
     @consume({ context: applicationWizardProvidersContext, subscribe: true })
-    public providerModelsList!: LocalTypeCreate[];
+    public providerModelsList!: TypeCreate[];
 
     get buttons(): WizardButton[] {
         return [
@@ -52,7 +54,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     }
 
     @bound
-    onSelect(ev: CustomEvent<LocalTypeCreate>) {
+    onSelect(ev: CustomEvent<TypeCreate>) {
         ev.stopPropagation();
         const detail: TypeCreate = ev.detail;
         this.handleUpdate({ providerModel: detail.modelName });
@@ -71,7 +73,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
                           name="selectProviderType"
                           layout=${TypeCreateWizardPageLayouts.grid}
                           .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
-                          @select=${(ev: CustomEvent<LocalTypeCreate>) => {
+                          @select=${(ev: CustomEvent<TypeCreate>) => {
                               this.handleUpdate(
                                   {
                                       ...this.wizard,

@@ -1,22 +1,25 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { isCausedByAbortError } from "#common/errors/network";
+import { isGuest } from "#common/users";
+
+import { SessionMixin } from "#elements/mixins/session";
 import { VersionContext, VersionMixin } from "#elements/mixins/version";
 import type { ReactiveElementHost } from "#elements/types";
 
+import { AdminApi, Version } from "@goauthentik/api";
+
 import { ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
-
-import { AdminApi, Version } from "@goauthentik/api";
 
 export class VersionContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/version`);
     #abortController: null | AbortController = null;
 
-    #host: ReactiveElementHost<VersionMixin>;
+    #host: ReactiveElementHost<SessionMixin & VersionMixin>;
     #context: ContextProvider<VersionContext>;
 
-    constructor(host: ReactiveElementHost<VersionMixin>, initialValue?: Version) {
+    constructor(host: ReactiveElementHost<VersionMixin & VersionMixin>, initialValue?: Version) {
         this.#host = host;
         this.#context = new ContextProvider(this.#host, {
             context: VersionContext,
@@ -26,8 +29,6 @@ export class VersionContextController implements ReactiveController {
 
     #fetch = () => {
         this.#log("Fetching latest version...");
-
-        this.#abortController?.abort();
 
         this.#abortController = new AbortController();
 
@@ -53,21 +54,30 @@ export class VersionContextController implements ReactiveController {
             });
     };
 
-    public hostConnected() {
-        window.addEventListener(EVENT_REFRESH, this.#fetch);
+    #refreshListener = (event: Event) => {
+        this.#abortController?.abort(event.type);
         this.#fetch();
+    };
+
+    public hostConnected() {
+        window.addEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
     public hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH, this.#fetch);
-        this.#abortController?.abort();
+        window.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
     public hostUpdate() {
-        // If the Interface changes its version information for some reason,
-        // we should notify all users of the context of that change. doesn't
-        if (this.#host.version && this.#host.version !== this.#context.value) {
-            this.#context.setValue(this.#host.version);
+        const { currentUser } = this.#host;
+
+        if (currentUser && !isGuest(currentUser) && !this.#abortController) {
+            this.#fetch();
+
+            return;
+        }
+
+        if (!currentUser && this.#abortController) {
+            this.#abortController.abort("session-invalidated");
         }
     }
 }

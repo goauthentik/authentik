@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 /**
  * @file Pseudo-localization script.
  *
@@ -6,9 +8,15 @@
  * @import { ProgramMessage } from "@lit/localize-tools/src/messages.js"
  * @import { Locale } from "@lit/localize-tools/src/types/locale.js"
  */
-import { PackageRoot } from "#paths/node";
+
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { PackageRoot } from "#paths/node";
+
+import { isMain } from "@goauthentik/core/scripting/node";
+
 import pseudolocale from "pseudolocale";
 
 import { makeFormatter } from "@lit/localize-tools/lib/formatters/index.js";
@@ -17,6 +25,7 @@ import { TransformLitLocalizer } from "@lit/localize-tools/lib/modes/transform.j
 
 const pseudoLocale = /** @type {Locale} */ ("pseudo-LOCALE");
 const targetLocales = [pseudoLocale];
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
  * @type {ConfigFile}
@@ -54,10 +63,16 @@ const pseudoMessagify = (message) => ({
     ),
 });
 
-const localizer = new TransformLitLocalizer(config);
-const { messages } = localizer.extractSourceMessages();
-const translations = messages.map(pseudoMessagify);
-const sorted = sortProgramMessages([...messages]);
-const formatter = makeFormatter(config);
+export async function generatePseudoLocaleModule() {
+    const localizer = new TransformLitLocalizer(config);
+    const { messages } = localizer.extractSourceMessages();
+    const translations = messages.map(pseudoMessagify);
+    const sorted = sortProgramMessages([...messages]);
+    const formatter = makeFormatter(config);
 
-formatter.writeOutput(sorted, new Map([[pseudoLocale, translations]]));
+    await formatter.writeOutput(sorted, new Map([[pseudoLocale, translations]]));
+}
+
+if (isMain(import.meta)) {
+    generatePseudoLocaleModule();
+}

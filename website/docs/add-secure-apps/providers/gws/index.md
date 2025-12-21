@@ -26,7 +26,7 @@ A _direct sync_ happens when a user or group is created, updated or deleted in a
 
 The _full sync_ happens when the provider is initially created and when it is saved. The full sync goes through all users and groups matching the **User filtering** options set and will create/update them in Google Workspace. After the initial sync, authentik will run a full sync every four hours to ensure the consistency of users and groups.
 
-During the full sync, if a user or group was created in authentik and a matching user/group exists in Google Workspace, authentik will automatically link them together. Furthermore, users present in authentik but not in Google Workspace will be created and and linked.
+During the full sync, if a user or group was created in authentik and a matching user/group exists in Google Workspace, authentik will automatically link them together. Furthermore, users and groups present in authentik but not in Google Workspace will be created and and linked.
 
 When a property mapping has an invalid expression, it will cause the sync to stop to prevent errors from being spammed. To handle any kind of network interruptions, authentik will detect transient request failures and retry any sync tasks.
 

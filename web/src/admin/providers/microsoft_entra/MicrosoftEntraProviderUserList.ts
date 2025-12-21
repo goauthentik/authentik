@@ -1,12 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncObjectForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     MicrosoftEntraProviderUser,
@@ -15,6 +14,10 @@ import {
     SyncObjectModelEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-provider-microsoft-entra-users-list")
 export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProviderUser> {
     @property({ type: Number })
@@ -22,9 +25,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
 
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -73,11 +74,17 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: MicrosoftEntraProviderUser): string {
+        return item.userObj.name || item.userObj.username;
     }
 
-    row(item: MicrosoftEntraProviderUser): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
+
+    row(item: MicrosoftEntraProviderUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -88,11 +95,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

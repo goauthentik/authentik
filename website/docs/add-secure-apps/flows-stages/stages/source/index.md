@@ -4,7 +4,23 @@ authentik_version: "2024.4"
 authentik_enterprise: true
 ---
 
-The source stage injects an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
+The source stage embeds an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
+
+### Example use case
+
+This stage can be used to leverage an external OAuth/SAML identity provider.
+
+For example, you can authenticate users by routing them through a custom device-health solution.
+
+Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx)/[SAML](../../../../users-sources/sources/protocols/saml/index.md) source by itself.
+
+### Considerations
+
+It is very important that the configured source's authentication and enrollment flows (when set; they can be left unselected to prevent authentication or enrollment with the source) do **not** have a [User login stage](../user_login/index.md) bound to them.
+
+This is because the Source stage works by appending a [dynamic in-memory](../../../../core/glossary?dynamic-in-memory-stage) stage to the source's flow, so having a [User login stage](../user_login/index.md) bound will cause the source's flow to not resume the original flow it was started from, and instead directly authenticating the pending user.
+
+## Source stage workflow
 
 ```mermaid
 sequenceDiagram
@@ -28,20 +44,6 @@ sequenceDiagram
 
     ak->>u: Execution of the previous flow is resumed
 ```
-
-### Considerations
-
-It is very important that the configured source's authentication and enrollment flows (when set; they can be left unselected to prevent authentication or enrollment with the source) do **not** have a [User login stage](../user_login/index.md) bound to them.
-
-This is because the Source stage works by appending a [dynamic in-memory](../../../../core/terminology.md#dynamic-in-memory-stage) stage to the source's flow, so having a [User login stage](../user_login/index.md) bound will cause the source's flow to not resume the original flow it was started from, and instead directly authenticating the pending user.
-
-### Example use case
-
-This stage can be used to leverage an external OAuth/SAML identity provider.
-
-For example, you can authenticate users by routing them through a custom device-health solution.
-
-Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx)/[SAML](../../../../users-sources/sources/protocols/saml/index.md) source by itself.
 
 ### Options
 

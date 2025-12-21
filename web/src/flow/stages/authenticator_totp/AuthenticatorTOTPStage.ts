@@ -1,146 +1,156 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
 import "webcomponent-qr-code";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { MessageLevel } from "#common/messages";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
+import { BaseStage } from "#flow/stages/base";
 
 import {
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .qr-container {
-                    display: flex;
-                    flex-direction: column;
-                    place-items: center;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFInputGroup,
+        PFTitle,
+        PFButton,
+        css`
+            .qr-container {
+                display: flex;
+                flex-direction: column;
+                place-items: center;
+            }
+        `,
+    ];
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
-                    <ak-form-element>
-                        <div class="qr-container">
-                            <qr-code data="${this.challenge.configUrl}"></qr-code>
-                            <button
-                                type="button"
-                                class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
-                                @click=${(e: Event) => {
-                                    e.preventDefault();
-                                    if (!this.challenge?.configUrl) return;
-                                    if (!navigator.clipboard) {
-                                        showMessage({
-                                            level: MessageLevel.info,
-                                            message: this.challenge?.configUrl,
-                                        });
-                                        return;
-                                    }
-                                    navigator.clipboard
-                                        .writeText(this.challenge?.configUrl)
-                                        .then(() => {
-                                            showMessage({
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
+                    </div>
+                </ak-form-static>
+                <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
+
+                <div class="pf-c-form__group">
+                    <div class="qr-container">
+                        <qr-code
+                            role="img"
+                            aria-label=${msg("QR-Code to setup a time-based one-time password")}
+                            format="svg"
+                            data="${this.challenge.configUrl}"
+                        ></qr-code>
+                        <button
+                            type="button"
+                            class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                            aria-label=${msg("Copy time-based one-time password configuration")}
+                            @click=${(e: Event) => {
+                                e.preventDefault();
+                                if (!this.challenge?.configUrl) return;
+                                if (!navigator.clipboard) {
+                                    showMessage({
+                                        level: MessageLevel.info,
+                                        message: this.challenge?.configUrl,
+                                    });
+                                    return;
+                                }
+                                navigator.clipboard
+                                    .writeText(this.challenge?.configUrl)
+                                    .then(() => {
+                                        showMessage(
+                                            {
                                                 level: MessageLevel.success,
                                                 message: msg("Successfully copied TOTP Config."),
-                                            });
-                                        });
-                                }}
-                            >
-                                <span class="pf-c-button__progress"
-                                    ><i class="fas fa-copy"></i
-                                ></span>
-                                ${msg("Copy")}
-                            </button>
-                        </div>
-                    </ak-form-element>
-                    <p>
-                        ${msg(
-                            "Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.",
-                        )}
-                    </p>
-                    <ak-form-element
-                        label="${msg("Code")}"
-                        required
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {}).code}
-                    >
-                        <!-- @ts-ignore -->
-                        <input
-                            type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${msg("Please enter your TOTP Code")}"
-                            autofocus=""
-                            autocomplete="one-time-code"
-                            class="pf-c-form-control pf-m-monospace"
-                            spellcheck="false"
-                            required
-                        />
-                    </ak-form-element>
-
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
+                                            },
+                                            true,
+                                        );
+                                    });
+                            }}
+                        >
+                            <span class="pf-c-button__progress"
+                                ><i class="fas fa-copy" aria-hidden="true"></i
+                            ></span>
+                            ${msg("Copy TOTP Config")}
                         </button>
                     </div>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+                </div>
+                <p>
+                    ${msg(
+                        "Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.",
+                    )}
+                </p>
+                <div class="pf-c-form__group">
+                    ${AKLabel(
+                        {
+                            "required": true,
+                            "htmlFor": "totp-code-input",
+                            "aria-label": msg("Time-based one-time password"),
+                        },
+                        msg("TOTP Code"),
+                    )}
+                    <input
+                        id="totp-code-input"
+                        type="text"
+                        name="code"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="${msg("Type your TOTP code...")}"
+                        aria-placeholder=${msg("Type your time-based one-time password code.")}
+                        autocomplete="one-time-code"
+                        class="pf-c-form-control pf-m-monospace"
+                        spellcheck="false"
+                        required
+                    />
+                    ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+                </div>
+
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
+                        ${msg("Continue")}
+                    </button>
+                </fieldset>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

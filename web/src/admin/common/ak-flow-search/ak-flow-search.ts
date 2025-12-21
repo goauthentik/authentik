@@ -1,8 +1,8 @@
-import { customElement } from "lit/decorators.js";
+import { FlowSearch } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
-import FlowSearch from "./FlowSearch";
+import { customElement } from "lit/decorators.js";
 
 /**
  * @element ak-flow-search
@@ -18,5 +18,3 @@ declare global {
         "ak-flow-search": AkFlowSearch<Flow>;
     }
 }
-
-export default AkFlowSearch;

@@ -14,7 +14,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
-from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
     from django.db.models import Model
@@ -23,6 +22,7 @@ if TYPE_CHECKING:
 
 
 class Direction(StrEnum):
+
     add = "add"
     remove = "remove"
 
@@ -36,16 +36,13 @@ SAFE_METHODS = [
 
 
 class BaseOutgoingSyncClient[
-    TModel: "Model",
-    TConnection: "Model",
-    TSchema: dict,
-    TProvider: "OutgoingSyncProvider",
+    TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
 ]:
     """Basic Outgoing sync client Client"""
 
     provider: TProvider
     connection_type: type[TConnection]
-    connection_attr: str
+    connection_type_query: str
     mapper: PropertyMappingManager
 
     can_discover = False
@@ -65,7 +62,9 @@ class BaseOutgoingSyncClient[
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
-        connection = getattr(obj, self.connection_attr).filter(provider=self.provider).first()
+        connection = self.connection_type.objects.filter(
+            provider=self.provider, **{self.connection_type_query: obj}
+        ).first()
         try:
             if not connection:
                 connection = self.create(obj)
@@ -106,9 +105,9 @@ class BaseOutgoingSyncClient[
             # Value error can be raised when assigning invalid data to an attribute
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
-                message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
+                message="Failed to evaluate property-mapping",
                 mapping=exc.mapping,
-            ).save()
+            ).with_exception(exc).save()
             raise StopSync(exc, obj, exc.mapping) from exc
         if not raw_final_object:
             raise StopSync(ValueError("No mappings configured"), obj)

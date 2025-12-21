@@ -8,7 +8,12 @@ toc_max_heading_level: 5
 
 The Mutual TLS stage enables authentik to use client certificates to enroll and authenticate users. These certificates can be local to the device or available via PIV Smart Cards, Yubikeys, etc.
 
-Management of client certificates is out of the scope of this document.
+:::warning Use of trusted Certificate Authority
+
+For mTLS, note that you should NOT use a globally known CA.
+
+Using private PKI certificates that are trusted by the end-device is best practise. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via mTLS, and in addition you should implement [custom validation](../../flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
+:::
 
 ## Reverse-proxy configuration
 
@@ -96,18 +101,14 @@ When using authentik without a reverse proxy, select the certificate authorities
 
 ## Stage configuration
 
-1. Log in as an admin to authentik, and go to the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-2. In the Admin interface, navigate to **System -> Certificates**
+2. Navigate to **System** > **Certificates**, and either generate or add the certificate you’ll use as a certificate authority.
 
-3. Create a new certificate for the Certificate Authority used to sign client certificates.
+3. Then, navigate to **Flows and Stages** > **Stages** and click **Create**. Select **Mutual TLS Stage**, click **Next**, and set the following fields:
+    - **Name**: provide a descriptive name, such as "chrome-device-trust".
 
-4. In the Admin interface, navigate to **Flows -> Stages**.
-
-5. Click **Create**, and select **Mutual TLS Stage**, and in the **New stage** box, define the following fields:
-    - **Name**: define a descriptive name, such as "chrome-device-trust".
-
-    - **Stage-specific settings**
+    - **Stage-specific settings**:
         - **Mode**: Configure the mode this stage operates in.
             - **Certificate optional**: When no certificate is provided by the user or the reverse proxy, the flow will continue to the next stage.
             - **Certificate required**: When no certificate is provided, the flow ends with an error message.
@@ -118,4 +119,4 @@ When using authentik without a reverse proxy, select the certificate authorities
 
         - **User attribute**: Select the attribute of the user the certificate should be compared against.
 
-6. Click **Finish**.
+4. Click **Finish**.

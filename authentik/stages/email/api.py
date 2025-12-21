@@ -44,6 +44,8 @@ class EmailStageSerializer(StageSerializer):
             "subject",
             "template",
             "activate_user_on_success",
+            "recovery_max_attempts",
+            "recovery_cache_timeout",
         ]
         extra_kwargs = {"password": {"write_only": True}}
 

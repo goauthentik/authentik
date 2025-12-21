@@ -1,13 +1,15 @@
-import { docLink } from "@goauthentik/common/global";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
+import "#elements/buttons/TokenCopyButton/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { docLink } from "#common/global";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
 
 import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-deployment-modal")
 export class OutpostDeploymentModal extends ModalButton {
@@ -22,9 +24,7 @@ export class OutpostDeploymentModal extends ModalButton {
                 <p>
                     <a
                         target="_blank"
-                        href="${docLink(
-                            "/docs/add-secure-apps/outposts?utm_source=authentik#deploy",
-                        )}"
+                        href=${docLink("/add-secure-apps/outposts#deploy")}
                         rel="noopener noreferrer"
                         >${msg("View deployment documentation")}</a
                     >
@@ -86,7 +86,7 @@ export class OutpostDeploymentModal extends ModalButton {
                                   />
                               </div>
                           `
-                        : html``}
+                        : nothing}
                 </form>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">

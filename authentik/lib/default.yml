@@ -8,9 +8,9 @@
 # make gen-dev-config
 # ```
 #
-# You may edit the generated file to override the configuration below.  
+# You may edit the generated file to override the configuration below.
 #
-# When making modifying the default configuration file, 
+# When making modifying the default configuration file,
 # ensure that the corresponding documentation is updated to match.
 #
 # @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
@@ -21,6 +21,7 @@ postgresql:
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
+  sslmode: disable
   use_pool: False
   test:
     name: test_authentik
@@ -31,14 +32,14 @@ postgresql:
   #   host: replica1.example.com
 
 listen:
-  listen_http: 0.0.0.0:9000
-  listen_https: 0.0.0.0:9443
-  listen_ldap: 0.0.0.0:3389
-  listen_ldaps: 0.0.0.0:6636
-  listen_radius: 0.0.0.0:1812
-  listen_metrics: 0.0.0.0:9300
-  listen_debug: 0.0.0.0:9900
-  listen_debug_py: 0.0.0.0:9901
+  http: 0.0.0.0:9000
+  https: 0.0.0.0:9443
+  ldap: 0.0.0.0:3389
+  ldaps: 0.0.0.0:6636
+  radius: 0.0.0.0:1812
+  metrics: 0.0.0.0:9300
+  debug: 0.0.0.0:9900
+  debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -46,20 +47,6 @@ listen:
     - 192.168.0.0/16
     - fe80::/10
     - ::1/128
-
-redis:
-  host: localhost
-  port: 6379
-  db: 0
-  username: ""
-  password: ""
-  tls: false
-  tls_reqs: "none"
-  tls_ca_cert: null
-
-# broker:
-#   url: ""
-#   transport_options: ""
 
 http_timeout: 30
 
@@ -71,10 +58,6 @@ cache:
 
 # channel:
 #   url: ""
-
-# result_backend:
-#   url: ""
-#   transport_options: ""
 
 debug: false
 debugger: false
@@ -157,21 +140,38 @@ web:
   path: /
 
 worker:
-  concurrency: 2
+  processes: 1
+  threads: 2
+  consumer_listen_timeout: "seconds=30"
+  task_max_retries: 5
+  task_default_time_limit: "minutes=10"
+  task_purge_interval: "days=1"
+  task_expiration: "days=30"
+  scheduler_interval: "seconds=60"
 
 storage:
-  media:
-    backend: file # or s3
-    file:
-      path: ./media
-    s3:
-      # How to talk to s3
-      # region: "us-east-1"
-      # use_ssl: True
-      # endpoint: "https://s3.us-east-1.amazonaws.com"
-      # access_key: ""
-      # secret_key: ""
-      # bucket_name: "authentik-media"
-      # How to render file URLs
-      # custom_domain: null
-      secure_urls: True
+  backend: file # or s3
+  file:
+    path: ./data
+    url_expiry: "minutes=15"
+  s3:
+    # How to talk to s3
+    # region: "us-east-1"
+    # use_ssl: True
+    # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # access_key: ""
+    # secret_key: ""
+    # bucket_name: "authentik-data"
+    # How to render file URLs
+    # custom_domain: null
+    secure_urls: True
+    url_expiry: "minutes=15"
+  # Usage based settings. Same schema as global settings, overrides global settings
+  # media:
+  #   backend: file # or s3
+  #   file: {}
+  #   s3: {}
+  # reports:
+  #   backend: file # or s3
+  #   file: {}
+  #   s3: {}

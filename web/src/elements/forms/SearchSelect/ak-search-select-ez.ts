@@ -1,13 +1,13 @@
+import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
+
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => string;
+    value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy?: (items: T[]) => [string, T[]][];
 }
@@ -45,22 +45,28 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 
 @customElement("ak-search-select-ez")
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
-    static get styles() {
-        return [...SearchSelectBase.styles];
-    }
+    static styles = [...SearchSelectBase.styles];
+
+    public fetchObjects!: (query?: string) => Promise<T[]>;
+    public renderElement!: (element: T) => string;
+    public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
+    public value!: (element: T | null) => string;
+    public selected?: ((element: T, elements: T[]) => boolean) | undefined;
 
     @property({ type: Object, attribute: false })
-    config!: ISearchSelectApi<T>;
+    public config!: ISearchSelectApi<T>;
 
-    connectedCallback() {
+    public override connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;
         this.renderElement = this.config.renderElement;
         this.renderDescription = this.config.renderDescription;
         this.value = this.config.value;
         this.selected = this.config.selected;
-        if (this.config.groupBy !== undefined) {
+
+        if (this.config.groupBy) {
             this.groupBy = this.config.groupBy;
         }
+
         super.connectedCallback();
     }
 }

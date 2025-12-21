@@ -1,28 +1,12 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import {
-    CustomEmitterElement,
-    CustomListenerElement,
-} from "@goauthentik/elements/utils/eventEmitter";
-import { match } from "ts-pattern";
-
-import { msg, str } from "@lit/localize";
-import { PropertyValues, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
-import type { Ref } from "lit/directives/ref.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import { globalVariables, mainStyles } from "./components/styles.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 import "./components/ak-dual-select-available-pane.js";
-import { AkDualSelectAvailablePane } from "./components/ak-dual-select-available-pane.js";
 import "./components/ak-dual-select-controls.js";
 import "./components/ak-dual-select-selected-pane.js";
-import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane.js";
 import "./components/ak-pagination.js";
 import "./components/ak-search-bar.js";
+
+import { AkDualSelectAvailablePane } from "./components/ak-dual-select-available-pane.js";
+import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane.js";
+import { globalVariables, mainStyles } from "./components/styles.js";
 import {
     BasePagination,
     DualSelectEventType,
@@ -31,6 +15,21 @@ import {
     SearchbarEventSource,
 } from "./types.js";
 
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement, CustomListenerElement } from "#elements/utils/eventEmitter";
+
+import { match } from "ts-pattern";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import type { Ref } from "lit/directives/ref.js";
+import { createRef, ref } from "lit/directives/ref.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     const aSortBy = String(a[2] || a[0]);
     const bSortBy = String(b[2] || b[0]);
@@ -38,7 +37,7 @@ function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     return aSortBy.localeCompare(bSortBy);
 }
 
-function keyfinder(key: string) {
+function keyfinder(key: string | number) {
     return ([k]: DualSelectPair) => k === key;
 }
 
@@ -99,7 +98,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @state()
     protected selectedFilter: string = "";
 
-    #selectedKeys: Set<string> = new Set();
+    #selectedKeys: Set<string | number> = new Set();
 
     //#endregion
 
@@ -189,7 +188,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     // updating the list of currently visible options;
     protected addAllVisible() {
         // Create a new array of all current options and selected, and de-dupe.
-        const selected = new Map<string, DualSelectPair>([
+        const selected = new Map<string | number, DualSelectPair>([
             ...this.options.map((pair) => [pair[0], pair] as const),
             ...this.selected.map((pair) => [pair[0], pair] as const),
         ]);
@@ -313,7 +312,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar name="ak-dual-list-available-search"></ak-search-bar>
+                    <ak-search-bar
+                        placeholder=${msg(str`Search ${this.availableLabel}...`)}
+                        name="ak-dual-list-available-search"
+                    ></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"
@@ -347,7 +349,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar name="ak-dual-list-selected-search"></ak-search-bar>
+                    <ak-search-bar
+                        placeholder=${msg(str`Search ${this.selectedLabel}...`)}
+                        name="ak-dual-list-selected-search"
+                    ></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"

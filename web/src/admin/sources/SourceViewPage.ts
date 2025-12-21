@@ -4,17 +4,20 @@ import "#admin/sources/oauth/OAuthSourceViewPage";
 import "#admin/sources/plex/PlexSourceViewPage";
 import "#admin/sources/saml/SAMLSourceViewPage";
 import "#admin/sources/scim/SCIMSourceViewPage";
-import { DEFAULT_CONFIG } from "#common/api/config";
-import "#components/ak-page-header";
-import { AKElement } from "#elements/Base";
+import "#admin/sources/telegram/TelegramSourceViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import { Source, SourcesApi } from "@goauthentik/api";
+
+import { html, PropertyValues, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
@@ -32,7 +35,7 @@ export class SourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: Source;
 
-    renderSource(): TemplateResult {
+    render(): TemplateResult {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
@@ -61,19 +64,22 @@ export class SourceViewPage extends AKElement {
                 return html`<ak-source-scim-view
                     sourceSlug=${this.source.slug}
                 ></ak-source-scim-view>`;
+            case "ak-source-telegram-form":
+                return html`<ak-source-telegram-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-telegram-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-middleware"
-                header=${ifDefined(this.source?.name)}
-                description=${ifDefined(this.source?.verboseName)}
-            >
-            </ak-page-header>
-            ${this.renderSource()}`;
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-middleware",
+            header: this.source?.name,
+            description: this.source?.verboseName,
+        });
     }
 }
 

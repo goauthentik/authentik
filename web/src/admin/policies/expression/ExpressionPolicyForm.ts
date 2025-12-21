@@ -1,17 +1,19 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
+import "#elements/CodeMirror";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
@@ -47,36 +49,24 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Expression")}
                         required
                         name="expression"
                     >
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>
@@ -85,9 +75,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href="${docLink(
-                                    "/docs/customize/policies/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink("/customize/policies/expression")}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

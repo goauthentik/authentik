@@ -4,8 +4,8 @@ title: "Markdown template: conceptual"
 
 Write a few sentences introducing the feature/component/technology.
 
-:::info
-if needed, use this syntax to add a note (info) or warning (warning)
+:::info Add a title here
+If needed, use this syntax to add a note (info) or warning (warning) anywhere in the document that is appropriate.
 :::
 
 ## Common use cases

@@ -4,16 +4,47 @@ title: SCIM Provider
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.
 
-### Configuration
+A SCIM provider requires a SCIM base URL for the endpoint and an authentication token. SCIM works via HTTP requests, so authentik must be able to reach the specified endpoint. This endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
 
-A SCIM provider requires a base URL and a token. SCIM works via HTTP requests, so authentik must be able to reach the specified endpoint.
+SCIM providers in authentik always serve as [backchannel providers](../../applications/manage_apps.mdx#backchannel-providers), which are used in addition to the main provider that supplies SSO authentication. A backchannel provider is used for an application that requires backend authentication, directory synchronization, or other additional authentication needs.
 
-When configuring SCIM, you'll get an endpoint and a token from the application that accepts SCIM data. This endpoint usually ends in `/v2`, which corresponds to the SCIM version supported.
+For example, you can create an application and provider pair for Slack, creating Slack as the application and SAML as the provider. Say you then want to use SCIM for further authentication using a token. For this scenario use the following workflow:
 
-The token given by the application will be sent with all outgoing SCIM requests to authenticate them.
+1. [Create](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) the application and provider pair.
+2. [Create](../../applications/manage_apps.mdx#backchannel-providers) the SCIM backchannel provider.
+3. Edit the application and in the **Backchannel Providers** field add the backchannel provider that you just created.
 
-:::info
-When adding the SCIM provider, you must define the **Backchannel provider using the name of the SCIM provider that you created in authentik. Do NOT add any value in the **Provider** field (doing so will cause the provider to display as an application on the user interface, under **My apps\*\*, which is not supported for SCIM).
+## Authentication mode options
+
+In authentik, there are two options for how to configure authentication for a SCIM provider:
+
+- **Static token** provided by the application (default)
+- **OAuth token** authentik will retrieve an OAuth token from a specified source and use that token for authentication
+
+When you create a new SCIM provider, select which **Authentication Mode** the application supports.
+
+![Creating a SCIM provider](./scim_oauth.png)
+
+Whichever mode you select you'll need to enter a SCIM base **URL**, for the endpoint.
+
+### Default authentication method for a SCIM provider
+
+With authentik's default mode, the token that you enter (provided by the application) is sent with all outgoing SCIM requests to authenticate each request.
+
+### OAuth authentication for a SCIM provider :ak-enterprise :ak-version[2025.10]
+
+Configuring your SCIM provider to use OAuth for authentication means that short-lived tokens are dynamically generated through an OAuth flow and sent to the SCIM endpoint. This offers improved security and control versus a static token.
+
+You can also add additional token request parameters to the OAuth token, such as `grant_type`, `subject_token`, or `client_assertion`.
+
+Some examples are:
+
+- `grant_type: client_credentials`
+
+- `grant_type: password`
+
+:::info OAuth source required
+To use OAuth authentication for your application, you will need to create and connect to an [OAuth source](../../../users-sources/sources/protocols/oauth/).
 :::
 
 ### Syncing
@@ -31,17 +62,43 @@ Attribute mapping from authentik to SCIM users is done via property mappings as 
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
-### Filtering
+### Compatibility modes
 
-By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
+Some applications require specific adjustments to work correctly with SCIM. authentik provides compatibility modes that modify SCIM behavior for vendor-specific implementations.
 
-### Supported features
+Available compatibility modes:
 
-SCIM defines multiple optional features, some of which are supported by the SCIM provider.
+- **Default**: Standard SCIM 2.0 implementation
+- **AWS**: Disables PATCH operations for AWS Identity Center compatibility
+- **Slack**: Enables filtering support for Slack's SCIM implementation
+- **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
+- **vCenter**: Skips the `ServiceProviderConfig` endpoint which is not implemented in VMware vCenter
+
+To configure a compatibility mode, select the appropriate option in the **SCIM Compatibility Mode** field when creating or editing a SCIM provider.
+
+### Filtering users
+
+By default service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
+
+### Supported options
+
+SCIM defines several optional settings that allow clients to discover a service provider's supported features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
+
+:::note
+The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache is automatically cleared when the SCIM provider is updated (such as when changing the compatibility mode).
+:::
+
+- Filtering
+
+    When the remote system supports [filtering](https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.2.2), authentik uses this operation to filter users and groups in the remote system to match them to existing authentik users and groups.
+
+- Bulk
+
+    The [`bulk`](https://datatracker.ietf.org/doc/html/rfc7644#section-3.7) configuration enables clients to send large collections of resource operations in a single request. If the remote system sets this attribute, authentik will respect the `maxOperations` value to determine the maximum number of individual operations a server can process within a single bulk request.
 
 - Patch updates
 
-    If the service provider supports patch updates, authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
+    If the service provider supports [PATCH updates](https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2), authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
 
 ### Using in conjunction with other providers
 

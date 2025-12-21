@@ -1,7 +1,7 @@
+import type { TypeCreate } from "@goauthentik/api";
+
 import { createContext } from "@lit/context";
 
-import { LocalTypeCreate } from "./steps/ProviderChoices.js";
-
-export const applicationWizardProvidersContext = createContext<LocalTypeCreate[]>(
+export const applicationWizardProvidersContext = createContext<TypeCreate[]>(
     Symbol.for("ak-application-wizard-providers-context"),
 );

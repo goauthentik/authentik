@@ -1,11 +1,8 @@
-import {
-    type DescriptionPair,
-    renderDescriptionList,
-} from "@goauthentik/components/DescriptionList.js";
-import { match } from "ts-pattern";
+import "#components/ak-status-label";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
+import { OneOfProvider } from "../types.js";
+
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import {
     ClientTypeEnum,
@@ -13,6 +10,7 @@ import {
     MatchingModeEnum,
     OAuth2Provider,
     ProviderModelEnum,
+    ProvidersSamlImportMetadataCreateRequest,
     ProxyMode,
     ProxyProvider,
     RACProvider,
@@ -22,7 +20,10 @@ import {
     SCIMProvider,
 } from "@goauthentik/api";
 
-import { OneOfProvider } from "../types.js";
+import { match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
 
 const renderSummary = (type: string, name: string, fields: DescriptionPair[]) =>
     renderDescriptionList([[msg("Type"), type], [msg("Name"), name], ...fields], {
@@ -39,6 +40,15 @@ function renderSAMLOverview(rawProvider: OneOfProvider) {
     ]);
 }
 
+function renderSAMLImportOverview(rawProvider: OneOfProvider) {
+    const provider = rawProvider as ProvidersSamlImportMetadataCreateRequest;
+
+    return renderSummary("SAML", provider.name, [
+        [msg("Authorization flow"), provider.authorizationFlow ?? "-"],
+        [msg("Invalidation flow"), provider.invalidationFlow ?? "-"],
+    ]);
+}
+
 function renderSCIMOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as SCIMProvider;
     return renderSummary("SCIM", provider.name, [[msg("URL"), provider.url]]);
@@ -52,7 +62,16 @@ function renderRadiusOverview(rawProvider: OneOfProvider) {
 }
 
 function renderRACOverview(rawProvider: OneOfProvider) {
-    const _provider = rawProvider as RACProvider;
+    const provider = rawProvider as RACProvider;
+    return renderSummary("RAC", provider.name, [
+        [msg("Connection expiry"), provider.connectionExpiry ?? "-"],
+        [
+            msg("Property mappings"),
+            Array.isArray(provider.propertyMappings) && provider.propertyMappings.length
+                ? provider.propertyMappings.join(", ")
+                : msg("None"),
+        ],
+    ]);
 }
 
 function formatRedirectUris(uris: RedirectURI[] = []) {
@@ -142,6 +161,7 @@ const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1
 
 export const providerRenderers = new Map([
     [providerName(ProviderModelEnum.AuthentikProvidersSamlSamlprovider), renderSAMLOverview],
+    ["samlproviderimportmodel", renderSAMLImportOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersScimScimprovider), renderSCIMOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersRadiusRadiusprovider), renderRadiusOverview],
     [providerName(ProviderModelEnum.AuthentikProvidersRacRacprovider), renderRACOverview],

@@ -1,5 +1,6 @@
-import { EVENT_REQUEST_POST } from "@goauthentik/common/constants.js";
-import { getCookie } from "@goauthentik/common/utils.js";
+import { EVENT_REQUEST_POST } from "#common/constants";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
+import { getCookie } from "#common/utils";
 
 import {
     CurrentBrand,
@@ -9,7 +10,10 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
+
 export const CSRFHeaderName = "X-authentik-CSRF";
+export const AcceptLanguage = "Accept-Language";
 
 export interface RequestInfo {
     time: number;
@@ -64,5 +68,36 @@ export class EventMiddleware implements Middleware {
             }),
         );
         return Promise.resolve(context.response);
+    }
+}
+
+export class LocaleMiddleware implements Middleware, Disposable {
+    #locale: string;
+
+    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status !== "ready") {
+            return;
+        }
+
+        this.#locale = event.detail.readyLocale;
+    };
+
+    constructor(localeHint?: string) {
+        this.#locale = autoDetectLanguage(localeHint);
+
+        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
+    [Symbol.dispose]() {
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
+    pre(context: RequestContext): Promise<FetchParams | void> {
+        context.init.headers = {
+            ...context.init.headers,
+            [AcceptLanguage]: this.#locale,
+        };
+
+        return Promise.resolve(context);
     }
 }

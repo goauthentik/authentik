@@ -1,13 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { property, query } from "lit/decorators.js";
+import { AKElement } from "#elements/Base";
+import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
+
+import { html } from "lit";
+import { customElement, property, query } from "lit/decorators.js";
 
 async function fetchObjects(query?: string): Promise<Group[]> {
     const args: CoreGroupsListRequest = {
@@ -50,13 +50,12 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
     search!: SearchSelect<Group>;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name?: string | null;
 
     selectedGroup?: Group;
 
     constructor() {
         super();
-        this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
@@ -83,9 +82,9 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    selected(group: Group) {
+    selected = (group: Group) => {
         return this.group === group.pk;
-    }
+    };
 
     render() {
         return html`

@@ -1,0 +1,80 @@
+# @file Redirect rules for the Docusaurus site.
+#
+# See https://docs.netlify.com/manage/routing/redirects/overview/
+#
+# Note: The order of the rules defines the priority of the redirect.
+#       i.e. The first rule that matches the URL will take precedence.
+
+#region API
+/schema.yml                                                 https://api.goauthentik.io/schema.yml 301!
+/schema.yaml                                                https://api.goauthentik.io/schema.yml 301!
+/api                                                        https://api.goauthentik.io 301!
+/docs/api                                                   https://api.goauthentik.io 301!
+/docs/developer-docs/api/                                   https://api.goauthentik.io 301!
+/api/*                                                      https://api.goauthentik.io/:splat 301!
+/docs/api/*                                                 https://api.goauthentik.io/:splat 301!
+/docs/developer-docs/api/*                                  https://api.goauthentik.io/:splat 301!
+/developer-docs/api/*                                       https://api.goauthentik.io/:splat 301!
+#endregion
+
+#region Applications
+/add-secure-apps/providers/azure-ad/                        /add-secure-apps/providers/entra/ 301!
+/add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/ 301!
+/core/applications                                          /add-secure-apps/applications/ 301!
+/applications/*                                             /add-secure-apps/applications/:splat 301!
+#endregion
+
+#region Core
+/core/geoip                                                 /install-config/geoip/ 301!
+/installation/*                                             /install-config/:splat 301!
+#endregion
+
+#region Customize
+/core/brands                                                /customize/brands/ 301!
+/customize/brands                                           /customize/branding/ 301!
+/customize/interfaces/admin/customization                   /customize/interfaces/admin/ 301!
+/customize/interfaces/flow/customization                    /customize/interfaces/flow/ 301!
+/customize/interfaces/user/customization                    /customize/interfaces/user/ 301!
+/customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/ 301!
+/customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
+/interfaces/*                                               /customize/interfaces/:splat 301!
+/policies/*                                                 /customize/policies/:splat 301!
+#endregion
+
+#region System Management
+/core/certificates                                          /sys-mgmt/certificates/ 301!
+/core/settings                                              /sys-mgmt/settings/ 301!
+/install-config/geoip                                       /sys-mgmt/ops/geoip 301!
+/install-config/storage-s3                                  /sys-mgmt/ops/storage-s3 301!
+/events/*                                                   /sys-mgmt/events/:splat 301!
+#endregion
+
+#region Flows and Stages
+/flow/*                                                     /add-secure-apps/flows-stages/flow/:splat 301!
+/flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat 301!
+/outposts/*                                                 /add-secure-apps/outposts/:splat 301!
+#endregion
+
+#region Sources
+/sources/*                                                  /users-sources/sources/:splat 301!
+/user-group-role/*                                          /users-sources/:splat 301!
+#endregion
+
+#region Property Mappings
+/property-mappings/*                                        /providers/property-mappings/:splat 301!
+#endregion
+
+#region Security
+/security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53 301!
+/security/CVE-*                                             /security/cves/CVE-:splat 301!
+/security/GHSA-*                                            /security/cves/GHSA-:splat 301!
+#endregion
+
+#region Integrations
+/integrations                                               https://integrations.goauthentik.io 301!
+/integrations/*                                             https://integrations.goauthentik.io/:splat 301!
+#endregion
+
+#region Docs prefix
+/docs/*                                                     /:splat 301!
+#endregion

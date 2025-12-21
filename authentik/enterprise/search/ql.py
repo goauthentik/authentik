@@ -6,6 +6,7 @@ from djangoql.ast import Name
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema
+from drf_spectacular.plumbing import ResolvedComponent, build_object_type
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
@@ -13,11 +14,12 @@ from structlog.stdlib import get_logger
 from authentik.enterprise.search.fields import JSONSearchField
 
 LOGGER = get_logger()
-AUTOCOMPLETE_COMPONENT_NAME = "Autocomplete"
-AUTOCOMPLETE_SCHEMA = {
-    "type": "object",
-    "additionalProperties": {},
-}
+AUTOCOMPLETE_SCHEMA = ResolvedComponent(
+    name="Autocomplete",
+    object="Autocomplete",
+    type=ResolvedComponent.SCHEMA,
+    schema=build_object_type(additionalProperties={}),
+)
 
 
 class BaseSchema(DjangoQLSchema):
@@ -42,16 +44,18 @@ class BaseSchema(DjangoQLSchema):
 class QLSearch(SearchFilter):
     """rest_framework search filter which uses DjangoQL"""
 
+    def __init__(self):
+        super().__init__()
+        self._fallback = SearchFilter()
+
     @property
     def enabled(self):
         return apps.get_app_config("authentik_enterprise").enabled()
 
-    def get_search_terms(self, request) -> str:
-        """
-        Search terms are set by a ?search=... query parameter,
-        and may be comma and/or whitespace delimited.
-        """
-        params = request.query_params.get(self.search_param, "")
+    def get_search_terms(self, request: Request) -> str:
+        """Search terms are set by a ?search=... query parameter,
+        and may be comma and/or whitespace delimited."""
+        params = request.query_params.get("search", "")
         params = params.replace("\x00", "")  # strip null characters
         return params
 
@@ -70,9 +74,9 @@ class QLSearch(SearchFilter):
         search_query = self.get_search_terms(request)
         schema = self.get_schema(request, view)
         if len(search_query) == 0 or not self.enabled:
-            return super().filter_queryset(request, queryset, view)
+            return self._fallback.filter_queryset(request, queryset, view)
         try:
             return apply_search(queryset, search_query, schema=schema)
         except DjangoQLError as exc:
             LOGGER.debug("Failed to parse search expression", exc=exc)
-            return super().filter_queryset(request, queryset, view)
+            return self._fallback.filter_queryset(request, queryset, view)

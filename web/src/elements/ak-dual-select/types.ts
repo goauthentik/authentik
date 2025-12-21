@@ -1,6 +1,6 @@
-import { TemplateResult } from "lit";
-
 import { Pagination } from "@goauthentik/api";
+
+import { TemplateResult } from "lit";
 
 export const DualSelectEventType = {
     AddSelected: "ak-dual-select-add",
@@ -26,7 +26,7 @@ export type DualSelectPair<T = unknown> = [
     /**
      * The key used to identify the object in the API.
      */
-    key: string,
+    key: string | number,
     /**
      * A human-readable label for the object.
      */

@@ -1,4 +1,4 @@
-import { isSafari } from "./isSafari";
+import { isSafari } from "./useragent.js";
 
 export async function writeToClipboard(message: string) {
     if (!navigator.clipboard) {

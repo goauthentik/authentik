@@ -1,7 +1,10 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Spinner";
-import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import "#elements/Spinner";
+
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult, type Spread } from "#elements/types";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
@@ -61,19 +64,19 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFTitle,
-            css`
-                i.pf-c-empty-state__icon {
-                    height: var(--pf-global--icon--FontSize--2xl);
-                    line-height: var(--pf-global--icon--FontSize--2xl);
-                }
-            `,
-        ];
-    }
+    public role = "status";
+
+    static styles = [
+        PFBase,
+        PFEmptyState,
+        PFTitle,
+        css`
+            i.pf-c-empty-state__icon {
+                height: var(--pf-global--icon--FontSize--2xl);
+                line-height: var(--pf-global--icon--FontSize--2xl);
+            }
+        `,
+    ];
 
     willUpdate() {
         if (this.defaultLabel && this.querySelector("span:not([slot])") === null) {
@@ -95,7 +98,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         };
 
         return html`<div aria-label=${this.localAriaLabel ?? nothing} class="${classMap(classes)}">
-            <div class="pf-c-empty-state__content" role="progressbar">
+            <div class="pf-c-empty-state__content">
                 ${loading
                     ? html`<div part="spinner" class="pf-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
@@ -132,7 +135,6 @@ interface IEmptyStateContent {
     primary?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

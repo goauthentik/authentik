@@ -1,41 +1,51 @@
-name: authentik-packages-npm-publish
+---
+name: Packages - Publish NPM packages
+
 on:
   push:
     branches: [main]
     paths:
-      - packages/docusaurus-config/**
+      - packages/tsconfig/**
       - packages/eslint-config/**
       - packages/prettier-config/**
-      - packages/tsconfig/**
-      - web/packages/esbuild-plugin-live-reload/**
+      - packages/docusaurus-config/**
+      - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
+
+permissions:
+  # Required for NPM OIDC trusted publisher
+  id-token: write
+  contents: read
+
 jobs:
   publish:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         package:
-          - packages/docusaurus-config
+          # The order of the `*config` packages should not be changed, as they depend on each other.
+          - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/tsconfig
-          - web/packages/esbuild-plugin-live-reload
+          - packages/docusaurus-config
+          - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: ${{ matrix.package }}/package.json
           registry-url: "https://registry.npmjs.org"
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c
+        uses: tj-actions/changed-files@e0021407031f5be11a464abee9a0776171c79891 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json
+      - name: Install Dependencies
+        run: npm ci
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
@@ -43,5 +53,3 @@ jobs:
           npm ci
           npm run build
           npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

@@ -1,0 +1,122 @@
+---
+name: CI - Docs
+
+on:
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - main
+      - version-*
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - prettier-check
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - name: Install dependencies
+        working-directory: website/
+        run: npm ci
+      - name: Lint
+        working-directory: website/
+        run: npm run ${{ matrix.command }}
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        name: Install Dependencies
+        run: npm ci
+      - name: Build Documentation via Docusaurus
+        working-directory: website/
+        run: npm run build
+  build-integrations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        name: Install Dependencies
+        run: npm ci
+      - name: Build Integrations via Docusaurus
+        working-directory: website/
+        run: npm run build -w integrations
+  build-container:
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/dev-docs
+      - name: Login to Container Registry
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker Image
+        id: push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
+        with:
+          tags: ${{ steps.ev.outputs.imageTags }}
+          file: website/Dockerfile
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
+          platforms: linux/amd64,linux/arm64
+          context: .
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
+        id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+  ci-website-mark:
+    if: always()
+    needs:
+      - lint
+      - build-docs
+      - build-integrations
+      - build-container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

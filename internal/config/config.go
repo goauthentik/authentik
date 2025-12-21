@@ -24,6 +24,9 @@ const defaultConfigPath = "./authentik/lib/default.yml"
 
 func getConfigPaths() []string {
 	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}
+	if workspace := os.Getenv("WORKSPACE_DIR"); workspace != "" {
+		_ = os.Chdir(workspace)
+	}
 	globConfigPaths, _ := filepath.Glob("/etc/authentik/config.d/*.yml")
 	configPaths = append(configPaths, globConfigPaths...)
 
@@ -166,8 +169,17 @@ func (c *Config) parseScheme(rawVal string) string {
 	case "env":
 		e, ok := os.LookupEnv(u.Host)
 		if ok {
+			log.WithFields(log.Fields{
+				"env_var": u.Host,
+				"found":   true,
+			}).Trace("Resolved environment variable")
 			return e
 		}
+		log.WithFields(log.Fields{
+			"env_var":  u.Host,
+			"found":    false,
+			"fallback": u.RawQuery,
+		}).Warn("Environment variable not found, using fallback")
 		return u.RawQuery
 	case "file":
 		d, err := os.ReadFile(u.Path)
@@ -177,6 +189,43 @@ func (c *Config) parseScheme(rawVal string) string {
 		return strings.TrimSpace(string(d))
 	}
 	return rawVal
+}
+
+// RefreshPostgreSQLConfig re-reads PostgreSQL configuration from file:// and env:// URIs
+// This enables hot-reloading when credentials are rotated by updating the referenced files.
+// Note: Plain environment variables (without file:// or env:// prefixes) are read from the
+// process environment and will not change unless the process is restarted or os.Setenv is called.
+func (c *Config) RefreshPostgreSQLConfig() PostgreSQLConfig {
+	// Start with current config as base
+	refreshed := c.PostgreSQL
+
+	// Manually read from environment variables with proper prefix
+	// We can't use env.Process directly on PostgreSQLConfig because it loses the AUTHENTIK_POSTGRESQL__ prefix
+	// Map of environment variable suffix to config field pointer
+	envVars := map[string]*string{
+		"HOST":           &refreshed.Host,
+		"USER":           &refreshed.User,
+		"PASSWORD":       &refreshed.Password,
+		"NAME":           &refreshed.Name,
+		"SSLMODE":        &refreshed.SSLMode,
+		"SSLROOTCERT":    &refreshed.SSLRootCert,
+		"SSLCERT":        &refreshed.SSLCert,
+		"SSLKEY":         &refreshed.SSLKey,
+		"DEFAULT_SCHEMA": &refreshed.DefaultSchema,
+		"CONN_OPTIONS":   &refreshed.ConnOptions,
+	}
+
+	// Read each environment variable if it exists
+	for suffix, field := range envVars {
+		if val, ok := os.LookupEnv("AUTHENTIK_POSTGRESQL__" + suffix); ok {
+			*field = val
+		}
+	}
+
+	// Process file:// and env:// URI schemes
+	c.walkScheme(&refreshed)
+
+	return refreshed
 }
 
 func (c *Config) configureLogger() {

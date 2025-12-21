@@ -1,0 +1,106 @@
+---
+title: Integrate with ezBookkeeping
+sidebar_label: ezBookkeeping
+support_level: community
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is ezBookkeeping
+
+> ezBookkeeping is a lightweight, self-hosted personal finance app with a user-friendly interface and powerful bookkeeping features.
+>
+> -- https://ezbookkeeping.mayswind.net/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `ezbookkeeping.company` is the FQDN of the ezBookkeeping installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of ezBookkeeping with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://ezbookkeeping.company/oauth2/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## ezBookkeeping configuration
+
+You can configure ezBookkeeping through environment variables or by editing its INI file:
+
+<Tabs
+  defaultValue="env"
+  values={[
+    { label: 'Environment Variables', value: 'env' },
+    { label: 'INI file', value: 'ini' },
+  ]}>
+  <TabItem value="env">
+Set the following environment variables to enable OpenID Connect authentication:
+
+```yaml showLineNumbers
+EBK_SERVER_DOMAIN=ezbookkeeping.company
+EBK_SERVER_ROOT_URL=https://ezbookkeeping.company/
+EBK_AUTH_ENABLE_OAUTH2_AUTH=true
+EBK_AUTH_OAUTH2_PROVIDER=oidc
+EBK_AUTH_OAUTH2_CLIENT_ID=<client_id>
+EBK_AUTH_OAUTH2_CLIENT_SECRET=<client_secret>
+EBK_AUTH_OIDC_PROVIDER_BASE_URL=https://authentik.company/application/o/<application_slug>/
+EBK_AUTH_ENABLE_OIDC_DISPLAY_NAME=true
+EBK_AUTH_OIDC_CUSTOM_DISPLAY_NAME=authentik
+```
+
+Restart ezBookkeeping for the changes to take effect.
+
+  </TabItem>
+  <TabItem value="ini">
+Set the following variables in the ezBookkeeping configuration file to enable OpenID Connect authentication:
+
+```ini showLineNumbers title="/conf/ezbookkeeping.ini"
+[server]
+domain = ezbookkeeping.company
+root_url = https://ezbookkeeping.company/
+
+[auth]
+enable_oauth2_auth = true
+oauth2_provider = oidc
+oauth2_client_id = <client_id>
+oauth2_client_secret = <client_secret>
+oidc_provider_base_url = https://authentik.company/application/o/<application_slug>/
+enable_oidc_display_name = true
+oidc_custom_display_name = authentik
+```
+
+Restart ezBookkeeping for the changes to take effect.
+
+  </TabItem>
+</Tabs>
+
+:::note Linking existing accounts
+If you're already signed in, go to **User Settings** > **Security** and click **Link** under **Third-Party Logins** to connect your authentik account.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with ezBookkeeping, log out of ezBookkeeping, click **Log in with authentik**, and complete the authentik sign-in flow. A successful authentication should return you to ezBookkeeping with access to your account.
+
+## References
+
+- [ezBookkeeping Documentation - Configuration](https://ezbookkeeping.mayswind.net/configuration#authentication)

@@ -1,14 +1,13 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-switch-input.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-switch-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     BackendsEnum,
@@ -19,6 +18,10 @@ import {
     PasswordStage,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
@@ -82,9 +85,8 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
                         <ak-checkbox-group
                             class="user-field-select"
@@ -142,7 +144,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to configure change their password.",
+                                "Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

@@ -1,0 +1,74 @@
+---
+title: Integrate with Planka
+sidebar_label: Planka
+support_level: community
+---
+
+## What is Planka
+
+> Planka is an open-source, Trello-like application with a Kanban board system, used for project management.
+>
+> -- https://planka.app/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `planka.company` is the FQDN of the Planka installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Planka with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://planka.company/oidc-callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Create a group in authentik _(optional)_
+
+To provision users in Planka with administrative permissions, you will need to create a group in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set a name for the group (e.g. `Planka Admins`) and click **Create**.
+4. Click the name of the newly created group, and then switch to the **Users** tab.
+5. Click **Add existing user**, select the user who requires Planka administrator access, and click **Add**.
+
+## Planka configuration
+
+Add the following required environment variables to your Planka deployment:
+
+```yaml
+OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+OIDC_CLIENT_ID=<client if from authentik>
+OIDC_CLIENT_SECRET=<client secret from authentik>
+
+#Optionally, if you want to provision users with administrator access, include the following environment variable:
+OIDC_ADMIN_ROLES=<authentik group name>
+
+#Optionally, if you want to enforce the use of SSO and disable local authentication, include the following environment variable:
+OIDC_ENFORCED=true
+```
+
+## Configuration verification
+
+To verify the integration with Planka, log out and attempt to log back in using the **Log in with SSO** button. You should be redirected to authentik. Once authenticated, you should then be redirected to the Planka dashboard.
+
+## Resources
+
+- [Planka Docs - OIDC (OpenID Connect)](https://docs.planka.cloud/docs/configuration/oidc)

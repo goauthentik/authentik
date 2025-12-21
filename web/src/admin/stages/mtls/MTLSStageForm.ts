@@ -1,25 +1,27 @@
-import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
+import "#admin/common/ak-crypto-certificate-search";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     CertAttributeEnum,
     MutualTLSStage,
-    MutualTLSStageModeEnum,
+    StageModeEnum,
     StagesApi,
     UserAttributeEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
@@ -35,16 +37,15 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                 stageUuid: this.instance.pk || "",
                 mutualTLSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
-                mutualTLSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
+            mutualTLSStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
         return html`
-            <span> ${msg("Client-certificate/mTLS authentication/enrollment.")} </span>
+            <span> ${msg("Client-certificate/mTLS authentication/enrollment.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -53,15 +54,14 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                         <ak-radio
                             .options=${[
                                 {
                                     label: msg("Certificate optional"),
-                                    value: MutualTLSStageModeEnum.Optional,
+                                    value: StageModeEnum.Optional,
                                     default: true,
                                     description: html`${msg(
                                         "If no certificate was provided, this stage will succeed and continue to the next stage.",
@@ -69,7 +69,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                                 },
                                 {
                                     label: msg("Certificate required"),
-                                    value: MutualTLSStageModeEnum.Required,
+                                    value: StageModeEnum.Required,
                                     description: html`${msg(
                                         "If no certificate was provided, this stage will stop flow execution.",
                                     )}`,

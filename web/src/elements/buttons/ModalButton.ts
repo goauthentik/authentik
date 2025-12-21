@@ -1,12 +1,13 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import {
-    ModalHideEvent,
-    ModalShowEvent,
-} from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
+import { SlottedTemplateResult } from "../types.js";
+
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
+import { Form } from "#elements/forms/Form";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
@@ -25,6 +26,10 @@ export const MODAL_BUTTON_STYLES = css`
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
+
+        /* Fixes issue where browser inherits from modal parent with more restrictive style. */
+        cursor: initial;
+        user-select: text;
     }
     .pf-c-modal-box > .pf-c-button + * {
         margin-right: 0;
@@ -36,87 +41,97 @@ export const MODAL_BUTTON_STYLES = css`
 `;
 
 @customElement("ak-modal-button")
-export class ModalButton extends AKElement {
+export abstract class ModalButton extends AKElement {
     @property()
-    size: PFSize = PFSize.Large;
+    public size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
-    open = false;
+    public open = false;
 
     @property({ type: Boolean })
-    locked = false;
+    public locked = false;
 
-    handlerBound = false;
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFModalBox,
+        PFForm,
+        PFTitle,
+        PFFormControl,
+        PFBullseye,
+        PFBackdrop,
+        PFPage,
+        PFCard,
+        PFContent,
+        MODAL_BUTTON_STYLES,
+        css`
+            .locked {
+                overflow-y: hidden !important;
+            }
+            .pf-c-modal-box.pf-m-xl {
+                --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+            }
+        `,
+    ];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFModalBox,
-            PFForm,
-            PFTitle,
-            PFFormControl,
-            PFBullseye,
-            PFBackdrop,
-            PFPage,
-            PFCard,
-            PFContent,
-            MODAL_BUTTON_STYLES,
-            css`
-                .locked {
-                    overflow-y: hidden !important;
-                }
-                .pf-c-modal-box.pf-m-xl {
-                    --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
-                }
-            `,
-        ];
+    public resetForms(): void {
+        this.querySelectorAll<Form>("[slot=form]").forEach((form) => {
+            form.reset?.();
+        });
     }
 
-    closeModal() {
+    /**
+     * Close the modal.
+     */
+    public close = () => {
         this.resetForms();
         this.open = false;
-    }
+    };
 
-    resetForms(): void {
-        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
-            if ("resetForm" in form) {
-                form?.resetForm();
-            }
-        });
-    }
-
-    onClick(): void {
+    /**
+     * Show the modal.
+     */
+    public show = (event?: PointerEvent): void => {
+        event?.preventDefault();
         this.open = true;
-        this.dispatchEvent(new ModalShowEvent(this));
-        this.querySelectorAll("*").forEach((child) => {
-            if ("requestUpdate" in child) {
-                (child as AKElement).requestUpdate();
-            }
-        });
-    }
 
-    renderModalInner(): TemplateResult | typeof nothing {
+        this.dispatchEvent(new ModalShowEvent(this));
+
+        this.querySelectorAll<AKElement>("*").forEach((child) => {
+            child.requestUpdate?.();
+        });
+    };
+
+    #closeListener = () => {
+        this.dispatchEvent(new ModalHideEvent(this));
+    };
+
+    #backdropListener = (event: PointerEvent) => {
+        event.stopPropagation();
+    };
+
+    /**
+     * @abstract
+     */
+    protected renderModalInner(): SlottedTemplateResult {
         return html`<slot name="modal"></slot>`;
     }
 
-    renderModal(): TemplateResult {
-        return html`<div
-            class="pf-c-backdrop"
-            @click=${(e: PointerEvent) => {
-                e.stopPropagation();
-            }}
-        >
-            <div class="pf-l-bullseye">
+    /**
+     * @abstract
+     */
+    protected renderModal(): SlottedTemplateResult {
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
+            <div class="pf-l-bullseye" role="presentation">
                 <div
                     class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
                     role="dialog"
                     aria-modal="true"
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
                 >
                     <button
-                        @click=${() => {
-                            this.dispatchEvent(new ModalHideEvent(this));
-                        }}
+                        @click=${this.#closeListener}
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-label=${msg("Close dialog")}
@@ -130,9 +145,11 @@ export class ModalButton extends AKElement {
     }
 
     render(): TemplateResult {
-        return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
+        return html` <slot name="trigger" @click=${this.show}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }
+
+    //#endregion
 }
 
 declare global {

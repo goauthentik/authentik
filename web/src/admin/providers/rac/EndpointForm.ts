@@ -1,20 +1,23 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#components/ak-radio-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { Endpoint, EndpointAuthModeEnum, ProtocolEnum, RacApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
-
-import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
@@ -34,7 +37,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
     }
 
     async send(data: Endpoint): Promise<Endpoint> {
-        data.authMode = AuthModeEnum.Prompt;
+        data.authMode = EndpointAuthModeEnum.Prompt;
         if (!this.instance) {
             data.provider = this.providerID || 0;
         } else {
@@ -53,12 +56,14 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} name="name" required>
+            <ak-form-element-horizontal label=${msg("Provider Name")} name="name" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
+                    placeholder=${msg("Type a provider name...")}
+                    spellcheck="false"
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Protocol")} required name="protocol">
@@ -88,7 +93,9 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     class="pf-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${msg("Hostname/IP to connect to.")}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Hostname/IP to connect to. Optionally specify the port.")}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Maximum concurrent connections")}
@@ -115,9 +122,8 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     selected-label="${msg("Selected User Property Mappings")}"
                 ></ak-dual-select-dynamic-selected>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"

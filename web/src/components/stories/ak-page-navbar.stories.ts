@@ -1,12 +1,15 @@
+import "#components/ak-page-navbar";
+
 import { DefaultBrand } from "#common/ui/config";
-import "#components/ak-page-header";
+
 import { AKPageNavbar } from "#components/ak-page-navbar";
+
+import { CurrentBrand } from "@goauthentik/api";
+
 import { Meta } from "@storybook/web-components";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { CurrentBrand } from "@goauthentik/api";
 
 const metadata: Meta<AKPageNavbar> = {
     title: "Components / Page Navbar",
@@ -37,22 +40,9 @@ declare global {
 }
 
 export const SimplePageNavbar = () => {
-    return html`
-        <story-ak-page-navbar open @sidebar-toggle=${() => {}}>
-            <ak-page-header header="Page Title" description="Page Description"> </ak-page-header>
-        </story-ak-page-navbar>
-    `;
+    return html` <story-ak-page-navbar open @sidebar-toggle=${() => {}}> </story-ak-page-navbar> `;
 };
 
 export const PageNavbarWithIcon = () => {
-    return html`
-        <story-ak-page-navbar open @sidebar-toggle=${() => {}}>
-            <ak-page-header
-                header="Page Title"
-                description="Page Description"
-                icon="pf-icon pf-icon-user"
-            >
-            </ak-page-header>
-        </story-ak-page-navbar>
-    `;
+    return html` <story-ak-page-navbar open @sidebar-toggle=${() => {}}> </story-ak-page-navbar> `;
 };

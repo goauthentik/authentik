@@ -1,24 +1,30 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-switch-input";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
-    FlowStageBinding,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowStageBinding,
     InvalidResponseActionEnum,
-    PolicyEngineMode,
     Stage,
     StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
@@ -72,9 +78,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderTarget(): TemplateResult {
+    renderTarget(): SlottedTemplateResult {
         if (this.instance?.target || this.targetPk) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
@@ -122,42 +128,20 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="evaluateOnPlan">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.evaluateOnPlan ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when flow is planned")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies during the Flow planning process.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="reEvaluatePolicies">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.reEvaluatePolicies ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when stage is run")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies before the Stage is presented to the user.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="evaluateOnPlan"
+                label=${msg("Evaluate when flow is planned")}
+                ?checked=${this.instance?.evaluateOnPlan ?? false}
+                help=${msg("Evaluate policies during the Flow planning process.")}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="reEvaluatePolicies"
+                label=${msg("Evaluate when stage is run")}
+                ?checked=${this.instance?.reEvaluatePolicies ?? true}
+                help=${msg("Evaluate policies before the Stage is presented to the user.")}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Invalid response behavior")}
                 required
@@ -200,22 +184,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 required
                 name="policyEngineMode"
             >
-                <ak-radio
-                    .options=${[
-                        {
-                            label: "any",
-                            value: PolicyEngineMode.Any,
-                            default: true,
-                            description: html`${msg("Any policy must match to grant access")}`,
-                        },
-                        {
-                            label: "all",
-                            value: PolicyEngineMode.All,
-                            description: html`${msg("All policies must match to grant access")}`,
-                        },
-                    ]}
-                    .value=${this.instance?.policyEngineMode}
-                >
+                <ak-radio .options=${policyEngineModes} .value=${this.instance?.policyEngineMode}>
                 </ak-radio>
             </ak-form-element-horizontal>`;
     }

@@ -1,9 +1,8 @@
-import { me } from "@goauthentik/common/users.js";
-import { isUserRoute } from "@goauthentik/elements/router/utils.js";
-import { deepmerge, deepmergeInto } from "deepmerge-ts";
+import { isUserRoute } from "#elements/router/utils";
 
-import { UiThemeEnum, UserSelf } from "@goauthentik/api";
-import { CurrentBrand } from "@goauthentik/api";
+import { CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+
+import { deepmerge } from "deepmerge-ts";
 
 export const DefaultBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
@@ -14,6 +13,10 @@ export const DefaultBrand = {
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
     defaultLocale: "",
+    flags: {
+        policiesBufferedAccessView: false,
+        flowsRefreshOthers: false,
+    },
 } as const satisfies CurrentBrand;
 
 export enum UserDisplay {
@@ -62,54 +65,42 @@ export interface UIConfig {
     };
 }
 
-export class DefaultUIConfig implements UIConfig {
-    enabledFeatures = {
+export const DefaultUIConfig = {
+    enabledFeatures: {
         apiDrawer: true,
         notificationDrawer: true,
         settings: true,
         applicationEdit: true,
         search: true,
-    };
-    layout = {
+    },
+    layout: {
         type: LayoutType.row,
-    };
-    navbar = {
+    },
+    navbar: {
         userDisplay: UserDisplay.username,
-    };
-    theme = {
+    },
+    theme: {
         base: UiThemeEnum.Automatic,
         background: "",
         cardBackground: "",
-    };
-    pagination = {
+    },
+    pagination: {
         perPage: 20,
-    };
-    locale = "";
-    defaults = {
+    },
+    locale: "",
+    defaults: {
         userPath: "users",
-    };
+    },
+} as const satisfies UIConfig;
 
-    constructor() {
-        this.enabledFeatures.apiDrawer = !isUserRoute();
-    }
-}
-
-let globalUiConfig: Promise<UIConfig>;
-
-export function getConfigForUser(user: UserSelf): UIConfig {
-    const settings = user.settings as UIConfig;
-    const config = new DefaultUIConfig();
-    if (!settings) {
-        return config;
-    }
-    return deepmerge({ ...config }, settings);
-}
-
-export function uiConfig(): Promise<UIConfig> {
-    if (!globalUiConfig) {
-        globalUiConfig = me().then((user) => {
-            return getConfigForUser(user.user);
-        });
-    }
-    return globalUiConfig;
+export function createUIConfig(overrides: Partial<UIConfig> = {}): UIConfig {
+    return deepmerge(
+        { ...DefaultUIConfig },
+        {
+            enabledFeatures: {
+                apiDrawer: !isUserRoute(),
+            },
+        },
+        overrides,
+    );
 }

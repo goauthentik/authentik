@@ -1,10 +1,75 @@
-import { type LitElement, type ReactiveControllerHost, type TemplateResult, nothing } from "lit";
-import "lit";
+import { OwnPropertyRecord, Writeable } from "#common/types";
+
+import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
+
+//#region HTML Helpers
 
 /**
- * Type utility to make readonly properties mutable.
+ * Utility type to extract a record of tag names which correspond to a given type.
+ *
+ * This is useful when selecting a subset of elements that share a common base class.
  */
-export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+export type HTMLElementTagNameMapOf<T> = {
+    [K in keyof HTMLElementTagNameMap as HTMLElementTagNameMap[K] extends T
+        ? K
+        : never]: HTMLElementTagNameMap[K];
+};
+
+//#endregion
+
+//#region Element Properties
+
+/**
+ *
+ * Given an element and a base class, pluck the properties not defined on the base class.
+ */
+export type TemplatedProperties<
+    T extends HTMLElement,
+    Base extends Element = HTMLElement,
+> = Partial<OwnPropertyRecord<T, Base>>;
+
+/**
+ * Given a record-like object, prefixes each key with a dot, allowing it to be spread into a
+ * template literal.
+ *
+ * ```ts
+ * interface MyElementProperties {
+ *     foo: string;
+ *     bar: number;
+ * }
+ *
+ * const properties {} as LitPropertyRecord<MyElementProperties>
+ *
+ * console.log(properties) // { '.foo': string; '.bar': number }
+ * ```
+ */
+export type LitPropertyRecord<T extends object> = {
+    [K in keyof T as K extends string ? LitPropertyKey<K> : never]?: T[K];
+};
+
+/**
+ * A type that represents a property key that can be used in a LitPropertyRecord.
+ *
+ * @see {@linkcode LitPropertyRecord}
+ */
+export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
+
+/**
+ * A React-like functional component. Used to render a component in a template.
+ *
+ * @template P The type of the props object.
+ * @param props The props object.
+ * @param children The children to render.
+ * @returns The rendered template.
+ */
+export type LitFC<P> = (
+    props: P,
+    children?: null | SlottedTemplateResult,
+) => SlottedTemplateResult | SlottedTemplateResult[] | null;
+
+//#endregion
+
+//#region Host/Controller
 
 /**
  * A custom element which may be used as a host for a ReactiveController.
@@ -15,6 +80,10 @@ export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
  */
 export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & Writeable<T>> & HTMLElement;
 
+//#endregion
+
+//#region Constructors
+
 export type AbstractLitElementConstructor<T = unknown> = abstract new (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
@@ -22,6 +91,10 @@ export type AbstractLitElementConstructor<T = unknown> = abstract new (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
+
+//#endregion
+
+//#region Mixins
 
 /**
  * A constructor that has been extended with a mixin.
@@ -163,7 +236,7 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
  *
  * - A string, which will be rendered as text.
  * - A TemplateResult, which will be rendered as HTML.
- * - `nothing`, which will not be rendered.
+ * - `nothing` or `null`, which will not be rendered.
  */
-export type SlottedTemplateResult = string | TemplateResult | typeof nothing;
+export type SlottedTemplateResult = string | TemplateResult | typeof nothing | null;
 export type Spread = { [key: string]: unknown };

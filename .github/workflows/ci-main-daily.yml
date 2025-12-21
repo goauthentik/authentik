@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-main-daily
+name: CI - Main daily
 
 on:
   workflow_dispatch:
@@ -18,11 +18,11 @@ jobs:
           - version-2025-4
           - version-2025-2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"
           mkdir -p $dir
           cd $dir
-          wget https://${{ matrix.version }}.goauthentik.io/docker-compose.yml
+          wget https://${{ matrix.version }}.goauthentik.io/compose.yml
           ${current}/scripts/test_docker.sh

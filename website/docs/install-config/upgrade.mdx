@@ -10,13 +10,19 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 authentik does not support downgrading. Make sure to back up your database in case you need to revert an upgrade.
 :::
 
-- **Preview the Release Notes**: Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
+**Preview the release notes**: Be sure to carefully read the [Release Notes](../../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
 
-- **Database backup**: Make a backup of your PostgreSQL database before upgrading. You can dump your existing database to get a backup file. For more information about dumping and backing up your database, refer to [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md).
+**Database backup**: Before upgrading, make a backup of your PostgreSQL database. You can create a backup by dumping your existing database. For detailed instructions, refer to the relevant guide for your deployment method ([Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md)).
 
-- **Upgrade sequence**: Upgrades need to follow the sequence of major releases; do not skip directly from an older major version to the most recent version. For example, if you are currently running 2023.10.3, you should first upgrade to the latest 2024.2.x release, then to the latest 2024.4.x release, and finally to the latest 2024.6.x release, in sequence. Always use the latest available patch version (_x_ in this case being the latest patch release) for each major.minor release.
+**Upgrade sequence**: Upgrades must follow the sequence of major releases; **do not skip** directly from an older major version to the most recent version.
 
-- **Outposts**: The versions of the authentik server and any authentik outposts must be the same. Always [upgrade any outposts](../add-secure-apps/outposts/upgrading.md) at the same time that you upgrade your authentik instance.
+Always upgrade to the latest minor version (`.x`) within each `major.minor` version before upgrading to the next major version. For example, if you're currently running `2025.2.1`, upgrade in the following order:
+
+1. Upgrade to the latest `2025.2.x`.
+2. Then to the latest `2025.4.x`.
+3. Finally to the latest `2025.6.x`.
+
+**Outposts**: The version of the authentik server and all authentik outposts must match. Ensure that all [outposts are upgraded](../add-secure-apps/outposts/upgrading.md) at the same time as the core authentik instance.
 
 ## Upgrade authentik
 
@@ -27,9 +33,9 @@ import Tabs from "@theme/Tabs";
   <TabItem value="docker-compose" label="Docker Compose" default>
     In your terminal, navigate to your installation directory and follow these steps:
 
-    #### 1. Retrieve latest `docker-compose.yml` file
+    #### 1. Retrieve latest `compose.yml` file
 
-    Download the `docker-compose.yml` file using either `wget -O docker-compose.yml https://goauthentik.io/docker-compose.yml` or `curl -O https://goauthentik.io/docker-compose.yml` or a similar process.
+    Download the `compose.yml` file using either `wget -O compose.yml https://docs.goauthentik.io/compose.yml` or `curl -O https://docs.goauthentik.io/compose.yml` or a similar process.
 
     **2. Run upgrade commands**
 
@@ -64,7 +70,7 @@ Be sure to also [upgrade any outposts](../add-secure-apps/outposts/upgrading.md)
 
 ## Verify your upgrade
 
-You can view the current version of your authentik instance by logging in to the Admin interface, and then navigating to **Dashboards -> Overview**.
+You can view the current version of your authentik instance by logging in to the Admin interface, and then navigating to **Dashboards > Overview**.
 
 ![](./version1.png)
 

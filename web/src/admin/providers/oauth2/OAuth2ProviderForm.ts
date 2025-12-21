@@ -1,13 +1,15 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+import { renderForm } from "./OAuth2ProviderFormForm.js";
 
-import { css } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DualSelectPair } from "#elements/ak-dual-select/types";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import { ClientTypeEnum, OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
-import { renderForm } from "./OAuth2ProviderFormForm.js";
+import { css } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 const providerToSelect = (provider: OAuth2Provider) => [provider.pk, provider.name];
 
@@ -60,19 +62,24 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
 
-    static get styles() {
-        return super.styles.concat(css`
+    @state()
+    showLogoutMethod = false;
+
+    static styles = [
+        ...super.styles,
+        css`
             ak-array-input {
                 width: 100%;
             }
-        `);
-    }
+        `,
+    ];
 
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+        this.showLogoutMethod = !!provider.logoutUri;
         return provider;
     }
 
@@ -92,7 +99,16 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return renderForm(this.instance ?? {}, [], this.showClientSecret, showClientSecretCallback);
+        const showLogoutMethodCallback = (show: boolean) => {
+            this.showLogoutMethod = show;
+        };
+        return renderForm({
+            provider: this.instance,
+            showClientSecret: this.showClientSecret,
+            showClientSecretCallback,
+            showLogoutMethod: this.showLogoutMethod,
+            showLogoutMethodCallback,
+        });
     }
 }
 

@@ -12,14 +12,12 @@ from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
-from guardian.models import UserObjectPermission
-from guardian.shortcuts import assign_perm
 from model_utils.managers import InheritanceManager
 from packaging.version import Version, parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
 from authentik.core.models import (
@@ -35,10 +33,12 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
-OUR_VERSION = parse(__version__)
+OUR_VERSION = parse(authentik_version())
 OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
 
@@ -74,6 +74,7 @@ class OutpostConfig:
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: str | None = field(default=None)
+    kubernetes_ingress_path_type: str | None = field(default=None)
     kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
     kubernetes_service_type: str = field(default="ClusterIP")
@@ -85,7 +86,7 @@ class OutpostConfig:
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
         """Return a list of all required objects"""
         return [self]
 
@@ -115,7 +116,7 @@ class OutpostServiceConnectionState:
     healthy: bool
 
 
-class OutpostServiceConnection(models.Model):
+class OutpostServiceConnection(ScheduledModel, models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -145,11 +146,11 @@ class OutpostServiceConnection(models.Model):
     @property
     def state(self) -> OutpostServiceConnectionState:
         """Get state of service connection"""
-        from authentik.outposts.tasks import outpost_service_connection_state
+        from authentik.outposts.tasks import outpost_service_connection_monitor
 
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_state.delay(self.pk)
+            outpost_service_connection_monitor.send_with_options(args=(self.pk,), rel_obj=self)
             return OutpostServiceConnectionState("", False)
         return state
 
@@ -159,6 +160,20 @@ class OutpostServiceConnection(models.Model):
         # This is called when creating an outpost with a service connection
         # since the response doesn't use the correct inheritance
         return ""
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.outposts.tasks import outpost_service_connection_monitor
+
+        return [
+            ScheduleSpec(
+                actor=outpost_service_connection_monitor,
+                uid=self.name,
+                args=(self.pk,),
+                crontab="3-59/15 * * * *",
+                send_on_save=True,
+            ),
+        ]
 
 
 class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
@@ -244,7 +259,7 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         return "ak-service-connection-kubernetes-form"
 
 
-class Outpost(SerializerModel, ManagedModel):
+class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -298,51 +313,58 @@ class Outpost(SerializerModel, ManagedModel):
         """Username for service user"""
         return f"ak-outpost-{self.uuid.hex}"
 
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.outposts.tasks import outpost_controller
+
+        return [
+            ScheduleSpec(
+                actor=outpost_controller,
+                uid=self.name,
+                args=(self.pk,),
+                kwargs={"action": "up", "from_cache": False},
+                crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
+                send_on_save=True,
+            ),
+        ]
+
     def build_user_permissions(self, user: User):
         """Create per-object and global permissions for outpost service-account"""
         # To ensure the user only has the correct permissions, we delete all of them and re-add
         # the ones the user needs
-        with transaction.atomic():
-            UserObjectPermission.objects.filter(user=user).delete()
-            user.user_permissions.clear()
-            for model_or_perm in self.get_required_objects():
-                if isinstance(model_or_perm, models.Model):
-                    model_or_perm: models.Model
-                    code_name = (
-                        f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
-                    )
-                    try:
-                        assign_perm(code_name, user, model_or_perm)
-                    except (Permission.DoesNotExist, AttributeError) as exc:
-                        LOGGER.warning(
-                            "permission doesn't exist",
-                            code_name=code_name,
-                            user=user,
-                            model=model_or_perm,
+        try:
+            with transaction.atomic():
+                user.remove_all_perms_from_managed_role()
+                for model_or_perm in self.get_required_objects():
+                    if isinstance(model_or_perm, models.Model):
+                        code_name = (
+                            f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
                         )
-                        Event.new(
-                            action=EventAction.SYSTEM_EXCEPTION,
-                            message=(
-                                "While setting the permissions for the service-account, a "
-                                "permission was not found: Check "
-                                "https://goauthentik.io/docs/troubleshooting/missing_permission"
-                            )
-                            + exception_to_string(exc),
-                        ).set_user(user).save()
-                else:
-                    app_label, perm = model_or_perm.split(".")
-                    permission = Permission.objects.filter(
-                        codename=perm,
-                        content_type__app_label=app_label,
-                    )
-                    if not permission.exists():
-                        LOGGER.warning("permission doesn't exist", perm=model_or_perm)
-                        continue
-                    user.user_permissions.add(permission.first())
+                        user.assign_perms_to_managed_role(code_name, model_or_perm)
+                    elif isinstance(model_or_perm, tuple):
+                        perm, obj = model_or_perm
+                        user.assign_perms_to_managed_role(perm, obj)
+                    else:
+                        user.assign_perms_to_managed_role(model_or_perm)
+        except (Permission.DoesNotExist, AttributeError) as exc:
+            LOGGER.warning(
+                "permission doesn't exist",
+                code_name=code_name,
+                user=user,
+                model=model_or_perm,
+            )
+            Event.new(
+                action=EventAction.SYSTEM_EXCEPTION,
+                message=(
+                    "While setting the permissions for the service-account, a "
+                    "permission was not found: Check "
+                    "https://docs.goauthentik.io/troubleshooting/missing_permission"
+                ),
+            ).with_exception(exc).set_user(user).save()
         LOGGER.debug(
             "Updated service account's permissions",
-            obj_perms=UserObjectPermission.objects.filter(user=user),
-            perms=user.user_permissions.all(),
+            obj_perms=user.get_all_obj_perms_on_managed_role(),
+            perms=user.get_all_model_perms_on_managed_role(),
         )
 
     @property
@@ -403,7 +425,7 @@ class Outpost(SerializerModel, ManagedModel):
             Token.objects.filter(identifier=self.token_identifier).delete()
             return self.token
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
         """Get an iterator of all objects the user needs read access to"""
         objects: list[models.Model | str] = [
             self,
@@ -417,7 +439,9 @@ class Outpost(SerializerModel, ManagedModel):
         if self.managed:
             for brand in Brand.objects.filter(web_certificate__isnull=False):
                 objects.append(brand)
-                objects.append(brand.web_certificate)
+                objects.append(("view_certificatekeypair", brand.web_certificate))
+                objects.append(("view_certificatekeypair_certificate", brand.web_certificate))
+                objects.append(("view_certificatekeypair_key", brand.web_certificate))
         return objects
 
     def __str__(self) -> str:
@@ -451,7 +475,7 @@ class OutpostState:
         """Check if outpost version matches our version"""
         if not self.version:
             return False
-        if self.build_hash != get_build_hash():
+        if self.build_hash != authentik_build_hash():
             return False
         return parse(self.version) != OUR_VERSION
 

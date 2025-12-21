@@ -1,16 +1,18 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/temporal";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { dateTimeLocal } from "#common/temporal";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
@@ -21,7 +23,7 @@ export class TokenForm extends ModelForm<Token, string> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
-        this.showExpiry = token.expiring || true;
+        this.showExpiry = token.expiring ?? true;
         return token;
     }
 
@@ -149,7 +151,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            ${this.showExpiry ? this.renderExpiry() : html``}`;
+            ${this.showExpiry ? this.renderExpiry() : nothing}`;
     }
 }
 

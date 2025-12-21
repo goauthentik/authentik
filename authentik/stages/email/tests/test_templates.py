@@ -54,7 +54,7 @@ class TestEmailStageTemplates(FlowTestCase):
             chmod(file2, 0o000)  # Remove all permissions so we can't read the file
             choices = get_template_choices()
             self.assertEqual(choices[-1][0], Path(file).name)
-            self.assertEqual(len(choices), 3)
+            self.assertEqual(len(choices), 5)
             unlink(file)
             unlink(file2)
 

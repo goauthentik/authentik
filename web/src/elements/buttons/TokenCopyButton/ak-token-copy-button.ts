@@ -1,15 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
+import { APIMessage } from "../../messages/Message.js";
+import BaseTaskButton from "../SpinnerButton/BaseTaskButton.js";
 
-import { msg } from "@lit/localize";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, ResponseError, TokenView } from "@goauthentik/api";
 
-import { APIMessage } from "../../messages/Message";
-import BaseTaskButton from "../SpinnerButton/BaseTaskButton";
+import { msg } from "@lit/localize";
+import { customElement, property } from "lit/decorators.js";
 
 /**
  * A derivative of ak-action-button that is used only to request tokens from the back-end server.

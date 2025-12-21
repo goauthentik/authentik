@@ -15,8 +15,9 @@ from structlog.stdlib import get_logger
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.outposts.models import OutpostModel
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -37,7 +38,7 @@ class AuthenticationMode(models.TextChoices):
     PROMPT = "prompt"
 
 
-class RACProvider(Provider):
+class RACProvider(OutpostModel, Provider):
     """Remotely access computers/servers via RDP/SSH/VNC."""
 
     settings = models.JSONField(default=dict)
@@ -119,9 +120,13 @@ class RACPropertyMapping(PropertyMapping):
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        if len(self.static_settings) > 0:
-            return self.static_settings
-        return super().evaluate(user, request, **kwargs)
+        settings = {}
+        for key, value in self.static_settings.items():
+            if value and value != "":
+                settings[key] = value
+        if self.expression != "":
+            always_merger.merge(settings, super().evaluate(user, request, **kwargs))
+        return settings
 
     @property
     def component(self) -> str:
@@ -140,7 +145,7 @@ class RACPropertyMapping(PropertyMapping):
         verbose_name_plural = _("RAC Provider Property Mappings")
 
 
-class ConnectionToken(ExpiringModel):
+class ConnectionToken(InternallyManagedMixin, ExpiringModel):
     """Token for a single connection to a specified endpoint"""
 
     connection_token_uuid = models.UUIDField(default=uuid4, primary_key=True)

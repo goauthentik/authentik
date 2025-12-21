@@ -1,28 +1,46 @@
 """RAC Client consumer"""
 
+from hashlib import sha256
+
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.db import connection
 from django.http.request import QueryDict
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
+from authentik.outposts.consumer import build_outpost_group_instance
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 from authentik.providers.rac.models import ConnectionToken, RACProvider
 
-# Global broadcast group, which messages are sent to when the outpost connects back
-# to authentik for a specific connection
-# The `RACClientConsumer` consumer adds itself to this group on connection,
-# and removes itself once it has been assigned a specific outpost channel
-RAC_CLIENT_GROUP = "group_rac_client"
-# A group for all connections in a given authentik session ID
-# A disconnect message is sent to this group when the session expires/is deleted
-RAC_CLIENT_GROUP_SESSION = "group_rac_client_%(session)s"
-# A group for all connections with a specific token, which in almost all cases
-# is just one connection, however this is used to disconnect the connection
-# when the token is deleted
-RAC_CLIENT_GROUP_TOKEN = "group_rac_token_%(token)s"  # nosec
+
+def build_rac_client_group() -> str:
+    """
+    Global broadcast group, which messages are sent to when the outpost connects back
+    to authentik for a specific connection
+    The `RACClientConsumer` consumer adds itself to this group on connection,
+    and removes itself once it has been assigned a specific outpost channel
+    """
+    return sha256(f"{connection.schema_name}/group_rac_client".encode()).hexdigest()
+
+
+def build_rac_client_group_session(session_key: str) -> str:
+    """
+    A group for all connections in a given authentik session ID
+    A disconnect message is sent to this group when the session expires/is deleted
+    """
+    return sha256(f"{connection.schema_name}/group_rac_client_{session_key}".encode()).hexdigest()
+
+
+def build_rac_client_group_token(token: str) -> str:
+    """
+    A group for all connections with a specific token, which in almost all cases
+    is just one connection, however this is used to disconnect the connection
+    when the token is deleted
+    """
+    return sha256(f"{connection.schema_name}/group_rac_token_{token}".encode()).hexdigest()
+
 
 # Step 1: Client connects to this websocket endpoint
 # Step 2: We prepare all the connection args for Guac
@@ -45,28 +63,32 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.logger = get_logger()
         await self.accept("guacamole")
-        await self.channel_layer.group_add(RAC_CLIENT_GROUP, self.channel_name)
+        await self.channel_layer.group_add(build_rac_client_group(), self.channel_name)
         await self.channel_layer.group_add(
-            RAC_CLIENT_GROUP_SESSION % {"session": self.scope["session"].session_key},
+            build_rac_client_group_session(self.scope["session"].session_key),
             self.channel_name,
         )
         await self.init_outpost_connection()
 
     async def disconnect(self, code):
         self.logger.debug("Disconnecting")
-        # Tell the outpost we're disconnecting
-        await self.channel_layer.send(
-            self.dest_channel_id,
-            {
-                "type": "event.disconnect",
-            },
-        )
+        if self.dest_channel_id:
+            # Tell the outpost we're disconnecting
+            await self.channel_layer.send(
+                self.dest_channel_id,
+                {
+                    "type": "event.disconnect",
+                },
+            )
 
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
         self.token = (
-            ConnectionToken.filter_not_expired(token=self.scope["url_route"]["kwargs"]["token"])
+            ConnectionToken.filter_not_expired(
+                token=self.scope["url_route"]["kwargs"]["token"],
+                session__session__session_key=self.scope["session"].session_key,
+            )
             .select_related("endpoint", "provider", "session", "session__user")
             .first()
         )
@@ -106,10 +128,8 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             if len(states) < 1:
                 continue
             self.logger.debug("Sending out connection broadcast")
-            async_to_sync(self.channel_layer.group_send)(
-                OUTPOST_GROUP_INSTANCE % {"outpost_pk": str(outpost.pk), "instance": states[0].uid},
-                msg,
-            )
+            group = build_outpost_group_instance(outpost.pk, states[0].uid)
+            async_to_sync(self.channel_layer.group_send)(group, msg)
         if self.provider and self.provider.delete_token_on_disconnect:
             self.logger.info("Deleting connection token to prevent reconnect", token=self.token)
             self.token.delete()
@@ -154,7 +174,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         self.dest_channel_id = outpost_channel
         # Since we have a specific outpost channel now, we can remove
         # ourselves from the global broadcast group
-        await self.channel_layer.group_discard(RAC_CLIENT_GROUP, self.channel_name)
+        await self.channel_layer.group_discard(build_rac_client_group(), self.channel_name)
 
     async def event_send(self, event: dict):
         """Handler called by outpost websocket that sends data to this specific

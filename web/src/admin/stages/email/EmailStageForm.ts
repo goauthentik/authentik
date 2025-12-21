@@ -1,16 +1,20 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-secret-text-input.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#components/ak-secret-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { SlottedTemplateResult } from "#elements/types";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {
@@ -43,13 +47,12 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    renderConnectionSettings(): SlottedTemplateResult {
         if (!this.showConnectionSettings) {
-            return html``;
+            return nothing;
         }
-        return html`<ak-form-group>
-            <span slot="header"> ${msg("Connection settings")} </span>
-            <div slot="body" class="pf-c-form">
+        return html`<ak-form-group label="${msg("Connection settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
@@ -76,7 +79,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 <ak-secret-text-input
                     label=${msg("SMTP Password")}
                     name="password"
-                    ?revealed=${this.instance === undefined}
+                    ?revealed=${!this.instance}
                 ></ak-secret-text-input>
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
@@ -146,9 +149,8 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="activateUserOnSuccess">
                         <label class="pf-c-switch">
                             <input
@@ -231,6 +233,36 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                                 </option>`;
                             })}
                         </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account Recovery Max Attempts")}
+                        required
+                        name="recoveryMaxAttempts"
+                    >
+                        <input
+                            type="number"
+                            value="${this.instance?.recoveryMaxAttempts ?? 5}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account Recovery Cache Timeout")}
+                        required
+                        name="recoveryCacheTimeout"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.recoveryCacheTimeout || "minutes=5")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "The time window used to count recent account recovery attempts.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

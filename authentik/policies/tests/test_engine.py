@@ -1,9 +1,12 @@
 """policy engine tests"""
 
 from django.core.cache import cache
+from django.db import connections
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.models import Group
+from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
@@ -19,7 +22,7 @@ class TestPolicyEngine(TestCase):
 
     def setUp(self):
         clear_policy_cache()
-        self.user = create_test_admin_user()
+        self.user = create_test_user()
         self.policy_false = DummyPolicy.objects.create(
             name=generate_id(), result=False, wait_min=0, wait_max=1
         )
@@ -127,3 +130,59 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
         self.assertEqual(engine.build().passing, False)
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
+
+    def test_engine_static_bindings(self):
+        """Test static bindings"""
+        group_a = Group.objects.create(name=generate_id())
+        group_b = Group.objects.create(name=generate_id())
+        group_b.users.add(self.user)
+        user = create_test_user()
+
+        for case in [
+            {
+                "message": "Group, not member",
+                "binding_args": {"group": group_a},
+                "passing": False,
+            },
+            {
+                "message": "Group, member",
+                "binding_args": {"group": group_b},
+                "passing": True,
+            },
+            {
+                "message": "User, other",
+                "binding_args": {"user": user},
+                "passing": False,
+            },
+            {
+                "message": "User, same",
+                "binding_args": {"user": self.user},
+                "passing": True,
+            },
+        ]:
+            with self.subTest():
+                pbm = PolicyBindingModel.objects.create()
+                for x in range(1000):
+                    PolicyBinding.objects.create(target=pbm, order=x, **case["binding_args"])
+                engine = PolicyEngine(pbm, self.user)
+                engine.use_cache = False
+                with CaptureQueriesContext(connections["default"]) as ctx:
+                    engine.build()
+                self.assertLess(ctx.final_queries, 1000)
+                self.assertEqual(engine.result.passing, case["passing"])
+
+    def test_engine_group_complex(self):
+        """Test more complex group setups"""
+        group_a = Group.objects.create(name=generate_id())
+        group_b = Group.objects.create(name=generate_id())
+        group_b.parents.add(group_a)
+        user = create_test_user()
+        group_b.users.add(user)
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, order=0, group=group_a)
+        engine = PolicyEngine(pbm, user)
+        engine.use_cache = False
+        with CaptureQueriesContext(connections["default"]) as ctx:
+            engine.build()
+        self.assertLess(ctx.final_queries, 1000)
+        self.assertTrue(engine.result.passing)

@@ -1,0 +1,121 @@
+---
+title: Integrate with Ironclad
+sidebar_label: Ironclad
+support_level: community
+---
+
+## What is Ironclad
+
+> Ironclad is a contract lifecycle management (CLM) platform that gives business and legal teams an easy-to-use platform with AI-powered tools to handle every aspect of the contract lifecycle.
+>
+> -- https://ironcladapp.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Ironclad with authentik, you need to create three property mappings, and an application/provider pair in authentik.
+
+### Create property mappings
+
+Ironclad requires both a first and last name for each user, but by default, authentik only provides a full name as a single string. Ironclad also requires the email attribute in a specific format. Therefore, property mappings must be created to provide the email, first name, and last name to Ironclad.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and then click **Next**.
+3. Configure the first mapping for the user's first name:
+    - **Name**: `firstName`
+    - **SAML Attribute Name**: `firstName`
+    - **Expression**:
+
+        ```python
+        return request.user.name.rsplit(" ", 1)[0]
+        ```
+
+4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's last name:
+    - **Name**: `lastName`
+    - **SAML Attribute Name**: `lastName`
+    - **Expression**:
+
+        ```python
+        return request.user.name.rsplit(" ", 1)[-1]
+        ```
+
+5. Click **Finish** to save. Finally, repeat the process to create a mapping for the user's email address:
+    - **Name**: `email`
+    - **SAML Attribute Name**: `email`
+    - **Expression**:
+
+        ```python
+        return request.user.email
+        ```
+
+6. Click **Finish**.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** to `https://temp.temp`
+        - Set **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Set an available **Signing certificate**.
+            - Toggle off **Sign assertions**.
+            - Toggle on **Sign responses**.
+            - **Property mappings**:
+                - Click the **x** button to remove all selected property mappings.
+                - Under **Selected User Property Mappings**, add the `firstName`, `lastName`, and `email` property mappings that were created in the previous section.
+
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Ironclad configuration
+
+1. Log in to the [Ironclad dashboard](https://ironcladapp.com/signin) as an administrator.
+2. Click your profile icon at the top-right corner, then select **Company Settings**.
+3. In the sidebar, select **Integrations**, and under **Other Integrations** click **SAML**.
+4. Click **Add SAML Integration**, then select **Show Additional IdP Settings**.
+5. Note the **Callback** URL and **Service Provider Identifier** values because you'll need them in the next section.
+6. Leave this page open, as you'll return to it after the next section.
+
+## Reconfigure authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Push Security provider.
+3. Under **Protocol settings**, set the following required configurations:
+    - **ACS URL**: Set to the **Callback** URL provided by Ironclad (e.g. `https://ironcladapp.com/saml/<customer-ID>/callback`).
+    - **Issuer**: Set to the **Service Provider Identifier** provided by Ironclad (e.g. `na1.ironcladapp.com`).
+4. Click **Update**.
+
+## Download the metadata file
+
+1. Log into authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the newly created Ironclad provider.
+3. Under **Metadata** click **Download**. This metadata file will be required in the next section.
+
+## Complete Ironclad configuration
+
+1. Return to the Ironclad SAML configuration page and under **IdP Configuration XML** click on **Choose file**. Select the metadata file that you downloaded from authentik.
+2. Set **Entry point** to `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`.
+3. Click **Save**.
+
+:::info
+SSO login must be specifically enabled on Ironclad user accounts. SSO login on the original Ironclad administrator account can only be enabled by Ironclad support. To request this, contact them at `support@ironcladapp.com`.
+
+For new user accounts, SSO login can be selected when creating the account.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Ironclad, log out and log back in via the [Ironclad Sign In page](https://ironcladapp.com/signin). Enter the email address of an Ironclad SSO enabled account, click **Continue**, and then **Sign in**. Uou should be redirected to authentik to login, and if successful, you should then be redirected to the Ironclad dashboard.

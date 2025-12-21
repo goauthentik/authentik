@@ -1,31 +1,44 @@
+import "#elements/EmptyState";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { globalAK } from "#common/global";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
-import "@goauthentik/elements/EmptyState";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import { renderImage } from "#elements/utils/images";
+
+import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { until } from "lit/directives/until.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
 
-import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
-
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
-    static get styles() {
-        return ModalButton.styles.concat(
-            PFAbout,
-            css`
-                .pf-c-about-modal-box__hero {
-                    background-image: url("/static/dist/assets/images/flow_background.jpg");
-                }
-            `,
-        );
-    }
+    static styles = [
+        ...ModalButton.styles,
+        PFAbout,
+        css`
+            .pf-c-about-modal-box {
+                --pf-c-about-modal-box--BackgroundColor: var(--pf-global--palette--black-900);
+            }
+
+            .pf-c-about-modal-box__hero {
+                background-image: url("/static/dist/assets/images/flow_background.jpg");
+            }
+            .pf-c-about-modal-box__brand {
+                --pf-c-about-modal-box__brand-image--Height: 6.25rem;
+            }
+            .pf-c-about-modal-box__brand i {
+                font-size: var(--pf-c-about-modal-box__brand-image--Height);
+            }
+        `,
+    ];
 
     async getAboutEntries(): Promise<[string, string | TemplateResult][]> {
         const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
@@ -55,41 +68,46 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         ];
     }
 
-    renderModal() {
+    #contentRef = createRef<HTMLDivElement>();
+
+    #backdropListener = (event: PointerEvent) => {
+        // We only want to close the modal when the backdrop is clicked, not when it's children are clicked.
+
+        if (this.#contentRef.value?.contains(event.target as Node)) {
+            return;
+        }
+        this.close();
+    };
+
+    protected override renderModal() {
         let product = this.brandingTitle;
 
-        if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
-        return html`<div
-            class="pf-c-backdrop"
-            @click=${(e: PointerEvent) => {
-                e.stopPropagation();
-                this.closeModal();
-            }}
-        >
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
-                <div class="pf-c-about-modal-box" role="dialog" aria-modal="true">
+                <div
+                    ${ref(this.#contentRef)}
+                    class="pf-c-about-modal-box"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                >
                     <div class="pf-c-about-modal-box__brand">
-                        <img
-                            class="pf-c-about-modal-box__brand-image"
-                            src=${this.brandingFavicon}
-                            alt="${msg("authentik Logo")}"
-                        />
+                        ${renderImage(
+                            this.brandingFavicon,
+                            msg("authentik Logo"),
+                            "pf-c-about-modal-box__brand-image",
+                        )}
                     </div>
                     <div class="pf-c-about-modal-box__close">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            @click=${() => {
-                                this.open = false;
-                            }}
-                        >
+                        <button class="pf-c-button pf-m-plain" type="button" @click=${this.close}>
                             <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="pf-c-about-modal-box__header">
-                        <h1 class="pf-c-title pf-m-4xl">${product}</h1>
+                        <h1 class="pf-c-title pf-m-4xl" id="modal-title">${product}</h1>
                     </div>
                     <div class="pf-c-about-modal-box__hero"></div>
                     <div class="pf-c-about-modal-box__content">

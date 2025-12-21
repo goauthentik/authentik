@@ -1,11 +1,13 @@
-import { RequestInfo } from "@goauthentik/common/api/middleware";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { AKElement } from "@goauthentik/elements/Base";
+import "#elements/timestamp/ak-timestamp";
+
+import { RequestInfo } from "#common/api/middleware";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "#common/constants";
+import { globalAK } from "#common/global";
+
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -14,44 +16,68 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+function renderItem(item: RequestInfo, idx: number): TemplateResult {
+    const subheading = `${item.method}: ${item.status}`;
+
+    const label = URL.canParse(item.path) ? new URL(item.path).pathname : null;
+
+    return html`<li
+        class="pf-c-notification-drawer__list-item pf-m-read"
+        aria-label=${label ?? subheading}
+    >
+        <div class="pf-c-notification-drawer__list-item-header">
+            <h2
+                class="pf-c-notification-drawer__list-item-header-title"
+                id="notification-list-item-${idx}"
+            >
+                ${item.method}: ${item.status}
+            </h2>
+        </div>
+        <a class="pf-c-notification-drawer__list-item-description" target="_blank" href=${item.path}
+            >${label ?? item.path}</a
+        >
+        <div class="pf-c-notification-drawer__list-item-timestamp">
+            <ak-timestamp .timestamp=${item.time} refresh datetime></ak-timestamp>
+        </div>
+    </li>`;
+}
+
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
     @property({ attribute: false })
     requests: RequestInfo[] = [];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFNotificationDrawer,
-            PFButton,
-            PFContent,
-            PFDropdown,
-            css`
-                :host {
-                    --header-height: 114px;
-                }
-                .pf-c-notification-drawer__header {
-                    height: var(--header-height);
-                    align-items: center;
-                }
-                .pf-c-notification-drawer__header-action,
-                .pf-c-notification-drawer__header-action-close,
-                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__list-item-description {
-                    white-space: pre-wrap;
-                    font-family: monospace;
-                }
-                .pf-c-notification-drawer__body {
-                    overflow-x: hidden;
-                }
-                .pf-c-notification-drawer__list {
-                    max-height: calc(100vh - var(--header-height));
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFNotificationDrawer,
+        PFButton,
+        PFContent,
+        PFDropdown,
+        css`
+            :host {
+                --header-height: 114px;
+            }
+            .pf-c-notification-drawer__header {
+                height: var(--header-height);
+                align-items: center;
+            }
+            .pf-c-notification-drawer__header-action,
+            .pf-c-notification-drawer__header-action-close,
+            .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                height: 100%;
+            }
+            .pf-c-notification-drawer__list-item-description {
+                white-space: pre-wrap;
+                font-family: var(--pf-global--FontFamily--monospace);
+            }
+            .pf-c-notification-drawer__body {
+                overflow-x: hidden;
+            }
+            .pf-c-notification-drawer__list {
+                max-height: calc(100vh - var(--header-height));
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -65,27 +91,13 @@ export class APIDrawer extends AKElement {
         }) as EventListener);
     }
 
-    renderItem(item: RequestInfo): TemplateResult {
-        return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
-            <div class="pf-c-notification-drawer__list-item-header">
-                <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${item.method}: ${item.status}
-                </h2>
-            </div>
-            <a
-                class="pf-c-notification-drawer__list-item-description"
-                target="_blank"
-                href=${item.path}
-                >${item.path}</a
-            >
-            <div class="pf-c-notification-drawer__list-item-timestamp">
-                ${formatElapsedTime(new Date(item.time))}
-            </div>
-        </li>`;
-    }
-
     render(): TemplateResult {
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
+        return html`<div
+            class="pf-c-drawer__body pf-m-no-padding"
+            aria-label=${msg("API drawer")}
+            role="region"
+            tabindex="0"
+        >
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
@@ -109,7 +121,7 @@ export class APIDrawer extends AKElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label=${msg("Close")}
+                                aria-label=${msg("Close API drawer")}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
@@ -118,7 +130,7 @@ export class APIDrawer extends AKElement {
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
-                        ${this.requests.map((n) => this.renderItem(n))}
+                        ${this.requests.map(renderItem)}
                     </ul>
                 </div>
             </div>

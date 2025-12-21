@@ -79,8 +79,8 @@ class SourceFlowManager:
 
     identifier: str
 
-    user_connection_type: type[UserSourceConnection] = UserSourceConnection
-    group_connection_type: type[GroupSourceConnection] = GroupSourceConnection
+    user_connection_type: type[UserSourceConnection]
+    group_connection_type: type[GroupSourceConnection]
 
     user_info: dict[str, Any]
     policy_context: dict[str, Any]

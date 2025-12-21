@@ -21,7 +21,7 @@ class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_users or not self._source.delete_not_found_objects:
-            self.message("User syncing is disabled for this Source")
+            self._task.info("User syncing is disabled for this Source")
             return iter(())
 
         uuid = uuid4()
@@ -56,7 +56,7 @@ class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
     def sync(self, user_pks: tuple) -> int:
         """Delete authentik users"""
         if not self._source.sync_users or not self._source.delete_not_found_objects:
-            self.message("User syncing is disabled for this Source")
+            self._task.info("User syncing is disabled for this Source")
             return -1
         self._logger.debug("Deleting users", user_pks=user_pks)
         _, deleted_per_type = User.objects.filter(pk__in=user_pks).delete()

@@ -2,20 +2,18 @@
 
 from time import sleep
 
-from django.test.client import RequestFactory
 from django.urls.base import reverse
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     get_webauthn_challenge_without_user,
@@ -86,7 +84,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_device_challenge_webauthn(self):
         """Test webauthn"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         webauthn_device = WebAuthnDevice.objects.create(
@@ -134,8 +132,8 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
     def test_device_challenge_webauthn_restricted(self):
         """Test webauthn (getting device challenges with a webauthn
         device that is not allowed due to aaguid restrictions)"""
-        webauthn_mds_import.delay(force=True).get()
-        request = get_request("/")
+        webauthn_mds_import.send(force=True).get_result()
+        request = self.request_factory.get("/")
         request.user = self.user
 
         WebAuthnDevice.objects.create(
@@ -162,7 +160,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -179,7 +177,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_raw_get_challenge(self):
         """Test webauthn"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         stage = AuthenticatorValidateStage.objects.create(
@@ -232,7 +230,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_get_challenge_userless(self):
         """Test webauthn (userless)"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(), webauthn_user_verification=UserVerification.PREFERRED
         )
@@ -260,7 +258,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_unrestricted(self):
         """Test webauthn authentication (unrestricted webauthn device)"""
-        webauthn_mds_import.delay(force=True).get()
+        webauthn_mds_import.send(force=True).get_result()
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -282,7 +280,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
@@ -334,7 +332,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_restricted(self):
         """Test webauthn authentication (restricted device type, failure)"""
-        webauthn_mds_import.delay(force=True).get()
+        webauthn_mds_import.send(force=True).get_result()
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -359,7 +357,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
@@ -441,7 +439,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
@@ -493,7 +491,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_invalid(self):
         """Test webauthn"""
-        request = get_request("/")
+        request = self.request_factory.get("/")
         request.user = self.user
 
         WebAuthnDevice.objects.create(
@@ -517,7 +515,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
         )
-        request = get_request("/")
+        request = self.request_factory.get("/")
 
         stage_view = AuthenticatorValidateStageView(
             FlowExecutorView(flow=flow, current_stage=stage, plan=plan), request=request

@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from dataclasses import asdict
-from json import loads
+from json import dumps
 from sys import platform
 from time import sleep
 from unittest.case import skip, skipUnless
@@ -88,38 +88,45 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.start_proxy(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
 
         self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body = self.parse_json_content()
+        headers = body.get("headers", {})
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
-        self.assertEqual(body["headers"]["X-Foo"], ["bar"])
-        raw_jwt: str = body["headers"]["X-Authentik-Jwt"][0]
+        self.assertEqual(
+            headers.get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
+        self.assertEqual(
+            headers.get("X-Foo"),
+            ["bar"],
+            f"X-Foo header mismatch at {self.driver.current_url}: {snippet}",
+        )
+        raw_jwt: str = headers.get("X-Authentik-Jwt", [None])[0]
         jwt = decode(raw_jwt, options={"verify_signature": False})
 
-        self.assertIsNotNone(jwt["sid"])
-        self.assertIsNotNone(jwt["ak_proxy"])
+        self.assertIsNotNone(jwt["sid"], "Missing 'sid' in JWT")
+        self.assertIsNotNone(jwt["ak_proxy"], "Missing 'ak_proxy' in JWT")
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
+
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", title)
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+
+        self.assertIn(
+            "You've logged out of",
+            title,
+            f"Logout title mismatch at {self.driver.current_url}: {title}",
+        )
 
     @retry()
     @apply_blueprint(
@@ -169,34 +176,43 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.start_proxy(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
 
         self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body = self.parse_json_content()
+        headers = body.get("headers", {})
+        snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            headers.get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
+
         auth_header = b64encode(f"{cred}:{cred}".encode()).decode()
-        self.assertEqual(body["headers"]["Authorization"], [f"Basic {auth_header}"])
+
+        self.assertEqual(
+            headers.get("Authorization"),
+            [f"Basic {auth_header}"],
+            f"Authorization header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
+
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", title)
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+
+        self.assertIn(
+            "You've logged out of",
+            title,
+            f"Logout title mismatch at {self.driver.current_url}: {title}",
+        )
 
 
 # TODO: Fix flaky test

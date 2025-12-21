@@ -1,18 +1,17 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-switch-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
-    AuthTypeEnum,
     AuthenticatorSMSStage,
+    AuthTypeEnum,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -23,6 +22,10 @@ import {
     ProviderEnum,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-sms-form")
 export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
@@ -159,38 +162,6 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the password to be used with basic auth")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
-                <ak-search-select
-                    .fetchObjects=${async (
-                        query?: string,
-                    ): Promise<NotificationWebhookMapping[]> => {
-                        const args: PropertymappingsNotificationListRequest = {
-                            ordering: "saml_name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
-                        return items.results;
-                    }}
-                    .renderElement=${(item: NotificationWebhookMapping): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
-                    .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.mapping === item.pk;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Modify the payload sent to the custom provider.")}
-                </p>
-            </ak-form-element-horizontal>
         `;
     }
 
@@ -222,9 +193,8 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Provider")} required name="provider">
                         <select
                             class="pf-c-form-control"
@@ -267,26 +237,46 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${this.provider === ProviderEnum.Generic
                         ? this.renderProviderGeneric()
                         : this.renderProviderTwillio()}
-                    <ak-form-element-horizontal name="verifyOnly">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.verifyOnly ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Hash phone number")}</span>
-                        </label>
+                    <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<NotificationWebhookMapping[]> => {
+                                const args: PropertymappingsNotificationListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query) {
+                                    args.search = query;
+                                }
+                                const items = await new PropertymappingsApi(
+                                    DEFAULT_CONFIG,
+                                ).propertymappingsNotificationList(args);
+                                return items.results;
+                            }}
+                            .renderElement=${(item: NotificationWebhookMapping): string => {
+                                return item.name;
+                            }}
+                            .value=${(item?: NotificationWebhookMapping) => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: NotificationWebhookMapping): boolean => {
+                                return this.instance?.mapping === item.pk;
+                            }}
+                            blankable
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
-                            )}
+                            ${msg("Modify the payload sent to the provider.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="verifyOnly"
+                        label=${msg("Hash phone number")}
+                        ?checked=${this.instance?.verifyOnly ?? false}
+                        help=${msg(
+                            "If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"

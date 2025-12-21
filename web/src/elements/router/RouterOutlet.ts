@@ -1,40 +1,48 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { Route } from "@goauthentik/elements/router/Route";
-import { RouteMatch } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/router/Router404";
+import "#elements/router/Router404";
+import "#elements/a11y/ak-skip-to-content";
+
+import { ROUTE_SEPARATOR } from "#common/constants";
+
+import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";
+import { AKElement } from "#elements/Base";
+import { Route } from "#elements/router/Route";
+import { RouteMatch } from "#elements/router/RouteMatch";
+
 import {
     BrowserClient,
+    getClient,
     SEMANTIC_ATTRIBUTE_SENTRY_SOURCE,
     Span,
-    getClient,
     startBrowserTracingNavigationSpan,
     startBrowserTracingPageLoadSpan,
 } from "@sentry/browser";
 
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
 window.addEventListener("load", () => {
-    if (!window.HashChangeEvent)
-        (function () {
-            let lastURL = document.URL;
-            window.addEventListener("hashchange", function (event) {
-                Object.defineProperty(event, "oldURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: lastURL,
-                });
-                Object.defineProperty(event, "newURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: document.URL,
-                });
-                lastURL = document.URL;
-            });
-        })();
+    if (window.HashChangeEvent) {
+        return;
+    }
+
+    let lastURL = document.URL;
+
+    window.addEventListener("hashchange", (event) => {
+        Object.defineProperty(event, "oldURL", {
+            enumerable: true,
+            configurable: true,
+            value: lastURL,
+        });
+
+        Object.defineProperty(event, "newURL", {
+            enumerable: true,
+            configurable: true,
+            value: document.URL,
+        });
+        lastURL = document.URL;
+    });
 });
 
 export function paramURL(url: string, params?: { [key: string]: unknown }): string {
@@ -52,6 +60,12 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
+    protected createRenderRoot() {
+        return this;
+    }
+
+    //#region Properties
+
     @property({ attribute: false })
     current?: RouteMatch;
 
@@ -61,21 +75,12 @@ export class RouterOutlet extends AKElement {
     @property({ attribute: false })
     routes: Route[] = [];
 
+    //#endregion
+
+    //#region Lifecycle
+
     private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;
-
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    background-color: transparent !important;
-                }
-                *:first-child {
-                    flex-direction: column;
-                }
-            `,
-        ];
-    }
 
     constructor() {
         super();
@@ -94,6 +99,33 @@ export class RouterOutlet extends AKElement {
     firstUpdated(): void {
         this.navigate();
     }
+
+    //#endregion
+
+    //#region a11y
+
+    #skipToContentElement = document.querySelector<AKSkipToContent>("ak-skip-to-content");
+
+    #synchronizeContentTarget = () => {
+        if (!this.#skipToContentElement) return;
+
+        const element = findMainContent(this);
+
+        if (element) {
+            this.#skipToContentElement.targetElement = element;
+        }
+    };
+
+    #mutationObserver = new MutationObserver(this.#synchronizeContentTarget);
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.#mutationObserver.observe(this.renderRoot, {
+            childList: true,
+        });
+    }
+
+    //#endregion
 
     navigate(ev?: HashChangeEvent): void {
         let activeUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];

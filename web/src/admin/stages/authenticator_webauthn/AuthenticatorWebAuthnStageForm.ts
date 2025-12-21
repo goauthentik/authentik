@@ -1,17 +1,16 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-number-input";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DataProvision } from "#elements/ak-dual-select/types";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorAttachmentEnum,
@@ -25,10 +24,14 @@ import {
     UserVerificationEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
     async loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
-        return await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
@@ -78,9 +81,8 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User verification")}
                         required

@@ -1,8 +1,8 @@
 """SCIM Utils"""
 
 from typing import Any
+from uuid import UUID
 
-from django.conf import settings
 from django.core.paginator import Page, Paginator
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
@@ -21,6 +21,7 @@ from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.scim.models import SCIMSource
 from authentik.sources.scim.views.v2.auth import SCIMTokenAuth
+from authentik.sources.scim.views.v2.exceptions import SCIMNotFoundError
 
 SCIM_CONTENT_TYPE = "application/scim+json"
 
@@ -54,6 +55,13 @@ class SCIMView(APIView):
     def get_authenticators(self):
         return [SCIMTokenAuth(self)]
 
+    def remove_excluded_attributes(self, data: dict):
+        """Remove attributes specified in excludedAttributes"""
+        excluded: str = self.request.query_params.get("excludedAttributes", "")
+        for key in excluded.split(","):
+            data.pop(key.strip(), None)
+        return data
+
     def filter_parse(self, request: Request):
         """Parse the path of a Patch Operation"""
         path = request.query_params.get("filter")
@@ -77,10 +85,9 @@ class SCIMView(APIView):
         )
 
     def paginate_query(self, query: QuerySet) -> Page:
-        per_page = 50
+        per_page = int(self.request.tenant.pagination_default_page_size)
         start_index = 1
         try:
-            per_page = int(settings.REST_FRAMEWORK["PAGE_SIZE"])
             start_index = int(self.request.query_params.get("startIndex", 1))
         except ValueError:
             pass
@@ -103,6 +110,12 @@ class SCIMObjectView(SCIMView):
         # a source attribute before
         self.mapper = SourceMapper(self.source)
         self.manager = self.mapper.get_manager(self.model, ["data"])
+        for key, value in kwargs.items():
+            if key.endswith("_id"):
+                try:
+                    UUID(value)
+                except ValueError:
+                    raise SCIMNotFoundError("Invalid ID") from None
 
     def build_object_properties(self, data: dict[str, Any]) -> dict[str, Any | dict[str, Any]]:
         return self.mapper.build_object_properties(

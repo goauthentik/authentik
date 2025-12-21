@@ -1,19 +1,46 @@
 /**
  * @file Rollup configuration for the SFE package.
+ * @import { Plugin, RollupOptions } from "rollup";
  */
+
+import * as fs from "node:fs/promises";
+import { join } from "node:path";
+
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import swc from "@rollup/plugin-swc";
-import { resolve as resolvePath } from "node:path";
-import copy from "rollup-plugin-copy";
 
 export async function createConfig() {
-    // TODO: Move this to a synchronous import once the repo root has NPM Workspaces.
+    // Rollup's CJS to ESM conversion doesn't work well with sub-dependencies.
+    // We use an async import to fix the issue.
     const { resolvePackage, MonoRepoRoot } = await import("@goauthentik/core/paths/node");
 
-    const distDirectory = resolvePath(MonoRepoRoot, "web", "dist", "sfe");
+    const distDirectory = join(MonoRepoRoot, "web", "dist", "sfe");
     const bootstrapDirectory = resolvePackage("bootstrap", import.meta);
 
+    /**
+     * @type {Plugin} A plugin to copy static assets.
+     */
+    const copyPlugin = {
+        name: "copy-static-assets",
+        buildEnd: async () => {
+            console.log("Copying static assets...");
+
+            const bootstrapCSSFilePath = join(
+                bootstrapDirectory,
+                "dist",
+                "css",
+                "bootstrap.min.css",
+            );
+
+            await fs.mkdir(distDirectory, { recursive: true });
+            await fs.copyFile(bootstrapCSSFilePath, join(distDirectory, "bootstrap.min.css"));
+        },
+    };
+
+    /**
+     * @type {RollupOptions}
+     */
     const config = {
         input: "src/index.ts",
         output: {
@@ -22,14 +49,7 @@ export async function createConfig() {
         },
         context: "window",
         plugins: [
-            copy({
-                targets: [
-                    {
-                        src: resolvePath(bootstrapDirectory, "dist", "css", "bootstrap.min.css"),
-                        dest: distDirectory,
-                    },
-                ],
-            }),
+            copyPlugin,
             resolve({ browser: true }),
             commonjs(),
             swc({

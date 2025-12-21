@@ -9,7 +9,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, DateTimeField
+from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import options_to_json
@@ -18,15 +18,15 @@ from webauthn.authentication.verify_authentication_response import verify_authen
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
-from webauthn.helpers.structs import UserVerificationRequirement
+from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.email import mask_email
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
@@ -48,7 +48,7 @@ if TYPE_CHECKING:
 class DeviceChallenge(PassiveSerializer):
     """Single device challenge"""
 
-    device_class = CharField()
+    device_class = ChoiceField(choices=DeviceClasses.choices)
     device_uid = CharField()
     challenge = JSONDictField()
     last_used = DateTimeField(allow_null=True)
@@ -124,7 +124,7 @@ def select_challenge(request: HttpRequest, device: Device):
 def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     """Send SMS"""
     device.generate_token()
-    device.stage.send(device.token, device)
+    device.stage.send(request, device.token, device)
 
 
 def select_challenge_email(request: HttpRequest, device: EmailDevice):
@@ -152,11 +152,23 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
     return device
 
 
-def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -> Device:
+def validate_challenge_webauthn(
+    data: dict,
+    stage_view: StageView,
+    user: User,
+    stage: AuthenticatorValidateStage | None = None,
+) -> Device:
     """Validate WebAuthn Challenge"""
     request = stage_view.request
     challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
-    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+    stage = stage or stage_view.executor.current_stage
+
+    if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
+        # Workaround for Android sign-in, when signing into Google Workspace on android while
+        # adding the account to the system (not in Chrome), for some reason `type` is not set
+        # so in that case we fall back to `public-key`
+        # since that's the only option we support anyways
+        data.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
     try:
         credential = parse_authentication_credential_json(data)
     except InvalidJSONStructure as exc:
@@ -227,9 +239,9 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
     pushinfo = {
         __("Domain"): stage_view.request.get_host(),
     }
-    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
-        pushinfo[__("Application")] = stage_view.request.session.get(
-            SESSION_KEY_APPLICATION_PRE, Application()
+    if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
+        pushinfo[__("Application")] = stage_view.executor.plan.context.get(
+            PLAN_CONTEXT_APPLICATION, Application()
         ).name
 
     try:

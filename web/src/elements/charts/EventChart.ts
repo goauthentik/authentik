@@ -1,8 +1,12 @@
 import { actionToLabel } from "#common/labels";
+
 import { AKChart } from "#elements/charts/Chart";
-import { ChartData, ChartDataset } from "chart.js";
 
 import { EventActions, EventVolume } from "@goauthentik/api";
+
+import { ChartData, ChartDataset } from "chart.js";
+
+import { msg } from "@lit/localize";
 
 export function actionToColor(action: EventActions): string {
     switch (action) {
@@ -63,6 +67,8 @@ export function actionToColor(action: EventActions): string {
 }
 
 export abstract class EventChart extends AKChart<EventVolume[]> {
+    public override ariaLabel = msg("Event volume chart");
+
     eventVolume(
         data: EventVolume[],
         options?: {

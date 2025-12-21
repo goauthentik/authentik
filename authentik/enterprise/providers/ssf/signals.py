@@ -3,7 +3,6 @@ from hashlib import sha256
 from django.db.models import Model
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
-from guardian.shortcuts import assign_perm
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
@@ -18,7 +17,7 @@ from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
 )
-from authentik.enterprise.providers.ssf.tasks import send_ssf_event
+from authentik.enterprise.providers.ssf.tasks import send_ssf_events
 from authentik.events.middleware import audit_ignore
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import DuoDevice
@@ -44,7 +43,7 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             "path": USER_PATH_PROVIDERS_SSF,
         },
     )
-    assign_perm("add_stream", user, instance)
+    user.assign_perms_to_managed_role("add_stream", instance)
     token, token_created = Token.objects.update_or_create(
         identifier=identifier,
         defaults={
@@ -66,7 +65,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
 
     As this signal is also triggered with a regular logout, we can't be sure
     if the session has been deleted by an admin or by the user themselves."""
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_SESSION_REVOKED,
         {
             "initiating_entity": "user",
@@ -88,7 +87,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
 @receiver(password_changed)
 def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
     """Credential change trigger (password changed)"""
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
@@ -126,7 +125,7 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         data,
         sub_id={
@@ -153,7 +152,7 @@ def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         data,
         sub_id={

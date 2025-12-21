@@ -3,7 +3,6 @@
 from json import loads
 
 from django.urls import reverse
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
@@ -48,8 +47,8 @@ class TestImpersonation(APITestCase):
     def test_impersonate_global(self):
         """Test impersonation with global permissions"""
         new_user = create_test_user()
-        assign_perm("authentik_core.impersonate", new_user)
-        assign_perm("authentik_core.view_user", new_user)
+        new_user.assign_perms_to_managed_role("authentik_core.impersonate")
+        new_user.assign_perms_to_managed_role("authentik_core.view_user")
         self.client.force_login(new_user)
 
         response = self.client.post(
@@ -59,7 +58,7 @@ class TestImpersonation(APITestCase):
             ),
             data={"reason": "some reason"},
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
@@ -69,8 +68,8 @@ class TestImpersonation(APITestCase):
     def test_impersonate_scoped(self):
         """Test impersonation with scoped permissions"""
         new_user = create_test_user()
-        assign_perm("authentik_core.impersonate", new_user, self.other_user)
-        assign_perm("authentik_core.view_user", new_user, self.other_user)
+        new_user.assign_perms_to_managed_role("authentik_core.impersonate", self.other_user)
+        new_user.assign_perms_to_managed_role("authentik_core.view_user", self.other_user)
         self.client.force_login(new_user)
 
         response = self.client.post(
@@ -80,7 +79,7 @@ class TestImpersonation(APITestCase):
             ),
             data={"reason": "some reason"},
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
@@ -137,10 +136,10 @@ class TestImpersonation(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-impersonate", kwargs={"pk": self.other_user.pk}),
             data={"reason": ""},
         )
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())

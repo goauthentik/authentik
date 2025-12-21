@@ -16,6 +16,8 @@ from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_string_validator
 
+EMAIL_RECOVERY_MAX_ATTEMPTS = 5
+
 LOGGER = get_logger()
 
 
@@ -29,6 +31,14 @@ class EmailTemplates(models.TextChoices):
     ACCOUNT_CONFIRM = (
         "email/account_confirmation.html",
         _("Account Confirmation"),
+    )
+    EMAIL_OTP = (
+        "email/email_otp.html",
+        _("Email OTP"),
+    )  # nosec
+    EVENT_NOTIFICATION = (
+        "email/event_notification.html",
+        _("Event Notification"),
     )
 
 
@@ -52,7 +62,7 @@ def get_template_choices():
 
 
 class EmailStage(Stage):
-    """Sends an Email to the user with a token to confirm their Email address."""
+    """Send an Email to the user with a token to confirm their Email address."""
 
     use_global_settings = models.BooleanField(
         default=False,
@@ -70,6 +80,17 @@ class EmailStage(Stage):
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
     from_address = models.EmailField(default="system@authentik.local")
+    recovery_max_attempts = models.PositiveIntegerField(default=EMAIL_RECOVERY_MAX_ATTEMPTS)
+    recovery_cache_timeout = models.TextField(
+        default="minutes=5",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "The time window used to count recent account recovery attempts. "
+            "If the number of attempts exceed recovery_max_attempts within "
+            "this period, further attempts will be rate-limited. "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
 
     activate_user_on_success = models.BooleanField(
         default=False, help_text=_("Activate users upon completion of stage.")

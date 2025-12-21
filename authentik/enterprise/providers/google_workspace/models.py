@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
 
@@ -17,7 +18,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
@@ -31,7 +32,7 @@ def default_scopes() -> list[str]:
     ]
 
 
-class GoogleWorkspaceProviderUser(SerializerModel):
+class GoogleWorkspaceProviderUser(InternallyManagedMixin, SerializerModel):
     """Mapping of a user and provider to a Google user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -57,7 +58,7 @@ class GoogleWorkspaceProviderUser(SerializerModel):
         return f"Google Workspace Provider User {self.user_id} to {self.provider_id}"
 
 
-class GoogleWorkspaceProviderGroup(SerializerModel):
+class GoogleWorkspaceProviderGroup(InternallyManagedMixin, SerializerModel):
     """Mapping of a group and provider to a Google group ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -110,6 +111,12 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
+    @property
+    def sync_actor(self) -> Actor:
+        from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
+
+        return google_workspace_sync
+
     def client_for_model(
         self,
         model: type[User | Group | GoogleWorkspaceProviderUser | GoogleWorkspaceProviderGroup],
@@ -132,11 +139,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = (
-                User.objects.prefetch_related("googleworkspaceprovideruser_set")
-                .all()
-                .exclude_anonymous()
-            )
+            base = User.objects.all().exclude_anonymous()
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -146,11 +149,7 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
             return base.order_by("pk")
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            return (
-                Group.objects.prefetch_related("googleworkspaceprovidergroup_set")
-                .all()
-                .order_by("pk")
-            )
+            return Group.objects.all().order_by("pk")
         raise ValueError(f"Invalid type {type}")
 
     def google_credentials(self):

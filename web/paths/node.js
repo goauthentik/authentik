@@ -3,9 +3,11 @@
  *
  * @runtime node
  */
-import { DistDirectoryName } from "#paths";
+
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { DistDirectoryName } from "#paths";
 
 const relativeDirname = dirname(fileURLToPath(import.meta.url));
 
@@ -79,6 +81,14 @@ export const EntryPoint = /** @type {const} */ ({
     Polyfill: {
         in: resolve(PackageRoot, "src", "polyfill", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "poly"),
+    },
+    InterfaceStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "interface.global.css"),
+        out: resolve(DistDirectory, "styles", "interface"),
+    },
+    StaticStyles: {
+        in: resolve(PackageRoot, "src", "styles", "authentik", "static.global.css"),
+        out: resolve(DistDirectory, "styles", "static"),
     },
 });
 

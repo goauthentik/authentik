@@ -1,22 +1,23 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-event-info";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import "#components/ak-event-info";
+import "#elements/Tabs";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, PropertyValues, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
@@ -54,14 +55,16 @@ export class ObjectChangelog extends Table<Event> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "enabled"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-        ];
+    protected override rowLabel(item: Event): string {
+        return actionToLabel(item.action);
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "enabled"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+    ];
 
     willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("targetModelName") && this.targetModelName) {
@@ -72,23 +75,15 @@ export class ObjectChangelog extends Table<Event> {
     row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            EventUser(item),
-            html`<div>${formatElapsedTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            renderEventUser(item),
+            Timestamp(item.created),
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
         ];
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-event-info .event=${item as EventWithContext}></ak-event-info>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-event-info .event=${item as EventWithContext}></ak-event-info>`;
     }
 
     renderEmpty(): TemplateResult {

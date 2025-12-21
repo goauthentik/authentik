@@ -1,10 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Form } from "#elements/forms/Form";
 
 import {
     AlgEnum,
@@ -12,6 +11,10 @@ import {
     CertificateKeyPair,
     CryptoApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {

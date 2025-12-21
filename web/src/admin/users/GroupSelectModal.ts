@@ -1,35 +1,34 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import "#components/ak-status-label";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { CoreApi, Group } from "@goauthentik/api";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
+    public supportsQL = true;
 
     @property()
     confirm!: (selectedItems: Group[]) => Promise<unknown>;
 
     order = "name";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
-    }
+    static styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -38,20 +37,18 @@ export class GroupSelectModal extends TableModal<Group> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Superuser"), "is_superuser"),
-            new TableColumn(msg("Members"), ""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Superuser"), "is_superuser"],
+        [msg("Members"), ""],
+    ];
 
-    row(item: Group): TemplateResult[] {
+    row(item: Group): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
             </div>`,
-            html` <ak-status-label type="info" ?good=${item.isSuperuser}></ak-status-label>`,
+            html` <ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`${(item.users || []).length}`,
         ];
     }
@@ -60,7 +57,7 @@ export class GroupSelectModal extends TableModal<Group> {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    renderModalInner(): SlottedTemplateResult {
         const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
@@ -75,7 +72,7 @@ export class GroupSelectModal extends TableModal<Group> {
                           )}
                       </div>
                   `
-                : html``}
+                : nothing}
             <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button

@@ -1,5 +1,9 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import type { SearchbarEventDetail, SearchbarEventSource } from "../types.ts";
+import { globalVariables, searchStyles } from "./search.styles.js";
+
+import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -7,15 +11,15 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { SearchbarEventDetail, SearchbarEventSource } from "../types.ts";
-import { globalVariables, searchStyles } from "./search.css.js";
-
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
     static styles = [PFBase, globalVariables, searchStyles];
 
     @property({ type: String, reflect: true })
     public value = "";
+
+    @property({ type: String })
+    public placeholder: string | null = null;
 
     /**
      * If you're using more than one search, this token can help listeners distinguishing between
@@ -50,9 +54,10 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
                 <div class="pf-c-text-input-group__main pf-m-icon">
                     <span class="pf-c-text-input-group__text"
                         ><span class="pf-c-text-input-group__icon"
-                            ><i class="fa fa-search fa-fw"></i></span
+                            ><i class="fa fa-search fa-fw" aria-hidden="true"></i></span
                         ><input
                             type="search"
+                            placeholder=${ifPresent(this.placeholder)}
                             class="pf-c-text-input-group__text-input"
                             ${ref(this.inputRef)}
                             @input=${this.#changeListener}

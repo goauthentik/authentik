@@ -1,16 +1,18 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-secret-textarea-input.js";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#components/ak-secret-textarea-input";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { EnterpriseApi, License } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {
@@ -64,7 +66,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
             </ak-form-element-horizontal>
             <ak-secret-textarea-input
                 name="key"
-                ?revealed=${this.instance === undefined}
+                ?revealed=${!this.instance}
                 label=${msg("License key")}
                 input-hint="code"
             >

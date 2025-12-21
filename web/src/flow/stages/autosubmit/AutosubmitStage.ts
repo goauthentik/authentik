@@ -1,8 +1,11 @@
-import "@goauthentik/elements/EmptyState";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/components/ak-flow-card";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { BaseStage } from "#flow/stages/base";
+
+import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
+
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -12,8 +15,6 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AutoSubmitChallengeResponseRequest, AutosubmitChallenge } from "@goauthentik/api";
-
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<
     AutosubmitChallenge,
@@ -22,35 +23,30 @@ export class AutosubmitStage extends BaseStage<
     @query("form")
     private form?: HTMLFormElement;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
-    updated(): void {
-        this.form?.submit();
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (changed.has("challenge") && this.challenge.url !== undefined) {
+            console.debug("authentik/flow/stages/autosubmit: submitting");
+            this.form?.submit();
+        }
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        let title = this.challenge.flowInfo?.title;
-        if (this.challenge.title && this.challenge.title !== "") {
-            title = this.challenge.title;
-        }
-        if (!title) {
-            title = msg("Loading");
-        }
-        return html`<form class="pf-c-form" action="${this.challenge.url}" method="POST">
-            ${Object.entries(this.challenge.attrs).map(([key, value]) => {
-                return html`<input
-                    type="hidden"
-                    name="${key as string}"
-                    value="${value as string}"
-                />`;
-            })}
-            <ak-empty-state loading title=${title}> </ak-empty-state>
-        </form>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form" action="${this.challenge.url}" method="post">
+                ${Object.entries(this.challenge.attrs).map(([key, value]) => {
+                    return html`<input
+                        type="hidden"
+                        name="${key as string}"
+                        value="${value as string}"
+                    />`;
+                })}
+                <ak-empty-state loading default-label></ak-empty-state>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

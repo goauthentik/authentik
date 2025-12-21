@@ -1,10 +1,11 @@
+import "../ak-visibility-toggle.js";
+
+import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../ak-visibility-toggle";
-import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
 
 const metadata: Meta<VisibilityToggleProps> = {
     title: "Elements/<ak-visibility-toggle>",
@@ -13,11 +14,11 @@ const metadata: Meta<VisibilityToggleProps> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Visibility Toggle Component
 
 A straightforward two-state iconic button for toggling the visibility of sensitive content such as passwords, private keys, or other secret information.
-                
+
 - Use for sensitive content that users might want to temporarily reveal
 - There are default hide/show messages for screen readers, but they can be overridden
 - Clients always handle the state
@@ -76,6 +77,7 @@ const Template: Story = {
 
 // Password field integration example
 export const PasswordFieldExample: Story = {
+    ...Template,
     args: {
         showMessage: "Reveal password",
         hideMessage: "Conceal password",

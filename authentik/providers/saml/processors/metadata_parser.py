@@ -9,10 +9,10 @@ from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import CertificateKeyPair, format_cert
 from authentik.flows.models import Flow
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.utils.encoding import PEM_FOOTER, PEM_HEADER
+from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_METADATA,
@@ -21,18 +21,6 @@ from authentik.sources.saml.processors.constants import (
 )
 
 LOGGER = get_logger()
-
-
-def format_pem_certificate(unformatted_cert: str) -> str:
-    """Format single, inline certificate into PEM Format"""
-    # Ensure that all linebreaks are gone
-    unformatted_cert = unformatted_cert.replace("\n", "")
-    chunks, chunk_size = len(unformatted_cert), 64
-    lines = [PEM_HEADER]
-    for i in range(0, chunks, chunk_size):
-        lines.append(unformatted_cert[i : i + chunk_size])  # noqa: E203
-    lines.append(PEM_FOOTER)
-    return "\n".join(lines)
 
 
 @dataclass(slots=True)
@@ -46,6 +34,7 @@ class ServiceProviderMetadata:
 
     auth_n_request_signed: bool
     assertion_signed: bool
+    name_id_policy: SAMLNameIDPolicy
 
     signing_keypair: CertificateKeyPair | None = None
 
@@ -60,6 +49,7 @@ class ServiceProviderMetadata:
         provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
+        provider.default_name_id_policy = self.name_id_policy
         if self.signing_keypair and self.auth_n_request_signed:
             self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
             self.signing_keypair.save()
@@ -84,7 +74,7 @@ class ServiceProviderMetadataParser:
         )
         if len(signing_certs) < 1:
             return None
-        raw_cert = format_pem_certificate(signing_certs[0])
+        raw_cert = format_cert(signing_certs[0])
         # sanity check, make sure the certificate is valid.
         load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
         return CertificateKeyPair(
@@ -148,6 +138,11 @@ class ServiceProviderMetadataParser:
         if signing_keypair:
             self.check_signature(root, signing_keypair)
 
+        name_id_format = descriptor.findall(f"{{{NS_SAML_METADATA}}}NameIDFormat")
+        name_id_policy = SAMLNameIDPolicy.UNSPECIFIED
+        if len(name_id_format) > 0:
+            name_id_policy = SAMLNameIDPolicy(name_id_format[0].text)
+
         return ServiceProviderMetadata(
             entity_id=entity_id,
             acs_binding=acs_binding,
@@ -155,4 +150,5 @@ class ServiceProviderMetadataParser:
             auth_n_request_signed=auth_n_request_signed,
             assertion_signed=assertion_signed,
             signing_keypair=signing_keypair,
+            name_id_policy=name_id_policy,
         )

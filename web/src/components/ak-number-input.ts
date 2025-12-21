@@ -1,8 +1,10 @@
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
+import { ifPresent } from "#elements/utils/attributes";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-number-input")
 export class AkNumberInput extends HorizontalLightComponent<number> {
@@ -21,7 +23,8 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
         return html`<input
             type="number"
             @input=${setValue}
-            value=${ifDefined(this.value)}
+            aria-label=${ifPresent(this.label)}
+            value=${ifPresent(this.value)}
             min=${ifDefined(this.min)}
             class="pf-c-form-control"
             ?required=${this.required}

@@ -1,28 +1,31 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/prompt/PromptStage";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#flow/stages/prompt/PromptStage";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { StageHost } from "#flow/stages/base";
+
+import {
+    instanceOfValidationError,
+    Prompt,
+    PromptChallenge,
+    PromptTypeEnum,
+    StagesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import {
-    Prompt,
-    PromptChallenge,
-    PromptTypeEnum,
-    StagesApi,
-    instanceOfValidationError,
-} from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
     challenge = undefined;
@@ -70,7 +73,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     async refreshPreview(prompt?: Prompt): Promise<void> {
         if (!prompt) {
-            prompt = this.serializeForm();
+            prompt = this.serialize();
             if (!prompt) {
                 return;
             }
@@ -99,9 +102,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             : msg("Successfully created prompt.");
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFGrid, PFTitle);
-    }
+    static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 
     _shouldRefresh = false;
     _timer = 0;
@@ -165,7 +166,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         </div> `;
     }
 
-    renderPreview(): TemplateResult {
+    renderPreview(): SlottedTemplateResult {
         return html`
             <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
             <div class="pf-l-grid pf-m-gutter">
@@ -187,7 +188,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                               </div>
                           </div>
                       `
-                    : html``}
+                    : nothing}
                 ${this.previewResult
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
@@ -197,7 +198,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                               </div>
                           </div>
                       `
-                    : html``}
+                    : nothing}
             </div>
         `;
     }
@@ -308,7 +309,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
+                    mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
                         this._shouldRefresh = true;
@@ -347,10 +348,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
-                    value="${ifDefined(this.instance?.initialValue)}"
-                >
+                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -362,7 +360,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.HTML}
+                    mode="html"
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
                         this._shouldRefresh = true;

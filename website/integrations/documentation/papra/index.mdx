@@ -1,0 +1,60 @@
+---
+title: Integrate with Papra
+sidebar_label: Papra
+support_level: community
+---
+
+## What is Papra
+
+> An open-source document management platform designed to help you organize, secure, and archive your files effortlessly.
+>
+> -- https://papra.app/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `papra.company` is the FQDN of the Papra installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Papra with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://papra.company/api/auth/oauth2/callback/authentik`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Papra configuration
+
+To support the integration of Papra with authentik, you'll need to add the following environment variable to your Papra deployment:
+
+```yaml
+AUTH_PROVIDERS_CUSTOMS=[{"providerId": "authentik","providerName": "authentik","providerIconUrl": "https://authentik.company/static/dist/assets/icons/icon.png","clientId": "<client_id>","clientSecret": "<client_secret>","type": "oidc","discoveryUrl": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration","scopes": ["openid", "profile", "email"]}]
+```
+
+:::info
+The JSON needs to be inline (single line) because various `.env` parsers, such as the one used by Docker Compose, do not support multiline environment variables.
+:::
+
+## Configuration verification
+
+To verify the integration with Papra, log out and attempt to log back in using the **Log in with authentik** button. You should be redirected to the authenik login page. Once authenticated, you should be redirected to the Papra dashboard.
+
+## Resources
+
+- [Papra Docs - Setup Custom OAuth2 Providers](https://docs.papra.app/guides/setup-custom-oauth2-providers/)

@@ -53,7 +53,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 				Environment:   globalConfig.ErrorReporting.Environment,
 				EnableTracing: true,
 				TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
-				Release:       fmt.Sprintf("authentik@%s", constants.VERSION),
+				Release:       fmt.Sprintf("authentik@%s", constants.VERSION()),
 				HTTPTransport: webutils.NewUserAgentTransport(constants.UserAgentOutpost(), http.DefaultTransport),
 				IgnoreErrors: []string{
 					http.ErrAbortHandler.Error(),
@@ -66,7 +66,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	}
 
 	if !initialSetup {
-		l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+		l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION()).Info("Starting authentik outpost")
 		initialSetup = true
 	}
 }

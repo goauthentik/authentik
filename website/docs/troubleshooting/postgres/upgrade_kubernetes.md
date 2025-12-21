@@ -4,7 +4,7 @@ title: Upgrading PostgreSQL on Kubernetes
 
 This guide walks you through upgrading PostgreSQL in your authentik Kubernetes deployment. The process requires a brief downtime period while the database is migrated.
 
-:::note
+:::info
 For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, which is the default name in the authentik Helm chart.
 :::
 
@@ -52,7 +52,7 @@ cd /bitnami/postgresql/
 export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 
 # Create a full database dump
-pg_dump -U $POSTGRES_USER $POSTGRES_DB > /bitnami/postgresql/dump.sql
+pg_dump -U $POSTGRES_USER $POSTGRES_DATABASE > /bitnami/postgresql/dump.sql
 ```
 
 :::tip
@@ -120,7 +120,7 @@ ls -lh dump.sql
 export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 
 # Import the database dump
-psql -U $POSTGRES_USER $POSTGRES_DB < dump.sql
+psql -U $POSTGRES_USER $POSTGRES_DATABASE < dump.sql
 ```
 
 ## Restart authentik services

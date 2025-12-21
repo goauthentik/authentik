@@ -19,12 +19,14 @@ from authentik.core.models import (
     Group,
     GroupSourceConnection,
     PropertyMapping,
-    Source,
     UserSourceConnection,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.sync.incoming.models import IncomingSyncSource
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
@@ -53,7 +55,7 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
-class LDAPSource(Source):
+class LDAPSource(IncomingSyncSource):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
@@ -158,6 +160,27 @@ class LDAPSource(Source):
         from authentik.sources.ldap.api import LDAPSourceSerializer
 
         return LDAPSourceSerializer
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync
+
+        return [
+            ScheduleSpec(
+                actor=ldap_sync,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_sync/' + str(self.pk))} */2 * * *",
+                send_on_save=True,
+            ),
+            ScheduleSpec(
+                actor=ldap_connectivity_check,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_connectivity_check/' + str(self.pk))} * * * *",
+                send_on_save=True,
+            ),
+        ]
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
@@ -274,6 +297,16 @@ class LDAPSource(Source):
             side_effect=pglock.Return,
         )
 
+    def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
+        info = {
+            "vendor": _("N/A"),
+            "version": _("N/A"),
+        }
+        if srv.info:
+            info["vendor"] = str(flatten(srv.info.vendor_name))
+            info["version"] = str(flatten(srv.info.vendor_version))
+        return info
+
     def check_connection(self) -> dict[str, dict[str, str]]:
         """Check LDAP Connection"""
         servers = self.server()
@@ -284,9 +317,8 @@ class LDAPSource(Source):
             try:
                 conn = self.connection(server=server)
                 server_info[server.host] = {
-                    "vendor": str(flatten(conn.server.info.vendor_name)),
-                    "version": str(flatten(conn.server.info.vendor_version)),
                     "status": "ok",
+                    **self.get_ldap_server_info(conn.server),
                 }
             except LDAPException as exc:
                 server_info[server.host] = {
@@ -296,9 +328,8 @@ class LDAPSource(Source):
         try:
             conn = self.connection()
             server_info["__all__"] = {
-                "vendor": str(flatten(conn.server.info.vendor_name)),
-                "version": str(flatten(conn.server.info.vendor_version)),
                 "status": "ok",
+                **self.get_ldap_server_info(conn.server),
             }
         except LDAPException as exc:
             server_info["__all__"] = {

@@ -1,11 +1,11 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     Flow,
@@ -15,6 +15,10 @@ import {
     RedirectStageModeEnum,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-stage-redirect-form")
 export class RedirectStageForm extends BaseStageForm<RedirectStage> {
@@ -56,9 +60,8 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                         <select
                             class="pf-c-form-control"

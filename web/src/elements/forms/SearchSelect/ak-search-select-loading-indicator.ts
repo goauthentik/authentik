@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { AKElement } from "#elements/Base";
+import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -25,9 +25,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-select-loading-indicator")
 export class SearchSelectLoadingIndicator extends AKElement {
-    static get styles() {
-        return [PFBase, PFFormControl, PFSelect];
-    }
+    static styles = [PFBase, PFFormControl, PFSelect];
 
     connectedCallback() {
         super.connectedCallback();

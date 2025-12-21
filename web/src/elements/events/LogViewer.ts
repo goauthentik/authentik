@@ -1,15 +1,19 @@
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#components/ak-status-label";
+import "#elements/EmptyState";
+import "#elements/timestamp/ak-timestamp";
+
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 @customElement("ak-log-viewer")
 export class LogViewer extends Table<LogEvent> {
@@ -19,9 +23,7 @@ export class LogViewer extends Table<LogEvent> {
     expandable = true;
     paginated = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
@@ -45,46 +47,40 @@ export class LogViewer extends Table<LogEvent> {
     }
 
     renderExpanded(item: LogEvent): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Timestamp")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${item.timestamp.toLocaleString()}
-                            </div>
-                        </dd>
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Timestamp")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${item.timestamp.toLocaleString()}
                     </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Attributes")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
+                </dd>
             </div>
-        </td>`;
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Attributes")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Time")),
-            new TableColumn(msg("Level")),
-            new TableColumn(msg("Event")),
-            new TableColumn(msg("Logger")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Time")],
+        [msg("Level")],
+        [msg("Event")],
+        [msg("Logger")],
+    ];
 
     statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
@@ -100,9 +96,13 @@ export class LogViewer extends Table<LogEvent> {
         }
     }
 
-    row(item: LogEvent): TemplateResult[] {
+    protected override rowLabel(item: LogEvent): string {
+        return formatElapsedTime(item.timestamp);
+    }
+
+    row(item: LogEvent): SlottedTemplateResult[] {
         return [
-            html`${formatElapsedTime(item.timestamp)}`,
+            html`<ak-timestamp .timestamp=${item.timestamp} refresh></ak-timestamp>`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}

@@ -1,31 +1,59 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "2.0.1",
+    "version": "3.3.1",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "scripts": {
         "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check ."
     },
     "type": "module",
-    "exports": "./index.js",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./imports-plugin": {
+            "import": "./lib/imports.js",
+            "types": "./out/lib/imports.d.ts"
+        },
+        "./formatter": {
+            "import": "./lib/formatter.js",
+            "types": "./out/lib/formatter.d.ts"
+        }
+    },
+    "dependencies": {
+        "format-imports": "^4.0.8"
+    },
     "devDependencies": {
-        "@goauthentik/tsconfig": "^1.0.1",
-        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.15",
-        "typescript": "^5.8.3"
+        "@eslint/js": "^9.39.1",
+        "@goauthentik/eslint-config": "../eslint-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@types/node": "^25.0.0",
+        "@typescript-eslint/eslint-plugin": "^8.49.0",
+        "@typescript-eslint/parser": "^8.49.0",
+        "eslint": "^9.39.1",
+        "prettier": "^3.7.4",
+        "prettier-plugin-packagejson": "^2.5.20",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.49.0"
     },
     "peerDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.15"
+        "prettier": "^3.7.4",
+        "prettier-plugin-packagejson": "^2.5.20"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/prettier-config"
     },
     "types": "./out/index.d.ts",
     "files": [
@@ -34,6 +62,11 @@
         "out/**/*"
     ],
     "prettier": "./index.js",
+    "overrides": {
+        "format-imports": {
+            "eslint": "$eslint"
+        }
+    },
     "publishConfig": {
         "access": "public"
     }

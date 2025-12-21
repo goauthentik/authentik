@@ -8,11 +8,13 @@ In effect, policies determine whether or not a specific stage is applied to a fl
 
 For example, you can create a policy that, for certain users, skips over a stage that prompts for MFA input. Or, you can define a policy that allows users to access a login flow only if the policy criteria are met. See below for other policies, including the reputation policy and an events-driven policy to manage notifications.
 
-For instructions about creating and binding policies to flows and stages, refer to ["Working with policies](./working_with_policies.md)".
+## Create and manage policies
+
+For instructions about creating and binding policies to flows and stages, refer to [Working with policies](./working_with_policies.md).
 
 ## Standard policies
 
-The following policies are our standard, out-of-the box policies.
+The following are our standard, out-of-the box policies that you can [create and customize](./working_with_policies.md) as needed.
 
 ### Event-matcher policy
 
@@ -61,9 +63,9 @@ The following rules can be set:
 - Minimum length.
 - Symbol charset (define which characters are counted as symbols).
 
-Starting with authentik 2022.11.0, the following checks can also be done with this policy:
+The following checks can also be done with this policy:
 
-- Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
+- Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik.
 - Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
 
 ### Password Uniqueness Policy
@@ -72,7 +74,7 @@ This policy prevents users from reusing their previous passwords when setting a 
 
 ### Reputation Policy
 
-authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
+authentik keeps track of recent login attempts per [Identifier](../../add-secure-apps/flows-stages/stages/identification/#user-fields) and client IP. These values are saved as scores. Failed logins decrease the score by 1, while successful logins increase the score by 1.
 
 This policy can be used, for example, to prompt clients with a low score to pass a CAPTCHA test before they can continue.
 

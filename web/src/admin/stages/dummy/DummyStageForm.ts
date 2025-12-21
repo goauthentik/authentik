@@ -1,13 +1,16 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-switch-input";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { DummyStage, StagesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-dummy-form")
 export class DummyStageForm extends BaseStageForm<DummyStage> {
@@ -43,21 +46,11 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="throwError">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.throwError ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Throw error?")}</span>
-                </label>
-            </ak-form-element-horizontal>`;
+            <ak-switch-input
+                name="throwError"
+                label=${msg("Throw error?")}
+                ?checked=${this.instance?.throwError ?? false}
+            ></ak-switch-input>`;
     }
 }
 

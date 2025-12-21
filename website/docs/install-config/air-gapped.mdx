@@ -2,6 +2,9 @@
 title: Air-gapped environments
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## Outbound connections
 
 By default, authentik creates outbound connections to the following URLs:
@@ -10,23 +13,20 @@ By default, authentik creates outbound connections to the following URLs:
 - https://goauthentik.io: Anonymous analytics on startup
 - https://secure.gravatar.com: Avatars for users
 - https://authentik.error-reporting.a7k.io: Error reporting
+- https://tile.openstreetmap.org: Map tiles for event logs :ak-enterprise :ak-version[2025.8]
 
-To disable these outbound connections, adjust the settings as follows:
+## Configuration
 
-## Configuration options
-
-To view a list of all configuration options, refer to the [Configuration](./configuration/configuration.mdx) documentation.
-
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
+To disable these outbound connections, adjust the following settings:
 
 <Tabs
   defaultValue="docker-compose"
   values={[
-    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Docker Compose', value: 'docker-compose'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
   <TabItem value="docker-compose">
+
 Add the following block to your `.env` file:
 
 ```shell
@@ -39,6 +39,7 @@ Afterwards, run the upgrade commands from the latest release notes.
 
   </TabItem>
   <TabItem value="kubernetes">
+
 Add the following block to your `values.yml` file:
 
 ```yaml
@@ -54,15 +55,55 @@ Afterwards, run the upgrade commands from the latest release notes.
   </TabItem>
 </Tabs>
 
-## Settings
+Additionally, adjust the following [System settings](../sys-mgmt/settings.md):
 
-In addition to the configuration options above, the following [System settings](../sys-mgmt/settings.md) need to also be adjusted:
+- **Avatars**: By default this setting connects to [Gravatar](https://secure.gravatar.com/). To avoid outgoing connections, set this to a combination of other options, such as `initials`.
 
-- **Avatars**: By default this setting uses [Gravatar](https://secure.gravatar.com/). The option can be set to a combination of any of the other options, for example `initials`
+## Required resources
 
-## Container images
+### Container images
 
-Container images can be pulled from the following URLs:
+authentik deployments require access to the following container images. In an air-gapped environment, this can be achieved by mirroring the images to an internal registry, or using other methods appropriate for your environment.
 
-- ghcr.io/goauthentik/server (https://ghcr.io)
-- beryju/authentik (https://index.docker.io)
+#### Main image
+
+- `ghcr.io/goauthentik/server` or `authentik/server`
+
+#### Outpost images
+
+- `ghcr.io/goauthentik/ldap` or `authentik/ldap`
+- `ghcr.io/goauthentik/proxy` or `authentik/proxy`
+- `ghcr.io/goauthentik/rac` or `authentik/rac`
+- `ghcr.io/goauthentik/radius` or `authentik/radius`
+
+#### Supporting services
+
+- PostgreSQL
+
+### Helm repositories
+
+For Helm deployments, ensure access to the following repository. In an air-gapped environment, this can be achieved by mirroring the chart to an internal registry, or using other methods appropriate for your environment.
+
+- https://charts.goauthentik.io
+
+## Network requirements
+
+### Required ports
+
+- **9000/9443**: Default authentik server ports for HTTP/HTTPS access.
+- **80/443**: For reverse proxy setups (if using a load balancer or ingress controller).
+- **SMTP ports**: Connectivity to your configured SMTP server (typically 25, 465, or 587).
+- **S3/object storage**: If configured, connectivity to your S3-compatible storage.
+
+### Outpost-specific ports
+
+Each outpost container, in order to communicate with authentik, requires access to the authentik server via whichever protocol is specified in the URL set in the `AUTHENTIK_HOST` environment variable (preferably HTTPS).
+
+The outpost containers also need certain ports exposed:
+
+- **LDAP Outpost**: Ports 389/636 (LDAP/LDAPS) exposed to ports 3389/6636 of the container.
+- **Proxy Outpost**: Ports 9000/9443 (HTTP/HTTPS) exposed to ports 9000/9443 of the container.
+- **RAC Outpost**: Exposed ports not required.
+- **RADIUS Outpost**: Port 1812 (RADIUS Authentication) exposed to port 1812/udp of the container.
+
+For more detailed information about outpost configuration in air-gapped environments, see the [Outposts documentation](../add-secure-apps/outposts/index.mdx).

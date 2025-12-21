@@ -1,5 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { DualSelectEventType } from "../types.js";
+
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -7,8 +9,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { DualSelectEventType } from "../types.js";
 
 /**
  * @element ak-dual-select-controls
@@ -36,6 +36,16 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                 justify-content: center;
                 align-content: center;
                 height: 100%;
+            }
+
+            .pf-c-button {
+                --pf-c-button--m-plain--Color: var(--pf-global--Color-300) !important;
+
+                &.pf-m-plain {
+                    --pf-c-button--m-plain--disabled--Color: var(
+                        --pf-global--Color--400
+                    ) !important;
+                }
             }
         `,
     ];
@@ -105,7 +115,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                     @click=${() => this.dispatchCustomEvent(eventType)}
                     data-ouia-component-type="AK/Button"
                 >
-                    <i class="fa ${direction}"></i>
+                    <i class="fa ${direction}" aria-hidden="true"></i>
                 </button>
             </div>
         </div>`;

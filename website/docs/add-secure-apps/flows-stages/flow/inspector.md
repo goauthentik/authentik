@@ -22,7 +22,7 @@ Starting with authentik 2025.2, for users with appropriate permissions to access
 
 ### Manually running a flow with the inspector
 
-1. To access the inspector, open the Admin interface and navigate to **Flows and Stages -> Flows**.
+1. To access the inspector, open the Admin interface and navigate to **Flows and Stages > Flows**.
 
 2. Select the specific flow that you want to inspect by clicking its name in the list.
 

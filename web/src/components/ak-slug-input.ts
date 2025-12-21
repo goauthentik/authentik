@@ -1,11 +1,12 @@
-import { bound } from "@goauthentik/elements/decorators/bound.js";
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
+import { bound } from "#elements/decorators/bound";
+
 import { kebabCase } from "change-case";
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
 
@@ -124,6 +125,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     public override renderControl() {
         return html`<input
+            id=${ifDefined(this.fieldID)}
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
             value=${ifDefined(this.value)}

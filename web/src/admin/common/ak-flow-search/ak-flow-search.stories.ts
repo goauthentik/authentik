@@ -1,12 +1,14 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { AkFlowSearch } from "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#elements/forms/HorizontalFormElement";
+
+import { AkFlowSearch } from "#admin/common/ak-flow-search/ak-flow-search";
+
+import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+
 import { Meta } from "@storybook/web-components";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-
-import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { html, TemplateResult } from "lit";
 
 const mockData = {
     pagination: {
@@ -83,7 +85,7 @@ const metadata: Meta<AkFlowSearch<Flow>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) => {
-    return html` <div style="background: #fff; padding: 1.0rem;">
+    return html` <div style="padding: 1.0rem;">
         <style>
             li {
                 display: block;

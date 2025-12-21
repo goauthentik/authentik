@@ -1,53 +1,46 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/stages/invitation/InvitationForm";
 import "#admin/stages/invitation/InvitationListLink";
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFColor } from "#elements/Label";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import { PaginatedResponse } from "#elements/table/Table";
-import { TableColumn } from "#elements/table/Table";
-import { TablePage } from "#elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import {
     FlowDesignationEnum,
     Invitation,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, HTMLTemplateResult, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Invitations");
-    }
-    pageDescription(): string {
-        return msg(
-            "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-migration";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Invitations");
+    public pageDescription = msg(
+        "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
+    );
+    public pageIcon = "pf-icon pf-icon-migration";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
-    }
+    static styles: CSSResult[] = [...super.styles, PFBanner];
 
     checkbox = true;
     clearOnRefresh = true;
@@ -85,14 +78,12 @@ export class InvitationListPage extends TablePage<Invitation> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Created by"), "created_by"),
-            new TableColumn(msg("Expiry")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Created by"), "created_by"],
+        [msg("Expiry")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -116,7 +107,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Invitation): TemplateResult[] {
+    row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${!item.flowObj && this.multipleEnrollmentFlows
@@ -127,21 +118,24 @@ export class InvitationListPage extends TablePage<Invitation> {
                               )}
                           </ak-label>
                       `
-                    : html``}`,
-            html`${item.createdBy?.username}`,
+                    : nothing}`,
+            html`<div>
+                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                </div>
+                <small>${item.createdBy.name}</small>`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Invitation")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Invitation")}</span>
                     <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -149,38 +143,25 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     renderExpanded(item: Invitation): TemplateResult {
-        return html` <td role="cell" colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <ak-stage-invitation-list-link
-                        .invitation=${item}
-                    ></ak-stage-invitation-list-link>
-                </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>`;
+        return html`<ak-stage-invitation-list-link
+            .invitation=${item}
+        ></ak-stage-invitation-list-link>`;
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Invitation")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Invitation")}</span>
                 <ak-invitation-form slot="form"> </ak-invitation-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
-            >
-            </ak-page-header>
-            ${this.invitationStageExists
-                ? html``
+    render(): HTMLTemplateResult {
+        return html`${this.invitationStageExists
+                ? nothing
                 : html`
                       <div class="pf-c-banner pf-m-warning">
                           ${msg(
@@ -191,6 +172,15 @@ export class InvitationListPage extends TablePage<Invitation> {
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }
 

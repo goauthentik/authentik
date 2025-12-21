@@ -1,12 +1,13 @@
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/messages/MessageContainer";
+import "../ak-crypto-certificate-search.js";
+
+import AkCryptoCertificateSearch from "../ak-crypto-certificate-search.js";
+import { dummyCryptoCertsSearch } from "./samples.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-crypto-certificate-search";
-import AkCryptoCertificateSearch from "../ak-crypto-certificate-search";
-import { dummyCryptoCertsSearch } from "./samples";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkCryptoCertificateSearch> = {
     title: "Components / Searches / CryptoCertificateKeyPair",
@@ -27,9 +28,9 @@ const metadata: Meta<AkCryptoCertificateSearch> = {
         ],
     },
     argTypes: {
-        // Typescript is unaware that arguments for components are treated as properties, and
-        // properties are typically renamed to lower case, even if the variable is not.
-        // @ts-expect-error
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         nokey: {
             control: "boolean",
             description:
@@ -56,7 +57,7 @@ function injectTheme() {
 
 const container = (testItem: TemplateResult) => {
     injectTheme();
-    return html` <div style="background: #fff; padding: 2em">
+    return html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

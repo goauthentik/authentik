@@ -1,15 +1,16 @@
-import "@goauthentik/elements/messages/MessageContainer";
-import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import "#elements/messages/MessageContainer";
+import "../ak-dual-select.js";
 
-import { LitElement, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { AkDualSelect } from "../ak-dual-select.js";
+import { DualSelectEventType, type DualSelectPair } from "../types.js";
 
 import { Pagination } from "@goauthentik/api";
 
-import "../ak-dual-select";
-import { AkDualSelect } from "../ak-dual-select";
-import { DualSelectEventType, type DualSelectPair } from "../types";
+import { Meta, StoryObj } from "@storybook/web-components";
+import { kebabCase } from "change-case";
+
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 const goodForYouRaw = `
 Apple, Arrowroot, Artichoke, Arugula, Asparagus, Avocado, Bamboo, Banana, Basil, Beet Root,
@@ -24,7 +25,7 @@ Rosemary, Rutabaga, Shallot, Soybeans, Spinach, Squash, Strawberries, Sweet pota
 Thyme, Tomatillo, Tomato, Turnip, Waterchestnut, Watercress, Watermelon, Yams
 `;
 
-const keyToPair = (key: string): DualSelectPair => [slug(key), key, key];
+const keyToPair = (key: string): DualSelectPair => [kebabCase(key), key, key];
 
 const goodForYou: DualSelectPair[] = goodForYouRaw
     .split("\n")
@@ -125,7 +126,7 @@ export class AkSbFruity extends LitElement {
 }
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -140,15 +141,14 @@ const container = (testItem: TemplateResult) =>
         <div id="action-button-message-pad" style="margin-top: 1em"></div>
     </div>`;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleMoveChanged = (result: any) => {
+const handleMoveChanged = (result: CustomEvent<{ value: Array<[string, string]> }>) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
-    // @ts-ignore
+
     target!.append(result.detail.value.map(([k, _]) => k).join(", "));
 };
 
-window.addEventListener("change", handleMoveChanged);
+window.addEventListener("change", handleMoveChanged as unknown as EventListener);
 
 type Story = StoryObj;
 

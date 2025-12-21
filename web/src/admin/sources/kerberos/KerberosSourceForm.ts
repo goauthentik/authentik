@@ -1,84 +1,88 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import {
-    GroupMatchingModeToLabel,
-    UserMatchingModeToLabel,
-} from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-secret-text-input.js";
-import "@goauthentik/components/ak-secret-textarea-input.js";
-import "@goauthentik/components/ak-slug-input.js";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-secret-text-input";
+import "#components/ak-secret-textarea-input";
+import "#components/ak-slug-input";
+import "#components/ak-radio-input";
+import "#components/ak-file-search-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RadioOption } from "#elements/forms/Radio";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
+    AdminFileListUsageEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     KadminTypeEnum,
     KerberosSource,
     KerberosSourceRequest,
     SourcesApi,
+    SyncOutgoingTriggerModeEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTriggerModeEnum>[] {
+    return [
+        {
+            label: msg("None"),
+            value: SyncOutgoingTriggerModeEnum.None,
+            description: html`${msg("Outgoing syncs will not be triggered.")}`,
+        },
+        {
+            label: msg("Immediate"),
+            value: SyncOutgoingTriggerModeEnum.Immediate,
+            description: html`${msg(
+                "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
+            )}`,
+        },
+        {
+            label: msg("Deferred until end"),
+            value: SyncOutgoingTriggerModeEnum.DeferredEnd,
+            default: true,
+            description: html`${msg(
+                "Outgoing syncs will be triggered at the end of the source synchronization.",
+            )}`,
+        },
+    ];
+}
 
 @customElement("ak-source-kerberos-form")
-export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<KerberosSource>) {
+export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
     async loadInstance(pk: string): Promise<KerberosSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
+        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
             slug: pk,
         });
-        this.clearIcon = false;
-        return source;
     }
 
-    @state()
-    clearIcon = false;
-
     async send(data: KerberosSource): Promise<KerberosSource> {
-        let source: KerberosSource;
         if (this.instance) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
+            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
                 slug: this.instance.slug,
                 patchedKerberosSourceRequest: data,
             });
-        } else {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
-                kerberosSourceRequest: data as unknown as KerberosSourceRequest,
-            });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles().icon;
-            if (icon || this.clearIcon) {
-                await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
-                    slug: source.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconUrlCreate({
-                slug: source.slug,
-                filePathRequest: {
-                    url: data.icon || "",
-                },
-            });
-        }
-        return source;
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
+            kerberosSourceRequest: data as unknown as KerberosSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -101,6 +105,14 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                 label=${msg("Enabled")}
             ></ak-switch-input>
             <ak-switch-input
+                name="promoted"
+                ?checked=${this.instance?.promoted ?? false}
+                label=${msg("Promoted")}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
                 name="passwordLoginUpdateInternalPassword"
                 ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
                 label=${msg("Update internal password on login")}
@@ -121,9 +133,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     "Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.",
                 )}
             ></ak-switch-input>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Realm settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Realm settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="realm"
                         label=${msg("Realm")}
@@ -213,9 +224,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Sync connection settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Sync connection settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("KAdmin type")}
                         required
@@ -253,7 +263,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-text-input
                         name="syncPassword"
                         label=${msg("Sync password")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                         )}
@@ -261,7 +271,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-textarea-input
                         name="syncKeytab"
                         label=${msg("Sync keytab")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
@@ -276,9 +286,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("SPNEGO settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("SPNEGO settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="spnegoServerName"
                         label=${msg("SPNEGO server name")}
@@ -290,7 +299,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-textarea-input
                         name="spnegoKeytab"
                         label=${msg("SPNEGO keytab")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
@@ -305,9 +314,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Kerberos Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Kerberos Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -344,9 +352,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="authenticationFlow"
@@ -377,9 +384,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Additional settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="userPathTemplate"
                         label=${msg("User path")}
@@ -388,52 +394,22 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         help=${placeholderHelperText}
                     ></ak-text-input>
                 </div>
-                ${this.can(CapabilitiesEnum.CanSaveMedia)
-                    ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                              <input type="file" value="" class="pf-c-form-control" />
-                              ${this.instance?.icon
-                                  ? html`
-                                        <p class="pf-c-form__helper-text">
-                                            ${msg("Currently set to:")} ${this.instance?.icon}
-                                        </p>
-                                    `
-                                  : html``}
-                          </ak-form-element-horizontal>
-                          ${this.instance?.icon
-                              ? html`
-                                    <ak-form-element-horizontal>
-                                        <label class="pf-c-switch">
-                                            <input
-                                                class="pf-c-switch__input"
-                                                type="checkbox"
-                                                @change=${(ev: Event) => {
-                                                    const target = ev.target as HTMLInputElement;
-                                                    this.clearIcon = target.checked;
-                                                }}
-                                            />
-                                            <span class="pf-c-switch__toggle">
-                                                <span class="pf-c-switch__toggle-icon">
-                                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                                </span>
-                                            </span>
-                                            <span class="pf-c-switch__label">
-                                                ${msg("Clear icon")}
-                                            </span>
-                                        </label>
-                                        <p class="pf-c-form__helper-text">
-                                            ${msg("Delete currently set icon.")}
-                                        </p>
-                                    </ak-form-element-horizontal>
-                                `
-                              : html``}`
-                    : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
-                          <input
-                              type="text"
-                              value="${this.instance?.icon ?? ""}"
-                              class="pf-c-form-control"
-                          />
-                          <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                      </ak-form-element-horizontal>`}
+                <ak-radio-input
+                    label=${msg("Outgoing sync trigger mode")}
+                    required
+                    name="type"
+                    .value=${this.instance?.syncOutgoingTriggerMode}
+                    .options=${createSyncOutgoingTriggerModeOptions}
+                >
+                </ak-radio-input>
+                <ak-file-search-input
+                    name="icon"
+                    label=${msg("Icon")}
+                    .value=${this.instance?.icon}
+                    .usage=${AdminFileListUsageEnum.Media}
+                    blankable
+                    help=${iconHelperText}
+                ></ak-file-search-input>
             </ak-form-group>`;
     }
 }

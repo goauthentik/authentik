@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
@@ -22,7 +23,7 @@ export function makeMicrosoftEntraPropertyMappingsSelector(
     instanceMappings: string[] | undefined,
     defaultSelection: string,
 ) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
+    const localMappings = instanceMappings ? new Set<string | number>(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
         : ([_0, _1, _2, scope]: DualSelectPair<ScopeMapping>) =>
