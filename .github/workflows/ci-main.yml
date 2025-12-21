@@ -267,7 +267,7 @@ jobs:
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: conformance-certification-${{ matrix.job.glob }}
+          name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
   ci-core-mark:
     if: always()
