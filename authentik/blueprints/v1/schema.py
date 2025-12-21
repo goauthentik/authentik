@@ -111,7 +111,7 @@ class SchemaBuilder:
                 try:
                     serializer_class = model_instance.serializer
                 except NotImplementedError as exc:
-                    raise NotImplementedError(model_instance) from exc
+                    raise ValueError(f"SerializerModel not implemented by {model}") from exc
             serializer = serializer_class(
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: False,
