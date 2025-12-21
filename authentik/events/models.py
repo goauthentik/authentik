@@ -8,6 +8,8 @@ from inspect import currentframe
 from typing import Any
 from uuid import uuid4
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
 from django.http import HttpRequest
@@ -41,6 +43,7 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
@@ -361,6 +364,15 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
         notification.save()
+        layer = get_channel_layer()
+        async_to_sync(layer.group_send)(
+            build_user_group(notification.user),
+            {
+                "type": "event.notification",
+                "id": str(notification.pk),
+                "data": notification.serializer(notification).data,
+            },
+        )
         return []
 
     def send_webhook(self, notification: "Notification") -> list[str]:
