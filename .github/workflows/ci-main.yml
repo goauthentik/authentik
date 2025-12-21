@@ -221,8 +221,8 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e
-  test-conformance:
-    name: test-conformance (${{ matrix.job.name }})
+  test-openid-conformance:
+    name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -278,7 +278,7 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
-      - test-conformance
+      - test-openid-conformance
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
