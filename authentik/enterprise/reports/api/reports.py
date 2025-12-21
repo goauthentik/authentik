@@ -10,18 +10,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
-from authentik.core.models import User
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.reports.models import DataExport
 from authentik.enterprise.reports.tasks import generate_export
 from authentik.rbac.permissions import HasPermission
-
-
-class RequestedBySerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("pk", "username")
 
 
 class ContentTypeSerializer(ModelSerializer):
@@ -38,7 +32,7 @@ class ContentTypeSerializer(ModelSerializer):
 
 
 class DataExportSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    requested_by = RequestedBySerializer(read_only=True)
+    requested_by = PartialUserSerializer(read_only=True)
     content_type = ContentTypeSerializer(read_only=True)
 
     class Meta:

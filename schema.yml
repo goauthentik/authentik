@@ -35742,7 +35742,7 @@ components:
           readOnly: true
         requested_by:
           allOf:
-          - $ref: '#/components/schemas/RequestedBy'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         requested_on:
           type: string
@@ -51256,22 +51256,6 @@ components:
           minimum: -2147483648
       required:
       - name
-    RequestedBy:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-      required:
-      - pk
-      - username
     ResidentKeyRequirementEnum:
       enum:
       - discouraged
