@@ -6,6 +6,7 @@ authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
   "ak-guardian==3.2.0",
+  "akql",
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
   "cryptography==45.0.5",
@@ -26,7 +27,6 @@ dependencies = [
   "django-prometheus==2.4.1",
   "django-storages[s3]==1.14.6",
   "django-tenants==3.9.0",
-  "djangoql==0.18.1",
   "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.7.3",
@@ -121,6 +121,7 @@ no-binary-package = [
 
 [tool.uv.sources]
 ak-guardian = { workspace = true }
+akql = { workspace = true }
 django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
 django-postgres-cache = { workspace = true }
@@ -129,6 +130,7 @@ opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc09
 [tool.uv.workspace]
 members = [
   "packages/ak-guardian",
+  "packages/akql",
   "packages/django-channels-postgres",
   "packages/django-dramatiq-postgres",
   "packages/django-postgres-cache",
