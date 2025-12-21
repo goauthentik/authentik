@@ -303,7 +303,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg("For more info see:")}
-                    <a href="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange"
+                    <a href="https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange"
                         >haveibeenpwned.com</a
                     >
                 </p>
