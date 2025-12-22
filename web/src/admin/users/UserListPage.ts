@@ -400,7 +400,7 @@ export class UserListPage extends WithBrandConfig(
                 }}
                 .exportParams=${async () => {
                     return {
-                        ...this.defaultEndpointConfig(),
+                        ...await this.defaultEndpointConfig(),
                         pathStartswith: this.activePath,
                         isActive: this.hideDeactivated ? true : undefined,
                     };
