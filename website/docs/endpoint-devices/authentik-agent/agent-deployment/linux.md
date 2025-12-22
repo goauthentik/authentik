@@ -7,7 +7,6 @@ tags: [authentik Agent, linux, deploy, packages]
 ## What it can do
 
 - Retrieves information about the host and reports it to authentik, see [Device Compliance](../../device-compliance/index.mdx).
-- Authorize Sudo elevation, see [Sudo authorization](../../device-authentication/sudo-authorization.md).
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 
