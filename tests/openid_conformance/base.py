@@ -1,4 +1,3 @@
-from json import dumps
 from os import makedirs
 from pathlib import Path
 from time import sleep
@@ -64,13 +63,13 @@ class TestOpenIDConformance(SeleniumTestCase):
             "client_registration": "static_client",
         }
 
-    def run_test(self, test_plan: str, test_plan_config: dict):
+    def run_test(self, test_name: str, test_plan_config: dict):
         # Create a Conformance instance...
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(
-            test_plan,
-            dumps(test_plan_config),
+            test_name,
+            test_plan_config,
             self.test_variant,
         )
         plan_id = test_plan["id"]
@@ -86,7 +85,7 @@ class TestOpenIDConformance(SeleniumTestCase):
                 self.run_single_test(module_id)
                 self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
             sleep(2)
-        self.conformance.exporthtml(plan_id, Path(__file__).parent / "exports")
+        self.conformance.export_html(plan_id, Path(__file__).parent / "exports")
 
     def run_single_test(self, module_id: str):
         """Process instructions for a single test, navigate to browser URLs and take screenshots"""
