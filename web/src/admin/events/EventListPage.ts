@@ -126,9 +126,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 .createExport=${async (params: EventsEventsExportCreateRequest) => {
                     return await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate(params);
                 }}
-                .exportParams=${async () => {
-                    return this.defaultEndpointConfig();
-                }}
+                .exportParams=${() => this.defaultEndpointConfig()}
             ></ak-reports-export-button>`;
     }
 }

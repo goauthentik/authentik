@@ -26,12 +26,10 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
     public createExport: ((params: { [key: string]: string }) => Promise<void>) | null = null;
 
     @property({ attribute: false })
-    public exportParams: () => Promise<{ [key: string]: string }> = async () => {
-        return {};
-    };
+    public exportParams: () => Promise<Record, string | undefined> = () => Promise.resolve({});
 
     @state()
-    params: { [key: string]: string } = {};
+    protected params: Record<string, string | undefined> = {};
 
     // safest display setting for a button
     cachedDisplay = "inline-block";
