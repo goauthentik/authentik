@@ -18,12 +18,12 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
 
-class MicrosoftEntraProviderUser(SerializerModel):
+class MicrosoftEntraProviderUser(InternallyManagedMixin, SerializerModel):
     """Mapping of a user and provider to a Microsoft user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -49,7 +49,7 @@ class MicrosoftEntraProviderUser(SerializerModel):
         return f"Microsoft Entra Provider User {self.user_id} to {self.provider_id}"
 
 
-class MicrosoftEntraProviderGroup(SerializerModel):
+class MicrosoftEntraProviderGroup(InternallyManagedMixin, SerializerModel):
     """Mapping of a group and provider to a Microsoft group ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)

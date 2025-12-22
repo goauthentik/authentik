@@ -211,4 +211,5 @@ source_docs/
 /vendor/
 
 ### Docker ###
+tests/openid_conformance/exports/*.zip
 compose.override.yml
