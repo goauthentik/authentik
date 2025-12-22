@@ -14,11 +14,15 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
+
 import { DataExport, ReportsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-data-export-list")
 export class DataExportListPage extends TablePage<DataExport> {
@@ -33,6 +37,8 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     @property({ type: String })
     public order = "-requested_on";
+
+    static styles = [...TablePage.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<DataExport>> {
         return new ReportsApi(DEFAULT_CONFIG).reportsExportsList(
@@ -91,7 +97,16 @@ export class DataExportListPage extends TablePage<DataExport> {
         return html` <dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-card__title">${msg("Query parameters")}</div>
             <div class="pf-c-card__body">
-                <code>${JSON.stringify(item.queryParams, null, 4)}</code>
+                ${renderDescriptionList(
+                    Object.keys(item.queryParams)
+                        .filter((key) => {
+                            return key !== "page" && key !== "pageSize";
+                        })
+                        .map((key): DescriptionPair => {
+                            return [key, html`<pre>${item.queryParams[key]}</pre>`];
+                        }),
+                    { horizontal: true, compact: true },
+                )}
             </div>
         </dl>`;
     }
