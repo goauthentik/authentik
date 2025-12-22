@@ -86,7 +86,9 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
                 </p>
                 <br />
                 ${renderDescriptionList(
-                    Object.keys(this.params).map((key): DescriptionPair => {
+                    Object.keys(this.params).filter(key => {
+                        return (key !== "page" && key !== "pageSize")
+                    }).map((key): DescriptionPair => {
                         return [key, html`<pre>${this.params[key]}</pre>`];
                     }),
                     { horizontal: true, compact: true },
