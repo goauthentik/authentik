@@ -14,6 +14,7 @@ import "#admin/stages/email/EmailStageForm";
 import "#admin/stages/identification/IdentificationStageForm";
 import "#admin/stages/invitation/InvitationStageForm";
 import "#admin/stages/mtls/MTLSStageForm";
+import "#admin/stages/endpoint/EndpointStageForm";
 import "#admin/stages/password/PasswordStageForm";
 import "#admin/stages/prompt/PromptStageForm";
 import "#admin/stages/redirect/RedirectStageForm";
@@ -101,7 +102,7 @@ export class StageWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
@@ -110,7 +111,7 @@ export class StageWizard extends AKElement {
                 ${this.showBindingPage
                     ? html`<ak-wizard-page-form
                           slot="create-binding"
-                          .sidebarLabel=${() => msg("Create Binding")}
+                          label=${msg("Create Binding")}
                           .activePageCallback=${async (context: FormWizardPage) => {
                               const createSlot = context.host.steps[1];
                               const bindingForm =

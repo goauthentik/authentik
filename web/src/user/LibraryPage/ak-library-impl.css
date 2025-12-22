@@ -3,7 +3,13 @@
     padding: 3% 5%;
 }
 
+.pf-c-page {
+    --pf-c-page--BackgroundColor: transparent;
+    --pf-c-page__main-section--BackgroundColor: transparent;
+}
+
 .pf-c-page__header {
+    --pf-c-page__header--BackgroundColor: transparent;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -16,7 +22,8 @@
         flex: 1 1 auto;
     }
 
-    .search-container {
+    search {
+        display: flex;
         flex: 0 0 36ch;
 
         @container (width < 650px) {
@@ -25,6 +32,10 @@
             &::part(search-input) {
                 font-size: var(--pf-global--FontSize--md);
             }
+        }
+
+        form {
+            flex: 1 1 auto;
         }
     }
 }
@@ -36,4 +47,33 @@
 .pf-c-page__main-section {
     background-color: transparent;
     padding-inline: 0;
+}
+
+input[name="application-search"] {
+    background-color: transparent;
+    display: block;
+    width: 100%;
+    font-size: var(--pf-global--FontSize--xl);
+
+    border-inline: none;
+    border-block-start: none;
+
+    &:focus,
+    &:hover {
+        --pf-c-form-control--BorderBottomColor: var(--ak-accent);
+    }
+
+    /**
+     * Despite the misleading name, this refers to the chevron appearing next to the
+     * search input, which we want to hide since it overlaps with the native search reset icon.
+     */
+    &::-webkit-calendar-picker-indicator,
+    &::-webkit-list-button {
+        display: none !important;
+        -webkit-appearance: none;
+    }
+
+    @media not (prefers-contrast: more) {
+        outline: none;
+    }
 }

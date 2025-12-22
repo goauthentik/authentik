@@ -205,6 +205,7 @@ class TestOAuthSource(APITestCase):
         session = self.client.session
         state = session[f"oauth-client-{self.source.name}-request-state"]
         verifier = session[SESSION_KEY_OAUTH_PKCE]
+        self.assertEqual(len(verifier), 128)
         challenge = pkce_s256_challenge(verifier)
 
         self.assertEqual(qs["redirect_uri"], ["http://testserver/source/oauth/callback/test/"])

@@ -9,7 +9,6 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.utils import sanitize_item
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT_MS
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
@@ -20,6 +19,7 @@ from authentik.lib.sync.outgoing.exceptions import (
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.reflection import class_to_path, path_to_class
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
@@ -44,10 +44,11 @@ class SyncTasks:
         **options,
     ):
         tasks = []
+        time_limit = timedelta_from_string(provider.sync_page_timeout).total_seconds() * 1000
         for page in paginator.page_range:
             page_sync = sync_objects.message_with_options(
                 args=(class_to_path(object_type), page, provider.pk),
-                time_limit=PAGE_TIMEOUT_MS,
+                time_limit=time_limit,
                 # Assign tasks to the same schedule as the current one
                 rel_obj=current_task.rel_obj,
                 uid=f"{provider.name}:{object_type._meta.model_name}:{page}",
@@ -139,7 +140,10 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return
-        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
+        paginator = Paginator(
+            provider.get_object_qs(_object_type).filter(**filter),
+            provider.sync_page_size,
+        )
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()

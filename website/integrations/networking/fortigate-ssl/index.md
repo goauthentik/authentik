@@ -51,8 +51,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
     - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps).
     - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`.
     - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`.
-    - Select your signing certificate.
-    - Under **Advanced Protocol Settings**:
+    - Under **Advanced protocol settings**:
         - Set **Signing certificate** to use any available certificate.
             - Enable both **Sign assertions** and **Sign responses**.
         - Set **Assertion valid not before** to `minutes=5`.

@@ -1,5 +1,6 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -7,12 +8,13 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
 import "#admin/common/ak-license-notice";
+import "#components/ak-number-input";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-text-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { CodeMirrorMode } from "#elements/CodeMirror";
 
 import {
     CompatibilityModeEnum,
@@ -45,7 +47,7 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: Valida
     ></ak-hidden-text-input>`;
 }
 
-export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
+export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
     return html`<ak-form-element-horizontal label=${msg("OAuth Source")} name="authOauth">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<OAuthSource[]> => {
@@ -75,10 +77,7 @@ export function renderAuthOAuth(provider?: Partial<SCIMProvider>, errors: Valida
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal label=${msg("OAuth Parameters")} name="authOauthParams">
-            <ak-codemirror
-                mode=${CodeMirrorMode.YAML}
-                value="${YAML.stringify(provider?.authOauthParams ?? {})}"
-            >
+            <ak-codemirror mode="yaml" value="${YAML.stringify(provider?.authOauthParams ?? {})}">
             </ak-codemirror>
             <p class="pf-c-form__helper-text">
                 ${msg("Additional OAuth parameters, such as grant_type.")}
@@ -107,7 +106,9 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
         <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
@@ -200,26 +201,29 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}
                 ></ak-radio-input>
-                <ak-form-element-horizontal name="dryRun">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${provider.dryRun ?? false}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
-                    </label>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "When enabled, mutating requests will be dropped and logged instead.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                <ak-text-input
+                    name="serviceProviderConfigCacheTimeout"
+                    label=${msg("Service Provider Config cache timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.serviceProviderConfigCacheTimeout ?? "hours=1"}"
+                    .errorMessages=${errors.service_provider_config_cache_timeout}
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
+                <ak-switch-input
+                    name="dryRun"
+                    label=${msg("Enable dry-run mode")}
+                    ?checked=${provider.dryRun ?? false}
+                    help=${msg(
+                        "When enabled, mutating requests will be dropped and logged instead.",
+                    )}
+                ></ak-switch-input>
             </div>
         </ak-form-group>
         <ak-form-group open label="${msg("User filtering")}">
@@ -299,6 +303,30 @@ export function renderForm({ provider = {}, errors = {}, update }: SCIMProviderF
                         ${msg("Property mappings used to group creation.")}
                     </p>
                 </ak-form-element-horizontal>
+            </div>
+        </ak-form-group>
+
+        <ak-form-group label="${msg("Sync settings")}">
+            <div class="pf-c-form">
+                <ak-number-input
+                    label=${msg("Page size")}
+                    required
+                    name="pageSize"
+                    value="${provider.syncPageSize ?? 100}"
+                    help=${msg("Controls the number of objects synced in a single task.")}
+                ></ak-number-input>
+                <ak-text-input
+                    name="syncPageTimeout"
+                    label=${msg("Page timeout")}
+                    input-hint="code"
+                    required
+                    value="${provider.syncPageTimeout ?? "minutes=30"}"
+                    .bighelp=${html`<p class="pf-c-form__helper-text">
+                            ${msg("Timeout for synchronization of a single page.")}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
             </div>
         </ak-form-group>
     `;

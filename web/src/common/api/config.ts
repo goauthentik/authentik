@@ -5,19 +5,24 @@ import {
     LoggingMiddleware,
     RedirectOnForbiddenMiddleware,
 } from "#common/api/middleware";
-import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { globalAK } from "#common/global";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
+import { Configuration, CurrentBrand } from "@goauthentik/api";
 
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
-export function config(): Promise<Config> {
-    if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
-    }
-    return globalConfigPromise;
-}
+const { locale, api, brand } = globalAK();
+
+export const DEFAULT_CONFIG = new Configuration({
+    basePath: `${api.base}api/v3`,
+    middleware: [
+        new CSRFMiddleware(),
+        new EventMiddleware(),
+        new LoggingMiddleware(brand),
+        new SentryMiddleware(),
+        new LocaleMiddleware(locale),
+        new RedirectOnForbiddenMiddleware(),
+    ],
+});
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
@@ -35,46 +40,6 @@ export function brandSetFavicon(brand: CurrentBrand) {
         relIcon.href = brand.brandingFavicon;
     });
 }
-
-export function brandSetLocale(brand: CurrentBrand) {
-    if (brand.defaultLocale === "") {
-        return;
-    }
-    console.debug("authentik/locale: setting locale from brand default");
-    window.dispatchEvent(
-        new CustomEvent(EVENT_LOCALE_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail: { locale: brand.defaultLocale },
-        }),
-    );
-}
-
-let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
-export function brand(): Promise<CurrentBrand> {
-    if (!globalBrandPromise) {
-        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreBrandsCurrentRetrieve()
-            .then((brand) => {
-                brandSetFavicon(brand);
-                brandSetLocale(brand);
-                return brand;
-            });
-    }
-    return globalBrandPromise;
-}
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-        new SentryMiddleware(),
-        new LocaleMiddleware(),
-        new RedirectOnForbiddenMiddleware(),
-    ],
-});
 
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or

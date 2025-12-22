@@ -12,6 +12,7 @@ import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
 
 import { useSyntheticTitle } from "#hooks/title.ts";
+import { PreReleaseAdmonition } from "#theme/DocItem/Content/PreReleaseAdmonition.tsx";
 
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";
@@ -87,6 +88,8 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         authentik_preview,
     } = frontMatter;
 
+    const preReleaseDoc = frontMatter.beta && metadata.id.startsWith("releases");
+
     useBadgeLinterEffect();
 
     const badges: JSX.Element[] = [];
@@ -128,6 +131,8 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
                     <BadgeGroup badges={badges} />
                 </header>
             ) : null}
+
+            {preReleaseDoc ? <PreReleaseAdmonition /> : null}
 
             <MDXContent>{children}</MDXContent>
         </div>

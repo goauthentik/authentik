@@ -39,7 +39,7 @@ To support the integration of NetBird with authentik, you need to create an appl
         - Add a `Strict` redirect: `http://localhost:53000`.
         - Add a `Regex` redirect: `https://<netbird.company>/.*`.
         - Select any available signing key.
-    - Under **Advanced Protocol Settings**:
+    - Under **Advanced protocol settings**:
         - Set **Access Code Validity** to `minutes=10`.
         - Set **Subject Mode** to be `Based on the User's ID`.
         - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes to **Selected Scopes**.

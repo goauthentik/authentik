@@ -25,8 +25,8 @@ from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.email import mask_email
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
@@ -152,11 +152,17 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
     return device
 
 
-def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -> Device:
+def validate_challenge_webauthn(
+    data: dict,
+    stage_view: StageView,
+    user: User,
+    stage: AuthenticatorValidateStage | None = None,
+) -> Device:
     """Validate WebAuthn Challenge"""
     request = stage_view.request
     challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
-    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+    stage = stage or stage_view.executor.current_stage
+
     if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
         # Workaround for Android sign-in, when signing into Google Workspace on android while
         # adding the account to the system (not in Chrome), for some reason `type` is not set
@@ -233,9 +239,9 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
     pushinfo = {
         __("Domain"): stage_view.request.get_host(),
     }
-    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
-        pushinfo[__("Application")] = stage_view.request.session.get(
-            SESSION_KEY_APPLICATION_PRE, Application()
+    if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
+        pushinfo[__("Application")] = stage_view.executor.plan.context.get(
+            PLAN_CONTEXT_APPLICATION, Application()
         ).name
 
     try:

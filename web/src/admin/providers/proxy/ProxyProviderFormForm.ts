@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-toggle-group";
@@ -86,22 +87,26 @@ function renderProxySettings(provider: Partial<ProxyProvider> = {}, errors: Vali
         <ak-text-input
             name="externalHost"
             label=${msg("External host")}
+            input-hint="code"
+            input-mode="url"
+            placeholder=${msg("https://...")}
             value="${ifDefined(provider.externalHost)}"
             required
             .errorMessages=${errors.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
-            input-hint="code"
         ></ak-text-input>
         <ak-text-input
             name="internalHost"
             label=${msg("Internal host")}
+            input-hint="code"
+            input-mode="url"
+            placeholder=${msg("http(s)://...")}
             value="${ifDefined(provider.internalHost)}"
             required
             .errorMessages=${errors.internalHost}
             help=${msg("Upstream host that the requests are forwarded to.")}
-            input-hint="code"
         ></ak-text-input>
 
         <ak-switch-input
@@ -125,13 +130,15 @@ function renderForwardSingleSettings(
         <ak-text-input
             name="externalHost"
             label=${msg("External host")}
+            input-hint="code"
+            input-mode="url"
+            placeholder=${msg("https://...")}
             value="${ifDefined(provider.externalHost)}"
             required
             .errorMessages=${errors.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
-            input-hint="code"
         ></ak-text-input>`;
 }
 
@@ -158,6 +165,9 @@ function renderForwardDomainSettings(
         <ak-text-input
             name="externalHost"
             label=${msg("Authentication URL")}
+            input-hint="code"
+            input-mode="url"
+            placeholder=${msg("https://...")}
             value="${provider.externalHost ?? window.location.origin}"
             required
             .errorMessages=${errors.externalHost}
@@ -168,6 +178,8 @@ function renderForwardDomainSettings(
 
         <ak-text-input
             label=${msg("Cookie domain")}
+            input-hint="code"
+            placeholder=${msg("domain.tld")}
             name="cookieDomain"
             value="${ifDefined(provider.cookieDomain)}"
             required
@@ -203,7 +215,9 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
         <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Type a provider name...")}
+            spellcheck="false"
             .errorMessages=${errors.name}
             required
         ></ak-text-input>

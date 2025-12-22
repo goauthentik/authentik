@@ -1,7 +1,9 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { LOCALES } from "#elements/ak-locale-context/definitions";
+import { formatLocaleOptions, PseudoLocale } from "#common/ui/locale/definitions";
+import { getBestMatchLocale } from "#common/ui/locale/utils";
+
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
 import { AKFormErrors } from "#components/ak-field-errors";
@@ -30,6 +32,9 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+// Fixes horizontal rule <hr> warning in select dropdowns.
+/* eslint-disable lit/no-invalid-html */
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
@@ -214,27 +219,38 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const locales = this.can(CapabilitiesEnum.CanDebug)
-                    ? LOCALES
-                    : LOCALES.filter((locale) => locale.code !== "debug");
-                const options = locales.map(
-                    (locale) =>
-                        html`<option
-                            value=${locale.code}
-                            ?selected=${locale.code === prompt.initialValue}
-                        >
-                            ${locale.code.toUpperCase()} - ${locale.label()}
-                        </option> `,
+                let localeOptions = formatLocaleOptions();
+                const selected = prompt.initialValue
+                    ? getBestMatchLocale(prompt.initialValue)
+                    : null;
+
+                if (!this.can(CapabilitiesEnum.CanDebug)) {
+                    localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
+                }
+
+                const options = localeOptions.map(
+                    ([label, code]) =>
+                        html`<option value=${code} ?selected=${code === selected}>
+                            ${label}
+                        </option>`,
                 );
 
                 return html`<select
                     class="pf-c-form-control"
                     id=${fieldId}
                     name="${prompt.fieldKey}"
+                    aria-label=${msg("Select language", {
+                        id: "language-selector-label",
+                        desc: "Label for the language selection dropdown",
+                    })}
                 >
-                    <option value="" ?selected=${prompt.initialValue === ""}>
-                        ${msg("Auto-detect (based on your browser)")}
+                    <option value="" ?selected=${!selected}>
+                        ${msg("Auto-detect", {
+                            id: "locale-auto-detect-option",
+                            desc: "Label for the auto-detect locale option in language selection dropdown",
+                        })}
                     </option>
+                    <hr />
                     ${options}
                 </select>`;
             }
@@ -300,7 +316,7 @@ ${prompt.initialValue}</textarea
     renderContinue(): TemplateResult {
         return html`<fieldset class="pf-c-form__group pf-m-action">
             <legend class="sr-only">${msg("Form actions")}</legend>
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+            <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>
         </fieldset>`;

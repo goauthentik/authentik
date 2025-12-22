@@ -40,7 +40,7 @@ To support the integration of HashiCorp Cloud with authentik, you need to create
         - Set the **ACS URL** to the value of `SSO Sign-On URL` in the **HashiCorp Cloud preparation** section.
         - Set the **Issuer** and **Audience** to the value of `Entity ID` in the **HashiCorp Cloud preparation** section.
         - Set the **Service Provider Binding** to `Post`.
-        - Under **Advanced protocol settings**, select an available signing certificate.
+        - Under **Advanced protocol settings**, select an available **Signing certificate**.
 3. Click **Submit** to save the new application and provider.
 
 ## HashiCorp Cloud configuration

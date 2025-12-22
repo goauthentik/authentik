@@ -144,6 +144,50 @@ make integrations-watch
 
 Starts a local development server for the integrations site and opens a preview in your browser. This command will automatically rebuild your local integrations site in real time, as you write or make changes to the Markdown files in the `website/integrations` directory.
 
+## Developing the glossary
+
+The [authentik glossary](/core/glossary/) provides definitions for both industry-standard terms (like LDAP, OAuth2, SAML) and authentik-specific concepts (like Flows, Stages, Blueprints).
+
+### Adding a new glossary term
+
+1. Create a new `.mdx` file in `website/docs/core/glossary/terms/` (e.g., `my-term.mdx`).
+
+2. Add frontmatter with the required metadata:
+
+```mdx
+---
+title: My Term
+sidebar_custom_props:
+    termName: My Term
+    tags:
+        - Category Name
+    isAuthentikSpecific: true # Only for authentik-specific terms
+    shortDescription: Brief one-line description.
+    longDescription: Detailed explanation with context, use cases, and examples.
+---
+```
+
+### Glossary metadata fields
+
+- **`termName`** (required): The display name of the term
+- **`tags`** (required): Array of category tags for organizing terms. Common tags include:
+    - Core Concepts
+    - Flows
+    - OAuth2/OIDC
+    - SAML
+    - Directory
+    - Configuration
+    - Protocols
+- **`isAuthentikSpecific`** (optional): Set to `true` for authentik-specific terms. This displays an "authentik specific" badge next to the term name to distinguish it from industry-standard terminology. Omit this field for industry-standard terms.
+- **`shortDescription`** (required): Concise one-line summary displayed in the main glossary view
+- **`longDescription`** (optional): Detailed explanation shown when users expand the term
+
+### Formatting guidelines
+
+- Use backticks for inline code: \`application\`
+- Keep `shortDescription` to one sentence
+- In `longDescription`, you can use multiple paragraphs separated by blank lines
+
 ## Page routing and URLs
 
 Every documentation page you see on our website starts as a simple Markdown file in our repository. When you create or edit these files, our build system automatically transforms them into web pages with predictable URLs.

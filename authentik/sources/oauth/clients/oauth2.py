@@ -143,7 +143,7 @@ class OAuth2Client(BaseOAuthClient):
         if self.source.source_type.urls_customizable and self.source.pkce:
             pkce_mode = self.source.pkce
         if pkce_mode != PKCEMethod.NONE:
-            verifier = generate_id()
+            verifier = generate_id(length=128)
             self.request.session[SESSION_KEY_OAUTH_PKCE] = verifier
             # https://datatracker.ietf.org/doc/html/rfc7636#section-4.2
             if pkce_mode == PKCEMethod.PLAIN:

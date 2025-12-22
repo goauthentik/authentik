@@ -66,6 +66,7 @@ type Server interface {
 	API() *ak.APIController
 	Apps() []*Application
 	CryptoStore() *ak.CryptoStore
+	SessionBackend() string
 }
 
 func init() {
@@ -94,10 +95,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
-	isEmbedded := false
-	if m := server.API().Outpost.Managed.Get(); m != nil {
-		isEmbedded = *m == "goauthentik.io/outposts/embedded"
-	}
+	isEmbedded := server.API().IsEmbedded()
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
@@ -153,6 +151,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	go a.authHeaderCache.Start()
 	if oldApp != nil && oldApp.sessions != nil {
 		a.sessions = oldApp.sessions
+		muxLogger.Debug("reusing existing session store")
 	} else {
 		sess, err := a.getStore(p, externalHost)
 		if err != nil {
@@ -161,7 +160,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		a.sessions = sess
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		c := a.getClaimsFromSession(r)
+		c := a.getClaimsFromSession(nil, r)
 		if c == nil {
 			return l
 		}
@@ -172,7 +171,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c := a.getClaimsFromSession(r)
+			c := a.getClaimsFromSession(nil, r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername

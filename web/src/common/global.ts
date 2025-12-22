@@ -1,3 +1,6 @@
+import { TargetLocale } from "#common/ui/locale/definitions";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
+
 import {
     Config,
     ConfigFromJSON,
@@ -6,9 +9,11 @@ import {
     FlowLayoutEnum,
 } from "@goauthentik/api";
 
+const convertedSymbol = Symbol("ak-converted");
+
 export interface GlobalAuthentik {
-    _converted?: boolean;
-    locale?: string;
+    [convertedSymbol]?: boolean;
+    locale: TargetLocale;
     flow?: {
         layout: FlowLayoutEnum;
     };
@@ -29,14 +34,12 @@ export interface AuthentikWindow {
 
 export function globalAK(): GlobalAuthentik {
     const ak = (window as unknown as AuthentikWindow).authentik;
-    if (ak && !ak._converted) {
-        ak._converted = true;
-        ak.brand = CurrentBrandFromJSON(ak.brand);
-        ak.config = ConfigFromJSON(ak.config);
-    }
-    const apiBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
+
     if (!ak) {
+        const apiBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
+
         return {
+            locale: autoDetectLanguage(),
             config: ConfigFromJSON({
                 capabilities: [],
             }),
@@ -52,6 +55,15 @@ export function globalAK(): GlobalAuthentik {
             },
         };
     }
+
+    if (!ak[convertedSymbol]) {
+        ak.locale = autoDetectLanguage(ak.locale);
+        ak.brand = CurrentBrandFromJSON(ak.brand);
+        ak.config = ConfigFromJSON(ak.config);
+
+        ak[convertedSymbol] = true;
+    }
+
     return ak;
 }
 

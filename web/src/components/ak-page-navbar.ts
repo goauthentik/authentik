@@ -3,15 +3,13 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { getConfigForUser, UIConfig, UserDisplay } from "#common/ui/config";
-import { me } from "#common/users";
+import { UserDisplay } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
-import { themeImage } from "#elements/utils/images";
-
-import { SessionUser } from "@goauthentik/api";
+import { renderImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -25,6 +23,30 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+export class PageDetailsUpdate extends Event {
+    static readonly eventName = "ak-page-details-update";
+    header: PageHeaderInit;
+
+    constructor(header: PageHeaderInit) {
+        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
+        this.header = header;
+    }
+}
+
+export class PageNavMenuToggle extends Event {
+    static readonly eventName = "ak-page-nav-menu-toggle";
+    open: boolean;
+
+    constructor(open?: boolean) {
+        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
+        this.open = !!open;
+    }
+}
+
+export function setPageDetails(header: PageHeaderInit) {
+    window.dispatchEvent(new PageDetailsUpdate(header));
+}
 
 export interface PageHeaderInit {
     header?: string | null;
@@ -40,7 +62,10 @@ export interface PageHeaderInit {
  * dispatched by the `ak-page-header` component.
  */
 @customElement("ak-page-navbar")
-export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHeaderInit {
+export class AKPageNavbar
+    extends WithBrandConfig(WithSession(AKElement))
+    implements PageHeaderInit
+{
     //#region Static Properties
 
     static styles: CSSResult[] = [
@@ -57,27 +82,30 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
             :host {
                 position: sticky;
                 top: 0;
-                z-index: var(--pf-global--ZIndex--lg);
+                z-index: var(--pf-c-page__header--ZIndex);
                 --pf-c-page__header-tools--MarginRight: 0;
                 --ak-brand-logo-height: var(--pf-global--FontSize--4xl, 2.25rem);
-                --ak-brand-background-color: var(--pf-c-page__sidebar--m-light--BackgroundColor);
+                --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
                 --host-navbar-height: var(--ak-c-page-header--height, 7.5rem);
             }
 
             :host([theme="dark"]) {
                 --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
-                --pf-c-page__sidebar--BackgroundColor: var(--ak-dark-background-light);
-                color: var(--ak-dark-foreground);
+
+                .sidebar-trigger,
+                .notification-trigger {
+                    background-color: transparent !important;
+                }
             }
 
             .main-content {
-                border-bottom: var(--pf-global--BorderWidth--sm);
+                border-bottom-width: 0.5px;
                 border-bottom-style: solid;
                 border-bottom-color: var(--pf-global--BorderColor--100);
-                background-color: var(--pf-c-page--BackgroundColor);
-
+                background-color: var(--pf-c-page__main-nav--BackgroundColor);
                 display: flex;
                 flex-direction: row;
+                box-shadow: var(--pf-global--BoxShadow--sm-bottom);
 
                 display: grid;
                 column-gap: var(--pf-global--spacer--sm);
@@ -207,6 +235,12 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
                 & img {
                     height: 100%;
                 }
+
+                & i {
+                    font-size: var(--ak-brand-logo-height);
+                    height: var(--ak-brand-logo-height);
+                    line-height: var(--ak-brand-logo-height);
+                }
             }
 
             .sidebar-trigger,
@@ -257,12 +291,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
 
     @property({ type: Boolean, reflect: true })
     public open?: boolean;
-
-    @state()
-    protected session?: SessionUser;
-
-    @state()
-    protected uiConfig!: UIConfig;
 
     //#endregion
 
@@ -320,8 +348,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     }
 
     public async firstUpdated() {
-        this.session = await me();
-        this.uiConfig = getConfigForUser(this.session.user);
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
@@ -359,11 +385,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
-                            <img
-                                src=${themeImage(this.brandingLogo)}
-                                alt="${msg("authentik Logo")}"
-                                loading="lazy"
-                            />
+                            ${renderImage(this.brandingLogo, msg("authentik Logo"), "")}
                         </div>
                     </a>
                 </aside>
@@ -398,7 +420,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
-                        <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
+                        <ak-nav-buttons>
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
@@ -413,30 +435,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     }
 
     //#endregion
-}
-
-export class PageDetailsUpdate extends Event {
-    static readonly eventName = "ak-page-details-update";
-    header: PageHeaderInit;
-
-    constructor(header: PageHeaderInit) {
-        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
-        this.header = header;
-    }
-}
-
-export class PageNavMenuToggle extends Event {
-    static readonly eventName = "ak-page-nav-menu-toggle";
-    open: boolean;
-
-    constructor(open?: boolean) {
-        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
-        this.open = !!open;
-    }
-}
-
-export function setPageDetails(header: PageHeaderInit) {
-    window.dispatchEvent(new PageDetailsUpdate(header));
 }
 
 declare global {

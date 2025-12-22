@@ -25,15 +25,15 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create a Proxy Provider with the following values
+Create a Proxy Provider with the following values:
 
-- Internal host
+- **Internal host**
 
     If Sonarr is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://sonarr:8989`, where sonarr is the name of your container.
 
     If Sonarr is running on a different server than where you are deploying the authentik proxy, set the value to `http://sonarr.company:8989`.
 
-- External host
+- **External host**
 
     Set this to the external URL you will be accessing Sonarr from.
 
@@ -62,4 +62,18 @@ Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and 
 
 ## Reverse Proxy Setup
 
-Finally, in your reverse proxy setup for Sonarr, replace the current value with your Authentik Server
+Finally, in your reverse proxy setup for Sonarr, replace the current value for the proxied server (e.g. proxy_pass in nginx) with your authentik outpost proxy provider address.
+
+```mermaid
+architecture-beta
+    service client(server)[Client]
+    service revprox(server)[Reverse Proxy]
+    service outpost(server)[Outpost]
+    service sonarr(server)[Sonarr]
+    service auth(server)[authentik]
+
+    client:R -- L:revprox
+    revprox:R -- L:outpost
+    outpost:R -- L:sonarr
+    outpost:T -- B:auth
+```

@@ -12,12 +12,13 @@ import { actionToLabel } from "#common/labels";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import Styles from "#admin/admin-overview/cards/RecentEventsCard.css";
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -42,15 +43,10 @@ export class RecentEventsCard extends Table<Event> {
     }
 
     static styles: CSSResult[] = [
+        // ---
         ...super.styles,
         PFCard,
-        css`
-            .pf-c-card__title {
-                --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
-                --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-            }
-        `,
+        Styles,
     ];
 
     protected override rowLabel(item: Event): string {

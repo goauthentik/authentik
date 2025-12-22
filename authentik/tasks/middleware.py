@@ -23,6 +23,7 @@ from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
+from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
@@ -30,6 +31,14 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
 DB_ERRORS = (OperationalError, Error)
+
+
+class StartupSignalsMiddleware(Middleware):
+    def after_process_boot(self, broker: Broker):
+        _startup_sender = type("WorkerStartup", (object,), {})
+        pre_startup.send(sender=_startup_sender)
+        startup.send(sender=_startup_sender)
+        post_startup.send(sender=_startup_sender)
 
 
 class CurrentTask(BaseCurrentTask):
@@ -236,7 +245,10 @@ class WorkerStatusMiddleware(Middleware):
                 WorkerStatusMiddleware.keep(status)
             except DB_ERRORS:  # pragma: no cover
                 sleep(10)
-                pass
+                try:
+                    connections.close_all()
+                except DB_ERRORS:
+                    pass
 
     @staticmethod
     def keep(status: WorkerStatus):

@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-hidden-text-input";
@@ -22,6 +23,8 @@ import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { RadioOption } from "#elements/forms/Radio";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { AKLabel } from "#components/ak-label";
 
 import {
     ClientTypeEnum,
@@ -149,19 +152,27 @@ export function renderForm({
 }: OAuth2ProviderFormProps) {
     return html` <ak-text-input
             name="name"
-            placeholder=${msg("Provider name...")}
+            placeholder=${msg("Type a provider name...")}
+            autocomplete="off"
             label=${msg("Provider Name")}
             value=${ifDefined(provider.name)}
             .errorMessages=${errors.name}
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal
-            name="authorizationFlow"
-            label=${msg("Authorization flow")}
-            required
-        >
+        <ak-form-element-horizontal name="authorizationFlow" required>
+            ${AKLabel(
+                {
+                    className: "pf-c-form__group-label",
+                    slot: "label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization flow"),
+            )}
+
             <ak-flow-search
+                id="authorizationFlow"
                 label=${msg("Authorization flow")}
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -231,7 +242,8 @@ export function renderForm({
                     name="logoutUri"
                     value="${provider?.logoutUri ?? ""}"
                     input-hint="code"
-                    placeholder="https://..."
+                    inputmode="url"
+                    placeholder=${msg("https://...")}
                     .help=${msg(
                         "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
                     )}
@@ -264,15 +276,6 @@ export function renderForm({
                         singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
-                    <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
-                    <ak-crypto-certificate-search
-                        label=${msg("Encryption Key")}
-                        placeholder=${msg("Select an encryption key...")}
-                        certificate=${ifPresent(provider.encryptionKey)}
-                    ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
@@ -382,6 +385,23 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
+                    <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
+                    <ak-crypto-certificate-search
+                        label=${msg("Encryption Key")}
+                        placeholder=${msg("Select an encryption key...")}
+                        certificate=${ifPresent(provider.encryptionKey)}
+                    ></ak-crypto-certificate-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.",
+                        )}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("authentik only supports RSA-OAEP-256 for encryption.")}
+                    </p>
+                </ak-form-element-horizontal>
+
                 <ak-radio-input
                     name="subMode"
                     label=${msg("Subject mode")}

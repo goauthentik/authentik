@@ -49,6 +49,9 @@ def outpost_m2m_changed(sender, instance: Outpost | Provider, action: str, **_):
     if action not in ["post_add", "post_remove", "post_clear"]:
         return
     if isinstance(instance, Outpost):
+        # Rebuild permissions when providers change
+        LOGGER.debug("Rebuilding outpost service account permissions", outpost=instance)
+        instance.build_user_permissions(instance.user)
         outpost_controller.send_with_options(
             args=(instance.pk,),
             rel_obj=instance.service_connection,
@@ -92,6 +95,15 @@ def outpost_post_save(sender, instance: Outpost, created: bool, **_):
 
 def outpost_related_post_save(sender, instance: OutpostServiceConnection | OutpostModel, **_):
     for outpost in instance.outpost_set.all():
+        # Rebuild permissions in case provider's required objects changed
+        if isinstance(instance, OutpostModel):
+            LOGGER.info(
+                "Provider changed, rebuilding permissions and sending update",
+                outpost=outpost.name,
+                provider=instance.name if hasattr(instance, "name") else str(instance),
+            )
+            outpost.build_user_permissions(outpost.user)
+        LOGGER.debug("Sending update to outpost", outpost=outpost.name, trigger="provider_change")
         outpost_send_update.send_with_options(
             args=(outpost.pk,),
             rel_obj=outpost,

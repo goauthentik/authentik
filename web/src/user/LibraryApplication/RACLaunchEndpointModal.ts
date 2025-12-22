@@ -15,16 +15,15 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
     protected override searchEnabled = true;
 
-    clickHandler = (item: Endpoint) => {
+    protected override rowClickListener(item: Endpoint, event?: InputEvent | PointerEvent) {
         if (!item.launchUrl) {
-            return;
+            return super.rowClickListener(item, event);
         }
-        if (this.app?.openInNewTab) {
-            window.open(item.launchUrl);
-        } else {
-            window.location.assign(item.launchUrl);
-        }
-    };
+
+        const target = this.app?.openInNewTab ? `ak-rac-endpoint-${item.name}` : "_self";
+
+        window.open(item.launchUrl, target);
+    }
 
     @property({ attribute: false })
     app?: Application;
@@ -35,7 +34,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
             provider: this.app?.provider || 0,
         });
         if (this.open && endpoints.pagination.count === 1) {
-            this.clickHandler(endpoints.results[0]);
+            this.rowClickListener(endpoints.results[0]);
             this.open = false;
         }
         return endpoints;

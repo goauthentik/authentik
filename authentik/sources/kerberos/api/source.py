@@ -44,6 +44,7 @@ class KerberosSourceSerializer(SourceSerializer):
             "spnego_keytab",
             "spnego_ccache",
             "password_login_update_internal_password",
+            "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {
             "sync_password": {"write_only": True},

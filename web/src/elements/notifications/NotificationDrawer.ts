@@ -2,19 +2,26 @@ import "#elements/EmptyState";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "#common/constants";
+import {
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_REFRESH,
+    EVENT_WS_MESSAGE,
+    WS_MSG_TYPE_NOTIFICATION,
+} from "#common/constants";
 import { globalAK } from "#common/global";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
 import { formatElapsedTime } from "#common/temporal";
-import { me } from "#common/users";
+import { isGuest } from "#common/users";
+import { WSMessage } from "#common/ws";
 
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { WithSession } from "#elements/mixins/session";
 import { PaginatedResponse } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { EventsApi, Notification } from "@goauthentik/api";
+import { EventsApi, Notification, NotificationFromJSON } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -27,7 +34,7 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-notification-drawer")
-export class NotificationDrawer extends AKElement {
+export class NotificationDrawer extends WithSession(AKElement) {
     @property({ attribute: false })
     notifications?: PaginatedResponse<Notification>;
 
@@ -63,19 +70,70 @@ export class NotificationDrawer extends AKElement {
         `,
     ];
 
-    firstUpdated(): void {
-        me().then((user) => {
-            new EventsApi(DEFAULT_CONFIG)
-                .eventsNotificationsList({
-                    seen: false,
-                    ordering: "-created",
-                    user: user.user.pk,
-                })
-                .then((r) => {
-                    this.notifications = r;
-                    this.unread = r.results.length;
-                });
+    #onWSMessage = (
+        e: CustomEvent<
+            WSMessage & {
+                data: unknown;
+            }
+        >,
+    ) => {
+        if (e.detail.message_type !== WS_MSG_TYPE_NOTIFICATION) {
+            return;
+        }
+        const notification = NotificationFromJSON(e.detail.data);
+        showMessage({
+            level: MessageLevel.info,
+            message: actionToLabel(notification.event?.action) ?? notification.body,
+            description: html`${notification.body}
+            ${notification.hyperlink
+                ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
+                : nothing}
+            ${notification.event
+                ? html`<br /><a href="#/events/log/${notification.event.pk}"
+                          >${msg("View details...")}</a
+                      >`
+                : nothing}`,
         });
+    };
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.refreshNotifications();
+        this.#onWSMessage = this.#onWSMessage.bind(this);
+        window.addEventListener(EVENT_WS_MESSAGE, this.#onWSMessage as EventListener);
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWSMessage as EventListener);
+    }
+
+    protected async refreshNotifications(): Promise<void> {
+        const { currentUser } = this;
+
+        if (!currentUser || isGuest(currentUser)) {
+            return Promise.resolve();
+        }
+
+        return new EventsApi(DEFAULT_CONFIG)
+            .eventsNotificationsList({
+                seen: false,
+                ordering: "-created",
+                user: currentUser.pk,
+            })
+            .then((r) => {
+                this.notifications = r;
+                this.unread = r.results.length;
+                this.requestUpdate();
+            });
+    }
+
+    protected renderHyperlink(item: Notification) {
+        if (!item.hyperlink) {
+            return nothing;
+        }
+
+        return html`<small><a href=${item.hyperlink}>${item.hyperlinkLabel}</a></small>`;
     }
 
     #renderItem = (item: Notification): TemplateResult => {
@@ -114,7 +172,7 @@ export class NotificationDrawer extends AKElement {
                                 },
                             })
                             .then(() => {
-                                this.firstUpdated();
+                                this.refreshNotifications();
                                 this.dispatchEvent(
                                     new CustomEvent(EVENT_REFRESH, {
                                         bubbles: true,
@@ -134,6 +192,7 @@ export class NotificationDrawer extends AKElement {
                     ${formatElapsedTime(item.created!)}
                 </pf-tooltip></small
             >
+            ${this.renderHyperlink(item)}
         </li>`;
     };
 
@@ -143,7 +202,7 @@ export class NotificationDrawer extends AKElement {
                 level: MessageLevel.success,
                 message: msg("Successfully cleared notifications"),
             });
-            this.firstUpdated();
+            this.refreshNotifications();
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,

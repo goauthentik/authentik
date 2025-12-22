@@ -1,0 +1,15 @@
+.pf-c-card {
+    container-type: inline-size;
+}
+
+.pf-c-card__title {
+    @container (width < 200px) {
+        font-size: var(--pf-global--FontSize--sm);
+    }
+}
+
+.status-container {
+    @container (width < 200px) {
+        font-size: var(--pf-global--icon--FontSize--md);
+    }
+}

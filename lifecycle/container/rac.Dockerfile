@@ -1,0 +1,68 @@
+# syntax=docker/dockerfile:1
+
+# Stage 1: Build
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25.5-trixie@sha256:8e8f9c84609b6005af0a4a8227cee53d6226aab1c6dcb22daf5aeeb8b05480e1 AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ARG GOOS=$TARGETOS
+ARG GOARCH=$TARGETARCH
+
+WORKDIR /go/src/goauthentik.io
+
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    dpkg --add-architecture arm64 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
+
+RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
+    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
+    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
+    --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
+COPY . .
+RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
+    --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
+    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
+    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
+    go build -o /go/rac ./cmd/rac
+
+# Stage 2: Run
+FROM ghcr.io/goauthentik/guacd:v1.6.0-fips@sha256:1d99572b0260924149b8c923c021a32016f885fcea6d5cc8d58f718dfdc7a2dd
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.description="goauthentik.io RAC outpost, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.title="authentik RAC outpost image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
+
+USER root
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/*
+USER 1000
+
+COPY --from=builder /go/rac /
+
+HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/rac", "healthcheck" ]
+
+USER 1000
+
+ENV TMPDIR=/dev/shm/ \
+    GOFIPS=1
+
+ENTRYPOINT ["/rac"]

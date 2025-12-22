@@ -1,3 +1,6 @@
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -34,7 +37,6 @@ const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
         label: msg("Redirect"),
         value: SAMLBindingsEnum.Redirect,
-        default: true,
     },
     {
         label: msg("Post"),
@@ -95,7 +97,7 @@ function renderHasSlsUrl(
             label=${msg("SLS Binding")}
             name="slsBinding"
             .options=${serviceProviderBindingOptions}
-            .value=${provider?.slsBinding}
+            .value=${provider?.slsBinding ?? SAMLBindingsEnum.Redirect}
             help=${msg(
                 "Determines how authentik sends the logout response back to the Service Provider.",
             )}
@@ -165,32 +167,47 @@ export function renderForm({
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
-                ></ak-text-input>
-                <ak-text-input
-                    label=${msg("Issuer")}
-                    name="issuer"
-                    value="${provider.issuer || "authentik"}"
-                    required
-                    .errorMessages=${errors.issuer}
-                    help=${msg("Also known as EntityID.")}
                 ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Service Provider Binding")}
                     name="spBinding"
                     required
                     .options=${serviceProviderBindingOptions}
-                    .value=${provider.spBinding}
+                    .value=${provider.spBinding ?? SAMLBindingsEnum.Post}
                     help=${msg(
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
-                >
-                </ak-radio-input>
+                ></ak-radio-input>
+                <ak-text-input
+                    label=${msg("Issuer")}
+                    input-hint="code"
+                    name="issuer"
+                    value="${provider.issuer || "authentik"}"
+                    required
+                    .errorMessages=${errors.issuer}
+                    help=${msg("Also known as Entity ID.")}
+                ></ak-text-input>
+                <ak-text-input
+                    name="audience"
+                    label=${msg("Audience")}
+                    placeholder="https://..."
+                    input-hint="code"
+                    input-mode="url"
+                    value="${ifDefined(provider.audience)}"
+                    .errorMessages=${errors.audience}
+                ></ak-text-input>
                 <ak-text-input
                     name="slsUrl"
                     label=${msg("SLS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    input-mode="url"
                     value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(
@@ -207,12 +224,6 @@ export function renderForm({
                           setLogoutMethod,
                       )
                     : nothing}
-                <ak-text-input
-                    name="audience"
-                    label=${msg("Audience")}
-                    value="${ifDefined(provider.audience)}"
-                    .errorMessages=${errors.audience}
-                ></ak-text-input>
             </div>
         </ak-form-group>
 
@@ -256,6 +267,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
+                        singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(

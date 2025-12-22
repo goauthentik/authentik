@@ -35,8 +35,10 @@ jobs:
           echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
         run: |
-          if [ "${{ inputs.release_reason }}" = "feature" ] || [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+          if [ "${{ inputs.release_reason }}" = "feature" ]; then
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+          elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
+            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
           else
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
           fi
@@ -47,8 +49,12 @@ jobs:
   test:
     name: Pre-release test
     runs-on: ubuntu-latest
+    needs:
+      - check-inputs
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+        with:
+          ref: "version-${{ needs.check-inputs.outputs.major_version }}"
       - run: make test-docker
   bump-authentik:
     name: Bump authentik version
@@ -59,7 +65,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -68,7 +74,7 @@ jobs:
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           ref: "version-${{ needs.check-inputs.outputs.major_version }}"
           token: "${{ steps.app-token.outputs.token }}"
@@ -87,7 +93,7 @@ jobs:
           git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
           git push --follow-tags
       - name: Create Release
-        uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ inputs.version }}"
@@ -106,7 +112,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -116,7 +122,7 @@ jobs:
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           repository: "${{ github.repository_owner }}/helm"
           token: "${{ steps.app-token.outputs.token }}"
@@ -128,7 +134,7 @@ jobs:
           sed -E -i 's/[0-9]{4}\.[0-9]{1,2}\.[0-9]+$/${{ inputs.version }}/' charts/authentik/Chart.yaml
           ./scripts/helm-docs.sh
       - name: Create pull request
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7
+        uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v7
         with:
           token: "${{ steps.app-token.outputs.token }}"
           branch: bump-${{ inputs.version }}
@@ -148,7 +154,7 @@ jobs:
     steps:
       - id: app-token
         name: Generate app token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -158,7 +164,7 @@ jobs:
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           repository: "${{ github.repository_owner }}/version"
           token: "${{ steps.app-token.outputs.token }}"
@@ -183,7 +189,7 @@ jobs:
             '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url' version.json > version.new.json
           mv version.new.json version.json
       - name: Create pull request
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7
+        uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v7
         with:
           token: "${{ steps.app-token.outputs.token }}"
           branch: bump-${{ inputs.version }}

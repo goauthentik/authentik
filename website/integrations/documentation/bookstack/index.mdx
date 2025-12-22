@@ -65,7 +65,7 @@ Once that's done, the next step is to update your `.env` file to include the fol
     OIDC_DISPLAY_NAME_CLAIMS=name # Claim(s) for the user's display name. Can have multiple attributes listed, separated with a '|' in which case those values will be joined with a space.
     OIDC_CLIENT_ID=<Client ID from authentik>
     OIDC_CLIENT_SECRET=<Client Secret from authentik>
-    OIDC_ISSUER=https://authentik.company/application/o/<application_slug>
+    OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
     OIDC_ISSUER_DISCOVER=true
     OIDC_END_SESSION_ENDPOINT=true
     ```
@@ -90,6 +90,9 @@ To support the integration of BookStack with authentik, you need to create an ap
     - Set the **ACS URL** to `https://bookstack.company/saml2/acs`.
     - Set the **Issuer** to `https://authentik.company`.
     - Set the **Service Provider Binding** to `Post`.
+    - Set the **Single Logout Service** to `https://bookstack.company/saml2/sls`.
+    - Set the **SLS Binding** to `Redirect`.
+    - Set the **Logout Method** to `Front-channel (Iframe)`.
     - Set the **Audience** to `https://bookstack.company/saml2/metadata`.
     - Under **Advanced protocol settings**, set **Signing Certificate** to use any available certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

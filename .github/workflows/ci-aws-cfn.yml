@@ -21,10 +21,10 @@ jobs:
   check-changes-applied:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: lifecycle/aws/package.json
           cache: "npm"
@@ -42,6 +42,6 @@ jobs:
       - check-changes-applied
     runs-on: ubuntu-latest
     steps:
-      - uses: re-actors/alls-green@release/v1
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}

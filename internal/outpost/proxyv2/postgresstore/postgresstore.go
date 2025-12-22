@@ -2,23 +2,25 @@ package postgresstore
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
-	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"gorm.io/gorm/logger"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
@@ -51,60 +53,121 @@ func (ProxySession) TableName() string {
 	return "authentik_providers_proxy_proxysession"
 }
 
-// BuildDSN constructs a PostgreSQL connection string
-func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
+// BuildConnConfig constructs a pgx.ConnConfig from PostgreSQL configuration.
+func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	// Validate required fields
 	if cfg.Host == "" {
-		return "", fmt.Errorf("PostgreSQL host is required")
+		return nil, fmt.Errorf("PostgreSQL host is required")
 	}
 	if cfg.User == "" {
-		return "", fmt.Errorf("PostgreSQL user is required")
+		return nil, fmt.Errorf("PostgreSQL user is required")
 	}
 	if cfg.Name == "" {
-		return "", fmt.Errorf("PostgreSQL database name is required")
+		return nil, fmt.Errorf("PostgreSQL database name is required")
 	}
 	if cfg.Port <= 0 {
-		return "", fmt.Errorf("PostgreSQL port must be positive")
+		return nil, fmt.Errorf("PostgreSQL port must be positive")
 	}
 
-	// Build DSN string with all parameters
-	dsnParts := []string{
-		"host=" + cfg.Host,
-		fmt.Sprintf("port=%d", cfg.Port),
-		"user=" + cfg.User,
-		"dbname=" + cfg.Name,
+	// Start with a default config
+	connConfig, err := pgx.ParseConfig("")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create default config: %w", err)
 	}
 
-	if cfg.Password != "" {
-		dsnParts = append(dsnParts, "password="+cfg.Password)
-	}
+	// Set connection parameters
+	connConfig.Host = cfg.Host
+	connConfig.Port = uint16(cfg.Port)
+	connConfig.User = cfg.User
+	connConfig.Password = cfg.Password
+	connConfig.Database = cfg.Name
 
-	// Add SSL mode
+	// Configure TLS/SSL
 	if cfg.SSLMode != "" {
-		dsnParts = append(dsnParts, "sslmode="+cfg.SSLMode)
+		switch cfg.SSLMode {
+		case "disable":
+			connConfig.TLSConfig = nil
+		case "require", "verify-ca", "verify-full":
+			tlsConfig := &tls.Config{}
+
+			// Load root CA certificate if provided
+			if cfg.SSLRootCert != "" {
+				caCert, err := os.ReadFile(cfg.SSLRootCert)
+				if err != nil {
+					return nil, fmt.Errorf("failed to read SSL root certificate: %w", err)
+				}
+				caCertPool := x509.NewCertPool()
+				if !caCertPool.AppendCertsFromPEM(caCert) {
+					return nil, fmt.Errorf("failed to parse SSL root certificate")
+				}
+				tlsConfig.RootCAs = caCertPool
+			}
+
+			// Load client certificate and key if provided
+			if cfg.SSLCert != "" && cfg.SSLKey != "" {
+				cert, err := tls.LoadX509KeyPair(cfg.SSLCert, cfg.SSLKey)
+				if err != nil {
+					return nil, fmt.Errorf("failed to load SSL client certificate: %w", err)
+				}
+				tlsConfig.Certificates = []tls.Certificate{cert}
+			}
+
+			// Set verification mode
+			switch cfg.SSLMode {
+			case "require":
+				// Don't verify the server certificate (just encrypt)
+				tlsConfig.InsecureSkipVerify = true
+			case "verify-ca":
+				// Verify the certificate is signed by a trusted CA
+				tlsConfig.InsecureSkipVerify = false
+			case "verify-full":
+				// Verify the certificate and hostname
+				tlsConfig.InsecureSkipVerify = false
+				tlsConfig.ServerName = cfg.Host
+			}
+
+			connConfig.TLSConfig = tlsConfig
+		}
 	}
 
-	// Add SSL certificates if provided
-	if cfg.SSLRootCert != "" {
-		dsnParts = append(dsnParts, "sslrootcert="+cfg.SSLRootCert)
+	// Set runtime params
+	if connConfig.RuntimeParams == nil {
+		connConfig.RuntimeParams = make(map[string]string)
 	}
-	if cfg.SSLCert != "" {
-		dsnParts = append(dsnParts, "sslcert="+cfg.SSLCert)
-	}
-	if cfg.SSLKey != "" {
-		dsnParts = append(dsnParts, "sslkey="+cfg.SSLKey)
-	}
+
 	if cfg.DefaultSchema != "" {
-		dsnParts = append(dsnParts, "search_path="+cfg.DefaultSchema)
+		connConfig.RuntimeParams["search_path"] = cfg.DefaultSchema
 	}
 
-	// Add connection options if specified
+	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
-		dsnParts = append(dsnParts, cfg.ConnOptions)
+		// Parse key=value pairs from ConnOptions
+		// Format: "key1=value1 key2=value2"
+		pairs := strings.Split(cfg.ConnOptions, " ")
+		for _, pair := range pairs {
+			if pair == "" {
+				continue
+			}
+			kv := strings.SplitN(pair, "=", 2)
+			if len(kv) == 2 {
+				connConfig.RuntimeParams[kv[0]] = kv[1]
+			}
+		}
 	}
 
-	// Join parts with spaces
-	return strings.Join(dsnParts, " "), nil
+	return connConfig, nil
+}
+
+// BuildDSN constructs a PostgreSQL connection string from a ConnConfig.
+func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
+	connConfig, err := BuildConnConfig(cfg)
+	if err != nil {
+		return "", err
+	}
+
+	// Register the config and get a connection string
+	// (This approach lets pgx handle all the escaping internally which is quite convenient for say spaces in the password)
+	return stdlib.RegisterConnConfig(connConfig), nil
 }
 
 // SetupGORMWithRefreshablePool creates a GORM DB with a refreshable connection pool.
@@ -159,12 +222,12 @@ func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.
 }
 
 // NewPostgresStore returns a new PostgresStore
-func NewPostgresStore() (*PostgresStore, error) {
+func NewPostgresStore(log *log.Entry) (*PostgresStore, error) {
 	cfg := config.Get().PostgreSQL
 
 	// Configure GORM
 	gormConfig := &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
+		Logger: NewLogger(log),
 		NowFunc: func() time.Time {
 			return time.Now().UTC()
 		},
@@ -435,39 +498,6 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 // generateSessionID generates a random session ID
 func generateSessionID() string {
 	return uuid.New().String()
-}
-
-var (
-	globalStore *PostgresStore
-	mu          sync.Mutex
-)
-
-// GetPersistentStore creates a new postgres store if it is the first time the function has been called.
-// If the function is called multiple times, the store from the variable is returned to ensure that only one instance is running.
-func GetPersistentStore() (*PostgresStore, error) {
-	mu.Lock()
-	defer mu.Unlock()
-
-	if globalStore == nil {
-		store, err := NewPostgresStore()
-		if err != nil {
-			return nil, fmt.Errorf("failed to create persistent store: %w", err)
-		}
-		globalStore = store
-	}
-
-	return globalStore, nil
-}
-
-// StopPersistentStore stops the cleanup background job and clears the globalStore variable.
-func StopPersistentStore() {
-	mu.Lock()
-	defer mu.Unlock()
-
-	if globalStore != nil {
-		_ = globalStore.Close()
-		globalStore = nil
-	}
 }
 
 // NewTestStore creates a PostgresStore for testing with the given database and pool.

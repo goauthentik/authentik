@@ -2,15 +2,15 @@ from typing import Any, Self
 
 import pglock
 from django.core.paginator import Paginator
+from django.core.validators import MinValueValidator
 from django.db import connection, models
 from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT_MS
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.utils.time import fqdn_rand
+from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
@@ -26,6 +26,17 @@ class OutgoingSyncDeleteAction(TextChoices):
 
 class OutgoingSyncProvider(ScheduledModel, Model):
     """Base abstract models for providers implementing outgoing sync"""
+
+    sync_page_size = models.PositiveIntegerField(
+        help_text=_("Controls the number of objects synced in a single task"),
+        default=100,
+        validators=[MinValueValidator(1)],
+    )
+    sync_page_timeout = models.TextField(
+        help_text=_("Timeout for synchronization of a single page"),
+        default="minutes=30",
+        validators=[timedelta_string_validator],
+    )
 
     dry_run = models.BooleanField(
         default=False,
@@ -46,11 +57,12 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         raise NotImplementedError
 
     def get_paginator[T: User | Group](self, type: type[T]) -> Paginator:
-        return Paginator(self.get_object_qs(type), PAGE_SIZE)
+        return Paginator(self.get_object_qs(type), self.sync_page_size)
 
     def get_object_sync_time_limit_ms[T: User | Group](self, type: type[T]) -> int:
         num_pages: int = self.get_paginator(type).num_pages
-        return int(num_pages * PAGE_TIMEOUT_MS * 1.5)
+        page_timeout_ms = timedelta_from_string(self.sync_page_timeout).total_seconds() * 1000
+        return int(num_pages * page_timeout_ms * 1.5)
 
     def get_sync_time_limit_ms(self) -> int:
         return int(
@@ -70,6 +82,10 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     @property
     def sync_actor(self) -> Actor:
         raise NotImplementedError
+
+    def sync_dispatch(self) -> None:
+        for schedule in self.schedules:
+            schedule.send()
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
