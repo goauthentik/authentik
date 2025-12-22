@@ -27,7 +27,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: Boolean, attribute: "readonly" })
     public readOnly: boolean = false;
 
-    @property({ type: String, attribute: "inputmode" })
+    @property({ type: String, attribute: "inputmode", useDefault: true })
     inputMode: string = "text";
 
     @property({ type: String })
