@@ -367,15 +367,13 @@ export class IdentificationStage extends BaseStage<
         const enrollmentItem = enrollUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
                   ${msg("Need an account?")}
-                  <a name="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
+                  <a href="${enrollUrl}">${msg("Sign up.")}</a>
               </div>`
             : null;
 
         const recoveryItem = recoveryUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
-                  <a name="recovery" href="${recoveryUrl}"
-                      >${msg("Forgot username or password?")}</a
-                  >
+                  <a href="${recoveryUrl}">${msg("Forgot username or password?")}</a>
               </div>`
             : null;
 
@@ -450,7 +448,6 @@ export class IdentificationStage extends BaseStage<
                       <ak-flow-input-password
                           label=${msg("Password")}
                           input-id="ak-stage-identification-password"
-                          required
                           class="pf-c-form__group"
                           .errors=${this.challenge?.responseErrors?.password}
                           ?allow-show-password=${this.challenge.allowShowPassword}
@@ -510,7 +507,6 @@ export class IdentificationStage extends BaseStage<
                 ${this.renderInput()}
                 ${this.challenge.passwordlessUrl
                     ? html`<a
-                          name="passwordless"
                           href=${this.challenge.passwordlessUrl}
                           class="pf-c-button pf-m-secondary pf-m-block"
                       >

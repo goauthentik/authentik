@@ -149,7 +149,6 @@ export class AgentConnectorSetup extends AKElement {
                         <li>
                             <ak-endpoints-agent-connector-config
                                 class="pf-m-secondary"
-                                label=${msg("Windows")}
                                 .request=${{
                                     connectorUuid: this.connector?.connectorUuid || "",
                                     mDMConfigRequest: {
@@ -170,7 +169,6 @@ export class AgentConnectorSetup extends AKElement {
                         <li>
                             <ak-endpoints-agent-connector-config
                                 class="pf-m-link"
-                                label=${msg("macOS")}
                                 .request=${{
                                     connectorUuid: this.connector?.connectorUuid || "",
                                     mDMConfigRequest: {
