@@ -46,6 +46,7 @@ export const EVENT_REFRESH_ENTERPRISE = "ak-refresh-enterprise";
 //#region WebSocket
 
 export const WS_MSG_TYPE_MESSAGE = "message";
+export const WS_MSG_TYPE_NOTIFICATION = "notification.new";
 export const WS_MSG_TYPE_REFRESH = "refresh";
 
 //#endregion

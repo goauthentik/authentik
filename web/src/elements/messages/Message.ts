@@ -3,7 +3,7 @@ import { MessageLevel } from "#common/messages";
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -24,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export interface APIMessage {
     level: MessageLevel;
     message: string;
-    description?: string;
+    description?: string | TemplateResult;
 }
 
 const LevelIconMap = {
@@ -47,8 +47,8 @@ export class Message extends AKElement {
 
     //#region Properties
 
-    @property({ type: String })
-    public description?: string;
+    @property({ type: String, attribute: false })
+    public description?: string | TemplateResult;
 
     @property({ type: String })
     public level?: MessageLevel;
