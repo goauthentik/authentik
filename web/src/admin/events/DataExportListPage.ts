@@ -100,10 +100,9 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ${renderDescriptionList(
                     Object.keys(item.queryParams)
                         .filter((key) => {
-                            return key !== "page" && key !== "pageSize";
-                        })
-                        .filter((key) => {
-                            return item.queryParams[key];
+                            if (key === "page" || key === "pageSize") return false;
+
+                            return !!item.queryParams[key];
                         })
                         .map((key): DescriptionPair => {
                             return [key, html`<pre>${item.queryParams[key]}</pre>`];
