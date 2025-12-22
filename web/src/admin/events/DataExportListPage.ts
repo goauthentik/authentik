@@ -102,6 +102,9 @@ export class DataExportListPage extends TablePage<DataExport> {
                         .filter((key) => {
                             return key !== "page" && key !== "pageSize";
                         })
+                        .filter((key) => {
+                            return item.queryParams[key];
+                        })
                         .map((key): DescriptionPair => {
                             return [key, html`<pre>${item.queryParams[key]}</pre>`];
                         }),

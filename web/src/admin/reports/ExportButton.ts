@@ -90,6 +90,9 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
                         .filter((key) => {
                             return key !== "page" && key !== "pageSize";
                         })
+                        .filter((key) =>{
+                            return this.params[key];
+                        })
                         .map((key): DescriptionPair => {
                             return [key, html`<pre>${this.params[key]}</pre>`];
                         }),
