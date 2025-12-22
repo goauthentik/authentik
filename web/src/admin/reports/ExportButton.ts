@@ -23,10 +23,12 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
     static styles: CSSResult[] = [PFButton, PFContent, PFDescriptionList];
 
     @property({ attribute: false })
-    public createExport: ((params: { [key: string]: string }) => Promise<void>) | null = null;
+    public createExport: ((params: Record<string, string | undefined>) => Promise<void>) | null =
+        null;
 
     @property({ attribute: false })
-    public exportParams: () => Promise<Record, string | undefined> = () => Promise.resolve({});
+    public exportParams: () => Promise<Record<string, string | undefined>> = () =>
+        Promise.resolve({});
 
     @state()
     protected params: Record<string, string | undefined> = {};
