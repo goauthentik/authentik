@@ -43,9 +43,6 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
         if (detectedDisplay) {
             this.cachedDisplay = detectedDisplay;
         }
-        this.exportParams().then((params) => {
-            this.params = params;
-        });
     }
 
     // Take it out of the DOM flow if it's not enabled
@@ -58,7 +55,6 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
         if (typeof this.createExport !== "function") {
             throw new TypeError("`createExport` property must be a function");
         }
-
         return this.createExport(this.params).catch(async (error) => {
             const apiError = await parseAPIResponseError(error);
             showAPIErrorMessage(apiError);
@@ -73,6 +69,11 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
             successMessage=${msg("Successfully requested data export")}
             errorMessage=${msg("Failed to export data")}
             .onConfirm=${this.#clickHandler}
+            @ak-modal-show=${() => {
+                this.exportParams().then((params) => {
+                    this.params = params;
+                });
+            }}
             action=${msg("Start export")}
             actionLevel="pf-m-primary"
         >
