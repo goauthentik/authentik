@@ -123,8 +123,8 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     protected renderToolbar(): TemplateResult {
         return html`${super.renderToolbar()}
             <ak-reports-export-button
-                .createExport=${async (params: EventsEventsExportCreateRequest) => {
-                    return await new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate(params);
+                .createExport=${(params: EventsEventsExportCreateRequest) => {
+                    return new EventsApi(DEFAULT_CONFIG).eventsEventsExportCreate(params);
                 }}
                 .exportParams=${() => this.defaultEndpointConfig()}
             ></ak-reports-export-button>`;

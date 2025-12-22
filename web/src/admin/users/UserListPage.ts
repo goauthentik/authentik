@@ -395,12 +395,12 @@ export class UserListPage extends WithBrandConfig(
                 </button>
             </ak-forms-modal>
             <ak-reports-export-button
-                .createExport=${async (params: CoreUsersExportCreateRequest) => {
+                .createExport=${(params: CoreUsersExportCreateRequest) => {
                     return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);
                 }}
                 .exportParams=${async () => {
                     return {
-                        ...await this.defaultEndpointConfig(),
+                        ...(await this.defaultEndpointConfig()),
                         pathStartswith: this.activePath,
                         isActive: this.hideDeactivated ? true : undefined,
                     };
