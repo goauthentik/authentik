@@ -21,6 +21,9 @@ export class ConfirmationForm extends ModalButton {
     @property()
     action!: string;
 
+    @property()
+    actionLevel = "pf-m-danger";
+
     @property({ attribute: false })
     onConfirm!: () => Promise<unknown>;
 
@@ -76,7 +79,7 @@ export class ConfirmationForm extends ModalButton {
                     .callAction=${() => {
                         return this.confirm();
                     }}
-                    class="pf-m-danger"
+                    class=${this.actionLevel}
                 >
                     ${this.action} </ak-spinner-button
                 >&nbsp;
