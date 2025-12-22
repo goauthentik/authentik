@@ -20,7 +20,7 @@ runs:
     - name: PostgreSQL Logs
       shell: bash
       run: |
-        if [[ $ACTIONS_RUNNER_DEBUG == 'true' || $ACTIONS_STEP_DEBUG == 'true' ]]; then
+        if [[ $RUNNER_DEBUG == '1' ]]; then
           docker stop setup-postgresql-1
           echo "::group::PostgreSQL Logs"
           docker logs setup-postgresql-1
