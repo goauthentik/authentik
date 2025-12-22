@@ -96,6 +96,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
         DiscoverRunner.add_arguments(parser)
+        default_seed = None
+        if seed := os.getenv("CI_TEST_SEED"):
+            default_seed = int(seed)
         parser.add_argument(
             "--randomly-seed",
             type=int,
@@ -103,6 +106,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "to reuse the seed from the previous run."
             "Default behaviour: use random.Random().getrandbits(32), so the seed is"
             "different on each run.",
+            default=default_seed,
         )
         parser.add_argument(
             "--no-capture",
