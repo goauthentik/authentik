@@ -149,7 +149,6 @@ class EventViewSet(
             JSONSearchField(
                 Event,
                 "user",
-                suggest_nested=False,
                 fixed_structure=OrderedDict(
                     pk=IntField(),
                     username=StrField(),
@@ -159,7 +158,6 @@ class EventViewSet(
             JSONSearchField(
                 Event,
                 "brand",
-                suggest_nested=False,
                 fixed_structure=OrderedDict(
                     pk=StrField(),
                     app=StrField(),
@@ -167,7 +165,23 @@ class EventViewSet(
                     model_name=StrField(),
                 ),
             ),
-            JSONSearchField(Event, "context", suggest_nested=False),
+            JSONSearchField(
+                Event,
+                "context",
+                fixed_structure=OrderedDict(
+                    http_request=JSONSearchField(
+                        Event,
+                        "context_http_request",
+                        fixed_structure=OrderedDict(
+                            args=JSONSearchField(Event, "context_http_request_args"),
+                            path=StrField(),
+                            method=StrField(),
+                            request_id=StrField(),
+                            user_agent=StrField(),
+                        ),
+                    ),
+                ),
+            ),
             DateTimeField(Event, "created", suggest_options=True),
         ]
 

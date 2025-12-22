@@ -20,7 +20,7 @@ class JSONSearchField(StrField):
         model=None,
         name=None,
         nullable=None,
-        suggest_nested=True,
+        suggest_nested=False,
         fixed_structure: OrderedDict | None = None,
     ):
         # Set this in the constructor to not clobber the type variable
@@ -66,19 +66,22 @@ class JSONSearchField(StrField):
             )
             return (x[0] for x in cursor.fetchall())
 
-    def get_fixed_structure(self) -> OrderedDict:
+    def get_fixed_structure(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:
         new_dict = OrderedDict()
         if not self.fixed_structure:
             return new_dict
+        new_dict.setdefault(self.relation(), {})
         for key, value in self.fixed_structure.items():
-            new_dict[key] = DjangoQLSchemaSerializer().serialize_field(value)
+            new_dict[self.relation()][key] = serializer.serialize_field(value)
+            if isinstance(value, JSONSearchField):
+                new_dict.update(value.get_nested_options(serializer))
         return new_dict
 
-    def get_nested_options(self) -> OrderedDict:
+    def get_nested_options(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:
         """Get keys of all nested objects to show autocomplete"""
         if not self.suggest_nested:
             if self.fixed_structure:
-                return OrderedDict(**{self.relation(): self.get_fixed_structure()})
+                return self.get_fixed_structure(serializer)
             return OrderedDict()
 
         def recursive_function(parts: list[str], parent_parts: list[str] | None = None):
