@@ -16,7 +16,7 @@ from authentik.endpoints.models import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 if TYPE_CHECKING:
@@ -143,7 +143,7 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
         ]
 
 
-class DeviceAuthenticationToken(ExpiringModel):
+class DeviceAuthenticationToken(InternallyManagedMixin, ExpiringModel):
 
     identifier = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
@@ -160,7 +160,7 @@ class DeviceAuthenticationToken(ExpiringModel):
         verbose_name_plural = _("Device authentication tokens")
 
 
-class AppleNonce(ExpiringModel):
+class AppleNonce(InternallyManagedMixin, ExpiringModel):
     nonce = models.TextField()
     device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
 
