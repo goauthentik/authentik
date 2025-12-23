@@ -1,10 +1,26 @@
-import { sourceLocale } from "../../../locale-codes.js";
+import { type allLocales, sourceLocale } from "../../../locale-codes.js";
 
-import { LocalePatternCodeMap, TargetLocale } from "#common/ui/locale/definitions";
+import {
+    CJKLanguageTags,
+    HanLanguageTags,
+    LocalePatternCodeMap,
+} from "#common/ui/locale/definitions";
 
-export function getBestMatchLocale(locale: string): TargetLocale | null {
+type TargetLocaleTag = (typeof allLocales)[number];
+
+export function isCJKLanguageTag(languageTag: string): boolean {
+    // @ts-expect-error: Type guard
+    return CJKLanguageTags.has(languageTag);
+}
+
+export function isHanLanguageTag(languageTag: string): boolean {
+    // @ts-expect-error: Type guard
+    return HanLanguageTags.has(languageTag);
+}
+
+export function getBestMatchLocale(languageTag: string): TargetLocaleTag | null {
     const [, localeCode] =
-        Iterator.from(LocalePatternCodeMap).find(([pattern]) => pattern.test(locale)) || [];
+        Iterator.from(LocalePatternCodeMap).find(([pattern]) => pattern.test(languageTag)) || [];
 
     return localeCode ?? null;
 }
@@ -20,7 +36,7 @@ export function getBestMatchLocale(locale: string): TargetLocale | null {
  * one that has a supported locale. Then, from *that*, we have to extract that first supported
  * locale.
  */
-export function findSupportedLocale(candidates: string[]): TargetLocale | null {
+export function findSupportedLocale(candidates: string[]): TargetLocaleTag | null {
     const candidate = candidates.find((candidate) => getBestMatchLocale(candidate));
     return candidate ? getBestMatchLocale(candidate) : null;
 }
@@ -30,14 +46,14 @@ const sessionLocaleKey = "authentik:locale";
 /**
  * Persist the given locale code to sessionStorage.
  */
-export function setSessionLocale(locale: TargetLocale | null): void {
+export function setSessionLocale(languageTag: TargetLocaleTag | null): void {
     try {
-        if (!locale || locale === sourceLocale) {
+        if (!languageTag || languageTag === sourceLocale) {
             sessionStorage?.removeItem?.(sessionLocaleKey);
             return;
         }
 
-        sessionStorage?.setItem?.(sessionLocaleKey, locale);
+        sessionStorage?.setItem?.(sessionLocaleKey, languageTag);
     } catch (error) {
         console.debug("authentik/locale: Unable to persist locale to sessionStorage", error);
     }
@@ -73,7 +89,10 @@ export function getSessionLocale(): string | null {
  * 5. A provided fallback locale code
  * 6. The source locale (English)
  */
-export function autoDetectLanguage(localeHint?: string, fallbackLocaleCode?: string): TargetLocale {
+export function autoDetectLanguage(
+    localeHint?: string,
+    fallbackLocaleCode?: string,
+): TargetLocaleTag {
     let localeParam: string | null = null;
 
     if (self.location) {

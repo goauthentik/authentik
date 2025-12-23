@@ -1,4 +1,10 @@
 :host {
+    --ak-c-locale-select--PaddingInline: 0.5em;
+    --ak-c-locale-select--PaddingBlock: 0.25em;
+    --ak-c-locale-select__select--PaddingInline: calc(
+        var(--ak-c-locale-select--PaddingInline) * 4.5
+    );
+
     cursor: pointer;
     display: flex;
     flex-flow: row;
@@ -12,29 +18,43 @@
     border-color: transparent;
     border-width: thin;
     overflow: hidden;
+    outline: none;
 }
 
 [part="select"] {
     display: flex;
     align-items: center;
-    background-color: transparent;
-    color: inherit;
     position: relative;
+    cursor: pointer;
+    user-select: none;
+    opacity: var(--ak-c-locale-select--Opacity, 1);
+
+    /* Compatibility mode */
+    background-color: var(--ak-c-locale-select--BackgroundColor, transparent) !important;
+    color: inherit !important;
+
+    border-radius: 0.75em;
+    outline: 1px solid var(--ak-c-locale--select--OutlineColor, transparent);
 
     border: none;
 
-    padding-inline-start: 1.75em !important;
+    &:focus {
+        outline: 1px solid var(--ak-c-locale--select--OutlineColor, transparent);
 
-    @media not (prefers-contrast: more) {
-        &:focus {
-            outline: none;
-        }
+        outline-offset: initial;
     }
 
+    padding-inline-start: var(
+        --ak-c-locale-select__select--PaddingInlineStart,
+        var(--ak-c-locale-select__select--PaddingInline)
+    ) !important;
+    padding-inline-end: var(
+        --ak-c-locale-select__select--PaddingInlineEnd,
+        var(--ak-c-locale-select__select--PaddingInline)
+    ) !important;
+    padding-block: var(--ak-c-locale-select--PaddingBlock) !important;
+
     appearance: none;
-    appearance: base-select;
-    transition: opacity 0.2s ease-in-out;
-    opacity: var(--ak-c-flow-executor__locale-select--select--Opacity, 1);
 
     &::picker-icon {
         /* Browser compatibility */
@@ -44,14 +64,42 @@
 }
 
 [part="label"] {
+    padding-inline-start: calc(var(--ak-c-locale-select--PaddingInline) * 1.25);
     background-color: var(--ak-c-locale-select--label--BackgroundColor, transparent);
     color: var(--ak-c-locale-select--label--Color, inherit);
     cursor: pointer;
     position: absolute;
+    inset-block-start: 0.625em;
+    inset-inline-start: 0.5em;
+
+    z-index: 1;
+    pointer-events: none;
 
     .icon {
         display: block;
         height: var(--pf-global--FontSize--xl);
+        stroke-width: 0.5;
+        stroke: currentColor;
         fill: currentColor;
     }
+}
+
+:host::after {
+    padding-inline-end: var(--ak-c-locale-select--PaddingInline);
+    inset-inline-end: var(--ak-c-locale-select--PaddingInline);
+
+    content: "⋯";
+    background-color: var(--ak-c-locale-select--label--BackgroundColor, transparent);
+    color: var(--ak-c-locale-select--label--Color, inherit);
+    cursor: pointer;
+    position: absolute;
+    opacity: var(--ak-c-locale-select__after--Opacity, 0);
+
+    z-index: 1;
+}
+
+[part="select"] {
+    transition: opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
 }

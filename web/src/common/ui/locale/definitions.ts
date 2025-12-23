@@ -1,14 +1,44 @@
-import { type allLocales, sourceLocale } from "../../../locale-codes.js";
+import { type allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
+
+import { UnwrapSet } from "#common/sets";
 
 import type { LocaleModule } from "@lit/localize";
-import { msg, str } from "@lit/localize";
 
-export type TargetLocale = (typeof allLocales)[number];
+export type TargetLanguageTag = (typeof allLocales)[number];
 
 /**
- * The pseudo locale code.
+ * An enum-like record of language tag constants that require special handling.
  */
-export const PseudoLocale = "pseudo-LOCALE" satisfies TargetLocale;
+export const LanguageTag = {
+    Source: SourceLanguageTag,
+    Pseudo: "en-XA",
+    HanSimplified: "zh-Hans",
+    HanTraditional: "zh-Hant",
+    Japanese: "ja-JP",
+    Korean: "ko-KR",
+} as const satisfies Record<string, TargetLanguageTag>;
+
+/**
+ * A set of **supported language tags** representing languages using Han scripts, i.e. Chinese.
+ */
+export const HanLanguageTags = new Set([
+    LanguageTag.HanSimplified,
+    LanguageTag.HanTraditional,
+] as const satisfies TargetLanguageTag[]);
+
+export type HanLanguageTag = UnwrapSet<typeof HanLanguageTags>;
+
+/**
+ * A set of **supported language tags** representing Chinese, Japanese, and Korean languages.
+ */
+export const CJKLanguageTags = new Set([
+    LanguageTag.HanSimplified,
+    LanguageTag.HanTraditional,
+    LanguageTag.Japanese,
+    LanguageTag.Korean,
+] as const satisfies TargetLanguageTag[]);
+
+export type CJKLanguageTag = UnwrapSet<typeof CJKLanguageTags>;
 
 /**
  * A dummy locale module representing the source locale (English).
@@ -22,108 +52,15 @@ const sourceTargetModule: LocaleModule = {
 };
 
 /**
- * A record mapping locale codes to their respective human-readable labels.
- *
- * @remarks
- * These are thunked functions to allow for localization via `msg()`.
- */
-export const LocaleLabelRecord: Record<TargetLocale, () => string> = {
-    [sourceLocale]: () => msg("English", { id: "en" }),
-    [PseudoLocale]: () => msg("Pseudolocale", { id: "pseudo-LOCALE" }),
-    "cs-CZ": () => msg("Czech", { id: "cs-CZ" }),
-    "de-DE": () => msg("German", { id: "de-DE" }),
-    "es-ES": () => msg("Spanish", { id: "es-ES" }),
-    "fi-FI": () => msg("Finnish", { id: "fi-FI" }),
-    "fr-FR": () => msg("French", { id: "fr-FR" }),
-    "it-IT": () => msg("Italian", { id: "it-IT" }),
-    "ja-JP": () => msg("Japanese", { id: "ja-JP" }),
-    "ko-KR": () => msg("Korean", { id: "ko-KR" }),
-    "nl-NL": () => msg("Dutch", { id: "nl-NL" }),
-    "pl-PL": () => msg("Polish", { id: "pl-PL" }),
-    "pt-BR": () => msg("Portuguese", { id: "pt-BR" }),
-    "ru-RU": () => msg("Russian", { id: "ru-RU" }),
-    "tr-TR": () => msg("Turkish", { id: "tr-TR" }),
-    "zh-Hans": () => msg("Chinese Simplified", { id: "zh-Hans" }),
-    "zh-Hant": () => msg("Chinese Traditional", { id: "zh-Hant" }),
-};
-
-/**
- * A record mapping locale codes to their respective human-readable labels in their own language.
- *
- * @remarks
- * These are not thunked, as they are already localized.
- */
-export const TranslatedLabelRecord: Record<TargetLocale, string> = {
-    [sourceLocale]: "English",
-    [PseudoLocale]: "Pseudolocale",
-    "cs-CZ": "Čeština",
-    "de-DE": "Deutsch",
-    "es-ES": "Español",
-    "fi-FI": "Suomi",
-    "fr-FR": "Français",
-    "it-IT": "Italiano",
-    "ja-JP": "日本語",
-    "ko-KR": "한국어",
-    "nl-NL": "Nederlands",
-    "pl-PL": "Polski",
-    "pt-BR": "Português",
-    "ru-RU": "Русский",
-    "tr-TR": "Türkçe",
-    "zh-Hans": "简体中文",
-    "zh-Hant": "繁體中文",
-};
-
-/**
- * A tuple representing a locale label and its corresponding code.
- */
-export type LocaleOption = [label: string, code: TargetLocale];
-
-/**
- * Format the locale options for use in a user-facing element.
- *
- * @param locales locales argument for locale-sensitive sorting.
- * @param collatorOptions Optional collator options for locale-sensitive sorting.
- * @returns An array of locale options sorted by their labels.
- */
-export function formatLocaleOptions(
-    locales?: Intl.LocalesArgument,
-    collatorOptions?: Intl.CollatorOptions,
-): LocaleOption[] {
-    const options = Object.entries(LocaleLabelRecord)
-        .map(([_code, label]) => {
-            const code = _code as TargetLocale;
-
-            const translatedLabel = TranslatedLabelRecord[code];
-
-            const localeLabel = label();
-            let localizedMessage: string;
-
-            if (localeLabel === translatedLabel) {
-                localizedMessage = localeLabel;
-            } else {
-                localizedMessage = msg(str`${localeLabel} (${translatedLabel})`, {
-                    id: "locale-option-localized-label",
-                    desc: "Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.",
-                });
-            }
-
-            return [localizedMessage, code];
-        })
-        .sort(([aLabel], [bLabel]) => aLabel.localeCompare(bLabel, locales, collatorOptions));
-
-    return options as LocaleOption[];
-}
-
-/**
  * A record mapping locale codes to their respective module loaders.
  *
  * @remarks
  * The `import` statements **must** reference a locale module path,
  * as this is how ESBuild identifies which files to include in the build.
  */
-export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule>> = {
-    [sourceLocale]: () => Promise.resolve(sourceTargetModule),
-    [PseudoLocale]: () => import("#locales/pseudo-LOCALE"),
+export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleModule>> = {
+    [LanguageTag.Source]: () => Promise.resolve(sourceTargetModule),
+    [LanguageTag.Pseudo]: () => import("#locales/en-XA"),
     "cs-CZ": () => import("#locales/cs-CZ"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
@@ -160,9 +97,9 @@ export const LocaleLoaderRecord: Record<TargetLocale, () => Promise<LocaleModule
  * Alternatively, the subtag can indicate a region with a predominant script.
  * The fallback is simplified Chinese.
  */
-export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
-    [sourceLocale]: /^en([_-]|$)/i,
-    [PseudoLocale]: /^pseudo/i,
+export const LocalePatternRecord: Record<TargetLanguageTag, RegExp> = {
+    [LanguageTag.Source]: /^en([_-]|$)/i,
+    [LanguageTag.Pseudo]: /^en[_-](XA)/i,
     "cs-CZ": /^cs([_-]|$)/i,
     "de-DE": /^de([_-]|$)/i,
     "es-ES": /^es([_-]|$)/i,
@@ -195,6 +132,9 @@ export const LocalePatternRecord: Record<TargetLocale, RegExp> = {
  *
  * @see {@linkcode LocalePatternRecord} for the source of this map.
  */
-export const LocalePatternCodeMap = new Map<RegExp, TargetLocale>(
-    Object.entries(LocalePatternRecord).map(([code, pattern]) => [pattern, code as TargetLocale]),
+export const LocalePatternCodeMap = new Map<RegExp, TargetLanguageTag>(
+    Object.entries(LocalePatternRecord).map(([code, pattern]) => [
+        pattern,
+        code as TargetLanguageTag,
+    ]),
 );
