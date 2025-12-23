@@ -1,10 +1,13 @@
 import "#elements/forms/ConfirmationForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { parseAPIResponseError } from "#common/errors/network";
+import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -19,7 +22,9 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-reports-export-button")
-export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement)) {
+export class ExportButton extends WithCapabilitiesConfig(
+    WithBrandConfig(WithLicenseSummary(AKElement)),
+) {
     static styles: CSSResult[] = [PFButton, PFContent, PFDescriptionList];
 
     @property({ attribute: false })
@@ -61,6 +66,37 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
         });
     };
 
+    renderBody() {
+        if (!this.can(CapabilitiesEnum.CanSaveReports)) {
+            return html`<p>
+                    ${msg(
+                        "Data exports are not available as storage for reports is not configured.",
+                    )}
+                </p>
+                <a href=${docLink("install-config/configuration/#storage-settings")}
+                    >${msg("Learn more")}</a
+                >`;
+        }
+        return html`<p>
+                ${msg(
+                    str`${this.brand.brandingTitle} will collect all objects with the specified parameters:`,
+                )}
+            </p>
+            <br />
+            ${renderDescriptionList(
+                Object.keys(this.params)
+                    .filter((key) => {
+                        if (key === "page" || key === "pageSize") return false;
+
+                        return !!this.params[key];
+                    })
+                    .map((key): DescriptionPair => {
+                        return [key, html`<pre>${this.params[key]}</pre>`];
+                    }),
+                { horizontal: true, compact: true },
+            )}`;
+    }
+
     render(): SlottedTemplateResult {
         if (!this.hasEnterpriseLicense) {
             return nothing;
@@ -76,28 +112,10 @@ export class ExportButton extends WithBrandConfig(WithLicenseSummary(AKElement))
             }}
             action=${msg("Start export")}
             actionLevel="pf-m-primary"
+            ?non-submittable=${!this.can(CapabilitiesEnum.CanSaveReports)}
         >
             <span slot="header">${msg("Export data")}</span>
-            <div slot="body">
-                <p>
-                    ${msg(
-                        str`${this.brand.brandingTitle} will collect all objects with the specified parameters:`,
-                    )}
-                </p>
-                <br />
-                ${renderDescriptionList(
-                    Object.keys(this.params)
-                        .filter((key) => {
-                            if (key === "page" || key === "pageSize") return false;
-
-                            return !!this.params[key];
-                        })
-                        .map((key): DescriptionPair => {
-                            return [key, html`<pre>${this.params[key]}</pre>`];
-                        }),
-                    { horizontal: true, compact: true },
-                )}
-            </div>
+            <div slot="body">${this.renderBody()}</div>
             <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
                 ${msg("Export")}
             </button>
