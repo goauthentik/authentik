@@ -51,6 +51,23 @@ export class APIBrowser extends WithBrandConfig(Interface) {
         this.textColor = rgba2hex(style.color.trim());
     };
 
+    constructor() {
+        super();
+        // @ts-expect-error RapiDoc does not provide a map of event names to event types
+        this.addEventListener(
+            "before-try",
+            (
+                e: CustomEvent<{
+                    request: {
+                        headers: Headers;
+                    };
+                }>,
+            ) => {
+                e.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
+            },
+        );
+    }
+
     public override connectedCallback(): void {
         super.connectedCallback();
 
@@ -82,15 +99,6 @@ export class APIBrowser extends WithBrandConfig(Interface) {
                 allow-spec-url-load="false"
                 allow-spec-file-load="false"
                 show-method-in-nav-bar="as-colored-text"
-                @before-try=${(
-                    e: CustomEvent<{
-                        request: {
-                            headers: Headers;
-                        };
-                    }>,
-                ) => {
-                    e.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
-                }}
             >
                 <div slot="nav-logo">
                     ${renderImage(this.brandingLogo, msg("authentik Logo"), "logo")}
