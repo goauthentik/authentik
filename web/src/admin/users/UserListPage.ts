@@ -193,7 +193,7 @@ export class UserListPage extends WithBrandConfig(
                               </div>
                               <h4 class="pf-c-alert__title">
                                   ${msg(
-                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                      str`Warning: You are about to delete user ${shouldShowWarning.username}, but you are currently logged in as this user. Proceed at your own risk.`,
                                   )}
                               </h4>
                           </div>

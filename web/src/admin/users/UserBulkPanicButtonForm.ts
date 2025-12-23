@@ -27,7 +27,12 @@ export class UserBulkPanicButtonForm extends Form<UserBulkPanicButtonRequest> {
     @state()
     private defaultNotifySecurity = false;
 
-    async firstUpdated(): Promise<void> {
+    constructor() {
+        super();
+        this.fetchSettings();
+    }
+
+    private async fetchSettings(): Promise<void> {
         try {
             const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
             this.defaultNotifyUser = settings.panicButtonNotifyUser ?? true;
