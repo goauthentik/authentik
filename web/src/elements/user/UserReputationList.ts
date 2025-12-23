@@ -81,3 +81,9 @@ export class UserReputationList extends Table<Reputation> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-reputation-list": UserReputationList;
+    }
+}

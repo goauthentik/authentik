@@ -414,3 +414,9 @@ export class LibraryPage extends WithSession(AKElement) {
 
     //#endregion
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-impl": LibraryPage;
+    }
+}
