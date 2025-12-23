@@ -17,6 +17,12 @@ class DuplicateNameError(RuntimeError):
 
 class Migration(BaseMigration):
     def needs_migration(self) -> bool:
+        self.cur.execute(
+            "select * from information_schema.tables where table_name = 'django_migrations';"
+        )
+        if not bool(self.cur.rowcount):
+            # No django_migrations table, no data to check
+            return False
         # migration that introduces the uniqueness
         self.cur.execute(
             "select count(*) from django_migrations where app = 'authentik_core' and name = '0056_user_roles';"
