@@ -256,7 +256,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         return [
             StrField(Group, "name"),
             BoolField(Group, "is_superuser", nullable=True),
-            JSONSearchField(Group, "attributes", suggest_nested=False),
+            JSONSearchField(Group, "attributes"),
         ]
 
     def get_queryset(self):
