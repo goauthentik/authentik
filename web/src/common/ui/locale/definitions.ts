@@ -126,15 +126,3 @@ export const LocalePatternRecord: Record<TargetLanguageTag, RegExp> = {
      */
     "zh-Hans": /^zh([_-](CN|SG|MY|Hans)|$)/i,
 };
-
-/**
- * A mapping of regex patterns to locale codes for matching user-supplied locale strings.
- *
- * @see {@linkcode LocalePatternRecord} for the source of this map.
- */
-export const LocalePatternCodeMap = new Map<RegExp, TargetLanguageTag>(
-    Object.entries(LocalePatternRecord).map(([code, pattern]) => [
-        pattern,
-        code as TargetLanguageTag,
-    ]),
-);

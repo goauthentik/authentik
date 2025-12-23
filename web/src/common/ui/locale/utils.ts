@@ -3,7 +3,7 @@ import { type allLocales, sourceLocale } from "../../../locale-codes.js";
 import {
     CJKLanguageTags,
     HanLanguageTags,
-    LocalePatternCodeMap,
+    LocalePatternRecord,
 } from "#common/ui/locale/definitions";
 
 type TargetLocaleTag = (typeof allLocales)[number];
@@ -19,10 +19,13 @@ export function isHanLanguageTag(languageTag: string): boolean {
 }
 
 export function getBestMatchLocale(languageTag: string): TargetLocaleTag | null {
-    const [, localeCode] =
-        Iterator.from(LocalePatternCodeMap).find(([pattern]) => pattern.test(languageTag)) || [];
+    for (const [localeCode, pattern] of Object.entries(LocalePatternRecord)) {
+        if (pattern.test(languageTag)) {
+            return localeCode as TargetLocaleTag;
+        }
+    }
 
-    return localeCode ?? null;
+    return null;
 }
 
 /**
