@@ -56,9 +56,16 @@ export class DataExportListPage extends TablePage<DataExport> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
-        return html` <ak-forms-delete-bulk
+        return html`<ak-forms-delete-bulk
             objectLabel=${msg("Data export(s)")}
             .objects=${this.selectedElements}
+            .metadata=${(item: DataExport) => {
+                return [
+                    { key: msg("Data type"), value: item.contentType.verboseNamePlural },
+                    { key: msg("Requested by"), value: item.requestedBy.username },
+                    { key: msg("Creation date"), value: Timestamp(item.requestedOn) },
+                ];
+            }}
             .delete=${(item: DataExport) => {
                 return new ReportsApi(DEFAULT_CONFIG).reportsExportsDestroy({
                     id: item.id,
