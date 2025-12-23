@@ -1,10 +1,10 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { formatLocaleOptions, PseudoLocale } from "#common/ui/locale/definitions";
+import { formatLocaleDisplayNames, renderLocaleDisplayNames } from "#common/ui/locale/format";
 import { getBestMatchLocale } from "#common/ui/locale/utils";
 
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
@@ -219,21 +219,11 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                let localeOptions = formatLocaleOptions();
-                const selected = prompt.initialValue
+                const entries = formatLocaleDisplayNames(this.activeLanguageTag);
+
+                const currentLanguageTag = prompt.initialValue
                     ? getBestMatchLocale(prompt.initialValue)
                     : null;
-
-                if (!this.can(CapabilitiesEnum.CanDebug)) {
-                    localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
-                }
-
-                const options = localeOptions.map(
-                    ([label, code]) =>
-                        html`<option value=${code} ?selected=${code === selected}>
-                            ${label}
-                        </option>`,
-                );
 
                 return html`<select
                     class="pf-c-form-control"
@@ -244,14 +234,14 @@ ${prompt.initialValue}</textarea
                         desc: "Label for the language selection dropdown",
                     })}
                 >
-                    <option value="" ?selected=${!selected}>
+                    <option value="" ?selected=${!currentLanguageTag}>
                         ${msg("Auto-detect", {
                             id: "locale-auto-detect-option",
                             desc: "Label for the auto-detect locale option in language selection dropdown",
                         })}
                     </option>
                     <hr />
-                    ${options}
+                    ${renderLocaleDisplayNames(entries, currentLanguageTag)}
                 </select>`;
             }
             default:
