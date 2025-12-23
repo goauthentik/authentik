@@ -8,7 +8,7 @@ import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-forms-confirm")
@@ -17,6 +17,9 @@ export class ConfirmationForm extends ModalButton {
     successMessage!: string;
     @property()
     errorMessage!: string;
+
+    @property({ type: Boolean, attribute: "non-submittable" })
+    nonSubmittable = true;
 
     @property()
     action!: string;
@@ -75,14 +78,16 @@ export class ConfirmationForm extends ModalButton {
                 </form>
             </section>
             <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class=${this.actionLevel}
-                >
-                    ${this.action} </ak-spinner-button
-                >&nbsp;
+                ${this.nonSubmittable
+                    ? nothing
+                    : html`<ak-spinner-button
+                              .callAction=${() => {
+                                  return this.confirm();
+                              }}
+                              class=${this.actionLevel}
+                          >
+                              ${this.action} </ak-spinner-button
+                          >&nbsp;`}
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
