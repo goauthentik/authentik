@@ -1,4 +1,5 @@
 import "#elements/LoadingOverlay";
+import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
@@ -20,14 +21,11 @@ import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
-import { formatLocaleOptions, PseudoLocale, TargetLocale } from "#common/ui/locale/definitions";
-import { setSessionLocale } from "#common/ui/locale/utils";
 import { WebsocketClient, WSMessage } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { WithLocale } from "#elements/mixins/locale";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { renderImage } from "#elements/utils/images";
@@ -50,7 +48,6 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { repeat } from "lit/directives/repeat.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -63,7 +60,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(WithLocale(Interface)))
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
     implements StageHost
 {
     static readonly DefaultLayout: FlowLayoutEnum =
@@ -485,51 +482,6 @@ export class FlowExecutor
         </button>`;
     }
 
-    #localeChangeListener = (event: Event) => {
-        const select = event.target as HTMLSelectElement;
-        const locale = select.value as TargetLocale;
-
-        this.locale = locale;
-
-        setSessionLocale(locale);
-    };
-
-    protected renderLocaleSelector() {
-        const { locale } = this;
-        let localeOptions = formatLocaleOptions();
-
-        if (!this.can(CapabilitiesEnum.CanDebug)) {
-            localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
-        }
-
-        const options = repeat(
-            localeOptions,
-            ([_locale, code]) => code,
-            ([label, code]) =>
-                html`<option value=${code} ?selected=${code === locale}>${label}</option>`,
-        );
-
-        return html`<div class="locale-selector">
-            <label
-                for="locale-selector"
-                aria-label=${msg("Select language", {
-                    id: "language-selector-label",
-                    desc: "Label for the language selection dropdown",
-                })}
-            >
-                <i class="fa fa-globe" aria-hidden="true"></i>
-            </label>
-            <select
-                id="locale-selector"
-                @change=${this.#localeChangeListener}
-                class="pf-c-form-control"
-                name="locale"
-            >
-                ${options}
-            </select>
-        </div>`;
-    }
-
     //#endregion
 
     //#region Render
@@ -541,9 +493,12 @@ export class FlowExecutor
     public override render(): TemplateResult {
         const { component } = this.challenge || {};
 
-        return html`<header class="pf-c-login__header">
-                ${this.renderLocaleSelector()} ${this.renderInspectorButton()}
-            </header>
+        return html` <ak-locale-select
+                part="locale-select"
+                exportparts="label:locale-select-label,select:locale-select-select"
+            ></ak-locale-select>
+
+            <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
             <main
                 data-layout=${this.layout}
                 class="pf-c-login__main"
