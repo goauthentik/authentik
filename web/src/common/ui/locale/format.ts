@@ -1,21 +1,48 @@
 import { allLocales } from "../../../locale-codes.js";
 
-import { LanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
-import { isCJKLanguageTag, isHanLanguageTag } from "#common/ui/locale/utils";
+import { CJKLanguageTag, isCJKLanguageTag, isHanLanguageTag } from "#common/ui/locale/cjk";
+import {
+    PseudoLanguageTag,
+    SourceLanguageTag,
+    TargetLanguageTag,
+} from "#common/ui/locale/definitions";
+import { safeParseLocale } from "#common/ui/locale/utils";
 
 import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 
-export function createLocale(
-    locale?: Intl.Locale | Intl.UnicodeBCP47LocaleIdentifier,
-    options?: Intl.LocaleOptions,
-): Intl.Locale {
+/**
+ * Safely get a minimized locale ID, with fallback for older browsers.
+ */
+function getMinimizedLocaleID(tag: string): string {
+    const locale = safeParseLocale(tag);
     if (!locale) {
-        return new Intl.Locale(LanguageTag.Source);
+        return tag.split(/[-_]/)[0].toLowerCase();
     }
 
-    return typeof locale === "string" ? new Intl.Locale(locale, options) : locale;
+    try {
+        return locale.minimize().baseName;
+    } catch {
+        return locale.language;
+    }
+}
+
+/**
+ * Get the appropriate locale ID for display purposes.
+ * Han scripts use full baseName; others use just the language.
+ */
+function getDisplayLocaleID(tag: TargetLanguageTag): string {
+    const locale = safeParseLocale(tag);
+    if (!locale) {
+        return tag;
+    }
+
+    if (isHanLanguageTag(tag)) {
+        return locale.baseName;
+    }
+
+    return locale.language;
 }
 
 export function formatDisplayName(
@@ -23,16 +50,16 @@ export function formatDisplayName(
     fallback?: string,
     languageNames?: Intl.DisplayNames,
 ): string {
-    localeID = typeof localeID === "string" ? localeID : localeID.baseName;
-    fallback ??= localeID;
+    const id = typeof localeID === "string" ? localeID : localeID.baseName;
+    fallback ??= id;
 
-    languageNames ??= new Intl.DisplayNames([localeID], {
+    languageNames ??= new Intl.DisplayNames([id], {
         type: "language",
     });
 
     try {
-        return languageNames.of(localeID) || fallback;
-    } catch (_error) {
+        return languageNames.of(id) || fallback;
+    } catch {
         return fallback;
     }
 }
@@ -52,7 +79,7 @@ export function normalizeDisplayName(displayName: string): string {
  * A triple representing a locale and its corresponding display names.
  */
 export type LocaleDisplay = [
-    locale: Intl.UnicodeBCP47LocaleIdentifier,
+    locale: TargetLanguageTag,
     localizedDisplayName: string,
     relativeDisplayName: string,
 ];
@@ -61,47 +88,57 @@ export function createIntlCollator(
     activeLocale: Intl.UnicodeBCP47LocaleIdentifier,
     options: Intl.CollatorOptions,
 ) {
+    const activeIsCJK = isCJKLanguageTag(activeLocale);
+
     return ([aLocale, aName]: LocaleDisplay, [bLocale, bName]: LocaleDisplay) => {
-        // The current locale always goes first.
+        // Active locale always first
+        if (activeLocale === aLocale) return -1;
+        if (activeLocale === bLocale) return 1;
 
-        if (activeLocale === aLocale) {
-            return -1;
+        // Pseudo locale always last
+        if (PseudoLanguageTag === aLocale) return 1;
+        if (PseudoLanguageTag === bLocale) return -1;
+
+        const aIsCJK = isCJKLanguageTag(aLocale);
+        const bIsCJK = isCJKLanguageTag(bLocale);
+
+        // Group CJK languages together
+        if (aIsCJK !== bIsCJK) {
+            return aIsCJK ? (activeIsCJK ? -1 : 1) : activeIsCJK ? 1 : -1;
         }
 
-        if (activeLocale === bLocale) {
-            return 1;
+        // Within CJK: group Han scripts together
+        if (aIsCJK && bIsCJK) {
+            const aIsHan = isHanLanguageTag(aLocale);
+            const bIsHan = isHanLanguageTag(bLocale);
+
+            if (aIsHan !== bIsHan) {
+                return aIsHan ? -1 : 1;
+            }
         }
-
-        // Pseudo locale goes last....
-
-        if (LanguageTag.Pseudo === aLocale) {
-            return 1;
-        }
-
-        if (LanguageTag.Pseudo === bLocale) {
-            return -1;
-        }
-
-        if (isCJKLanguageTag(aLocale) && !isCJKLanguageTag(bLocale)) {
-            return 1;
-        }
-
-        if (!isCJKLanguageTag(aLocale) && isCJKLanguageTag(bLocale)) {
-            return -1;
-        }
-
-        // Finally, sort by localized name.
 
         return aName.localeCompare(bName, activeLocale, options);
     };
 }
 
 export interface FormatLocaleOptionsInit {
-    activeLocale?: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale;
     languageNames?: Intl.DisplayNames;
     collatorOptions?: Intl.CollatorOptions;
     debug?: boolean;
 }
+
+/**
+ * Pre-defined display names for locales that need special handling.
+ * These use minimized IDs or explicit fallbacks.
+ */
+const SPECIAL_LOCALE_FALLBACKS: ReadonlyMap<TargetLanguageTag, () => string> = new Map([
+    [SourceLanguageTag, () => msg("English", { id: "en" })],
+    [CJKLanguageTag.HanSimplified, () => msg("Chinese (Simplified)", { id: "zh-Hans" })],
+    [CJKLanguageTag.HanTraditional, () => msg("Chinese (Traditional)", { id: "zh-Hant" })],
+    [CJKLanguageTag.Japanese, () => msg("Japanese", { id: "ja-JP" })],
+    [CJKLanguageTag.Korean, () => msg("Korean", { id: "ko-KR" })],
+    [PseudoLanguageTag, () => msg("English (Pseudo-Accents)", { id: "en-XA" })],
+]);
 
 /**
  * Format the locale options for use in a user-facing element.
@@ -112,116 +149,51 @@ export function formatLocaleDisplayNames(
     activeLanguageTag: Intl.UnicodeBCP47LocaleIdentifier | Intl.Locale,
     { collatorOptions = {}, languageNames, debug }: FormatLocaleOptionsInit = {},
 ): LocaleDisplay[] {
-    const activeLocale = createLocale(activeLanguageTag);
+    const activeLocaleTag =
+        typeof activeLanguageTag === "string" ? activeLanguageTag : activeLanguageTag.baseName;
 
-    languageNames ??= new Intl.DisplayNames(activeLocale, {
+    languageNames ??= new Intl.DisplayNames(activeLocaleTag, {
         type: "language",
     });
 
-    const localeIDs = new Set<Intl.UnicodeBCP47LocaleIdentifier>();
+    const usedLanguages = new Set<string>();
+    const displayNames = new Map<TargetLanguageTag, string>();
 
-    const displayNames = new Map<Intl.UnicodeBCP47LocaleIdentifier, string>([
-        [
-            LanguageTag.Source,
-            formatDisplayName(LanguageTag.Source, msg("English", { id: "en" }), languageNames),
-        ],
-        [
-            LanguageTag.HanSimplified,
-            formatDisplayName(
-                LanguageTag.HanSimplified,
-                msg("Chinese (Simplified)", { id: "zh-Hans" }),
-                languageNames,
-            ),
-        ],
-        [
-            LanguageTag.HanTraditional,
-            formatDisplayName(
-                LanguageTag.HanTraditional,
-                msg("Chinese (Traditional)", { id: "zh-Hant" }),
-                languageNames,
-            ),
-        ],
-        [
-            LanguageTag.Japanese,
-            formatDisplayName(
-                new Intl.Locale(LanguageTag.Japanese).minimize(),
-                msg("Japanese", { id: "ja-JP" }),
-                languageNames,
-            ),
-        ],
-
-        [
-            LanguageTag.Korean,
-            formatDisplayName(
-                new Intl.Locale(LanguageTag.Korean).minimize(),
-                msg("Korean", { id: "ko-KR" }),
-                languageNames,
-            ),
-        ],
-    ]);
-
-    const tags = new Set(allLocales);
-    const localeCache = new Map<Intl.UnicodeBCP47LocaleIdentifier, Intl.Locale>();
-
-    for (const tag of tags) {
-        if (displayNames.has(tag) || tag === LanguageTag.Pseudo) {
+    // Process all locales
+    for (const tag of allLocales) {
+        // Skip pseudo unless debug
+        if (tag === PseudoLanguageTag && !debug) {
             continue;
         }
 
-        let locale = localeCache.get(tag);
+        const specialFallback = SPECIAL_LOCALE_FALLBACKS.get(tag);
 
-        if (!locale) {
-            locale = new Intl.Locale(tag);
-            localeCache.set(tag, locale);
-        }
-
-        let localeID: string;
-
-        // Prefer a less specific locale ID if we haven't already used it.
-        if (!localeIDs.has(locale.language)) {
-            localeID = locale.language;
+        if (specialFallback) {
+            // Special locales use minimized ID for lookup
+            const localeID = getMinimizedLocaleID(tag);
+            displayNames.set(tag, formatDisplayName(localeID, specialFallback(), languageNames));
         } else {
-            localeID = locale.baseName;
+            // Standard locales: prefer language-only if not already used
+            const locale = safeParseLocale(tag);
+            const language = locale?.language ?? tag.split(/[-_]/)[0].toLowerCase();
+
+            const localeID = usedLanguages.has(language) ? (locale?.baseName ?? tag) : language;
+
+            usedLanguages.add(language);
+            displayNames.set(tag, formatDisplayName(localeID, language, languageNames));
         }
-
-        localeIDs.add(localeID);
-
-        displayNames.set(tag, formatDisplayName(localeID, locale.language, languageNames));
     }
 
-    if (debug) {
-        displayNames.set(
-            LanguageTag.Pseudo,
-            formatDisplayName(
-                LanguageTag.Pseudo,
-                // Fallback provided if the browser doesn't support this locale.
-                msg("English (Pseudo-Accents)", { id: "en-XA" }),
-                languageNames,
-            ),
-        );
-    }
+    // Build display entries with relative names
+    const entries: LocaleDisplay[] = Array.from(displayNames, ([tag, localizedName]) => {
+        const relativeLanguageNames = new Intl.DisplayNames(tag, { type: "language" });
+        const localeID = getDisplayLocaleID(tag);
+        const relativeName = formatDisplayName(localeID, localizedName, relativeLanguageNames);
 
-    const entries = Array.from(displayNames)
-        .map(([languageTag, localizedDisplayName]): LocaleDisplay => {
-            const relativeLanguageNames = new Intl.DisplayNames(languageTag, {
-                type: "language",
-            });
+        return [tag, localizedName, relativeName];
+    });
 
-            const locale = localeCache.get(languageTag) || new Intl.Locale(languageTag);
-            const localeID = isHanLanguageTag(languageTag) ? locale.baseName : locale.language;
-
-            const relativeDisplayName = formatDisplayName(
-                localeID,
-                localizedDisplayName,
-                relativeLanguageNames,
-            );
-
-            return [languageTag, localizedDisplayName, relativeDisplayName];
-        })
-
-        .sort(createIntlCollator(activeLocale.baseName, collatorOptions));
-
-    return entries;
+    return entries.sort(createIntlCollator(activeLocaleTag, collatorOptions));
 }
 
 export function renderLocaleDisplayNames(
@@ -232,7 +204,7 @@ export function renderLocaleDisplayNames(
         entries,
         ([languageTag]) => languageTag,
         ([languageTag, localizedDisplayName, relativeDisplayName]) => {
-            const pseudo = languageTag === LanguageTag.Pseudo;
+            const pseudo = languageTag === PseudoLanguageTag;
 
             const same =
                 relativeDisplayName &&
@@ -244,7 +216,7 @@ export function renderLocaleDisplayNames(
             if (!same && !pseudo) {
                 localizedMessage = msg(str`${relativeDisplayName} (${localizedDisplayName})`, {
                     id: "locale-option-localized-label",
-                    desc: "Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the relative language name.",
+                    desc: "Locale option label showing the localized language name along with the native language name in parentheses.",
                 });
             }
 

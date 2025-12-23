@@ -1,31 +1,99 @@
-import { type allLocales, sourceLocale } from "../../../locale-codes.js";
+import { allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
 
-import {
-    CJKLanguageTags,
-    HanLanguageTags,
-    LocalePatternRecord,
-} from "#common/ui/locale/definitions";
+import { resolveChineseScript, resolveChineseScriptFallback } from "#common/ui/locale/cjk";
+import { PseudoLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
 
-type TargetLocaleTag = (typeof allLocales)[number];
+//#region Cache
 
-export function isCJKLanguageTag(languageTag: string): boolean {
-    // @ts-expect-error: Type guard
-    return CJKLanguageTags.has(languageTag);
-}
+const localeCache = new Map<string, Intl.Locale | null>();
 
-export function isHanLanguageTag(languageTag: string): boolean {
-    // @ts-expect-error: Type guard
-    return HanLanguageTags.has(languageTag);
-}
+//#endregion
 
-export function getBestMatchLocale(languageTag: string): TargetLocaleTag | null {
-    for (const [localeCode, pattern] of Object.entries(LocalePatternRecord)) {
-        if (pattern.test(languageTag)) {
-            return localeCode as TargetLocaleTag;
-        }
+//#region Locale Matching
+
+/**
+ * Parse a locale string with caching and fallback for invalid/unsupported locales.
+ */
+export function safeParseLocale(candidate: string): Intl.Locale | null {
+    if (localeCache.has(candidate)) {
+        return localeCache.get(candidate)!;
     }
 
-    return null;
+    let locale: Intl.Locale | null = null;
+    try {
+        locale = new Intl.Locale(candidate);
+    } catch {
+        // Invalid locale string
+    }
+
+    localeCache.set(candidate, locale);
+    return locale;
+}
+
+interface ParsedLocale {
+    tag: TargetLanguageTag;
+    language: string;
+    script?: string;
+    region?: string;
+}
+
+let parsedSupportedLocales: ParsedLocale[] | null = null;
+
+/**
+ * Lazily parse and cache supported locales.
+ */
+function getParsedSupportedLocales(): ParsedLocale[] {
+    if (!parsedSupportedLocales) {
+        parsedSupportedLocales = allLocales.map((tag) => {
+            const locale = safeParseLocale(tag);
+
+            return {
+                tag,
+                language: locale?.language ?? tag.split(/[-_]/)[0].toLowerCase(),
+                script: locale?.script,
+                region: locale?.region,
+            };
+        });
+    }
+
+    return parsedSupportedLocales;
+}
+
+/**
+ * Find the best matching supported locale for a given locale string.
+ */
+export function getBestMatchLocale(candidate: string): TargetLanguageTag | null {
+    // Normalize common variations
+    const normalized = candidate.trim();
+    if (!normalized) return null;
+
+    const locale = safeParseLocale(normalized);
+    const language = locale?.language ?? normalized.split(/[-_]/)[0].toLowerCase();
+
+    // Pseudo-locale
+    if (language === "en") {
+        const region = locale?.region ?? normalized.split(/[-_]/)[1]?.toUpperCase();
+
+        if (region === "XA") {
+            return PseudoLanguageTag;
+        }
+
+        return SourceLanguageTag;
+    }
+
+    // Chinese Han script
+    if (language === "zh") {
+        const script = locale
+            ? resolveChineseScript(locale)
+            : resolveChineseScriptFallback(normalized);
+
+        return `zh-${script}`;
+    }
+
+    const parsed = getParsedSupportedLocales();
+    const match = parsed.find((p) => p.language === language);
+
+    return match?.tag ?? null;
 }
 
 /**
@@ -39,19 +107,26 @@ export function getBestMatchLocale(languageTag: string): TargetLocaleTag | null 
  * one that has a supported locale. Then, from *that*, we have to extract that first supported
  * locale.
  */
-export function findSupportedLocale(candidates: string[]): TargetLocaleTag | null {
-    const candidate = candidates.find((candidate) => getBestMatchLocale(candidate));
-    return candidate ? getBestMatchLocale(candidate) : null;
+export function findSupportedLocale(candidates: string[]): TargetLanguageTag | null {
+    for (const candidate of candidates) {
+        const match = getBestMatchLocale(candidate);
+        if (match) return match;
+    }
+    return null;
 }
+
+//#endregion
+
+//#region Persistence
 
 const sessionLocaleKey = "authentik:locale";
 
 /**
  * Persist the given locale code to sessionStorage.
  */
-export function setSessionLocale(languageTag: TargetLocaleTag | null): void {
+export function setSessionLocale(languageTag: TargetLanguageTag | null): void {
     try {
-        if (!languageTag || languageTag === sourceLocale) {
+        if (!languageTag || languageTag === SourceLanguageTag) {
             sessionStorage?.removeItem?.(sessionLocaleKey);
             return;
         }
@@ -75,6 +150,10 @@ export function getSessionLocale(): string | null {
     return null;
 }
 
+//#endregion
+
+//#region Auto-Detection
+
 /**
  * Auto-detect the best locale to use from several sources.
  *
@@ -95,7 +174,7 @@ export function getSessionLocale(): string | null {
 export function autoDetectLanguage(
     localeHint?: string,
     fallbackLocaleCode?: string,
-): TargetLocaleTag {
+): TargetLanguageTag {
     let localeParam: string | null = null;
 
     if (self.location) {
@@ -107,8 +186,8 @@ export function autoDetectLanguage(
     const sessionLocale = getSessionLocale();
 
     const candidates = [
-        sessionLocale,
         localeParam,
+        sessionLocale,
         localeHint,
         self.navigator?.language,
         fallbackLocaleCode,
@@ -118,13 +197,13 @@ export function autoDetectLanguage(
 
     if (!firstSupportedLocale) {
         console.debug(`authentik/locale: Falling back to source locale`, {
-            sourceLocale,
+            SourceLanguageTag,
             localeHint,
             fallbackLocaleCode,
             candidates,
         });
 
-        return sourceLocale;
+        return SourceLanguageTag;
     }
 
     return firstSupportedLocale;
