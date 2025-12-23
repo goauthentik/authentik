@@ -1,6 +1,6 @@
 import { allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
 
-import { resolveChineseScript, resolveChineseScriptFallback } from "#common/ui/locale/cjk";
+import { resolveChineseScript, resolveChineseScriptLegacy } from "#common/ui/locale/cjk";
 import { PseudoLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
 
 //#region Cache
@@ -85,9 +85,9 @@ export function getBestMatchLocale(candidate: string): TargetLanguageTag | null 
     if (language === "zh") {
         const script = locale
             ? resolveChineseScript(locale)
-            : resolveChineseScriptFallback(normalized);
+            : resolveChineseScriptLegacy(normalized);
 
-        return `zh-${script}`;
+        return `${language}-${script}`;
     }
 
     const parsed = getParsedSupportedLocales();
