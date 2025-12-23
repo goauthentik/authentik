@@ -13,10 +13,6 @@
     gap: var(--pf-global--spacer--sm);
     padding-inline: var(--pf-global--spacer--sm);
     padding-block: var(--pf-global--spacer--xs);
-    border-radius: var(--pf-global--BorderRadius--sm);
-    border-style: solid;
-    border-color: transparent;
-    border-width: thin;
     overflow: hidden;
     outline: none;
 }
@@ -32,8 +28,10 @@
     /* Compatibility mode */
     background-color: var(--ak-c-locale-select--BackgroundColor, transparent) !important;
     color: inherit !important;
+    text-decoration: underline;
+    text-decoration-color: var(--ak-c-locale-select--TextDecorationColor, transparent);
 
-    border-radius: 0.75em;
+    border-radius: var(--pf-global--BorderRadius--sm);
     outline: 1px solid var(--ak-c-locale--select--OutlineColor, transparent);
 
     border: none;
@@ -99,7 +97,7 @@
 }
 
 [part="select"] {
-    transition: opacity;
+    transition-property: opacity, text-decoration-color;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
 }

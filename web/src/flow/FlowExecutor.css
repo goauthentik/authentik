@@ -16,7 +16,6 @@
 [part="locale-select"] {
     --ak-c-flow-executor__locale-select--Padding: var(--pf-global--spacer--md);
     --ak-c-flow-executor__locale-select--Color: var(--pf-global--Color--light-100);
-    --ak-c-flow-executor__locale-select--Color--hover: var(--pf-global--primary-color--dark-100);
     --ak-c-locale-select--label--Color: var(--ak-c-flow-executor__locale-select--Color);
 
     /* Compatibility mode */
@@ -32,14 +31,27 @@
     /* Slight differences in browser hover states. */
     &:has(select:hover),
     &:hover {
-        --ak-c-locale-select--label--Color: var(--ak-c-flow-executor__locale-select--Color--hover);
+        --ak-c-locale-select--label--Color: var(
+            --ak-c-flow-executor__locale-select--Color--hover,
+            var(--ak-c-flow-executor__locale-select--Color)
+        );
         --ak-c-locale-select--BackgroundColor: var(
             --ak-c-flow-executor__locale-select--BackgroundColor--hover
         );
+        --ak-c-locale-select--TextDecorationColor: var(--ak-c-locale-select--label--Color);
         --ak-c-locale-select__after--Opacity: 1;
-        --ak-c-locale--select--OutlineColor: currentColor;
 
         color: var(--ak-c-flow-executor__locale-select--Color--hover);
+
+        @media (prefers-contrast: more) {
+            --ak-c-flow-executor__locale-select--Color--hover: var(
+                --pf-global--primary-color--dark-100
+            );
+
+            --ak-c-locale--select--OutlineColor: var(
+                --ak-c-flow-executor__locale-select--Color--hover
+            );
+        }
     }
 
     &::part(select) {
@@ -67,7 +79,7 @@
         }
     }
 
-    @media (width >= 61.25rem) {
+    @media (width >= 61.25rem) and (prefers-contrast: more) {
         --ak-c-flow-executor__locale-select--BackgroundColor--hover: var(
             --pf-global--BackgroundColor--150
         );
