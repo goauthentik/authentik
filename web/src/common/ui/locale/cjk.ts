@@ -74,19 +74,21 @@ export function resolveChineseScript(locale: Intl.Locale): HanScriptTag {
     }
 
     const scriptViaRegion = locale.region ? ZHRegionToHanScript.get(locale.region) : null;
+
     if (scriptViaRegion) {
         return scriptViaRegion;
     }
 
     try {
         const maximized = locale.maximize();
+
         if (
             maximized.script === HanScriptTag.Traditional ||
             maximized.script === HanScriptTag.Simplified
         ) {
             return maximized.script;
         }
-    } catch {
+    } catch (_error) {
         // maximize() not supported or failed
     }
 
