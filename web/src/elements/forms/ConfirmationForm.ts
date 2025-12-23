@@ -19,7 +19,7 @@ export class ConfirmationForm extends ModalButton {
     errorMessage!: string;
 
     @property({ type: Boolean, attribute: "non-submittable" })
-    nonSubmittable = true;
+    nonSubmittable = false;
 
     @property()
     action!: string;
