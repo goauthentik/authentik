@@ -244,7 +244,7 @@ export function renderLocaleDisplayNames(
             if (!same && !pseudo) {
                 localizedMessage = msg(str`${relativeDisplayName} (${localizedDisplayName})`, {
                     id: "locale-option-localized-label",
-                    desc: "Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.",
+                    desc: "Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the relative language name.",
                 });
             }
 
