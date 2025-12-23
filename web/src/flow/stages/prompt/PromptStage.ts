@@ -225,16 +225,6 @@ ${prompt.initialValue}</textarea
                     ? getBestMatchLocale(prompt.initialValue)
                     : null;
 
-                // const entries = localeOptions.map(
-                //     ([locale, label]) =>
-                //         html`<option
-                //             value=${locale.baseName}
-                //             ?selected=${locale.baseName === selected}
-                //         >
-                //             ${label}
-                //         </option>`,
-                // );
-
                 return html`<select
                     class="pf-c-form-control"
                     id=${fieldId}
