@@ -169,8 +169,10 @@ export function formatLocaleDisplayNames(
         const specialFallback = SPECIAL_LOCALE_FALLBACKS.get(tag);
 
         if (specialFallback) {
-            // Special locales use minimized ID for lookup
-            const localeID = getMinimizedLocaleID(tag);
+            const localeID = isHanLanguageTag(tag)
+                ? tag // Prefer the display name over region minimization.
+                : getMinimizedLocaleID(tag);
+
             displayNames.set(tag, formatDisplayName(localeID, specialFallback(), languageNames));
         } else {
             // Standard locales: prefer language-only if not already used
