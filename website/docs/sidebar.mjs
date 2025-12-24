@@ -730,7 +730,7 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/temp"],
+                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35.0"],
                     },
                 ],
             },
