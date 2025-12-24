@@ -6,8 +6,11 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 from django.db import connection
+from structlog.stdlib import get_logger
 
 from authentik.root.ws.storage import CACHE_PREFIX
+
+LOGGER = get_logger()
 
 
 def build_session_group(session_key: str):
@@ -36,17 +39,17 @@ class MessageConsumer(JsonWebsocketConsumer):
             cache.set(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}", True, None)
         if device_cookie := self.scope["cookies"].get("authentik_device", None):
             self.device_cookie = device_cookie
-            async_to_sync(self.channel_layer.group_add)(
-                build_device_group(self.device_cookie), self.channel_name
-            )
+            group = build_device_group(self.device_cookie)
+            LOGGER.debug("Joining device group", group=group)
+            async_to_sync(self.channel_layer.group_add)(group, self.channel_name)
 
     def disconnect(self, code):
         if self.session_key:
             cache.delete(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}")
         if self.device_cookie:
-            async_to_sync(self.channel_layer.group_discard)(
-                build_device_group(self.device_cookie), self.channel_name
-            )
+            group = build_device_group(self.device_cookie)
+            LOGGER.debug("Leaving device group", group=group)
+            async_to_sync(self.channel_layer.group_discard)(group, self.channel_name)
 
     def event_message(self, event: dict):
         """Event handler which is called by Messages Storage backend"""
