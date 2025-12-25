@@ -26,6 +26,18 @@ def google_workspace_sync_direct(*args, **kwargs):
 
 
 @actor(
+    description=_("Dispatch deletions for an object (user, group) for Google Workspace providers.")
+)
+def google_workspace_sync_delete_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_delete_dispatch(google_workspace_sync_delete, *args, **kwargs)
+
+
+@actor(description=_("Delete an object (user, group) for Google Workspace provider."))
+def google_workspace_sync_delete(*args, **kwargs):
+    return sync_tasks.sync_signal_delete(*args, **kwargs)
+
+
+@actor(
     description=_(
         "Dispatch syncs for a direct object (user, group) for Google Workspace providers."
     )

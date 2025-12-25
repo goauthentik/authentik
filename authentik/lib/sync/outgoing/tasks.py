@@ -13,6 +13,7 @@ from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
     DryRunRejected,
+    NotFoundSyncException,
     StopSync,
     TransientSyncException,
 )
@@ -189,17 +190,16 @@ class SyncTasks:
 
     def sync_signal_direct_dispatch(
         self,
-        task_sync_signal_direct: Actor[[str, str | int, int, str], None],
+        task_sync_signal_direct: Actor[[str, str | int, int], None],
         model: str,
         pk: str | int,
-        raw_op: str,
     ):
         model_class: type[Model] = path_to_class(model)
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ):
             task_sync_signal_direct.send_with_options(
-                args=(model, pk, provider.pk, raw_op),
+                args=(model, pk, provider.pk),
                 rel_obj=provider,
                 uid=f"{provider.name}:{model_class._meta.model_name}:{pk}:direct",
             )
@@ -209,7 +209,6 @@ class SyncTasks:
         model: str,
         pk: str | int,
         provider_pk: int,
-        raw_op: str,
     ):
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
@@ -219,14 +218,13 @@ class SyncTasks:
         instance = model_class.objects.filter(pk=pk).first()
         if not instance:
             return
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        operation = Direction(raw_op)
         client = provider.client_for_model(instance.__class__)
         # Check if the object is allowed within the provider's restrictions
         queryset = provider.get_object_qs(instance.__class__)
@@ -239,10 +237,7 @@ class SyncTasks:
             return
 
         try:
-            if operation == Direction.add:
-                client.write(instance)
-            if operation == Direction.remove:
-                client.delete(instance)
+            client.write(instance)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
@@ -251,6 +246,60 @@ class SyncTasks:
             self.logger.info("Rejected dry-run event", exc=exc)
         except StopSync as exc:
             self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+
+    def sync_signal_delete_dispatch(
+        self,
+        task_sync_signal_delete: Actor[[str, int, str], None],
+        model: str,
+        mappings: list[tuple[str, str]],
+    ):
+        model_class: type[Model] = path_to_class(model)
+        for provider_pk, identifier in mappings:
+            provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
+                pk=provider_pk
+            ).first()
+            if not provider:
+                continue
+            task_sync_signal_delete.send_with_options(
+                args=(model, identifier, provider_pk),
+                rel_obj=provider,
+                uid=f"{provider.name}:{model_class._meta.model_name}:{identifier}:delete",
+            )
+
+    def sync_signal_delete(
+        self,
+        model: str,
+        identifier: str,
+        provider_pk: int,
+    ):
+        task = CurrentTask.get_task()
+        self.logger = get_logger().bind(
+            provider_type=class_to_path(self._provider_model),
+        )
+        model_class: type[Model] = path_to_class(model)
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
+        ).first()
+        if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
+            return
+        client = provider.client_for_model(model_class)
+
+        try:
+            client.delete(identifier)
+        except NotFoundSyncException as exc:
+            self.logger.info(
+                "Object not found in remote provider",
+                model_name=model_class._meta.model_name,
+                identifier=identifier,
+                exc=exc,
+                provider_pk=provider.pk,
+            )
+        except TransientSyncException as exc:
+            raise Retry() from exc
+        except DryRunRejected as exc:
+            self.logger.info("Rejected dry-run event", exc=exc)
 
     def sync_signal_m2m_dispatch(
         self,
