@@ -71,7 +71,7 @@ def register_signals(
             class_to_path(instance.__class__),
             instance.pk,
             Direction.remove.value,
-        )
+        ).get_result(block=True)
 
     pre_delete.connect(model_pre_delete, User, dispatch_uid=uid, weak=False)
     pre_delete.connect(model_pre_delete, Group, dispatch_uid=uid, weak=False)
