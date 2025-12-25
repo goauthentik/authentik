@@ -397,7 +397,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                 <ak-radio-input
                     label=${msg("Outgoing sync trigger mode")}
                     required
-                    name="type"
+                    name="syncOutgoingTriggerMode"
                     .value=${this.instance?.syncOutgoingTriggerMode}
                     .options=${createSyncOutgoingTriggerModeOptions}
                 >
