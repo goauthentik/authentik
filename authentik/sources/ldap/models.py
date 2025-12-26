@@ -151,6 +151,10 @@ class LDAPSource(IncomingSyncSource):
         ),
     )
 
+    sync_group_parentage = models.BooleanField(
+        default=False, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
+    )
+
     @property
     def component(self) -> str:
         return "ak-source-ldap-form"
