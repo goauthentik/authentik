@@ -745,7 +745,8 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.provider:
             return None
 
-        candidates = []
+        best_candidate = None
+        best_depth = -1
         base_class = Provider
         for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
             parent = self.provider
@@ -757,13 +758,12 @@ class Application(SerializerModel, PolicyBindingModel):
             # Skip if we didn't find a subclass (parent is still the base Provider)
             if type(parent) is base_class:
                 continue
-            if parent in candidates:
-                continue
-            idx = subclass.count(LOOKUP_SEP) + 1
-            candidates.insert(idx, parent)
-        if not candidates:
-            return None
-        return candidates[-1]
+            # Track the most specific (deepest) subclass
+            depth = subclass.count(LOOKUP_SEP)
+            if depth > best_depth:
+                best_depth = depth
+                best_candidate = parent
+        return best_candidate
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""
