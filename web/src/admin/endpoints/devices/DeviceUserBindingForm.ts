@@ -5,7 +5,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PolicyBindingForm } from "#admin/policies/PolicyBindingForm";
 import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
-import { DeviceUserBinding, EndpointsApi } from "@goauthentik/api";
+import { DeviceUserBinding, EndpointsApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -28,6 +28,36 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
         }
         this.defaultOrder = await this.getOrder();
         return binding;
+    }
+
+    async send(data: PolicyBinding): Promise<unknown> {
+        if (this.targetPk) {
+            data.target = this.targetPk;
+        }
+        switch (this.policyGroupUser) {
+            case PolicyBindingCheckTarget.policy:
+                data.user = null;
+                data.group = null;
+                break;
+            case PolicyBindingCheckTarget.group:
+                data.policy = null;
+                data.user = null;
+                break;
+            case PolicyBindingCheckTarget.user:
+                data.policy = null;
+                data.group = null;
+                break;
+        }
+
+        if (this.instance?.pk) {
+            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsUpdate({
+                policyBindingUuid: this.instance.pk,
+                deviceUserBindingRequest: data,
+            });
+        }
+        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceBindingsCreate({
+            deviceUserBindingRequest: data,
+        });
     }
 
     public override renderForm() {

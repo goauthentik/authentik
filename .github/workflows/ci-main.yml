@@ -199,7 +199,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
         uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
         with:
@@ -221,6 +221,54 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e
+  test-openid-conformance:
+    name: test-openid-conformance (${{ matrix.job.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: basic
+            glob: tests/openid_conformance/test_basic.py
+          - name: implicit
+            glob: tests/openid_conformance/test_implicit.py
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: Setup e2e env (chrome, etc)
+        run: |
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - name: Setup conformance suite
+        run: |
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+      - id: cache-web
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
+        run: |
+          npm ci
+          make -C .. gen-client-ts
+          npm run build
+          npm run build:sfe
+      - name: run conformance
+        run: |
+          uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage xml
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: conformance
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: conformance-certification-${{ matrix.job.name }}
+          path: tests/openid_conformance/exports/
   ci-core-mark:
     if: always()
     needs:

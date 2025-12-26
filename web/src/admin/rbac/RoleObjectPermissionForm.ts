@@ -71,40 +71,45 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         if (!this.modelPermissions) {
             return nothing;
         }
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Role")} name="role">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Role[]> => {
-                        const args: RbacRolesListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
-                        return roles.results;
-                    }}
-                    .renderElement=${(role: Role): string => {
-                        return role.name;
-                    }}
-                    .value=${(role: Role | undefined): string | undefined => {
-                        return role?.pk;
-                    }}
-                >
-                </ak-search-select>
-            </ak-form-element-horizontal>
-            ${this.modelPermissions?.results
-                .filter((perm) => {
-                    const [_app, model] = this.model?.split(".") || "";
-                    return perm.codename !== `add_${model}`;
-                })
-                .map((perm) => {
-                    return html`<ak-switch-input
-                        name="permissions.${perm.codename}"
-                        label=${perm.name}
-                    ></ak-switch-input>`;
-                })}
-        </form>`;
+        return html`<span
+                >${msg(
+                    "Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.",
+                )}</span
+            >
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-form-element-horizontal label=${msg("Role")} name="role">
+                    <ak-search-select
+                        .fetchObjects=${async (query?: string): Promise<Role[]> => {
+                            const args: RbacRolesListRequest = {
+                                ordering: "name",
+                            };
+                            if (query !== undefined) {
+                                args.search = query;
+                            }
+                            const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                            return roles.results;
+                        }}
+                        .renderElement=${(role: Role): string => {
+                            return role.name;
+                        }}
+                        .value=${(role: Role | undefined): string | undefined => {
+                            return role?.pk;
+                        }}
+                    >
+                    </ak-search-select>
+                </ak-form-element-horizontal>
+                ${this.modelPermissions?.results
+                    .filter((perm) => {
+                        const [_app, model] = this.model?.split(".") || "";
+                        return perm.codename !== `add_${model}`;
+                    })
+                    .map((perm) => {
+                        return html`<ak-switch-input
+                            name="permissions.${perm.codename}"
+                            label=${perm.name}
+                        ></ak-switch-input>`;
+                    })}
+            </form>`;
     }
 }
 

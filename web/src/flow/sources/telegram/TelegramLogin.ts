@@ -1,3 +1,5 @@
+import "#flow/components/ak-flow-card";
+
 import { loadTelegramWidget, TelegramUserResponse } from "./utils";
 
 import { BaseStage } from "#flow/stages/base";
