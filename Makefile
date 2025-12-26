@@ -327,6 +327,6 @@ ci-pending-migrations: ci--meta-debug
 	uv run ak makemigrations --check
 
 ci-test: ci--meta-debug
-	uv run coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
+	uv run coverage run manage.py test --keepdb authentik
 	uv run coverage report
 	uv run coverage xml
