@@ -22453,6 +22453,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sync_group_parentage
+        schema:
+          type: boolean
+      - in: query
         name: sync_groups
         schema:
           type: boolean
@@ -40655,6 +40659,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_parentage:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - component
@@ -40873,6 +40880,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_parentage:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - name
@@ -47273,6 +47283,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_parentage:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:
       type: object
       description: License Serializer

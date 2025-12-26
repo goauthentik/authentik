@@ -11724,6 +11724,11 @@
                     ],
                     "title": "Sync outgoing trigger mode",
                     "description": "When to trigger sync for outgoing providers"
+                },
+                "sync_group_parentage": {
+                    "type": "boolean",
+                    "title": "Sync group parentage",
+                    "description": "Sync group parentage/hierarchy from LDAP directories."
                 }
             },
             "required": []
