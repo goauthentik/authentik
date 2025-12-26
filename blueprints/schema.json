@@ -11664,17 +11664,17 @@
                     "title": "Group object filter",
                     "description": "Consider Objects matching this filter to be Groups."
                 },
-                "group_membership_field": {
+                "membership_field": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Group membership field",
-                    "description": "Field which contains members of a group."
+                    "title": "Membership field",
+                    "description": "Field which contains a list of members/memberships."
                 },
-                "user_membership_attribute": {
+                "membership_reference": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "User membership attribute",
-                    "description": "Attribute which matches the value of `group_membership_field`."
+                    "title": "Membership reference",
+                    "description": "Attribute which matches the value of `membership_field`."
                 },
                 "object_uniqueness_field": {
                     "type": "string",
@@ -11700,14 +11700,14 @@
                     "type": "boolean",
                     "title": "Sync groups"
                 },
-                "sync_parent_group": {
+                "additional_parent_group": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Sync parent group"
+                    "title": "Additional parent group"
                 },
-                "lookup_groups_from_user": {
+                "lookup_groups_from_member": {
                     "type": "boolean",
-                    "title": "Lookup groups from user",
+                    "title": "Lookup groups from member",
                     "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
                 },
                 "delete_not_found_objects": {
@@ -11725,9 +11725,9 @@
                     "title": "Sync outgoing trigger mode",
                     "description": "When to trigger sync for outgoing providers"
                 },
-                "sync_group_parentage": {
+                "sync_group_parents": {
                     "type": "boolean",
-                    "title": "Sync group parentage",
+                    "title": "Sync group parents",
                     "description": "Sync group parentage/hierarchy from LDAP directories."
                 }
             },
