@@ -55,16 +55,25 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 group_dn = group.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
                 group_filter = f"({self._source.membership_field}={escaped_dn})"
-                group_members = self._source.connection().extend.standard.paged_search(
-                    search_base=self.base_dn_users,
+
+                bases = [self.base_dn_users]  # select search bases
+                if self._source.sync_group_parents:
+                    bases.append(self.base_dn_groups)
+
+                group_members = map(lambda base:self._source.connection().extend.standard.paged_search(
+                    search_base=base,
                     search_filter=group_filter,
                     search_scope=SUBTREE,
                     attributes=[self._source.object_uniqueness_field],
-                )
+                ), bases)  # do it once or twice depending on sync_group_parents
+
                 members = []
-                for group_member in group_members:
-                    group_member_dn = group_member.get("dn", {})
-                    members.append(group_member_dn)
+
+                for per_base_search in group_members:  # iterate over results per base
+                    for group_member in per_base_search:
+                        group_member_dn = group_member.get("dn", {})
+                        members.append(group_member_dn)
+
             else:
                 if (attributes := self.get_attributes(group)) is None:
                     continue
