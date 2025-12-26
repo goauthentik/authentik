@@ -754,11 +754,12 @@ class Application(SerializerModel, PolicyBindingModel):
                     parent = getattr(parent, level)
                 except AttributeError:
                     break
+            # Skip if we didn't find a subclass (parent is still the base Provider)
+            if type(parent) is base_class:
+                continue
             if parent in candidates:
                 continue
-            idx = subclass.count(LOOKUP_SEP)
-            if type(parent) is not base_class:
-                idx += 1
+            idx = subclass.count(LOOKUP_SEP) + 1
             candidates.insert(idx, parent)
         if not candidates:
             return None
