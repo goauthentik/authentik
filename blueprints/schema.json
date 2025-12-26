@@ -6276,6 +6276,11 @@
                     ],
                     "format": "date-time",
                     "title": "Expires"
+                },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
                 }
             },
             "required": []
