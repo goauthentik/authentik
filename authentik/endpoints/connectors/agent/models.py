@@ -97,7 +97,7 @@ class AgentDeviceUserBinding(DeviceUserBinding):
     apple_enclave_key_id = models.TextField()
 
 
-class DeviceToken(InternallyManagedMixin, ExpiringModel):
+class DeviceToken(ExpiringModel):
     """Per-device token used for authentication."""
 
     token_uuid = models.UUIDField(primary_key=True, default=uuid4)
