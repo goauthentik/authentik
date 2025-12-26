@@ -255,11 +255,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         name="syncGroupParents"
                         label=${msg("Sync Group Parents")}
                         ?checked=${this.instance?.syncGroupParents ?? true}
-                        help=${msg(
-                            "Sync group hierarchy from LDAP directories.",
-                        )}
+                        help=${msg("Sync group hierarchy from LDAP directories.")}
                     ></ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Additional Parent Group")} name="additionalParentGroup">
+                    <ak-form-element-horizontal
+                        label=${msg("Additional Parent Group")}
+                        name="additionalParentGroup"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -384,7 +385,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Attribute which matches the value of Membership field. Typically `distinguishedName` or `cn`.")}
+                            ${msg(
+                                "Attribute which matches the value of Membership field. Typically `distinguishedName` or `cn`.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
