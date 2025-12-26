@@ -90,6 +90,20 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             membership_count += 1
             membership_count += users.count()
             group.users.set(users)
+
+            if self._source.sync_group_parentage:
+                groups = Group.objects.filter(
+                    Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
+                    | Q(
+                        **{
+                            f"attributes__{self._source.user_membership_attribute}__isnull": True,
+                            "parents__in": [group],
+                        }
+                    )
+                ).distinct()
+                membership_count += groups.count()
+                group.children.set(groups)
+
             group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
