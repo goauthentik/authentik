@@ -93,6 +93,18 @@ class CertificateBuilder:
             .not_valid_after(datetime.datetime.today() + datetime.timedelta(days=validity_days))
             .serial_number(int(uuid.uuid4()))
             .public_key(self.__public_key)
+            .add_extension(
+                x509.SubjectKeyIdentifier.from_public_key(self.__private_key.public_key()),
+                critical=False,
+            )
+            .add_extension(
+                x509.AuthorityKeyIdentifier.from_issuer_public_key(self.__private_key.public_key()),
+                critical=False,
+            )
+            .add_extension(
+                x509.BasicConstraints(ca=True, path_length=None),
+                critical=True,
+            )
         )
         if alt_names:
             self.__builder = self.__builder.add_extension(
