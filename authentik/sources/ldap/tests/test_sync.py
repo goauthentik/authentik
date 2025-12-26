@@ -225,6 +225,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        self.source.sync_group_parents = False
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             _user = create_test_admin_user()
             parent_group = Group.objects.get(name=_user.username)
@@ -336,6 +337,86 @@ class LDAPSyncTests(TestCase):
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
             self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
+    def test_sync_group_parentship_ad(self):
+        """Test group parentship sync"""
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
+        )
+        self.source.sync_group_parents = True
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            additional_parent_group = Group.objects.get(name=_user.username)
+            self.source.additional_parent_group = additional_parent_group
+            self.source.save()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            membership_sync.sync_full()
+            group: Group = Group.objects.filter(name="test-group").first()
+            parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
+            self.assertTrue(
+                parent_ad_group in group.parents.all(),
+                "Parent AD group missing"
+                )
+            self.assertTrue(
+                additional_parent_group in group.parents.all(),
+                "Additional parent group missing from test-group"
+                )
+            self.assertTrue(
+                additional_parent_group in parent_ad_group.parents.all(),
+                "Additional parent group missing from test-group-containing-groups"
+                )
+
+    def test_sync_group_parentship_ad_memberOf(self):
+        """Test group parentship sync"""
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
+        )
+        self.source.sync_group_parents = True
+        self.source.lookup_groups_from_member = True
+        self.source.membership_field = "memberOf"
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            additional_parent_group = Group.objects.get(name=_user.username)
+            self.source.additional_parent_group = additional_parent_group
+            self.source.save()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            membership_sync.sync_full()
+            group: Group = Group.objects.filter(name="test-group").first()
+            parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
+            self.assertTrue(
+                parent_ad_group in group.parents.all(),
+                "Parent AD group missing."
+                )
+            self.assertTrue(
+                additional_parent_group in group.parents.all(),
+                "Additional parent group missing from test-group"
+                )
+            self.assertTrue(
+                additional_parent_group in parent_ad_group.parents.all(),
+                "Additional parent group missing from test-group-containing-groups"
+                )
 
     def test_tasks_ad(self):
         """Test Scheduled tasks"""
