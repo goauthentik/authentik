@@ -287,7 +287,7 @@
     flex-direction: column;
     align-self: end;
     justify-content: center;
-    padding-inline: var(--pf-global--spacer--2xl);
+    padding-inline: var(--pf-global--spacer--xl) !important;
     padding-block: var(--ak-login__footer--PaddingBlock) !important;
     min-height: calc((var(--ak-login__footer--PaddingBlock) * 2) + 1rem);
     line-height: var(--pf-global--LineHeight--md);
@@ -297,6 +297,10 @@
 
     @media (max-width: 35rem) {
         color: var(--pf-global--Color--200);
+    }
+
+    @media (min-width: 35rem) and (min-height: 17.5rem) {
+        filter: var(--ak-global--background-contrast-Filter);
     }
 }
 

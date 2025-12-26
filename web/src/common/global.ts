@@ -1,4 +1,4 @@
-import { TargetLocale } from "#common/ui/locale/definitions";
+import { TargetLanguageTag } from "#common/ui/locale/definitions";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 
 import {
@@ -13,7 +13,7 @@ const convertedSymbol = Symbol("ak-converted");
 
 export interface GlobalAuthentik {
     [convertedSymbol]?: boolean;
-    locale: TargetLocale;
+    locale: TargetLanguageTag;
     flow?: {
         layout: FlowLayoutEnum;
     };
