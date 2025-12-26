@@ -127,6 +127,14 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 ?checked=${this.instance?.syncGroups ?? true}
             ></ak-switch-input>
             <ak-switch-input
+                name="syncGroupParentage"
+                label=${msg("Sync group parentage")}
+                ?checked=${this.instance?.syncGroupParentage ?? false}
+                help=${msg(
+                    "Sync group hierarchy from LDAP directories. Attributes are configurable in Additional settings.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
                 name="deleteNotFoundObjects"
                 label=${msg("Delete Not Found Objects")}
                 ?checked=${this.instance?.deleteNotFoundObjects ?? false}
