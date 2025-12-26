@@ -7,12 +7,14 @@ from typing import Any
 from django.utils.timezone import now
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, DictField
 from structlog import configure, get_config
-from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter
+from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter, get_logger
 from structlog.testing import LogCapture
 from structlog.types import EventDict
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.utils import sanitize_dict
+
+LOGGER = get_logger("").bind()
 
 
 @dataclass()
@@ -34,6 +36,11 @@ class LogEvent:
         item.pop("log_level", None)
         return LogEvent(
             event, log_level, item.pop("logger"), timestamp, attributes=sanitize_dict(item)
+        )
+
+    def log(self):
+        LOGGER.getChild(self.logger).log(
+            NAME_TO_LEVEL[self.log_level], self.event, **self.attributes
         )
 
 

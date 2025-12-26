@@ -49,6 +49,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
         blueprint_content = self.blueprint_instance.retrieve()
         importer = Importer.from_string(blueprint_content, self.blueprint_instance.context)
         valid, logs = importer.validate()
+        [log.log() for log in logs]
         if valid:
             importer.apply()
         return MetaResult()
