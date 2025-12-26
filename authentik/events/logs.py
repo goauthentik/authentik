@@ -14,8 +14,6 @@ from structlog.types import EventDict
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.utils import sanitize_dict
 
-LOGGER = get_logger("").bind()
-
 
 @dataclass()
 class LogEvent:
@@ -39,9 +37,7 @@ class LogEvent:
         )
 
     def log(self):
-        LOGGER.getChild(self.logger).log(
-            NAME_TO_LEVEL[self.log_level], self.event, **self.attributes
-        )
+        get_logger(self.logger).log(NAME_TO_LEVEL[self.log_level], self.event, **self.attributes)
 
 
 class LogEventSerializer(PassiveSerializer):
