@@ -60,12 +60,15 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 if self._source.sync_group_parents:
                     bases.append(self.base_dn_groups)
 
-                group_members = map(lambda base:self._source.connection().extend.standard.paged_search(
-                    search_base=base,
-                    search_filter=group_filter,
-                    search_scope=SUBTREE,
-                    attributes=[self._source.object_uniqueness_field],
-                ), bases)  # do it once or twice depending on sync_group_parents
+                group_members = map(
+                    lambda base: self._source.connection().extend.standard.paged_search(
+                        search_base=base,
+                        search_filter=group_filter,
+                        search_scope=SUBTREE,
+                        attributes=[self._source.object_uniqueness_field],
+                    ),
+                    bases,
+                )  # do it once or twice depending on sync_group_parents
 
                 members = []
 

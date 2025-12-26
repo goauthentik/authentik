@@ -364,18 +364,15 @@ class LDAPSyncTests(TestCase):
             membership_sync.sync_full()
             group: Group = Group.objects.filter(name="test-group").first()
             parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
-            self.assertTrue(
-                parent_ad_group in group.parents.all(),
-                "Parent AD group missing"
-                )
+            self.assertTrue(parent_ad_group in group.parents.all(), "Parent AD group missing")
             self.assertTrue(
                 additional_parent_group in group.parents.all(),
-                "Additional parent group missing from test-group"
-                )
+                "Additional parent group missing from test-group",
+            )
             self.assertTrue(
                 additional_parent_group in parent_ad_group.parents.all(),
-                "Additional parent group missing from test-group-containing-groups"
-                )
+                "Additional parent group missing from test-group-containing-groups",
+            )
 
     def test_sync_group_parentship_ad_memberOf(self):
         """Test group parentship sync"""
@@ -405,18 +402,15 @@ class LDAPSyncTests(TestCase):
             membership_sync.sync_full()
             group: Group = Group.objects.filter(name="test-group").first()
             parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
-            self.assertTrue(
-                parent_ad_group in group.parents.all(),
-                "Parent AD group missing."
-                )
+            self.assertTrue(parent_ad_group in group.parents.all(), "Parent AD group missing.")
             self.assertTrue(
                 additional_parent_group in group.parents.all(),
-                "Additional parent group missing from test-group"
-                )
+                "Additional parent group missing from test-group",
+            )
             self.assertTrue(
                 additional_parent_group in parent_ad_group.parents.all(),
-                "Additional parent group missing from test-group-containing-groups"
-                )
+                "Additional parent group missing from test-group-containing-groups",
+            )
 
     def test_tasks_ad(self):
         """Test Scheduled tasks"""
