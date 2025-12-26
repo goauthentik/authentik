@@ -166,7 +166,7 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/ldap/index",
                         },
-                        items: ["add-secure-apps/providers/ldap/generic_setup"],
+                        items: ["add-secure-apps/providers/ldap/create-ldap-provider"],
                     },
                     {
                         type: "category",
