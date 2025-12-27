@@ -71,7 +71,15 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
-		return "", fmt.Errorf("failed to get session: %w", err)
+		// Session file may not exist (e.g., after outpost restart or logout)
+		// Delete the stale session cookie and continue with the new empty session
+		a.log.WithError(err).Debug("failed to get session, clearing stale cookie")
+		s.Options.MaxAge = -1
+		if saveErr := s.Save(r, w); saveErr != nil {
+			a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
+		}
+		// Get a fresh session after clearing the stale cookie
+		s, _ = a.sessions.Get(r, a.SessionName())
 	}
 	if s.ID == "" {
 		// Ensure session has an ID
