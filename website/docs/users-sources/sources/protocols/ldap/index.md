@@ -43,16 +43,17 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### Additional Settings
 
-- **Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
+- **Sync Group Parents**: Sync group hierarchy from LDAP directories. Adds parents to groups imported from this LDAP directory, using same lookup fields and method as for user group membership.
+- **Additional Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
 - **User path**: Path template for all new users created.
 - **Additional User DN**: Prepended to the base DN for user queries.
 - **Additional Group DN**: Prepended to the base DN for group queries.
 - **User object filter**: Consider objects matching this filter to be users.
 - **Group object filter**: Consider objects matching this filter to be groups.
-- **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
-- **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
-- **User membership attribute**: Attribute name on authentik user objects which is checked against the **Group membership field**. Two common cases are:
-    - If your groups have `member` attributes containing DNs, set this to `distinguishedName`. (The `distinguishedName` attribute for User objects in authentik is set automatically.)
+- **Lookup using a member attribute**: Acquire group membership from a member object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
+- **Membership field**: The user object attribute or the group object attribute that determines the group membership for an object. If **Lookup using a user attribute** is set, this should be a member object attribute (`memberOf`), otherwise a group object attribute (`member`).
+- **Membership reference attribute**: Attribute name on authentik user objects which is checked against the **Group membership field**. Two common cases are:
+    - If your groups have `member` attributes containing DNs, set this to `distinguishedName`. (The `distinguishedName` attribute for User and Group objects in authentik is set automatically.)
     - If your groups have `memberUid` attributes containing `uid`s, set this to `uid`. Make sure that you've created a property mapping that creates an attribute called `uid`.
 - **Object uniqueness field**: This field contains a unique identifier.
 

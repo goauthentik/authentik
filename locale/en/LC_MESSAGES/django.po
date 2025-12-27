@@ -2803,7 +2803,7 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
-msgid "Attribute which matches the value of `group_membership_field`."
+msgid "Attribute which matches the value of `membership_field`."
 msgstr ""
 
 #: authentik/sources/ldap/models.py

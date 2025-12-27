@@ -35,6 +35,7 @@ def mock_ad_connection(password: str) -> Connection:
             "objectClass": "group",
             "distinguishedName": "cn=group1,ou=groups,dc=goauthentik,dc=io",
             "member": ["cn=user,ou=users,dc=goauthentik,dc=io"],
+            "memberOf": ["cn=group3,ou=groups,dc=goauthentik,dc=io"],
         },
     )
     # Group without SID
@@ -96,6 +97,16 @@ def mock_ad_connection(password: str) -> Connection:
             "objectSid": "unique-test2222",
             "objectClass": "person",
             "distinguishedName": "cn=user3,ou=users,dc=goauthentik,dc=io",
+        },
+    )
+    connection.strategy.add_entry(
+        "cn=group3,ou=groups,dc=goauthentik,dc=io",
+        {
+            "name": "test-group-containing-groups",
+            "objectSid": "nested-test-group",
+            "objectClass": "group",
+            "distinguishedName": "cn=group3,ou=groups,dc=goauthentik,dc=io",
+            "member": ["cn=group1,ou=groups,dc=goauthentik,dc=io"],
         },
     )
     connection.bind()

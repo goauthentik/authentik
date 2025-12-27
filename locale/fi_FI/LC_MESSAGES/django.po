@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Marc Schmitt, 2025
 # Ville Ranki, 2025
 # Jani Hast, 2025
 # MarkoTukiainen, 2025
 # Skyler Mäntysaari, 2025
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -2950,8 +2950,8 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr "Käsittele tämän suodattimen rajaamia objekteja käyttäjinä."
 
 #: authentik/sources/ldap/models.py
-msgid "Attribute which matches the value of `group_membership_field`."
-msgstr "Attribuutti, joka vastaa `group_membership_field`-kentän arvoa."
+msgid "Attribute which matches the value of `membership_field`."
+msgstr "Attribuutti, joka vastaa `membership_field`-kentän arvoa."
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."

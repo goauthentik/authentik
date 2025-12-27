@@ -178,8 +178,8 @@ class LDAPSyncTests(TestCase):
         """Test group sync when membership is derived from memberOf user attribute"""
         self.source.object_uniqueness_field = "uid"
         self.source.group_object_filter = "(objectClass=groupOfNames)"
-        self.source.lookup_groups_from_user = True
-        self.source.group_membership_field = "memberOf"
+        self.source.lookup_groups_from_member = True
+        self.source.membership_field = "memberOf"
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default")
@@ -225,10 +225,11 @@ class LDAPSyncTests(TestCase):
             )
         )
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        self.source.sync_group_parents = False
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             _user = create_test_admin_user()
             parent_group = Group.objects.get(name=_user.username)
-            self.source.sync_parent_group = parent_group
+            self.source.additional_parent_group = parent_group
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
@@ -266,10 +267,10 @@ class LDAPSyncTests(TestCase):
     def test_sync_groups_openldap_posix_group(self):
         """Test posix group sync"""
         self.source.object_uniqueness_field = "cn"
-        self.source.group_membership_field = "memberUid"
+        self.source.membership_field = "memberUid"
         self.source.user_object_filter = "(objectClass=posixAccount)"
         self.source.group_object_filter = "(objectClass=posixGroup)"
-        self.source.user_membership_attribute = "uid"
+        self.source.membership_reference = "uid"
         self.source.user_property_mappings.set(
             [
                 *LDAPSourcePropertyMapping.objects.filter(
@@ -303,10 +304,10 @@ class LDAPSyncTests(TestCase):
     def test_sync_groups_openldap_posix_group_nonstandard_membership_attribute(self):
         """Test posix group sync"""
         self.source.object_uniqueness_field = "cn"
-        self.source.group_membership_field = "memberUid"
+        self.source.membership_field = "memberUid"
         self.source.user_object_filter = "(objectClass=posixAccount)"
         self.source.group_object_filter = "(objectClass=posixGroup)"
-        self.source.user_membership_attribute = "cn"
+        self.source.membership_reference = "cn"
         self.source.user_property_mappings.set(
             [
                 *LDAPSourcePropertyMapping.objects.filter(
@@ -336,6 +337,80 @@ class LDAPSyncTests(TestCase):
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
             self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
+    def test_sync_group_parentship_ad(self):
+        """Test group parentship sync"""
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
+        )
+        self.source.sync_group_parents = True
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            additional_parent_group = Group.objects.get(name=_user.username)
+            self.source.additional_parent_group = additional_parent_group
+            self.source.save()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            membership_sync.sync_full()
+            group: Group = Group.objects.filter(name="test-group").first()
+            parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
+            self.assertTrue(parent_ad_group in group.parents.all(), "Parent AD group missing")
+            self.assertTrue(
+                additional_parent_group in group.parents.all(),
+                "Additional parent group missing from test-group",
+            )
+            self.assertTrue(
+                additional_parent_group in parent_ad_group.parents.all(),
+                "Additional parent group missing from test-group-containing-groups",
+            )
+
+    def test_sync_group_parentship_ad_memberOf(self):
+        """Test group parentship sync"""
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
+        )
+        self.source.sync_group_parents = True
+        self.source.lookup_groups_from_member = True
+        self.source.membership_field = "memberOf"
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            additional_parent_group = Group.objects.get(name=_user.username)
+            self.source.additional_parent_group = additional_parent_group
+            self.source.save()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            membership_sync.sync_full()
+            group: Group = Group.objects.filter(name="test-group").first()
+            parent_ad_group = Group.objects.filter(name="test-group-containing-groups").first()
+            self.assertTrue(parent_ad_group in group.parents.all(), "Parent AD group missing.")
+            self.assertTrue(
+                additional_parent_group in group.parents.all(),
+                "Additional parent group missing from test-group",
+            )
+            self.assertTrue(
+                additional_parent_group in parent_ad_group.parents.all(),
+                "Additional parent group missing from test-group-containing-groups",
+            )
 
     def test_tasks_ad(self):
         """Test Scheduled tasks"""
@@ -526,8 +601,8 @@ class LDAPSyncTests(TestCase):
         """Test membership synchronization with special characters in group DN"""
         self.source.object_uniqueness_field = "uid"
         self.source.group_object_filter = "(objectClass=groupOfNames)"
-        self.source.lookup_groups_from_user = True
-        self.source.group_membership_field = "memberOf"
+        self.source.lookup_groups_from_member = True
+        self.source.membership_field = "memberOf"
 
         # Mock connection with group DN containing special characters
         mock_conn = MagicMock()
