@@ -269,6 +269,8 @@ export abstract class SearchSelectBase<T>
 
         if (!value) {
             this.selectedObject = null;
+            this.query = undefined;
+            this.updateData();
             return;
         }
 
