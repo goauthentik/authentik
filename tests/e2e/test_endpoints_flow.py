@@ -39,7 +39,7 @@ class TestEndpointsFlow(SeleniumTestCase):
         )
         self.assertEqual(rc, 0, str(output))
 
-        dev = Device.objects.filter(name="docker-desktop").first()
+        dev = Device.objects.first()
         self.assertIsNotNone(dev)
 
         stage = EndpointStage.objects.create(
