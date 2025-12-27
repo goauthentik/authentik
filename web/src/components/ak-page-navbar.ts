@@ -9,7 +9,7 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -23,6 +23,30 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+export class PageDetailsUpdate extends Event {
+    static readonly eventName = "ak-page-details-update";
+    header: PageHeaderInit;
+
+    constructor(header: PageHeaderInit) {
+        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
+        this.header = header;
+    }
+}
+
+export class PageNavMenuToggle extends Event {
+    static readonly eventName = "ak-page-nav-menu-toggle";
+    open: boolean;
+
+    constructor(open?: boolean) {
+        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
+        this.open = !!open;
+    }
+}
+
+export function setPageDetails(header: PageHeaderInit) {
+    window.dispatchEvent(new PageDetailsUpdate(header));
+}
 
 export interface PageHeaderInit {
     header?: string | null;
@@ -211,6 +235,12 @@ export class AKPageNavbar
                 & img {
                     height: 100%;
                 }
+
+                & i {
+                    font-size: var(--ak-brand-logo-height);
+                    height: var(--ak-brand-logo-height);
+                    line-height: var(--ak-brand-logo-height);
+                }
             }
 
             .sidebar-trigger,
@@ -355,11 +385,7 @@ export class AKPageNavbar
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
-                            <img
-                                src=${themeImage(this.brandingLogo, this.activeTheme)}
-                                alt="${msg("authentik Logo")}"
-                                loading="lazy"
-                            />
+                            ${renderImage(this.brandingLogo, msg("authentik Logo"), "")}
                         </div>
                     </a>
                 </aside>
@@ -409,30 +435,6 @@ export class AKPageNavbar
     }
 
     //#endregion
-}
-
-export class PageDetailsUpdate extends Event {
-    static readonly eventName = "ak-page-details-update";
-    header: PageHeaderInit;
-
-    constructor(header: PageHeaderInit) {
-        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
-        this.header = header;
-    }
-}
-
-export class PageNavMenuToggle extends Event {
-    static readonly eventName = "ak-page-nav-menu-toggle";
-    open: boolean;
-
-    constructor(open?: boolean) {
-        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
-        this.open = !!open;
-    }
-}
-
-export function setPageDetails(header: PageHeaderInit) {
-    window.dispatchEvent(new PageDetailsUpdate(header));
 }
 
 declare global {

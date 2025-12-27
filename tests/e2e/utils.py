@@ -23,8 +23,10 @@ from docker.models.containers import Container
 from docker.models.networks import Network
 from selenium import webdriver
 from selenium.common.exceptions import (
+    DetachedShadowRootException,
     NoSuchElementException,
     NoSuchShadowRootException,
+    StaleElementReferenceException,
     TimeoutException,
     WebDriverException,
 )
@@ -175,6 +177,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         count = 0
         opts = webdriver.ChromeOptions()
+        opts.accept_insecure_certs = True
         opts.add_argument("--disable-search-engine-choice-screen")
         # This breaks selenium when running remotely...?
         # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
@@ -247,36 +250,60 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         Raises a clear test failure if the element isn't found, the text doesn't appear
         within `timeout` seconds, or the text is not valid JSON.
         """
+        use_body = context is None
+        wait_timeout = timeout or self.wait_timeout
+
+        def get_context() -> WebElement:
+            """Get or refresh the context element."""
+            if use_body:
+                return self.driver.find_element(By.TAG_NAME, "body")
+            return context
+
+        def get_text_safely() -> str:
+            """Get element text, re-finding element if stale."""
+            for _ in range(5):
+                try:
+                    return get_context().text.strip()
+                except StaleElementReferenceException:
+                    sleep(0.5)
+            return get_context().text.strip()
+
+        def get_inner_html_safely() -> str:
+            """Get innerHTML, re-finding element if stale."""
+            for _ in range(5):
+                try:
+                    return get_context().get_attribute("innerHTML") or ""
+                except StaleElementReferenceException:
+                    sleep(0.5)
+            return get_context().get_attribute("innerHTML") or ""
 
         try:
-            if context is None:
-                context = self.driver.find_element(By.TAG_NAME, "body")
+            get_context()
         except NoSuchElementException:
             self.fail(
                 f"No element found (defaulted to <body>). Current URL: {self.driver.current_url}"
             )
 
-        wait_timeout = timeout or self.wait_timeout
-        wait = WebDriverWait(context, wait_timeout)
+        wait = WebDriverWait(self.driver, wait_timeout)
 
         try:
-            wait.until(lambda d: len(d.text.strip()) != 0)
+            wait.until(lambda d: len(get_text_safely()) != 0)
         except TimeoutException:
-            snippet = context.text.strip()[:500].replace("\n", " ")
+            snippet = get_text_safely()[:500].replace("\n", " ")
             self.fail(
                 f"Timed out waiting for element text to appear at {self.driver.current_url}. "
                 f"Current content: {snippet or '<empty>'}"
             )
 
-        body_text = context.text.strip()
-        inner_html = context.get_attribute("innerHTML") or ""
+        body_text = get_text_safely()
+        inner_html = get_inner_html_safely()
 
         if "redirecting" in inner_html.lower():
             try:
-                wait.until(lambda d: "redirecting" not in d.get_attribute("innerHTML").lower())
+                wait.until(lambda d: "redirecting" not in get_inner_html_safely().lower())
             except TimeoutException:
-                snippet = context.text.strip()[:500].replace("\n", " ")
-                inner_html = context.get_attribute("innerHTML") or ""
+                snippet = get_text_safely()[:500].replace("\n", " ")
+                inner_html = get_inner_html_safely()
 
                 self.fail(
                     f"Timed out waiting for redirect to finish at {self.driver.current_url}. "
@@ -284,8 +311,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                     f"{inner_html or '<empty>'}"
                 )
 
-            inner_html = context.get_attribute("innerHTML") or ""
-            body_text = context.text.strip()
+            inner_html = get_inner_html_safely()
+            body_text = get_text_safely()
 
         snippet = body_text[:500].replace("\n", " ")
 
@@ -326,18 +353,23 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
         while attempts < SHADOW_ROOT_RETRIES:
             try:
+                host = container.find_element(By.CSS_SELECTOR, selector)
                 return host.shadow_root
-            except NoSuchShadowRootException:
+            except (
+                NoSuchElementException,
+                NoSuchShadowRootException,
+                DetachedShadowRootException,
+                StaleElementReferenceException,
+            ):
                 attempts += 1
                 sleep(0.2)
-                # re-find host in case it was re-attached
-                try:
-                    host = container.find_element(By.CSS_SELECTOR, selector)
-                except NoSuchElementException:
-                    # loop and retry finding host
-                    pass
 
-        inner_html = host.get_attribute("innerHTML") or "<no host>"
+        inner_html = "<no host>"
+        if host is not None:
+            try:
+                inner_html = host.get_attribute("innerHTML") or "<no host>"
+            except (DetachedShadowRootException, StaleElementReferenceException):
+                inner_html = "<stale host>"
 
         raise RuntimeError(
             f"Failed to obtain shadow root for {selector} after {attempts} attempts. "

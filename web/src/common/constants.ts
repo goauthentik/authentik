@@ -35,7 +35,6 @@ export const EVENT_API_DRAWER_TOGGLE = "ak-api-drawer-toggle";
 export const EVENT_FLOW_INSPECTOR_TOGGLE = "ak-flow-inspector-toggle";
 export const EVENT_WS_MESSAGE = "ak-ws-message";
 export const EVENT_FLOW_ADVANCE = "ak-flow-advance";
-export const EVENT_LOCALE_CHANGE = "ak-locale-change";
 export const EVENT_LOCALE_REQUEST = "ak-locale-request";
 export const EVENT_REQUEST_POST = "ak-request-post";
 export const EVENT_MESSAGE = "ak-message";
@@ -47,6 +46,7 @@ export const EVENT_REFRESH_ENTERPRISE = "ak-refresh-enterprise";
 //#region WebSocket
 
 export const WS_MSG_TYPE_MESSAGE = "message";
+export const WS_MSG_TYPE_NOTIFICATION = "notification.new";
 export const WS_MSG_TYPE_REFRESH = "refresh";
 
 //#endregion

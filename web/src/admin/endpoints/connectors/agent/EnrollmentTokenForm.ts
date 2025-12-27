@@ -23,7 +23,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
     connectorID?: string;
 
     @state()
-    showExpiry = true;
+    protected showExpiry = false;
 
     async loadInstance(pk: string): Promise<EnrollmentToken> {
         const token = await new EndpointsApi(
@@ -31,7 +31,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         ).endpointsAgentsEnrollmentTokensRetrieve({
             tokenUuid: pk,
         });
-        this.showExpiry = token.expiring ?? true;
+        this.showExpiry = token.expiring ?? false;
         return token;
     }
 
@@ -77,17 +77,20 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
-            <ak-form-element-horizontal label=${msg("Device Group")} name="deviceGroup">
+            <ak-form-element-horizontal label=${msg("Device Access Group")} name="deviceGroup">
                 <ak-endpoints-device-group-search
                     .group=${this.instance?.deviceGroup}
                 ></ak-endpoints-device-group-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Select a device access group to be added to upon enrollment.")}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
                 <label class="pf-c-switch">
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.expiring ?? true}
+                        ?checked=${this.instance?.expiring ?? false}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showExpiry = el.checked;

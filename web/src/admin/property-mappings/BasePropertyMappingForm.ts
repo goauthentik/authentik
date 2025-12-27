@@ -1,6 +1,7 @@
+import "#elements/CodeMirror/ak-codemirror";
+
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -40,10 +41,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
             </ak-form-element-horizontal>
             ${this.renderExtraFields()}
             <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
-                    value="${ifDefined(this.instance?.expression)}"
-                >
+                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}

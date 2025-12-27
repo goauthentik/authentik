@@ -1,9 +1,12 @@
 from plistlib import PlistFormat, dumps
+from uuid import uuid4
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest
 from django.urls import reverse
+from rest_framework.fields import CharField
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
 from authentik.endpoints.controller import BaseController
 from authentik.endpoints.facts import OSFamily
@@ -32,6 +35,13 @@ def csp_create_replace_item(loc_uri, data_value) -> Element:
     return replace
 
 
+class MDMConfigResponseSerializer(PassiveSerializer):
+
+    config = CharField(required=True)
+    mime_type = CharField(required=True)
+    filename = CharField(required=True)
+
+
 class AgentConnectorController(BaseController[AgentConnector]):
 
     def supported_enrollment_methods(self):
@@ -39,14 +49,20 @@ class AgentConnectorController(BaseController[AgentConnector]):
 
     def generate_mdm_config(
         self, target_platform: OSFamily, request: HttpRequest, token: EnrollmentToken
-    ) -> str:
+    ) -> MDMConfigResponseSerializer:
+        response = None
         if target_platform == OSFamily.windows:
-            return self._generate_mdm_config_windows(request, token)
+            response = self._generate_mdm_config_windows(request, token)
         if target_platform in [OSFamily.iOS, OSFamily.macOS]:
-            return self._generate_mdm_config_macos(request, token)
-        raise ValueError(f"Unsupported platform for MDM Configuration: {target_platform}")
+            response = self._generate_mdm_config_macos(request, token)
+        if not response:
+            raise ValueError(f"Unsupported platform for MDM Configuration: {target_platform}")
+        response.is_valid(raise_exception=True)
+        return response
 
-    def _generate_mdm_config_windows(self, request: HttpRequest, token: EnrollmentToken) -> str:
+    def _generate_mdm_config_windows(
+        self, request: HttpRequest, token: EnrollmentToken
+    ) -> MDMConfigResponseSerializer:
         base_uri = (
             "./Vendor/MSFT/Registry/HKLM/SOFTWARE/authentik Security Inc./Platform/ManagedConfig"
         )
@@ -60,21 +76,73 @@ class AgentConnectorController(BaseController[AgentConnector]):
         )
 
         payload = tostring(token_item, encoding="unicode") + tostring(url_item, encoding="unicode")
-        return payload
+        return MDMConfigResponseSerializer(
+            data={
+                "config": payload,
+                "mime_type": "application/xml",
+                "filename": f"{self.connector.name}_config.csp.xml",
+            }
+        )
 
-    def _generate_mdm_config_macos(self, request: HttpRequest, token: EnrollmentToken) -> str:
+    def _generate_mdm_config_macos(
+        self, request: HttpRequest, token: EnrollmentToken
+    ) -> MDMConfigResponseSerializer:
+        token_uuid = str(token.pk).upper()
         payload = dumps(
             {
                 "PayloadContent": [
+                    # Config for authentik Platform Agent (sysd)
                     {
                         "PayloadDisplayName": "authentik Platform",
-                        "PayloadIdentifier": f"io.goauthentik.platform.{str(token.pk).upper()}",
+                        "PayloadIdentifier": f"io.goauthentik.platform.{token_uuid}",
                         "PayloadType": "io.goauthentik.platform",
-                        "PayloadUUID": str(token.pk).upper(),
+                        "PayloadUUID": str(uuid4()),
                         "PayloadVersion": 1,
                         "RegistrationToken": token.key,
                         "URL": request.build_absolute_uri(reverse("authentik_core:root-redirect")),
-                    }
+                    },
+                    # Config for MDM-associated domains (required for PSSO)
+                    {
+                        "PayloadDisplayName": "Associated Domains",
+                        "PayloadIdentifier": f"com.apple.associated-domains.{token_uuid}",
+                        "PayloadType": "com.apple.associated-domains",
+                        "PayloadUUID": str(uuid4()),
+                        "PayloadVersion": 1,
+                        "Configuration": [
+                            {
+                                "ApplicationIdentifier": "232G855Y8N.io.goauthentik.platform.agent",
+                                "AssociatedDomains": [f"authsrv:{request.get_host()}"],
+                                "EnableDirectDownloads": False,
+                            }
+                        ],
+                    },
+                    # Config for Platform SSO
+                    {
+                        "PayloadDisplayName": "Platform Single Sign-On",
+                        "PayloadIdentifier": f"com.apple.extensiblesso.{token_uuid}",
+                        "PayloadType": "com.apple.extensiblesso",
+                        "PayloadUUID": str(uuid4()),
+                        "PayloadVersion": 1,
+                        "ExtensionIdentifier": "io.goauthentik.platform.psso",
+                        "TeamIdentifier": "232G855Y8N",
+                        "Type": "Redirect",
+                        "URLs": [
+                            request.build_absolute_uri(reverse("authentik_core:root-redirect")),
+                        ],
+                        "PlatformSSO": {
+                            "AccountDisplayName": "authentik",
+                            "AllowDeviceIdentifiersInAttestation": True,
+                            "AuthenticationMethod": "UserSecureEnclaveKey",
+                            "EnableAuthorization": True,
+                            "EnableCreateUserAtLogin": True,
+                            "FileVaultPolicy": ["RequireAuthentication"],
+                            "LoginPolicy": ["RequireAuthentication"],
+                            "NewUserAuthorizationMode": "Standard",
+                            "UnlockPolicy": ["RequireAuthentication"],
+                            "UseSharedDeviceKeys": True,
+                            "UserAuthorizationMode": "Standard",
+                        },
+                    },
                 ],
                 "PayloadDisplayName": "authentik Platform",
                 "PayloadIdentifier": str(self.connector.pk).upper(),
@@ -85,4 +153,10 @@ class AgentConnectorController(BaseController[AgentConnector]):
             },
             fmt=PlistFormat.FMT_XML,
         ).decode()
-        return payload
+        return MDMConfigResponseSerializer(
+            data={
+                "config": payload,
+                "mime_type": "application/xml",
+                "filename": f"{self.connector.name}_config.mobileconfig",
+            }
+        )

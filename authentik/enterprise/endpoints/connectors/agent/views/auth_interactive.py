@@ -30,7 +30,7 @@ class AgentInteractiveAuth(EnterprisePolicyAccessView):
 
     def resolve_provider_application(self):
         auth_token = (
-            DeviceAuthenticationToken.objects.filter(identifier=self.kwargs["token_uuid"])
+            DeviceAuthenticationToken.filter_not_expired(identifier=self.kwargs["token_uuid"])
             .prefetch_related()
             .first()
         )
@@ -60,6 +60,8 @@ class AgentInteractiveAuth(EnterprisePolicyAccessView):
             device_token_hash, sha256(self.auth_token.device_token.key.encode()).hexdigest()
         ):
             return HttpResponseBadRequest("Invalid device token")
+        if not self.connector.authorization_flow:
+            return HttpResponseBadRequest("No authorization flow configured")
 
         planner = FlowPlanner(self.connector.authorization_flow)
         planner.allow_empty_flows = True
@@ -90,9 +92,15 @@ class AgentAuthFulfillmentStage(StageView):
             PLAN_CONTEXT_DEVICE_AUTH_TOKEN
         )
 
-        token, exp = agent_auth_issue_token(device, request.user, jti=str(auth_token.identifier))
+        token, exp = agent_auth_issue_token(
+            device,
+            auth_token.connector.agentconnector,
+            request.user,
+            jti=str(auth_token.identifier),
+        )
         if not token or not exp:
             return self.executor.stage_invalid("Failed to generate token")
+        auth_token.user = request.user
         auth_token.token = token
         auth_token.expires = exp
         auth_token.expiring = True

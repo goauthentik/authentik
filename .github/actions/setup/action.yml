@@ -12,16 +12,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install apt deps
+    - name: Install apt deps & cleanup
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
       run: |
         sudo apt-get remove --purge man-db
         sudo apt-get update
         sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libkrb5-dev krb5-kdc krb5-user krb5-admin-server
+        sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244 # v5
+      uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -35,7 +36,7 @@ runs:
       run: uv sync --all-extras --dev --frozen
     - name: Setup node
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v4
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v4
       with:
         node-version-file: web/package.json
         cache: "npm"
@@ -50,13 +51,13 @@ runs:
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       uses: AndreKurait/docker-cache@0fe76702a40db986d9663c24954fc14c6a6031b7
       with:
-        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/docker-compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
+        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
       if: ${{ contains(inputs.dependencies, 'runtime') }}
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker compose -f .github/actions/setup/docker-compose.yml up -d
+        docker compose -f .github/actions/setup/compose.yml up -d
         cd web && npm i
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}

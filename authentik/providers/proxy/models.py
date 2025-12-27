@@ -13,7 +13,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import (
     ClientTypes,
@@ -27,7 +27,7 @@ SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
-class ProxySession(ExpiringModel):
+class ProxySession(InternallyManagedMixin, ExpiringModel):
     """Session storage for proxyv2 outposts using PostgreSQL"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
@@ -179,11 +179,13 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     def __str__(self):
         return f"Proxy Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
-        required_models = [self]
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
+        required = [self]
         if self.certificate is not None:
-            required_models.append(self.certificate)
-        return required_models
+            required.append(("view_certificatekeypair", self.certificate))
+            required.append(("view_certificatekeypair_certificate", self.certificate))
+            required.append(("view_certificatekeypair_key", self.certificate))
+        return required
 
     class Meta:
         verbose_name = _("Proxy Provider")

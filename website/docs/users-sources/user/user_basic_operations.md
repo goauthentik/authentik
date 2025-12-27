@@ -89,7 +89,13 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 
 1. To add a user to a group, navigate to **Directory** > **Users** to display all users.
 2. Click the name of the user to display the full user details page.
-3. Click the **Groups** tab, and then click either **Add to existing group** or **Add to new group**.
+3. Click the **Groups** tab, and then click either **Add to existing group** (or **Add new group** first).
+
+## Add a user to a role
+
+1. To add a user to a role, navigate to **Directory > Users** to display all users.
+2. Click the name of the user to display the full user details page.
+3. Click the **Roles** tab, and then click either **Add to existing role** (or **Add new role** first).
 
 ## User credentials recovery
 
@@ -181,3 +187,17 @@ An Admin can globally enable or disable impersonation in the [System Settings](.
 
 An Admin can also configure whether inputting a reason for impersonation is required in the [System Settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
 :::
+
+## Export users :ak-enterprise
+
+You can export your authentik instance's user data to a CSV file. To generate a data export, follow these steps:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and click **Export**.
+3. Set a [search query](#tell-me-more) as well as the ordering for the data export.
+4. Click **Export** above the event list.
+5. Confirm the export parameters in the confirmation dialog.
+6. The export is processed in the background. When it's ready, you will receive a notification in the Admin interface's notification area.
+7. In the notification, click **Download**.
+
+To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.

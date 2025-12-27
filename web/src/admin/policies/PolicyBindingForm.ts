@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#components/ak-toggle-group";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -31,8 +32,11 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
 
 @customElement("ak-policy-binding-form")
-export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
-    async loadInstance(pk: string): Promise<PolicyBinding> {
+export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends ModelForm<
+    T,
+    string
+> {
+    async loadInstance(pk: string): Promise<T> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
@@ -46,7 +50,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
             this.policyGroupUser = PolicyBindingCheckTarget.user;
         }
         this.defaultOrder = await this.getOrder();
-        return binding;
+        return binding as T;
     }
 
     @property()
@@ -264,39 +268,19 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     </ak-form-element-horizontal>
                 </div>
             </div>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="negate">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.negate ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Negate result")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Negates the outcome of the binding. Messages are unaffected.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="negate"
+                label=${msg("Negate result")}
+                ?checked=${this.instance?.negate ?? false}
+                help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"

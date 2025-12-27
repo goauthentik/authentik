@@ -4,7 +4,6 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import {
@@ -16,7 +15,7 @@ import {
     PropertymappingsApi,
     PropertyMappingTestRequest,
     PropertyMappingTestResult,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 
@@ -56,7 +55,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
-                      mode=${CodeMirrorMode.JavaScript}
+                      mode="javascript"
                       readonly
                       value="${ifDefined(this.result?.result)}"
                   >
@@ -73,7 +72,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
 
     renderExampleButtons() {
         return this.mapping?.metaModelName ===
-            RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
+            RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
                   ${this.renderExampleLDAP()}`
             : nothing;
@@ -183,10 +182,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Context")} name="context">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value=${YAML.stringify(this.request?.context ?? {})}
-                >
+                <ak-codemirror mode="yaml" value=${YAML.stringify(this.request?.context ?? {})}>
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>

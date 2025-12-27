@@ -26,7 +26,7 @@ export type DualSelectPair<T = unknown> = [
     /**
      * The key used to identify the object in the API.
      */
-    key: string,
+    key: string | number,
     /**
      * A human-readable label for the object.
      */

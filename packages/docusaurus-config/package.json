@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.2.1",
+    "version": "2.3.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "scripts": {
@@ -31,17 +31,17 @@
         "@goauthentik/eslint-config": "../eslint-config",
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^24.10.1",
+        "@types/node": "^25.0.0",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.47.0",
         "@typescript-eslint/parser": "^8.47.0",
         "eslint": "^9.39.1",
         "pino": "^10.1.0",
-        "prettier": "^3.6.2",
-        "prettier-plugin-packagejson": "^2.5.19",
+        "prettier": "^3.7.4",
+        "prettier-plugin-packagejson": "^2.5.20",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.47.0"
+        "typescript-eslint": "^8.49.0"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.9.2",

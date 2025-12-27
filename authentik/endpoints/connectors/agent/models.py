@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel, default_token_key
+from authentik.core.models import ExpiringModel, User, default_token_key
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import (
     Connector,
@@ -16,7 +16,7 @@ from authentik.endpoints.models import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 if TYPE_CHECKING:
@@ -26,12 +26,15 @@ if TYPE_CHECKING:
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
-    auth_terminate_session_on_expiry = models.BooleanField(default=False)
     refresh_interval = models.TextField(
         default="minutes=30",
         validators=[timedelta_string_validator],
     )
 
+    auth_session_duration = models.TextField(
+        default="hours=8", validators=[timedelta_string_validator]
+    )
+    auth_terminate_session_on_expiry = models.BooleanField(default=False)
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )
@@ -43,6 +46,10 @@ class AgentConnector(Connector):
     nss_gid_offset = models.PositiveIntegerField(default=1000)
 
     challenge_key = models.ForeignKey(CertificateKeyPair, on_delete=models.CASCADE, null=True)
+    challenge_idle_timeout = models.TextField(
+        validators=[timedelta_string_validator], default="seconds=5"
+    )
+    challenge_trigger_check_in = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -77,11 +84,11 @@ class AgentConnector(Connector):
 
 class AgentDeviceConnection(DeviceConnection):
 
-    apple_signing_key = models.TextField()
-    apple_encryption_key = models.TextField()
     apple_key_exchange_key = models.TextField()
-    apple_sign_key_id = models.TextField()
+    apple_encryption_key = models.TextField()
     apple_enc_key_id = models.TextField()
+    apple_signing_key = models.TextField()
+    apple_sign_key_id = models.TextField()
 
 
 class AgentDeviceUserBinding(DeviceUserBinding):
@@ -136,12 +143,13 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
         ]
 
 
-class DeviceAuthenticationToken(ExpiringModel):
+class DeviceAuthenticationToken(InternallyManagedMixin, ExpiringModel):
 
     identifier = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
     connector = models.ForeignKey(AgentConnector, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
     token = models.TextField()
 
     def __str__(self):
@@ -150,3 +158,12 @@ class DeviceAuthenticationToken(ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Device authentication token")
         verbose_name_plural = _("Device authentication tokens")
+
+
+class AppleNonce(InternallyManagedMixin, ExpiringModel):
+    nonce = models.TextField()
+    device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Apple Nonce")
+        verbose_name_plural = _("Apple Nonces")
