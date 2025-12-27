@@ -126,11 +126,10 @@ $CONFIG = [
   'openid-connect' => [
     'provider-url' => 'https://authentik.company/application/o/owncloud/',
     'client-id' => '<Client ID from authentik>',
-    'client-secret' => '<Client secret from authentik',
+    'client-secret' => '<Client secret from authentik>',
     'loginButtonName' => 'Log in with authentik',
     'mode' => 'userid',
     'search-attribute' => 'preferred_username',
-    ],
   ],
 ];
 ```
