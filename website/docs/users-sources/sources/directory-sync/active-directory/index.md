@@ -64,13 +64,14 @@ To support the integration of authentik with Active Directory, you will need to 
     - **Group Property Mappings**: select "authentik default LDAP Mapping: Name"
 
     Under **Additional Settings** _(optional)_ configurations that may need to be adjusted based on the setup of your domain:
-    - **Group**: if enabled, all synchronized groups will be given this group as a parent.
+    - **Sync Group Parents**: if enabled, groups have their parents set the same as in AD, allowing for nesting to be done without flattening the memberships.
+    - **Additional Parent Group**: if selected, all synchronized groups will be given this group as a parent.
     - **Addition User/Group DN**: additional DN which is _prepended_ to your Base DN configured above, to limit the scope of synchronization for Users and Groups.
     - **User object filter**: which objects should be considered users (e.g. `(objectClass=user)`). For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.
     - **Group object filter**: which objects should be considered groups (e.g `(objectClass=group)`).
-    - **Lookup using a user attribute**: acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories and nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
-    - **Group membership field**: the user object attribute or the group object attribute that determines the group membership of a user (e.g. `member`). If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
-    - **User membership attribute**: ensure that this is set to `distinguishedName`.
+    - **Lookup using a member attribute**: acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`).
+    - **Membership field**: ensure that this is set to `member` for Active Directory nested group lookups, unless flattening memberships is needed. Flattening can be achieved my setting this to `memberOf:1.2.840.113556.1.4.1941:` and enabling **Lookup using a member attribute**.
+    - **Membership reference attribute**: ensure that this is set to `distinguishedName`.
     - **Object uniqueness field**: a user attribute that contains a unique identifier (e.g. `objectSid`).
 
 5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** > **System Tasks**:
