@@ -384,42 +384,18 @@ class UserPasswordSetSerializer(PassiveSerializer):
 
 
 class UserPanicButtonSerializer(PassiveSerializer):
-    """Payload to trigger panic button for a user"""
+    """Payload to trigger account lockdown for a user"""
 
-    reason = CharField(required=True, help_text="Reason for triggering panic button")
-    notify_user = BooleanField(
-        required=False, allow_null=True, default=None, help_text="Override notify user setting"
-    )
-    notify_admins = BooleanField(
-        required=False, allow_null=True, default=None, help_text="Override notify admins setting"
-    )
-    notify_security = BooleanField(
-        required=False,
-        allow_null=True,
-        default=None,
-        help_text="Override notify security setting",
-    )
+    reason = CharField(required=True, help_text="Reason for triggering account lockdown")
 
 
 class UserBulkPanicButtonSerializer(PassiveSerializer):
-    """Payload to trigger panic button for multiple users"""
+    """Payload to trigger account lockdown for multiple users"""
 
     users = PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all().exclude_anonymous(), help_text="Users to lock"
     )
-    reason = CharField(required=True, help_text="Reason for triggering panic button")
-    notify_user = BooleanField(
-        required=False, allow_null=True, default=None, help_text="Override notify user setting"
-    )
-    notify_admins = BooleanField(
-        required=False, allow_null=True, default=None, help_text="Override notify admins setting"
-    )
-    notify_security = BooleanField(
-        required=False,
-        allow_null=True,
-        default=None,
-        help_text="Override notify security setting",
-    )
+    reason = CharField(required=True, help_text="Reason for triggering account lockdown")
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -895,11 +871,15 @@ class UserViewSet(
         request: Request,
         user: User,
         reason: str,
-        notify_user: bool | None,
-        notify_admins: bool | None,
-        notify_security: bool | None,
     ) -> None:
-        """Helper method to trigger panic button for a single user"""
+        """Helper method to trigger account lockdown for a single user.
+
+        This method:
+        1. Deactivates the user account
+        2. Resets the password to a random value
+        3. Terminates all active sessions
+        4. Creates an event that can trigger notifications via NotificationRules
+        """
         from secrets import token_urlsafe
 
         with atomic():
@@ -909,7 +889,9 @@ class UserViewSet(
             user.save()
 
             Session.objects.filter(authenticatedsession__user=user).delete()
-            LOGGER.info("Panic button triggered", user=user.username, triggered_by=request.user)
+            LOGGER.info(
+                "Account lockdown triggered", user=user.username, triggered_by=request.user
+            )
 
         Event.new(
             EventAction.PANIC_BUTTON_TRIGGERED,
@@ -918,51 +900,22 @@ class UserViewSet(
             triggered_by=request.user.username,
         ).from_http(request, user)
 
-        # Resolve notification settings (use tenant defaults if not specified)
-        resolved_notify_user = (
-            notify_user if notify_user is not None else request.tenant.panic_button_notify_user
-        )
-        resolved_notify_admins = (
-            notify_admins
-            if notify_admins is not None
-            else request.tenant.panic_button_notify_admins
-        )
-        resolved_notify_security = (
-            notify_security
-            if notify_security is not None
-            else request.tenant.panic_button_notify_security
-        )
-
-        from authentik.events.tasks import panic_button_notification
-
-        panic_button_notification.send_with_options(
-            args=(
-                user.pk,
-                request.user.pk,
-                reason,
-                resolved_notify_user,
-                resolved_notify_admins,
-                resolved_notify_security,
-            ),
-            kwargs={},
-        )
-
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
         request=UserPanicButtonSerializer,
         responses={
-            "204": OpenApiResponse(description="Successfully triggered panic button"),
-            "400": OpenApiResponse(description="Panic button feature is disabled"),
+            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
         },
     )
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     @validate(UserPanicButtonSerializer)
     def panic_button(self, request: Request, pk: int, body: UserPanicButtonSerializer) -> Response:
-        """Trigger panic button for a user"""
+        """Trigger account lockdown for a user"""
         if not request.tenant.panic_button_enabled:
-            LOGGER.debug("Panic button feature is disabled")
+            LOGGER.debug("Account lockdown feature is disabled")
             return Response(
-                data={"non_field_errors": [_("Panic button feature is disabled.")]},
+                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
                 status=400,
             )
 
@@ -970,20 +923,15 @@ class UserViewSet(
         reason = body.validated_data["reason"]
 
         if user.pk == request.user.pk:
-            LOGGER.debug("User attempted to trigger panic button on themselves", user=request.user)
+            LOGGER.debug(
+                "User attempted to trigger account lockdown on themselves", user=request.user
+            )
             return Response(
-                data={"non_field_errors": [_("Cannot trigger panic button on yourself.")]},
+                data={"non_field_errors": [_("Cannot trigger account lockdown on yourself.")]},
                 status=400,
             )
 
-        self._trigger_panic_button(
-            request,
-            user,
-            reason,
-            body.validated_data.get("notify_user"),
-            body.validated_data.get("notify_admins"),
-            body.validated_data.get("notify_security"),
-        )
+        self._trigger_panic_button(request, user, reason)
 
         return Response(status=204)
 
@@ -991,8 +939,8 @@ class UserViewSet(
     @extend_schema(
         request=UserBulkPanicButtonSerializer,
         responses={
-            "204": OpenApiResponse(description="Successfully triggered panic button"),
-            "400": OpenApiResponse(description="Panic button feature is disabled"),
+            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
         },
     )
     @action(
@@ -1003,11 +951,11 @@ class UserViewSet(
     )
     @validate(UserBulkPanicButtonSerializer)
     def panic_button_bulk(self, request: Request, body: UserBulkPanicButtonSerializer) -> Response:
-        """Trigger panic button for multiple users"""
+        """Trigger account lockdown for multiple users"""
         if not request.tenant.panic_button_enabled:
-            LOGGER.debug("Panic button feature is disabled")
+            LOGGER.debug("Account lockdown feature is disabled")
             return Response(
-                data={"non_field_errors": [_("Panic button feature is disabled.")]},
+                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
                 status=400,
             )
 
@@ -1018,14 +966,7 @@ class UserViewSet(
             if user.pk == request.user.pk:
                 continue  # Skip self
 
-            self._trigger_panic_button(
-                request,
-                user,
-                reason,
-                body.validated_data.get("notify_user"),
-                body.validated_data.get("notify_admins"),
-                body.validated_data.get("notify_security"),
-            )
+            self._trigger_panic_button(request, user, reason)
 
         return Response(status=204)
 

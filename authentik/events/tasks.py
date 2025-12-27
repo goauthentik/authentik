@@ -94,6 +94,13 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
             count += 1
             if transport.send_once:
                 break
+    # Send to security email if enabled
+    if trigger.destination_security_email:
+        notification_security_email.send_with_options(
+            args=(event.pk, trigger.pk),
+            rel_obj=trigger,
+        )
+        count += 1
     self.info(f"Created {count} notification tasks")
 
 
@@ -123,6 +130,59 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     transport.send(notification)
 
 
+@actor(description=_("Send notification to security email."))
+def notification_security_email(event_pk: str, trigger_pk: str):
+    """Send notification to security email address configured in tenant settings."""
+    from authentik.stages.email.tasks import send_mail
+    from authentik.stages.email.utils import TemplateEmailMessage
+    from authentik.tenants.models import Tenant
+
+    event = Event.objects.filter(pk=event_pk).first()
+    if not event:
+        LOGGER.warning("notification_security_email: event not found", event_pk=event_pk)
+        return
+
+    trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
+    if not trigger:
+        LOGGER.warning("notification_security_email: trigger not found", trigger_pk=trigger_pk)
+        return
+
+    tenant = Tenant.objects.first()
+    if not tenant or not tenant.security_email:
+        LOGGER.info(
+            "notification_security_email: no security email configured",
+            has_tenant=bool(tenant),
+        )
+        return
+
+    # Build context from event
+    context = {
+        "key_value": {},
+        "body": event.summary,
+        "title": event.action,
+    }
+    if event.user:
+        context["key_value"]["event_user_email"] = event.user.get("email", "")
+        context["key_value"]["event_user_username"] = event.user.get("username", "")
+    for key, value in event.context.items():
+        if isinstance(value, str):
+            context["key_value"][key] = value
+
+    mail = TemplateEmailMessage(
+        subject=f"[Security] {event.action}",
+        to=[("Security Team", tenant.security_email)],
+        language="en",
+        template_name="email/event_notification.html",
+        template_context=context,
+    )
+    send_mail.send_with_options(args=(mail.__dict__,))
+    LOGGER.info(
+        "notification_security_email: sent to security email",
+        email=tenant.security_email,
+        event_action=event.action,
+    )
+
+
 @actor(description=_("Cleanup events for GDPR compliance."))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
@@ -143,131 +203,3 @@ def notification_cleanup():
     self.info(f"Expired {amount} Notifications")
 
 
-@actor(description=_("Send panic button notification emails."))
-def panic_button_notification(
-    affected_user_pk: int,
-    triggered_by_pk: int,
-    reason: str,
-    notify_user: bool,
-    notify_admins: bool,
-    notify_security: bool,
-):
-    """Send email notifications when panic button is triggered.
-
-    Uses send_mail directly instead of email stages to ensure delivery
-    regardless of stage configuration.
-    """
-    from authentik.stages.email.tasks import send_mail
-    from authentik.stages.email.utils import TemplateEmailMessage
-    from authentik.tenants.models import Tenant
-
-    # Delay between emails to avoid SES rate limits (sandbox = 1/sec)
-    EMAIL_DELAY_MS = 1500
-    email_count = 0
-
-    LOGGER.info(
-        "panic button notification task started",
-        affected_user_pk=affected_user_pk,
-        triggered_by_pk=triggered_by_pk,
-        notify_user=notify_user,
-        notify_admins=notify_admins,
-        notify_security=notify_security,
-    )
-
-    affected_user = User.objects.filter(pk=affected_user_pk).first()
-    triggered_by = User.objects.filter(pk=triggered_by_pk).first()
-    if not affected_user or not triggered_by:
-        LOGGER.warning("panic button notification: users not found")
-        return
-
-    tenant = Tenant.objects.first()
-    if not tenant:
-        LOGGER.warning("panic button notification: tenant not found")
-        return
-
-    template_context = {
-        "affected_user": affected_user,
-        "triggered_by": triggered_by,
-        "reason": reason,
-    }
-
-    if notify_user and affected_user.email:
-        LOGGER.info("Sending panic button notification to user", email=affected_user.email)
-        user_message = TemplateEmailMessage(
-            subject=_("Security Alert: Your Account Has Been Locked"),
-            to=[(affected_user.name, affected_user.email)],
-            template_name="email/panic_button.html",
-            language="en",
-            template_context=template_context,
-        )
-        send_mail.send_with_options(
-            args=(user_message.__dict__,), delay=email_count * EMAIL_DELAY_MS
-        )
-        email_count += 1
-        LOGGER.info(
-            "panic button notification queued for user", affected_user=affected_user.username
-        )
-    else:
-        LOGGER.info(
-            "Skipping user notification",
-            notify_user=notify_user,
-            has_email=bool(affected_user.email),
-        )
-
-    if notify_admins:
-        admin_users = User.objects.filter(ak_groups__is_superuser=True).distinct()
-        admin_recipients = []
-        for admin in admin_users:
-            if admin.email and admin.pk != affected_user_pk:
-                admin_recipients.append((admin.name, admin.email))
-
-        LOGGER.info(
-            "Admin notification check",
-            admin_count=admin_users.count(),
-            recipients_with_email=len(admin_recipients),
-        )
-
-        if admin_recipients:
-            LOGGER.info("Sending panic button notification to admins", count=len(admin_recipients))
-            admin_message = TemplateEmailMessage(
-                subject=_("Security Alert: Panic Button Triggered"),
-                to=admin_recipients,
-                template_name="email/panic_button_admin.html",
-                language="en",
-                template_context=template_context,
-            )
-            send_mail.send_with_options(
-                args=(admin_message.__dict__,), delay=email_count * EMAIL_DELAY_MS
-            )
-            email_count += 1
-            LOGGER.info(
-                "panic button notification queued for admins", admin_count=len(admin_recipients)
-            )
-    else:
-        LOGGER.info("Skipping admin notification", notify_admins=notify_admins)
-
-    if notify_security and tenant.panic_button_security_email:
-        LOGGER.info(
-            "Sending panic button notification to security",
-            email=tenant.panic_button_security_email,
-        )
-        security_message = TemplateEmailMessage(
-            subject=_("SECURITY ALERT: Panic Button Triggered"),
-            to=[("Security Team", tenant.panic_button_security_email)],
-            template_name="email/panic_button_security.html",
-            language="en",
-            template_context=template_context,
-        )
-        send_mail.send_with_options(
-            args=(security_message.__dict__,), delay=email_count * EMAIL_DELAY_MS
-        )
-        email_count += 1
-        LOGGER.info("panic button notification queued for security")
-    else:
-        LOGGER.info(
-            "Skipping security notification",
-            notify_security=notify_security,
-            has_security_email=bool(tenant.panic_button_security_email),
-        )
-
-    LOGGER.info("panic button notification task completed")

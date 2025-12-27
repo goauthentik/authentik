@@ -204,14 +204,14 @@ export class UserListPage extends WithBrandConfig(
                 </button>
             </ak-forms-delete-bulk>
             <ak-forms-modal size=${PFSize.Medium}>
-                <span slot="submit">${msg("Trigger Panic Button")}</span>
-                <span slot="header">${msg("Panic Button for Selected Users")}</span>
+                <span slot="submit">${msg("Trigger Lockdown")}</span>
+                <span slot="header">${msg("Account Lockdown for Selected Users")}</span>
                 <ak-user-bulk-panic-button-form
                     slot="form"
                     .users=${this.selectedElements}
                 ></ak-user-bulk-panic-button-form>
                 <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                    ${msg("Panic Button")}
+                    ${msg("Account Lockdown")}
                 </button>
             </ak-forms-modal>`;
     }

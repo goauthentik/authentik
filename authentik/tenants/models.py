@@ -124,24 +124,10 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
     )
 
     panic_button_enabled = models.BooleanField(
-        help_text=_("Enable the panic button feature for administrators."), default=True
+        help_text=_("Enable the account lockdown feature for administrators."), default=True
     )
-    panic_button_notify_user = models.BooleanField(
-        help_text=_("Send email notification to the affected user when panic button is triggered."),
-        default=True,
-    )
-    panic_button_notify_admins = models.BooleanField(
-        help_text=_("Send email notification to administrators when panic button is triggered."),
-        default=True,
-    )
-    panic_button_notify_security = models.BooleanField(
-        help_text=_(
-            "Send email notification to security email address when panic button is triggered."
-        ),
-        default=False,
-    )
-    panic_button_security_email = models.EmailField(
-        help_text=_("Security email address for panic button notifications."),
+    security_email = models.EmailField(
+        help_text=_("Security team email address for security notifications."),
         blank=True,
         default="",
     )

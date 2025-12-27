@@ -181,16 +181,16 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             </ak-user-active-form>
             ${canTriggerPanic
                 ? html`
-                      <ak-forms-modal size=${PFSize.Medium} id="panic-button-request">
-                          <span slot="submit">${msg("Trigger Panic Button")}</span>
-                          <span slot="header">${msg("Panic Button")}</span>
+                      <ak-forms-modal size=${PFSize.Medium} id="account-lockdown-request">
+                          <span slot="submit">${msg("Trigger Lockdown")}</span>
+                          <span slot="header">${msg("Account Lockdown")}</span>
                           <ak-user-panic-button-form
                               slot="form"
                               .instancePk=${user.pk}
                               .user=${user}
                           ></ak-user-panic-button-form>
                           <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
-                              ${msg("Panic Button")}
+                              ${msg("Account Lockdown")}
                           </button>
                       </ak-forms-modal>
                   `

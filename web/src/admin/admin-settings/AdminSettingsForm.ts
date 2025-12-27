@@ -228,47 +228,22 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Require administrators to provide a reason for impersonating a user.")}
             >
             </ak-switch-input>
-            <ak-switch-input
-                name="panicButtonEnabled"
-                label=${msg("Enable panic button")}
-                ?checked=${settings.panicButtonEnabled}
-                help=${msg("Enable the panic button feature for administrators.")}
-            >
-            </ak-switch-input>
-            <ak-switch-input
-                name="panicButtonNotifyUser"
-                label=${msg("Notify user on panic button")}
-                ?checked=${settings.panicButtonNotifyUser}
-                help=${msg(
-                    "Send email notification to the affected user when panic button is triggered.",
-                )}
-            >
-            </ak-switch-input>
-            <ak-switch-input
-                name="panicButtonNotifyAdmins"
-                label=${msg("Notify admins on panic button")}
-                ?checked=${settings.panicButtonNotifyAdmins}
-                help=${msg(
-                    "Send email notification to administrators when panic button is triggered.",
-                )}
-            >
-            </ak-switch-input>
-            <ak-switch-input
-                name="panicButtonNotifySecurity"
-                label=${msg("Notify security team on panic button")}
-                ?checked=${settings.panicButtonNotifySecurity}
-                help=${msg(
-                    "Send email notification to security email address when panic button is triggered.",
-                )}
-            >
-            </ak-switch-input>
             <ak-text-input
-                name="panicButtonSecurityEmail"
-                label=${msg("Panic button security email")}
-                value="${ifDefined(settings.panicButtonSecurityEmail)}"
-                help=${msg("Security email address for panic button notifications.")}
+                name="securityEmail"
+                label=${msg("Security email")}
+                value="${ifDefined(settings.securityEmail)}"
+                help=${msg(
+                    "Security team email address for security notifications. Used by Notification Rules with 'Send email to security address' enabled.",
+                )}
             >
             </ak-text-input>
+            <ak-switch-input
+                name="panicButtonEnabled"
+                label=${msg("Enable account lockdown")}
+                ?checked=${settings.panicButtonEnabled}
+                help=${msg("Enable the account lockdown feature for administrators.")}
+            >
+            </ak-switch-input>
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}

@@ -7441,6 +7441,11 @@
                     "type": "boolean",
                     "title": "Destination event user",
                     "description": "When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both."
+                },
+                "destination_security_email": {
+                    "type": "boolean",
+                    "title": "Destination security email",
+                    "description": "When enabled, notification will be sent to the security email address configured in System Settings."
                 }
             },
             "required": []

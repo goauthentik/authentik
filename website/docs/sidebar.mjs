@@ -894,6 +894,7 @@ const items = [
         items: [
             "security/policy",
             "security/security-hardening",
+            "security/account-lockdown",
             {
                 //#endregion
 
