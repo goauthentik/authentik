@@ -193,6 +193,8 @@ jobs:
             glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
+          - name: endpoints
+            glob: tests/e2e/test_endpoints_*
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
       - name: Setup authentik env
