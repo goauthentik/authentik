@@ -57,7 +57,6 @@ export class ProviderWizard extends AKElement {
                 .finalHandler=${this.finalHandler}
             >
                 <ak-wizard-page-type-create
-                    name="selectProviderType"
                     slot="initial"
                     layout=${TypeCreateWizardPageLayouts.grid}
                     .types=${this.providerTypes}

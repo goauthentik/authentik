@@ -117,7 +117,6 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
-                autocomplete="off"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required

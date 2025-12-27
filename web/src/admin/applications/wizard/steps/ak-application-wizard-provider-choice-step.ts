@@ -70,7 +70,6 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
                   <form class="pf-c-form pf-m-horizontal">
                       <ak-wizard-page-type-create
                           .types=${this.providerModelsList}
-                          name="selectProviderType"
                           layout=${TypeCreateWizardPageLayouts.grid}
                           .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
                           @select=${(ev: CustomEvent<TypeCreate>) => {
