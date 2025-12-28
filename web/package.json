@@ -151,7 +151,7 @@
         "globals": "^16.5.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^5.77.0",
+        "knip": "^5.77.1",
         "lex": "^2025.11.0",
         "lit": "^3.3.2",
         "lit-analyzer": "^2.0.3",
