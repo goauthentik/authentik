@@ -6,34 +6,6 @@
   <source>English</source>
   <target>Engels</target>
 </trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-  <target>Pseudotaal</target>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech</source>
-  <target>Tsjechisch</target>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German</source>
-  <target>Duits</target>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish</source>
-  <target>Spaans</target>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish</source>
-  <target>Fins</target>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French</source>
-  <target>Frans</target>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian</source>
-  <target>Italiaans</target>
-</trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
   <target>Japans</target>
@@ -42,32 +14,12 @@
   <source>Korean</source>
   <target>Koreaans</target>
 </trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch</source>
-  <target>Nederlands</target>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish</source>
-  <target>Pools</target>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese</source>
-  <target>Portugees</target>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian</source>
-  <target>Russisch</target>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish</source>
-  <target>Turks</target>
-</trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified</source>
+  <source>Chinese (Simplified)</source>
   <target>Chinees</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional</source>
+  <source>Chinese (Traditional)</source>
   <target>Chinees</target>
 </trans-unit>
 <!-- #endregion -->
@@ -84,8 +36,8 @@
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
-  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
-  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
 
@@ -8971,12 +8923,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
 </trans-unit>
-<trans-unit id="scdeb093efb1ac2f2">
-  <source>Data export requested successfully</source>
-</trans-unit>
-<trans-unit id="se5a360179bd5937e">
-  <source>You will receive a notification once the data is ready</source>
-</trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
 </trans-unit>
@@ -9101,6 +9047,48 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sb4a957846c89fca1">
   <source>Primary disk usage</source>
+</trans-unit>
+<trans-unit id="s7b68229d885a34d3">
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+</trans-unit>
+<trans-unit id="s284f44964466ef38">
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+</trans-unit>
+<trans-unit id="s01f8cd92a0204da2">
+  <source>Data exports are not available as storage for reports is not configured.</source>
+</trans-unit>
+<trans-unit id="s7afef158aada7389">
+  <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+</trans-unit>
+<trans-unit id="sa8d2689c8fdfea22">
+  <source>Successfully requested data export</source>
+</trans-unit>
+<trans-unit id="s7e2ef0e26e7f5e6f">
+  <source>Failed to export data</source>
+</trans-unit>
+<trans-unit id="sc6991f3e377938fb">
+  <source>Start export</source>
+</trans-unit>
+<trans-unit id="sd69873a0783f8e39">
+  <source>Export data</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s3ec4da71c1a62754">
+  <source>Queued</source>
+</trans-unit>
+<trans-unit id="sd32298bb7d36024d">
+  <source>Configured file backend does not support file management.</source>
+</trans-unit>
+<trans-unit id="s4f1e04b9b4cb96ae">
+  <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+</trans-unit>
+<trans-unit id="s3a46b5964b3ecfac">
+  <source>View details...</source>
 </trans-unit>
 </body>
 </file>
