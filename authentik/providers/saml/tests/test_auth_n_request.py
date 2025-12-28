@@ -26,7 +26,7 @@ from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
-    SAML_BINDING_REDIRECT,
+    SAML_BINDING_POST,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
@@ -113,7 +113,7 @@ class TestAuthNRequest(TestCase):
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
         auth_n = request_proc.get_auth_n()
-        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_REDIRECT)
+        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_POST)
 
         request = request_proc.build_auth_n()
         # Now we check the ID and signature
