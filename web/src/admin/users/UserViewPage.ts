@@ -107,7 +107,6 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             #ak-email-recovery-request,
             #update-password-request .pf-c-button,
             #ak-email-recovery-request .pf-c-button {
-                margin: 0;
                 width: 100%;
             }
         `,
