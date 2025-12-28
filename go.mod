@@ -1,8 +1,6 @@
 module goauthentik.io
 
-go 1.24.3
-
-toolchain go1.24.6
+go 1.25.5
 
 require (
 	beryju.io/ldap v0.1.0
