@@ -161,7 +161,7 @@ sidebar_custom_props:
     termName: My Term
     tags:
         - Category Name
-    isAuthentikSpecific: true # Only for authentik-specific terms
+    authentikSpecific: true # Only for authentik-specific terms
     shortDescription: Brief one-line description.
     longDescription: Detailed explanation with context, use cases, and examples.
 ---
@@ -178,7 +178,7 @@ sidebar_custom_props:
     - Directory
     - Configuration
     - Protocols
-- **`isAuthentikSpecific`** (optional): Set to `true` for authentik-specific terms. This displays an "authentik specific" badge next to the term name to distinguish it from industry-standard terminology. Omit this field for industry-standard terms.
+- **`authentikSpecific`** (optional): Set to `true` for authentik-specific terms. This displays an "authentik specific" badge next to the term name to distinguish it from industry-standard terminology. Omit this field for industry-standard terms.
 - **`shortDescription`** (required): Concise one-line summary displayed in the main glossary view
 - **`longDescription`** (optional): Detailed explanation shown when users expand the term
 
