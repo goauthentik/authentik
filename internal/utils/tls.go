@@ -1,6 +1,9 @@
 package utils
 
-import "crypto/tls"
+import (
+	"crypto/tls"
+	"slices"
+)
 
 func GetTLSConfig() *tls.Config {
 	// Based on
@@ -13,17 +16,25 @@ func GetTLSConfig() *tls.Config {
 			tls.CurveP384,
 		},
 		PreferServerCipherSuites: true,
-		CipherSuites: []uint16{
-			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-			tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
-			tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
-			// Insecure SWEET32 attack ciphers, TLS config uses a fallback
-			// tls.TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,
-			// tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-		},
+		CipherSuites:             []uint16{},
 	}
+
+	excludedCiphers := []uint16{
+		// ChaCha20 is not FIPS validated
+		tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
+		tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
+		// Insecure SWEET32 attack ciphers, TLS config uses a fallback
+		tls.TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,
+		tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+	}
+
+	defaultSecureCiphers := []uint16{}
+	for _, cs := range tls.CipherSuites() {
+		if slices.Contains(excludedCiphers, cs.ID) {
+			continue
+		}
+		defaultSecureCiphers = append(defaultSecureCiphers, cs.ID)
+	}
+	tlsConfig.CipherSuites = defaultSecureCiphers
 	return tlsConfig
 }
