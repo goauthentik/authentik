@@ -39,7 +39,7 @@ msgid ""
 "hyphens (-), underscores (_), and forward slashes (/)"
 msgstr ""
 "O nome do arquivo pode conter apenas letras (a-z, A-Z), números (0-9), "
-"pontos (.), hífens (-), underscores (_) e barras (/)"
+"pontos (.), hífens (-), underline (_) e barras (/)"
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot contain duplicate /"
