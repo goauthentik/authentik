@@ -166,3 +166,9 @@ declare global {
         "ak-application-wizard-applications-step": ApplicationWizardBindingsStep;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-bindings-step": ApplicationWizardBindingsStep;
+    }
+}
