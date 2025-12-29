@@ -86,6 +86,14 @@ class ApplicationSerializer(ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["icon"] = CharField(source="meta_icon", required=False)
+            # When importing from a blueprint, the provider is created in the same
+            # transaction and linked via KeyOf reference. We skip FK validation here
+            # because DRF's PrimaryKeyRelatedField.to_internal_value() queries the DB
+            # to verify the PK exists, and that query may hit a read replica that
+            # hasn't replicated the just-created provider yet (it's uncommitted).
+            # The actual FK assignment is handled by the blueprint importer.
+            self.fields.pop("provider", None)
+            self.fields.pop("backchannel_providers", None)
 
     class Meta:
         model = Application
