@@ -95,9 +95,10 @@ export class AKFileSearchInput extends AKElement {
 
                 let results = fileResponse;
 
-                // If we have a current value and it's not in the results (e.g., fa:// or custom URL),
-                // add it as a synthetic item so it shows up as selected
-                if (this.value && !results.find((item) => item.name === this.value)) {
+                // Only add synthetic item on initial load (no query), not during search.
+                // This prevents stale values from appearing in search results.
+                // The synthetic item is needed for fa:// URLs or custom URLs that aren't in the API.
+                if (!query && this.value && !results.find((item) => item.name === this.value)) {
                     results = [
                         {
                             name: this.value,

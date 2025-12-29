@@ -192,7 +192,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     sitekey: this.challenge.siteKey,
                     callback: this.onTokenChange,
                     size: "invisible",
-                    hl: this.locale,
+                    hl: this.activeLanguageTag,
                 }),
             );
         });
@@ -227,7 +227,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 sitekey: this.challenge.siteKey,
                 callback: this.onTokenChange,
                 size: "invisible",
-                hl: this.locale,
+                hl: this.activeLanguageTag,
             }),
         );
     }
@@ -253,7 +253,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             data-theme="${this.activeTheme}"
             data-callback="callback"
             data-size="flexible"
-            data-language=${ifPresent(this.locale)}
+            data-language=${ifPresent(this.activeLanguageTag)}
         ></div>`;
     };
 
