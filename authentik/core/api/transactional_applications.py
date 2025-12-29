@@ -126,6 +126,11 @@ class TransactionApplicationSerializer(PassiveSerializer):
             )
         )
         app_data = attrs["app"]
+        # KeyOf resolves to the provider's PK during blueprint apply().
+        # Note: TransactionApplicationRequestSerializer excludes the provider field
+        # to prevent DRF from validating this FK during importer.validate(), which
+        # would fail with read replicas (the validation query hits a replica that
+        # can't see the uncommitted provider created in the primary's transaction).
         app_data["provider"] = KeyOf(None, ScalarNode(tag="", value="provider"))
         blueprint.entries.append(
             BlueprintEntry(
