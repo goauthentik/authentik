@@ -21,7 +21,7 @@ fieldset[name="login-sources"] {
         gap: var(--pf-global--spacer--sm);
         flex: 0 1 auto;
 
-        &:hover {
+        &:not(.pf-m-primary):hover {
             background-color: var(--pf-c-button--m-plain--hover--BackgroundColor);
         }
 
