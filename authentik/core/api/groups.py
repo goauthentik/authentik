@@ -85,6 +85,7 @@ class GroupSerializer(ModelSerializer):
         source="roles",
         required=False,
     )
+    inherited_roles_obj = SerializerMethodField(read_only=True)
     num_pk = IntegerField(read_only=True)
 
     @property
@@ -125,6 +126,13 @@ class GroupSerializer(ModelSerializer):
         if not self._should_include_parents:
             return None
         return RelatedGroupSerializer(instance.parents, many=True).data
+
+    @extend_schema_field(RoleSerializer(many=True))
+    def get_inherited_roles_obj(self, instance: Group) -> list:
+        """Return only inherited roles from ancestor groups (excludes direct roles)"""
+        direct_role_pks = set(instance.roles.values_list("pk", flat=True))
+        inherited_roles = instance.all_roles().exclude(pk__in=direct_role_pks)
+        return RoleSerializer(inherited_roles, many=True).data
 
     def validate_is_superuser(self, superuser: bool):
         """Ensure that the user creating this group has permissions to set the superuser flag"""
@@ -167,6 +175,7 @@ class GroupSerializer(ModelSerializer):
             "attributes",
             "roles",
             "roles_obj",
+            "inherited_roles_obj",
             "children",
             "children_obj",
         ]
