@@ -1,3 +1,4 @@
+import "#elements/forms/Radio";
 import "#components/ak-switch-input";
 import "#elements/Alert";
 import "#elements/forms/FormGroup";

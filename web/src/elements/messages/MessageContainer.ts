@@ -14,7 +14,6 @@ import { instanceOfValidationError } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -150,7 +149,7 @@ export class MessageContainer extends AKElement {
                 return html`<ak-message
                     ?live=${idx === 0}
                     level=${level}
-                    description=${ifDefined(description)}
+                    .description=${description}
                     .onDismiss=${() => this.#removeMessage(message)}
                 >
                     ${title}

@@ -77,10 +77,13 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
-            <ak-form-element-horizontal label=${msg("Device Group")} name="deviceGroup">
+            <ak-form-element-horizontal label=${msg("Device Access Group")} name="deviceGroup">
                 <ak-endpoints-device-group-search
                     .group=${this.instance?.deviceGroup}
                 ></ak-endpoints-device-group-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Select a device access group to be added to upon enrollment.")}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
                 <label class="pf-c-switch">

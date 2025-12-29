@@ -1,0 +1,19 @@
+services:
+  chromium:
+    image: ghcr.io/goauthentik/selenium:143.0-ak-0.35.3
+    shm_size: 2g
+    network_mode: host
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - io.goauthentik.tests=selenium
+  mailpit:
+    image: docker.io/axllent/mailpit:v1.28.0
+    ports:
+      - 1025:1025
+      - 8025:8025
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8025"]
+      interval: 5s
+      start_period: 1s

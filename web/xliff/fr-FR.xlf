@@ -7,34 +7,6 @@
   <source>English</source>
   <target>Anglais</target>
 </trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-  <target>Pseudo-langue</target>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech</source>
-  <target>Tchèque</target>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German</source>
-  <target>Allemand</target>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish</source>
-  <target>Espagnol</target>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish</source>
-  <target>Finnois</target>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French</source>
-  <target>Français</target>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian</source>
-  <target>Italien</target>
-</trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
   <target>Japonais</target>
@@ -43,32 +15,12 @@
   <source>Korean</source>
   <target>Coréen</target>
 </trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch</source>
-  <target>Néerlandais</target>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish</source>
-  <target>Polonais</target>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese</source>
-  <target>Portugais</target>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian</source>
-  <target>Russe</target>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish</source>
-  <target>Turc</target>
-</trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified</source>
+  <source>Chinese (Simplified)</source>
   <target>Chinois</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional</source>
+  <source>Chinese (Traditional)</source>
   <target>Chinois</target>
 </trans-unit>
 <!-- #endregion -->
@@ -85,8 +37,8 @@
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
-  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
-  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
 
@@ -4282,9 +4234,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sf96a86df0756bc7b">
   <source>Afterwards, select the enrollment token you want to use:</source>
 </trans-unit>
-<trans-unit id="s13b4cf044a01dde2">
-  <source>Then download the configuration to deploy the authentik Agent</source>
-</trans-unit>
 <trans-unit id="s12f523a52b843ea2">
   <source>macOS</source>
 </trans-unit>
@@ -4382,12 +4331,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
-</trans-unit>
-<trans-unit id="s76ea179414f2b2a5">
-  <source>Disk size</source>
-</trans-unit>
-<trans-unit id="s25e7a078391a3ec3">
-  <source>Disk usage</source>
 </trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
@@ -9758,9 +9701,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
 </trans-unit>
-<trans-unit id="s506c7d2e87f6770e">
-  <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
-</trans-unit>
 <trans-unit id="s3a3d5b2575cd32ea">
   <source>File uploaded successfully</source>
 </trans-unit>
@@ -9893,9 +9833,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
 </trans-unit>
-<trans-unit id="s184c3b30bebb2dd8">
-  <source>Assign role permissions</source>
-</trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
 </trans-unit>
@@ -10013,12 +9950,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
 </trans-unit>
-<trans-unit id="scdeb093efb1ac2f2">
-  <source>Data export requested successfully</source>
-</trans-unit>
-<trans-unit id="se5a360179bd5937e">
-  <source>You will receive a notification once the data is ready</source>
-</trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
 </trans-unit>
@@ -10108,6 +10039,83 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s46a03121a2c260ea">
   <source>Buffer PolicyAccessView requests</source>
+</trans-unit>
+<trans-unit id="s361e9d929ee925e6">
+  <source>Assign Object Permission</source>
+</trans-unit>
+<trans-unit id="s5f6ad947b4824e40">
+  <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
+</trans-unit>
+<trans-unit id="s523337424b694d5c">
+  <source>Device Access Group</source>
+</trans-unit>
+<trans-unit id="s7642bf28cf8f476c">
+  <source>Select a device access group to be added to upon enrollment.</source>
+</trans-unit>
+<trans-unit id="h30bbf18fbf87fa57">
+  <source>To create a data export, navigate to
+                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
+                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="s813faec5ff1d32d1">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
+</trans-unit>
+<trans-unit id="s54af3ec70642782c">
+  <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
+</trans-unit>
+<trans-unit id="sb3be65525dd1f92c">
+  <source>Assign object permissions to role</source>
+</trans-unit>
+<trans-unit id="sbcd108b66363075c">
+  <source>Device access group</source>
+</trans-unit>
+<trans-unit id="s325acae04cdcac57">
+  <source>Primary disk size</source>
+</trans-unit>
+<trans-unit id="sb4a957846c89fca1">
+  <source>Primary disk usage</source>
+</trans-unit>
+<trans-unit id="s7b68229d885a34d3">
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+</trans-unit>
+<trans-unit id="s284f44964466ef38">
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+</trans-unit>
+<trans-unit id="s01f8cd92a0204da2">
+  <source>Data exports are not available as storage for reports is not configured.</source>
+</trans-unit>
+<trans-unit id="s7afef158aada7389">
+  <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+</trans-unit>
+<trans-unit id="sa8d2689c8fdfea22">
+  <source>Successfully requested data export</source>
+</trans-unit>
+<trans-unit id="s7e2ef0e26e7f5e6f">
+  <source>Failed to export data</source>
+</trans-unit>
+<trans-unit id="sc6991f3e377938fb">
+  <source>Start export</source>
+</trans-unit>
+<trans-unit id="sd69873a0783f8e39">
+  <source>Export data</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s3ec4da71c1a62754">
+  <source>Queued</source>
+</trans-unit>
+<trans-unit id="sd32298bb7d36024d">
+  <source>Configured file backend does not support file management.</source>
+</trans-unit>
+<trans-unit id="s4f1e04b9b4cb96ae">
+  <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+</trans-unit>
+<trans-unit id="s3a46b5964b3ecfac">
+  <source>View details...</source>
 </trans-unit>
 </body>
 </file>

@@ -68,7 +68,7 @@ export class DeviceViewPage extends AKElement {
                 ? msg(str`Device ${this.device?.name}`)
                 : msg("Loading device..."),
             description: this.device?.facts.data.os
-                ? this.device?.facts.data.os?.name + " " + this.device?.facts.data.os?.version
+                ? `${this.device?.facts.data.os?.name} ${this.device?.facts.data.os?.version}`
                 : undefined,
             icon: "fa fa-laptop",
         });
@@ -110,7 +110,7 @@ export class DeviceViewPage extends AKElement {
                                     ?good=${this.device.facts.data.network?.firewallEnabled}
                                 ></ak-status-label>`,
                             ],
-                            [msg("Group"), this.device.accessGroupObj?.name ?? "-"],
+                            [msg("Device access group"), this.device.accessGroupObj?.name ?? "-"],
                             [
                                 msg("Actions"),
                                 html`<ak-forms-modal>
@@ -162,13 +162,13 @@ export class DeviceViewPage extends AKElement {
                                 ></ak-status-label>`,
                             ],
                             [
-                                msg("Disk size"),
+                                msg("Primary disk size"),
                                 rootDisk?.capacityTotalBytes
                                     ? getSize(rootDisk.capacityTotalBytes)
                                     : "-",
                             ],
                             [
-                                msg("Disk usage"),
+                                msg("Primary disk usage"),
                                 rootDisk?.capacityTotalBytes && rootDisk.capacityUsedBytes
                                     ? html`<progress
                                               value="${rootDisk.capacityUsedBytes}"
