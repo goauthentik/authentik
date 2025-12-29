@@ -52,7 +52,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
 
     json() {
         return Object.fromEntries(
-            Array.from(this.controls ?? []).map((control) => [control.name, control.value])
+            Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as RedirectURI;
     }
 
