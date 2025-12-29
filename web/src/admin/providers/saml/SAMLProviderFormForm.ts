@@ -169,7 +169,7 @@ export function renderForm({
                     label=${msg("ACS URL")}
                     placeholder=${msg("https://...")}
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
@@ -198,7 +198,7 @@ export function renderForm({
                     label=${msg("Audience")}
                     placeholder="https://..."
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
@@ -207,7 +207,7 @@ export function renderForm({
                     label=${msg("SLS URL")}
                     placeholder=${msg("https://...")}
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(
@@ -319,7 +319,6 @@ export function renderForm({
                     name="nameIdMapping"
                 >
                     <ak-search-select
-                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
@@ -355,7 +354,6 @@ export function renderForm({
                     name="authnContextClassRefMapping"
                 >
                     <ak-search-select
-                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
