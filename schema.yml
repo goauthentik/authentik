@@ -34792,6 +34792,7 @@ components:
     CapabilitiesEnum:
       enum:
       - can_save_media
+      - can_save_reports
       - can_geo_ip
       - can_asn
       - can_impersonate
