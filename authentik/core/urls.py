@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import path, re_path
 
 from authentik.core.api.application_entitlements import ApplicationEntitlementViewSet
 from authentik.core.api.applications import ApplicationViewSet
@@ -55,8 +55,8 @@ urlpatterns = [
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
     ),
-    path(
-        "if/flow/<slug:flow_slug>/",
+    re_path(
+        r"^if/flow/(?P<flow_slug>[-\w]+)/?$",
         # FIXME: move this url to the flows app...also will cause all
         # of the reverse calls to be adjusted
         FlowInterfaceView.as_view(),
