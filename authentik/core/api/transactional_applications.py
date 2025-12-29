@@ -63,10 +63,33 @@ class TransactionPolicyBindingSerializer(PolicyBindingSerializer):
         fields = [x for x in PolicyBindingSerializer.Meta.fields if x != "target"]
 
 
+class TransactionApplicationRequestSerializer(ApplicationSerializer):
+    """ApplicationSerializer that excludes provider fields.
+
+    The provider is created in the same transaction and linked via KeyOf reference,
+    so we don't want DRF to validate the provider FK here - that validation would
+    query the database and potentially hit a read replica that hasn't replicated
+    the just-created provider yet.
+    """
+
+    class Meta(ApplicationSerializer.Meta):
+        fields = [
+            x
+            for x in ApplicationSerializer.Meta.fields
+            if x
+            not in (
+                "provider",
+                "provider_obj",
+                "backchannel_providers",
+                "backchannel_providers_obj",
+            )
+        ]
+
+
 class TransactionApplicationSerializer(PassiveSerializer):
     """Serializer for creating a provider and an application in one transaction"""
 
-    app = ApplicationSerializer()
+    app = TransactionApplicationRequestSerializer()
     provider_model = ChoiceField(choices=list(get_provider_serializer_mapping().keys()))
     provider = TransactionProviderField()
 
