@@ -97,6 +97,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 input-hint="code"
                 required
                 maxlength=${150}
+                autofocus
                 help=${msg(
                     "The user's primary identifier used for authentication. 150 characters or fewer.",
                 )}
