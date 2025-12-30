@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/base64"
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
@@ -710,11 +711,24 @@ func TestBuildConnConfig(t *testing.T) {
 				Port:        5432,
 				User:        "testuser",
 				Name:        "testdb",
-				ConnOptions: "connect_timeout=10 application_name=authentik",
+				ConnOptions: base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"10","application_name":"authentik"}`)),
 			},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
-				assert.Equal(t, "10", cc.RuntimeParams["connect_timeout"])
+				assert.Equal(t, 10*time.Second, cc.ConnectTimeout)
 				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
+			},
+		},
+		{
+			name: "with target_session_attrs",
+			cfg: config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				ConnOptions: base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "read-write", cc.RuntimeParams["target_session_attrs"])
 			},
 		},
 		{
@@ -727,7 +741,7 @@ func TestBuildConnConfig(t *testing.T) {
 				Name:          "production",
 				SSLMode:       "require",
 				DefaultSchema: "app_schema",
-				ConnOptions:   "application_name=authentik",
+				ConnOptions:   base64.StdEncoding.EncodeToString([]byte(`{"application_name":"authentik"}`)),
 			},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
 				assert.Equal(t, "db.example.com", cc.Host)
@@ -829,7 +843,7 @@ func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
 				SSLCert:       clientCertPath,
 				SSLKey:        clientKeyPath,
 				DefaultSchema: "app_schema",
-				ConnOptions:   "application_name=authentik",
+				ConnOptions:   base64.StdEncoding.EncodeToString([]byte(`{"application_name":"authentik"}`)),
 			},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
 				assert.Equal(t, "db.example.com", cc.Host)
@@ -939,6 +953,193 @@ func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
 		err := <-done
 		assert.NoError(t, err, "Concurrent operation %d should succeed", i)
 	}
+}
+
+// TestParseConnOptions tests the base64 JSON parsing of connection options
+func TestParseConnOptions(t *testing.T) {
+	tests := []struct {
+		name        string
+		input       string
+		expected    map[string]string
+		expectError bool
+		errorMsg    string
+	}{
+		{
+			name:     "simple key-value",
+			input:    base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
+			expected: map[string]string{"target_session_attrs": "read-write"},
+		},
+		{
+			name:     "multiple options",
+			input:    base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"10","application_name":"authentik"}`)),
+			expected: map[string]string{"connect_timeout": "10", "application_name": "authentik"},
+		},
+		{
+			name:     "numeric value as number",
+			input:    base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":10}`)),
+			expected: map[string]string{"connect_timeout": "10"},
+		},
+		{
+			name:     "boolean value",
+			input:    base64.StdEncoding.EncodeToString([]byte(`{"default_transaction_read_only":true}`)),
+			expected: map[string]string{"default_transaction_read_only": "true"},
+		},
+		{
+			name:     "empty object",
+			input:    base64.StdEncoding.EncodeToString([]byte(`{}`)),
+			expected: map[string]string{},
+		},
+		{
+			name:        "invalid base64",
+			input:       "not-valid-base64!!!",
+			expectError: true,
+			errorMsg:    "invalid base64 encoding",
+		},
+		{
+			name:        "invalid JSON",
+			input:       base64.StdEncoding.EncodeToString([]byte(`not json`)),
+			expectError: true,
+			errorMsg:    "invalid JSON",
+		},
+		{
+			name:        "JSON array instead of object",
+			input:       base64.StdEncoding.EncodeToString([]byte(`["value1", "value2"]`)),
+			expectError: true,
+			errorMsg:    "invalid JSON",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := parseConnOptions(tt.input)
+			if tt.expectError {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errorMsg)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, tt.expected, result)
+			}
+		})
+	}
+}
+
+// TestApplyConnOptions tests that connection options are applied correctly to pgx.ConnConfig
+func TestApplyConnOptions(t *testing.T) {
+	tests := []struct {
+		name        string
+		opts        map[string]string
+		validate    func(*testing.T, *pgx.ConnConfig)
+		expectError bool
+		errorMsg    string
+	}{
+		{
+			name: "connect_timeout sets ConnectTimeout",
+			opts: map[string]string{"connect_timeout": "30"},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, 30*time.Second, cc.ConnectTimeout)
+			},
+		},
+		{
+			name: "target_session_attrs goes to RuntimeParams",
+			opts: map[string]string{"target_session_attrs": "read-write"},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "read-write", cc.RuntimeParams["target_session_attrs"])
+			},
+		},
+		{
+			name: "application_name goes to RuntimeParams",
+			opts: map[string]string{"application_name": "my-app"},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "my-app", cc.RuntimeParams["application_name"])
+			},
+		},
+		{
+			name: "statement_timeout goes to RuntimeParams",
+			opts: map[string]string{"statement_timeout": "5000"},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "5000", cc.RuntimeParams["statement_timeout"])
+			},
+		},
+		{
+			name: "unknown options go to RuntimeParams",
+			opts: map[string]string{"custom_param": "custom_value"},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "custom_value", cc.RuntimeParams["custom_param"])
+			},
+		},
+		{
+			name: "multiple options",
+			opts: map[string]string{
+				"connect_timeout":      "10",
+				"target_session_attrs": "read-write",
+				"application_name":     "authentik",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, 10*time.Second, cc.ConnectTimeout)
+				assert.Equal(t, "read-write", cc.RuntimeParams["target_session_attrs"])
+				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
+			},
+		},
+		{
+			name:        "invalid connect_timeout",
+			opts:        map[string]string{"connect_timeout": "not-a-number"},
+			expectError: true,
+			errorMsg:    "invalid connect_timeout value",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Create a base config
+			connConfig, err := pgx.ParseConfig("")
+			require.NoError(t, err)
+			connConfig.RuntimeParams = make(map[string]string)
+
+			err = applyConnOptions(connConfig, tt.opts)
+			if tt.expectError {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errorMsg)
+			} else {
+				require.NoError(t, err)
+				tt.validate(t, connConfig)
+			}
+		})
+	}
+}
+
+// TestBuildConnConfig_Base64JSONConnOptions tests the full integration of base64 JSON connection options
+func TestBuildConnConfig_Base64JSONConnOptions(t *testing.T) {
+	t.Run("bug report scenario - target_session_attrs", func(t *testing.T) {
+		cfg := config.PostgreSQLConfig{
+			Host:        "localhost",
+			Port:        5432,
+			User:        "authentik",
+			Name:        "authentik",
+			ConnOptions: "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6InJlYWQtd3JpdGUifQ==",
+		}
+
+		connConfig, err := BuildConnConfig(cfg)
+		require.NoError(t, err)
+		assert.Equal(t, "read-write", connConfig.RuntimeParams["target_session_attrs"])
+	})
+
+	t.Run("complex connection options", func(t *testing.T) {
+		// {"connect_timeout":10,"target_session_attrs":"read-write","application_name":"authentik-proxy"}
+		connOpts := base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":10,"target_session_attrs":"read-write","application_name":"authentik-proxy"}`))
+		cfg := config.PostgreSQLConfig{
+			Host:        "localhost",
+			Port:        5432,
+			User:        "authentik",
+			Name:        "authentik",
+			ConnOptions: connOpts,
+		}
+
+		connConfig, err := BuildConnConfig(cfg)
+		require.NoError(t, err)
+		assert.Equal(t, 10*time.Second, connConfig.ConnectTimeout)
+		assert.Equal(t, "read-write", connConfig.RuntimeParams["target_session_attrs"])
+		assert.Equal(t, "authentik-proxy", connConfig.RuntimeParams["application_name"])
+	})
 }
 
 // Helper function to create session data JSON

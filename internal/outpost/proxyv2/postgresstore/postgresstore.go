@@ -4,12 +4,13 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,7 +19,6 @@ import (
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
-	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
@@ -141,21 +141,74 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 
 	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
-		// Parse key=value pairs from ConnOptions
-		// Format: "key1=value1 key2=value2"
-		pairs := strings.Split(cfg.ConnOptions, " ")
-		for _, pair := range pairs {
-			if pair == "" {
-				continue
-			}
-			kv := strings.SplitN(pair, "=", 2)
-			if len(kv) == 2 {
-				connConfig.RuntimeParams[kv[0]] = kv[1]
-			}
+		connOpts, err := parseConnOptions(cfg.ConnOptions)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse connection options: %w", err)
+		}
+
+		// Apply each connection option to the appropriate config field
+		if err := applyConnOptions(connConfig, connOpts); err != nil {
+			return nil, fmt.Errorf("failed to apply connection options: %w", err)
 		}
 	}
 
 	return connConfig, nil
+}
+
+// parseConnOptions decodes a base64-encoded JSON string into a map of connection options.
+// This matches the Python behavior in authentik/lib/config.py:get_dict_from_b64_json
+func parseConnOptions(encoded string) (map[string]string, error) {
+	// Base64 decode
+	decoded, err := base64.StdEncoding.DecodeString(encoded)
+	if err != nil {
+		return nil, fmt.Errorf("invalid base64 encoding: %w", err)
+	}
+
+	// Parse JSON
+	var opts map[string]interface{}
+	if err := json.Unmarshal(decoded, &opts); err != nil {
+		return nil, fmt.Errorf("invalid JSON: %w", err)
+	}
+
+	// Convert all values to strings
+	result := make(map[string]string)
+	for k, v := range opts {
+		switch val := v.(type) {
+		case string:
+			result[k] = val
+		case float64:
+			// JSON numbers are float64
+			if val == float64(int(val)) {
+				result[k] = strconv.Itoa(int(val))
+			} else {
+				result[k] = strconv.FormatFloat(val, 'f', -1, 64)
+			}
+		case bool:
+			result[k] = strconv.FormatBool(val)
+		default:
+			result[k] = fmt.Sprintf("%v", v)
+		}
+	}
+
+	return result, nil
+}
+
+// applyConnOptions applies parsed connection options to the pgx.ConnConfig.
+func applyConnOptions(connConfig *pgx.ConnConfig, opts map[string]string) error {
+	for key, value := range opts {
+		// connect_timeout needs special handling as it's a connection-level timeout
+		if key == "connect_timeout" {
+			timeout, err := strconv.Atoi(value)
+			if err != nil {
+				return fmt.Errorf("invalid connect_timeout value: %w", err)
+			}
+			connConfig.ConnectTimeout = time.Duration(timeout) * time.Second
+			continue
+		}
+		// All other options go to RuntimeParams
+		connConfig.RuntimeParams[key] = value
+	}
+	return nil
 }
 
 // BuildDSN constructs a PostgreSQL connection string from a ConnConfig.
