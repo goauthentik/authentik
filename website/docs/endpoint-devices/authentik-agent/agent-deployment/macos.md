@@ -31,7 +31,7 @@ If you have already created have an enrollment token, skip to the [next section]
 ## Install the authentik Agent on macOS
 
 :::info Automated deployment is recommended
-It's recommended to deploy the Agent via [MDM or automatiation tools](./automated.mdx) rather than manually.
+It's recommended to deploy the Agent via [MDM or automatiation tools](./automated.mdx) instead of manually configuring it.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
