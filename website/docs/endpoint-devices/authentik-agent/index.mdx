@@ -31,23 +31,12 @@ The authentik Agent consists of several components:
 
 All authentik Agent components communicate via gRPC and Unix domain sockets/Windows named pipes.
 
-```
-	case SocketIDDefault:
-		return pstr.PlatformString{
-			Linux:   pstr.S("/var/run/authentik/sys.sock"),
-			Darwin:  pstr.S("/var/run/authentik-sysd.sock"),
-			Windows: pstr.S(`\\.\pipe\authentik\sysd`),
-		}
-	case SocketIDCtrl:
-		return pstr.PlatformString{
-			Linux:   pstr.S("/var/run/authentik/sys-ctrl.sock"),
-			Darwin:  pstr.S("/var/run/authentik-sysd-ctrl.sock"),
-			Windows: pstr.S(`\\.\pipe\authentik\sysd-ctrl`),
-		}
-```
+**Linux**: `/var/run/authentik/sys.sock` and `/var/run/authentik/sys-ctrl.sock`
+**macOS**: `/var/run/authentik-sysd.sock` and `/var/run/authentik-sysd-ctrl.sock`
+**Windows**: `\\.\pipe\authentik\sysd` and `\\.\pipe\authentik\sysd-ctrl`
 
-- `sys.sock` for general communication
-- `sys-ctrl.sock` for domain join
+- `sys.sock`/`*sysd.sock` for general communication
+- `*-ctrl.sock` for domain join
 
 ## Important considerations
 
