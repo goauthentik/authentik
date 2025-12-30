@@ -29,17 +29,62 @@ To support the integration of authentik Agent with AWS CLI, you need to create a
 
 3. Click **Submit** to save the new application and provider.
 
-## Authenticate to AWS CLI with the authentik Agent
+### Configure AWS
 
-To authenticate to the AWS CLI with the authentik agent, use the following command:
+- Open AWS dashboard
+- Go to IAM
+- Go to Identity Providers
+- Click add
+- Select OpenID Connect
+- *Provider URL*: `https://authentik.company/application/o/authentik-aws-cli/`
+- *Audience*: `authentik-aws-cli`
 
-```bash
-ak auth aws
+### Configure permissions in AWS
+
+- Open AWS dashboard
+- Go to IAM
+- Go to Roles
+- Create/edit a role you want people to be able to use
+- Go to trust relationships
+- Edit
+- Add this, replacing `<account_id>` with your AWS Account ID
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::<account_id>:oidc-provider/authentik.company/application/o/authentik-aws-cli/"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "authentik.company/application/o/authentik-aws-cli/:aud": "authentik-aws-cli"
+                }
+            }
+        }
+    ]
+}
 ```
 
-**Available flags:**
+## Configure aws CLI to authenticate with authentik
 
-- `-c, --client-id <string>` - Client ID
-- `-e, --region <string>` - AWS region (default: `eu-central-1`)
-- `-r, --role-arn <string>` - IAM Role ARN
-- `-h, --help` - Display help information
+Update `~/.aws/credentials`
+Replace `<role_arn>` with the ARN of the role above
+
+```
+[default]
+credential_process = ak auth aws --client-id authentik-aws-cli --role-arn <role_arn>
+```
+
+To verify, run `aws sts get-caller-identity`, which should output something like this
+
+```json
+{
+    "UserId": "xxxxxx",
+    "Account": "<account_id>",
+    "Arn": "arn:aws:sts::<account_id>:assumed-role/<role name>/<authentik username>"
+}
+```

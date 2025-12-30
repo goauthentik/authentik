@@ -32,6 +32,23 @@ If you have already created have an enrollment token, skip to the [next section]
 
 Follow these steps to install the authentik Agent on your Linux device:
 
+# JL: use tabs, add RPM
+
+Very untested
+```
+# This overwrites any existing configuration in /etc/yum.repos.d/authentik.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/authentik.repo
+[authentik]
+name=authentik
+baseurl=https://pkg.goauthentik.io
+enabled=1
+gpgcheck=1
+gpgkey=https://pkg.goauthentik.io/keys/gpg-key.asc
+EOF
+```
+`sudo yum install -y authentik-cli`
+---
+
 1. Open a Terminal session and install the required GPG key:
 
 ```sh
@@ -54,7 +71,25 @@ sudo apt install authentik-cli authentik-agent authentik-sysd
 4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Enable device authentication
+## Enable device compliance and SSH access
+
+To enable [device compliance features](../../device-compliance/index.mdx) and the device [accepting SSH connections](../../device-authentication/ssh-authentication.mdx), you must join the device to an authentik domain.
+
+1. Open a Terminal session and run the following command:
+
+```sh
+sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
+```
+
+- `deployment_name` is the name that will be used to identify the authentik deployment on the device.
+- `https://authentik.company` is the fully qualified domain name of the authentik deployment.
+
+2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
+3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
+
+## Enable CLI authentication
+
+# JL: this is only for cli (basically any command thats `ak ...`)
 
 To enable [device authentication features](../../device-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
 
@@ -65,22 +100,6 @@ ak config setup --authentik-url https://authentik.company
 ```
 
 2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
-
-## Enable device compliance and SSH access
-
-To enable [device compliance features](../../device-compliance/index.mdx) and the device [accepting SSH connections](../../device-authentication/ssh-authentication.mdx), you must join the device to an authentik domain.
-
-1. Open a Terminal session and run the following command:
-
-```sh
-ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
-```
-
-- `deployment_name` is the name that will be used to identify the authentik deployment on the device.
-- `https://authentik.company` is the fully qualified domain name of the authentik deployment.
-
-2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
-3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
 
 ## Logging
 
