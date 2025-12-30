@@ -6,8 +6,6 @@ tags: [authentik Agent, mac, macos, deploy]
 
 ## What it can do
 
-# JL: recommend to do it automated
-
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
@@ -32,6 +30,10 @@ If you have already created have an enrollment token, skip to the [next section]
 
 ## Install the authentik Agent on macOS
 
+:::info Automated deployment is recommended
+It's recommended to deploy the Agent via [MDM or automatiation tools](./automated.mdx) rather than manually.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
@@ -41,18 +43,6 @@ If you have already created have an enrollment token, skip to the [next section]
     - Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"`
 6. Confirm that the authentik Agent is installed by opening a Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
-
-## Enable device authentication
-
-To enable [device authentication features](../../device-authentication/index.mdx), you must connect the device to an authentik deployment. To do so, follow these steps:
-
-1. Open a Terminal session and run the following command:
-
-```sh
-ak config setup --authentik-url https://authentik.company
-```
-
-2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
 ## Enable device compliance
 
@@ -69,6 +59,18 @@ sudo "/Applications/authentik Agent.app/Contents/MacOS/ak-sysd" domains join <de
 
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
+
+## Enable SSH client authentication and CLI application authentication
+
+To enable [initiating SSH connections](../../device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
+
+1. Open a Terminal session and run the following command:
+
+```sh
+ak config setup --authentik-url https://authentik.company
+```
+
+2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
 ## Logging
 

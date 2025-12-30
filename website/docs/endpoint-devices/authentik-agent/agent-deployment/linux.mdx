@@ -4,6 +4,9 @@ sidebar_label: Linux
 tags: [authentik Agent, linux, deploy, packages]
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## What it can do
 
 - Retrieves information about the host and reports it to authentik, see [Device Compliance](../../device-compliance/index.mdx).
@@ -26,29 +29,14 @@ If you have already created have an enrollment token, skip to the [next section]
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether or not the enrollment token will expire
 5. Click **Create**.
-6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance-and-ssh-access).
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance-ssh-server-authentication-and-local-device-login).
 
 ## Install the authentik Agent on Linux
 
 Follow these steps to install the authentik Agent on your Linux device:
 
-# JL: use tabs, add RPM
-
-Very untested
-
-```
-# This overwrites any existing configuration in /etc/yum.repos.d/authentik.repo
-cat <<EOF | sudo tee /etc/yum.repos.d/authentik.repo
-[authentik]
-name=authentik
-baseurl=https://pkg.goauthentik.io
-enabled=1
-gpgcheck=1
-gpgkey=https://pkg.goauthentik.io/keys/gpg-key.asc
-EOF
-```
-
-## `sudo yum install -y authentik-cli`
+<Tabs defaultValue="Debian-based">
+<TabItem value="Debian-based">
 
 1. Open a Terminal session and install the required GPG key:
 
@@ -72,7 +60,37 @@ sudo apt install authentik-cli authentik-agent authentik-sysd
 4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Enable device compliance and SSH access
+</TabItem>
+<TabItem value="RedHat-based">
+
+1. Open a Terminal session and run the following command to add the authentik repo and associated GPG key:
+
+```bash
+# This overwrites any existing configuration in /etc/yum.repos.d/authentik.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/authentik.repo
+[authentik]
+name=authentik
+baseurl=https://pkg.goauthentik.io
+enabled=1
+gpgcheck=1
+gpgkey=https://pkg.goauthentik.io/keys/gpg-key.asc
+EOF
+```
+
+2. Run the following commands to refresh metadata and install the authentik Agent packages:
+
+```bash
+sudo yum update
+sudo yum install -y authentik-cli authentik-agent authentik-sysd
+```
+
+3. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
+   You should see a response that starts with: `authentik CLI v<version_number>`
+
+</TabItem>
+</Tabs>
+
+## Enable device compliance, SSH server authentication, and local device login
 
 To enable [device compliance features](../../device-compliance/index.mdx) and the device [accepting SSH connections](../../device-authentication/ssh-authentication.mdx), you must join the device to an authentik domain.
 
@@ -88,11 +106,9 @@ sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.co
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
 
-## Enable CLI authentication
+## Enable SSH client authentication and CLI application authentication
 
-# JL: this is only for cli (basically any command that's `ak ...`)
-
-To enable [device authentication features](../../device-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
+To enable [initiating SSH connections](../../device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
 
 1. Open a Terminal session and run the following command:
 

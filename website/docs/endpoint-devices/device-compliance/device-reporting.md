@@ -33,6 +33,8 @@ This feature is still in development and will be announced soon.
 
 ## Example facts
 
+For an example of the facts provided for a Linux device, see [here](./facts-linux.json)
+
 ## Endpoint devices in event logs
 
 Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.md). For example:

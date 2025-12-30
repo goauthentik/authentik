@@ -31,17 +31,17 @@ To support the integration of authentik Agent with `kubectl`, you need to create
 
 ## Kubernetes configuration
 
-# JL: clarify that these are instructions for kubeadm, and might vary depending on which k8s you're running
+These instructions depend on how you're running Kubernetes and are specifically for kubeadm. The same instructions can't be applied to a hosted/cloud Kubernetes platform where you don't have control over the Kubernetes API server.
 
-# JL: doesn't apply to "hosted" K8s where you dont have control over the api server
+:::info Reverse proxy for Kubernetes API servers
+[kube-oidc-proxy](https://github.com/TremoloSecurity/kube-oidc-proxy) is a useful project that provides a reverse proxy to authenticate to managed Kubernetes API servers via OIDC.
+:::
 
-# JL: also mention https://github.com/TremoloSecurity/kube-oidc-proxy
-
-To integrate the authentik Agent with your kubernetes deployment, you'll need to configure kubeadm.
+To integrate the authentik Agent with your Kubernetes deployment, you'll need to configure kubeadm.
 
 ### Configure kubeadm settings
 
-Update your kubeadm config file using the template below.
+Update your kubeadm config file using the template below:
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1beta4
@@ -73,7 +73,7 @@ kubeadm upgrade apply <version> --config=kubeadm_config.yml
 
 Where `<version>` matches the target Kubernetes version specified in your config file.
 
-## Configure kubectl to authenticate with the authentik CLI
+### Configure kubectl to authenticate with authentik CLI
 
 Update your kubeconfig file (~/.kube/config) to use the `ak` command to authenticate
 

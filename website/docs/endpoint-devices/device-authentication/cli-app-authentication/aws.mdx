@@ -29,25 +29,28 @@ To support the integration of authentik Agent with AWS CLI, you need to create a
 
 3. Click **Submit** to save the new application and provider.
 
-### Configure AWS
+## AWS configuration
 
-- Open AWS dashboard
-- Go to IAM
-- Go to Identity Providers
-- Click add
-- Select OpenID Connect
-- _Provider URL_: `https://authentik.company/application/o/authentik-aws-cli/`
-- _Audience_: `authentik-aws-cli`
+To support the integration of AWS with the authentik Agent, you need to configure authentik CLI as an IDP and setup permission roles in AWS.
+
+### Configure authentik CLI as an IDP in AWS
+
+1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
+2. Open the [IAM Console](https://console.aws.amazon.com/iam/) and in the left sidebar under **Access Management**, click **Identity providers**.
+3. Click **Add provider** and configure the following fields:
+    - **Provider type**: `OpenID Connect`
+    - **Provider URL**: `https://authentik.company/application/o/<application-slug>/`
+    - **Audience**: `authentik-aws-cli`
+4. Click **Add provider**
+5. On the **Identity providers** page, click on the name of the provider that you just added.
 
 ### Configure permissions in AWS
 
-- Open AWS dashboard
-- Go to IAM
-- Go to Roles
-- Create/edit a role you want people to be able to use
-- Go to trust relationships
-- Edit
-- Add this, replacing `<account_id>` with your AWS Account ID
+1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
+2. Open the [IAM Console](https://console.aws.amazon.com/iam/) and in the left sidebar under **Access Management**, click **Roles**.
+3. Either create or edit a role that you want authentik users to be able to use.
+4. Open the **Trust relationships** tab.
+5. Click **Edit trust policy** and add the following, replacing `<account_id>` with your AWS Account ID:
 
 ```json
 {
@@ -69,10 +72,12 @@ To support the integration of authentik Agent with AWS CLI, you need to create a
 }
 ```
 
-## Configure aws CLI to authenticate with authentik
+6. Click **Update policy**.
+7. Take note of the role ARN as it will be required in the next section.
 
-Update `~/.aws/credentials`
-Replace `<role_arn>` with the ARN of the role above
+### Configure AWS CLI to authenticate with authentik CLI
+
+On the device running AWS CLI, update the `~/.aws/credentials` file with the following, replacing `<role_arn>` with the ARN of the role above:
 
 ```
 [default]

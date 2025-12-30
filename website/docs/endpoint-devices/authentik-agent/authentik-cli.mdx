@@ -97,7 +97,17 @@ ak-sysd agent
 ```
 
 `-d` for debug
-`--disable-component` to disable a component, can be used multiple times. - agent_starter: Responsible for starting the authentik user agent - auth: Authentication components for interactive and token-based authentication - ctrl: Provides a control socket for the CLI to join domains, etc - device: Handles device compliance checkins and validations - directory: Provides directory services on linux system - ping: Provides a ping service for healthchecking - session: Handles sessions created with local device authentication/SSH
+`--disable-component` to disable a component, can be used multiple times.
+
+**Components**:
+
+- `agent_starter`: Responsible for starting the authentik user agent
+- `auth`: Authentication components for interactive and token-based authentication
+- `ctrl`: Provides a control socket for the CLI to join domains, etc
+- `device`: Handles device compliance checkins and validations
+- `directory`: Provides directory services on linux system
+- `ping`: Provides a ping service for healthchecking
+- `session`: Handles sessions created with local device authentication/SSH
 
 ### completion
 
