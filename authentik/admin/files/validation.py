@@ -12,6 +12,13 @@ from authentik.admin.files.usage import FileUsage
 MAX_FILE_NAME_LENGTH = 1024
 MAX_PATH_COMPONENT_LENGTH = 255
 
+# Theme variable placeholder that can be used in file paths
+# This allows for theme-specific files like logo-%(theme)s.png
+THEME_VARIABLE = "%(theme)s"
+
+# Valid themes that can be substituted for %(theme)s
+VALID_THEMES = ("light", "dark")
+
 
 def validate_file_name(name: str) -> None:
     if PassthroughBackend(FileUsage.MEDIA).supports_file(name) or StaticBackend(
@@ -39,12 +46,17 @@ def validate_upload_file_name(
     if not name:
         raise ValidationError(_("File name cannot be empty"))
 
-    # Same regex is used in the frontend as well
-    if not re.match(r"^[a-zA-Z0-9._/-]+$", name):
+    # Allow %(theme)s placeholder for theme-specific files
+    # We temporarily replace it for validation, then check the result
+    name_for_validation = name.replace(THEME_VARIABLE, "theme")
+
+    # Same regex is used in the frontend as well (without %(theme)s handling there)
+    if not re.match(r"^[a-zA-Z0-9._/-]+$", name_for_validation):
         raise ValidationError(
             _(
                 "File name can only contain letters (a-z, A-Z), numbers (0-9), "
-                "dots (.), hyphens (-), underscores (_), and forward slashes (/)"
+                "dots (.), hyphens (-), underscores (_), forward slashes (/), "
+                "and the special placeholder %(theme)s for theme-specific files"
             )
         )
 

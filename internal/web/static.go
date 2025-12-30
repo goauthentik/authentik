@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-http-utils/etag"
@@ -17,9 +18,42 @@ import (
 	staticWeb "goauthentik.io/web"
 )
 
+// Theme variable placeholder that can be used in file paths
+// This allows for theme-specific files like logo-%(theme)s.png
+const themeVariable = "%(theme)s"
+
+// Valid themes that can be substituted for %(theme)s
+var validThemes = []string{"light", "dark"}
+
 type StorageClaims struct {
 	jwt.RegisteredClaims
 	Path string `json:"path,omitempty"`
+}
+
+// pathMatchesWithTheme checks if the requested path matches the JWT path,
+// accounting for theme variable substitution.
+// If the JWT path contains %(theme)s, it will match the requested path
+// if substituting %(theme)s with any valid theme produces the requested path.
+func pathMatchesWithTheme(jwtPath, requestedPath string) bool {
+	// Direct match (no theme variable)
+	if jwtPath == requestedPath {
+		return true
+	}
+
+	// Check if JWT path contains theme variable
+	if !strings.Contains(jwtPath, themeVariable) {
+		return false
+	}
+
+	// Try substituting each valid theme and check for a match
+	for _, theme := range validThemes {
+		substituted := strings.ReplaceAll(jwtPath, themeVariable, theme)
+		if substituted == requestedPath {
+			return true
+		}
+	}
+
+	return false
 }
 
 func storageTokenIsValid(usage string, r *http.Request) bool {
@@ -51,7 +85,8 @@ func storageTokenIsValid(usage string, r *http.Request) bool {
 		return false
 	}
 
-	if claims.Path != fmt.Sprintf("%s/%s", usage, r.URL.Path) {
+	requestedPath := fmt.Sprintf("%s/%s", usage, r.URL.Path)
+	if !pathMatchesWithTheme(claims.Path, requestedPath) {
 		return false
 	}
 
