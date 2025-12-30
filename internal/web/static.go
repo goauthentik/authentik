@@ -86,11 +86,7 @@ func storageTokenIsValid(usage string, r *http.Request) bool {
 	}
 
 	requestedPath := fmt.Sprintf("%s/%s", usage, r.URL.Path)
-	if !pathMatchesWithTheme(claims.Path, requestedPath) {
-		return false
-	}
-
-	return true
+	return pathMatchesWithTheme(claims.Path, requestedPath)
 }
 
 func (ws *WebServer) configureStatic() {
