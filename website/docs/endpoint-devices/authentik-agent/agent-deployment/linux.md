@@ -35,6 +35,7 @@ Follow these steps to install the authentik Agent on your Linux device:
 # JL: use tabs, add RPM
 
 Very untested
+
 ```
 # This overwrites any existing configuration in /etc/yum.repos.d/authentik.repo
 cat <<EOF | sudo tee /etc/yum.repos.d/authentik.repo
@@ -46,8 +47,8 @@ gpgcheck=1
 gpgkey=https://pkg.goauthentik.io/keys/gpg-key.asc
 EOF
 ```
-`sudo yum install -y authentik-cli`
----
+
+## `sudo yum install -y authentik-cli`
 
 1. Open a Terminal session and install the required GPG key:
 
@@ -89,7 +90,7 @@ sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.co
 
 ## Enable CLI authentication
 
-# JL: this is only for cli (basically any command thats `ak ...`)
+# JL: this is only for cli (basically any command that's `ak ...`)
 
 To enable [device authentication features](../../device-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
 

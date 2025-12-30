@@ -32,7 +32,9 @@ To support the integration of authentik Agent with `kubectl`, you need to create
 ## Kubernetes configuration
 
 # JL: clarify that these are instructions for kubeadm, and might vary depending on which k8s you're running
+
 # JL: doesn't apply to "hosted" K8s where you dont have control over the api server
+
 # JL: also mention https://github.com/TremoloSecurity/kube-oidc-proxy
 
 To integrate the authentik Agent with your kubernetes deployment, you'll need to configure kubeadm.
@@ -45,18 +47,18 @@ Update your kubeadm config file using the template below.
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 apiServer:
-  # [...]
-  extraArgs:
-    - name: oidc-client-id
-      value: kubernetes-cluster
-    - name: oidc-groups-claim
-      value: groups
-    - name: oidc-groups-prefix
-      value: "oidc:"
-    - name: oidc-issuer-url
-      value: https://authentik.company/application/o/<application-slug>/
-    - name: oidc-username-claim
-      value: email
+    # [...]
+    extraArgs:
+        - name: oidc-client-id
+          value: kubernetes-cluster
+        - name: oidc-groups-claim
+          value: groups
+        - name: oidc-groups-prefix
+          value: "oidc:"
+        - name: oidc-issuer-url
+          value: https://authentik.company/application/o/<application-slug>/
+        - name: oidc-username-claim
+          value: email
 ```
 
 Run the following command to apply the changes to an existing Kubernetes cluster:
@@ -77,18 +79,18 @@ Update your kubeconfig file (~/.kube/config) to use the `ak` command to authenti
 
 ```yaml
 users:
-- name: kubernetes-cluster
-  user:
-    exec:
-      apiVersion: client.authentication.k8s.io/v1
-      args:
-      - auth
-      - kubectl
-      - --client-id=kubernetes-cluster
-      command: ak
-      env: null
-      interactiveMode: IfAvailable
-      provideClusterInfo: false
+    - name: kubernetes-cluster
+      user:
+          exec:
+              apiVersion: client.authentication.k8s.io/v1
+              args:
+                  - auth
+                  - kubectl
+                  - --client-id=kubernetes-cluster
+              command: ak
+              env: null
+              interactiveMode: IfAvailable
+              provideClusterInfo: false
 ```
 
 To verify, run `kubectl auth whoami`, which should output your authentik email address as a username

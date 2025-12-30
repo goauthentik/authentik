@@ -28,7 +28,8 @@ It currently only supports local login; RDP login is not supported.
 - WCP can cause issues with user encrypted directories.
 - Support with Active directory has not been confirmed yet.
 - Offline login is currently not supported.
-  :::
+
+:::
 
 ## Prerequisites
 
@@ -75,7 +76,7 @@ ak config setup --authentik-url https://authentik.company
 
 To enable [device compliance features](../../device-compliance/index.mdx), you must join the device to an authentik domain.
 
-1. Open a Terminal session and run the following command:
+1. Open a Terminal session as Administrator and run the following command:
 
 ```sh
 ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
