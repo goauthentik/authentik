@@ -61,9 +61,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${ifDefined(this.instance?.name)}
+                input-hint="code"
+                autofocus
                 required
             ></ak-text-input>
             <ak-text-input

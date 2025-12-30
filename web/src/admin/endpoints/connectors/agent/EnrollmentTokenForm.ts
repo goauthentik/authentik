@@ -1,7 +1,8 @@
-import "#components/ak-text-input";
-import "#components/ak-number-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
+import "#components/ak-text-input";
+import "#components/ak-number-input";
+import "#components/ak-switch-input";
 import "#admin/endpoints/ak-endpoints-device-group-search";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -10,20 +11,28 @@ import { dateTimeLocal } from "#common/temporal";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 
+import { AKLabel } from "#components/ak-label";
+
 import { EndpointsApi, EnrollmentToken, EnrollmentTokenRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+const createExpirationValue = (value?: Date | null) => {
+    return dateTimeLocal(value || new Date(Date.now() + 30 * 60 * 1000));
+};
+
 @customElement("ak-endpoints-agent-enrollment-token-form")
 export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentToken, string>) {
-    @property()
-    connectorID?: string;
+    protected expirationMinimumDate: string = dateTimeLocal(new Date());
 
     @state()
-    protected showExpiry = false;
+    protected expiresAt: string | null = createExpirationValue();
+
+    @property({ type: String, attribute: "connector-id" })
+    public connectorID?: string;
 
     async loadInstance(pk: string): Promise<EnrollmentToken> {
         const token = await new EndpointsApi(
@@ -31,7 +40,9 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         ).endpointsAgentsEnrollmentTokensRetrieve({
             tokenUuid: pk,
         });
-        this.showExpiry = token.expiring ?? false;
+
+        this.expiresAt = token.expiring ? createExpirationValue(token.expires) : null;
+
         return token;
     }
 
@@ -58,24 +69,36 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
         });
     }
 
-    renderExpiry() {
-        return html`<ak-form-element-horizontal label=${msg("Expires on")} name="expires">
-            <input
-                type="datetime-local"
-                data-type="datetime-local"
-                value="${dateTimeLocal(this.instance?.expires ?? new Date())}"
-                class="pf-c-form-control"
-            />
-        </ak-form-element-horizontal>`;
-    }
+    //#region Event Listeners
+
+    #expiringChangeListener = (event: Event) => {
+        const expiringElement = event.target as HTMLInputElement;
+
+        if (!expiringElement.checked) {
+            this.expiresAt = null;
+            return;
+        }
+
+        if (this.instance?.expiring && this.instance.expires) {
+            this.expiresAt = dateTimeLocal(this.instance.expires);
+            return;
+        }
+
+        this.expiresAt = createExpirationValue();
+    };
+
+    //#endregion
+
+    //#region Rendering
 
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Token name...")}
+                placeholder=${msg("Type a name for the token...")}
                 label=${msg("Token name")}
                 value=${ifDefined(this.instance?.name)}
                 required
+                ?autofocus=${!this.instance}
             ></ak-text-input>
             <ak-form-element-horizontal label=${msg("Device Access Group")} name="deviceGroup">
                 <ak-endpoints-device-group-search
@@ -85,32 +108,39 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
                     ${msg("Select a device access group to be added to upon enrollment.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="expiring">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.expiring ?? false}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showExpiry = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Expiring")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "If this is selected, the token will expire. Upon expiration, the token will be rotated.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            ${this.showExpiry ? this.renderExpiry() : nothing}`;
+
+            <ak-switch-input
+                name="expiring"
+                label=${msg("Expiring")}
+                help=${msg(
+                    "Whether the token will expire. Upon expiration, the token will be rotated.",
+                )}
+                @change=${this.#expiringChangeListener}
+                ?checked=${this.expiresAt}
+            ></ak-switch-input>
+
+            <ak-form-element-horizontal name="expires">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "expiration-date-input",
+                    },
+                    msg("Expires on"),
+                )}
+
+                <input
+                    id="expiration-date-input"
+                    type="datetime-local"
+                    value=${this.expiresAt ?? ""}
+                    min=${this.expirationMinimumDate}
+                    ?disabled=${!this.expiresAt}
+                    class="pf-c-form-control"
+                />
+            </ak-form-element-horizontal> `;
     }
+
+    //#endregion
 }
 
 declare global {
