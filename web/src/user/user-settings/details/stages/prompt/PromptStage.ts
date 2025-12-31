@@ -1,21 +1,66 @@
 import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
 
 import { AKLabel } from "#components/ak-label";
 
 import { PromptStage } from "#flow/stages/prompt/PromptStage";
 
-import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
+import { AdminApi, PromptTypeEnum, Settings, StagePrompt } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
+    @state()
+    private settings?: Settings;
+
+    constructor() {
+        super();
+        new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
+            this.settings = settings;
+        });
+    }
+
+    isFieldReadOnly(prompt: StagePrompt): boolean {
+        if (
+            prompt.type === PromptTypeEnum.Email &&
+            this.settings?.defaultUserChangeEmail === false
+        ) {
+            return true;
+        }
+        if (
+            prompt.type === PromptTypeEnum.Username &&
+            this.settings?.defaultUserChangeUsername === false
+        ) {
+            return true;
+        }
+        if (
+            prompt.type === PromptTypeEnum.Text &&
+            prompt.fieldKey === "name" &&
+            this.settings?.defaultUserChangeName === false
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    renderPromptHelpText(prompt: StagePrompt) {
+        if (this.isFieldReadOnly(prompt)) {
+            return html`<p class="pf-c-form__helper-text">
+                ${msg("Not allowed to change this field. Please contact your administrator.")}
+            </p>`;
+        }
+        return super.renderPromptHelpText(prompt);
+    }
+
     renderPromptInner(prompt: StagePrompt): TemplateResult {
+        const fieldId = `field-${prompt.fieldKey}`;
+
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<input
                 type="checkbox"
@@ -24,6 +69,59 @@ export class UserSettingsPromptStage extends PromptStage {
                 ?checked=${prompt.initialValue !== ""}
                 ?required=${prompt.required}
                 style="vertical-align: bottom"
+            />`;
+        }
+
+        // Check if email field should be read-only
+        if (
+            prompt.type === PromptTypeEnum.Email &&
+            this.settings?.defaultUserChangeEmail === false
+        ) {
+            return html`<input
+                type="email"
+                id=${fieldId}
+                autocomplete="email"
+                name="${prompt.fieldKey}"
+                placeholder="${prompt.placeholder}"
+                class="pf-c-form-control"
+                disabled
+                value="${prompt.initialValue}"
+            />`;
+        }
+
+        // Check if username field should be read-only
+        if (
+            prompt.type === PromptTypeEnum.Username &&
+            this.settings?.defaultUserChangeUsername === false
+        ) {
+            return html`<input
+                type="text"
+                id=${fieldId}
+                name="${prompt.fieldKey}"
+                placeholder="${prompt.placeholder}"
+                autocomplete="username"
+                spellcheck="false"
+                class="pf-c-form-control"
+                disabled
+                value="${prompt.initialValue}"
+            />`;
+        }
+
+        // Check if name field should be read-only (text field with fieldKey "name")
+        if (
+            prompt.type === PromptTypeEnum.Text &&
+            prompt.fieldKey === "name" &&
+            this.settings?.defaultUserChangeName === false
+        ) {
+            return html`<input
+                type="text"
+                id=${fieldId}
+                name="${prompt.fieldKey}"
+                placeholder="${prompt.placeholder}"
+                autocomplete="off"
+                class="pf-c-form-control"
+                disabled
+                value="${prompt.initialValue}"
             />`;
         }
 
