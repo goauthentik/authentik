@@ -48,7 +48,7 @@ In Karakeep, you'll need to add these environment variables:
 NEXTAUTH_URL=https://karakeep.company
 OAUTH_CLIENT_ID=<Client ID from authentik>
 OAUTH_CLIENT_SECRET=<Client secret from authentik>
-OAUTH_WELLKNOWN_URL=<the value in the OpenID Configuration URL field>
+OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
 OAUTH_PROVIDER_NAME=authentik
 OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
 # Optional: You can add this if you only want to allow login with Authentik
