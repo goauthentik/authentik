@@ -67,8 +67,8 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	if cfg.Name == "" {
 		return nil, fmt.Errorf("PostgreSQL database name is required")
 	}
-	if cfg.Port <= 0 {
-		return nil, fmt.Errorf("PostgreSQL port must be positive")
+	if cfg.Port == "" {
+		return nil, fmt.Errorf("PostgreSQL port is required")
 	}
 
 	// Start with a default config
@@ -84,13 +84,27 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		hosts[i] = strings.TrimSpace(host)
 	}
 
-	if len(hosts) == 0 {
-		return nil, fmt.Errorf("no hosts specified")
+	// Parse and validate comma-separated ports
+	portStrs := strings.Split(cfg.Port, ",")
+	ports := make([]uint16, len(portStrs))
+	for i, portStr := range portStrs {
+		portStr = strings.TrimSpace(portStr)
+		port, err := strconv.Atoi(portStr)
+		if err != nil {
+			return nil, fmt.Errorf("invalid port value %q: %w", portStr, err)
+		}
+		if port <= 0 {
+			return nil, fmt.Errorf("PostgreSQL port %d must be positive", port)
+		}
+		if port > 65535 {
+			return nil, fmt.Errorf("PostgreSQL port %d is out of valid range", port)
+		}
+		ports[i] = uint16(port)
 	}
 
-	// Parse first host (primary)
+	// Get port for primary host
 	primaryHost := hosts[0]
-	primaryPort := uint16(cfg.Port)
+	primaryPort := ports[0]
 
 	// Set connection parameters for primary host
 	connConfig.Host = primaryHost
@@ -150,10 +164,11 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	// Create fallback configurations for additional hosts
 	if len(hosts) > 1 {
 		connConfig.Fallbacks = make([]*pgconn.FallbackConfig, 0, len(hosts)-1)
-		for _, host := range hosts[1:] {
+		for i, host := range hosts[1:] {
+			port := getPortForIndex(ports, i+1)
 			fallback := &pgconn.FallbackConfig{
 				Host: host,
-				Port: uint16(cfg.Port),
+				Port: port,
 			}
 			// Copy TLS config to fallback if present
 			if connConfig.TLSConfig != nil {
@@ -190,6 +205,15 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	}
 
 	return connConfig, nil
+}
+
+// getPortForIndex returns the port for the given host index.
+// If there are fewer ports than needed, returns the last port (libpq behavior).
+func getPortForIndex(ports []uint16, i int) uint16 {
+	if i >= len(ports) {
+		return ports[len(ports)-1]
+	}
+	return ports[i]
 }
 
 // parseConnOptions decodes a base64-encoded JSON string into a map of connection options.

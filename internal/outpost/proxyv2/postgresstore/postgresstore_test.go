@@ -37,7 +37,7 @@ import (
 func SetupTestDB(t *testing.T) (*gorm.DB, *RefreshableConnPool) {
 	cfg := config.Get().PostgreSQL
 
-	t.Logf("PostgreSQL config: Host=%s Port=%d User=%s DBName=%s SSLMode=%s",
+	t.Logf("PostgreSQL config: Host=%s Port=%s User=%s DBName=%s SSLMode=%s",
 		cfg.Host, cfg.Port, cfg.User, cfg.Name, cfg.SSLMode)
 	t.Logf("Password length: %d", len(cfg.Password))
 	if cfg.Password == "" {
@@ -489,7 +489,7 @@ func TestBuildDSN_Validation(t *testing.T) {
 		{
 			name: "missing host",
 			cfg: config.PostgreSQLConfig{
-				Port: 5432,
+				Port: "5432",
 				User: "testuser",
 				Name: "testdb",
 			},
@@ -500,7 +500,7 @@ func TestBuildDSN_Validation(t *testing.T) {
 			name: "missing user",
 			cfg: config.PostgreSQLConfig{
 				Host: "localhost",
-				Port: 5432,
+				Port: "5432",
 				Name: "testdb",
 			},
 			expectError: true,
@@ -510,7 +510,7 @@ func TestBuildDSN_Validation(t *testing.T) {
 			name: "missing database name",
 			cfg: config.PostgreSQLConfig{
 				Host: "localhost",
-				Port: 5432,
+				Port: "5432",
 				User: "testuser",
 			},
 			expectError: true,
@@ -520,23 +520,23 @@ func TestBuildDSN_Validation(t *testing.T) {
 			name: "invalid port (zero)",
 			cfg: config.PostgreSQLConfig{
 				Host: "localhost",
-				Port: 0,
+				Port: "0",
 				User: "testuser",
 				Name: "testdb",
 			},
 			expectError: true,
-			errorMsg:    "PostgreSQL port must be positive",
+			errorMsg:    "PostgreSQL port 0 must be positive",
 		},
 		{
 			name: "invalid port (negative)",
 			cfg: config.PostgreSQLConfig{
 				Host: "localhost",
-				Port: -1,
+				Port: "-1",
 				User: "testuser",
 				Name: "testdb",
 			},
 			expectError: true,
-			errorMsg:    "PostgreSQL port must be positive",
+			errorMsg:    "PostgreSQL port -1 must be positive",
 		},
 	}
 
@@ -564,7 +564,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "basic configuration",
 			cfg: config.PostgreSQLConfig{
 				Host: "localhost",
-				Port: 5432,
+				Port: "5432",
 				User: "testuser",
 				Name: "testdb",
 			},
@@ -580,7 +580,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with simple password",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: "testpass",
 				Name:     "testdb",
@@ -593,7 +593,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with password containing spaces",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: "my secure password",
 				Name:     "testdb",
@@ -606,7 +606,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with password containing single quotes",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: "pass'word",
 				Name:     "testdb",
@@ -619,7 +619,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with password containing backslashes",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: `pass\word`,
 				Name:     "testdb",
@@ -632,7 +632,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with password containing special characters",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: `p@ss w0rd!#$%^&*()`,
 				Name:     "testdb",
@@ -645,7 +645,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with password containing quotes and backslashes",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: `my'pass\word"here`,
 				Name:     "testdb",
@@ -658,7 +658,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with passphrase (multiple spaces)",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: "the quick brown fox jumps over",
 				Name:     "testdb",
@@ -671,7 +671,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with sslmode=disable",
 			cfg: config.PostgreSQLConfig{
 				Host:    "localhost",
-				Port:    5432,
+				Port:    "5432",
 				User:    "testuser",
 				Name:    "testdb",
 				SSLMode: "disable",
@@ -684,7 +684,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with sslmode=require (no certs)",
 			cfg: config.PostgreSQLConfig{
 				Host:    "localhost",
-				Port:    5432,
+				Port:    "5432",
 				User:    "testuser",
 				Name:    "testdb",
 				SSLMode: "require",
@@ -698,7 +698,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with custom schema",
 			cfg: config.PostgreSQLConfig{
 				Host:          "localhost",
-				Port:          5432,
+				Port:          "5432",
 				User:          "testuser",
 				Name:          "testdb",
 				DefaultSchema: "custom_schema",
@@ -711,7 +711,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with connection options",
 			cfg: config.PostgreSQLConfig{
 				Host:        "localhost",
-				Port:        5432,
+				Port:        "5432",
 				User:        "testuser",
 				Name:        "testdb",
 				ConnOptions: base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"10","application_name":"authentik"}`)),
@@ -725,7 +725,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "with target_session_attrs",
 			cfg: config.PostgreSQLConfig{
 				Host:        "localhost",
-				Port:        5432,
+				Port:        "5432",
 				User:        "testuser",
 				Name:        "testdb",
 				ConnOptions: base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
@@ -746,7 +746,7 @@ func TestBuildConnConfig(t *testing.T) {
 			name: "full configuration with special password",
 			cfg: config.PostgreSQLConfig{
 				Host:          "db.example.com",
-				Port:          5433,
+				Port:          "5433",
 				User:          "admin",
 				Password:      "my super secret password!@#",
 				Name:          "production",
@@ -790,7 +790,7 @@ func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
 			name: "verify-full with all certificates",
 			cfg: config.PostgreSQLConfig{
 				Host:        "db.example.com",
-				Port:        5432,
+				Port:        "5432",
 				User:        "testuser",
 				Password:    "my secure password",
 				Name:        "testdb",
@@ -811,7 +811,7 @@ func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
 			name: "verify-ca with root cert only",
 			cfg: config.PostgreSQLConfig{
 				Host:        "localhost",
-				Port:        5432,
+				Port:        "5432",
 				User:        "testuser",
 				Name:        "testdb",
 				SSLMode:     "verify-ca",
@@ -828,7 +828,7 @@ func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
 			name: "require with client cert",
 			cfg: config.PostgreSQLConfig{
 				Host:    "localhost",
-				Port:    5432,
+				Port:    "5432",
 				User:    "testuser",
 				Name:    "testdb",
 				SSLMode: "require",
@@ -845,7 +845,7 @@ func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
 			name: "full configuration with SSL and special password",
 			cfg: config.PostgreSQLConfig{
 				Host:          "db.example.com",
-				Port:          5433,
+				Port:          "5433",
 				User:          "admin",
 				Password:      "my super secret password!@#",
 				Name:          "production",
@@ -906,7 +906,7 @@ func TestBuildDSN_WithSpecialPasswords(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := config.PostgreSQLConfig{
 				Host:     "localhost",
-				Port:     5432,
+				Port:     "5432",
 				User:     "testuser",
 				Password: tt.password,
 				Name:     "testdb",
@@ -1140,7 +1140,7 @@ func TestBuildConnConfig_Base64JSONConnOptions(t *testing.T) {
 	t.Run("bug report scenario - target_session_attrs", func(t *testing.T) {
 		cfg := config.PostgreSQLConfig{
 			Host:        "localhost",
-			Port:        5432,
+			Port:        "5432",
 			User:        "authentik",
 			Name:        "authentik",
 			ConnOptions: "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6InJlYWQtd3JpdGUifQ==",
@@ -1163,7 +1163,7 @@ func TestBuildConnConfig_Base64JSONConnOptions(t *testing.T) {
 		connOpts := base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":10,"target_session_attrs":"read-write","application_name":"authentik-proxy"}`))
 		cfg := config.PostgreSQLConfig{
 			Host:        "localhost",
-			Port:        5432,
+			Port:        "5432",
 			User:        "authentik",
 			Name:        "authentik",
 			ConnOptions: connOpts,
@@ -1287,17 +1287,15 @@ func TestBuildConnConfig_WithBase64EncodedConnOptions(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name: "base64 encoded JSON with single parameter",
-			// {"connect_timeout": "10"}
-			connOptions: "eyJjb25uZWN0X3RpbWVvdXQiOiAiMTAifQ==",
+			name:        "base64 encoded JSON with single parameter",
+			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"10"}`)),
 			expected:    map[string]string{
 				// connect_timeout is handled specially and NOT added to RuntimeParams
 			},
 		},
 		{
-			name: "base64 encoded JSON with multiple parameters",
-			// {"connect_timeout": "10", "application_name": "authentik", "statement_timeout": "30000"}
-			connOptions: "eyJjb25uZWN0X3RpbWVvdXQiOiAiMTAiLCAiYXBwbGljYXRpb25fbmFtZSI6ICJhdXRoZW50aWsiLCAic3RhdGVtZW50X3RpbWVvdXQiOiAiMzAwMDAifQ==",
+			name:        "base64 encoded JSON with multiple parameters",
+			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"10","application_name":"authentik","statement_timeout":"30000"}`)),
 			expected: map[string]string{
 				// connect_timeout is handled specially and NOT added to RuntimeParams
 				"application_name":  "authentik",
@@ -1305,17 +1303,15 @@ func TestBuildConnConfig_WithBase64EncodedConnOptions(t *testing.T) {
 			},
 		},
 		{
-			name: "base64 encoded JSON with special characters in values",
-			// {"application_name": "authentik proxy v2"}
-			connOptions: "eyJhcHBsaWNhdGlvbl9uYW1lIjogImF1dGhlbnRpayBwcm94eSB2MiJ9",
+			name:        "base64 encoded JSON with special characters in values",
+			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"application_name":"authentik proxy v2"}`)),
 			expected: map[string]string{
 				"application_name": "authentik proxy v2",
 			},
 		},
 		{
-			name: "base64 encoded JSON with target_session_attrs",
-			// {"target_session_attrs": "read-write", "application_name": "authentik"}
-			connOptions: "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIiwgImFwcGxpY2F0aW9uX25hbWUiOiAiYXV0aGVudGlrIn0=",
+			name:        "base64 encoded JSON with target_session_attrs",
+			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write","application_name":"authentik"}`)),
 			expected: map[string]string{
 				"application_name": "authentik",
 				// target_session_attrs should NOT appear in RuntimeParams
@@ -1327,7 +1323,7 @@ func TestBuildConnConfig_WithBase64EncodedConnOptions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := config.PostgreSQLConfig{
 				Host:        "localhost",
-				Port:        5432,
+				Port:        "5432",
 				User:        "testuser",
 				Name:        "testdb",
 				ConnOptions: tt.connOptions,
@@ -1376,57 +1372,50 @@ func TestBuildConnConfig_TargetSessionAttrs(t *testing.T) {
 		validatorDescription string
 	}{
 		{
-			name: "target_session_attrs=read-write",
-			// {"target_session_attrs": "read-write"}
-			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIn0=",
+			name:                 "target_session_attrs=read-write",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
 			targetSessionAttrs:   "read-write",
 			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsReadWrite,
 			validatorDescription: "should validate connection is read-write by checking transaction_read_only=off",
 		},
 		{
-			name: "target_session_attrs=read-only",
-			// {"target_session_attrs": "read-only"}
-			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLW9ubHkifQ==",
+			name:                 "target_session_attrs=read-only",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-only"}`)),
 			targetSessionAttrs:   "read-only",
 			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsReadOnly,
 			validatorDescription: "should validate connection is read-only by checking transaction_read_only=on",
 		},
 		{
-			name: "target_session_attrs=primary",
-			// {"target_session_attrs": "primary"}
-			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmltYXJ5In0=",
+			name:                 "target_session_attrs=primary",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"primary"}`)),
 			targetSessionAttrs:   "primary",
 			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsPrimary,
 			validatorDescription: "should validate connection is to primary by checking in_hot_standby=off",
 		},
 		{
-			name: "target_session_attrs=standby",
-			// {"target_session_attrs": "standby"}
-			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJzdGFuZGJ5In0=",
+			name:                 "target_session_attrs=standby",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"standby"}`)),
 			targetSessionAttrs:   "standby",
 			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsStandby,
 			validatorDescription: "should validate connection is to standby by checking in_hot_standby=on",
 		},
 		{
-			name: "target_session_attrs=prefer-standby",
-			// {"target_session_attrs": "prefer-standby"}
-			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmVmZXItc3RhbmRieSJ9",
+			name:                 "target_session_attrs=prefer-standby",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"prefer-standby"}`)),
 			targetSessionAttrs:   "prefer-standby",
 			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsPreferStandby,
 			validatorDescription: "should prefer standby connections (affects fallback logic)",
 		},
 		{
-			name: "target_session_attrs=any (default)",
-			// {"target_session_attrs": "any"}
-			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJhbnkifQ==",
+			name:                 "target_session_attrs=any (default)",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"any"}`)),
 			targetSessionAttrs:   "any",
 			expectedValidator:    nil,
 			validatorDescription: "should not set validator as any connection is acceptable",
 		},
 		{
-			name: "no target_session_attrs",
-			// {"application_name": "authentik"}
-			connOptions:          "eyJhcHBsaWNhdGlvbl9uYW1lIjogImF1dGhlbnRpayJ9",
+			name:                 "no target_session_attrs",
+			connOptions:          base64.StdEncoding.EncodeToString([]byte(`{"application_name":"authentik"}`)),
 			targetSessionAttrs:   "",
 			expectedValidator:    nil,
 			validatorDescription: "should not set validator when target_session_attrs is not specified",
@@ -1437,7 +1426,7 @@ func TestBuildConnConfig_TargetSessionAttrs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := config.PostgreSQLConfig{
 				Host:        "localhost",
-				Port:        5432,
+				Port:        "5432",
 				User:        "testuser",
 				Name:        "testdb",
 				ConnOptions: tt.connOptions,
@@ -1482,7 +1471,7 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 	tests := []struct {
 		name                 string
 		host                 string
-		port                 int
+		port                 string
 		sslMode              string
 		connOptions          string
 		targetSessionAttrs   string
@@ -1494,47 +1483,12 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 		validatorDescription string
 	}{
 		{
-			name: "multiple hosts with read-write",
-			host: "db1.example.com,db2.example.com,db3.example.com",
-			port: 5432,
-			// {"target_session_attrs": "read-write"}
-			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIn0=",
+			name:                "multiple hosts with read-write",
+			host:                "db1.local,db2.local,db3.local",
+			port:                "5432",
+			connOptions:         base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
 			targetSessionAttrs:  "read-write",
 			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsReadWrite,
-			expectedPrimaryHost: "db1.example.com",
-			expectedPrimaryPort: 5432,
-			expectedFallbacks: []*pgconn.FallbackConfig{
-				{Host: "db2.example.com", Port: 5432, TLSConfig: nil},
-				{Host: "db3.example.com", Port: 5432, TLSConfig: nil},
-			},
-			expectTLS:            false,
-			validatorDescription: "should set validator and create fallbacks for additional hosts",
-		},
-		{
-			name: "multiple hosts with prefer-standby",
-			host: "primary.db.local,standby1.db.local,standby2.db.local",
-			port: 5433,
-			// {"target_session_attrs": "prefer-standby"}
-			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmVmZXItc3RhbmRieSJ9",
-			targetSessionAttrs:  "prefer-standby",
-			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsPreferStandby,
-			expectedPrimaryHost: "primary.db.local",
-			expectedPrimaryPort: 5433,
-			expectedFallbacks: []*pgconn.FallbackConfig{
-				{Host: "standby1.db.local", Port: 5433, TLSConfig: nil},
-				{Host: "standby2.db.local", Port: 5433, TLSConfig: nil},
-			},
-			expectTLS:            false,
-			validatorDescription: "should set prefer-standby validator with fallbacks",
-		},
-		{
-			name: "multiple hosts with ports specified",
-			host: "db1.local,db2.local,db3.local",
-			port: 5432, // Default port, but each host has its own
-			// {"target_session_attrs": "primary"}
-			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmltYXJ5In0=",
-			targetSessionAttrs:  "primary",
-			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsPrimary,
 			expectedPrimaryHost: "db1.local",
 			expectedPrimaryPort: 5432,
 			expectedFallbacks: []*pgconn.FallbackConfig{
@@ -1542,25 +1496,57 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 				{Host: "db3.local", Port: 5432, TLSConfig: nil},
 			},
 			expectTLS:            false,
+			validatorDescription: "should set validator and create fallbacks for additional hosts",
+		},
+		{
+			name:                "multiple hosts with ports specified",
+			host:                "db1.local,db2.local,db3.local",
+			port:                "5432,5433,5434",
+			connOptions:         base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
+			targetSessionAttrs:  "read-write",
+			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsReadWrite,
+			expectedPrimaryHost: "db1.local",
+			expectedPrimaryPort: 5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "db2.local", Port: 5433, TLSConfig: nil},
+				{Host: "db3.local", Port: 5434, TLSConfig: nil},
+			},
+			expectTLS:            false,
 			validatorDescription: "should handle hosts with explicit ports",
 		},
 		{
-			name:    "multiple hosts with TLS required",
-			host:    "db-primary.secure.local,db-replica1.secure.local,db-replica2.secure.local",
-			port:    5432,
-			sslMode: "require",
-			// {"target_session_attrs": "read-write"}
-			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIn0=",
+			name:                "multiple hosts with TLS required",
+			host:                "db1.local,db2.local,db3.local",
+			port:                "5432",
+			sslMode:             "require",
+			connOptions:         base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write", "sslmode":"require"}`)),
 			targetSessionAttrs:  "read-write",
 			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsReadWrite,
-			expectedPrimaryHost: "db-primary.secure.local",
+			expectedPrimaryHost: "db1.local",
 			expectedPrimaryPort: 5432,
 			expectedFallbacks: []*pgconn.FallbackConfig{
-				{Host: "db-replica1.secure.local", Port: 5432}, // TLSConfig should be set (non-nil)
-				{Host: "db-replica2.secure.local", Port: 5432}, // TLSConfig should be set (non-nil)
+				{Host: "db2.local", Port: 5432}, // TLSConfig should be set (non-nil)
+				{Host: "db3.local", Port: 5432}, // TLSConfig should be set (non-nil)
 			},
 			expectTLS:            true,
 			validatorDescription: "should set TLS config for all hosts when sslmode=require",
+		},
+		{
+			name:                "multiple hosts with TLS verify-full",
+			host:                "db1.local,db2.local,db3.local",
+			port:                "5432",
+			sslMode:             "require",
+			connOptions:         base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write", "sslmode":"verify-full"}`)),
+			targetSessionAttrs:  "read-write",
+			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsReadWrite,
+			expectedPrimaryHost: "db1.local",
+			expectedPrimaryPort: 5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "db2.local", Port: 5432}, // TLSConfig should be set (non-nil)
+				{Host: "db3.local", Port: 5432}, // TLSConfig should be set (non-nil)
+			},
+			expectTLS:            true,
+			validatorDescription: "should set TLS config host name for all hosts when sslmode=verify-full",
 		},
 	}
 
@@ -1629,9 +1615,15 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 					assert.NotNil(t, actualFb.TLSConfig,
 						"Fallback %d should have TLSConfig set when sslmode=%s", i+1, tt.sslMode)
 					// Verify InsecureSkipVerify for sslmode=require
-					if tt.sslMode == "require" {
+					switch tt.sslMode {
+					case "require":
 						assert.True(t, actualFb.TLSConfig.InsecureSkipVerify,
 							"Fallback %d TLSConfig should have InsecureSkipVerify=true for sslmode=require", i+1)
+					case "verify-full":
+						assert.False(t, actualFb.TLSConfig.InsecureSkipVerify,
+							"Fallback %d TLSConfig should have InsecureSkipVerify=false for sslmode=verify-full", i+1)
+						assert.Equal(t, actualFb.Host, actualFb.TLSConfig.ServerName,
+							"Fallback %d TLSConfig ServerName should match host for sslmode=verify-full", i+1)
 					}
 				} else {
 					assert.Nil(t, actualFb.TLSConfig,
@@ -1654,7 +1646,7 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 func TestBuildConnConfig_MultipleHosts_WithoutTargetSessionAttrs(t *testing.T) {
 	cfg := config.PostgreSQLConfig{
 		Host: "db1.local,db2.local,db3.local",
-		Port: 5432,
+		Port: "5432",
 		User: "testuser",
 		Name: "testdb",
 	}
@@ -1678,50 +1670,101 @@ func TestBuildConnConfig_MultipleHosts_WithoutTargetSessionAttrs(t *testing.T) {
 	assert.Nil(t, result.ValidateConnect)
 }
 
-// TestBuildConnConfig_ErrorPropagation tests that errors from parseConnOptions
-// are properly propagated through BuildConnConfig
-func TestBuildConnConfig_ErrorPropagation(t *testing.T) {
+// TestBuildConnConfig_CommaSeparatedPorts_EdgeCases tests edge cases and error scenarios for comma-separated ports
+func TestBuildConnConfig_CommaSeparatedPorts_EdgeCases(t *testing.T) {
 	tests := []struct {
-		name        string
-		connOptions string
-		errorMsg    string
+		name              string
+		host              string
+		port              string
+		expectError       bool
+		errorContains     string
+		expectedHost      string
+		expectedPort      uint16
+		expectedFallbacks []*pgconn.FallbackConfig
 	}{
 		{
-			name:        "invalid base64 in ConnOptions",
-			connOptions: "not-valid-base64!!!",
-			errorMsg:    "failed to parse connection options",
+			name:          "invalid port in comma-separated list",
+			host:          "db1.local,db2.local",
+			port:          "5432,abc",
+			expectError:   true,
+			errorContains: "invalid port value",
 		},
 		{
-			name:        "invalid JSON in ConnOptions",
-			connOptions: base64.StdEncoding.EncodeToString([]byte("not json")),
-			errorMsg:    "failed to parse connection options",
+			name:          "port out of range (too high)",
+			host:          "db1.local,db2.local",
+			port:          "5432,99999",
+			expectError:   true,
+			errorContains: "PostgreSQL port 99999 is out of valid range",
 		},
 		{
-			name:        "invalid target_session_attrs value",
-			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"invalid-mode"}`)),
-			errorMsg:    "failed to apply connection options",
+			name:          "port out of range (zero)",
+			host:          "db1.local,db2.local",
+			port:          "5432,0",
+			expectError:   true,
+			errorContains: "PostgreSQL port 0 must be positive",
 		},
 		{
-			name:        "invalid connect_timeout value",
-			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"not-a-number"}`)),
-			errorMsg:    "failed to apply connection options",
+			name:          "empty port string",
+			host:          "db1.local",
+			port:          "",
+			expectError:   true,
+			errorContains: "PostgreSQL port is required",
+		},
+		{
+			name:          "port with only whitespace",
+			host:          "db1.local",
+			port:          "   ",
+			expectError:   true,
+			errorContains: "invalid port value",
+		},
+		{
+			name:         "mismatched number of hosts and ports",
+			host:         "db1.local,db2.local",
+			port:         "5432",
+			expectError:  false,
+			expectedHost: "db1.local",
+			expectedPort: 5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "db2.local", Port: 5432},
+			},
+		},
+		{
+			name:              "extra ports than hosts",
+			host:              "db1.local",
+			port:              "5432,5433",
+			expectError:       false,
+			expectedHost:      "db1.local",
+			expectedPort:      5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := config.PostgreSQLConfig{
-				Host:        "localhost",
-				Port:        5432,
-				User:        "testuser",
-				Name:        "testdb",
-				ConnOptions: tt.connOptions,
+				Host: tt.host,
+				Port: tt.port,
+				User: "testuser",
+				Name: "testdb",
 			}
 
-			result, err := BuildConnConfig(cfg)
-			require.Error(t, err)
-			assert.Nil(t, result)
-			assert.Contains(t, err.Error(), tt.errorMsg)
+			c, err := BuildConnConfig(cfg)
+			if tt.expectError {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tt.errorContains)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, c)
+
+				assert.Equal(t, tt.expectedHost, c.Host)
+				assert.Equal(t, tt.expectedPort, c.Port)
+				require.Len(t, c.Fallbacks, len(tt.expectedFallbacks))
+				for i, expectedFb := range tt.expectedFallbacks {
+					actualFb := c.Fallbacks[i]
+					assert.Equal(t, expectedFb.Host, actualFb.Host)
+					assert.Equal(t, expectedFb.Port, actualFb.Port)
+				}
+			}
 		})
 	}
 }
