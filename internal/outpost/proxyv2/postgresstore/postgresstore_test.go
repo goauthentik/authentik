@@ -14,12 +14,15 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
+	"runtime"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
@@ -728,7 +731,15 @@ func TestBuildConnConfig(t *testing.T) {
 				ConnOptions: base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"read-write"}`)),
 			},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
-				assert.Equal(t, "read-write", cc.RuntimeParams["target_session_attrs"])
+				// target_session_attrs should NOT be in RuntimeParams
+				_, hasTargetSessionAttrs := cc.RuntimeParams["target_session_attrs"]
+				assert.False(t, hasTargetSessionAttrs, "target_session_attrs should not appear in RuntimeParams")
+				// It should set ValidateConnect instead
+				assert.NotNil(t, cc.ValidateConnect, "ValidateConnect should be set for target_session_attrs")
+				// Verify it's the correct validator function
+				expectedValidator := pgconn.ValidateConnectTargetSessionAttrsReadWrite
+				assert.Equal(t, runtime.FuncForPC(reflect.ValueOf(expectedValidator).Pointer()).Name(),
+					runtime.FuncForPC(reflect.ValueOf(cc.ValidateConnect).Pointer()).Name())
 			},
 		},
 		{
@@ -1040,10 +1051,17 @@ func TestApplyConnOptions(t *testing.T) {
 			},
 		},
 		{
-			name: "target_session_attrs goes to RuntimeParams",
+			name: "target_session_attrs sets ValidateConnect",
 			opts: map[string]string{"target_session_attrs": "read-write"},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
-				assert.Equal(t, "read-write", cc.RuntimeParams["target_session_attrs"])
+				// target_session_attrs should NOT be in RuntimeParams
+				_, hasTargetSessionAttrs := cc.RuntimeParams["target_session_attrs"]
+				assert.False(t, hasTargetSessionAttrs, "target_session_attrs should not be in RuntimeParams")
+				// It should set ValidateConnect instead
+				assert.NotNil(t, cc.ValidateConnect, "ValidateConnect should be set")
+				expectedValidator := pgconn.ValidateConnectTargetSessionAttrsReadWrite
+				assert.Equal(t, runtime.FuncForPC(reflect.ValueOf(expectedValidator).Pointer()).Name(),
+					runtime.FuncForPC(reflect.ValueOf(cc.ValidateConnect).Pointer()).Name())
 			},
 		},
 		{
@@ -1076,7 +1094,11 @@ func TestApplyConnOptions(t *testing.T) {
 			},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
 				assert.Equal(t, 10*time.Second, cc.ConnectTimeout)
-				assert.Equal(t, "read-write", cc.RuntimeParams["target_session_attrs"])
+				// target_session_attrs should NOT be in RuntimeParams
+				_, hasTargetSessionAttrs := cc.RuntimeParams["target_session_attrs"]
+				assert.False(t, hasTargetSessionAttrs, "target_session_attrs should not be in RuntimeParams")
+				// It should set ValidateConnect instead
+				assert.NotNil(t, cc.ValidateConnect, "ValidateConnect should be set")
 				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
 			},
 		},
@@ -1085,6 +1107,12 @@ func TestApplyConnOptions(t *testing.T) {
 			opts:        map[string]string{"connect_timeout": "not-a-number"},
 			expectError: true,
 			errorMsg:    "invalid connect_timeout value",
+		},
+		{
+			name:        "invalid target_session_attrs",
+			opts:        map[string]string{"target_session_attrs": "invalid-mode"},
+			expectError: true,
+			errorMsg:    "unknown target_session_attrs value",
 		},
 	}
 
@@ -1120,7 +1148,14 @@ func TestBuildConnConfig_Base64JSONConnOptions(t *testing.T) {
 
 		connConfig, err := BuildConnConfig(cfg)
 		require.NoError(t, err)
-		assert.Equal(t, "read-write", connConfig.RuntimeParams["target_session_attrs"])
+		// target_session_attrs should NOT be in RuntimeParams
+		_, hasTargetSessionAttrs := connConfig.RuntimeParams["target_session_attrs"]
+		assert.False(t, hasTargetSessionAttrs, "target_session_attrs should not appear in RuntimeParams")
+		// It should set ValidateConnect instead
+		assert.NotNil(t, connConfig.ValidateConnect, "ValidateConnect should be set")
+		expectedValidator := pgconn.ValidateConnectTargetSessionAttrsReadWrite
+		assert.Equal(t, runtime.FuncForPC(reflect.ValueOf(expectedValidator).Pointer()).Name(),
+			runtime.FuncForPC(reflect.ValueOf(connConfig.ValidateConnect).Pointer()).Name())
 	})
 
 	t.Run("complex connection options", func(t *testing.T) {
@@ -1137,7 +1172,11 @@ func TestBuildConnConfig_Base64JSONConnOptions(t *testing.T) {
 		connConfig, err := BuildConnConfig(cfg)
 		require.NoError(t, err)
 		assert.Equal(t, 10*time.Second, connConfig.ConnectTimeout)
-		assert.Equal(t, "read-write", connConfig.RuntimeParams["target_session_attrs"])
+		// target_session_attrs should NOT be in RuntimeParams
+		_, hasTargetSessionAttrs := connConfig.RuntimeParams["target_session_attrs"]
+		assert.False(t, hasTargetSessionAttrs, "target_session_attrs should not appear in RuntimeParams")
+		// It should set ValidateConnect instead
+		assert.NotNil(t, connConfig.ValidateConnect, "ValidateConnect should be set")
 		assert.Equal(t, "authentik-proxy", connConfig.RuntimeParams["application_name"])
 	})
 }
@@ -1236,4 +1275,471 @@ func generateTestCerts(t *testing.T) (rootCertPath, clientCertPath, clientKeyPat
 	}
 
 	return rootCertPath, clientCertPath, clientKeyPath, cleanup
+}
+
+// TestBuildConnConfig_WithBase64EncodedConnOptions demonstrates that ConnOptions
+// should be base64-encoded JSON but is currently being parsed as key=value pairs
+func TestBuildConnConfig_WithBase64EncodedConnOptions(t *testing.T) {
+	tests := []struct {
+		name        string
+		connOptions string
+		expected    map[string]string
+		expectError bool
+	}{
+		{
+			name: "base64 encoded JSON with single parameter",
+			// {"connect_timeout": "10"}
+			connOptions: "eyJjb25uZWN0X3RpbWVvdXQiOiAiMTAifQ==",
+			expected:    map[string]string{
+				// connect_timeout is handled specially and NOT added to RuntimeParams
+			},
+		},
+		{
+			name: "base64 encoded JSON with multiple parameters",
+			// {"connect_timeout": "10", "application_name": "authentik", "statement_timeout": "30000"}
+			connOptions: "eyJjb25uZWN0X3RpbWVvdXQiOiAiMTAiLCAiYXBwbGljYXRpb25fbmFtZSI6ICJhdXRoZW50aWsiLCAic3RhdGVtZW50X3RpbWVvdXQiOiAiMzAwMDAifQ==",
+			expected: map[string]string{
+				// connect_timeout is handled specially and NOT added to RuntimeParams
+				"application_name":  "authentik",
+				"statement_timeout": "30000",
+			},
+		},
+		{
+			name: "base64 encoded JSON with special characters in values",
+			// {"application_name": "authentik proxy v2"}
+			connOptions: "eyJhcHBsaWNhdGlvbl9uYW1lIjogImF1dGhlbnRpayBwcm94eSB2MiJ9",
+			expected: map[string]string{
+				"application_name": "authentik proxy v2",
+			},
+		},
+		{
+			name: "base64 encoded JSON with target_session_attrs",
+			// {"target_session_attrs": "read-write", "application_name": "authentik"}
+			connOptions: "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIiwgImFwcGxpY2F0aW9uX25hbWUiOiAiYXV0aGVudGlrIn0=",
+			expected: map[string]string{
+				"application_name": "authentik",
+				// target_session_attrs should NOT appear in RuntimeParams
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				ConnOptions: tt.connOptions,
+			}
+
+			result, err := BuildConnConfig(cfg)
+
+			if tt.expectError {
+				assert.Error(t, err)
+				return
+			}
+
+			require.NoError(t, err)
+			require.NotNil(t, result)
+
+			// Verify that all expected parameters are present in RuntimeParams
+			for key, expectedValue := range tt.expected {
+				actualValue, exists := result.RuntimeParams[key]
+				assert.True(t, exists, "Expected runtime parameter %s to exist", key)
+				assert.Equal(t, expectedValue, actualValue, "Runtime parameter %s should have value %s", key, expectedValue)
+			}
+
+			// Verify that connect_timeout is handled specially (sets ConnectTimeout field, not RuntimeParams)
+			if tt.name == "base64 encoded JSON with single parameter" || tt.name == "base64 encoded JSON with multiple parameters" {
+				_, hasConnectTimeout := result.RuntimeParams["connect_timeout"]
+				assert.False(t, hasConnectTimeout, "connect_timeout should not appear in RuntimeParams")
+				assert.Equal(t, 10*time.Second, result.ConnectTimeout, "connect_timeout should be set as ConnectTimeout duration")
+			}
+
+			// Verify that target_session_attrs is NOT in RuntimeParams
+			// (it affects connection behavior, not a runtime param)
+			_, hasTargetSessionAttrs := result.RuntimeParams["target_session_attrs"]
+			assert.False(t, hasTargetSessionAttrs, "target_session_attrs should not appear in RuntimeParams")
+		})
+	}
+}
+
+// TestBuildConnConfig_TargetSessionAttrs demonstrates how target_session_attrs
+// should be properly handled using pgx's ValidateConnect callback
+func TestBuildConnConfig_TargetSessionAttrs(t *testing.T) {
+	tests := []struct {
+		name                 string
+		connOptions          string
+		targetSessionAttrs   string
+		expectedValidator    pgconn.ValidateConnectFunc
+		validatorDescription string
+	}{
+		{
+			name: "target_session_attrs=read-write",
+			// {"target_session_attrs": "read-write"}
+			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIn0=",
+			targetSessionAttrs:   "read-write",
+			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsReadWrite,
+			validatorDescription: "should validate connection is read-write by checking transaction_read_only=off",
+		},
+		{
+			name: "target_session_attrs=read-only",
+			// {"target_session_attrs": "read-only"}
+			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLW9ubHkifQ==",
+			targetSessionAttrs:   "read-only",
+			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsReadOnly,
+			validatorDescription: "should validate connection is read-only by checking transaction_read_only=on",
+		},
+		{
+			name: "target_session_attrs=primary",
+			// {"target_session_attrs": "primary"}
+			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmltYXJ5In0=",
+			targetSessionAttrs:   "primary",
+			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsPrimary,
+			validatorDescription: "should validate connection is to primary by checking in_hot_standby=off",
+		},
+		{
+			name: "target_session_attrs=standby",
+			// {"target_session_attrs": "standby"}
+			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJzdGFuZGJ5In0=",
+			targetSessionAttrs:   "standby",
+			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsStandby,
+			validatorDescription: "should validate connection is to standby by checking in_hot_standby=on",
+		},
+		{
+			name: "target_session_attrs=prefer-standby",
+			// {"target_session_attrs": "prefer-standby"}
+			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmVmZXItc3RhbmRieSJ9",
+			targetSessionAttrs:   "prefer-standby",
+			expectedValidator:    pgconn.ValidateConnectTargetSessionAttrsPreferStandby,
+			validatorDescription: "should prefer standby connections (affects fallback logic)",
+		},
+		{
+			name: "target_session_attrs=any (default)",
+			// {"target_session_attrs": "any"}
+			connOptions:          "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJhbnkifQ==",
+			targetSessionAttrs:   "any",
+			expectedValidator:    nil,
+			validatorDescription: "should not set validator as any connection is acceptable",
+		},
+		{
+			name: "no target_session_attrs",
+			// {"application_name": "authentik"}
+			connOptions:          "eyJhcHBsaWNhdGlvbl9uYW1lIjogImF1dGhlbnRpayJ9",
+			targetSessionAttrs:   "",
+			expectedValidator:    nil,
+			validatorDescription: "should not set validator when target_session_attrs is not specified",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				ConnOptions: tt.connOptions,
+			}
+
+			result, err := BuildConnConfig(cfg)
+			require.NoError(t, err)
+			require.NotNil(t, result)
+
+			// Verify target_session_attrs is NOT in RuntimeParams
+			_, hasTargetSessionAttrs := result.RuntimeParams["target_session_attrs"]
+			assert.False(t, hasTargetSessionAttrs,
+				"target_session_attrs should not appear in RuntimeParams")
+
+			// Verify ValidateConnect callback is set to the correct standard pgx function
+			if tt.expectedValidator != nil {
+				require.NotNil(t, result.ValidateConnect,
+					"ValidateConnect should be set for target_session_attrs=%s: %s",
+					tt.targetSessionAttrs, tt.validatorDescription)
+
+				// Compare function pointers using reflect to check if it's the same function
+				actualFuncPtr := runtime.FuncForPC(reflect.ValueOf(result.ValidateConnect).Pointer())
+				expectedFuncPtr := runtime.FuncForPC(reflect.ValueOf(tt.expectedValidator).Pointer())
+
+				assert.Equal(t, expectedFuncPtr.Name(), actualFuncPtr.Name(),
+					"ValidateConnect should be set to %s for target_session_attrs=%s",
+					expectedFuncPtr.Name(), tt.targetSessionAttrs)
+
+				t.Logf("Expected validator: %s", expectedFuncPtr.Name())
+				t.Logf("Actual validator: %s", actualFuncPtr.Name())
+			} else {
+				assert.Nil(t, result.ValidateConnect,
+					"ValidateConnect should not be set: %s", tt.validatorDescription)
+			}
+		})
+	}
+}
+
+// TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts tests that when multiple
+// hosts are specified, fallbacks are properly configured along with the validator
+func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
+	tests := []struct {
+		name                 string
+		host                 string
+		port                 int
+		sslMode              string
+		connOptions          string
+		targetSessionAttrs   string
+		expectedValidator    pgconn.ValidateConnectFunc
+		expectedPrimaryHost  string
+		expectedPrimaryPort  uint16
+		expectedFallbacks    []*pgconn.FallbackConfig
+		expectTLS            bool
+		validatorDescription string
+	}{
+		{
+			name: "multiple hosts with read-write",
+			host: "db1.example.com,db2.example.com,db3.example.com",
+			port: 5432,
+			// {"target_session_attrs": "read-write"}
+			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIn0=",
+			targetSessionAttrs:  "read-write",
+			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsReadWrite,
+			expectedPrimaryHost: "db1.example.com",
+			expectedPrimaryPort: 5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "db2.example.com", Port: 5432, TLSConfig: nil},
+				{Host: "db3.example.com", Port: 5432, TLSConfig: nil},
+			},
+			expectTLS:            false,
+			validatorDescription: "should set validator and create fallbacks for additional hosts",
+		},
+		{
+			name: "multiple hosts with prefer-standby",
+			host: "primary.db.local,standby1.db.local,standby2.db.local",
+			port: 5433,
+			// {"target_session_attrs": "prefer-standby"}
+			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmVmZXItc3RhbmRieSJ9",
+			targetSessionAttrs:  "prefer-standby",
+			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsPreferStandby,
+			expectedPrimaryHost: "primary.db.local",
+			expectedPrimaryPort: 5433,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "standby1.db.local", Port: 5433, TLSConfig: nil},
+				{Host: "standby2.db.local", Port: 5433, TLSConfig: nil},
+			},
+			expectTLS:            false,
+			validatorDescription: "should set prefer-standby validator with fallbacks",
+		},
+		{
+			name: "multiple hosts with ports specified",
+			host: "db1.local:5432,db2.local:5433,db3.local:5434",
+			port: 5432, // Default port, but each host has its own
+			// {"target_session_attrs": "primary"}
+			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmltYXJ5In0=",
+			targetSessionAttrs:  "primary",
+			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsPrimary,
+			expectedPrimaryHost: "db1.local",
+			expectedPrimaryPort: 5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "db2.local", Port: 5433, TLSConfig: nil},
+				{Host: "db3.local", Port: 5434, TLSConfig: nil},
+			},
+			expectTLS:            false,
+			validatorDescription: "should handle hosts with explicit ports",
+		},
+		{
+			name:    "multiple hosts with TLS required",
+			host:    "db-primary.secure.local,db-replica1.secure.local,db-replica2.secure.local",
+			port:    5432,
+			sslMode: "require",
+			// {"target_session_attrs": "read-write"}
+			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJyZWFkLXdyaXRlIn0=",
+			targetSessionAttrs:  "read-write",
+			expectedValidator:   pgconn.ValidateConnectTargetSessionAttrsReadWrite,
+			expectedPrimaryHost: "db-primary.secure.local",
+			expectedPrimaryPort: 5432,
+			expectedFallbacks: []*pgconn.FallbackConfig{
+				{Host: "db-replica1.secure.local", Port: 5432}, // TLSConfig should be set (non-nil)
+				{Host: "db-replica2.secure.local", Port: 5432}, // TLSConfig should be set (non-nil)
+			},
+			expectTLS:            true,
+			validatorDescription: "should set TLS config for all hosts when sslmode=require",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := config.PostgreSQLConfig{
+				Host:        tt.host,
+				Port:        tt.port,
+				User:        "testuser",
+				Name:        "testdb",
+				SSLMode:     tt.sslMode,
+				ConnOptions: tt.connOptions,
+			}
+
+			result, err := BuildConnConfig(cfg)
+			require.NoError(t, err)
+			require.NotNil(t, result)
+
+			// Verify target_session_attrs is NOT in RuntimeParams
+			_, hasTargetSessionAttrs := result.RuntimeParams["target_session_attrs"]
+			assert.False(t, hasTargetSessionAttrs,
+				"target_session_attrs should not appear in RuntimeParams")
+
+			// Verify ValidateConnect is set to the correct function
+			require.NotNil(t, result.ValidateConnect,
+				"ValidateConnect should be set for target_session_attrs=%s with multiple hosts",
+				tt.targetSessionAttrs)
+
+			actualFuncPtr := runtime.FuncForPC(reflect.ValueOf(result.ValidateConnect).Pointer())
+			expectedFuncPtr := runtime.FuncForPC(reflect.ValueOf(tt.expectedValidator).Pointer())
+
+			assert.Equal(t, expectedFuncPtr.Name(), actualFuncPtr.Name(),
+				"ValidateConnect should be %s for target_session_attrs=%s",
+				expectedFuncPtr.Name(), tt.targetSessionAttrs)
+
+			// Verify the primary host and port
+			assert.Equal(t, tt.expectedPrimaryHost, result.Host,
+				"Primary host should be %s", tt.expectedPrimaryHost)
+			assert.Equal(t, tt.expectedPrimaryPort, result.Port,
+				"Primary port should be %d", tt.expectedPrimaryPort)
+
+			// Verify primary TLSConfig based on sslmode
+			if tt.expectTLS {
+				assert.NotNil(t, result.TLSConfig,
+					"Primary connection should have TLSConfig set when sslmode=%s", tt.sslMode)
+			} else {
+				assert.Nil(t, result.TLSConfig,
+					"Primary connection should not have TLSConfig when sslmode is not set")
+			}
+
+			// Verify Fallbacks are configured for the additional hosts
+			require.Len(t, result.Fallbacks, len(tt.expectedFallbacks),
+				"Should have %d fallback configs for the additional hosts", len(tt.expectedFallbacks))
+
+			// Verify each fallback configuration
+			for i, expectedFb := range tt.expectedFallbacks {
+				actualFb := result.Fallbacks[i]
+
+				assert.Equal(t, expectedFb.Host, actualFb.Host,
+					"Fallback %d host should be %s", i+1, expectedFb.Host)
+				assert.Equal(t, expectedFb.Port, actualFb.Port,
+					"Fallback %d port should be %d", i+1, expectedFb.Port)
+
+				// Verify TLSConfig is set appropriately for fallbacks
+				if tt.expectTLS {
+					assert.NotNil(t, actualFb.TLSConfig,
+						"Fallback %d should have TLSConfig set when sslmode=%s", i+1, tt.sslMode)
+					// Verify InsecureSkipVerify for sslmode=require
+					if tt.sslMode == "require" {
+						assert.True(t, actualFb.TLSConfig.InsecureSkipVerify,
+							"Fallback %d TLSConfig should have InsecureSkipVerify=true for sslmode=require", i+1)
+					}
+				} else {
+					assert.Nil(t, actualFb.TLSConfig,
+						"Fallback %d should not have TLSConfig when sslmode is not set", i+1)
+				}
+			}
+
+			// Log the configuration for debugging
+			t.Logf("Primary host: %s:%d", result.Host, result.Port)
+			t.Logf("Validator: %s", actualFuncPtr.Name())
+			for i, fb := range result.Fallbacks {
+				t.Logf("Fallback %d: %s:%d", i+1, fb.Host, fb.Port)
+			}
+		})
+	}
+}
+
+// TestBuildConnConfig_MultipleHosts_WithoutTargetSessionAttrs tests that multiple hosts
+// create fallbacks even without target_session_attrs
+func TestBuildConnConfig_MultipleHosts_WithoutTargetSessionAttrs(t *testing.T) {
+	cfg := config.PostgreSQLConfig{
+		Host: "db1.local,db2.local:5433,db3.local",
+		Port: 5432,
+		User: "testuser",
+		Name: "testdb",
+	}
+
+	result, err := BuildConnConfig(cfg)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	// Verify primary host
+	assert.Equal(t, "db1.local", result.Host)
+	assert.Equal(t, uint16(5432), result.Port)
+
+	// Verify fallbacks are created
+	require.Len(t, result.Fallbacks, 2, "Should have 2 fallback configs")
+	assert.Equal(t, "db2.local", result.Fallbacks[0].Host)
+	assert.Equal(t, uint16(5433), result.Fallbacks[0].Port)
+	assert.Equal(t, "db3.local", result.Fallbacks[1].Host)
+	assert.Equal(t, uint16(5432), result.Fallbacks[1].Port)
+
+	// Verify no ValidateConnect is set (no target_session_attrs)
+	assert.Nil(t, result.ValidateConnect)
+}
+
+// TestBuildConnConfig_ErrorPropagation tests that errors from parseConnOptions
+// are properly propagated through BuildConnConfig
+func TestBuildConnConfig_ErrorPropagation(t *testing.T) {
+	tests := []struct {
+		name        string
+		connOptions string
+		errorMsg    string
+	}{
+		{
+			name:        "invalid base64 in ConnOptions",
+			connOptions: "not-valid-base64!!!",
+			errorMsg:    "failed to parse connection options",
+		},
+		{
+			name:        "invalid JSON in ConnOptions",
+			connOptions: base64.StdEncoding.EncodeToString([]byte("not json")),
+			errorMsg:    "failed to parse connection options",
+		},
+		{
+			name:        "invalid target_session_attrs value",
+			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"target_session_attrs":"invalid-mode"}`)),
+			errorMsg:    "failed to apply connection options",
+		},
+		{
+			name:        "invalid connect_timeout value",
+			connOptions: base64.StdEncoding.EncodeToString([]byte(`{"connect_timeout":"not-a-number"}`)),
+			errorMsg:    "failed to apply connection options",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				ConnOptions: tt.connOptions,
+			}
+
+			result, err := BuildConnConfig(cfg)
+			require.Error(t, err)
+			assert.Nil(t, result)
+			assert.Contains(t, err.Error(), tt.errorMsg)
+		})
+	}
+}
+
+// TestBuildConnConfig_SingleHostWithPort tests that a single host with explicit port works
+func TestBuildConnConfig_SingleHostWithPort(t *testing.T) {
+	cfg := config.PostgreSQLConfig{
+		Host: "db.example.com:5433",
+		Port: 5432, // Default, but host specifies 5433
+		User: "testuser",
+		Name: "testdb",
+	}
+
+	result, err := BuildConnConfig(cfg)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "db.example.com", result.Host)
+	assert.Equal(t, uint16(5433), result.Port, "Should use port from host string, not default")
+	assert.Empty(t, result.Fallbacks, "Single host should not create fallbacks")
 }
