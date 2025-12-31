@@ -4418,6 +4418,34 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/account_lockdown/:
+    post:
+      operationId: core_users_account_lockdown_create
+      description: Trigger account lockdown for a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountLockdownRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully triggered account lockdown
+        '400':
+          description: Account lockdown feature is disabled or invalid target
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/impersonate/:
     post:
       operationId: core_users_impersonate_create
@@ -4444,34 +4472,6 @@ paths:
           description: Successfully started impersonation
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/users/{id}/panic_button/:
-    post:
-      operationId: core_users_panic_button_create
-      description: Trigger account lockdown for a user
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserPanicButtonRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Successfully triggered account lockdown
-        '400':
-          description: Account lockdown feature is disabled
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/recovery/:
@@ -4582,6 +4582,31 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/account_lockdown_bulk/:
+    post:
+      operationId: core_users_account_lockdown_bulk_create
+      description: Trigger account lockdown for multiple users
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserBulkAccountLockdownRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownBulkResponse'
+          description: ''
+        '400':
+          description: Account lockdown feature is disabled
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/users/export/:
@@ -4774,27 +4799,6 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /core/users/panic_button_bulk/:
-    post:
-      operationId: core_users_panic_button_bulk_create
-      description: Trigger account lockdown for multiple users
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserBulkPanicButtonRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Successfully triggered account lockdown
-        '400':
-          description: Account lockdown feature is disabled
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/users/paths/:
@@ -6955,6 +6959,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - custom_
@@ -6970,7 +6975,6 @@ paths:
             - model_created
             - model_deleted
             - model_updated
-            - panic_button_triggered
             - password_set
             - policy_exception
             - policy_execution
@@ -7217,6 +7221,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - custom_
@@ -7232,7 +7237,6 @@ paths:
             - model_created
             - model_deleted
             - model_updated
-            - panic_button_triggered
             - password_set
             - policy_exception
             - policy_execution
@@ -7345,6 +7349,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - custom_
@@ -7360,7 +7365,6 @@ paths:
             - model_created
             - model_deleted
             - model_updated
-            - panic_button_triggered
             - password_set
             - policy_exception
             - policy_execution
@@ -11006,6 +11010,7 @@ paths:
           type: string
           nullable: true
           enum:
+          - account_lockdown_triggered
           - authorize_application
           - configuration_error
           - custom_
@@ -11021,7 +11026,6 @@ paths:
           - model_created
           - model_deleted
           - model_updated
-          - panic_button_triggered
           - password_set
           - policy_exception
           - policy_execution
@@ -33041,6 +33045,22 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AccountLockdownBulkResponse:
+      type: object
+      properties:
+        processed:
+          type: array
+          items:
+            type: string
+          description: Users successfully locked
+        skipped:
+          type: array
+          items:
+            type: string
+          description: Users skipped with reasons
+      required:
+      - processed
+      - skipped
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -37697,7 +37717,7 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
-      - panic_button_triggered
+      - account_lockdown_triggered
       - flow_execution
       - policy_execution
       - policy_exception
@@ -49322,7 +49342,7 @@ components:
           format: email
           description: Security team email address for security notifications.
           maxLength: 254
-        panic_button_enabled:
+        account_lockdown_enabled:
           type: boolean
           description: Enable the account lockdown feature for administrators.
         flags:
@@ -53815,7 +53835,7 @@ components:
           format: email
           description: Security team email address for security notifications.
           maxLength: 254
-        panic_button_enabled:
+        account_lockdown_enabled:
           type: boolean
           description: Enable the account lockdown feature for administrators.
         flags:
@@ -53898,7 +53918,7 @@ components:
           format: email
           description: Security team email address for security notifications.
           maxLength: 254
-        panic_button_enabled:
+        account_lockdown_enabled:
           type: boolean
           description: Enable the account lockdown feature for administrators.
         flags:
@@ -55393,6 +55413,17 @@ components:
       - uid
       - username
       - uuid
+    UserAccountLockdownRequest:
+      type: object
+      description: Payload to trigger account lockdown for a user
+      properties:
+        reason:
+          type: string
+          minLength: 1
+          description: Reason for triggering account lockdown (max 500 characters)
+          maxLength: 500
+      required:
+      - reason
     UserAccountRequest:
       type: object
       description: Account adding/removing operations
@@ -55414,7 +55445,7 @@ components:
       - username
       - email
       type: string
-    UserBulkPanicButtonRequest:
+    UserBulkAccountLockdownRequest:
       type: object
       description: Payload to trigger account lockdown for multiple users
       properties:
@@ -55426,7 +55457,8 @@ components:
         reason:
           type: string
           minLength: 1
-          description: Reason for triggering account lockdown
+          description: Reason for triggering account lockdown (max 500 characters)
+          maxLength: 500
       required:
       - reason
       - users
@@ -55874,16 +55906,6 @@ components:
       - identifier
       - source
       - user
-    UserPanicButtonRequest:
-      type: object
-      description: Payload to trigger account lockdown for a user
-      properties:
-        reason:
-          type: string
-          minLength: 1
-          description: Reason for triggering account lockdown
-      required:
-      - reason
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly
