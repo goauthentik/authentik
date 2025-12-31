@@ -78,7 +78,7 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	}
 
 	// Parse comma-separated hosts and create fallbacks
-	// cfg.Host can be a comma-separated list like "host1:5433,host2,host3:5434"
+	// cfg.Host can be a comma-separated list like "host1,host2,host3"
 	hosts := strings.Split(cfg.Host, ",")
 	for i, host := range hosts {
 		hosts[i] = strings.TrimSpace(host)
@@ -89,7 +89,8 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	}
 
 	// Parse first host (primary)
-	primaryHost, primaryPort := parseHostPort(hosts[0], cfg.Port)
+	primaryHost := hosts[0]
+	primaryPort := uint16(cfg.Port)
 
 	// Set connection parameters for primary host
 	connConfig.Host = primaryHost
@@ -150,18 +151,16 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	if len(hosts) > 1 {
 		connConfig.Fallbacks = make([]*pgconn.FallbackConfig, 0, len(hosts)-1)
 		for _, host := range hosts[1:] {
-			fallbackHost, fallbackPort := parseHostPort(host, cfg.Port)
 			fallback := &pgconn.FallbackConfig{
-				Host: fallbackHost,
-				Port: fallbackPort,
+				Host: host,
+				Port: uint16(cfg.Port),
 			}
 			// Copy TLS config to fallback if present
 			if connConfig.TLSConfig != nil {
-				// Create a copy of the TLS config for the fallback
 				fallbackTLS := connConfig.TLSConfig.Clone()
 				// Update ServerName for verify-full mode
 				if cfg.SSLMode == "verify-full" {
-					fallbackTLS.ServerName = fallbackHost
+					fallbackTLS.ServerName = host
 				}
 				fallback.TLSConfig = fallbackTLS
 			}
@@ -185,29 +184,12 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 			return nil, fmt.Errorf("failed to parse connection options: %w", err)
 		}
 
-		// Apply each connection option to the appropriate config field
 		if err := applyConnOptions(connConfig, connOpts); err != nil {
 			return nil, fmt.Errorf("failed to apply connection options: %w", err)
 		}
 	}
 
 	return connConfig, nil
-}
-
-// parseHostPort parses a host string that may contain a port ("host:port")
-// If no port is specified, returns the default port
-func parseHostPort(hostStr string, defaultPort int) (string, uint16) {
-	if strings.Contains(hostStr, ":") {
-		// Host has explicit port
-		parts := strings.Split(hostStr, ":")
-		if len(parts) == 2 {
-			if port, err := strconv.Atoi(parts[1]); err == nil && port > 0 {
-				return parts[0], uint16(port)
-			}
-		}
-	}
-	// Use default port
-	return hostStr, uint16(defaultPort)
 }
 
 // parseConnOptions decodes a base64-encoded JSON string into a map of connection options.

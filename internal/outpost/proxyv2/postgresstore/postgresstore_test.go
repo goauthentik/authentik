@@ -1529,7 +1529,7 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 		},
 		{
 			name: "multiple hosts with ports specified",
-			host: "db1.local:5432,db2.local:5433,db3.local:5434",
+			host: "db1.local,db2.local,db3.local",
 			port: 5432, // Default port, but each host has its own
 			// {"target_session_attrs": "primary"}
 			connOptions:         "eyJ0YXJnZXRfc2Vzc2lvbl9hdHRycyI6ICJwcmltYXJ5In0=",
@@ -1538,8 +1538,8 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 			expectedPrimaryHost: "db1.local",
 			expectedPrimaryPort: 5432,
 			expectedFallbacks: []*pgconn.FallbackConfig{
-				{Host: "db2.local", Port: 5433, TLSConfig: nil},
-				{Host: "db3.local", Port: 5434, TLSConfig: nil},
+				{Host: "db2.local", Port: 5432, TLSConfig: nil},
+				{Host: "db3.local", Port: 5432, TLSConfig: nil},
 			},
 			expectTLS:            false,
 			validatorDescription: "should handle hosts with explicit ports",
@@ -1653,7 +1653,7 @@ func TestBuildConnConfig_TargetSessionAttrs_WithMultipleHosts(t *testing.T) {
 // create fallbacks even without target_session_attrs
 func TestBuildConnConfig_MultipleHosts_WithoutTargetSessionAttrs(t *testing.T) {
 	cfg := config.PostgreSQLConfig{
-		Host: "db1.local,db2.local:5433,db3.local",
+		Host: "db1.local,db2.local,db3.local",
 		Port: 5432,
 		User: "testuser",
 		Name: "testdb",
@@ -1670,7 +1670,7 @@ func TestBuildConnConfig_MultipleHosts_WithoutTargetSessionAttrs(t *testing.T) {
 	// Verify fallbacks are created
 	require.Len(t, result.Fallbacks, 2, "Should have 2 fallback configs")
 	assert.Equal(t, "db2.local", result.Fallbacks[0].Host)
-	assert.Equal(t, uint16(5433), result.Fallbacks[0].Port)
+	assert.Equal(t, uint16(5432), result.Fallbacks[0].Port)
 	assert.Equal(t, "db3.local", result.Fallbacks[1].Host)
 	assert.Equal(t, uint16(5432), result.Fallbacks[1].Port)
 
@@ -1724,22 +1724,4 @@ func TestBuildConnConfig_ErrorPropagation(t *testing.T) {
 			assert.Contains(t, err.Error(), tt.errorMsg)
 		})
 	}
-}
-
-// TestBuildConnConfig_SingleHostWithPort tests that a single host with explicit port works
-func TestBuildConnConfig_SingleHostWithPort(t *testing.T) {
-	cfg := config.PostgreSQLConfig{
-		Host: "db.example.com:5433",
-		Port: 5432, // Default, but host specifies 5433
-		User: "testuser",
-		Name: "testdb",
-	}
-
-	result, err := BuildConnConfig(cfg)
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "db.example.com", result.Host)
-	assert.Equal(t, uint16(5433), result.Port, "Should use port from host string, not default")
-	assert.Empty(t, result.Fallbacks, "Single host should not create fallbacks")
 }
