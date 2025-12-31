@@ -7,7 +7,7 @@ import { Form } from "#elements/forms/Form";
 
 import { CoreApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -69,7 +69,7 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
     protected get warningTitle(): string {
         return this.accountCount === 1
             ? msg("You are about to lock 1 account")
-            : msg(`You are about to lock ${this.accountCount} accounts`);
+            : msg(str`You are about to lock ${this.accountCount} accounts`);
     }
 
     /**
