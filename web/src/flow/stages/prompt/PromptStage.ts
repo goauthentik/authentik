@@ -226,7 +226,7 @@ ${prompt.initialValue}</textarea
                     : null;
 
                 return html`<select
-                    class="pf-c-form-control"
+                    class="pf-c-form-control ak-m-capitalize"
                     id=${fieldId}
                     name="${prompt.fieldKey}"
                     aria-label=${msg("Select language", {
