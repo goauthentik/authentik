@@ -546,7 +546,7 @@ class UserViewSet(
     def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
-        brand: Brand = self.request._request.brand
+        brand: Brand = self.request.brand
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
