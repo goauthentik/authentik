@@ -87,6 +87,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.providers.oauth2.models import AccessToken, RefreshToken
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -892,7 +893,7 @@ class UserViewSet(
             anon_user = get_anonymous_user()
             if user.pk == anon_user.pk:
                 return _("Cannot trigger account lockdown on anonymous user.")
-        except Exception:
+        except User.DoesNotExist:
             pass
 
         # Cannot lock down internal service accounts
@@ -930,14 +931,9 @@ class UserViewSet(
             # Revoke all API and app password tokens
             Token.objects.filter(user=user).delete()
 
-            # Revoke OAuth2 tokens if the provider is installed
-            try:
-                from authentik.providers.oauth2.models import AccessToken, RefreshToken
-
-                AccessToken.objects.filter(user=user).delete()
-                RefreshToken.objects.filter(user=user).delete()
-            except ImportError:
-                pass
+            # Revoke OAuth2 tokens
+            AccessToken.objects.filter(user=user).delete()
+            RefreshToken.objects.filter(user=user).delete()
 
             LOGGER.info(
                 "Account lockdown triggered",

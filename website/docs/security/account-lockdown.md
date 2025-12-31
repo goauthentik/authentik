@@ -26,10 +26,11 @@ An event is created that can be used to [trigger notifications via Notification 
 
 :::note Protected accounts
 Account Lockdown cannot be triggered on:
+
 - Your own account
 - The anonymous user
 - Internal service accounts
-:::
+  :::
 
 ## Trigger an Account Lockdown for a single user
 

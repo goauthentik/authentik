@@ -19,6 +19,7 @@ from authentik.lib.utils.db import chunked_queryset
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.tasks.middleware import CurrentTask
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -149,7 +150,7 @@ def notification_security_email(event_pk: str, trigger_pk: str):
 
     try:
         tenant = get_current_tenant()
-    except Exception:
+    except Tenant.DoesNotExist:
         LOGGER.warning("notification_security_email: failed to get current tenant")
         return
 
