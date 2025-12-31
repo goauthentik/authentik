@@ -20,16 +20,14 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const createExpirationValue = (value?: Date | null) => {
-    return dateTimeLocal(value || new Date(Date.now() + 30 * 60 * 1000));
-};
+const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
 @customElement("ak-endpoints-agent-enrollment-token-form")
 export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentToken, string>) {
-    protected expirationMinimumDate: string = dateTimeLocal(new Date());
+    protected expirationMinimumDate: string = dateTimeLocal();
 
     @state()
-    protected expiresAt: string | null = createExpirationValue();
+    protected expiresAt: string | null = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
 
     @property({ type: String, attribute: "connector-id" })
     public connectorID?: string;
@@ -41,7 +39,9 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
             tokenUuid: pk,
         });
 
-        this.expiresAt = token.expiring ? createExpirationValue(token.expires) : null;
+        this.expiresAt = token.expiring
+            ? dateTimeLocal(token.expires || Date.now() + EXPIRATION_DURATION)
+            : null;
 
         return token;
     }
@@ -84,7 +84,7 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
             return;
         }
 
-        this.expiresAt = createExpirationValue();
+        this.expiresAt = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
     };
 
     //#endregion

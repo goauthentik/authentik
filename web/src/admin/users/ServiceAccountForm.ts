@@ -26,14 +26,12 @@ import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const createExpirationValue = () => {
-    return dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360));
-};
+const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @state()
-    protected expiresAt: string | null = createExpirationValue();
+    protected expiresAt: string | null = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
 
     //#region Properties
 
@@ -91,7 +89,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     #expiringChangeListener = (event: Event) => {
         const expiringElement = event.target as HTMLInputElement;
 
-        this.expiresAt = expiringElement.checked ? createExpirationValue() : null;
+        this.expiresAt = expiringElement.checked
+            ? dateTimeLocal(Date.now() + EXPIRATION_DURATION)
+            : null;
     };
 
     //#endregion

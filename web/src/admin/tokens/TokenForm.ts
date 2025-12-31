@@ -18,23 +18,23 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-const createExpirationValue = (value?: Date | null) => {
-    return dateTimeLocal(value || new Date(Date.now() + 30 * 60 * 1000));
-};
+const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
-    protected expirationMinimumDate: string = dateTimeLocal(new Date());
+    protected expirationMinimumDate: string = dateTimeLocal();
 
     @state()
-    protected expiresAt: string | null = createExpirationValue();
+    protected expiresAt: string | null = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
 
     async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
 
-        this.expiresAt = token.expiring ? createExpirationValue(token.expires) : null;
+        this.expiresAt = token.expiring
+            ? dateTimeLocal(token.expires || Date.now() + EXPIRATION_DURATION)
+            : null;
 
         return token;
     }
@@ -72,7 +72,7 @@ export class TokenForm extends ModelForm<Token, string> {
             return;
         }
 
-        this.expiresAt = createExpirationValue();
+        this.expiresAt = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
     };
 
     //#endregion
