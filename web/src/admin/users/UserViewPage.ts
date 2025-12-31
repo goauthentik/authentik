@@ -95,7 +95,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                 display: flex;
                 flex-direction: column;
                 gap: 0.375rem;
-                max-width: 12rem;
+                max-width: 13rem;
             }
             .ak-button-collection > * {
                 flex: 1 0 100%;
@@ -107,7 +107,6 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             #ak-email-recovery-request,
             #update-password-request .pf-c-button,
             #ak-email-recovery-request .pf-c-button {
-                margin: 0;
                 width: 100%;
             }
         `,
@@ -127,7 +126,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             [msg("Email"), user.email || "-"],
             [msg("Last login"), Timestamp(user.lastLogin)],
             [msg("Last password change"), Timestamp(user.passwordChangeDate)],
-            [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
+            [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
             [msg("Actions"), this.renderActionButtons(user)],

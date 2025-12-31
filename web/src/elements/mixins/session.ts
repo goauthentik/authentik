@@ -124,12 +124,17 @@ export const WithSession = createMixin<SessionMixin>(
                 subscribe,
             })
             public set session(nextResult: APIResult<SessionUser>) {
+                const previousValue = this.#data;
+
                 this.#data = nextResult;
+
                 if (isAPIResultReady(nextResult)) {
                     const { settings = {} } = nextResult.user || {};
 
                     this.#uiConfig = createUIConfig(settings);
                 }
+
+                this.requestUpdate("session", previousValue);
             }
 
             public get session(): APIResult<Readonly<SessionUser>> {

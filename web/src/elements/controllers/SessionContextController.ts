@@ -1,6 +1,7 @@
 import type { APIResult } from "#common/api/responses";
-import { isCausedByAbortError, parseAPIResponseError } from "#common/errors/network";
+import { createSyntheticGenericError } from "#common/errors/network";
 
+import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { AKConfigMixin } from "#elements/mixins/config";
 import { type LocaleMixin } from "#elements/mixins/locale";
 import { SessionContext, SessionMixin } from "#elements/mixins/session";
@@ -9,16 +10,14 @@ import type { ReactiveElementHost } from "#elements/types";
 import { SessionUser } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
 
 /**
  * A controller that provides the session information to the element.
  *
  * @see {@linkcode SessionMixin}
  */
-export class SessionContextController implements ReactiveController {
-    #log = console.debug.bind(console, `authentik/controller/session`);
-    #abortController: null | AbortController = null;
+export class SessionContextController extends ReactiveContextController<APIResult<SessionUser>> {
+    protected static override logPrefix = "session";
 
     #host: ReactiveElementHost<LocaleMixin & SessionMixin & AKConfigMixin>;
     #context: ContextProvider<SessionContext>;
@@ -27,6 +26,8 @@ export class SessionContextController implements ReactiveController {
         host: ReactiveElementHost<SessionMixin & AKConfigMixin>,
         initialValue?: APIResult<SessionUser>,
     ) {
+        super();
+
         this.#host = host;
 
         this.#context = new ContextProvider(this.#host, {
@@ -35,45 +36,38 @@ export class SessionContextController implements ReactiveController {
         });
     }
 
-    #fetch = () => {
+    protected apiEndpoint(requestInit?: RequestInit) {
         if (!this.#host.refreshSession) {
-            this.#log("No refreshSession method available, skipping session fetch");
-            return Promise.resolve();
+            // This situation is unlikely, but possible if a host reference becomes
+            // stale or is misconfigured.
+
+            this.debug(
+                "No `refreshSession` method available, skipping session fetch. Check if the `SessionMixin` is applied correctly.",
+            );
+
+            const result: APIResult<SessionUser> = {
+                loading: false,
+                error: createSyntheticGenericError("No `refreshSession` method available"),
+            };
+
+            return Promise.resolve(result);
         }
 
-        this.#abortController?.abort();
-
-        this.#abortController = new AbortController();
-
-        return this.#host
-            .refreshSession({
-                signal: this.#abortController.signal,
-            })
-            .then((session) => {
-                this.#context.setValue(session);
-                this.#host.requestUpdate?.();
-            })
-            .catch(async (error: unknown) => {
-                if (isCausedByAbortError(error)) {
-                    this.#log("Aborted fetching session");
-                }
-
-                const parsedError = parseAPIResponseError(error);
-                console.error("authentik/controller/session: Failed to fetch session", parsedError);
-
-                throw error;
-            })
-            .finally(() => {
-                this.#abortController = null;
-            });
-    };
-
-    public hostConnected() {
-        this.#fetch();
+        return this.#host.refreshSession(requestInit);
     }
 
-    public hostDisconnected() {
+    protected doRefresh(session: APIResult<SessionUser>) {
+        this.#context.setValue(session);
+        this.#host.requestUpdate?.();
+    }
+
+    public override hostConnected() {
+        this.refresh();
+    }
+
+    public override hostDisconnected() {
         this.#context.clearCallbacks();
-        this.#abortController?.abort();
+
+        super.hostDisconnected();
     }
 }

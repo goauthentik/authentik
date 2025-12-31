@@ -405,7 +405,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-radio-input
                         label=${msg("Outgoing sync trigger mode")}
                         required
-                        name="type"
+                        name="syncOutgoingTriggerMode"
                         .value=${this.instance?.syncOutgoingTriggerMode}
                         .options=${createSyncOutgoingTriggerModeOptions}
                     >
