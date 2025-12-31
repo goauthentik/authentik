@@ -6,7 +6,43 @@ To install authentik automatically (skipping the Out-of-box experience), you can
 
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD`
 
+:::note
+For improved security, consider using a [hashed password](#authentik_bootstrap_password_hash) to avoid storing plaintext passwords in environment variables.
+:::
+
 Configure the default password for the `akadmin` user. Only read on the first startup. Can be used for any flow executor.
+
+### `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`
+
+Configure the default password for the `akadmin` user using a pre-hashed password. Only read on the first startup.
+
+This is useful when you want to avoid storing plaintext passwords in environment variables or configuration files.
+
+To generate a hash, run this command before your initial deployment:
+
+```bash
+# In local development environment
+uv run ak hash_password your-password
+
+# Or using a temporary Docker container
+docker run --rm -it ghcr.io/goauthentik/server:<The latest release at this time> ak hash_password your-password
+
+# Or on an existing authentik installation
+docker exec -it authentik-worker ak hash_password your-password
+```
+
+If both `AUTHENTIK_BOOTSTRAP_PASSWORD` and `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` are set, the hash takes precedence.
+
+:::warning Docker Compose
+When using Docker Compose with a `.env` file, escape the `$` characters in the password hash by doubling them (`$$`):
+
+```bash
+# .env file
+AUTHENTIK_BOOTSTRAP_PASSWORD_HASH="pbkdf2_sha256$$870000$$salt$$hash..."
+```
+
+This prevents Docker Compose from interpreting `$` as variable references.
+:::
 
 ### `AUTHENTIK_BOOTSTRAP_TOKEN`
 
@@ -36,3 +72,15 @@ global:
 ```
 
 where _some-secret_ contains the environment variables as in the documentation above.
+
+### Using password hash with Helm values
+
+For improved security, you can use a pre-hashed password directly in your Helm values:
+
+```yaml
+authentik:
+    bootstrap_password_hash: "pbkdf2_sha256$870000$abc123$xyz..."
+    bootstrap_email: "admin@example.com"
+```
+
+Or store the password hash in a secret and reference it via `envFrom` (same method as shown above for storing password and token in a secret).
