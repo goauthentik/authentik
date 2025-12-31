@@ -59,8 +59,6 @@ export class UserSettingsPromptStage extends PromptStage {
     }
 
     renderPromptInner(prompt: StagePrompt): TemplateResult {
-        const fieldId = `field-${prompt.fieldKey}`;
-
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<input
                 type="checkbox"
@@ -72,60 +70,8 @@ export class UserSettingsPromptStage extends PromptStage {
             />`;
         }
 
-        // Check if email field should be read-only
-        if (
-            prompt.type === PromptTypeEnum.Email &&
-            this.settings?.defaultUserChangeEmail === false
-        ) {
-            return html`<input
-                type="email"
-                id=${fieldId}
-                autocomplete="email"
-                name="${prompt.fieldKey}"
-                placeholder="${prompt.placeholder}"
-                class="pf-c-form-control"
-                disabled
-                value="${prompt.initialValue}"
-            />`;
-        }
-
-        // Check if username field should be read-only
-        if (
-            prompt.type === PromptTypeEnum.Username &&
-            this.settings?.defaultUserChangeUsername === false
-        ) {
-            return html`<input
-                type="text"
-                id=${fieldId}
-                name="${prompt.fieldKey}"
-                placeholder="${prompt.placeholder}"
-                autocomplete="username"
-                spellcheck="false"
-                class="pf-c-form-control"
-                disabled
-                value="${prompt.initialValue}"
-            />`;
-        }
-
-        // Check if name field should be read-only (text field with fieldKey "name")
-        if (
-            prompt.type === PromptTypeEnum.Text &&
-            prompt.fieldKey === "name" &&
-            this.settings?.defaultUserChangeName === false
-        ) {
-            return html`<input
-                type="text"
-                id=${fieldId}
-                name="${prompt.fieldKey}"
-                placeholder="${prompt.placeholder}"
-                autocomplete="off"
-                class="pf-c-form-control"
-                disabled
-                value="${prompt.initialValue}"
-            />`;
-        }
-
-        return super.renderPromptInner(prompt);
+        const disabled = this.isFieldReadOnly(prompt);
+        return super.renderPromptInner(prompt, disabled);
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
