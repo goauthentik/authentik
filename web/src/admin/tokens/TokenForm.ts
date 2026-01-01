@@ -22,10 +22,10 @@ const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
-    protected expirationMinimumDate: string = dateTimeLocal();
+    protected expirationMinimumDate = new Date();
 
     @state()
-    protected expiresAt: string | null = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
+    protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
     async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
@@ -33,7 +33,7 @@ export class TokenForm extends ModelForm<Token, string> {
         });
 
         this.expiresAt = token.expiring
-            ? dateTimeLocal(token.expires || Date.now() + EXPIRATION_DURATION)
+            ? new Date(token.expires || Date.now() + EXPIRATION_DURATION)
             : null;
 
         return token;
@@ -68,11 +68,11 @@ export class TokenForm extends ModelForm<Token, string> {
         }
 
         if (this.instance?.expiring && this.instance.expires) {
-            this.expiresAt = dateTimeLocal(this.instance.expires);
+            this.expiresAt = new Date(this.instance.expires);
             return;
         }
 
-        this.expiresAt = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
     };
 
     //#endregion
@@ -181,8 +181,8 @@ export class TokenForm extends ModelForm<Token, string> {
                 <input
                     id="expiration-date-input"
                     type="datetime-local"
-                    value=${this.expiresAt ?? ""}
-                    min=${this.expirationMinimumDate}
+                    value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
+                    min=${dateTimeLocal(this.expirationMinimumDate)}
                     ?disabled=${!this.expiresAt}
                     class="pf-c-form-control"
                 />

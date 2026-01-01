@@ -31,7 +31,7 @@ const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @state()
-    protected expiresAt: string | null = dateTimeLocal(Date.now() + EXPIRATION_DURATION);
+    protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
     //#region Properties
 
@@ -90,7 +90,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         const expiringElement = event.target as HTMLInputElement;
 
         this.expiresAt = expiringElement.checked
-            ? dateTimeLocal(Date.now() + EXPIRATION_DURATION)
+            ? new Date(Date.now() + EXPIRATION_DURATION)
             : null;
     };
 
@@ -144,7 +144,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     id="expiration-date-input"
                     type="datetime-local"
                     data-type="datetime-local"
-                    value=${this.expiresAt ?? ""}
+                    value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
                     ?disabled=${!this.expiresAt}
                     class="pf-c-form-control"
                 />
