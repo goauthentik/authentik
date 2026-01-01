@@ -6,6 +6,8 @@ export interface AuthentikVersionProps {
     semver: string;
 }
 
+export const YEAR_CUTOFF = 2;
+
 /**
  * Badge indicating semantic versioning of authentik required for a feature or integration.
  */
@@ -16,7 +18,6 @@ export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
         throw new Error(`Invalid semver version: ${semver}`);
     }
 
-    const yearCutoff = new Date().getFullYear() - 2;
     const isBrowser = useIsBrowser();
     const onError = (err: Error) => {
         if (isBrowser) {
@@ -26,6 +27,7 @@ export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
         }
     };
 
+    const yearCutoff = new Date().getFullYear() - YEAR_CUTOFF;
 
     if (parsed.major <= yearCutoff) {
         onError(new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`));
