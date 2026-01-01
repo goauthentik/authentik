@@ -8,6 +8,7 @@ from dramatiq.actor import actor
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import User
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
@@ -68,6 +69,7 @@ def _check_app_access(stream: Stream, event_data: dict) -> bool:
     if not user:
         return True
     engine = PolicyEngine(stream.provider.backchannel_application, user)
+    engine.empty_result = AppAccessWithoutBindings().get()
     engine.use_cache = False
     engine.build()
     return engine.passing

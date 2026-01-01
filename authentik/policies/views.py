@@ -13,6 +13,7 @@ from django.utils.translation import gettext as _
 from django.views.generic.base import TemplateView, View
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, Provider, User
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
@@ -147,6 +148,7 @@ class PolicyAccessView(AccessMixin, View):
         policy_engine = PolicyEngine(
             pbm or self.application, user or self.request.user, self.request
         )
+        policy_engine.empty_result = AppAccessWithoutBindings().get()
         policy_engine.use_cache = False
         policy_engine.request = self.modify_policy_request(policy_engine.request)
         policy_engine.build()
