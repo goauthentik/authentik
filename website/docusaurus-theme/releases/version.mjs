@@ -23,7 +23,7 @@ export function assertVersionSupported(parsed, supportDuration = DEFAULT_VERSION
     const now = new Date();
 
     if (now.getTime() - versionDate.getTime() >= supportDuration) {
-        const message = `Semver version ${versionDate.getFullYear()}.${versionDate.getMonth()} is older than 2 years`;
+        const message = `Semver version ${versionDate.getFullYear()}.${versionDate.getMonth()} is older than 2 years.`;
 
         throw new VersionValidationError(message);
     }
