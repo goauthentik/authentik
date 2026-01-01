@@ -1,5 +1,6 @@
 import { EVENT_REFRESH } from "#common/constants";
 import { isCausedByAbortError, parseAPIResponseError } from "#common/errors/network";
+import { createDebugLogger } from "#common/logger";
 
 import type { ReactiveController } from "lit";
 
@@ -41,10 +42,9 @@ export abstract class ReactiveContextController<T extends object> implements Rea
     protected hostAbortController: AbortController | null = null;
 
     public constructor() {
-        const Constructor = this.constructor as typeof ReactiveContextController;
-        const logPrefix = Constructor.logPrefix;
+        const { logPrefix } = this.constructor as typeof ReactiveContextController;
 
-        this.debug = console.debug.bind(console, `authentik/context/${logPrefix}`);
+        this.debug = createDebugLogger("context", logPrefix);
     }
 
     /**
@@ -73,7 +73,7 @@ export abstract class ReactiveContextController<T extends object> implements Rea
     protected refresh = (): Promise<void> => {
         this.abort("Refresh aborted by new refresh call");
 
-        this.debug("Refreshing...");
+        this.debug("Refresh requested...");
 
         this.abortController?.abort();
 

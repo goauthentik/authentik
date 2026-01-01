@@ -1,48 +1,33 @@
 import "#elements/EmptyState";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-import {
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_REFRESH,
-    EVENT_WS_MESSAGE,
-    WS_MSG_TYPE_NOTIFICATION,
-} from "#common/constants";
+import { isAPIResultReady } from "#common/api/responses";
+import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
+import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { actionToLabel, severityToLevel } from "#common/labels";
-import { MessageLevel } from "#common/messages";
 import { formatElapsedTime } from "#common/temporal";
-import { isGuest } from "#common/users";
-import { WSMessage } from "#common/ws";
 
 import { AKElement } from "#elements/Base";
-import { showMessage } from "#elements/messages/MessageContainer";
+import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
-import { PaginatedResponse } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { EventsApi, Notification, NotificationFromJSON } from "@goauthentik/api";
+import { Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-notification-drawer")
-export class NotificationDrawer extends WithSession(AKElement) {
-    @property({ attribute: false })
-    notifications?: PaginatedResponse<Notification>;
-
-    @property({ type: Number })
-    unread = 0;
-
+export class NotificationDrawer extends WithNotifications(WithSession(AKElement)) {
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFNotificationDrawer,
         PFContent,
@@ -70,63 +55,7 @@ export class NotificationDrawer extends WithSession(AKElement) {
         `,
     ];
 
-    #onWSMessage = (
-        e: CustomEvent<
-            WSMessage & {
-                data: unknown;
-            }
-        >,
-    ) => {
-        if (e.detail.message_type !== WS_MSG_TYPE_NOTIFICATION) {
-            return;
-        }
-        const notification = NotificationFromJSON(e.detail.data);
-        showMessage({
-            level: MessageLevel.info,
-            message: actionToLabel(notification.event?.action) ?? notification.body,
-            description: html`${notification.body}
-            ${notification.hyperlink
-                ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
-                : nothing}
-            ${notification.event
-                ? html`<br /><a href="#/events/log/${notification.event.pk}"
-                          >${msg("View details...")}</a
-                      >`
-                : nothing}`,
-        });
-    };
-
-    connectedCallback(): void {
-        super.connectedCallback();
-        this.refreshNotifications();
-        this.#onWSMessage = this.#onWSMessage.bind(this);
-        window.addEventListener(EVENT_WS_MESSAGE, this.#onWSMessage as EventListener);
-    }
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWSMessage as EventListener);
-    }
-
-    protected async refreshNotifications(): Promise<void> {
-        const { currentUser } = this;
-
-        if (!currentUser || isGuest(currentUser)) {
-            return Promise.resolve();
-        }
-
-        return new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-                user: currentUser.pk,
-            })
-            .then((r) => {
-                this.notifications = r;
-                this.unread = r.results.length;
-                this.requestUpdate();
-            });
-    }
+    //#region Rendering
 
     protected renderHyperlink(item: Notification) {
         if (!item.hyperlink) {
@@ -163,24 +92,7 @@ export class NotificationDrawer extends WithSession(AKElement) {
                 <button
                     class="pf-c-dropdown__toggle pf-m-plain"
                     type="button"
-                    @click=${() => {
-                        new EventsApi(DEFAULT_CONFIG)
-                            .eventsNotificationsPartialUpdate({
-                                uuid: item.pk || "",
-                                patchedNotificationRequest: {
-                                    seen: true,
-                                },
-                            })
-                            .then(() => {
-                                this.refreshNotifications();
-                                this.dispatchEvent(
-                                    new CustomEvent(EVENT_REFRESH, {
-                                        bubbles: true,
-                                        composed: true,
-                                    }),
-                                );
-                            });
-                    }}
+                    @click=${() => this.markAsRead(item.pk)}
                     aria-label=${msg("Mark as read")}
                 >
                     <i class="fas fa-times" aria-hidden="true"></i>
@@ -196,41 +108,36 @@ export class NotificationDrawer extends WithSession(AKElement) {
         </li>`;
     };
 
-    clearNotifications() {
-        new EventsApi(DEFAULT_CONFIG).eventsNotificationsMarkAllSeenCreate().then(() => {
-            showMessage({
-                level: MessageLevel.success,
-                message: msg("Successfully cleared notifications"),
-            });
-            this.refreshNotifications();
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            this.dispatchEvent(
-                new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-        });
-    }
-
-    renderEmpty() {
+    protected renderEmpty() {
         return html`<ak-empty-state
             ><span>${msg("No notifications found.")}</span>
             <div slot="body">${msg("You don't have any notifications currently.")}</div>
         </ak-empty-state>`;
     }
 
-    render(): SlottedTemplateResult {
-        if (!this.notifications) {
-            return nothing;
+    protected renderBody() {
+        if (this.notifications.loading) {
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
 
-        const { results } = this.notifications;
+        if (this.notifications.error) {
+            return html`<ak-empty-state icon="fa-ban"
+                ><span>${msg("Failed to fetch notifications.")}</span>
+                <div slot="body">${pluckErrorDetail(this.notifications.error)}</div>
+            </ak-empty-state>`;
+        }
+
+        if (!this.notifications.size) {
+            return this.renderEmpty();
+        }
+
+        return html`<ul class="pf-c-notification-drawer__list" role="list">
+            ${repeat(this.notifications.values(), (n) => this.#renderItem(n))}
+        </ul>`;
+    }
+
+    protected override render(): SlottedTemplateResult {
+        const unreadCount = isAPIResultReady(this.notifications) ? this.notifications.size : 0;
 
         return html`<div
             class="pf-c-drawer__body pf-m-no-padding"
@@ -244,7 +151,7 @@ export class NotificationDrawer extends WithSession(AKElement) {
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("Notifications")}
                         </h1>
-                        <span> ${msg(str`${this.unread} unread`)}</span>
+                        <span> ${msg(str`${unreadCount} unread`)}</span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div>
@@ -278,13 +185,7 @@ export class NotificationDrawer extends WithSession(AKElement) {
                         </div>
                     </div>
                 </div>
-                <div class="pf-c-notification-drawer__body">
-                    ${results.length
-                        ? html`<ul class="pf-c-notification-drawer__list" role="list">
-                              ${results.map((n) => this.#renderItem(n))}
-                          </ul>`
-                        : this.renderEmpty()}
-                </div>
+                <div class="pf-c-notification-drawer__body">${this.renderBody()}</div>
             </div>
         </div>`;
     }

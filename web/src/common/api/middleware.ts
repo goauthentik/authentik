@@ -23,20 +23,23 @@ export interface RequestInfo {
 }
 
 export class LoggingMiddleware implements Middleware {
-    brand: CurrentBrand;
+    #logPrefix: string;
+
     constructor(brand: CurrentBrand) {
-        this.brand = brand;
+        this.#logPrefix = `%c[api/${brand.matchedDomain}]: `;
     }
 
     post(context: ResponseContext): Promise<Response | void> {
-        let msg = `authentik/api[${this.brand.matchedDomain}]: `;
+        let msg = this.#logPrefix;
+
         // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
         msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
-        let style = "";
-        if (context.response.status >= 400) {
-            style = "color: red; font-weight: bold;";
-        }
-        console.debug(msg, style, "");
+
+        const style = context.response.ok
+            ? "color: green; font-weight: bold;"
+            : "color: red; font-weight: bold;";
+
+        console.debug(msg, "font-weight: bold;", style, "");
         return Promise.resolve(context.response);
     }
 }

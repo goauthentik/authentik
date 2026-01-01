@@ -2,6 +2,7 @@ import "#elements/router/Router404";
 import "#elements/a11y/ak-skip-to-content";
 
 import { ROUTE_SEPARATOR } from "#common/constants";
+import { createDebugLogger } from "#common/logger";
 
 import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
@@ -60,6 +61,7 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
+    #debug = createDebugLogger("router");
     protected createRenderRoot() {
         return this;
     }
@@ -137,7 +139,7 @@ export class RouterOutlet extends AKElement {
         if (activeUrl === "") {
             activeUrl = this.defaultUrl || "/";
             window.location.hash = `#${activeUrl}`;
-            console.debug(`authentik/router: defaulted URL to ${window.location.hash}`);
+            this.#debug(`defaulted URL to ${window.location.hash}`);
             return;
         }
         let matchedRoute: RouteMatch | null = null;
@@ -152,7 +154,7 @@ export class RouterOutlet extends AKElement {
             return false;
         });
         if (!matchedRoute) {
-            console.debug(`authentik/router: route "${activeUrl}" not defined`);
+            this.#debug(`route "${activeUrl}" not defined`);
             const route = new Route(RegExp(""), async () => {
                 return html`<div class="pf-c-page__main">
                     <ak-router-404 url=${activeUrl}></ak-router-404>

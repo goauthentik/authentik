@@ -1,4 +1,5 @@
 import { APIResult, isAPIResultReady } from "#common/api/responses";
+import { createDebugLogger } from "#common/logger";
 import { createUIConfig, DefaultUIConfig, UIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
@@ -7,14 +8,16 @@ import { AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, LocaleContext, LocaleContextValue } from "#elements/mixins/locale";
 import { createMixin } from "#elements/types";
 
-import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
+import { type Config, type SessionUser, type UserSelf } from "@goauthentik/api";
 
 import { setUser } from "@sentry/browser";
 
 import { consume, createContext } from "@lit/context";
 
+export const kAKSession = Symbol("kAKSession");
+
 /**
- * The Lit context for the application configuration.
+ * The Lit context for the session information.
  *
  * @category Context
  * @see {@linkcode SessionMixin}
@@ -25,6 +28,7 @@ export const SessionContext = createContext<APIResult<SessionUser>>(
 );
 
 export type SessionContext = typeof SessionContext;
+
 /**
  * A consumer that provides session information to the element.
  *
@@ -32,6 +36,13 @@ export type SessionContext = typeof SessionContext;
  * @see {@linkcode WithSession}
  */
 export interface SessionMixin {
+    /**
+     * The session context value.
+     *
+     * @internal
+     */
+    readonly [kAKSession]: Readonly<APIResult<SessionUser>>;
+
     /**
      * The current session information.
      *
@@ -84,7 +95,7 @@ export function canAccessAdmin(user?: UserSelf | null) {
     );
 }
 
-// uiConfig.enabledFeatures.applicationEdit && currentUser?.isSuperuser
+// console.debug.bind(console, `authentik/session:${this.constructor.name}`);
 
 /**
  * A mixin that provides the session information to the element.
@@ -98,7 +109,9 @@ export const WithSession = createMixin<SessionMixin>(
         subscribe = true,
     }) => {
         abstract class SessionProvider extends SuperClass implements SessionMixin {
-            #log = console.debug.bind(console, `authentik/session`);
+            #log = createDebugLogger("session", this);
+
+            //#region Context Consumers
 
             @consume({
                 context: AuthentikConfigContext,
@@ -137,8 +150,20 @@ export const WithSession = createMixin<SessionMixin>(
                 this.requestUpdate("session", previousValue);
             }
 
+            //#endregion
+
+            //#region Properties
+
             public get session(): APIResult<Readonly<SessionUser>> {
                 return this.#data;
+            }
+
+            public set [kAKSession](value: APIResult<Readonly<SessionUser>>) {
+                this.session = value;
+            }
+
+            public get [kAKSession](): APIResult<Readonly<SessionUser>> {
+                return this.session;
             }
 
             public get uiConfig(): Readonly<UIConfig> {
@@ -156,6 +181,10 @@ export const WithSession = createMixin<SessionMixin>(
             public get impersonating(): boolean {
                 return !!this.originalUser;
             }
+
+            //#endregion
+
+            //#region Methods
 
             public refreshSession(requestInit?: RequestInit): Promise<SessionUser> {
                 this.#log("Fetching session...");
@@ -177,12 +206,13 @@ export const WithSession = createMixin<SessionMixin>(
                         setUser({ email: session.user.email });
                     }
 
-                    this.#log("Fetched session", session);
                     this.session = session;
 
                     return session;
                 });
             }
+
+            //#endregion
         }
 
         return SessionProvider;

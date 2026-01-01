@@ -9,16 +9,16 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
-import { WebsocketClient } from "#common/ws";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { ifPresent } from "#elements/utils/attributes";
@@ -27,10 +27,8 @@ import { renderImage } from "#elements/utils/images";
 import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
 
-import { EventsApi } from "@goauthentik/api";
-
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -78,9 +76,6 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
 
     @property({ type: Boolean, reflect: true })
     apiDrawerOpen = false;
-
-    @property({ type: Number })
-    notificationsCount = 0;
 
     renderAdminInterfaceLink() {
         if (!canAccessAdmin(this.currentUser)) {
@@ -183,7 +178,9 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
+export class UserInterface extends WithNotifications(
+    WithBrandConfig(WithSession(AuthenticatedInterface)),
+) {
     public static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
 
     public override tabIndex = -1;
@@ -193,9 +190,6 @@ export class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInte
 
     @state()
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    @state()
-    notificationsCount = 0;
 
     constructor() {
         configureSentry();
@@ -224,33 +218,6 @@ export class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInte
         WebsocketClient.close();
     }
 
-    public updated(changedProperties: PropertyValues<this>): void {
-        super.updated(changedProperties);
-
-        if (changedProperties.has("session")) {
-            this.refreshNotifications();
-        }
-    }
-
-    protected refreshNotifications(): Promise<void> {
-        const { currentUser } = this;
-
-        if (!currentUser || isGuest(currentUser)) {
-            return Promise.resolve();
-        }
-
-        return new EventsApi(DEFAULT_CONFIG)
-            .eventsNotificationsList({
-                seen: false,
-                ordering: "-created",
-                pageSize: 1,
-                user: currentUser.pk,
-            })
-            .then((notifications) => {
-                this.notificationsCount = notifications.pagination.count;
-            });
-    }
-
     toggleNotificationDrawer() {
         this.notificationDrawerOpen = !this.notificationDrawerOpen;
         updateURLParams({
@@ -277,7 +244,6 @@ export class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInte
         return html`<ak-interface-user-presentation
             ?notificationDrawerOpen=${this.notificationDrawerOpen}
             ?apiDrawerOpen=${this.apiDrawerOpen}
-            notificationsCount=${this.notificationsCount}
         >
             <slot name="placeholder"></slot>
         </ak-interface-user-presentation>`;

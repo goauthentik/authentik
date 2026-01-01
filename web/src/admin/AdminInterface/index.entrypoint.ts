@@ -18,10 +18,11 @@ import { isAPIResultReady } from "#common/api/responses";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
-import { WebsocketClient } from "#common/ws";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 
@@ -48,7 +49,9 @@ if (process.env.NODE_ENV === "development") {
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithCapabilitiesConfig(WithSession(AuthenticatedInterface)) {
+export class AdminInterface extends WithCapabilitiesConfig(
+    WithNotifications(WithSession(AuthenticatedInterface)),
+) {
     //#region Properties
 
     @property({ type: Boolean })
