@@ -1,3 +1,4 @@
+import useIsBrowser from "@docusaurus/useIsBrowser";
 import React from "react";
 import { coerce } from "semver";
 
@@ -16,9 +17,18 @@ export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
     }
 
     const yearCutoff = new Date().getFullYear() - 2;
+    const isBrowser = useIsBrowser();
+    const onError = (err: Error) => {
+        if (isBrowser) {
+            console.warn(err);
+        } else {
+            throw err;
+        }
+    };
+
 
     if (parsed.major <= yearCutoff) {
-        throw new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`);
+        onError(new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`));
     }
 
     return (
