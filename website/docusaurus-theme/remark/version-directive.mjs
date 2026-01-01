@@ -5,7 +5,7 @@
  * @import {} from "mdast-util-directive";
  */
 
-import { validateVersion } from "../releases/version.mjs";
+import { assertVersionSupported } from "../releases/version.mjs";
 
 import { h } from "hastscript";
 import { coerce } from "semver";
@@ -45,7 +45,7 @@ export function remarkVersionDirective() {
                 throw new Error(`Invalid semver version: ${semver}`);
             }
 
-            validateVersion(parsed);
+            assertVersionSupported(parsed);
 
             const data = node.data || (node.data = {});
 

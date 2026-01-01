@@ -1,6 +1,8 @@
-import { validateVersion } from "../releases/version.mjs";
+import {
+    assertVersionSupported,
+    VersionValidationError,
+} from "@goauthentik/docusaurus-theme/releases/version";
 
-import useIsBrowser from "@docusaurus/useIsBrowser";
 import React from "react";
 import { coerce } from "semver";
 
@@ -12,25 +14,24 @@ export interface AuthentikVersionProps {
  * Badge indicating semantic versioning of authentik required for a feature or integration.
  */
 export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
-    const isBrowser = useIsBrowser();
-    const onError = (err: unknown) => {
-        if (isBrowser) {
-            console.warn(err);
-        } else {
-            throw err;
-        }
-    };
-
     const parsed = coerce(semver);
 
     if (!parsed) {
-        throw new Error(`Invalid semver version: ${semver}`);
+        throw new VersionValidationError(`Could not parse semver version: ${semver}`);
     }
 
     try {
-        validateVersion(parsed);
-    } catch (err) {
-        onError(err);
+        assertVersionSupported(parsed);
+    } catch (error) {
+        if (!(error instanceof VersionValidationError)) {
+            throw error;
+        }
+
+        if (process.env.NODE_ENV !== "production") {
+            throw error;
+        }
+
+        console.error(error.message);
     }
 
     return (
