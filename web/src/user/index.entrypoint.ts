@@ -146,14 +146,14 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         const backgroundStyles = this.uiConfig.theme.background;
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
-            <div class="pf-c-page">
-                <div class="background-wrapper" style=${ifPresent(backgroundStyles)}>
+            <div part="page" class="pf-c-page">
+                <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
                     ${!backgroundStyles
-                        ? html`<div class="background-default-slant"></div>`
+                        ? html`<div part="background-default-slant"></div>`
                         : nothing}
                 </div>
-                <header class="pf-c-page__header">
-                    <div class="pf-c-page__header-brand">
+                <header part="page__header" class="pf-c-page__header">
+                    <div part="brand" class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
                             ${renderImage(this.brandingLogo, this.brandingTitle, "pf-c-brand")}
                         </a>
