@@ -5,6 +5,8 @@
  * @import {} from "mdast-util-directive";
  */
 
+import { validateVersion } from "../releases/version.mjs";
+
 import { h } from "hastscript";
 import { coerce } from "semver";
 import { SKIP, visit } from "unist-util-visit";
@@ -43,11 +45,7 @@ export function remarkVersionDirective() {
                 throw new Error(`Invalid semver version: ${semver}`);
             }
 
-            const yearCutoff = new Date().getFullYear() - 2;
-
-            if (parsed.major <= yearCutoff) {
-                throw new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`);
-            }
+            validateVersion(parsed);
 
             const data = node.data || (node.data = {});
 

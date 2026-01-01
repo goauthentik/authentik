@@ -1,3 +1,5 @@
+import { validateVersion } from "../releases/version.mjs";
+
 import useIsBrowser from "@docusaurus/useIsBrowser";
 import React from "react";
 import { coerce } from "semver";
@@ -6,20 +8,12 @@ export interface AuthentikVersionProps {
     semver: string;
 }
 
-export const YEAR_CUTOFF = 2;
-
 /**
  * Badge indicating semantic versioning of authentik required for a feature or integration.
  */
 export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
-    const parsed = coerce(semver);
-
-    if (!parsed) {
-        throw new Error(`Invalid semver version: ${semver}`);
-    }
-
     const isBrowser = useIsBrowser();
-    const onError = (err: Error) => {
+    const onError = (err: unknown) => {
         if (isBrowser) {
             console.warn(err);
         } else {
@@ -27,10 +21,16 @@ export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
         }
     };
 
-    const yearCutoff = new Date().getFullYear() - YEAR_CUTOFF;
+    const parsed = coerce(semver);
 
-    if (parsed.major <= yearCutoff) {
-        onError(new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`));
+    if (!parsed) {
+        throw new Error(`Invalid semver version: ${semver}`);
+    }
+
+    try {
+        validateVersion(parsed);
+    } catch (err) {
+        onError(err);
     }
 
     return (
