@@ -4,13 +4,13 @@ import "#elements/buttons/ActionButton/ak-action-button";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import Styles from "#components/ak-nav-button.css";
@@ -20,6 +20,7 @@ import { CoreApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -52,56 +53,53 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         Styles,
     ];
 
-    renderApiDrawerTrigger() {
-        if (!this.uiConfig?.enabledFeatures.apiDrawer) {
-            return nothing;
-        }
+    protected renderAPIDrawerTrigger() {
+        const { apiDrawer } = this.uiConfig.enabledFeatures;
 
-        const onClick = (ev: Event) => {
-            ev.stopPropagation();
-            this.dispatchEvent(
-                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
-            );
-        };
+        return guard([apiDrawer], () => {
+            if (!apiDrawer) {
+                return nothing;
+            }
 
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
-            <button class="pf-c-button pf-m-plain" type="button" @click=${onClick}>
-                <pf-tooltip position="top" content=${msg("Open API drawer")}>
-                    <i class="fas fa-code" aria-hidden="true"></i>
-                </pf-tooltip>
-            </button>
-        </div>`;
+            return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
+                <button
+                    class="pf-c-button pf-m-plain"
+                    type="button"
+                    @click=${AKDrawerChangeEvent.dispatchAPIToggle}
+                >
+                    <pf-tooltip position="top" content=${msg("Open API drawer")}>
+                        <i class="fas fa-code" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
+            </div>`;
+        });
     }
 
-    renderNotificationDrawerTrigger() {
-        if (!this.uiConfig?.enabledFeatures.notificationDrawer) {
-            return nothing;
-        }
+    protected renderNotificationDrawerTrigger() {
+        const { notificationDrawer } = this.uiConfig.enabledFeatures;
+        const notificationCount = this.notificationCount;
 
-        const onClick = (ev: Event) => {
-            ev.stopPropagation();
-            this.dispatchEvent(
-                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
-            );
-        };
+        return guard([notificationDrawer, notificationCount], () => {
+            if (!notificationDrawer) {
+                return nothing;
+            }
 
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
-            <button
-                class="pf-c-button pf-m-plain"
-                type="button"
-                aria-label="${msg("Unread notifications")}"
-                @click=${onClick}
-            >
-                <span
-                    class="pf-c-notification-badge ${this.notificationCount ? "pf-m-unread" : ""}"
+            return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
+                <button
+                    class="pf-c-button pf-m-plain"
+                    type="button"
+                    aria-label="${msg("Unread notifications")}"
+                    @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
                 >
-                    <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
-                        <i class="fas fa-bell" aria-hidden="true"></i>
-                    </pf-tooltip>
-                    <span class="pf-c-notification-badge__count">${this.notificationCount}</span>
-                </span>
-            </button>
-        </div> `;
+                    <span class="pf-c-notification-badge ${notificationCount ? "pf-m-unread" : ""}">
+                        <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
+                            <i class="fas fa-bell" aria-hidden="true"></i>
+                        </pf-tooltip>
+                        <span class="pf-c-notification-badge__count">${notificationCount}</span>
+                    </span>
+                </button>
+            </div>`;
+        });
     }
 
     renderSettings() {
@@ -166,7 +164,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
         return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
-                ${this.renderApiDrawerTrigger()}
+                ${this.renderAPIDrawerTrigger()}
                 <!-- -->
                 ${this.renderNotificationDrawerTrigger()}
                 <!-- -->

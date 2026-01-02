@@ -9,7 +9,6 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { globalAK } from "#common/global";
 import { createDebugLogger } from "#common/logger";
 import { configureSentry } from "#common/sentry/index";
@@ -17,11 +16,15 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
-import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import {
+    DrawerState,
+    persistDrawerParams,
+    readDrawerParams,
+    renderNotificationDrawerPanel,
+} from "#elements/notifications/utils";
 import { ifPresent } from "#elements/utils/attributes";
 import { renderImage } from "#elements/utils/images";
 
@@ -30,7 +33,8 @@ import { ROUTES } from "#user/Routes";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -45,22 +49,9 @@ if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 
-//  ___                     _        _   _
-// | _ \_ _ ___ ___ ___ _ _| |_ __ _| |_(_)___ _ _
-// |  _/ '_/ -_|_-</ -_) ' \  _/ _` |  _| / _ \ ' \
-// |_| |_| \___/__/\___|_||_\__\__,_|\__|_\___/_||_|
-//
-
-// Despite the length of the render() method and its accessories, this top-level Interface does
-// surprisingly little. It has been broken into two parts: the business logic at the bottom, and the
-// rendering code at the top, which is wholly independent of APIs and Interfaces.
-
-// Because this is not exported, and because it's invoked as a web component, neither TSC or ESLint
-// trusts that we actually used it. Hence the double ignore below:
-
-@customElement("ak-interface-user-presentation")
-class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) {
-    static styles = [
+@customElement("ak-interface-user")
+class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
+    public static readonly styles = [
         PFDisplay,
         PFBrand,
         PFPage,
@@ -72,42 +63,76 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
         Styles,
     ];
 
-    #debug = createDebugLogger("user-interface-presentation");
+    #debug = createDebugLogger("user-interface");
 
-    @property({ type: Boolean, reflect: true })
-    notificationDrawerOpen = false;
+    @state()
+    protected drawer: DrawerState = readDrawerParams();
 
-    @property({ type: Boolean, reflect: true })
-    apiDrawerOpen = false;
+    #drawerListener = (event: AKDrawerChangeEvent) => {
+        this.drawer = event.drawer;
+        persistDrawerParams(event.drawer);
+    };
 
-    renderAdminInterfaceLink() {
-        if (!canAccessAdmin(this.currentUser)) {
-            return nothing;
-        }
+    //#region Lifecycle
 
-        return html`<a
-                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                href="${globalAK().api.base}if/admin/"
-                slot="extra"
-            >
-                ${msg("Admin interface")}
-            </a>
-            <a
-                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                href="${globalAK().api.base}if/admin/"
-                slot="extra"
-            >
-                ${msg("Admin")}
-            </a>`;
+    constructor() {
+        configureSentry();
+
+        super();
+
+        WebsocketClient.connect();
     }
 
-    render() {
+    public override connectedCallback() {
+        super.connectedCallback();
+
+        window.addEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
+    }
+
+    public override disconnectedCallback() {
+        super.disconnectedCallback();
+
+        window.removeEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
+
+        WebsocketClient.close();
+    }
+
+    //#endregion
+
+    //#region Rendering
+
+    protected renderAdminInterfaceLink() {
+        return guard([this.currentUser], () => {
+            if (!canAccessAdmin(this.currentUser)) {
+                return nothing;
+            }
+
+            const { base } = globalAK().api;
+
+            return html`<a
+                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                    href="${base}if/admin/"
+                    slot="extra"
+                >
+                    ${msg("Admin interface")}
+                </a>
+                <a
+                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
+                    href="${base}if/admin/"
+                    slot="extra"
+                >
+                    ${msg("Admin")}
+                </a>`;
+        });
+    }
+
+    protected render() {
         const { currentUser } = this;
 
-        if (!currentUser) {
-            this.#debug("waiting for user session to be available");
+        if (!currentUser || isGuest(currentUser)) {
+            this.#debug("Waiting for user session to be available", this.session, currentUser);
 
-            return html`<slot></slot>`;
+            return html`<slot name="placeholder"></slot>`;
         }
 
         if (isGuest(currentUser)) {
@@ -137,7 +162,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                 </header>
                 <div class="pf-c-page__drawer">
                     <div
-                        class="pf-c-drawer ${this.notificationDrawerOpen || this.apiDrawerOpen
+                        class="pf-c-drawer ${this.drawer.notifications || this.drawer.api
                             ? "pf-m-expanded"
                             : "pf-m-collapsed"}"
                     >
@@ -154,19 +179,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
                                     </ak-router-outlet>
                                 </div>
                             </div>
-                            <ak-notification-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this
-                                    .notificationDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.notificationDrawerOpen}
-                            ></ak-notification-drawer>
-                            <ak-api-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                    ? ""
-                                    : "display-none"}"
-                                ?hidden=${!this.apiDrawerOpen}
-                            ></ak-api-drawer>
+                            ${renderNotificationDrawerPanel(this.drawer)}
                         </div>
                     </div>
                 </div>
@@ -174,90 +187,8 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
     }
 }
 
-//  ___         _
-// | _ )_  _ __(_)_ _  ___ ______
-// | _ \ || (_-< | ' \/ -_|_-<_-<
-// |___/\_,_/__/_|_||_\___/__/__/
-//
-//
-@customElement("ak-interface-user")
-export class UserInterface extends WithNotifications(
-    WithBrandConfig(WithSession(AuthenticatedInterface)),
-) {
-    public static shadowRootOptions = { ...AKElement.shadowRootOptions, delegatesFocus: true };
-
-    public override tabIndex = -1;
-
-    #debug = createDebugLogger("user-interface");
-
-    @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
-
-    @state()
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    constructor() {
-        configureSentry();
-
-        super();
-
-        WebsocketClient.connect();
-
-        this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
-        this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
-    }
-
-    async connectedCallback() {
-        super.connectedCallback();
-
-        window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
-        window.addEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-
-        window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
-        window.removeEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
-
-        WebsocketClient.close();
-    }
-
-    toggleNotificationDrawer() {
-        this.notificationDrawerOpen = !this.notificationDrawerOpen;
-        updateURLParams({
-            notificationDrawerOpen: this.notificationDrawerOpen,
-        });
-    }
-
-    toggleApiDrawer() {
-        this.apiDrawerOpen = !this.apiDrawerOpen;
-        updateURLParams({
-            apiDrawerOpen: this.apiDrawerOpen,
-        });
-    }
-
-    render() {
-        const { currentUser } = this;
-
-        if (!currentUser || isGuest(currentUser)) {
-            this.#debug("Waiting for user session to be available", this.session, currentUser);
-
-            return html`<slot></slot>`;
-        }
-
-        return html`<ak-interface-user-presentation
-            ?notificationDrawerOpen=${this.notificationDrawerOpen}
-            ?apiDrawerOpen=${this.apiDrawerOpen}
-        >
-            <slot name="placeholder"></slot>
-        </ak-interface-user-presentation>`;
-    }
-}
-
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-interface-user-presentation": UserInterfacePresentation;
         "ak-interface-user": UserInterface;
     }
 }

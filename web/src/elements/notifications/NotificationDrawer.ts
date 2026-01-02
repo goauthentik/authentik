@@ -2,7 +2,6 @@ import "#elements/EmptyState";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { isAPIResultReady } from "#common/api/responses";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { actionToLabel, severityToLevel } from "#common/labels";
@@ -11,6 +10,7 @@ import { formatElapsedTime } from "#common/temporal";
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { Notification } from "@goauthentik/api";
@@ -178,14 +178,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                         </div>
                         <div class="pf-c-notification-drawer__header-action-close">
                             <button
-                                @click=${() => {
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                }}
+                                @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
                                 aria-label=${msg("Close")}

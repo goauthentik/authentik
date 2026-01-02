@@ -2,8 +2,6 @@ import "#admin/AdminInterface/AboutModal";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
-import "#elements/notifications/APIDrawer";
-import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
@@ -15,7 +13,6 @@ import {
 } from "./AdminSidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
@@ -24,7 +21,13 @@ import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import {
+    DrawerState,
+    persistDrawerParams,
+    readDrawerParams,
+    renderNotificationDrawerPanel,
+} from "#elements/notifications/utils";
 
 import { PageNavMenuToggle } from "#components/ak-page-navbar";
 
@@ -35,14 +38,13 @@ import { ROUTES } from "#admin/Routes";
 import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
@@ -52,13 +54,20 @@ if (process.env.NODE_ENV === "development") {
 export class AdminInterface extends WithCapabilitiesConfig(
     WithNotifications(WithSession(AuthenticatedInterface)),
 ) {
+    //#region Styles
+
+    public static readonly styles: CSSResult[] = [
+        // ---
+        PFPage,
+        PFButton,
+        PFDrawer,
+        PFNav,
+        Styles,
+    ];
+
+    //#endregion
+
     //#region Properties
-
-    @property({ type: Boolean })
-    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
-
-    @property({ type: Boolean })
-    public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     @query("ak-about-modal")
     public aboutModal?: AboutModal;
@@ -77,19 +86,13 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     //#endregion
 
-    //#region Styles
+    @state()
+    protected drawer: DrawerState = readDrawerParams();
 
-    static styles: CSSResult[] = [
-        // ---
-        PFBase,
-        PFPage,
-        PFButton,
-        PFDrawer,
-        PFNav,
-        Styles,
-    ];
-
-    //#endregion
+    #drawerListener = (event: AKDrawerChangeEvent) => {
+        this.drawer = event.drawer;
+        persistDrawerParams(event.drawer);
+    };
 
     //#region Lifecycle
 
@@ -102,6 +105,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
+
         this.addEventListener(PageNavMenuToggle.eventName, this.#onPageNavMenuEvent, {
             passive: true,
         });
@@ -110,19 +114,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
     public connectedCallback() {
         super.connectedCallback();
 
-        window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
-            this.notificationDrawerOpen = !this.notificationDrawerOpen;
-            updateURLParams({
-                notificationDrawerOpen: this.notificationDrawerOpen,
-            });
-        });
-
-        window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
-            this.apiDrawerOpen = !this.apiDrawerOpen;
-            updateURLParams({
-                apiDrawerOpen: this.apiDrawerOpen,
-            });
-        });
+        window.addEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
 
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
@@ -131,6 +123,9 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
+
+        window.removeEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
+
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
         WebsocketClient.close();
@@ -157,8 +152,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
             "pf-m-collapsed": !this.sidebarOpen,
         };
 
-        const openDrawerCount =
-            (this.notificationDrawerOpen ? 1 : 0) + (this.apiDrawerOpen ? 1 : 0);
+        const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0);
         const drawerClasses = {
             "pf-m-expanded": openDrawerCount !== 0,
             "pf-m-collapsed": openDrawerCount === 0,
@@ -193,23 +187,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                                 </ak-router-outlet>
                             </div>
                         </div>
-                        <div
-                            class=${classMap({
-                                "pf-c-drawer__panel": true,
-                                "pf-m-width-33": openDrawerCount === 1,
-                                "pf-m-width-66": openDrawerCount === 2,
-                                "display-none": openDrawerCount === 0,
-                            })}
-                        >
-                            <ak-notification-drawer
-                                class="pf-c-drawer__panel_content"
-                                ?hidden=${!this.notificationDrawerOpen}
-                            ></ak-notification-drawer>
-                            <ak-api-drawer
-                                class="pf-c-drawer__panel_content"
-                                ?hidden=${!this.apiDrawerOpen}
-                            ></ak-api-drawer>
-                        </div>
+                        ${renderNotificationDrawerPanel(this.drawer)}
                         <ak-about-modal></ak-about-modal>
                     </div>
                 </div>

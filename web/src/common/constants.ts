@@ -30,8 +30,6 @@ export const ROUTE_SEPARATOR = ";";
 //#region Events
 
 export const EVENT_REFRESH = "ak-refresh";
-export const EVENT_NOTIFICATION_DRAWER_TOGGLE = "ak-notification-toggle";
-export const EVENT_API_DRAWER_TOGGLE = "ak-api-drawer-toggle";
 export const EVENT_FLOW_INSPECTOR_TOGGLE = "ak-flow-inspector-toggle";
 export const EVENT_FLOW_ADVANCE = "ak-flow-advance";
 export const EVENT_LOCALE_REQUEST = "ak-locale-request";

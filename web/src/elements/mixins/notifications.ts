@@ -1,11 +1,11 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIResult, isAPIResultReady } from "#common/api/responses";
-import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { createDebugLogger } from "#common/logger";
 import { MessageLevel } from "#common/messages";
 
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { createMixin } from "#elements/types";
 
 import {
@@ -162,14 +162,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
 
                         this.requestUpdate?.();
                     })
-                    .then(() => {
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    });
+                    .then(AKDrawerChangeEvent.dispatchCloseNotifications);
             }
         }
 

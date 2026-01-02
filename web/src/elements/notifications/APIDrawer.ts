@@ -1,10 +1,11 @@
 import "#elements/timestamp/ak-timestamp";
 
 import { RequestInfo } from "#common/api/middleware";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "#common/constants";
+import { EVENT_REQUEST_POST } from "#common/constants";
 import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -111,14 +112,7 @@ export class APIDrawer extends AKElement {
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
                             <button
-                                @click=${() => {
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                }}
+                                @click=${AKDrawerChangeEvent.dispatchAPIToggle}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
                                 aria-label=${msg("Close API drawer")}
