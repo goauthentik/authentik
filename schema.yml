@@ -34035,7 +34035,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 16
           minimum: 0
       required:
       - component
@@ -34066,7 +34066,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 16
           minimum: 0
       required:
       - name
@@ -45771,7 +45771,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 16
           minimum: 0
     PatchedAuthenticatorTOTPStageRequest:
       type: object

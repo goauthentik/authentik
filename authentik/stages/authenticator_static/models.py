@@ -4,6 +4,7 @@ from base64 import b32encode
 from os import urandom
 
 from django.conf import settings
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
@@ -19,7 +20,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup static token based authentication for the user."""
 
     token_count = models.PositiveIntegerField(default=6)
-    token_length = models.PositiveIntegerField(default=12)
+    token_length = models.PositiveIntegerField(default=12, validators=[MaxValueValidator(16)])
 
     @property
     def serializer(self) -> type[BaseSerializer]:
