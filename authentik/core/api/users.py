@@ -80,6 +80,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
+from authentik.enterprise.api import enterprise_action
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -949,6 +950,47 @@ class UserViewSet(
                 triggered_by=request.user.username,
             ).from_http(request, user)
 
+    def _trigger_account_lockdown_self(
+        self,
+        request: Request,
+        user: User,
+        reason: str,
+    ) -> None:
+        """Helper method to trigger self-service account lockdown.
+
+        Similar to _trigger_account_lockdown but creates a different event
+        for self-service lockdown (user locking their own account).
+        """
+        from secrets import token_urlsafe
+
+        with atomic():
+            user.is_active = False
+            new_password = token_urlsafe(32)
+            user.set_password(new_password)
+            user.save()
+
+            # Delete all sessions
+            Session.objects.filter(authenticatedsession__user=user).delete()
+
+            # Revoke all API and app password tokens
+            Token.objects.filter(user=user).delete()
+
+            # Revoke OAuth2 tokens
+            AccessToken.objects.filter(user=user).delete()
+            RefreshToken.objects.filter(user=user).delete()
+
+            LOGGER.info(
+                "Self-service account lockdown triggered",
+                user=user.username,
+            )
+
+            # Create event with self-service action
+            Event.new(
+                EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
+                reason=reason,
+                affected_user=user.username,
+            ).from_http(request, user)
+
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
         request=UserAccountLockdownSerializer,
@@ -961,6 +1003,7 @@ class UserViewSet(
     )
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     @validate(UserAccountLockdownSerializer)
+    @enterprise_action
     def account_lockdown(
         self, request: Request, pk: int, body: UserAccountLockdownSerializer
     ) -> Response:
@@ -1015,6 +1058,7 @@ class UserViewSet(
         url_path="account_lockdown_bulk",
     )
     @validate(UserBulkAccountLockdownSerializer)
+    @enterprise_action
     def account_lockdown_bulk(
         self, request: Request, body: UserBulkAccountLockdownSerializer
     ) -> Response:
@@ -1043,6 +1087,56 @@ class UserViewSet(
             processed.append(user.username)
 
         return Response({"processed": processed, "skipped": skipped})
+
+    @extend_schema(
+        request=UserAccountLockdownSerializer,
+        responses={
+            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
+        },
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        url_path="account_lockdown_self",
+    )
+    @validate(UserAccountLockdownSerializer)
+    @enterprise_action
+    def account_lockdown_self(
+        self, request: Request, body: UserAccountLockdownSerializer
+    ) -> Response:
+        """Trigger account lockdown for the current user (self-service).
+
+        This allows users to lock down their own account in case of a security incident.
+        """
+        if not request.tenant.account_lockdown_enabled:
+            LOGGER.debug("Account lockdown feature is disabled")
+            return Response(
+                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
+                status=400,
+            )
+
+        user: User = request.user
+        reason = body.validated_data["reason"]
+
+        # For self-lockdown, we don't need to validate target - user is locking themselves
+        # But we should prevent internal service accounts from locking themselves
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            LOGGER.debug(
+                "Internal service account attempted self-lockdown",
+                user=user.username,
+            )
+            return Response(
+                data={
+                    "non_field_errors": [_("Internal service accounts cannot use this feature.")]
+                },
+                status=400,
+            )
+
+        self._trigger_account_lockdown_self(request, user, reason)
+
+        return Response(status=204)
 
     @extend_schema(
         responses={

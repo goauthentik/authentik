@@ -116,10 +116,23 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
                 <div class="pf-c-alert__description">
                     <p>${msg("This action will immediately:")}</p>
                     <ul class="pf-c-list">
-                        <li>${msg("Deactivate the user account")}</li>
-                        <li>${msg("Reset the password to a random value")}</li>
-                        <li>${msg("Terminate all active sessions")}</li>
-                        <li>${msg("Revoke all API tokens and OAuth tokens")}</li>
+                        <li>
+                            ${msg("Invalidate the user's password")}
+                            <ul class="pf-c-list">
+                                <li>
+                                    ${msg(
+                                        "The password will be set to a random value and cannot be recovered",
+                                    )}
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            ${msg("Deactivate the user account")}
+                            <ul class="pf-c-list">
+                                <li>${msg("Terminate all active authentik sessions")}</li>
+                                <li>${msg("Revoke all API tokens and OAuth tokens")}</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
