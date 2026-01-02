@@ -53,11 +53,14 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
 
     if not RefreshOtherFlowsAfterAuthentication().get():
         return
+    LOGGER.debug("Sending authenticated signal")
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")
     if device_cookie:
+        group = build_device_group(device_cookie)
+        LOGGER.debug("Sending signal to group", group=group)
         async_to_sync(layer.group_send)(
-            build_device_group(device_cookie),
+            group,
             {"type": "event.session.authenticated"},
         )
 
