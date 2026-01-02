@@ -28,7 +28,13 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     objects: T[] = [];
 
     @property({ attribute: false })
-    metadata!: (item: T) => BulkDeleteMetadata;
+    metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
+        const metadata: BulkDeleteMetadata = [];
+        if ("name" in item) {
+            metadata.push({ key: msg("Name"), value: item.name as string });
+        }
+        return metadata;
+    };
 
     @property({ attribute: false })
     usedBy?: (item: T) => Promise<UsedBy[]>;
@@ -52,9 +58,9 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
             results: this.objects,
         });
     }
+
     protected override rowLabel(item: T): string | null {
         const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
-
         return name || null;
     }
 
