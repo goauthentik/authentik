@@ -4026,9 +4026,6 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
   <source>Click to change value</source>
   <target>Kliknij, aby zmienić wartość</target>
 </trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
-</trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
 </trans-unit>
@@ -4093,19 +4090,12 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
   <source>Expires on</source>
   <target>Wygasa dnia</target>
 </trans-unit>
-<trans-unit id="sb7fe62e7073eb6c9">
-  <source>Token name...</source>
-</trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
   <target>Wygasa</target>
-</trans-unit>
-<trans-unit id="safcc54b2aedb1a17">
-  <source>If this is selected, the token will expire. Upon expiration, the token will be rotated.</source>
-  <target>Jeśli ta opcja zostanie wybrana, token wygaśnie. Po wygaśnięciu token będzie podlegał rotacji.</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -4125,9 +4115,6 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
-</trans-unit>
-<trans-unit id="sc522b30adb9ff289">
-  <source>Update Enrollment token</source>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -9471,6 +9458,24 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s3a46b5964b3ecfac">
   <source>View details...</source>
+</trans-unit>
+<trans-unit id="s6cbf6cd401ea3336">
+  <source>Type a connector name...</source>
+</trans-unit>
+<trans-unit id="s04be2edfb0d2218a">
+  <source>Type a name for the token...</source>
+</trans-unit>
+<trans-unit id="s84e29a714db544e9">
+  <source>Update Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s5a7055a44dc83b1e">
+  <source>Type a unique identifier...</source>
+</trans-unit>
+<trans-unit id="sdfe787aeeebbfbf1">
+  <source>Type a token description...</source>
+</trans-unit>
+<trans-unit id="s434805f916fbf657">
+  <source>Not allowed to change this field. Please contact your administrator.</source>
 </trans-unit>
 </body>
 </file>
