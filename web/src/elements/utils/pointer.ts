@@ -1,5 +1,5 @@
 const InteractiveElementsQuery =
-    "[href],input,button,[role='button'],select,[tabindex]:not([tabindex='-1'])";
+    "[href],input,button,i,[role='button'],select,[tabindex]:not([tabindex='-1'])";
 
 /**
  * Whether a pointer event is targeting the element itself or one of its children.
