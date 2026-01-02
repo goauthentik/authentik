@@ -1,9 +1,9 @@
 """Test Users Account Lockdown API"""
 
 from json import loads
+from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents, UserTypes
@@ -12,7 +12,14 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.tenants.models import Tenant
 
+# Patch for enterprise license check
+patch_license = patch(
+    "authentik.enterprise.models.LicenseUsageStatus.is_valid",
+    MagicMock(return_value=True),
+)
 
+
+@patch_license
 class TestUsersAccountLockdownAPI(APITestCase):
     """Test Users Account Lockdown API"""
 
@@ -123,9 +130,47 @@ class TestUsersAccountLockdownAPI(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         body = loads(response.content)
+        self.assertIn("Account lockdown feature is disabled", body["non_field_errors"][0])
+
+    def test_account_lockdown_reason_max_length(self):
+        """Test that reason field has max length validation"""
+        self.client.force_login(self.admin)
+
+        # Create a reason that exceeds 500 characters
+        long_reason = "x" * 501
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            data={"reason": long_reason},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content)
         self.assertIn("reason", body)
 
+    def test_account_lockdown_unauthenticated(self):
+        """Test account lockdown requires authentication"""
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            data={"reason": "Test"},
+        )
 
+        self.assertEqual(response.status_code, 403)
+
+    def test_account_lockdown_non_admin(self):
+        """Test account lockdown requires admin permissions"""
+        regular_user = create_test_user()
+        self.client.force_login(regular_user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            data={"reason": "Test"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+
+@patch_license
 class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
     """Test Users Account Lockdown Self-Service API"""
 
@@ -276,44 +321,8 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_account_lockdown_reason_max_length(self):
-        """Test that reason field has max length validation"""
-        self.client.force_login(self.admin)
 
-        # Create a reason that exceeds 500 characters
-        long_reason = "x" * 501
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": long_reason},
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("reason", body)
-
-    def test_account_lockdown_unauthenticated(self):
-        """Test account lockdown requires authentication"""
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Test"},
-        )
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_account_lockdown_non_admin(self):
-        """Test account lockdown requires admin permissions"""
-        regular_user = create_test_user()
-        self.client.force_login(regular_user)
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={"reason": "Test"},
-        )
-
-        self.assertEqual(response.status_code, 403)
-
-
+@patch_license
 class TestUsersAccountLockdownBulkAPI(APITestCase):
     """Test Users Account Lockdown Bulk API"""
 
