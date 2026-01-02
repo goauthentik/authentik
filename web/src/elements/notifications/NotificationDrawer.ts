@@ -119,9 +119,9 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
-            ${code
+            ${code && item.event?.context
                 ? html`<pre class="pf-c-notification-drawer__list-item-description">
-${item.body}</pre
+${JSON.stringify(item.event.context, null, 2)}</pre
                   >`
                 : html`<p class="pf-c-notification-drawer__list-item-description">${item.body}</p>`}
             <small class="pf-c-notification-drawer__list-item-timestamp"
