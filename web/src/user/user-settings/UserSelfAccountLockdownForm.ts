@@ -1,23 +1,18 @@
-import "#elements/forms/HorizontalFormElement";
-
-import { MessageLevel } from "#common/messages";
-
-import { APIMessage } from "#elements/messages/Message";
-
 import {
-    AccountLockdownFormBase,
     AccountLockdownRequest,
+    SingleUserAccountLockdownForm,
 } from "#admin/users/AccountLockdownFormBase";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
+/**
+ * Self-service account lockdown form for users to lock their own account.
+ */
 @customElement("ak-user-self-account-lockdown-form")
-export class UserSelfAccountLockdownForm extends AccountLockdownFormBase<AccountLockdownRequest> {
-    @property({ type: String })
-    public username?: string;
-
+export class UserSelfAccountLockdownForm extends SingleUserAccountLockdownForm {
+    // Override messages for first-person context
     protected override get warningTitle(): string {
         return msg("You are about to lock your account");
     }
@@ -30,28 +25,22 @@ export class UserSelfAccountLockdownForm extends AccountLockdownFormBase<Account
         return msg("Describe why you are locking your account...");
     }
 
-    protected override formatAPISuccessMessage(): APIMessage | null {
-        return {
-            level: MessageLevel.success,
-            message: msg(str`Account lockdown triggered successfully.`),
-            description: msg("Your account has been secured. You will be logged out."),
-        };
+    protected override get successDescription(): string {
+        return msg("Your account has been secured. You will be logged out.");
+    }
+
+    protected override get affectedUserLabel(): string {
+        return msg("Account");
+    }
+
+    protected override get usernameDisplay(): string | TemplateResult {
+        return html`${this.username} (${msg("your account")})`;
     }
 
     async send(data: AccountLockdownRequest): Promise<void> {
         await this.coreApi.coreUsersAccountLockdownSelfCreate({
             userAccountLockdownRequest: data,
         });
-    }
-
-    protected renderAffectedUsers(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Account")}>
-                <div class="pf-c-form-control-static">
-                    ${this.username} (${msg("your account")})
-                </div>
-            </ak-form-element-horizontal>
-        `;
     }
 }
 

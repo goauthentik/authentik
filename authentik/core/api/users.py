@@ -903,11 +903,26 @@ class UserViewSet(
 
         return None
 
+    def _check_lockdown_enabled(self, request: Request) -> Response | None:
+        """Check if account lockdown feature is enabled.
+
+        Returns a 400 Response if disabled, None if enabled.
+        """
+        if not request.tenant.account_lockdown_enabled:
+            LOGGER.debug("Account lockdown feature is disabled")
+            return Response(
+                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
+                status=400,
+            )
+        return None
+
     def _trigger_account_lockdown(
         self,
         request: Request,
         user: User,
         reason: str,
+        *,
+        self_service: bool = False,
     ) -> None:
         """Helper method to trigger account lockdown for a single user.
 
@@ -917,6 +932,12 @@ class UserViewSet(
         3. Terminates all active sessions
         4. Revokes all tokens (API, OAuth, app passwords)
         5. Creates an event that can trigger notifications via NotificationRules
+
+        Args:
+            request: The HTTP request
+            user: The user to lock down
+            reason: The reason for the lockdown
+            self_service: If True, creates a self-service event and omits triggered_by
         """
         from secrets import token_urlsafe
 
@@ -936,60 +957,28 @@ class UserViewSet(
             AccessToken.objects.filter(user=user).delete()
             RefreshToken.objects.filter(user=user).delete()
 
-            LOGGER.info(
-                "Account lockdown triggered",
-                user=user.username,
-                triggered_by=request.user.username,
-            )
-
-            # Create event
-            Event.new(
-                EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
-                reason=reason,
-                affected_user=user.username,
-                triggered_by=request.user.username,
-            ).from_http(request, user)
-
-    def _trigger_account_lockdown_self(
-        self,
-        request: Request,
-        user: User,
-        reason: str,
-    ) -> None:
-        """Helper method to trigger self-service account lockdown.
-
-        Similar to _trigger_account_lockdown but creates a different event
-        for self-service lockdown (user locking their own account).
-        """
-        from secrets import token_urlsafe
-
-        with atomic():
-            user.is_active = False
-            new_password = token_urlsafe(32)
-            user.set_password(new_password)
-            user.save()
-
-            # Delete all sessions
-            Session.objects.filter(authenticatedsession__user=user).delete()
-
-            # Revoke all API and app password tokens
-            Token.objects.filter(user=user).delete()
-
-            # Revoke OAuth2 tokens
-            AccessToken.objects.filter(user=user).delete()
-            RefreshToken.objects.filter(user=user).delete()
-
-            LOGGER.info(
-                "Self-service account lockdown triggered",
-                user=user.username,
-            )
-
-            # Create event with self-service action
-            Event.new(
-                EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
-                reason=reason,
-                affected_user=user.username,
-            ).from_http(request, user)
+            if self_service:
+                LOGGER.info(
+                    "Self-service account lockdown triggered",
+                    user=user.username,
+                )
+                Event.new(
+                    EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
+                    reason=reason,
+                    affected_user=user.username,
+                ).from_http(request, user)
+            else:
+                LOGGER.info(
+                    "Account lockdown triggered",
+                    user=user.username,
+                    triggered_by=request.user.username,
+                )
+                Event.new(
+                    EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+                    reason=reason,
+                    affected_user=user.username,
+                    triggered_by=request.user.username,
+                ).from_http(request, user)
 
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
@@ -1008,19 +997,13 @@ class UserViewSet(
         self, request: Request, pk: int, body: UserAccountLockdownSerializer
     ) -> Response:
         """Trigger account lockdown for a user"""
-        if not request.tenant.account_lockdown_enabled:
-            LOGGER.debug("Account lockdown feature is disabled")
-            return Response(
-                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
-                status=400,
-            )
+        if disabled_response := self._check_lockdown_enabled(request):
+            return disabled_response
 
         user: User = self.get_object()
         reason = body.validated_data["reason"]
 
-        # Validate target user
-        validation_error = self._validate_lockdown_target(request, user)
-        if validation_error:
+        if validation_error := self._validate_lockdown_target(request, user):
             LOGGER.debug(
                 "Account lockdown validation failed",
                 user=user.username,
@@ -1063,12 +1046,8 @@ class UserViewSet(
         self, request: Request, body: UserBulkAccountLockdownSerializer
     ) -> Response:
         """Trigger account lockdown for multiple users"""
-        if not request.tenant.account_lockdown_enabled:
-            LOGGER.debug("Account lockdown feature is disabled")
-            return Response(
-                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
-                status=400,
-            )
+        if disabled_response := self._check_lockdown_enabled(request):
+            return disabled_response
 
         users = body.validated_data["users"]
         reason = body.validated_data["reason"]
@@ -1077,9 +1056,7 @@ class UserViewSet(
         skipped = []
 
         for user in users:
-            # Validate target user
-            validation_error = self._validate_lockdown_target(request, user)
-            if validation_error:
+            if validation_error := self._validate_lockdown_target(request, user):
                 skipped.append({"username": user.username, "reason": str(validation_error)})
                 continue
 
@@ -1110,23 +1087,15 @@ class UserViewSet(
 
         This allows users to lock down their own account in case of a security incident.
         """
-        if not request.tenant.account_lockdown_enabled:
-            LOGGER.debug("Account lockdown feature is disabled")
-            return Response(
-                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
-                status=400,
-            )
+        if disabled_response := self._check_lockdown_enabled(request):
+            return disabled_response
 
         user: User = request.user
         reason = body.validated_data["reason"]
 
-        # For self-lockdown, we don't need to validate target - user is locking themselves
-        # But we should prevent internal service accounts from locking themselves
+        # Prevent internal service accounts from locking themselves
         if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            LOGGER.debug(
-                "Internal service account attempted self-lockdown",
-                user=user.username,
-            )
+            LOGGER.debug("Internal service account attempted self-lockdown", user=user.username)
             return Response(
                 data={
                     "non_field_errors": [_("Internal service accounts cannot use this feature.")]
@@ -1134,7 +1103,7 @@ class UserViewSet(
                 status=400,
             )
 
-        self._trigger_account_lockdown_self(request, user, reason)
+        self._trigger_account_lockdown(request, user, reason, self_service=True)
 
         return Response(status=204)
 
