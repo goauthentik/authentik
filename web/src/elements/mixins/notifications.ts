@@ -3,19 +3,43 @@ import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { createDebugLogger } from "#common/logger";
 import { MessageLevel } from "#common/messages";
-import { isGuest } from "#common/users";
 
+import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { showMessage } from "#elements/messages/MessageContainer";
-import { kAKSession, SessionContext } from "#elements/mixins/session";
 import { createMixin } from "#elements/types";
 
-import { EventsApi, type Notification, SessionUser } from "@goauthentik/api";
+import {
+    EventsApi,
+    type Notification,
+    PaginatedNotificationList,
+    SessionUser,
+} from "@goauthentik/api";
 
 import { consume, createContext } from "@lit/context";
 import { msg } from "@lit/localize";
+import { property } from "lit/decorators.js";
 
-export type NotificationsMap = Map<Notification["pk"], Notification>;
-export const kAKNotifications = Symbol("kAKNotifications");
+export function createPaginatedNotificationListFrom(
+    input: Iterable<Notification> = [],
+): PaginatedNotificationList {
+    const results = Array.from(input);
+
+    return {
+        pagination: {
+            count: results.length,
+            next: 0,
+            previous: 0,
+            current: 0,
+            totalPages: 1,
+            startIndex: 0,
+            endIndex: 0,
+        },
+        results,
+        autocomplete: [],
+    };
+}
+
+export type NotificationsContextValue = APIResult<Readonly<PaginatedNotificationList>>;
 
 /**
  * The Lit context for the user's notifications.
@@ -24,8 +48,8 @@ export const kAKNotifications = Symbol("kAKNotifications");
  * @see {@linkcode SessionMixin}
  * @see {@linkcode WithSession}
  */
-export const NotificationsContext = createContext<APIResult<NotificationsMap>>(
-    Symbol.for("authentik-notifications-context"),
+export const NotificationsContext = createContext<NotificationsContextValue>(
+    Symbol("authentik-notifications-context"),
 );
 
 export type NotificationsContext = typeof NotificationsContext;
@@ -39,14 +63,18 @@ export interface NotificationsMixin {
     /**
      * The current user's notifications.
      */
-    readonly notifications: APIResult<Readonly<NotificationsMap>>;
+    readonly notifications: APIResult<Readonly<PaginatedNotificationList>>;
 
+    /**
+     * The total count of unread notifications, including those not loaded.
+     */
+    readonly notificationCount: number;
     /**
      * Refresh the current user's notifications.
      *
      * @param requestInit Optional parameters to pass to the fetch call.
      */
-    refreshNotifications(requestInit?: RequestInit): Promise<NotificationsMap>;
+    refreshNotifications(): Promise<void>;
 
     /**
      * Mark a notification as read.
@@ -54,10 +82,7 @@ export interface NotificationsMixin {
      * @param notificationPk Primary key of the notification to mark as read.
      * @param requestInit Optional parameters to pass to the fetch call.
      */
-    markAsRead(
-        notificationPk: Notification["pk"],
-        requestInit?: RequestInit,
-    ): Promise<NotificationsMap>;
+    markAsRead(notificationPk: Notification["pk"], requestInit?: RequestInit): Promise<void>;
 
     /**
      * Clear all notifications.
@@ -78,101 +103,35 @@ export const WithNotifications = createMixin<NotificationsMixin>(
     }) => {
         abstract class NotificationsProvider extends SuperClass implements NotificationsMixin {
             #log = createDebugLogger("notifications", this);
-            #refreshAbortController: AbortController | null = null;
+            #contextController = ContextControllerRegistry.get(NotificationsContext);
 
-            @consume({
-                context: SessionContext,
-                subscribe,
-            })
-            public [kAKSession]!: APIResult<SessionUser>;
+            public session!: APIResult<Readonly<SessionUser>>;
 
-            // @consume({
-            //     context: NotificationsContext,
-            //     subscribe,
-            // })
-            // public notifications!: APIResult<Readonly<NotificationsMap>>;
+            public get notificationCount(): number {
+                if (!isAPIResultReady(this.notifications)) {
+                    return 0;
+                }
 
-            #data: APIResult<NotificationsMap> = {
-                loading: true,
-                error: null,
-            };
+                return this.notifications.pagination.count;
+            }
 
             @consume({
                 context: NotificationsContext,
                 subscribe,
             })
-            public set notifications(nextResult: APIResult<NotificationsMap>) {
-                const previousValue = this.#data;
-
-                this.#data = nextResult;
-
-                this.requestUpdate("notifications", previousValue);
-            }
-
-            public get notifications(): APIResult<NotificationsMap> {
-                return this.#data;
-            }
+            @property({ attribute: false })
+            public notifications!: APIResult<Readonly<PaginatedNotificationList>>;
 
             //#region Methods
 
-            public refreshNotifications(requestInit?: RequestInit): Promise<NotificationsMap> {
-                const session = this[kAKSession];
-
-                console.log(">>> session in refreshNotifications", session);
-                this.#refreshAbortController?.abort();
-
-                if (!isAPIResultReady(session)) {
-                    this.#log("Session not ready, skipping notifications refresh");
-                    return Promise.resolve(new Map());
-                }
-
-                if (session.error) {
-                    this.#log("Session error, skipping notifications refresh");
-                    return Promise.resolve(new Map());
-                }
-
-                const currentNotifications = this.notifications;
-
-                if (!session.user || isGuest(session.user)) {
-                    this.#log("No current user, skipping");
-
-                    this.notifications = new Map();
-                    this.requestUpdate("notifications", currentNotifications);
-
-                    return Promise.resolve(this.notifications);
-                }
-
-                this.#log("Fetching notifications...");
-
-                this.#refreshAbortController = new AbortController();
-
-                return new EventsApi(DEFAULT_CONFIG)
-                    .eventsNotificationsList(
-                        {
-                            seen: false,
-                            ordering: "-created",
-                            user: session.user.pk,
-                        },
-                        {
-                            signal: this.#refreshAbortController.signal,
-                            ...requestInit,
-                        },
-                    )
-                    .then((data) => {
-                        this.notifications = new Map(
-                            data.results.map((notification) => [notification.pk, notification]),
-                        );
-
-                        // this.requestUpdate("notifications", currentNotifications);
-
-                        return this.notifications;
-                    });
+            public async refreshNotifications(): Promise<void> {
+                await this.#contextController?.refresh();
             }
 
             public markAsRead(
                 notificationID: Notification["pk"],
                 requestInit?: RequestInit,
-            ): Promise<NotificationsMap> {
+            ): Promise<void> {
                 this.#log(`Marking notification ${notificationID} as read...`);
 
                 return new EventsApi(DEFAULT_CONFIG)
@@ -197,7 +156,11 @@ export const WithNotifications = createMixin<NotificationsMixin>(
                             message: msg("Successfully cleared notifications"),
                         });
 
-                        this.notifications = new Map();
+                        this.#contextController?.context.setValue(
+                            createPaginatedNotificationListFrom([]),
+                        );
+
+                        this.requestUpdate?.();
                     })
                     .then(() => {
                         this.dispatchEvent(

@@ -11,6 +11,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { globalAK } from "#common/global";
+import { createDebugLogger } from "#common/logger";
 import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
@@ -71,6 +72,8 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
         Styles,
     ];
 
+    #debug = createDebugLogger("user-interface-presentation");
+
     @property({ type: Boolean, reflect: true })
     notificationDrawerOpen = false;
 
@@ -102,7 +105,7 @@ class UserInterfacePresentation extends WithBrandConfig(WithSession(AKElement)) 
         const { currentUser } = this;
 
         if (!currentUser) {
-            console.debug(`authentik/user/UserInterface: waiting for user session to be available`);
+            this.#debug("waiting for user session to be available");
 
             return html`<slot></slot>`;
         }
@@ -185,6 +188,8 @@ export class UserInterface extends WithNotifications(
 
     public override tabIndex = -1;
 
+    #debug = createDebugLogger("user-interface");
+
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -236,7 +241,7 @@ export class UserInterface extends WithNotifications(
         const { currentUser } = this;
 
         if (!currentUser || isGuest(currentUser)) {
-            console.debug(`authentik/user/UserInterface: waiting for user session to be available`);
+            this.#debug("Waiting for user session to be available", this.session, currentUser);
 
             return html`<slot></slot>`;
         }

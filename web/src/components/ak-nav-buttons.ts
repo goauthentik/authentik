@@ -4,7 +4,6 @@ import "#elements/buttons/ActionButton/ak-action-button";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { isAPIResultReady } from "#common/api/responses";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName } from "#common/users";
@@ -86,8 +85,6 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
             );
         };
 
-        const unreadCount = isAPIResultReady(this.notifications) ? this.notifications.size : 0;
-
         return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
             <button
                 class="pf-c-button pf-m-plain"
@@ -95,11 +92,13 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 aria-label="${msg("Unread notifications")}"
                 @click=${onClick}
             >
-                <span class="pf-c-notification-badge ${unreadCount ? "pf-m-unread" : ""}">
+                <span
+                    class="pf-c-notification-badge ${this.notificationCount ? "pf-m-unread" : ""}"
+                >
                     <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
                         <i class="fas fa-bell" aria-hidden="true"></i>
                     </pf-tooltip>
-                    <span class="pf-c-notification-badge__count">${unreadCount}</span>
+                    <span class="pf-c-notification-badge__count">${this.notificationCount}</span>
                 </span>
             </button>
         </div> `;

@@ -13,14 +13,14 @@ import { ContextProvider } from "@lit/context";
 export class VersionContextController extends ReactiveContextController<Version> {
     protected static override logPrefix = "version";
 
-    #host: ReactiveElementHost<SessionMixin & VersionMixin>;
-    #context: ContextProvider<VersionContext>;
+    public host: ReactiveElementHost<SessionMixin & VersionMixin>;
+    public context: ContextProvider<VersionContext>;
 
     constructor(host: ReactiveElementHost<SessionMixin & VersionMixin>, initialValue?: Version) {
         super();
 
-        this.#host = host;
-        this.#context = new ContextProvider(this.#host, {
+        this.host = host;
+        this.context = new ContextProvider(this.host, {
             context: VersionContext,
             initialValue,
         });
@@ -31,14 +31,14 @@ export class VersionContextController extends ReactiveContextController<Version>
     }
 
     protected doRefresh(version: Version) {
-        this.#context.setValue(version);
-        this.#host.version = version;
+        this.context.setValue(version);
+        this.host.version = version;
     }
 
     public hostUpdate() {
-        const { currentUser } = this.#host;
+        const { currentUser } = this.host;
 
-        if (currentUser && !isGuest(currentUser) && !this.#host.version && !this.abortController) {
+        if (currentUser && !isGuest(currentUser) && !this.host.version && !this.abortController) {
             this.refresh();
 
             return;

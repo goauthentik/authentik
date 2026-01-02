@@ -1,5 +1,5 @@
-import { APIResult, isAPIResultReady } from "#common/api/responses";
-import { createSyntheticGenericError } from "#common/errors/network";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { isAPIResultReady } from "#common/api/responses";
 import { actionToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
 import { isGuest } from "#common/users";
@@ -8,62 +8,80 @@ import { AKNotificationEvent } from "#common/ws/events";
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { showMessage } from "#elements/messages/MessageContainer";
 import {
+    createPaginatedNotificationListFrom,
     NotificationsContext,
-    NotificationsMap,
+    NotificationsContextValue,
     NotificationsMixin,
 } from "#elements/mixins/notifications";
 import { SessionMixin } from "#elements/mixins/session";
 import type { ReactiveElementHost } from "#elements/types";
 
+import { EventsApi } from "@goauthentik/api";
+
 import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 
-export class NotificationsContextController extends ReactiveContextController<
-    APIResult<NotificationsMap>
-> {
+export class NotificationsContextController extends ReactiveContextController<NotificationsContextValue> {
     protected static override logPrefix = "notifications";
 
-    #host: ReactiveElementHost<SessionMixin & NotificationsMixin>;
-    #context: ContextProvider<NotificationsContext>;
+    public host: ReactiveElementHost<SessionMixin & NotificationsMixin>;
+    public context: ContextProvider<NotificationsContext>;
 
-    constructor(
-        host: ReactiveElementHost<SessionMixin & NotificationsMixin>,
-        initialValue?: NotificationsMap,
-    ) {
+    constructor(host: ReactiveElementHost<SessionMixin & NotificationsMixin>) {
         super();
 
-        this.#host = host;
-        this.#context = new ContextProvider(this.#host, {
+        this.host = host;
+        this.context = new ContextProvider(this.host, {
             context: NotificationsContext,
-            initialValue: initialValue ?? { loading: true, error: null },
+            initialValue: { loading: true, error: null },
         });
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
-        if (!this.#host.refreshNotifications) {
-            // This situation is unlikely, but possible if a host reference becomes
-            // stale or is misconfigured.
+        const fallback = createPaginatedNotificationListFrom();
 
-            this.debug(
-                "No `refreshNotifications` method available, skipping session fetch. Check if the `SessionMixin` is applied correctly.",
-            );
+        const { session } = this.host;
 
-            const result: APIResult<NotificationsMap> = {
-                loading: false,
-                error: createSyntheticGenericError("No `refreshNotifications` method available"),
-            };
-
-            return Promise.resolve(result);
+        if (!isAPIResultReady(session)) {
+            this.debug("Session not ready, skipping notifications refresh");
+            return Promise.resolve(fallback);
         }
 
-        return this.#host.refreshNotifications(requestInit);
+        if (session.error) {
+            this.debug("Session error, skipping notifications refresh");
+            return Promise.resolve(fallback);
+        }
+
+        if (!session.user || isGuest(session.user)) {
+            this.debug("No current user, skipping");
+
+            return Promise.resolve(fallback);
+        }
+
+        this.debug("Fetching notifications...");
+
+        return new EventsApi(DEFAULT_CONFIG)
+            .eventsNotificationsList(
+                {
+                    seen: false,
+                    ordering: "-created",
+                    user: session.user.pk,
+                },
+                {
+                    ...requestInit,
+                },
+            )
+            .then((data) => {
+                this.host.notifications = data;
+
+                return this.host.notifications;
+            });
     }
 
-    protected doRefresh(notifications: APIResult<NotificationsMap>) {
-        this.#context.setValue(notifications);
-        this.#context.updateObservers();
-        this.#host.requestUpdate?.();
+    protected doRefresh(notifications: NotificationsContextValue) {
+        this.context.setValue(notifications);
+        this.host.requestUpdate?.();
     }
 
     public override hostConnected() {
@@ -73,20 +91,18 @@ export class NotificationsContextController extends ReactiveContextController<
     }
 
     public override hostDisconnected() {
-        this.#context.clearCallbacks();
-
         window.removeEventListener(AKNotificationEvent.eventName, this.#messageListener);
 
         super.hostDisconnected();
     }
 
     public hostUpdate() {
-        const { currentUser } = this.#host;
+        const { currentUser } = this.host;
 
         if (
             currentUser &&
             !isGuest(currentUser) &&
-            !isAPIResultReady(this.#context.value) &&
+            !isAPIResultReady(this.host.notifications) &&
             !this.abortController
         ) {
             this.refresh();
@@ -114,14 +130,21 @@ export class NotificationsContextController extends ReactiveContextController<
                 : nothing}`,
         });
 
-        const currentNotifications = this.#context.value;
+        const currentNotifications = this.context.value;
 
         if (isAPIResultReady(currentNotifications)) {
-            this.debug("Adding notification to context", notification);
-            currentNotifications.set(notification.pk, notification);
-            this.#context.setValue(currentNotifications);
-            this.#context.updateObservers();
-        } else if (currentNotifications.error) {
+            this.debug("Adding notification to context");
+
+            const appended = createPaginatedNotificationListFrom([
+                notification,
+                ...currentNotifications.results,
+            ]);
+            appended.pagination.count += currentNotifications.pagination.count + 1;
+
+            this.context.setValue(appended);
+
+            this.host.requestUpdate?.();
+        } else if (currentNotifications?.error) {
             this.debug("Current notifications context in error state, refreshing");
             this.refresh();
         }

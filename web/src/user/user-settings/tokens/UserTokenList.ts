@@ -37,7 +37,8 @@ export class UserTokenList extends Table<Token> {
         let { currentUser } = this;
 
         if (!currentUser) {
-            currentUser = (await this.refreshSession()).user;
+            const session = await this.refreshSession();
+            currentUser = session ? session.user : null;
         }
 
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
@@ -45,7 +46,7 @@ export class UserTokenList extends Table<Token> {
             managed: "",
             // The user might have access to other tokens that aren't for their user
             // but only show tokens for their user here
-            userUsername: currentUser.username,
+            userUsername: currentUser?.username,
         });
     }
 

@@ -137,17 +137,17 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
             </ak-empty-state>`;
         }
 
-        if (!this.notifications.size) {
+        if (!this.notificationCount) {
             return this.renderEmpty();
         }
 
         return html`<ul class="pf-c-notification-drawer__list" role="list">
-            ${repeat(this.notifications.values(), (n) => this.#renderItem(n))}
+            ${repeat(this.notifications.results, (n) => this.#renderItem(n))}
         </ul>`;
     }
 
     protected override render(): SlottedTemplateResult {
-        const unreadCount = isAPIResultReady(this.notifications) ? this.notifications.size : 0;
+        const unreadCount = isAPIResultReady(this.notifications) ? this.notificationCount : 0;
 
         return html`<div
             class="pf-c-drawer__body pf-m-no-padding"

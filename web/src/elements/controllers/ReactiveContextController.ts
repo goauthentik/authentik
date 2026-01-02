@@ -2,7 +2,12 @@ import { EVENT_REFRESH } from "#common/constants";
 import { isCausedByAbortError, parseAPIResponseError } from "#common/errors/network";
 import { createDebugLogger } from "#common/logger";
 
-import type { ReactiveController } from "lit";
+import {
+    ReactiveContextController as IReactiveContextController,
+    ReactiveElementHost,
+} from "#elements/types";
+
+import { Context, ContextProvider } from "@lit/context";
 
 /**
  * A base Lit controller for API-backed context providers.
@@ -10,7 +15,13 @@ import type { ReactiveController } from "lit";
  * Subclasses must implement {@linkcode apiEndpoint} and {@linkcode doRefresh}
  * to fetch data and update the context value, respectively.
  */
-export abstract class ReactiveContextController<T extends object> implements ReactiveController {
+export abstract class ReactiveContextController<
+    Value extends object,
+    Host extends object = object,
+> implements IReactiveContextController<Context<symbol, Value>, Host> {
+    public abstract context: ContextProvider<Context<symbol, Value>>;
+    public abstract host: ReactiveElementHost<Host>;
+
     /**
      * A prefix for log messages from this controller.
      */
@@ -54,7 +65,7 @@ export abstract class ReactiveContextController<T extends object> implements Rea
      *
      * @see {@linkcode refresh} for fetching new data.
      */
-    protected abstract doRefresh(data: T): void | Promise<void>;
+    protected abstract doRefresh(data: Value): void | Promise<void>;
 
     /**
      * Fetches data from the API endpoint.
@@ -62,7 +73,7 @@ export abstract class ReactiveContextController<T extends object> implements Rea
      * @param requestInit Optional request initialization parameters.
      * @returns A promise that resolves to the fetched data.
      */
-    protected abstract apiEndpoint(requestInit?: RequestInit): Promise<T>;
+    protected abstract apiEndpoint(requestInit?: RequestInit): Promise<Value>;
 
     /**
      * Refreshes the context by calling the API endpoint and updating the context value.
@@ -70,7 +81,7 @@ export abstract class ReactiveContextController<T extends object> implements Rea
      * @see {@linkcode apiEndpoint} for the API call.
      * @see {@linkcode doRefresh} for updating the context value.
      */
-    protected refresh = (): Promise<void> => {
+    public refresh = (): Promise<Value | null> => {
         this.abort("Refresh aborted by new refresh call");
 
         this.debug("Refresh requested...");
@@ -82,9 +93,13 @@ export abstract class ReactiveContextController<T extends object> implements Rea
         return this.apiEndpoint({
             signal: this.abortController.signal,
         })
-            .then((data) => this.doRefresh(data))
+            .then(async (data) => {
+                await this.doRefresh(data);
+
+                return data;
+            })
             .catch(this.suppressAbortError)
-            .catch(this.reportSessionError);
+            .catch(this.reportRefreshError);
     };
 
     /**
@@ -96,7 +111,7 @@ export abstract class ReactiveContextController<T extends object> implements Rea
         if (isCausedByAbortError(error)) {
             this.debug("Aborted:", error.message);
 
-            return;
+            return null;
         }
 
         throw error;
@@ -107,10 +122,12 @@ export abstract class ReactiveContextController<T extends object> implements Rea
      *
      * @param error The error to report.
      */
-    protected reportSessionError = async (error: unknown) => {
+    protected reportRefreshError = async (error: unknown) => {
         const parsedError = await parseAPIResponseError(error);
 
         this.debug(parsedError);
+
+        return null;
     };
 
     /**

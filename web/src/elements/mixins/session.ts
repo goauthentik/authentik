@@ -1,20 +1,18 @@
 import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { createDebugLogger } from "#common/logger";
 import { createUIConfig, DefaultUIConfig, UIConfig } from "#common/ui/config";
-import { autoDetectLanguage } from "#common/ui/locale/utils";
-import { me } from "#common/users";
 
+import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, LocaleContext, LocaleContextValue } from "#elements/mixins/locale";
 import { createMixin } from "#elements/types";
 
 import { type Config, type SessionUser, type UserSelf } from "@goauthentik/api";
 
-import { setUser } from "@sentry/browser";
-
 import { consume, createContext } from "@lit/context";
+import { property } from "lit/decorators.js";
 
-export const kAKSession = Symbol("kAKSession");
+export const kAKSessionContext = Symbol("kAKSessionContext");
 
 /**
  * The Lit context for the session information.
@@ -24,7 +22,7 @@ export const kAKSession = Symbol("kAKSession");
  * @see {@linkcode WithSession}
  */
 export const SessionContext = createContext<APIResult<SessionUser>>(
-    Symbol.for("authentik-session-context"),
+    Symbol("authentik-session-context"),
 );
 
 export type SessionContext = typeof SessionContext;
@@ -36,13 +34,6 @@ export type SessionContext = typeof SessionContext;
  * @see {@linkcode WithSession}
  */
 export interface SessionMixin {
-    /**
-     * The session context value.
-     *
-     * @internal
-     */
-    readonly [kAKSession]: Readonly<APIResult<SessionUser>>;
-
     /**
      * The current session information.
      *
@@ -77,10 +68,8 @@ export interface SessionMixin {
 
     /**
      * Refresh the current session information.
-     *
-     * @param requestInit Optional parameters to pass to the fetch call.
      */
-    refreshSession(requestInit?: RequestInit): Promise<SessionUser>;
+    refreshSession(): Promise<SessionUser | null>;
 }
 
 /**
@@ -110,6 +99,7 @@ export const WithSession = createMixin<SessionMixin>(
     }) => {
         abstract class SessionProvider extends SuperClass implements SessionMixin {
             #log = createDebugLogger("session", this);
+            #contextController = ContextControllerRegistry.get(SessionContext);
 
             //#region Context Consumers
 
@@ -125,57 +115,28 @@ export const WithSession = createMixin<SessionMixin>(
             })
             public [kAKLocale]!: LocaleContextValue;
 
-            #data: APIResult<Readonly<SessionUser>> = {
-                loading: true,
-                error: null,
-            };
-
             #uiConfig: Readonly<UIConfig> = DefaultUIConfig;
 
             @consume({
                 context: SessionContext,
-                subscribe,
             })
-            public set session(nextResult: APIResult<SessionUser>) {
-                const previousValue = this.#data;
-
-                this.#data = nextResult;
-
-                if (isAPIResultReady(nextResult)) {
-                    const { settings = {} } = nextResult.user || {};
-
-                    this.#uiConfig = createUIConfig(settings);
-                }
-
-                this.requestUpdate("session", previousValue);
-            }
+            @property({ attribute: false })
+            public session!: APIResult<Readonly<SessionUser>>;
 
             //#endregion
 
             //#region Properties
-
-            public get session(): APIResult<Readonly<SessionUser>> {
-                return this.#data;
-            }
-
-            public set [kAKSession](value: APIResult<Readonly<SessionUser>>) {
-                this.session = value;
-            }
-
-            public get [kAKSession](): APIResult<Readonly<SessionUser>> {
-                return this.session;
-            }
 
             public get uiConfig(): Readonly<UIConfig> {
                 return this.#uiConfig;
             }
 
             public get currentUser(): Readonly<UserSelf> | null {
-                return (isAPIResultReady(this.#data) && this.#data.user) || null;
+                return (isAPIResultReady(this.session) && this.session.user) || null;
             }
 
             public get originalUser(): Readonly<UserSelf> | null {
-                return (isAPIResultReady(this.#data) && this.#data.original) || null;
+                return (isAPIResultReady(this.session) && this.session.original) || null;
             }
 
             public get impersonating(): boolean {
@@ -186,30 +147,19 @@ export const WithSession = createMixin<SessionMixin>(
 
             //#region Methods
 
-            public refreshSession(requestInit?: RequestInit): Promise<SessionUser> {
+            public async refreshSession(): Promise<SessionUser | null> {
                 this.#log("Fetching session...");
+                const nextResult = await this.#contextController?.refresh();
 
-                return me(requestInit).then((session) => {
-                    const localeHint: string | undefined = session.user.settings.locale;
+                if (!isAPIResultReady(nextResult)) {
+                    return null;
+                }
 
-                    if (localeHint) {
-                        const locale = autoDetectLanguage(localeHint);
-                        this.#log(`Activating user's configured locale '${locale}'`);
-                        this[kAKLocale]?.setLocale(locale);
-                    }
+                const { settings = {} } = nextResult.user || {};
 
-                    const config = this[kAKConfig];
+                this.#uiConfig = createUIConfig(settings);
 
-                    if (config?.errorReporting.sendPii) {
-                        this.#log("Sentry with PII enabled.");
-
-                        setUser({ email: session.user.email });
-                    }
-
-                    this.session = session;
-
-                    return session;
-                });
+                return nextResult;
             }
 
             //#endregion

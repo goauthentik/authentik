@@ -1,6 +1,13 @@
 import { OwnPropertyRecord, Writeable } from "#common/types";
 
-import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
+import { Context, ContextProvider, ContextType } from "@lit/context";
+import type {
+    LitElement,
+    nothing,
+    ReactiveController,
+    ReactiveControllerHost,
+    TemplateResult,
+} from "lit";
 
 //#region HTML Helpers
 
@@ -71,14 +78,42 @@ export type LitFC<P> = (
 
 //#region Host/Controller
 
+export interface ReactiveContextController<
+    T extends Context<unknown, unknown> = Context<unknown, unknown>,
+    Host extends object = object,
+> extends ReactiveController {
+    context: ContextProvider<T>;
+    host: ReactiveElementHost<Host>;
+    refresh(): Promise<ContextType<T> | null>;
+}
+
 /**
- * A custom element which may be used as a host for a ReactiveController.
+ * A registry mapping context keys to their respective ReactiveControllers.
+ */
+export interface ContextControllerRegistryMap {
+    get<T extends Context<unknown, unknown>>(
+        key: T,
+    ): ReactiveContextController<T, object> | undefined;
+
+    set<T extends Context<unknown, unknown>>(
+        key: ContextType<T>,
+        controller: ReactiveContextController<T, object>,
+    ): void;
+}
+
+export interface ReactiveControllerHostRegistry extends ReactiveControllerHost {
+    contextControllers: ContextControllerRegistryMap;
+}
+
+/**
+ * A custom element which may be used as a host for a {@linkcode ReactiveController}.
  *
  * @remarks
  *
  * This type is derived from an internal type in Lit.
  */
-export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & Writeable<T>> & HTMLElement;
+export type ReactiveElementHost<T> = Partial<ReactiveControllerHostRegistry & Writeable<T>> &
+    HTMLElement;
 
 //#endregion
 
