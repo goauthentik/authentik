@@ -12,12 +12,14 @@ import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -65,6 +67,8 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
         `,
     ];
 
+    #APIBase = globalAK().api.base;
+
     //#region Rendering
 
     protected renderHyperlink(item: Notification) {
@@ -79,7 +83,14 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
         const label = actionToLabel(item.event?.action);
         const level = severityToLevel(item.severity);
 
-        return html`<li class="pf-c-notification-drawer__list-item">
+        // There's little information we can have to determine if the body
+        // contains code, but if it looks like JSON, we can at least style it better.
+        const code = item.body.includes("{");
+
+        return html`<li
+            class="pf-c-notification-drawer__list-item"
+            data-notification-action=${ifPresent(item.event?.action)}
+        >
             <div class="pf-c-notification-drawer__list-item-header">
                 <span class="pf-c-notification-drawer__list-item-header-icon ${level}">
                     <i class="fas fa-info-circle" aria-hidden="true"></i>
@@ -91,7 +102,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                 html`
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
-                        href="${globalAK().api.base}if/admin/#/events/log/${item.event?.pk}"
+                        href="${this.#APIBase}if/admin/#/events/log/${item.event?.pk}"
                         aria-label=${msg(str`View details for ${label}`)}
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
@@ -108,7 +119,11 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                     <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
-            <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
+            ${code
+                ? html`<pre class="pf-c-notification-drawer__list-item-description">
+${item.body}</pre
+                  >`
+                : html`<p class="pf-c-notification-drawer__list-item-description">${item.body}</p>`}
             <small class="pf-c-notification-drawer__list-item-timestamp"
                 ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
                     ${formatElapsedTime(item.created!)}
@@ -126,24 +141,30 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
     }
 
     protected renderBody() {
-        if (this.notifications.loading) {
-            return html`<ak-empty-state default-label></ak-empty-state>`;
-        }
+        return guard([this.notifications], () => {
+            if (this.notifications.loading) {
+                return html`<ak-empty-state default-label></ak-empty-state>`;
+            }
 
-        if (this.notifications.error) {
-            return html`<ak-empty-state icon="fa-ban"
-                ><span>${msg("Failed to fetch notifications.")}</span>
-                <div slot="body">${pluckErrorDetail(this.notifications.error)}</div>
-            </ak-empty-state>`;
-        }
+            if (this.notifications.error) {
+                return html`<ak-empty-state icon="fa-ban"
+                    ><span>${msg("Failed to fetch notifications.")}</span>
+                    <div slot="body">${pluckErrorDetail(this.notifications.error)}</div>
+                </ak-empty-state>`;
+            }
 
-        if (!this.notificationCount) {
-            return this.renderEmpty();
-        }
+            if (!this.notificationCount) {
+                return this.renderEmpty();
+            }
 
-        return html`<ul class="pf-c-notification-drawer__list" role="list">
-            ${repeat(this.notifications.results, (n) => this.#renderItem(n))}
-        </ul>`;
+            return html`<ul class="pf-c-notification-drawer__list" role="list">
+                ${repeat(
+                    this.notifications.results,
+                    (n) => n.pk,
+                    (n) => this.#renderItem(n),
+                )}
+            </ul>`;
+        });
     }
 
     protected override render(): SlottedTemplateResult {
@@ -166,9 +187,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                     <div class="pf-c-notification-drawer__header-action">
                         <div>
                             <button
-                                @click=${() => {
-                                    this.clearNotifications();
-                                }}
+                                @click=${this.clearNotifications}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
                                 aria-label=${msg("Clear all")}

@@ -7,9 +7,34 @@ import "#elements/notifications/NotificationDrawer";
 
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 
+import { type Notification, type PaginatedNotificationList } from "@goauthentik/api";
+
 import { html } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
+
+/**
+ * Creates a PaginatedNotificationList from an iterable of notifications.
+ */
+export function createPaginatedNotificationListFrom(
+    input: Iterable<Notification> = [],
+): PaginatedNotificationList {
+    const results = Array.from(input);
+
+    return {
+        pagination: {
+            count: results.length,
+            next: 0,
+            previous: 0,
+            current: 0,
+            totalPages: 1,
+            startIndex: 0,
+            endIndex: 0,
+        },
+        results,
+        autocomplete: [],
+    };
+}
 
 /**
  * The state of the interface drawers.

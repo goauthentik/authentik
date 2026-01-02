@@ -6,6 +6,7 @@ import { MessageLevel } from "#common/messages";
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
 import { createMixin } from "#elements/types";
 
 import {
@@ -18,26 +19,6 @@ import {
 import { consume, createContext } from "@lit/context";
 import { msg } from "@lit/localize";
 import { property } from "lit/decorators.js";
-
-export function createPaginatedNotificationListFrom(
-    input: Iterable<Notification> = [],
-): PaginatedNotificationList {
-    const results = Array.from(input);
-
-    return {
-        pagination: {
-            count: results.length,
-            next: 0,
-            previous: 0,
-            current: 0,
-            totalPages: 1,
-            startIndex: 0,
-            endIndex: 0,
-        },
-        results,
-        autocomplete: [],
-    };
-}
 
 export type NotificationsContextValue = APIResult<Readonly<PaginatedNotificationList>>;
 
@@ -82,12 +63,12 @@ export interface NotificationsMixin {
      * @param notificationPk Primary key of the notification to mark as read.
      * @param requestInit Optional parameters to pass to the fetch call.
      */
-    markAsRead(notificationPk: Notification["pk"], requestInit?: RequestInit): Promise<void>;
+    markAsRead: (notificationPk: Notification["pk"], requestInit?: RequestInit) => Promise<void>;
 
     /**
      * Clear all notifications.
      */
-    clearNotifications(): Promise<void>;
+    clearNotifications: () => Promise<void>;
 }
 
 /**
@@ -124,14 +105,14 @@ export const WithNotifications = createMixin<NotificationsMixin>(
 
             //#region Methods
 
-            public async refreshNotifications(): Promise<void> {
+            public refreshNotifications = async (): Promise<void> => {
                 await this.#contextController?.refresh();
-            }
+            };
 
-            public markAsRead(
+            public markAsRead = (
                 notificationID: Notification["pk"],
                 requestInit?: RequestInit,
-            ): Promise<void> {
+            ): Promise<void> => {
                 this.#log(`Marking notification ${notificationID} as read...`);
 
                 return new EventsApi(DEFAULT_CONFIG)
@@ -145,9 +126,9 @@ export const WithNotifications = createMixin<NotificationsMixin>(
                         requestInit,
                     )
                     .then(() => this.refreshNotifications());
-            }
+            };
 
-            public clearNotifications(): Promise<void> {
+            public clearNotifications = (): Promise<void> => {
                 return new EventsApi(DEFAULT_CONFIG)
                     .eventsNotificationsMarkAllSeenCreate()
                     .then(() => {
@@ -157,13 +138,13 @@ export const WithNotifications = createMixin<NotificationsMixin>(
                         });
 
                         this.#contextController?.context.setValue(
-                            createPaginatedNotificationListFrom([]),
+                            createPaginatedNotificationListFrom(),
                         );
 
                         this.requestUpdate?.();
                     })
                     .then(AKDrawerChangeEvent.dispatchCloseNotifications);
-            }
+            };
         }
 
         return NotificationsProvider;

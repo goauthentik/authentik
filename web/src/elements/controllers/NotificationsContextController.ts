@@ -8,12 +8,12 @@ import { AKNotificationEvent } from "#common/ws/events";
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { showMessage } from "#elements/messages/MessageContainer";
 import {
-    createPaginatedNotificationListFrom,
     NotificationsContext,
     NotificationsContextValue,
     NotificationsMixin,
 } from "#elements/mixins/notifications";
 import { SessionMixin } from "#elements/mixins/session";
+import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { EventsApi } from "@goauthentik/api";
