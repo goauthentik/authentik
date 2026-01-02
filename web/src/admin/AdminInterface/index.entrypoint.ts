@@ -157,11 +157,11 @@ export class AdminInterface extends WithCapabilitiesConfig(
             "pf-m-collapsed": !this.sidebarOpen,
         };
 
-        const drawerOpen = this.notificationDrawerOpen || this.apiDrawerOpen;
-
+        const openDrawerCount =
+            (this.notificationDrawerOpen ? 1 : 0) + (this.apiDrawerOpen ? 1 : 0);
         const drawerClasses = {
-            "pf-m-expanded": drawerOpen,
-            "pf-m-collapsed": !drawerOpen,
+            "pf-m-expanded": openDrawerCount !== 0,
+            "pf-m-collapsed": openDrawerCount === 0,
         };
 
         return html`<div class="pf-c-page">
@@ -193,18 +193,23 @@ export class AdminInterface extends WithCapabilitiesConfig(
                                 </ak-router-outlet>
                             </div>
                         </div>
-                        <ak-notification-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.notificationDrawerOpen}
-                        ></ak-notification-drawer>
-                        <ak-api-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.apiDrawerOpen}
-                        ></ak-api-drawer>
+                        <div
+                            class=${classMap({
+                                "pf-c-drawer__panel": true,
+                                "pf-m-width-33": openDrawerCount === 1,
+                                "pf-m-width-66": openDrawerCount === 2,
+                                "display-none": openDrawerCount === 0,
+                            })}
+                        >
+                            <ak-notification-drawer
+                                class="pf-c-drawer__panel_content"
+                                ?hidden=${!this.notificationDrawerOpen}
+                            ></ak-notification-drawer>
+                            <ak-api-drawer
+                                class="pf-c-drawer__panel_content"
+                                ?hidden=${!this.apiDrawerOpen}
+                            ></ak-api-drawer>
+                        </div>
                         <ak-about-modal></ak-about-modal>
                     </div>
                 </div>

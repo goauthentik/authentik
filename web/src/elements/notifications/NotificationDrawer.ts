@@ -36,21 +36,31 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
             .pf-c-drawer__body {
                 height: 100%;
             }
+
             .pf-c-notification-drawer__body {
                 flex-grow: 1;
                 overflow-x: hidden;
             }
+
             .pf-c-notification-drawer__header {
-                height: 114px;
                 align-items: center;
             }
+
             .pf-c-notification-drawer__header-action,
             .pf-c-notification-drawer__header-action-close,
             .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
                 height: 100%;
             }
+
             .pf-c-notification-drawer__list-item-description {
                 white-space: pre-wrap;
+            }
+
+            .pf-c-notification-drawer__list-item-action {
+                display: flex;
+                flex-flow: row;
+                align-items: start;
+                gap: var(--pf-global--spacer--sm);
             }
         `,
     ];

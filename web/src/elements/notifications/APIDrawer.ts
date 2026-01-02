@@ -54,27 +54,27 @@ export class APIDrawer extends AKElement {
         PFContent,
         PFDropdown,
         css`
-            :host {
-                --header-height: 114px;
+            .pf-c-drawer__body {
+                height: 100%;
             }
+
             .pf-c-notification-drawer__header {
-                height: var(--header-height);
                 align-items: center;
             }
+
             .pf-c-notification-drawer__header-action,
             .pf-c-notification-drawer__header-action-close,
             .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
                 height: 100%;
             }
+
             .pf-c-notification-drawer__list-item-description {
                 white-space: pre-wrap;
                 font-family: var(--pf-global--FontFamily--monospace);
             }
+
             .pf-c-notification-drawer__body {
-                overflow-x: hidden;
-            }
-            .pf-c-notification-drawer__list {
-                max-height: calc(100vh - var(--header-height));
+                overflow-x: auto;
             }
         `,
     ];

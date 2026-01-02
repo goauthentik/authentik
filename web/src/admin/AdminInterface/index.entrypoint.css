@@ -44,4 +44,12 @@ ak-sidebar-item:active ak-sidebar-item::part(list-item) {
 
 .pf-c-drawer__panel {
     z-index: var(--pf-global--ZIndex--xl);
+    flex-flow: row;
+    gap: var(--pf-global--spacer--sm);
+
+    background-color: transparent !important;
+
+    .pf-c-drawer__panel_content {
+        flex: 1 1 50%;
+    }
 }
