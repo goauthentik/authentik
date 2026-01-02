@@ -27,12 +27,9 @@ To support the integration of Vaultwarden with authentik, you need to create an 
 
 ### Create custom scope mapping
 
-Vaultwarden either requires the email scope to return a true value for whether the email address is verified, or no
-value at all. As of [authentik
-2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope
-mapping is required for Vaultwarden to allow authentication.
+Vaultwarden either requires the email scope to return a true value for whether the email address is verified, or no value at all. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Vaultwarden to allow authentication.
 
-1. Log into authentik as admin and open the authentik Admin interface
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
     - **Select type**: select **Scope Mapping**.
     - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Vaultwarden Email Scope`), and an optional description.
@@ -70,7 +67,7 @@ mapping is required for Vaultwarden to allow authentication.
 
 To configure authentik with Vaultwarden, you must add the following environment variables to your Vaultwarden deployment:
 
-```yamlhospital
+```yaml
 SSO_ENABLED=true
 SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>/
 SSO_CLIENT_ID=<client_id>
