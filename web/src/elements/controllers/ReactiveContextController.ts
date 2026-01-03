@@ -1,11 +1,12 @@
 import { EVENT_REFRESH } from "#common/constants";
 import { isCausedByAbortError, parseAPIResponseError } from "#common/errors/network";
-import { createDebugLogger } from "#common/logger";
 
 import {
     ReactiveContextController as IReactiveContextController,
     ReactiveElementHost,
 } from "#elements/types";
+
+import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { Context, ContextProvider } from "@lit/context";
 
@@ -33,10 +34,8 @@ export abstract class ReactiveContextController<
 
     /**
      * Log a debug message with the controller's prefix.
-     *
-     * @todo Port `ConsoleLogger` here for better logging.
      */
-    protected debug: (...args: unknown[]) => void;
+    protected logger: Logger;
 
     /**
      * An {@linkcode AbortController} that can be used to cancel ongoing refreshes.
@@ -55,7 +54,7 @@ export abstract class ReactiveContextController<
     public constructor() {
         const { logPrefix } = this.constructor as typeof ReactiveContextController;
 
-        this.debug = createDebugLogger("context", logPrefix);
+        this.logger = ConsoleLogger.prefix(`controller/${logPrefix}`);
     }
 
     /**
@@ -84,7 +83,7 @@ export abstract class ReactiveContextController<
     public refresh = (): Promise<Value | null> => {
         this.abort("Refresh aborted by new refresh call");
 
-        this.debug("Refresh requested...");
+        this.logger.debug("Refresh requested");
 
         this.abortController?.abort();
 
@@ -109,7 +108,7 @@ export abstract class ReactiveContextController<
      */
     protected suppressAbortError = (error: unknown) => {
         if (isCausedByAbortError(error)) {
-            this.debug("Aborted:", error.message);
+            this.logger.info(`Aborted: ${error.message}`);
 
             return null;
         }
@@ -125,7 +124,7 @@ export abstract class ReactiveContextController<
     protected reportRefreshError = async (error: unknown) => {
         const parsedError = await parseAPIResponseError(error);
 
-        this.debug(parsedError);
+        this.logger.info(parsedError);
 
         return null;
     };

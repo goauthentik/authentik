@@ -44,22 +44,22 @@ export class NotificationsContextController extends ReactiveContextController<No
         const { session } = this.host;
 
         if (!isAPIResultReady(session)) {
-            this.debug("Session not ready, skipping notifications refresh");
+            this.logger.info("Session not ready, skipping notifications refresh");
             return Promise.resolve(fallback);
         }
 
         if (session.error) {
-            this.debug("Session error, skipping notifications refresh");
+            this.logger.warn("Session error, skipping notifications refresh");
             return Promise.resolve(fallback);
         }
 
         if (!session.user || isGuest(session.user)) {
-            this.debug("No current user, skipping");
+            this.logger.info("No current user, skipping");
 
             return Promise.resolve(fallback);
         }
 
-        this.debug("Fetching notifications...");
+        this.logger.debug("Fetching notifications...");
 
         return new EventsApi(DEFAULT_CONFIG)
             .eventsNotificationsList(
@@ -133,7 +133,7 @@ export class NotificationsContextController extends ReactiveContextController<No
         const currentNotifications = this.context.value;
 
         if (isAPIResultReady(currentNotifications)) {
-            this.debug("Adding notification to context");
+            this.logger.info("Adding notification to context");
 
             const appended = createPaginatedNotificationListFrom([
                 notification,
@@ -145,7 +145,7 @@ export class NotificationsContextController extends ReactiveContextController<No
 
             this.host.requestUpdate?.();
         } else if (currentNotifications?.error) {
-            this.debug("Current notifications context in error state, refreshing");
+            this.logger.info("Current notifications context in error state, refreshing");
             this.refresh();
         }
     };

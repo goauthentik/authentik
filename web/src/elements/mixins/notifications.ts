@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIResult, isAPIResultReady } from "#common/api/responses";
-import { createDebugLogger } from "#common/logger";
 import { MessageLevel } from "#common/messages";
 
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
@@ -8,6 +7,8 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import { createPaginatedNotificationListFrom } from "#elements/notifications/utils";
 import { createMixin } from "#elements/types";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import {
     EventsApi,
@@ -83,7 +84,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
         subscribe = true,
     }) => {
         abstract class NotificationsProvider extends SuperClass implements NotificationsMixin {
-            #log = createDebugLogger("notifications", this);
+            #logger = ConsoleLogger.prefix("notifications");
             #contextController = ContextControllerRegistry.get(NotificationsContext);
 
             public session!: APIResult<Readonly<SessionUser>>;
@@ -113,7 +114,7 @@ export const WithNotifications = createMixin<NotificationsMixin>(
                 notificationID: Notification["pk"],
                 requestInit?: RequestInit,
             ): Promise<void> => {
-                this.#log(`Marking notification ${notificationID} as read...`);
+                this.#logger.debug(`Marking notification ${notificationID} as read...`);
 
                 return new EventsApi(DEFAULT_CONFIG)
                     .eventsNotificationsPartialUpdate(

@@ -1,11 +1,12 @@
 import { APIResult, isAPIResultReady } from "#common/api/responses";
-import { createDebugLogger } from "#common/logger";
 import { createUIConfig, DefaultUIConfig, UIConfig } from "#common/ui/config";
 
 import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, LocaleContext, LocaleContextValue } from "#elements/mixins/locale";
 import { createMixin } from "#elements/types";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { type Config, type SessionUser, type UserSelf } from "@goauthentik/api";
 
@@ -98,7 +99,7 @@ export const WithSession = createMixin<SessionMixin>(
         subscribe = true,
     }) => {
         abstract class SessionProvider extends SuperClass implements SessionMixin {
-            #log = createDebugLogger("session", this);
+            #logger = ConsoleLogger.prefix("session");
             #contextController = ContextControllerRegistry.get(SessionContext);
 
             //#region Context Consumers
@@ -148,7 +149,7 @@ export const WithSession = createMixin<SessionMixin>(
             //#region Methods
 
             public async refreshSession(): Promise<SessionUser | null> {
-                this.#log("Fetching session...");
+                this.#logger.debug("Fetching session...");
                 const nextResult = await this.#contextController?.refresh();
 
                 if (!isAPIResultReady(nextResult)) {

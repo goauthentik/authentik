@@ -52,14 +52,14 @@ export class SessionContextController extends ReactiveContextController<APIResul
 
             if (localeHint) {
                 const locale = autoDetectLanguage(localeHint);
-                this.debug(`Activating user's configured locale '${locale}'`);
+                this.logger.info(`Activating user's configured locale '${locale}'`);
                 this.host[kAKLocale]?.setLocale(locale);
             }
 
             const config = this.host[kAKConfig];
 
             if (config?.errorReporting.sendPii) {
-                this.debug("Sentry with PII enabled.");
+                this.logger.info("Sentry with PII enabled.");
 
                 setUser({ email: session.user.email });
             }
@@ -67,7 +67,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
     }
 
     public override hostConnected() {
-        this.debug("Host connected, refreshing session");
+        this.logger.debug("Host connected, refreshing session");
         this.refresh();
     }
 

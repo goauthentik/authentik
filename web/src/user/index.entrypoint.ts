@@ -10,7 +10,6 @@ import "#elements/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
-import { createDebugLogger } from "#common/logger";
 import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
@@ -30,6 +29,8 @@ import { renderImage } from "#elements/utils/images";
 
 import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -63,7 +64,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         Styles,
     ];
 
-    #debug = createDebugLogger("user-interface");
+    #logger = ConsoleLogger.prefix("user-interface");
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -129,18 +130,18 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
     protected render() {
         const { currentUser } = this;
 
-        if (!currentUser || isGuest(currentUser)) {
-            this.#debug("Waiting for user session to be available", this.session, currentUser);
+        const guest = isGuest(currentUser);
 
-            return html`<slot name="placeholder"></slot>`;
-        }
+        if (!currentUser || guest) {
+            this.#logger.debug("Waiting for user session", {
+                currentUser,
+                guest,
+            });
 
-        if (isGuest(currentUser)) {
             // TODO: There might be a hidden feature here.
             // Allowing guest users to see some parts of the interface?
             // Maybe redirect to a flow?
-
-            return html`<slot></slot>`;
+            return html`<slot name="placeholder"></slot>`;
         }
 
         const backgroundStyles = this.uiConfig.theme.background;

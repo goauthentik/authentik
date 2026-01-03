@@ -2,6 +2,8 @@ import { EVENT_REQUEST_POST } from "#common/constants";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
 
+import { ConsoleLogger, Logger } from "#logger/browser";
+
 import {
     CurrentBrand,
     FetchParams,
@@ -23,24 +25,25 @@ export interface RequestInfo {
 }
 
 export class LoggingMiddleware implements Middleware {
-    #logPrefix: string;
+    #logger: Logger;
 
     constructor(brand: CurrentBrand) {
-        this.#logPrefix = `%c[api/${brand.matchedDomain}]: `;
+        const prefix =
+            brand.matchedDomain === "authentik-default" ? "api" : `api/${brand.matchedDomain}`;
+
+        this.#logger = ConsoleLogger.prefix(prefix);
     }
 
-    post(context: ResponseContext): Promise<Response | void> {
-        let msg = this.#logPrefix;
+    post({ response, init, url }: ResponseContext): Promise<Response> {
+        const parsedURL = URL.canParse(url) ? new URL(url) : null;
+        const path = parsedURL ? parsedURL.pathname + parsedURL.search : url;
+        if (response.ok) {
+            this.#logger.debug(`${init.method} ${path}`);
+        } else {
+            this.#logger.warn(`${response.status} ${init.method} ${path}`);
+        }
 
-        // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
-        msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
-
-        const style = context.response.ok
-            ? "color: green; font-weight: bold;"
-            : "color: red; font-weight: bold;";
-
-        console.debug(msg, "font-weight: bold;", style, "");
-        return Promise.resolve(context.response);
+        return Promise.resolve(response);
     }
 }
 
