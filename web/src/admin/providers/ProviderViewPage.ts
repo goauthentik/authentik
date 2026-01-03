@@ -15,10 +15,11 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
 
-import { setPageDetails } from "#components/ak-page-navbar";
+import { carbonIcon, setPageDetails } from "#components/ak-page-navbar";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
+import CFragmentsIcon from "@carbon/icons/svg/32/fragments.svg";
 import { spread } from "@open-wc/lit-helpers";
 
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
@@ -94,7 +95,7 @@ export class ProviderViewPage extends AKElement {
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
-            icon: "pf-icon pf-icon-integration",
+            icon: carbonIcon(CFragmentsIcon),
             header: this.provider?.name,
             description: this.provider?.verboseName,
         });

@@ -11,6 +11,7 @@ import "#elements/forms/ProxyForm";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import COrchestrateIcon from "@carbon/icons/svg/32/orchestrate.svg";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -25,6 +26,7 @@ import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { carbonIcon } from "#components/ak-page-navbar";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
@@ -33,7 +35,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
     );
 
-    public pageIcon = "pf-icon pf-icon-integration";
+    public pageIcon = carbonIcon(COrchestrateIcon);;
     protected override searchEnabled = true;
 
     checkbox = true;
