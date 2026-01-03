@@ -27,6 +27,9 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: Boolean, attribute: "readonly" })
     public readOnly: boolean = false;
 
+    @property({ type: String, attribute: "inputmode", useDefault: true })
+    inputMode: string = "text";
+
     @property({ type: String })
     public type: "text" | "email" = "text";
 
@@ -52,7 +55,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
             aria-describedby=${this.helpID}
             placeholder=${ifPresent(this.placeholder)}
-            inputmode=${ifPresent(this.inputMode)}
+            inputmode=${this.inputMode}
             ?required=${this.required}
         />`;
     }

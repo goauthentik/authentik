@@ -1,15 +1,15 @@
 fieldset[name="login-sources"] {
     --ak-login-sources-padding-inline: var(--pf-global--spacer--xl);
 
-    flex: 1 1 auto;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    gap: var(--pf-global--spacer--sm);
-
     /* compatibility-mode-fix */
 
     & {
+        flex: 1 1 auto;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        gap: var(--pf-global--spacer--sm);
+
         padding-inline: var(--ak-login-sources-padding-inline) !important;
         padding-block-start: var(--pf-global--spacer--md) !important;
     }
@@ -21,7 +21,7 @@ fieldset[name="login-sources"] {
         gap: var(--pf-global--spacer--sm);
         flex: 0 1 auto;
 
-        &:hover {
+        &:not(.pf-m-primary):hover {
             background-color: var(--pf-c-button--m-plain--hover--BackgroundColor);
         }
 

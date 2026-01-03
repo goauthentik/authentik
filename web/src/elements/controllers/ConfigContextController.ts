@@ -1,26 +1,24 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
-import { isCausedByAbortError } from "#common/errors/network";
 
+import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { AKConfigMixin, AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { Config, RootApi } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
 
 /**
  * A controller that provides the application configuration to the element.
  */
-export class ConfigContextController implements ReactiveController {
-    #log = console.debug.bind(console, `authentik/controller/config`);
-    #abortController: null | AbortController = null;
+export class ConfigContextController extends ReactiveContextController<Config> {
+    protected static override logPrefix = "config";
 
     #host: ReactiveElementHost<AKConfigMixin>;
     #context: ContextProvider<AuthentikConfigContext>;
 
     constructor(host: ReactiveElementHost<AKConfigMixin>, initialValue: Config) {
+        super();
         this.#host = host;
 
         this.#context = new ContextProvider(this.#host, {
@@ -31,42 +29,13 @@ export class ConfigContextController implements ReactiveController {
         this.#host[kAKConfig] = initialValue;
     }
 
-    #fetch = () => {
-        this.#log("Fetching configuration...");
-
-        this.#abortController?.abort();
-
-        this.#abortController = new AbortController();
-
-        return new RootApi(DEFAULT_CONFIG)
-            .rootConfigRetrieve({
-                signal: this.#abortController.signal,
-            })
-            .then((authentikConfig) => {
-                this.#context.setValue(authentikConfig);
-                this.#host[kAKConfig] = authentikConfig;
-            })
-            .catch((error: unknown) => {
-                if (isCausedByAbortError(error)) {
-                    this.#log("Aborted fetching configuration");
-                    return;
-                }
-
-                throw error;
-            })
-            .finally(() => {
-                this.#abortController = null;
-            });
-    };
-
-    public hostConnected() {
-        window.addEventListener(EVENT_REFRESH, this.#fetch);
-        this.#fetch();
+    protected apiEndpoint(requestInit?: RequestInit) {
+        return new RootApi(DEFAULT_CONFIG).rootConfigRetrieve(requestInit);
     }
 
-    public hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH, this.#fetch);
-        this.#abortController?.abort();
+    protected doRefresh(authentikConfig: Config) {
+        this.#context.setValue(authentikConfig);
+        this.#host[kAKConfig] = authentikConfig;
     }
 
     public hostUpdate() {
