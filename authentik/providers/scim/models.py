@@ -193,6 +193,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             return Group.objects.all().order_by("pk")
         raise ValueError(f"Invalid type {type}")
 
+    @classmethod
+    def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:
+        if isinstance(obj, User):
+            return list(obj.scimprovideruser_set.values_list("provider__pk", "scim_id"))
+        if isinstance(obj, Group):
+            return list(obj.scimprovidergroup_set.values_list("provider__pk", "scim_id"))
+        raise ValueError(f"Invalid type {type(obj)}")
+
     @property
     def component(self) -> str:
         return "ak-provider-scim-form"
