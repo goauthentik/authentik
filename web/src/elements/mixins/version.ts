@@ -6,7 +6,7 @@ import { consume, createContext } from "@lit/context";
 import { property } from "lit/decorators.js";
 
 /**
- * The Lit context for application branding.
+ * The Lit context for authentik's version.
  *
  * @category Context
  * @see {@linkcode VersionMixin}

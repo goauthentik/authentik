@@ -1,8 +1,7 @@
 import { APIError } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { ModelForm } from "#elements/forms/ModelForm";
-import { APIMessage } from "#elements/messages/Message";
 
 import { msg } from "@lit/localize";
 

@@ -14,10 +14,6 @@
     }
 }
 
-.display-none {
-    display: none;
-}
-
 ak-page-navbar {
     grid-area: header;
 }
@@ -36,5 +32,5 @@ ak-sidebar-item:active ak-sidebar-item::part(list-item) {
 }
 
 .pf-c-drawer__panel {
-    z-index: var(--pf-global--ZIndex--xl);
+    background-color: transparent !important;
 }

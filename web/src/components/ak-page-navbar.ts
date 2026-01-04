@@ -1,9 +1,7 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { UserDisplay } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -318,10 +316,6 @@ export class AKPageNavbar
 
     //#region Event Handlers
 
-    #onWebSocket = () => {
-        this.firstUpdated();
-    };
-
     #onPageDetails = (ev: PageDetailsUpdate) => {
         const { header, description, icon, iconImage } = ev.header;
         this.header = header;
@@ -337,18 +331,12 @@ export class AKPageNavbar
 
     public connectedCallback(): void {
         super.connectedCallback();
-        window.addEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
         window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
     }
 
     public disconnectedCallback(): void {
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
         window.removeEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
         super.disconnectedCallback();
-    }
-
-    public async firstUpdated() {
-        this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
     willUpdate() {

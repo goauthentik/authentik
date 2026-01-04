@@ -26,18 +26,22 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 export class UserTokenList extends Table<Token> {
     protected override searchEnabled = true;
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    order = "expires";
+    @property({ type: String })
+    public override order = "expires";
+
+    public override label = msg("User Tokens");
+    protected override emptyStateMessage = msg("No User Tokens enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         let { currentUser } = this;
 
         if (!currentUser) {
-            currentUser = (await this.refreshSession()).user;
+            const session = await this.refreshSession();
+            currentUser = session ? session.user : null;
         }
 
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
@@ -45,7 +49,7 @@ export class UserTokenList extends Table<Token> {
             managed: "",
             // The user might have access to other tokens that aren't for their user
             // but only show tokens for their user here
-            userUsername: currentUser.username,
+            userUsername: currentUser?.username,
         });
     }
 

@@ -52,7 +52,6 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                <div></div>
             </div>`,
         ];
     }

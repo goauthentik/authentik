@@ -11,18 +11,18 @@ import { ContextProvider } from "@lit/context";
 export class BrandingContextController extends ReactiveContextController<CurrentBrand> {
     protected static override logPrefix = "branding";
 
-    #host: ReactiveElementHost<BrandingMixin>;
-    #context: ContextProvider<BrandingContext>;
+    public host: ReactiveElementHost<BrandingMixin>;
+    public context: ContextProvider<BrandingContext>;
 
     constructor(host: ReactiveElementHost<BrandingMixin>, initialValue: CurrentBrand) {
         super();
 
-        this.#host = host;
-        this.#context = new ContextProvider(this.#host, {
+        this.host = host;
+        this.context = new ContextProvider(this.host, {
             context: BrandingContext,
             initialValue,
         });
-        this.#host.brand = initialValue;
+        this.host.brand = initialValue;
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
@@ -30,15 +30,15 @@ export class BrandingContextController extends ReactiveContextController<Current
     }
 
     protected doRefresh(brand: CurrentBrand) {
-        this.#context.setValue(brand);
-        this.#host.brand = brand;
+        this.context.setValue(brand);
+        this.host.brand = brand;
     }
 
     public hostUpdate() {
         // If the Interface changes its brand information for some reason,
         // we should notify all users of the context of that change. doesn't
-        if (this.#host.brand && this.#host.brand !== this.#context.value) {
-            this.#context.setValue(this.#host.brand);
+        if (this.host.brand && this.host.brand !== this.context.value) {
+            this.context.setValue(this.host.brand);
         }
     }
 }
