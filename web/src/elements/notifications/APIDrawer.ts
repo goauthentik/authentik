@@ -93,18 +93,16 @@ export class APIDrawer extends AKElement {
     };
 
     render(): TemplateResult {
-        return html`<div
+        return html`<aside
             class="pf-c-drawer__body pf-m-no-padding"
             aria-label=${msg("API drawer")}
-            role="region"
-            tabindex="0"
         >
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
+                <header class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
+                        <h2 class="pf-c-notification-drawer__header-title">
                             ${msg("API Requests")}
-                        </h1>
+                        </h2>
                         <a href="${globalAK().api.base}api/v3/" target="_blank"
                             >${msg("Open API Browser")}</a
                         >
@@ -121,14 +119,14 @@ export class APIDrawer extends AKElement {
                             </button>
                         </div>
                     </div>
-                </div>
+                </header>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
                         ${this.requests.map(renderItem)}
                     </ul>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 

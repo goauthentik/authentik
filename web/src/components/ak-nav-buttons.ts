@@ -63,11 +63,19 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
             return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
                 <button
+                    id="api-drawer-toggle-button"
                     class="pf-c-button pf-m-plain"
                     type="button"
+                    aria-label=${msg("Toggle API requests drawer", {
+                        id: "drawer-toggle-button-api-requests",
+                    })}
                     @click=${AKDrawerChangeEvent.dispatchAPIToggle}
                 >
-                    <pf-tooltip position="top" content=${msg("Open API drawer")}>
+                    <pf-tooltip
+                        position="top"
+                        content=${msg("API Drawer")}
+                        trigger="api-drawer-toggle-button"
+                    >
                         <i class="fas fa-code" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
@@ -86,16 +94,33 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
             return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
                 <button
+                    id="notification-drawer-toggle-button"
                     class="pf-c-button pf-m-plain"
                     type="button"
-                    aria-label="${msg("Unread notifications")}"
+                    aria-label=${msg("Toggle notifications drawer", {
+                        id: "drawer-toggle-button-notifications",
+                    })}
+                    aria-describedby="notification-count"
                     @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
                 >
                     <span class="pf-c-notification-badge ${notificationCount ? "pf-m-unread" : ""}">
-                        <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
+                        <pf-tooltip
+                            position="top"
+                            content=${msg("Notification Drawer", {
+                                id: "drawer-invoker-tooltip-notifications",
+                            })}
+                            trigger="notification-drawer-toggle-button"
+                        >
                             <i class="fas fa-bell" aria-hidden="true"></i>
                         </pf-tooltip>
-                        <span class="pf-c-notification-badge__count">${notificationCount}</span>
+                        <span
+                            id="notification-count"
+                            class="pf-c-notification-badge__count"
+                            aria-live="polite"
+                        >
+                            ${notificationCount}
+                            <span class="sr-only">unread</span>
+                        </span>
                     </span>
                 </button>
             </div>`;
@@ -112,6 +137,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 class="pf-c-button pf-m-plain"
                 type="button"
                 href="${globalAK().api.base}if/user/#/settings"
+                aria-label=${msg("Settings")}
             >
                 <pf-tooltip position="top" content=${msg("Settings")}>
                     <i class="fas fa-cog" aria-hidden="true"></i>

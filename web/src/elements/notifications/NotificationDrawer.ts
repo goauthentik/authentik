@@ -170,46 +170,53 @@ ${JSON.stringify(item.event.context, null, 2)}</pre
     protected override render(): SlottedTemplateResult {
         const unreadCount = isAPIResultReady(this.notifications) ? this.notificationCount : 0;
 
-        return html`<div
+        return html`<aside
             class="pf-c-drawer__body pf-m-no-padding"
-            aria-label=${msg("Notification drawer")}
-            role="region"
-            tabindex="0"
+            aria-labelledby="notification-drawer-title"
         >
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
+                <header class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
+                        <h2
+                            id="notification-drawer-title"
+                            class="pf-c-notification-drawer__header-title"
+                        >
                             ${msg("Notifications")}
-                        </h1>
-                        <span> ${msg(str`${unreadCount} unread`)}</span>
+                        </h2>
+                        <span aria-live="polite" aria-atomic="true">
+                            ${msg(str`${unreadCount} unread`, {
+                                id: "notification-unread-count",
+                                desc: "Indicates the number of unread notifications in the notification drawer",
+                            })}
+                        </span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
-                        <div>
-                            <button
-                                @click=${this.clearNotifications}
-                                class="pf-c-button pf-m-plain"
-                                type="button"
-                                aria-label=${msg("Clear all")}
-                            >
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div class="pf-c-notification-drawer__header-action-close">
-                            <button
-                                @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
-                                class="pf-c-button pf-m-plain"
-                                type="button"
-                                aria-label=${msg("Close")}
-                            >
-                                <i class="fas fa-times" aria-hidden="true"></i>
-                            </button>
-                        </div>
+                        <button
+                            @click=${this.clearNotifications}
+                            class="pf-c-button pf-m-plain"
+                            type="button"
+                            aria-label=${msg("Clear all notifications", {
+                                id: "notification-drawer-clear-all",
+                            })}
+                            ?disabled=${!unreadCount}
+                        >
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                        <button
+                            @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
+                            class="pf-c-button pf-m-plain"
+                            type="button"
+                            aria-label=${msg("Close notification drawer", {
+                                id: "notification-drawer-close",
+                            })}
+                        >
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
                     </div>
-                </div>
+                </header>
                 <div class="pf-c-notification-drawer__body">${this.renderBody()}</div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 
