@@ -169,7 +169,7 @@ export class RelatedRoleList extends Table<Role> {
         return directResponse;
     }
 
-    get columns(): TableColumn[] {
+    protected get columns(): TableColumn[] {
         // Hide actions column in showInherited mode (view-only)
         if (this.showInherited) {
             return [[msg("Name"), "name"]];
