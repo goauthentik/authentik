@@ -139,7 +139,6 @@ export class NotificationsContextController extends ReactiveContextController<No
                 notification,
                 ...currentNotifications.results,
             ]);
-            appended.pagination.count += currentNotifications.pagination.count + 1;
 
             this.context.setValue(appended);
 
