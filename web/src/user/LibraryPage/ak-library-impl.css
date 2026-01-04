@@ -5,7 +5,7 @@
 
 .pf-c-page {
     --pf-c-page--BackgroundColor: transparent;
-    --pf-c-page__main-section--BackgroundColor: transparent;
+    --pf-c-page__main-section--BackgroundColor: transparent !important;
 }
 
 .pf-c-page__header {
@@ -45,7 +45,6 @@
 }
 
 .pf-c-page__main-section {
-    background-color: transparent;
     padding-inline: 0;
 }
 

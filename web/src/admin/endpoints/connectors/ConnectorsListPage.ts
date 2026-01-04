@@ -44,23 +44,25 @@ export class ConnectorsListPage extends TablePage<Connector> {
         return [
             html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
             html`${item.verboseName}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Connector")}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.connectorUuid,
-                    }}
-                    type=${ifDefined(item.component)}
-                >
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Connector")}</span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.connectorUuid,
+                        }}
+                        type=${ifDefined(item.component)}
+                    >
+                    </ak-proxy-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 
