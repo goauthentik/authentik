@@ -30,10 +30,11 @@ class BaseMigration:
     def __init__(self, cur: Any, con: Any):
         self.cur = cur
         self.con = con
+        self.log = get_logger().bind()
 
     def system_crit(self, command: str):
         """Run system command"""
-        LOGGER.debug("Running system_crit command", command=command)
+        self.log.debug("Running system_crit command", command=command)
         retval = system(command)  # nosec
         if retval != 0:
             raise CommandError("Migration error")
