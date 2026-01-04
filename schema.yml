@@ -32955,6 +32955,9 @@ components:
       enum:
       - rsa
       - ecdsa
+      - ed25519
+      - ed448
+      - dsa
       type: string
     App:
       type: object
