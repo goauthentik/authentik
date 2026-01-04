@@ -65,7 +65,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                         type="tel"
                         name="phoneNumber"
                         placeholder="${msg("Please enter your Phone number.")}"
-                        autofocus=""
+                        autofocus
                         autocomplete="tel"
                         class="pf-c-form-control"
                         required
@@ -110,7 +110,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                         inputmode="numeric"
                         pattern="[0-9]*"
                         placeholder="${msg("Please enter the code you received via SMS")}"
-                        autofocus=""
+                        autofocus
                         autocomplete="one-time-code"
                         class="pf-c-form-control pf-m-monospace"
                         required

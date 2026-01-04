@@ -1,10 +1,13 @@
+from unittest import skipUnless
+
 from django.test import TestCase
 
-from authentik.admin.files.tests.utils import FileTestS3BackendMixin
+from authentik.admin.files.tests.utils import FileTestS3BackendMixin, s3_test_server_available
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 
 
+@skipUnless(s3_test_server_available(), "S3 test server not available")
 class TestS3Backend(FileTestS3BackendMixin, TestCase):
     """Test S3 backend functionality"""
 

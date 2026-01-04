@@ -4729,11 +4729,6 @@ paths:
           type: boolean
         description: Only return certificate-key pairs with keys
       - in: query
-        name: include_details
-        schema:
-          type: boolean
-          default: true
-      - in: query
         name: key_type
         schema:
           type: array
@@ -26216,7 +26211,7 @@ paths:
       tags:
       - stages
       security:
-      - authentik: []
+      - {}
       responses:
         '200':
           content:
@@ -33586,7 +33581,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-email
         code:
-          type: integer
+          type: string
+          minLength: 1
         email:
           type: string
           minLength: 1
@@ -33833,7 +33829,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-sms
         code:
-          type: integer
+          type: string
+          minLength: 1
         phone_number:
           type: string
           minLength: 1
@@ -34107,7 +34104,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-totp
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     AuthenticatorTOTPStage:
@@ -34794,6 +34792,7 @@ components:
     CapabilitiesEnum:
       enum:
       - can_save_media
+      - can_save_reports
       - can_geo_ip
       - can_asn
       - can_impersonate
@@ -34992,25 +34991,25 @@ components:
           type: string
         fingerprint_sha256:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA256)
           readOnly: true
+          nullable: true
+          description: SHA256 fingerprint of the certificate
         fingerprint_sha1:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA1)
           readOnly: true
+          nullable: true
+          description: SHA1 fingerprint of the certificate
         cert_expiry:
           type: string
           format: date-time
-          nullable: true
-          description: Get certificate expiry
           readOnly: true
+          nullable: true
+          description: Certificate expiry date
         cert_subject:
           type: string
-          nullable: true
-          description: Get certificate subject as full rfc4514
           readOnly: true
+          nullable: true
+          description: Certificate subject as RFC4514 string
         private_key_available:
           type: boolean
           description: Show if this keypair has a private key configured or not
@@ -35018,8 +35017,9 @@ components:
         key_type:
           allOf:
           - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
           readOnly: true
+          nullable: true
+          description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
           type: string
           description: Get URL to download certificate
@@ -35388,10 +35388,14 @@ components:
         model:
           type: string
           readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
       required:
       - app_label
       - id
       - model
+      - verbose_name_plural
     ContextualFlowInfo:
       type: object
       description: Contextual flow information for a challenge
@@ -35739,7 +35743,7 @@ components:
           readOnly: true
         requested_by:
           allOf:
-          - $ref: '#/components/schemas/RequestedBy'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         requested_on:
           type: string
@@ -51253,22 +51257,6 @@ components:
           minimum: -2147483648
       required:
       - name
-    RequestedBy:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-      required:
-      - pk
-      - username
     ResidentKeyRequirementEnum:
       enum:
       - discouraged

@@ -472,7 +472,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
             aria-autocomplete="list"
             role="combobox"
             aria-label=${ifPresent(this.label)}
-            aria-has-popup="listbox"
+            aria-haspopup="listbox"
             aria-activedescendant=${this.selectionIndex === -1
                 ? ""
                 : `suggestion-${this.selectionIndex}`}
