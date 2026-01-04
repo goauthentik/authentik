@@ -13,7 +13,13 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    IntegerField,
+    ListField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -86,6 +92,19 @@ class ApplicationSerializer(ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["icon"] = CharField(source="meta_icon", required=False)
+            # When importing from a blueprint, the provider is created in the same
+            # transaction and linked via KeyOf reference. We skip FK validation here
+            # because DRF's PrimaryKeyRelatedField.to_internal_value() queries the DB
+            # to verify the PK exists, and that query may hit a read replica that
+            # hasn't replicated the just-created provider yet (it's uncommitted).
+            # Using IntegerField with source="provider_id" allows the PK value to pass
+            # through without DB lookup, and assigns directly to the FK's _id field.
+            self.fields["provider"] = IntegerField(
+                source="provider_id", required=False, allow_null=True
+            )
+            self.fields["backchannel_providers"] = ListField(
+                child=IntegerField(), required=False, default=list
+            )
 
     class Meta:
         model = Application
