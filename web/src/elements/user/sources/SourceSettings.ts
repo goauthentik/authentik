@@ -25,7 +25,7 @@ import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css
 export class UserSourceSettingsPage extends AKElement {
     static styles: CSSResult[] = [PFDataList, Styles];
 
-    @property({ type: Number })
+    @property({ type: Number, attribute: "user-id" })
     public userId?: number;
 
     @property({ type: Boolean, attribute: "allow-configuration" })
