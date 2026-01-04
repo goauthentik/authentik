@@ -40,9 +40,6 @@ Front-channel logout sends logout requests through the user's browser. authentik
     - Provides fast, parallel logout across multiple providers
     - Required by the OIDC front-channel logout specification
     - Most SAML providers also support iframe-based logout
-    - Provides fast, parallel logout across multiple providers
-    - Required by the OIDC front-channel logout specification
-    - Most SAML providers also support iframe-based logout
 
 #### Native Mode (SAML Only)
 
