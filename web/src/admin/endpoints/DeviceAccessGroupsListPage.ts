@@ -43,7 +43,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Group")}</span>
-                    <ak-endpoints-device-access-groups-form slot="form" pk=${item.pbmUuid}>
+                    <ak-endpoints-device-access-groups-form slot="form" .instancePk=${item.pbmUuid}>
                     </ak-endpoints-device-access-groups-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
@@ -51,7 +51,6 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                <div></div>
             </div>`,
         ];
     }
