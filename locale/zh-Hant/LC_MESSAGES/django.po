@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Chen Zhikai, 2022
 # PasserDreamer, 2023
 # Phreeman33, 2024
 # 刘松, 2025
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -2709,7 +2709,7 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr "將符合此過濾條件的物件視為使用者。"
 
 #: authentik/sources/ldap/models.py
-msgid "Attribute which matches the value of `group_membership_field`."
+msgid "Attribute which matches the value of `membership_field`."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
