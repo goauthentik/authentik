@@ -1,10 +1,10 @@
 import "#elements/timestamp/ak-timestamp";
 
-import { RequestInfo } from "#common/api/middleware";
-import { EVENT_REQUEST_POST } from "#common/constants";
+import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
 
 import { msg } from "@lit/localize";
@@ -17,7 +17,7 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-function renderItem(item: RequestInfo, idx: number): TemplateResult {
+function renderItem(item: APIRequestInfo, idx: number): TemplateResult {
     const subheading = `${item.method}: ${item.status}`;
 
     const label = URL.canParse(item.path) ? new URL(item.path).pathname : null;
@@ -46,7 +46,7 @@ function renderItem(item: RequestInfo, idx: number): TemplateResult {
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
     @property({ attribute: false })
-    requests: RequestInfo[] = [];
+    public requests: APIRequestInfo[] = [];
 
     static styles: CSSResult[] = [
         PFBase,
@@ -80,17 +80,17 @@ export class APIDrawer extends AKElement {
         `,
     ];
 
-    constructor() {
-        super();
-        window.addEventListener(EVENT_REQUEST_POST, ((e: CustomEvent<RequestInfo>) => {
-            this.requests.push(e.detail);
-            this.requests.sort((a, b) => a.time - b.time).reverse();
-            if (this.requests.length > 50) {
-                this.requests.shift();
-            }
-            this.requestUpdate();
-        }) as EventListener);
-    }
+    @listen(AKRequestPostEvent)
+    protected enqueueRequest = ({ requestInfo }: AKRequestPostEvent) => {
+        this.requests.push(requestInfo);
+
+        this.requests.sort((a, b) => a.time - b.time).reverse();
+        if (this.requests.length > 50) {
+            this.requests.shift();
+        }
+
+        this.requestUpdate();
+    };
 
     render(): TemplateResult {
         return html`<div

@@ -15,6 +15,7 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { AKDrawerChangeEvent } from "#elements/notifications/events";
@@ -69,7 +70,8 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
     @state()
     protected drawer: DrawerState = readDrawerParams();
 
-    #drawerListener = (event: AKDrawerChangeEvent) => {
+    @listen(AKDrawerChangeEvent)
+    protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);
     };
@@ -84,16 +86,8 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         WebsocketClient.connect();
     }
 
-    public override connectedCallback() {
-        super.connectedCallback();
-
-        window.addEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
-    }
-
     public override disconnectedCallback() {
         super.disconnectedCallback();
-
-        window.removeEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
 
         WebsocketClient.close();
     }

@@ -6,6 +6,9 @@
 
 /// <reference types="../../types/esbuild.js" />
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AKEnterpriseRefreshEvent, AKRefreshEvent } from "#common/events";
+
 //#region Patternfly
 
 export const SECONDARY_CLASS = "pf-m-secondary";
@@ -29,12 +32,18 @@ export const ROUTE_SEPARATOR = ";";
 
 //#region Events
 
+/**
+ * Event name for refresh events.
+ *
+ * @deprecated Use {@linkcode AKRefreshEvent}
+ */
 export const EVENT_REFRESH = "ak-refresh";
-export const EVENT_FLOW_INSPECTOR_TOGGLE = "ak-flow-inspector-toggle";
-export const EVENT_FLOW_ADVANCE = "ak-flow-advance";
-export const EVENT_LOCALE_REQUEST = "ak-locale-request";
-export const EVENT_REQUEST_POST = "ak-request-post";
-export const EVENT_MESSAGE = "ak-message";
+
+/**
+ * Event name for enterprise refresh events.
+ *
+ * @deprecated Use {@linkcode AKEnterpriseRefreshEvent}
+ */
 export const EVENT_REFRESH_ENTERPRISE = "ak-refresh-enterprise";
 
 //#endregion

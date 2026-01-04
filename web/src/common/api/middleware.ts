@@ -1,4 +1,4 @@
-import { EVENT_REQUEST_POST } from "#common/constants";
+import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
 
@@ -16,13 +16,6 @@ import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 
 export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
-
-export interface RequestInfo {
-    time: number;
-    method: string;
-    path: string;
-    status: number;
-}
 
 export class LoggingMiddleware implements Middleware {
     #logger: Logger;
@@ -60,19 +53,15 @@ export class CSRFMiddleware implements Middleware {
 
 export class EventMiddleware implements Middleware {
     post?(context: ResponseContext): Promise<Response | void> {
-        const request: RequestInfo = {
+        const requestInfo: APIRequestInfo = {
             time: new Date().getTime(),
             method: (context.init.method || "GET").toUpperCase(),
             path: context.url,
             status: context.response.status,
         };
-        window.dispatchEvent(
-            new CustomEvent(EVENT_REQUEST_POST, {
-                bubbles: true,
-                composed: true,
-                detail: request,
-            }),
-        );
+
+        window.dispatchEvent(new AKRequestPostEvent(requestInfo));
+
         return Promise.resolve(context.response);
     }
 }

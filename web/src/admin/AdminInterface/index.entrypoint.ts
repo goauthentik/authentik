@@ -18,6 +18,7 @@ import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
@@ -89,7 +90,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
     @state()
     protected drawer: DrawerState = readDrawerParams();
 
-    #drawerListener = (event: AKDrawerChangeEvent) => {
+    @listen(AKDrawerChangeEvent)
+    protected drawerListener = (event: AKDrawerChangeEvent) => {
         this.drawer = event.drawer;
         persistDrawerParams(event.drawer);
     };
@@ -114,8 +116,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
     public connectedCallback() {
         super.connectedCallback();
 
-        window.addEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
-
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
         });
@@ -123,8 +123,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-
-        window.removeEventListener(AKDrawerChangeEvent.eventName, this.#drawerListener);
 
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
