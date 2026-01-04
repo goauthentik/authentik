@@ -124,16 +124,25 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
                 <button type="reset" aria-label=${msg("Clear search")}>&times;</button>`;
         }
 
-        return html`<input
-            aria-label=${ifPresent(this.label)}
-            name="search"
-            type="search"
-            autocomplete="off"
-            placeholder=${ifPresent(this.placeholder)}
-            value=${ifPresent(this.defaultValue)}
-            class="pf-c-form-control"
-            @search=${this.#searchListener}
-        />`;
+        // The ts-ignore comment is lit-analyzer's solution to "ignore semantic errors in the
+        // following HTML code." NOTE: This code needs to be revised. The three common browsers all
+        // implement `type="search"` in different and incompatible ways. Safari and Firefox issue
+        // `input` events. Firefox treats it as pure `text` field, whereas Safari debounces it
+        // according to the `incremental` attribute. Safari's `input` event carries a custom field,
+        // `results`, to hint at how many values are currently being found. Consistent behavior will
+        // require a custom element that understands the semantics of the delete button and
+        // harmonizes the meaning of the `incremental` attribute.
+        return html` <!-- @ts-ignore -->
+            <input
+                aria-label=${ifPresent(this.label)}
+                name="search"
+                type="search"
+                autocomplete="off"
+                placeholder=${ifPresent(this.placeholder)}
+                value=${ifPresent(this.defaultValue)}
+                class="pf-c-form-control"
+                @search=${this.#searchListener}
+            />`;
     }
 
     render(): TemplateResult {
