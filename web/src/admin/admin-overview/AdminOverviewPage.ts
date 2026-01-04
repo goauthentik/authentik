@@ -91,7 +91,11 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-aggregate-card icon="fa fa-sync-alt" label=${msg("Sync status")}>
+                        <ak-aggregate-card
+                            icon="fa fa-sync-alt"
+                            label=${msg("Sync status")}
+                            tooltip=${msg("Integrations synced in the last 12 hours.")}
+                        >
                             <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                         </ak-aggregate-card>
                     </div>
