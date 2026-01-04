@@ -370,7 +370,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
         </div>`;
     }
 
-    renderTabRoles(user: User): TemplateResult {
+    protected renderTabRoles(user: User): TemplateResult {
         return html`
             <ak-tabs pageIdentifier="userRoles" vertical>
                 <div
