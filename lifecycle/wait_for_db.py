@@ -18,6 +18,7 @@ def check_postgres():
         if attempt >= CHECK_THRESHOLD:
             sysexit(1)
         try:
+            conn_opts = CONFIG.get_dict_from_b64_json("postgresql.conn_options", default={})
             conn = connect(
                 dbname=CONFIG.refresh("postgresql.name"),
                 user=CONFIG.refresh("postgresql.user"),
@@ -28,6 +29,7 @@ def check_postgres():
                 sslrootcert=CONFIG.get("postgresql.sslrootcert"),
                 sslcert=CONFIG.get("postgresql.sslcert"),
                 sslkey=CONFIG.get("postgresql.sslkey"),
+                **conn_opts,
             )
             conn.cursor()
             break
