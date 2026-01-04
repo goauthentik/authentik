@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import Permission
 from django.http import Http404
-from django_filters.filters import AllValuesMultipleFilter, BooleanFilter
+from django_filters.filters import AllValuesMultipleFilter, BooleanFilter, CharFilter, NumberFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_field
@@ -22,7 +22,7 @@ from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.core.models import User
+from authentik.core.models import Group, User
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
 
@@ -65,15 +65,54 @@ class RoleSerializer(ManagedSerializer, ModelSerializer):
 
 
 class RoleFilterSet(FilterSet):
-    """Filter for PropertyMapping"""
+    """Filter for Role"""
 
     managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
     managed__isnull = BooleanFilter(field_name="managed", lookup_expr="isnull")
 
+    inherited_user_roles = extend_schema_field(OpenApiTypes.INT)(
+        NumberFilter(
+            method="filter_inherited_user_roles",
+            label="Filter by inherited roles from groups (excludes direct)",
+        )
+    )
+
+    inherited_group_roles = extend_schema_field(OpenApiTypes.UUID)(
+        CharFilter(
+            method="filter_inherited_group_roles",
+            label="Filter by inherited roles from ancestor groups (excludes direct)",
+        )
+    )
+
+    def filter_inherited_user_roles(self, queryset, name, value):
+        """Filter roles inherited from groups (excludes direct user roles)"""
+        try:
+            user = User.objects.get(pk=value)
+        except User.DoesNotExist:
+            return queryset.none()
+        direct_role_pks = set(user.roles.values_list("pk", flat=True))
+        return user.all_roles().exclude(pk__in=direct_role_pks)
+
+    def filter_inherited_group_roles(self, queryset, name, value):
+        """Filter roles inherited from ancestor groups (excludes direct roles)"""
+        try:
+            group = Group.objects.get(pk=value)
+        except Group.DoesNotExist:
+            return queryset.none()
+        direct_role_pks = set(group.roles.values_list("pk", flat=True))
+        return group.all_roles().exclude(pk__in=direct_role_pks)
+
     class Meta:
         model = Role
-        fields = ["name", "users", "managed"]
+        fields = [
+            "name",
+            "users",
+            "ak_groups",
+            "managed",
+            "inherited_user_roles",
+            "inherited_group_roles",
+        ]
 
 
 class RoleViewSet(UsedByMixin, ModelViewSet):

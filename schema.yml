@@ -20048,6 +20048,24 @@ paths:
       description: Role viewset
       parameters:
       - in: query
+        name: ak_groups
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: inherited_group_roles
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: inherited_user_roles
+        schema:
+          type: integer
+      - in: query
         name: managed
         schema:
           type: array
@@ -38770,6 +38788,11 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        inherited_roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
         children:
           type: array
           items:
@@ -38785,6 +38808,7 @@ components:
       required:
       - children
       - children_obj
+      - inherited_roles_obj
       - name
       - num_pk
       - parents_obj
