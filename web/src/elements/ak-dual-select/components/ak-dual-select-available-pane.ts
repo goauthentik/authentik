@@ -46,7 +46,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
     /* The array of key/value pairs this pane is currently showing */
     @property({ type: Array })
-    public readonly options?: DualSelectPair[];
+    public options?: DualSelectPair[];
 
     /**
      * A set (set being easy for lookups) of keys with all the pairs selected,
@@ -54,7 +54,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
      * can be marked and their clicks ignored.
      */
     @property({ type: Object })
-    public readonly selected: Set<string | number> = new Set();
+    public selected: Set<string | number> = new Set();
 
     //#endregion
 
