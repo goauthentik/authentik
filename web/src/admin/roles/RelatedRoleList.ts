@@ -183,7 +183,7 @@ export class RelatedRoleList extends Table<Role> {
     renderToolbarSelected(): TemplateResult {
         // Don't render Remove button in showInherited mode (view-only)
         if (this.showInherited) {
-            return html``;
+            return nothing;
         }
         const disabled = !this.selectedElements.length;
         return html`<ak-forms-delete-bulk
