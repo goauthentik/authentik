@@ -249,7 +249,7 @@ export class GroupViewPage extends AKElement {
         </main>`;
     }
 
-    renderTabRoles(group: Group): TemplateResult {
+    protected renderTabRoles(group: Group): TemplateResult {
         return html`
             <ak-tabs pageIdentifier="groupRoles" vertical>
                 <div
