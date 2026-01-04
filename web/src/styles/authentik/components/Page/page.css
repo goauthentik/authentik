@@ -2,6 +2,8 @@
  * Extensions of PF4's sidebar color to better match our existing dark theme.
  */
 .pf-c-page {
+    --pf-c-page__header--ZIndex: auto;
+    --pf-c-page__main--ZIndex: auto;
     --pf-c-page__main-nav--BackgroundColor: var(--pf-global--BackgroundColor--200);
     --pf-c-page__sidebar--m-dark--BackgroundColor: var(--pf-global--BackgroundColor--100);
 
@@ -53,7 +55,7 @@ ak-tabs::part(row) {
         --pf-global--BackgroundColor--300
     );
     --pf-c-page__sidebar--BackgroundColor: var(--pf-c-page__sidebar--m-dark--BackgroundColor);
-    --pf-c-page__header--BackgroundColor: var(--pf-global--palette--black-1000);
+    --pf-c-page__header--BackgroundColor: transparent;
 
     /**
      * cf. Color reversal.
