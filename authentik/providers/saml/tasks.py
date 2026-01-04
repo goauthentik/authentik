@@ -19,6 +19,7 @@ def send_saml_logout_request(
     name_id: str,
     name_id_format: str,
     session_index: str,
+    issuer: str,
 ):
     """Send SAML LogoutRequest to a Service Provider using session data"""
     provider = SAMLProvider.objects.filter(pk=provider_pk).first()
@@ -44,6 +45,7 @@ def send_saml_logout_request(
         name_id=name_id,
         name_id_format=name_id_format,
         session_index=session_index,
+        issuer=issuer,
     )
 
     return send_post_logout_request(provider, processor)
