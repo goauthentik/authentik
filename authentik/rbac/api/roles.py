@@ -87,18 +87,16 @@ class RoleFilterSet(FilterSet):
 
     def filter_inherited_user_roles(self, queryset, name, value):
         """Filter roles inherited from groups (excludes direct user roles)"""
-        try:
-            user = User.objects.get(pk=value)
-        except User.DoesNotExist:
+        user = User.objects.filter(pk=value).first()
+        if not user:
             return queryset.none()
         direct_role_pks = user.roles.values_list("pk", flat=True)
         return user.all_roles().exclude(pk__in=direct_role_pks)
 
     def filter_inherited_group_roles(self, queryset, name, value):
         """Filter roles inherited from ancestor groups (excludes direct roles)"""
-        try:
-            group = Group.objects.get(pk=value)
-        except Group.DoesNotExist:
+        group = Group.objects.filter(pk=value).first()
+        if not group:
             return queryset.none()
         direct_role_pks = group.roles.values_list("pk", flat=True)
         return group.all_roles().exclude(pk__in=direct_role_pks)
