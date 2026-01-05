@@ -88,7 +88,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
             html`<div>
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Enrollment token")}</span>
+                    <span slot="header">${msg("Update Enrollment Token")}</span>
                     <ak-endpoints-agent-enrollment-token-form
                         slot="form"
                         .instancePk=${item.tokenUuid}
