@@ -210,17 +210,22 @@ export class RelatedRoleList extends Table<Role> {
         </ak-forms-delete-bulk>`;
     }
 
-    isInherited(role: Role): boolean {
+    protected isInherited(role: Role): boolean {
         if (this.targetGroup) {
             // For groups, check if role is in direct roles
             if (!this.targetGroup.roles) return false;
+            
             return !this.targetGroup.roles.includes(role.pk);
         }
+        
         if (this.targetUser) {
             // For users, check if role is in direct roles
+            
             if (!this.targetUser.roles) return false;
+            
             return !this.targetUser.roles.includes(role.pk);
         }
+        
         return false;
     }
 
