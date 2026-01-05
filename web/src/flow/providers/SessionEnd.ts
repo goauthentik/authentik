@@ -70,3 +70,9 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
         </ak-flow-card>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-session-end": SessionEnd;
+    }
+}
