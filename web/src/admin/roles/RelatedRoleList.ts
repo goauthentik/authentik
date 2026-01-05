@@ -22,6 +22,8 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-role-related-add")
 export class RelatedRoleAdd extends Form<{ roles: string[] }> {
+    #api = new RbacApi(DEFAULT_CONFIG);
+
     @property({ attribute: false })
     public user: User | null = null;
 
@@ -36,7 +38,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
         await Promise.all(
             data.roles.map((role) => {
                 if (!this.user) return Promise.resolve();
-                return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                return this.#api.rbacRolesAddUserCreate({
                     uuid: role,
                     userAccountSerializerForRoleRequest: {
                         pk: this.user.pk,
@@ -86,6 +88,8 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
 
 @customElement("ak-role-related-list")
 export class RelatedRoleList extends Table<Role> {
+    #api = new RbacApi(DEFAULT_CONFIG);
+
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
@@ -117,11 +121,11 @@ export class RelatedRoleList extends Table<Role> {
         if (this.targetGroup) {
             // Always fetch both direct and inherited roles
             const [directResponse, inheritedResponse] = await Promise.all([
-                new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+                this.#api.rbacRolesList({
                     ...config,
                     akGroups: [this.targetGroup.pk],
                 }),
-                new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+                this.#api.rbacRolesList({
                     ...config,
                     inheritedGroupRoles: this.targetGroup.pk,
                 }),
@@ -145,11 +149,11 @@ export class RelatedRoleList extends Table<Role> {
 
         // Handle user filtering - always fetch both direct and inherited roles
         const [directResponse, inheritedResponse] = await Promise.all([
-            new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+            this.#api.rbacRolesList({
                 ...config,
                 users: this.targetUser?.pk ? [this.targetUser.pk] : undefined,
             }),
-            new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+            this.#api.rbacRolesList({
                 ...config,
                 inheritedUserRoles: this.targetUser?.pk,
             }),
@@ -196,7 +200,7 @@ export class RelatedRoleList extends Table<Role> {
             .objects=${this.selectedElements}
             .delete=${(item: Role) => {
                 if (!this.targetUser) return;
-                return new RbacApi(DEFAULT_CONFIG).rbacRolesRemoveUserCreate({
+                return this.#api.rbacRolesRemoveUserCreate({
                     uuid: item.pk,
                     userAccountSerializerForRoleRequest: {
                         pk: this.targetUser.pk,
