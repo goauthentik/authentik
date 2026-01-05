@@ -1,3 +1,4 @@
+import "#elements/forms/ConfirmationForm";
 import "#admin/applications/ApplicationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";

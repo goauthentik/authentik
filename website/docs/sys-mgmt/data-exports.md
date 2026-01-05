@@ -10,7 +10,7 @@ The content included in a data export matches that returned by the API endpoints
 
 For detailed instructions on exporting users and events, see [Export users](../users-sources/user/user_basic_operations.md#export-users-) and [Export events](events/logging-events.md#export-events-) respectively.
 
-You can access past data exports from the **System Management** > **Data Exports** page. On this page you can view the query used for a specific export, search exports by data type and user, download completed exports and delete exports that you no longer need.
+You can access past data exports from the **Events** > **Data Exports** page. On this page you can view the query used for a specific export, search exports by data type and user, download completed exports and delete exports that you no longer need.
 
 ## Permissions
 

@@ -6,53 +6,17 @@
 <trans-unit id="en">
   <source>English</source>
 </trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech</source>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German</source>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish</source>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish</source>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French</source>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian</source>
-</trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
 </trans-unit>
 <trans-unit id="ko-KR">
   <source>Korean</source>
 </trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch</source>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish</source>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese</source>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian</source>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish</source>
-</trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified</source>
+  <source>Chinese (Simplified)</source>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional</source>
+  <source>Chinese (Traditional)</source>
 </trans-unit>
 <!-- #endregion -->
 
@@ -66,8 +30,8 @@
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
-  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
-  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
 
@@ -3220,9 +3184,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sf96a86df0756bc7b">
   <source>Afterwards, select the enrollment token you want to use:</source>
 </trans-unit>
-<trans-unit id="s13b4cf044a01dde2">
-  <source>Then download the configuration to deploy the authentik Agent</source>
-</trans-unit>
 <trans-unit id="s12f523a52b843ea2">
   <source>macOS</source>
 </trans-unit>
@@ -3319,12 +3280,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
 </trans-unit>
-<trans-unit id="s76ea179414f2b2a5">
-  <source>Disk size</source>
-</trans-unit>
-<trans-unit id="s25e7a078391a3ec3">
-  <source>Disk usage</source>
-</trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
 </trans-unit>
@@ -3333,9 +3288,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s09810653c832e935">
   <source>Click to change value</source>
-</trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
 </trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
@@ -3397,17 +3349,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s4165cd175bc4c0c4">
   <source>Expires on</source>
 </trans-unit>
-<trans-unit id="sb7fe62e7073eb6c9">
-  <source>Token name...</source>
-</trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
-</trans-unit>
-<trans-unit id="safcc54b2aedb1a17">
-  <source>If this is selected, the token will expire. Upon expiration, the token will be rotated.</source>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -3423,9 +3369,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
-</trans-unit>
-<trans-unit id="sc522b30adb9ff289">
-  <source>Update Enrollment token</source>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -6085,9 +6028,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
 </trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
 </trans-unit>
@@ -6226,9 +6166,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se9b1fec72ffd8f48">
   <source>Local</source>
-</trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
 </trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
@@ -7389,9 +7326,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
 </trans-unit>
-<trans-unit id="s506c7d2e87f6770e">
-  <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
-</trans-unit>
 <trans-unit id="s3a3d5b2575cd32ea">
   <source>File uploaded successfully</source>
 </trans-unit>
@@ -7524,9 +7458,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
 </trans-unit>
-<trans-unit id="s184c3b30bebb2dd8">
-  <source>Assign role permissions</source>
-</trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
 </trans-unit>
@@ -7632,9 +7563,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
 </trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
-</trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
@@ -7643,6 +7571,194 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+</trans-unit>
+<trans-unit id="s1af2337b6d11d4c6">
+  <source>Data export ready</source>
+</trans-unit>
+<trans-unit id="sd0fcaa6952729a9a">
+  <source>Data Exports</source>
+</trans-unit>
+<trans-unit id="s1d1d961d6f3550e5">
+  <source>Manage past data exports.</source>
+</trans-unit>
+<trans-unit id="s8cddef7d8dac7f87">
+  <source>Data type</source>
+</trans-unit>
+<trans-unit id="s3783e647280eb968">
+  <source>Requested by</source>
+</trans-unit>
+<trans-unit id="s2d119c0d85bde088">
+  <source>Creation date</source>
+</trans-unit>
+<trans-unit id="s5033dab8c17f05f2">
+  <source>Completed</source>
+</trans-unit>
+<trans-unit id="s21c76a0f6cae7920">
+  <source>Row actions</source>
+</trans-unit>
+<trans-unit id="s97aa774d38013957">
+  <source>Data export(s)</source>
+</trans-unit>
+<trans-unit id="s694b2e2c53d2d85d">
+  <source>Query parameters</source>
+</trans-unit>
+<trans-unit id="s145aca905bbc68a4">
+  <source>SAML metadata XML file to import provider settings from.</source>
+</trans-unit>
+<trans-unit id="s0d748f6fb237da48">
+  <source>Configure SAML Provider from Metadata</source>
+</trans-unit>
+<trans-unit id="sb541f02499d73b4e">
+  <source>Outgoing syncs will not be triggered.</source>
+</trans-unit>
+<trans-unit id="s967b3abf2608649a">
+  <source>Immediate</source>
+</trans-unit>
+<trans-unit id="sba0b0ee7c8b8f04a">
+  <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+</trans-unit>
+<trans-unit id="sd3dfc2a1c3647e77">
+  <source>Deferred until end</source>
+</trans-unit>
+<trans-unit id="secd492de6e1ae305">
+  <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+</trans-unit>
+<trans-unit id="s0c476074a4fc4d95">
+  <source>Outgoing sync trigger mode</source>
+</trans-unit>
+<trans-unit id="s4bb6f209647072f4">
+  <source>Successfully connected source</source>
+</trans-unit>
+<trans-unit id="sf3ad0b5ebe730780">
+  <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
+</trans-unit>
+<trans-unit id="s361e9d929ee925e6">
+  <source>Assign Object Permission</source>
+</trans-unit>
+<trans-unit id="s5f6ad947b4824e40">
+  <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
+</trans-unit>
+<trans-unit id="s523337424b694d5c">
+  <source>Device Access Group</source>
+</trans-unit>
+<trans-unit id="s7642bf28cf8f476c">
+  <source>Select a device access group to be added to upon enrollment.</source>
+</trans-unit>
+<trans-unit id="h30bbf18fbf87fa57">
+  <source>To create a data export, navigate to
+                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
+                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="s813faec5ff1d32d1">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
+</trans-unit>
+<trans-unit id="s54af3ec70642782c">
+  <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
+</trans-unit>
+<trans-unit id="sb3be65525dd1f92c">
+  <source>Assign object permissions to role</source>
+</trans-unit>
+<trans-unit id="sbcd108b66363075c">
+  <source>Device access group</source>
+</trans-unit>
+<trans-unit id="s325acae04cdcac57">
+  <source>Primary disk size</source>
+</trans-unit>
+<trans-unit id="sb4a957846c89fca1">
+  <source>Primary disk usage</source>
+</trans-unit>
+<trans-unit id="s7b68229d885a34d3">
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+</trans-unit>
+<trans-unit id="s284f44964466ef38">
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+</trans-unit>
+<trans-unit id="s01f8cd92a0204da2">
+  <source>Data exports are not available as storage for reports is not configured.</source>
+</trans-unit>
+<trans-unit id="s7afef158aada7389">
+  <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+</trans-unit>
+<trans-unit id="sa8d2689c8fdfea22">
+  <source>Successfully requested data export</source>
+</trans-unit>
+<trans-unit id="s7e2ef0e26e7f5e6f">
+  <source>Failed to export data</source>
+</trans-unit>
+<trans-unit id="sc6991f3e377938fb">
+  <source>Start export</source>
+</trans-unit>
+<trans-unit id="sd69873a0783f8e39">
+  <source>Export data</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s3ec4da71c1a62754">
+  <source>Queued</source>
+</trans-unit>
+<trans-unit id="sd32298bb7d36024d">
+  <source>Configured file backend does not support file management.</source>
+</trans-unit>
+<trans-unit id="s4f1e04b9b4cb96ae">
+  <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+</trans-unit>
+<trans-unit id="s3a46b5964b3ecfac">
+  <source>View details...</source>
+</trans-unit>
+<trans-unit id="s6cbf6cd401ea3336">
+  <source>Type a connector name...</source>
+</trans-unit>
+<trans-unit id="s04be2edfb0d2218a">
+  <source>Type a name for the token...</source>
+</trans-unit>
+<trans-unit id="s84e29a714db544e9">
+  <source>Update Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s5a7055a44dc83b1e">
+  <source>Type a unique identifier...</source>
+</trans-unit>
+<trans-unit id="sdfe787aeeebbfbf1">
+  <source>Type a token description...</source>
+</trans-unit>
+<trans-unit id="s434805f916fbf657">
+  <source>Not allowed to change this field. Please contact your administrator.</source>
 </trans-unit>
 </body>
 </file>

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.12.0-rc1
+  version: 2026.2.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4728,11 +4728,6 @@ paths:
         schema:
           type: boolean
         description: Only return certificate-key pairs with keys
-      - in: query
-        name: include_details
-        schema:
-          type: boolean
-          default: true
       - in: query
         name: key_type
         schema:
@@ -18431,8 +18426,12 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
-          description: Successfully imported provider
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLProvider'
+          description: ''
         '400':
           description: Bad request
         '403':
@@ -24421,6 +24420,39 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /sources/telegram/{slug}/connect_user/:
+    post:
+      operationId: sources_telegram_connect_user_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegramAuthRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserTelegramSourceConnection'
+          description: ''
+        '403':
+          description: Access denied
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
   /sources/telegram/{slug}/used_by/:
     get:
       operationId: sources_telegram_used_by_list
@@ -26179,7 +26211,7 @@ paths:
       tags:
       - stages
       security:
-      - authentik: []
+      - {}
       responses:
         '200':
           content:
@@ -29201,6 +29233,11 @@ paths:
         name: show_source_labels
         schema:
           type: boolean
+      - in: query
+        name: webauthn_stage
+        schema:
+          type: string
+          format: uuid
       tags:
       - stages
       security:
@@ -33544,7 +33581,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-email
         code:
-          type: integer
+          type: string
+          minLength: 1
         email:
           type: string
           minLength: 1
@@ -33791,7 +33829,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-sms
         code:
-          type: integer
+          type: string
+          minLength: 1
         phone_number:
           type: string
           minLength: 1
@@ -34065,7 +34104,8 @@ components:
           minLength: 1
           default: ak-stage-authenticator-totp
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     AuthenticatorTOTPStage:
@@ -34752,6 +34792,7 @@ components:
     CapabilitiesEnum:
       enum:
       - can_save_media
+      - can_save_reports
       - can_geo_ip
       - can_asn
       - can_impersonate
@@ -34950,25 +34991,25 @@ components:
           type: string
         fingerprint_sha256:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA256)
           readOnly: true
+          nullable: true
+          description: SHA256 fingerprint of the certificate
         fingerprint_sha1:
           type: string
-          nullable: true
-          description: Get certificate Hash (SHA1)
           readOnly: true
+          nullable: true
+          description: SHA1 fingerprint of the certificate
         cert_expiry:
           type: string
           format: date-time
-          nullable: true
-          description: Get certificate expiry
           readOnly: true
+          nullable: true
+          description: Certificate expiry date
         cert_subject:
           type: string
-          nullable: true
-          description: Get certificate subject as full rfc4514
           readOnly: true
+          nullable: true
+          description: Certificate subject as RFC4514 string
         private_key_available:
           type: boolean
           description: Show if this keypair has a private key configured or not
@@ -34976,8 +35017,9 @@ components:
         key_type:
           allOf:
           - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
           readOnly: true
+          nullable: true
+          description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
           type: string
           description: Get URL to download certificate
@@ -35346,10 +35388,14 @@ components:
         model:
           type: string
           readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
       required:
       - app_label
       - id
       - model
+      - verbose_name_plural
     ContextualFlowInfo:
       type: object
       description: Contextual flow information for a challenge
@@ -35697,7 +35743,7 @@ components:
           readOnly: true
         requested_by:
           allOf:
-          - $ref: '#/components/schemas/RequestedBy'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         requested_on:
           type: string
@@ -39241,6 +39287,10 @@ components:
         enable_remember_me:
           type: boolean
           default: true
+        passkey_challenge:
+          type: object
+          additionalProperties: {}
+          nullable: true
       required:
       - flow_designation
       - password_fields
@@ -39257,15 +39307,17 @@ components:
           default: ak-stage-identification
         uid_field:
           type: string
-          minLength: 1
+          nullable: true
         password:
           type: string
           nullable: true
         captcha_token:
           type: string
           nullable: true
-      required:
-      - uid_field
+        passkey:
+          type: object
+          additionalProperties: {}
+          nullable: true
     IdentificationStage:
       type: object
       description: IdentificationStage Serializer
@@ -39358,6 +39410,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - component
       - flow_set
@@ -39433,6 +39491,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
       required:
       - name
     IframeLogoutChallenge:
@@ -39799,6 +39863,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - component
       - connectivity
@@ -39983,6 +40051,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - name
       - realm
@@ -40507,6 +40579,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - base_dn
       - component
@@ -40721,6 +40797,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
       required:
       - base_dn
       - name
@@ -46689,6 +46769,12 @@ components:
           type: boolean
           description: Show the user the 'Remember me on this device' toggle, allowing
             repeat users to skip straight to entering their password.
+        webauthn_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, and conditional WebAuthn is available, allow the
+            user to use their passkey as a first factor.
     PatchedInitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer
@@ -46863,6 +46949,10 @@ components:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
             login with the Kerberos password backend
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -47097,6 +47187,10 @@ components:
           type: boolean
           description: Delete authentik users and groups which were previously supplied
             by this source, but are now missing from it.
+        sync_outgoing_trigger_mode:
+          allOf:
+          - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
+          description: When to trigger sync for outgoing providers
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -48683,6 +48777,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -50080,6 +50184,7 @@ components:
       - slack
       - twitch
       - twitter
+      - wechat
       type: string
     ProxyMode:
       enum:
@@ -51152,22 +51257,6 @@ components:
           minimum: -2147483648
       required:
       - name
-    RequestedBy:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-      required:
-      - pk
-      - username
     ResidentKeyRequirementEnum:
       enum:
       - discouraged
@@ -53173,6 +53262,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -53238,6 +53337,16 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        pagination_default_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Default page size for API responses, if no size was requested.
+        pagination_max_page_size:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Maximum page size
         flags:
           type: object
           properties:
@@ -53697,6 +53806,12 @@ components:
           readOnly: true
       required:
       - messages
+    SyncOutgoingTriggerModeEnum:
+      enum:
+      - none
+      - immediate
+      - deferred_end
+      type: string
     SyncStatus:
       type: object
       description: Provider/source sync status
@@ -53898,14 +54013,9 @@ components:
       - warning
       - error
       type: string
-    TelegramChallengeResponseRequest:
+    TelegramAuthRequest:
       type: object
-      description: Base class for all challenge responses
       properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-source-telegram
         id:
           type: integer
         first_name:
@@ -53930,6 +54040,42 @@ components:
           type: string
           minLength: 1
           maxLength: 64
+      required:
+      - auth_date
+      - hash
+      - id
+    TelegramChallengeResponseRequest:
+      type: object
+      description: Base class for all challenge responses
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        username:
+          type: string
+          minLength: 1
+          maxLength: 255
+        photo_url:
+          type: string
+          format: uri
+          minLength: 1
+        auth_date:
+          type: integer
+        hash:
+          type: string
+          minLength: 1
+          maxLength: 64
+        component:
+          type: string
+          minLength: 1
+          default: ak-source-telegram
       required:
       - auth_date
       - hash

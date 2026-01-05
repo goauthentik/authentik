@@ -38,6 +38,11 @@ class PassthroughBackend(Backend):
         """External files cannot be listed."""
         yield from []
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Return the URL as-is for passthrough files."""
         return name

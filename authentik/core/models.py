@@ -152,7 +152,7 @@ class AttributesMixin(models.Model):
     @classmethod
     def update_or_create_attributes(
         cls, query: dict[str, Any], properties: dict[str, Any]
-    ) -> tuple[models.Model, bool]:
+    ) -> tuple[Self, bool]:
         """Same as django's update_or_create but correctly updates attributes by merging dicts"""
         instance = cls.objects.filter(**query).first()
         if not instance:
@@ -658,6 +658,10 @@ class ApplicationQuerySet(QuerySet):
         qs = self.select_related("provider")
         for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
             qs = qs.select_related(f"provider__{subclass}")
+            # Also prefetch/select through each subclass path to ensure casted instances have access
+            qs = qs.prefetch_related(f"provider__{subclass}__property_mappings")
+            qs = qs.select_related(f"provider__{subclass}__application")
+            qs = qs.select_related(f"provider__{subclass}__backchannel_application")
         return qs
 
 
@@ -709,8 +713,15 @@ class Application(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
-    def get_launch_url(self, user: Optional["User"] = None) -> str | None:
-        """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+    def get_launch_url(
+        self, user: Optional["User"] = None, user_data: dict | None = None
+    ) -> str | None:
+        """Get launch URL if set, otherwise attempt to get launch URL based on provider.
+
+        Args:
+            user: User instance for formatting the URL
+            user_data: Pre-serialized user data to avoid re-serialization (performance optimization)
+        """
         from authentik.core.api.users import UserSerializer
 
         url = None
@@ -720,7 +731,10 @@ class Application(SerializerModel, PolicyBindingModel):
             url = provider.launch_url
         if user and url:
             try:
-                return url % UserSerializer(instance=user).data
+                # Use pre-serialized data if available, otherwise serialize now
+                if user_data is None:
+                    user_data = UserSerializer(instance=user).data
+                return url % user_data
             except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
