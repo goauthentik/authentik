@@ -18,14 +18,14 @@ class DuplicateNameError(RuntimeError):
 class Migration(BaseMigration):
     def needs_migration(self) -> bool:
         self.cur.execute(
-            "select * from information_schema.tables where table_name = 'django_migrations';"
+            "select 1 from information_schema.tables where table_name = 'django_migrations';"
         )
         if not bool(self.cur.rowcount):
             # No django_migrations table, no data to check
             return False
         # migration that introduces the uniqueness
         self.cur.execute(
-            "select count(*) from django_migrations where app = 'authentik_core' and name = '0056_user_roles';"
+            "select 1 from django_migrations where app = 'authentik_core' and name = '0056_user_roles';"
         )
         return not bool(self.cur.rowcount)
 
@@ -34,7 +34,7 @@ class Migration(BaseMigration):
         if len(rows):
             for row in rows:
                 self.log.error(
-                    "Group with duplicate name detected", name=row["name"], count=row["name__count"]
+                    "Group with duplicate name detected", group_name=row[0], count=row[1]
                 )
             raise DuplicateNameError(
                 f"authentik 2025.12 forbids duplicate group names. For a list of duplicate groups, see logging output above. Please rename the offending groups and re-run the migration. For more information, see: https://version-2025-12.goauthentik.io/releases/2025.12/#group-name-uniqueness"
