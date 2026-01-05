@@ -11,7 +11,7 @@ This recovery key will give whoever has the link direct access to your instances
 To create the key, run the following command:
 
 ```shell
-docker compose run --rm server create_recovery_key 10 akadmin
+docker compose run --rm server ak create_recovery_key 10 akadmin
 ```
 
 For Kubernetes, run
