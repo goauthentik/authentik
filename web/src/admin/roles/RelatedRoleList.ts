@@ -236,8 +236,8 @@ export class RelatedRoleList extends Table<Role> {
             : msg("Inherited from group");
         const nameCell = html`<a href="#/identity/roles/${item.pk}">${item.name}</a> ${inherited
                 ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
-                      <span class="pf-c-label pf-m-outline pf-m-cyan" style="margin-left: 0.5rem;">
-                          <span class="pf-c-label__content">${msg("Inherited")}</span>
+                      <span class="pf-c-label pf-m-outline pf-m-cyan">
+                          <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
                       </span>
                   </pf-tooltip>`
                 : nothing}`;
