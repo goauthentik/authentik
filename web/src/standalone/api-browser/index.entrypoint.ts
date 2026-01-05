@@ -16,6 +16,14 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+export const BEFORE_TRY_EVENT = "before-try";
+
+export interface BeforeTryEventDetail {
+    request: {
+        headers: Headers;
+    };
+}
+
 function rgba2hex(cssValue: string) {
     const matches = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/.exec(cssValue);
     if (!matches) return "";
@@ -44,25 +52,21 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @state()
     textColor = "#000000";
 
+    #appendCSRFHeader = (event: CustomEvent<BeforeTryEventDetail>) => {
+        event.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
+    };
+
+    constructor() {
+        super();
+        this.addEventListener(BEFORE_TRY_EVENT, this.#appendCSRFHeader);
+    }
+
     #synchronizeTheme = () => {
         const style = getComputedStyle(document.body);
 
         this.bgColor = rgba2hex(style.backgroundColor.trim());
         this.textColor = rgba2hex(style.color.trim());
     };
-
-    #appendCSRFHeader = (event: CustomEvent<BeforeTryEventDetail>) => {
-        event.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
-    };
-
-    public override connectedCallback(): void {
-        super.connectedCallback();
-
-        this.addEventListener(BEFORE_TRY_EVENT, this.#appendCSRFHeader);
-
-        this.#synchronizeTheme();
-        createUIThemeEffect(this.#synchronizeTheme);
-    }
 
     public override connectedCallback(): void {
         super.connectedCallback();
@@ -107,5 +111,11 @@ export class APIBrowser extends WithBrandConfig(Interface) {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-api-browser": APIBrowser;
+    }
+}
+
+declare global {
+    interface HTMLElementEventMap {
+        [BEFORE_TRY_EVENT]: CustomEvent<BeforeTryEventDetail>;
     }
 }
