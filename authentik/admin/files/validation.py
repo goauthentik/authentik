@@ -16,9 +16,6 @@ MAX_PATH_COMPONENT_LENGTH = 255
 # This allows for theme-specific files like logo-%(theme)s.png
 THEME_VARIABLE = "%(theme)s"
 
-# Valid themes that can be substituted for %(theme)s
-VALID_THEMES = ("light", "dark")
-
 
 def validate_file_name(name: str) -> None:
     if PassthroughBackend(FileUsage.MEDIA).supports_file(name) or StaticBackend(
