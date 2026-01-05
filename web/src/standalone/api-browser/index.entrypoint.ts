@@ -51,21 +51,17 @@ export class APIBrowser extends WithBrandConfig(Interface) {
         this.textColor = rgba2hex(style.color.trim());
     };
 
-    constructor() {
-        super();
-        // @ts-expect-error RapiDoc does not provide a map of event names to event types
-        this.addEventListener(
-            "before-try",
-            (
-                e: CustomEvent<{
-                    request: {
-                        headers: Headers;
-                    };
-                }>,
-            ) => {
-                e.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
-            },
-        );
+    #appendCSRFHeader = (event: CustomEvent<BeforeTryEventDetail>) => {
+        event.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.addEventListener(BEFORE_TRY_EVENT, this.#appendCSRFHeader);
+
+        this.#synchronizeTheme();
+        createUIThemeEffect(this.#synchronizeTheme);
     }
 
     public override connectedCallback(): void {
