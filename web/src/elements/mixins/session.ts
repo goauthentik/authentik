@@ -1,30 +1,33 @@
 import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { createUIConfig, DefaultUIConfig, UIConfig } from "#common/ui/config";
-import { autoDetectLanguage } from "#common/ui/locale/utils";
-import { me } from "#common/users";
 
+import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
 import { AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, LocaleContext, LocaleContextValue } from "#elements/mixins/locale";
 import { createMixin } from "#elements/types";
 
-import type { Config, SessionUser, UserSelf } from "@goauthentik/api";
+import { ConsoleLogger } from "#logger/browser";
 
-import { setUser } from "@sentry/browser";
+import { type Config, type SessionUser, type UserSelf } from "@goauthentik/api";
 
 import { consume, createContext } from "@lit/context";
+import { property } from "lit/decorators.js";
+
+export const kAKSessionContext = Symbol("kAKSessionContext");
 
 /**
- * The Lit context for the application configuration.
+ * The Lit context for the session information.
  *
  * @category Context
  * @see {@linkcode SessionMixin}
  * @see {@linkcode WithSession}
  */
 export const SessionContext = createContext<APIResult<SessionUser>>(
-    Symbol.for("authentik-session-context"),
+    Symbol("authentik-session-context"),
 );
 
 export type SessionContext = typeof SessionContext;
+
 /**
  * A consumer that provides session information to the element.
  *
@@ -66,10 +69,8 @@ export interface SessionMixin {
 
     /**
      * Refresh the current session information.
-     *
-     * @param requestInit Optional parameters to pass to the fetch call.
      */
-    refreshSession(requestInit?: RequestInit): Promise<SessionUser>;
+    refreshSession(): Promise<SessionUser | null>;
 }
 
 /**
@@ -84,7 +85,7 @@ export function canAccessAdmin(user?: UserSelf | null) {
     );
 }
 
-// uiConfig.enabledFeatures.applicationEdit && currentUser?.isSuperuser
+// console.debug.bind(console, `authentik/session:${this.constructor.name}`);
 
 /**
  * A mixin that provides the session information to the element.
@@ -98,7 +99,10 @@ export const WithSession = createMixin<SessionMixin>(
         subscribe = true,
     }) => {
         abstract class SessionProvider extends SuperClass implements SessionMixin {
-            #log = console.debug.bind(console, `authentik/session`);
+            #logger = ConsoleLogger.prefix("session");
+            #contextController = ContextControllerRegistry.get(SessionContext);
+
+            //#region Context Consumers
 
             @consume({
                 context: AuthentikConfigContext,
@@ -112,77 +116,54 @@ export const WithSession = createMixin<SessionMixin>(
             })
             public [kAKLocale]!: LocaleContextValue;
 
-            #data: APIResult<Readonly<SessionUser>> = {
-                loading: true,
-                error: null,
-            };
-
             #uiConfig: Readonly<UIConfig> = DefaultUIConfig;
 
             @consume({
                 context: SessionContext,
-                subscribe,
             })
-            public set session(nextResult: APIResult<SessionUser>) {
-                const previousValue = this.#data;
+            @property({ attribute: false })
+            public session!: APIResult<Readonly<SessionUser>>;
 
-                this.#data = nextResult;
+            //#endregion
 
-                if (isAPIResultReady(nextResult)) {
-                    const { settings = {} } = nextResult.user || {};
-
-                    this.#uiConfig = createUIConfig(settings);
-                }
-
-                this.requestUpdate("session", previousValue);
-            }
-
-            public get session(): APIResult<Readonly<SessionUser>> {
-                return this.#data;
-            }
+            //#region Properties
 
             public get uiConfig(): Readonly<UIConfig> {
                 return this.#uiConfig;
             }
 
             public get currentUser(): Readonly<UserSelf> | null {
-                return (isAPIResultReady(this.#data) && this.#data.user) || null;
+                return (isAPIResultReady(this.session) && this.session.user) || null;
             }
 
             public get originalUser(): Readonly<UserSelf> | null {
-                return (isAPIResultReady(this.#data) && this.#data.original) || null;
+                return (isAPIResultReady(this.session) && this.session.original) || null;
             }
 
             public get impersonating(): boolean {
                 return !!this.originalUser;
             }
 
-            public refreshSession(requestInit?: RequestInit): Promise<SessionUser> {
-                this.#log("Fetching session...");
+            //#endregion
 
-                return me(requestInit).then((session) => {
-                    const localeHint: string | undefined = session.user.settings.locale;
+            //#region Methods
 
-                    if (localeHint) {
-                        const locale = autoDetectLanguage(localeHint);
-                        this.#log(`Activating user's configured locale '${locale}'`);
-                        this[kAKLocale]?.setLocale(locale);
-                    }
+            public async refreshSession(): Promise<SessionUser | null> {
+                this.#logger.debug("Fetching session...");
+                const nextResult = await this.#contextController?.refresh();
 
-                    const config = this[kAKConfig];
+                if (!isAPIResultReady(nextResult)) {
+                    return null;
+                }
 
-                    if (config?.errorReporting.sendPii) {
-                        this.#log("Sentry with PII enabled.");
+                const { settings = {} } = nextResult.user || {};
 
-                        setUser({ email: session.user.email });
-                    }
+                this.#uiConfig = createUIConfig(settings);
 
-                    this.#log("Fetched session", session);
-                    this.session = session;
-
-                    return session;
-                });
+                return nextResult;
             }
+
+            //#endregion
         }
 
         return SessionProvider;
