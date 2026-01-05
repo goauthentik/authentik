@@ -68,6 +68,12 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 
 During the installation process, the database migrations will be applied automatically on startup.
 
+## Email configuration (optional but recommended)
+
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+
+For more information, refer to our [Email configuration](../email.mdx) documentation.
+
 ## Access authentik
 
 After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
@@ -83,8 +89,4 @@ We recommend using another installation method for PostgreSQL than the one provi
 - [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
 - [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
 
-## Email configuration (optional but recommended)
 
-It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
-
-For more information, refer to our [Email configuration](../email.mdx) documentation.
