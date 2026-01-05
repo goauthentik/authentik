@@ -14,19 +14,19 @@ import { ContextProvider } from "@lit/context";
 export class ConfigContextController extends ReactiveContextController<Config> {
     protected static override logPrefix = "config";
 
-    #host: ReactiveElementHost<AKConfigMixin>;
-    #context: ContextProvider<AuthentikConfigContext>;
+    public host: ReactiveElementHost<AKConfigMixin>;
+    public context: ContextProvider<AuthentikConfigContext>;
 
     constructor(host: ReactiveElementHost<AKConfigMixin>, initialValue: Config) {
         super();
-        this.#host = host;
+        this.host = host;
 
-        this.#context = new ContextProvider(this.#host, {
+        this.context = new ContextProvider(this.host, {
             context: AuthentikConfigContext,
             initialValue,
         });
 
-        this.#host[kAKConfig] = initialValue;
+        this.host[kAKConfig] = initialValue;
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
@@ -34,16 +34,16 @@ export class ConfigContextController extends ReactiveContextController<Config> {
     }
 
     protected doRefresh(authentikConfig: Config) {
-        this.#context.setValue(authentikConfig);
-        this.#host[kAKConfig] = authentikConfig;
+        this.context.setValue(authentikConfig);
+        this.host[kAKConfig] = authentikConfig;
     }
 
     public hostUpdate() {
         // If the Interface changes its config information, we should notify all
         // users of the context of that change, without creating an infinite
         // loop of resets.
-        if (this.#host[kAKConfig] && this.#host[kAKConfig] !== this.#context.value) {
-            this.#context.setValue(this.#host[kAKConfig]);
+        if (this.host[kAKConfig] && this.host[kAKConfig] !== this.context.value) {
+            this.context.setValue(this.host[kAKConfig]);
         }
     }
 }

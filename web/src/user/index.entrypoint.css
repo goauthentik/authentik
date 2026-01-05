@@ -71,3 +71,7 @@
     min-height: calc(100vh - 76px);
     max-height: calc(100vh - 76px);
 }
+
+.pf-c-drawer__panel {
+    background-color: transparent !important;
+}
