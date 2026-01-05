@@ -117,66 +117,19 @@ export class RelatedRoleList extends Table<Role> {
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         const config = await this.defaultEndpointConfig();
 
-        // Handle group filtering
         if (this.targetGroup) {
-            // Always fetch both direct and inherited roles
-            const [directResponse, inheritedResponse] = await Promise.all([
-                this.#api.rbacRolesList({
-                    ...config,
-                    akGroups: [this.targetGroup.pk],
-                }),
-                this.#api.rbacRolesList({
-                    ...config,
-                    inheritedGroupRoles: this.targetGroup.pk,
-                }),
-            ]);
-
-            if (this.showInherited) {
-                // Combine, deduplicate by pk, and sort alphabetically
-                const allRoles = [...directResponse.results, ...inheritedResponse.results];
-                const uniqueRoles = allRoles
-                    .filter(
-                        (role, index, self) => self.findIndex((r) => r.pk === role.pk) === index,
-                    )
-                    .sort((a, b) => a.name.localeCompare(b.name));
-                return {
-                    pagination: {
-                        ...directResponse.pagination,
-                        count: uniqueRoles.length,
-                    },
-                    results: uniqueRoles,
-                };
-            }
-            return directResponse;
+            return this.#api.rbacRolesList({
+                ...config,
+                akGroups: this.targetGroup.pk,
+                inherited: this.showInherited,
+            });
         }
 
-        // Handle user filtering - always fetch both direct and inherited roles
-        const [directResponse, inheritedResponse] = await Promise.all([
-            this.#api.rbacRolesList({
-                ...config,
-                users: this.targetUser?.pk ? [this.targetUser.pk] : undefined,
-            }),
-            this.#api.rbacRolesList({
-                ...config,
-                inheritedUserRoles: this.targetUser?.pk,
-            }),
-        ]);
-
-        if (this.showInherited) {
-            // Combine, deduplicate by pk, and sort alphabetically
-            const allRoles = [...directResponse.results, ...inheritedResponse.results];
-            const uniqueRoles = allRoles
-                .filter((role, index, self) => self.findIndex((r) => r.pk === role.pk) === index)
-                .sort((a, b) => a.name.localeCompare(b.name));
-            return {
-                pagination: {
-                    ...directResponse.pagination,
-                    count: uniqueRoles.length,
-                },
-                results: uniqueRoles,
-            };
-        }
-        return directResponse;
+        return this.#api.rbacRolesList({
+            ...config,
+            users: this.targetUser?.pk,
+            inherited: this.showInherited,
+        });
     }
 
     protected get columns(): TableColumn[] {

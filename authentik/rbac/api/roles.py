@@ -71,45 +71,56 @@ class RoleFilterSet(FilterSet):
 
     managed__isnull = BooleanFilter(field_name="managed", lookup_expr="isnull")
 
-    inherited_user_roles = extend_schema_field(OpenApiTypes.INT)(
+    inherited = BooleanFilter(
+        method="filter_inherited",
+        label="Include inherited roles (requires users or ak_groups filter)",
+    )
+
+    users = extend_schema_field(OpenApiTypes.INT)(
         NumberFilter(
-            method="filter_inherited_user_roles",
-            label="Filter by inherited roles from groups (excludes direct)",
+            method="filter_users",
+            label="Filter by user (use with inherited=true for all roles)",
         )
     )
 
-    inherited_group_roles = extend_schema_field(OpenApiTypes.UUID)(
+    ak_groups = extend_schema_field(OpenApiTypes.UUID)(
         CharFilter(
-            method="filter_inherited_group_roles",
-            label="Filter by inherited roles from ancestor groups (excludes direct)",
+            method="filter_ak_groups",
+            label="Filter by group (use with inherited=true for all roles)",
         )
     )
 
-    def filter_inherited_user_roles(self, queryset, name, value):
-        """Filter roles inherited from groups (excludes direct user roles)"""
+    def filter_inherited(self, queryset, name, value):
+        """This filter is handled by filter_users and filter_ak_groups"""
+        return queryset
+
+    def filter_users(self, queryset, name, value):
+        """Filter roles by user, optionally including inherited roles"""
         user = User.objects.filter(pk=value).first()
         if not user:
             return queryset.none()
-        direct_role_pks = user.roles.values_list("pk", flat=True)
-        return user.all_roles().exclude(pk__in=direct_role_pks)
 
-    def filter_inherited_group_roles(self, queryset, name, value):
-        """Filter roles inherited from ancestor groups (excludes direct roles)"""
+        include_inherited = self.data.get("inherited", "").lower() == "true"
+        if include_inherited:
+            return user.all_roles()
+        return queryset.filter(users=user)
+
+    def filter_ak_groups(self, queryset, name, value):
+        """Filter roles by group, optionally including inherited roles"""
         group = Group.objects.filter(pk=value).first()
         if not group:
             return queryset.none()
-        direct_role_pks = group.roles.values_list("pk", flat=True)
-        return group.all_roles().exclude(pk__in=direct_role_pks)
+
+        include_inherited = self.data.get("inherited", "").lower() == "true"
+        if include_inherited:
+            return group.all_roles()
+        return queryset.filter(ak_groups=group)
 
     class Meta:
         model = Role
         fields = [
             "name",
-            "users",
-            "ak_groups",
             "managed",
-            "inherited_user_roles",
-            "inherited_group_roles",
         ]
 
 

@@ -20060,21 +20060,13 @@ paths:
       - in: query
         name: ak_groups
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
-      - in: query
-        name: inherited_group_roles
-        schema:
           type: string
           format: uuid
       - in: query
-        name: inherited_user_roles
+        name: inherited
         schema:
-          type: integer
+          type: boolean
+        description: Include inherited roles (requires users or ak_groups filter)
       - in: query
         name: managed
         schema:
@@ -20095,11 +20087,7 @@ paths:
       - in: query
         name: users
         schema:
-          type: array
-          items:
-            type: integer
-        explode: true
-        style: form
+          type: integer
       tags:
       - rbac
       security:
