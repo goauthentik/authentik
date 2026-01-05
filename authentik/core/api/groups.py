@@ -139,7 +139,7 @@ class GroupSerializer(ModelSerializer):
         """Return only inherited roles from ancestor groups (excludes direct roles)"""
         if not self._should_include_inherited_roles:
             return None
-        direct_role_pks = set(instance.roles.values_list("pk", flat=True))
+        direct_role_pks = instance.roles.values_list("pk", flat=True)
         inherited_roles = instance.all_roles().exclude(pk__in=direct_role_pks)
         return RoleSerializer(inherited_roles, many=True).data
 

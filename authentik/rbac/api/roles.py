@@ -91,7 +91,7 @@ class RoleFilterSet(FilterSet):
             user = User.objects.get(pk=value)
         except User.DoesNotExist:
             return queryset.none()
-        direct_role_pks = set(user.roles.values_list("pk", flat=True))
+        direct_role_pks = user.roles.values_list("pk", flat=True)
         return user.all_roles().exclude(pk__in=direct_role_pks)
 
     def filter_inherited_group_roles(self, queryset, name, value):
@@ -100,7 +100,7 @@ class RoleFilterSet(FilterSet):
             group = Group.objects.get(pk=value)
         except Group.DoesNotExist:
             return queryset.none()
-        direct_role_pks = set(group.roles.values_list("pk", flat=True))
+        direct_role_pks = group.roles.values_list("pk", flat=True)
         return group.all_roles().exclude(pk__in=direct_role_pks)
 
     class Meta:
