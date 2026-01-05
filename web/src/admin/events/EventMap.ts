@@ -82,23 +82,35 @@ export class EventMap extends AKElement {
         `,
     ];
 
-    constructor() {
-        super();
-        // @ts-expect-error OpenLayers does not provide a map of event names to event types
-        this.addEventListener("feature-selected", (ev: CustomEvent<{ feature: Feature }>) => {
-            const eventId = ev.detail.feature.getId();
-            this.dispatchEvent(
-                new CustomEvent("select-event", {
-                    composed: true,
-                    bubbles: true,
-                    detail: {
-                        eventId: eventId,
-                    },
-                }),
-            );
-        });
-    }
 
+export const SELECTED_FEATURE_EVENT = "feature-selected";
+
+declare global {
+    interface HTMLElementEventMap {
+        [SELECTED_FEATURE_EVENT]: CustomEvent<SelectedFeatureEventDetail>;
+    }
+}
+
+export interface SelectedFeatureEventDetail {
+    feature: Feature;
+}
+
+#dispatchSelectedFeature = (event: CustomEvent<SelectedFeatureEventDetail>) => {
+        const eventId = event.detail.feature.getId();
+        this.dispatchEvent(
+            new CustomEvent("select-event", {
+                composed: true,
+                bubbles: true,
+                detail: {
+                   eventId,
+                },
+            }),
+        );
+    };
+
+    public override connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener(SELECTED_FEATURE_EVENT, this.#dispatchSelectedFeature);
     updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {
             return;
