@@ -7,7 +7,6 @@ This installation method is for test setups and small-scale production setups.
 ## Requirements
 
 - A host with at least 2 CPU cores and 2 GB of RAM
-- Podman or Docker
 - Podman or Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
 
 ## Video
@@ -70,7 +69,7 @@ It is also recommended to configure global email settings. These are used by aut
 
 For more information, refer to our [Email configuration](../email.mdx) documentation.
 
-## Startup
+## Access authentik
 
 :::warning
 All internal operations use UTC. Times displayed in the UI are automatically localized for the user. Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers; it will cause problems with OAuth and SAML authentication, as seen this [GitHub issue](https://github.com/goauthentik/authentik/issues/3005).

@@ -68,7 +68,7 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 
 During the installation process, the database migrations will be applied automatically on startup.
 
-## Accessing authentik
+## Access authentik
 
 After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
