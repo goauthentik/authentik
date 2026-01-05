@@ -140,7 +140,10 @@ export class RelatedRoleList extends Table<Role> {
                     )
                     .sort((a, b) => a.name.localeCompare(b.name));
                 return {
-                    pagination: directResponse.pagination,
+                    pagination: {
+                        ...directResponse.pagination,
+                        count: uniqueRoles.length,
+                    },
                     results: uniqueRoles,
                 };
             }
@@ -166,7 +169,10 @@ export class RelatedRoleList extends Table<Role> {
                 .filter((role, index, self) => self.findIndex((r) => r.pk === role.pk) === index)
                 .sort((a, b) => a.name.localeCompare(b.name));
             return {
-                pagination: directResponse.pagination,
+                pagination: {
+                    ...directResponse.pagination,
+                    count: uniqueRoles.length,
+                },
                 results: uniqueRoles,
             };
         }

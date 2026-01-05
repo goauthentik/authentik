@@ -38803,6 +38803,7 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+          nullable: true
         children:
           type: array
           items:

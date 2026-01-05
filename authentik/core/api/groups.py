@@ -85,7 +85,7 @@ class GroupSerializer(ModelSerializer):
         source="roles",
         required=False,
     )
-    inherited_roles_obj = SerializerMethodField(read_only=True)
+    inherited_roles_obj = SerializerMethodField(allow_null=True)
     num_pk = IntegerField(read_only=True)
 
     @property

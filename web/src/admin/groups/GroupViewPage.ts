@@ -139,29 +139,34 @@ export class GroupViewPage extends AKElement {
                                                             </a>
                                                         </li>`;
                                                     })}
-                                                    ${this.group.inheritedRolesObj.map((role) => {
-                                                        return html`<li>
-                                                            <a href=${`#/identity/roles/${role.pk}`}
-                                                                >${role.name}
-                                                            </a>
-                                                            <pf-tooltip
-                                                                position="top"
-                                                                content=${msg(
-                                                                    "Inherited from parent group",
-                                                                )}
-                                                            >
-                                                                <span
-                                                                    class="pf-c-label pf-m-outline pf-m-cyan"
-                                                                    style="margin-left: 0.5rem;"
+                                                    ${(this.group.inheritedRolesObj ?? []).map(
+                                                        (role) => {
+                                                            return html`<li>
+                                                                <a
+                                                                    href=${`#/identity/roles/${role.pk}`}
+                                                                    >${role.name}
+                                                                </a>
+                                                                <pf-tooltip
+                                                                    position="top"
+                                                                    content=${msg(
+                                                                        "Inherited from parent group",
+                                                                    )}
                                                                 >
                                                                     <span
-                                                                        class="pf-c-label__content"
-                                                                        >${msg("Inherited")}</span
+                                                                        class="pf-c-label pf-m-outline pf-m-cyan"
+                                                                        style="margin-left: 0.5rem;"
                                                                     >
-                                                                </span>
-                                                            </pf-tooltip>
-                                                        </li>`;
-                                                    })}
+                                                                        <span
+                                                                            class="pf-c-label__content"
+                                                                            >${msg(
+                                                                                "Inherited",
+                                                                            )}</span
+                                                                        >
+                                                                    </span>
+                                                                </pf-tooltip>
+                                                            </li>`;
+                                                        },
+                                                    )}
                                                 </ul>
                                             </div>
                                         </dd>
