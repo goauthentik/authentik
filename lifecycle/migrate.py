@@ -74,6 +74,7 @@ def release_lock(conn: Connection, cursor: Cursor):
 
 
 def run_migrations():
+    conn_opts = CONFIG.get_dict_from_b64_json("postgresql.conn_options", default={})
     conn = connect(
         dbname=CONFIG.get("postgresql.name"),
         user=CONFIG.get("postgresql.user"),
@@ -84,6 +85,7 @@ def run_migrations():
         sslrootcert=CONFIG.get("postgresql.sslrootcert"),
         sslcert=CONFIG.get("postgresql.sslcert"),
         sslkey=CONFIG.get("postgresql.sslkey"),
+        **conn_opts,
     )
     curr = conn.cursor()
     try:
