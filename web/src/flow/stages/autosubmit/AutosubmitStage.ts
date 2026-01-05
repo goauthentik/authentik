@@ -28,7 +28,8 @@ export class AutosubmitStage extends BaseStage<
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
-        if (this.challenge.url !== undefined) {
+        if (changed.has("challenge") && this.challenge.url !== undefined) {
+            console.debug("authentik/flow/stages/autosubmit: submitting");
             this.form?.submit();
         }
     }

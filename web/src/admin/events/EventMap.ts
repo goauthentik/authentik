@@ -76,7 +76,7 @@ export class EventMap extends AKElement {
             ol-map {
                 height: 24rem;
             }
-            :host([theme="dark"]) ol-map {
+            :host([theme="dark"]) ak-map {
                 filter: invert(100%) hue-rotate(180deg);
             }
         `,

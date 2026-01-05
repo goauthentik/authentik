@@ -1,8 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
-import { isCausedByAbortError } from "#common/errors/network";
 import { isGuest } from "#common/users";
 
+import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { SessionMixin } from "#elements/mixins/session";
 import { VersionContext, VersionMixin } from "#elements/mixins/version";
 import type { ReactiveElementHost } from "#elements/types";
@@ -10,16 +9,16 @@ import type { ReactiveElementHost } from "#elements/types";
 import { AdminApi, Version } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
 
-export class VersionContextController implements ReactiveController {
-    #log = console.debug.bind(console, `authentik/controller/version`);
-    #abortController: null | AbortController = null;
+export class VersionContextController extends ReactiveContextController<Version> {
+    protected static override logPrefix = "version";
 
     #host: ReactiveElementHost<SessionMixin & VersionMixin>;
     #context: ContextProvider<VersionContext>;
 
-    constructor(host: ReactiveElementHost<VersionMixin & VersionMixin>, initialValue?: Version) {
+    constructor(host: ReactiveElementHost<SessionMixin & VersionMixin>, initialValue?: Version) {
+        super();
+
         this.#host = host;
         this.#context = new ContextProvider(this.#host, {
             context: VersionContext,
@@ -27,57 +26,26 @@ export class VersionContextController implements ReactiveController {
         });
     }
 
-    #fetch = () => {
-        this.#log("Fetching latest version...");
-
-        this.#abortController = new AbortController();
-
-        return new AdminApi(DEFAULT_CONFIG)
-            .adminVersionRetrieve({
-                signal: this.#abortController.signal,
-            })
-            .then((version) => {
-                this.#context.setValue(version);
-                this.#host.version = version;
-            })
-
-            .catch((error: unknown) => {
-                if (isCausedByAbortError(error)) {
-                    this.#log("Aborted fetching license summary");
-                    return;
-                }
-
-                throw error;
-            })
-            .finally(() => {
-                this.#abortController = null;
-            });
-    };
-
-    #refreshListener = (event: Event) => {
-        this.#abortController?.abort(event.type);
-        this.#fetch();
-    };
-
-    public hostConnected() {
-        window.addEventListener(EVENT_REFRESH, this.#refreshListener);
+    protected apiEndpoint(requestInit?: RequestInit) {
+        return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve(requestInit);
     }
 
-    public hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+    protected doRefresh(version: Version) {
+        this.#context.setValue(version);
+        this.#host.version = version;
     }
 
     public hostUpdate() {
         const { currentUser } = this.#host;
 
-        if (currentUser && !isGuest(currentUser) && !this.#abortController) {
-            this.#fetch();
+        if (currentUser && !isGuest(currentUser) && !this.#host.version && !this.abortController) {
+            this.refresh();
 
             return;
         }
 
-        if (!currentUser && this.#abortController) {
-            this.#abortController.abort("session-invalidated");
+        if (!currentUser) {
+            this.abort("Session Invalidated");
         }
     }
 }

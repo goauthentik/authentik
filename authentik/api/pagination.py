@@ -15,7 +15,9 @@ class Pagination(pagination.PageNumberPagination):
 
     def get_page_size(self, request):
         if self.page_size_query_param in request.query_params:
-            return min(super().get_page_size(request), request.tenant.pagination_max_page_size)
+            page_size = super().get_page_size(request)
+            if page_size is not None:
+                return min(super().get_page_size(request), request.tenant.pagination_max_page_size)
         return request.tenant.pagination_default_page_size
 
     def get_paginated_response(self, data):

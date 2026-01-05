@@ -1,3 +1,4 @@
+import "#elements/forms/DeleteBulkForm";
 import "#admin/roles/RolePermissionForm";
 import "#elements/forms/ModalForm";
 

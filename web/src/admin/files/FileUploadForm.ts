@@ -16,16 +16,31 @@ import { createRef, ref } from "lit/directives/ref.js";
 
 // Same regex is used in the backend as well
 const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/source
-// This is perfect for the "pattern" attribute
-const VALID_FILE_NAME_PATTERN_STRING = VALID_FILE_NAME_PATTERN.source;
+
+// Note: browsers compile `pattern` using the new `v` RegExp flag (Unicode sets). Under `/v`,
+// both `/` and `-` must be escaped inside character classes.
+const VALID_FILE_NAME_PATTERN_STRING = "^[a-zA-Z0-9._\\/\\-]+$";
 
 function assertValidFileName(fileName: string): void {
     if (!VALID_FILE_NAME_PATTERN.test(fileName)) {
         throw new Error(
-            msg("Filename can only contain letters, numbers, dots, hyphens, and underscores"),
+            msg(
+                "Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes",
+            ),
         );
     }
+}
+
+function getFileExtension(fileName: string): string {
+    const lastDot = fileName.lastIndexOf(".");
+    if (lastDot <= 0) return "";
+    return fileName.slice(lastDot);
+}
+
+function hasBasenameExtension(fileName: string): boolean {
+    const baseName = fileName.split("/").pop() ?? fileName;
+    const lastDot = baseName.lastIndexOf(".");
+    return lastDot > 0;
 }
 
 @customElement("ak-file-upload-form")
@@ -57,36 +72,36 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
             throw new PreventFormSubmit("Selected file not provided", this);
         }
 
-        assertValidFileName(this.selectedFile.name);
-
         const api = new AdminApi(DEFAULT_CONFIG);
-        const customName = typeof data.fileName === "string" ? data.fileName.trim() : "";
+        const customName = typeof data.name === "string" ? data.name.trim() : "";
 
         // If custom name provided, validate and append original extension
+        // Only validate the original filename if no custom name is provided
         let finalName = this.selectedFile.name;
         if (customName) {
             assertValidFileName(customName);
-            const ext = this.selectedFile.name.substring(this.selectedFile.name.lastIndexOf("."));
-            finalName = customName + ext;
+            const ext = getFileExtension(this.selectedFile.name);
+            finalName =
+                ext && !hasBasenameExtension(customName) ? `${customName}${ext}` : customName;
+        } else {
+            assertValidFileName(this.selectedFile.name);
         }
 
-        return api
-            .adminFileCreate({
-                file: this.selectedFile,
-                name: finalName,
-                usage: this.usage,
-            })
-            .then(() => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: msg("File uploaded successfully"),
-                });
+        assertValidFileName(finalName);
 
-                this.reset();
-            })
-            .finally(() => {
-                this.clearFileInput();
-            });
+        await api.adminFileCreate({
+            file: this.selectedFile,
+            name: finalName,
+            usage: this.usage,
+        });
+
+        showMessage({
+            level: MessageLevel.success,
+            message: msg("File uploaded successfully"),
+        });
+
+        this.reset();
+        this.clearFileInput();
     }
 
     renderForm() {
@@ -101,7 +116,7 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
                         @change=${this.#fileChangeListener}
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("File Name")} name="fileName">
+                <ak-form-element-horizontal label=${msg("File Name")} name="name">
                     <input
                         type="text"
                         class="pf-c-form-control"

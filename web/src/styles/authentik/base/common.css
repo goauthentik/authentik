@@ -57,6 +57,10 @@
     }
 }
 
+.ak-m-capitalize {
+    text-transform: capitalize;
+}
+
 ::placeholder {
     font-style: italic;
 }

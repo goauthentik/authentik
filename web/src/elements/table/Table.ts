@@ -1,3 +1,4 @@
+import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
@@ -866,6 +867,21 @@ export abstract class Table<T extends object>
         `;
     }
 
+    protected renderLoadingBar() {
+        return guard(
+            [this.loading, this.label],
+            () =>
+                html`<ak-progress-bar
+                    indeterminate
+                    ?inert=${!this.loading}
+                    label=${msg(str`Loading ${this.label ?? "table"} data`, {
+                        id: "table-loading-bar-label",
+                        desc: "Label for progress bar shown when table data is loading",
+                    })}
+                ></ak-progress-bar>`,
+        );
+    }
+
     protected renderTable(): TemplateResult {
         const totalItemCount = this.data?.pagination.count ?? -1;
 
@@ -877,10 +893,14 @@ export abstract class Table<T extends object>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
+        return html`${this.renderLoadingBar()}${this.needChipGroup
+                ? this.renderChipGroup()
+                : nothing}
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
+                    aria-live="polite"
+                    aria-busy=${this.loading.toString()}
                     aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
                     aria-rowcount=${totalItemCount}
                     class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"

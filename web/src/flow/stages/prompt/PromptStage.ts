@@ -1,10 +1,10 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { formatLocaleOptions, PseudoLocale } from "#common/ui/locale/definitions";
+import { formatLocaleDisplayNames, renderLocaleDisplayNames } from "#common/ui/locale/format";
 import { getBestMatchLocale } from "#common/ui/locale/utils";
 
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
@@ -59,7 +59,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    renderPromptInner(prompt: StagePrompt, disabled = false): TemplateResult {
         const fieldId = `field-${prompt.fieldKey}`;
 
         switch (prompt.type) {
@@ -71,6 +71,7 @@ export class PromptStage extends WithCapabilitiesConfig(
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -81,6 +82,7 @@ export class PromptStage extends WithCapabilitiesConfig(
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                 >
 ${prompt.initialValue}</textarea
@@ -114,6 +116,7 @@ ${prompt.initialValue}</textarea
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -125,6 +128,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -136,6 +140,7 @@ ${prompt.initialValue}</textarea
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                 />`;
             case PromptTypeEnum.Number:
@@ -145,6 +150,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -155,6 +161,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -165,6 +172,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -175,6 +183,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
+                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -192,7 +201,11 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
             case PromptTypeEnum.Dropdown:
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
+                return html`<select
+                    class="pf-c-form-control"
+                    name="${prompt.fieldKey}"
+                    ?disabled=${disabled}
+                >
                     ${prompt.choices?.map((choice) => {
                         return html`<option
                             value="${choice.value}"
@@ -212,6 +225,7 @@ ${prompt.initialValue}</textarea
                             name="${prompt.fieldKey}"
                             id="${id}"
                             ?checked="${prompt.initialValue === choice.value}"
+                            ?disabled=${disabled}
                             ?required="${prompt.required}"
                             value="${choice.value}"
                         />
@@ -219,39 +233,30 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                let localeOptions = formatLocaleOptions();
-                const selected = prompt.initialValue
+                const entries = formatLocaleDisplayNames(this.activeLanguageTag);
+
+                const currentLanguageTag = prompt.initialValue
                     ? getBestMatchLocale(prompt.initialValue)
                     : null;
 
-                if (!this.can(CapabilitiesEnum.CanDebug)) {
-                    localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
-                }
-
-                const options = localeOptions.map(
-                    ([label, code]) =>
-                        html`<option value=${code} ?selected=${code === selected}>
-                            ${label}
-                        </option>`,
-                );
-
                 return html`<select
-                    class="pf-c-form-control"
+                    class="pf-c-form-control ak-m-capitalize"
                     id=${fieldId}
                     name="${prompt.fieldKey}"
+                    ?disabled=${disabled}
                     aria-label=${msg("Select language", {
                         id: "language-selector-label",
                         desc: "Label for the language selection dropdown",
                     })}
                 >
-                    <option value="" ?selected=${!selected}>
+                    <option value="" ?selected=${!currentLanguageTag}>
                         ${msg("Auto-detect", {
                             id: "locale-auto-detect-option",
                             desc: "Label for the auto-detect locale option in language selection dropdown",
                         })}
                     </option>
                     <hr />
-                    ${options}
+                    ${renderLocaleDisplayNames(entries, currentLanguageTag)}
                 </select>`;
             }
             default:

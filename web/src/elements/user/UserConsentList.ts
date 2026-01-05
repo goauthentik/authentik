@@ -44,6 +44,16 @@ export class UserConsentList extends Table<UserConsent> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Consent(s)")}
             .objects=${this.selectedElements}
+            .metadata=${(item: UserConsent) => {
+                return [
+                    { key: msg("Application"), value: item.application.name },
+                    {
+                        key: msg("Expires"),
+                        value: Timestamp(item.expires && item.expiring ? item.expires : null),
+                    },
+                    { key: msg("Permissions"), value: item.permissions ?? "-" },
+                ];
+            }}
             .usedBy=${(item: UserConsent) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
                     id: item.pk,

@@ -2,10 +2,12 @@
 
 import socket
 from collections.abc import Callable
-from functools import lru_cache, wraps
+from functools import cached_property, lru_cache, wraps
 from json import JSONDecodeError, dumps, loads
 from os import environ, getenv
+from pathlib import Path
 from sys import stderr
+from tempfile import gettempdir
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
@@ -21,6 +23,7 @@ from docker import DockerClient, from_env
 from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
+from requests import RequestException
 from selenium import webdriver
 from selenium.common.exceptions import (
     DetachedShadowRootException,
@@ -43,6 +46,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.http import get_http_session
 from authentik.root.test_runner import get_docker_tag
 
 IS_CI = "CI" in environ
@@ -177,7 +181,9 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         count = 0
         opts = webdriver.ChromeOptions()
+        opts.accept_insecure_certs = True
         opts.add_argument("--disable-search-engine-choice-screen")
+        opts.add_extension(self._get_chrome_extension())
         # This breaks selenium when running remotely...?
         # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         opts.add_experimental_option(
@@ -198,6 +204,31 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 self.logger.warning("Failed to setup webdriver", exc=exc)
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
+
+    def _get_chrome_extension(self):
+        path = Path(gettempdir()) / "ak-chrome.crx"
+        try:
+            self.logger.info("Downloading chrome extension...", path=path)
+            res = get_http_session().get(
+                "https://pkg.goauthentik.io/packages/authentik_browser-ext/browser-ext/authentik_chrome.zip",
+                stream=True,
+            )
+            with open(path, "w+b") as _ext:
+                for chunk in res.iter_content(chunk_size=1024):
+                    if chunk:
+                        _ext.write(chunk)
+        except RequestException as exc:
+            if path.exists() and not IS_CI:
+                self.logger.info(
+                    "Failed to download chrome extension, using cached copy", path=path
+                )
+                return path
+            raise exc
+        return path
+
+    @cached_property
+    def driver_container(self) -> Container:
+        return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
 
     def tearDown(self):
         if IS_CI:
@@ -249,36 +280,60 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         Raises a clear test failure if the element isn't found, the text doesn't appear
         within `timeout` seconds, or the text is not valid JSON.
         """
+        use_body = context is None
+        wait_timeout = timeout or self.wait_timeout
+
+        def get_context() -> WebElement:
+            """Get or refresh the context element."""
+            if use_body:
+                return self.driver.find_element(By.TAG_NAME, "body")
+            return context
+
+        def get_text_safely() -> str:
+            """Get element text, re-finding element if stale."""
+            for _ in range(5):
+                try:
+                    return get_context().text.strip()
+                except StaleElementReferenceException:
+                    sleep(0.5)
+            return get_context().text.strip()
+
+        def get_inner_html_safely() -> str:
+            """Get innerHTML, re-finding element if stale."""
+            for _ in range(5):
+                try:
+                    return get_context().get_attribute("innerHTML") or ""
+                except StaleElementReferenceException:
+                    sleep(0.5)
+            return get_context().get_attribute("innerHTML") or ""
 
         try:
-            if context is None:
-                context = self.driver.find_element(By.TAG_NAME, "body")
+            get_context()
         except NoSuchElementException:
             self.fail(
                 f"No element found (defaulted to <body>). Current URL: {self.driver.current_url}"
             )
 
-        wait_timeout = timeout or self.wait_timeout
-        wait = WebDriverWait(context, wait_timeout)
+        wait = WebDriverWait(self.driver, wait_timeout)
 
         try:
-            wait.until(lambda d: len(d.text.strip()) != 0)
+            wait.until(lambda d: len(get_text_safely()) != 0)
         except TimeoutException:
-            snippet = context.text.strip()[:500].replace("\n", " ")
+            snippet = get_text_safely()[:500].replace("\n", " ")
             self.fail(
                 f"Timed out waiting for element text to appear at {self.driver.current_url}. "
                 f"Current content: {snippet or '<empty>'}"
             )
 
-        body_text = context.text.strip()
-        inner_html = context.get_attribute("innerHTML") or ""
+        body_text = get_text_safely()
+        inner_html = get_inner_html_safely()
 
         if "redirecting" in inner_html.lower():
             try:
-                wait.until(lambda d: "redirecting" not in d.get_attribute("innerHTML").lower())
+                wait.until(lambda d: "redirecting" not in get_inner_html_safely().lower())
             except TimeoutException:
-                snippet = context.text.strip()[:500].replace("\n", " ")
-                inner_html = context.get_attribute("innerHTML") or ""
+                snippet = get_text_safely()[:500].replace("\n", " ")
+                inner_html = get_inner_html_safely()
 
                 self.fail(
                     f"Timed out waiting for redirect to finish at {self.driver.current_url}. "
@@ -286,8 +341,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                     f"{inner_html or '<empty>'}"
                 )
 
-            inner_html = context.get_attribute("innerHTML") or ""
-            body_text = context.text.strip()
+            inner_html = get_inner_html_safely()
+            body_text = get_text_safely()
 
         snippet = body_text[:500].replace("\n", " ")
 

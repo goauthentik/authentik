@@ -28,7 +28,7 @@ If you use Docker volumes: `docker volume rm -f authentik_database`.
 
 If your data is a file path: `rm -rf /path/to/v12-data`
 
-### Modify your docker-compose.yml file
+### Modify your compose.yml file
 
 Update the PostgreSQL service image from `docker.io/library/postgres:12-alpine` to `docker.io/library/postgres:16-alpine`.
 

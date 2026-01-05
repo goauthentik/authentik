@@ -1,3 +1,5 @@
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/cards/AggregateCard.css";
 import { SlottedTemplateResult } from "#elements/types";
@@ -42,6 +44,14 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      */
     @property({ type: String })
     public label: string | null = null;
+
+    /**
+     * The optional tooltip of the card.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public tooltip: string | null = null;
 
     /**
      * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
@@ -93,7 +103,12 @@ export class AggregateCard extends AKElement implements IAggregateCard {
             >
                 <h1 part="card-title" class="pf-c-card__title" id="card-title">
                     ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
-                    <span>${this.label || nothing}</span>${this.renderHeaderLink()}
+                    ${this.tooltip
+                        ? html`<pf-tooltip position="top" content=${this.tooltip}
+                              ><span>${this.label || nothing}</span></pf-tooltip
+                          >`
+                        : html`<span>${this.label || nothing}</span>`}
+                    ${this.renderHeaderLink()}
                 </h1>
             </header>
             <div part="card-body" class="pf-c-card__body">
