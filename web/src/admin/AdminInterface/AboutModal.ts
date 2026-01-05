@@ -134,3 +134,9 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-about-modal": AboutModal;
+    }
+}

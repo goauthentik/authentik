@@ -110,3 +110,9 @@ export class AkApplicationWizardMain extends AKElement {
         </ak-wizard-steps>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-main": AkApplicationWizardMain;
+    }
+}
