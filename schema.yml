@@ -3386,6 +3386,11 @@ paths:
           type: boolean
           default: false
       - in: query
+        name: include_inherited_roles
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_parents
         schema:
           type: boolean
@@ -3475,6 +3480,11 @@ paths:
         required: true
       - in: query
         name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: include_inherited_roles
         schema:
           type: boolean
           default: false
@@ -20048,6 +20058,16 @@ paths:
       description: Role viewset
       parameters:
       - in: query
+        name: ak_groups
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: inherited
+        schema:
+          type: boolean
+        description: Include inherited roles (requires users or ak_groups filter)
+      - in: query
         name: managed
         schema:
           type: array
@@ -20067,11 +20087,7 @@ paths:
       - in: query
         name: users
         schema:
-          type: array
-          items:
-            type: integer
-        explode: true
-        style: form
+          type: integer
       tags:
       - rbac
       security:
@@ -38770,6 +38786,12 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        inherited_roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+          nullable: true
         children:
           type: array
           items:
@@ -38785,6 +38807,7 @@ components:
       required:
       - children
       - children_obj
+      - inherited_roles_obj
       - name
       - num_pk
       - parents_obj
