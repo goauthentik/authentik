@@ -15,6 +15,7 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
@@ -23,6 +24,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
+
+import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { Pagination } from "@goauthentik/api";
 
@@ -43,7 +46,6 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export * from "./shared.js";
 export * from "./TableColumn.js";
@@ -76,7 +78,6 @@ export abstract class Table<T extends object>
     implements TableLike
 {
     static styles: CSSResult[] = [
-        PFBase,
         PFTable,
         PFBullseye,
         PFButton,
@@ -86,6 +87,8 @@ export abstract class Table<T extends object>
         PFPagination,
         Styles,
     ];
+
+    //#region Abstract members
 
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     /**
@@ -102,10 +105,49 @@ export abstract class Table<T extends object>
      */
     protected abstract row(item: T): SlottedTemplateResult[];
 
+    //#endregion
+
+    //#region Protected Properties
+
     /**
      * Customize the "No objects found" message.
      */
     protected emptyStateMessage = msg("No objects found.");
+
+    /**
+     * Whether the table is currently fetching data.
+     */
+    @state()
+    protected loading = false;
+
+    /**
+     * A timestamp of the last attempt to refresh the table data.
+     */
+    @state()
+    protected lastRefreshedAt: Date | null = null;
+
+    /**
+     * Logger instance for this table.
+     */
+    protected logger: Logger;
+
+    /**
+     * A cached grouping of the last fetched results.
+     *
+     * @see {@linkcode Table.fetch}
+     */
+    @state()
+    protected groups: GroupResult<T>[] = [];
+
+    @state()
+    protected expandedElements = new Set<string | number>();
+
+    @state()
+    protected error: APIError | null = null;
+
+    //#endregion
+
+    //#region Private Members
 
     /**
      * The total number of defined and additional columns in the table.
@@ -133,32 +175,40 @@ export abstract class Table<T extends object>
     }
 
     /**
-     * Whether the table is currently fetching data.
+     * Timestamp of when a fetch was requested, but deferred due to the table not being visible.
      */
-    @state()
-    protected loading = false;
+    #deferredRefreshRequestAt: Date | null = null;
+
+    #synchronizeRefreshSchedule(): Promise<void> {
+        if (!this.visible) {
+            if (!this.#deferredRefreshRequestAt) {
+                this.#deferredRefreshRequestAt = new Date();
+            }
+
+            return Promise.resolve();
+        }
+
+        if (!this.#deferredRefreshRequestAt) {
+            return Promise.resolve();
+        }
+
+        return this.fetch();
+    }
+
+    readonly #pageParam: string;
+    readonly #searchParam: string;
 
     /**
-     * A timestamp of the last attempt to refresh the table data.
+     * A mapping of the current items to their respective identifiers.
      */
-    @state()
-    protected lastRefreshedAt: Date | null = null;
+    #itemKeys = new WeakMap<T, string | number>();
 
-    /**
-     * A cached grouping of the last fetched results.
-     *
-     * @see {@linkcode Table.fetch}
-     */
-    @state()
-    protected groups: GroupResult<T>[] = [];
-
-    #pageParam = `${this.tagName.toLowerCase()}-page`;
-    #searchParam = `${this.tagName.toLowerCase()}-search`;
+    //#endregion
 
     @property({ type: Boolean })
     public supportsQL: boolean = false;
 
-    //#region Properties
+    //#region Public Properties
 
     @property({ type: String })
     public toolbarLabel: string | null = null;
@@ -170,7 +220,7 @@ export abstract class Table<T extends object>
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page = getURLParam(this.#pageParam, 1);
+    public page: number;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -200,9 +250,10 @@ export abstract class Table<T extends object>
     public checkboxChip = false;
 
     /**
-     * A mapping of the current items to their respective identifiers.
+     * Whether the table is visible in the viewport.
      */
-    #itemKeys = new WeakMap<T, string | number>();
+    @intersectionObserver()
+    public visible = false;
 
     /**
      * A mapping of item keys to selected items.
@@ -230,17 +281,22 @@ export abstract class Table<T extends object>
 
     //#region Lifecycle
 
-    @state()
-    protected expandedElements = new Set<string | number>();
-
-    @state()
-    protected error: APIError | null = null;
-
     #selectAllCheckboxRef = createRef<HTMLInputElement>();
 
     #refreshListener = () => {
         return this.fetch();
     };
+
+    constructor() {
+        super();
+        const tagName = this.tagName.toLowerCase();
+
+        this.#pageParam = `${tagName}-page`;
+        this.#searchParam = `${tagName}-search`;
+        this.page = getURLParam(this.#pageParam, 1);
+
+        this.logger = ConsoleLogger.prefix(tagName);
+    }
 
     public override connectedCallback(): void {
         super.connectedCallback();
@@ -284,15 +340,20 @@ export abstract class Table<T extends object>
         ) {
             this.#synchronizeColumnProperties();
         }
+
+        if (changedProperties.has("visible") && this.hasUpdated) {
+            this.#synchronizeRefreshSchedule();
+        }
     }
 
-    firstUpdated(): void {
-        this.fetch();
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+        this.#synchronizeRefreshSchedule();
     }
 
     //#endregion
 
-    async defaultEndpointConfig(): Promise<BaseTableListRequest> {
+    protected async defaultEndpointConfig(): Promise<BaseTableListRequest> {
         return {
             ordering: this.order,
             page: this.page,
@@ -301,7 +362,27 @@ export abstract class Table<T extends object>
         };
     }
 
-    public fetch(): Promise<void> {
+    /**
+     * Fetch data from the API endpoint.
+     *
+     * @see {@linkcode Table.apiEndpoint}
+     * @todo Make this protected.
+     */
+    public async fetch(): Promise<void> {
+        if (!this.visible) {
+            if (this.#deferredRefreshRequestAt) {
+                this.logger.debug("Skipping fetch; already scheduled");
+
+                return Promise.resolve();
+            }
+
+            this.logger.debug("Scheduling fetch for when table becomes visible");
+
+            this.#deferredRefreshRequestAt = new Date();
+
+            return Promise.resolve();
+        }
+
         if (this.loading) {
             return Promise.resolve();
         }
@@ -351,20 +432,25 @@ export abstract class Table<T extends object>
             .finally(() => {
                 this.loading = false;
                 this.lastRefreshedAt = new Date();
+                this.#deferredRefreshRequestAt = null;
                 this.requestUpdate();
             });
     }
 
     //#region Render
 
-    protected renderLoading(): TemplateResult {
-        return html`<tr role="presentation">
-            <td role="presentation" colspan=${this.#columnCount}>
-                <div class="pf-l-bullseye">
-                    <ak-empty-state default-label></ak-empty-state>
-                </div>
-            </td>
-        </tr>`;
+    protected renderLoading(): SlottedTemplateResult {
+        return guard(
+            [this.loading, this.#columnCount],
+            () =>
+                html`<tr role="presentation" class="ak-fade-in">
+                    <td role="presentation" colspan=${this.#columnCount}>
+                        <div class="pf-l-bullseye">
+                            <ak-empty-state default-label></ak-empty-state>
+                        </div>
+                    </td>
+                </tr>`,
+        );
     }
 
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
@@ -447,7 +533,7 @@ export abstract class Table<T extends object>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
-        if (this.loading && this.data === null) {
+        if (!this.visible || (this.loading && this.data === null)) {
             return this.renderLoading();
         }
 
@@ -668,13 +754,8 @@ export abstract class Table<T extends object>
     //#region Toolbar
 
     protected renderToolbar(): TemplateResult {
-        return html` ${this.renderObjectCreate()}
-            <ak-spinner-button
-                .callAction=${() => {
-                    return this.fetch();
-                }}
-                class="pf-m-secondary"
-            >
+        return html`${this.renderObjectCreate()}
+            <ak-spinner-button .callAction=${this.#refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             >`;
     }
@@ -867,19 +948,19 @@ export abstract class Table<T extends object>
         `;
     }
 
-    protected renderLoadingBar() {
-        return guard(
-            [this.loading, this.label],
-            () =>
-                html`<ak-progress-bar
-                    indeterminate
-                    ?inert=${!this.loading}
-                    label=${msg(str`Loading ${this.label ?? "table"} data`, {
-                        id: "table-loading-bar-label",
-                        desc: "Label for progress bar shown when table data is loading",
-                    })}
-                ></ak-progress-bar>`,
-        );
+    protected renderLoadingBar(): SlottedTemplateResult {
+        return guard([this.loading, this.label], () => {
+            if (!this.loading) return nothing;
+
+            return html`<ak-progress-bar
+                indeterminate
+                ?inert=${!this.loading}
+                label=${msg(str`Loading ${this.label ?? "table"} data`, {
+                    id: "table-loading-bar-label",
+                    desc: "Label for progress bar shown when table data is loading",
+                })}
+            ></ak-progress-bar>`;
+        });
     }
 
     protected renderTable(): TemplateResult {
@@ -930,7 +1011,7 @@ export abstract class Table<T extends object>
             ${guard([this.paginated, this.lastRefreshedAt], renderBottomPagination)}`;
     }
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         return this.renderTable();
     }
 }

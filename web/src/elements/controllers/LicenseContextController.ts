@@ -15,14 +15,14 @@ export class LicenseContextController extends ReactiveContextController<LicenseS
     protected static refreshEvent = EVENT_REFRESH_ENTERPRISE;
     protected static logPrefix = "license";
 
-    #host: ReactiveElementHost<SessionMixin & LicenseMixin>;
-    #context: ContextProvider<LicenseContext>;
+    public host: ReactiveElementHost<SessionMixin & LicenseMixin>;
+    public context: ContextProvider<LicenseContext>;
 
     constructor(host: ReactiveElementHost<LicenseMixin>, initialValue?: LicenseSummary) {
         super();
 
-        this.#host = host;
-        this.#context = new ContextProvider(this.#host, {
+        this.host = host;
+        this.context = new ContextProvider(this.host, {
             context: LicenseContext,
             initialValue: initialValue,
         });
@@ -33,12 +33,12 @@ export class LicenseContextController extends ReactiveContextController<LicenseS
     }
 
     protected doRefresh(licenseSummary: LicenseSummary) {
-        this.#context.setValue(licenseSummary);
-        this.#host.licenseSummary = licenseSummary;
+        this.context.setValue(licenseSummary);
+        this.host.licenseSummary = licenseSummary;
     }
 
     public hostUpdate() {
-        const { currentUser } = this.#host;
+        const { currentUser } = this.host;
 
         if (currentUser && !isGuest(currentUser) && !this.abortController) {
             this.refresh();
