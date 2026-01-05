@@ -44,6 +44,7 @@ export class GroupViewPage extends AKElement {
             .coreGroupsRetrieve({
                 groupUuid: id,
                 includeUsers: false,
+                includeInheritedRoles: true,
             })
             .then((group) => {
                 this.group = group;

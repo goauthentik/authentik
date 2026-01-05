@@ -3386,6 +3386,11 @@ paths:
           type: boolean
           default: false
       - in: query
+        name: include_inherited_roles
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_parents
         schema:
           type: boolean
@@ -3475,6 +3480,11 @@ paths:
         required: true
       - in: query
         name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: include_inherited_roles
         schema:
           type: boolean
           default: false

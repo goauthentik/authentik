@@ -180,7 +180,7 @@ export class RelatedRoleList extends Table<Role> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    renderToolbarSelected(): SlottedTemplateResult {
         // Don't render Remove button in showInherited mode (view-only)
         if (this.showInherited) {
             return nothing;
@@ -214,18 +214,18 @@ export class RelatedRoleList extends Table<Role> {
         if (this.targetGroup) {
             // For groups, check if role is in direct roles
             if (!this.targetGroup.roles) return false;
-            
+
             return !this.targetGroup.roles.includes(role.pk);
         }
-        
+
         if (this.targetUser) {
             // For users, check if role is in direct roles
-            
+
             if (!this.targetUser.roles) return false;
-            
+
             return !this.targetUser.roles.includes(role.pk);
         }
-        
+
         return false;
     }
 

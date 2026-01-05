@@ -109,6 +109,13 @@ class GroupSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_parents", "false")).lower() == "true"
 
+    @property
+    def _should_include_inherited_roles(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_inherited_roles", "false")).lower() == "true"
+
     @extend_schema_field(PartialUserSerializer(many=True))
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
@@ -128,8 +135,10 @@ class GroupSerializer(ModelSerializer):
         return RelatedGroupSerializer(instance.parents, many=True).data
 
     @extend_schema_field(RoleSerializer(many=True))
-    def get_inherited_roles_obj(self, instance: Group) -> list:
+    def get_inherited_roles_obj(self, instance: Group) -> list | None:
         """Return only inherited roles from ancestor groups (excludes direct roles)"""
+        if not self._should_include_inherited_roles:
+            return None
         direct_role_pks = set(instance.roles.values_list("pk", flat=True))
         inherited_roles = instance.all_roles().exclude(pk__in=direct_role_pks)
         return RoleSerializer(inherited_roles, many=True).data
@@ -298,6 +307,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             OpenApiParameter("include_users", bool, default=True),
             OpenApiParameter("include_children", bool, default=False),
             OpenApiParameter("include_parents", bool, default=False),
+            OpenApiParameter("include_inherited_roles", bool, default=False),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -308,6 +318,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             OpenApiParameter("include_users", bool, default=True),
             OpenApiParameter("include_children", bool, default=False),
             OpenApiParameter("include_parents", bool, default=False),
+            OpenApiParameter("include_inherited_roles", bool, default=False),
         ]
     )
     def retrieve(self, request, *args, **kwargs):
