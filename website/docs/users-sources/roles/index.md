@@ -16,6 +16,30 @@ For example, let's take a look at the following scenario:
 
 The easiest workflow for setting up these new users involves [creating a role](./manage_roles.md#create-a-role) specifically for their type of work, and then [assigning that role to a group](./manage_roles.md#assign-a-role-to-a-group) to which all of the users belong.
 
+## Viewing roles for users and groups
+
+You can view the roles assigned to a user or group through their detail pages in the Admin interface.
+
+### User roles
+
+To view roles for a user:
+
+1. Navigate to **Directory > Users** and click on a user's name.
+2. Click the **Roles** tab.
+3. The tab has two sub-tabs:
+    - **Assigned Roles**: Shows roles directly assigned to this user.
+    - **All Roles**: Shows all roles the user has, including roles inherited from groups they belong to. Inherited roles are marked with an "Inherited" label.
+
+### Group roles
+
+To view roles for a group:
+
+1. Navigate to **Directory > Groups** and click on a group's name.
+2. Click the **Roles** tab.
+3. The tab has two sub-tabs:
+    - **Assigned Roles**: Shows roles directly assigned to this group.
+    - **All Roles**: Shows all roles the group has, including roles inherited from parent groups. Inherited roles are marked with an "Inherited" label.
+
 To learn more about working with roles in authentik, refer to the following topics:
 
 <DocCardList />
