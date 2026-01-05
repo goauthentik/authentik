@@ -8,6 +8,8 @@ Roles are a way to simplify the assignment of permissions. Roles are also the ba
 
 Think of roles as a collection of permissions. A role, along with its "bucket" of assigned permissions, can then be assigned to a user, or it can be assigned to a group (which means that every user who is a part of that group will inherit all of the permissions in that role's "bucket").
 
+Roles are also inherited through group hierarchy. When a role is assigned to a parent group, all child groups automatically inherit that role. This means users in any descendant group will have the permissions from roles assigned to any of their ancestor groups.
+
 For example, let's take a look at the following scenario:
 
 > You need to add 5 new users, all new hires, to authentik, your identity management system. These users will be the first team members on the brand new Security team, so they will need some high-level permissions, with object permissions to create and remove other users, revoke permissions, and send recovery emails. They will also need [global permissions](../access-control/permissions.md#fundamentals-of-authentik-permissions) to control access to flows and stages.
