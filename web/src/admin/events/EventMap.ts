@@ -168,3 +168,10 @@ export class EventMap extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-map": Map;
+        "ak-events-map": EventMap;
+    }
+}
