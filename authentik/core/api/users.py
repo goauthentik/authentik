@@ -416,6 +416,11 @@ class UsersFilter(FilterSet):
     last_updated = IsoDateTimeFilter(field_name="last_updated")
     last_updated__gt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="gt")
 
+    last_login__lt = IsoDateTimeFilter(field_name="last_login", lookup_expr="lt")
+    last_login = IsoDateTimeFilter(field_name="last_login")
+    last_login__gt = IsoDateTimeFilter(field_name="last_login", lookup_expr="gt")
+    last_login__isnull = BooleanFilter(field_name="last_login", lookup_expr="isnull")
+
     is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
@@ -473,6 +478,7 @@ class UsersFilter(FilterSet):
             "email",
             "date_joined",
             "last_updated",
+            "last_login",
             "name",
             "is_active",
             "is_superuser",
@@ -493,7 +499,7 @@ class UserViewSet(
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username", "date_joined", "last_updated"]
+    ordering = ["username", "date_joined", "last_updated", "last_login"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
