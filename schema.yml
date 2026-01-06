@@ -4158,6 +4158,25 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: last_login
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: last_login__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: last_updated
         schema:
           type: string
@@ -4568,6 +4587,25 @@ paths:
         name: is_superuser
         schema:
           type: boolean
+      - in: query
+        name: last_login
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: last_login__lt
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: last_updated
         schema:
