@@ -46,3 +46,9 @@ export function makeEditButton(
         ${label}
     </ak-application-wizard-binding-step-edit-button>`;
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-binding-step-edit-button": ApplicationWizardBindingStepEditButton;
+    }
+}
