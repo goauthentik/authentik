@@ -76,9 +76,10 @@ const items = [
                     "install-config/install/kubernetes",
                     "install-config/install/aws",
                 ],
-            },
-            {
                 //#endregion
+            },
+            "install-config/first_steps",
+            {
 
                 //#region Configuration
                 type: "category",
