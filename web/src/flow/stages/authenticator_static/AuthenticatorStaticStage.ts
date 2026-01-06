@@ -36,17 +36,16 @@ export class AuthenticatorStaticStage extends BaseStage<
         PFButton,
         css`
             /* Static OTP Tokens */
-            ul {
-                list-style: circle;
-                columns: 2;
-                -webkit-columns: 2;
-                -moz-columns: 2;
-                column-width: 1em;
-                margin-left: var(--pf-global--spacer--xs);
+            .token-list {
+                list-style: disc;
+                padding-left: var(--pf-global--spacer--lg);
+                margin: var(--pf-global--spacer--sm) 0;
             }
-            ul li {
-                font-size: var(--pf-global--FontSize--2xl);
-                margin: 0 2rem;
+            .token-list li {
+                font-family: var(--pf-global--FontFamily--monospace);
+                font-size: var(--pf-global--FontSize--md);
+                margin-bottom: var(--pf-global--spacer--xs);
+                word-break: break-all;
             }
         `,
     ];
@@ -65,13 +64,11 @@ export class AuthenticatorStaticStage extends BaseStage<
                         >
                     </div>
                 </ak-form-static>
-                <div class="pf-c-form__group">
-                    <ul>
-                        ${this.challenge.codes.map((token) => {
-                            return html`<li class="pf-m-monospace">${token}</li>`;
-                        })}
-                    </ul>
-                </div>
+                <ul class="pf-c-form__group token-list">
+                    ${this.challenge.codes.map((token) => {
+                        return html`<li>${token}</li>`;
+                    })}
+                </ul>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
                 <fieldset class="pf-c-form__group pf-m-action">

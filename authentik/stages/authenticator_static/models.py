@@ -20,7 +20,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup static token based authentication for the user."""
 
     token_count = models.PositiveIntegerField(default=6)
-    token_length = models.PositiveIntegerField(default=12, validators=[MaxValueValidator(16)])
+    token_length = models.PositiveIntegerField(default=12, validators=[MaxValueValidator(50)])
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -110,11 +110,11 @@ class StaticToken(models.Model):
 
     .. attribute:: token
 
-        *CharField*: A random string up to 16 characters.
+        *CharField*: A random string up to 50 characters.
     """
 
     device = models.ForeignKey(StaticDevice, related_name="token_set", on_delete=models.CASCADE)
-    token = models.CharField(max_length=16, db_index=True)
+    token = models.CharField(max_length=50, db_index=True)
 
     class Meta:
         verbose_name = _("Static Token")
