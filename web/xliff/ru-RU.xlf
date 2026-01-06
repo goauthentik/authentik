@@ -9565,6 +9565,13 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s434805f916fbf657">
   <source>Not allowed to change this field. Please contact your administrator.</source>
 </trans-unit>
+<trans-unit id="sd7c52e2ce408c542">
+  <source>Integrations synced in the last 12 hours.</source>
+</trans-unit>
+<trans-unit id="table-loading-bar-label">
+  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
+</trans-unit>
 </body>
 </file>
 </xliff>
