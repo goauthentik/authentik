@@ -1,12 +1,12 @@
-import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
+import { createEventFromWSMessage, WSMessage } from "#common/ws/events";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
-
-export interface WSMessage {
-    message_type: string;
-}
 
 /**
  * A websocket client that automatically reconnects.
@@ -14,6 +14,7 @@ export interface WSMessage {
  * @singleton
  */
 export class WebsocketClient extends WebSocket implements Disposable {
+    static #logger = ConsoleLogger.prefix("ws");
     static #connection: WebsocketClient | null = null;
 
     public static get connection(): WebsocketClient | null {
@@ -45,6 +46,7 @@ export class WebsocketClient extends WebSocket implements Disposable {
     }
 
     #retryDelay = 200;
+    #connectionTimeoutID = -1;
 
     //#endregion
 
@@ -94,17 +96,17 @@ export class WebsocketClient extends WebSocket implements Disposable {
     #messageListener = (e: MessageEvent<string>) => {
         const data: WSMessage = JSON.parse(e.data);
 
-        window.dispatchEvent(
-            new CustomEvent(EVENT_WS_MESSAGE, {
-                bubbles: true,
-                composed: true,
-                detail: data,
-            }),
-        );
+        const event = createEventFromWSMessage(data);
+
+        if (event) {
+            window.dispatchEvent(event);
+        }
     };
 
     #openListener = () => {
-        console.debug(`authentik/ws: connected to ${this.url}`);
+        window.clearTimeout(this.#connectionTimeoutID);
+
+        WebsocketClient.#logger.debug(`Connected to ${this.url}`);
 
         WebsocketClient.#connection = this;
 
@@ -112,25 +114,24 @@ export class WebsocketClient extends WebSocket implements Disposable {
     };
 
     #closeListener = (event: CloseEvent) => {
-        console.debug("authentik/ws: closed ws connection", event);
+        window.clearTimeout(this.#connectionTimeoutID);
+
+        WebsocketClient.#logger.warn("Connection closed", event);
 
         WebsocketClient.#connection = null;
 
         if (this.#retryDelay > 6000) {
-            window.dispatchEvent(
-                new CustomEvent(EVENT_MESSAGE, {
-                    bubbles: true,
-                    composed: true,
-                    detail: {
-                        level: MessageLevel.error,
-                        message: msg("Connection error, reconnecting..."),
-                    },
-                }),
+            showMessage(
+                {
+                    level: MessageLevel.error,
+                    message: msg("Connection error, reconnecting..."),
+                },
+                true,
             );
         }
 
-        setTimeout(() => {
-            console.debug(`authentik/ws: reconnecting ws in ${this.#retryDelay}ms`);
+        this.#connectionTimeoutID = window.setTimeout(() => {
+            WebsocketClient.#logger.info(`Reconnecting in ${this.#retryDelay}ms`);
 
             WebsocketClient.connect();
         }, this.#retryDelay);

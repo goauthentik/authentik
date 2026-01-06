@@ -40,17 +40,19 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     row(item: DeviceAccessGroup): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Group")}</span>
-                <ak-endpoints-device-access-groups-form slot="form" .instancePk=${item.pbmUuid}>
-                </ak-endpoints-device-access-groups-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Group")}</span>
+                    <ak-endpoints-device-access-groups-form slot="form" .instancePk=${item.pbmUuid}>
+                    </ak-endpoints-device-access-groups-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 
