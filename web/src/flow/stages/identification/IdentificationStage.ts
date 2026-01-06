@@ -435,7 +435,7 @@ export class IdentificationStage extends BaseStage<
                     type=${type}
                     name="uidField"
                     placeholder=${label}
-                    autofocus=""
+                    autofocus
                     autocomplete=${autocomplete}
                     spellcheck="false"
                     class="pf-c-form-control"
