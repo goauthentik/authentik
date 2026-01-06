@@ -80,7 +80,6 @@ const items = [
             },
             "install-config/first_steps",
             {
-
                 //#region Configuration
                 type: "category",
                 label: "Configuration",

@@ -58,11 +58,10 @@ See all configurable values on [ArtifactHub](https://artifacthub.io/packages/hel
 
 ## PostgreSQL production setup
 
-The PostgreSQL database that is created by default during installtion is only intended for demonstration and testing purposes. For production instances, you should use another installation method using one of the following operators:
+The PostgreSQL database that is created by default during installation is only intended for demonstration and testing purposes. For production instances, you should use another installation method using one of the following operators:
 
 - [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
 - [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
-
 
 ## Email configuration (optional but recommended)
 
@@ -92,6 +91,6 @@ You will get a `Not Found` error if initial setup URL doesn't include the traili
 
 ## First steps in authentik
 
-import Blurb_first_steps from "../_blurb_first_steps.md";
+import Blurb_first_steps from "../\_blurb_first_steps.md";
 
 <Blurb_first_steps />
