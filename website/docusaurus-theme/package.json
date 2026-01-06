@@ -16,6 +16,7 @@
         "./redirects": "./redirects/index.mjs",
         "./releases/common": "./releases/common.mjs",
         "./releases/plugin": "./releases/plugin.mjs",
+        "./releases/version": "./releases/version.mjs",
         "./releases/node": "./releases/node.mjs"
     },
     "imports": {
