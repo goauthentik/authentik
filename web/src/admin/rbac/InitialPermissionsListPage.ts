@@ -115,3 +115,9 @@ declare global {
         "initial-permissions-list": InitialPermissionsListPage;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-initial-permissions-list": InitialPermissionsListPage;
+    }
+}
