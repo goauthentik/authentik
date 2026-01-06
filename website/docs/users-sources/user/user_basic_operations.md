@@ -81,11 +81,9 @@ To modify a user object, go to **Directory** > **Users**, and click the edit ico
 
 ## Manage user permissions
 
-You cannot grant a user any permissions. Instead, either assign the user to a role with the appropriate permissions, or add a user to a group that has the appropriate permissions (via the group's role).
+You cannot directly grant a user any permissions. Instead, either assign the user to a role with the appropriate permissions, or add a user to a group that has the appropriate permissions (via the group's role/roles).
 
-You can however grant _object_ permissions on a user, meaning you can define what permissions any specific role has on that user object (what can be done TO that user object, not by that user).
-
-For more information, review ["Permissions"](../access-control/permissions.md).
+On the flipside, to grant permissions on a user object to a role, review ["Manage permissions"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Add a user to a group
 
