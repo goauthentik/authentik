@@ -1,9 +1,7 @@
 """Generate JSON Schema for blueprints"""
 
-from json import dumps
 from typing import Any
 
-from django.core.management.base import BaseCommand, no_translations
 from django.db.models import Model, fields
 from django.db.models.fields.related import OneToOneField
 from drf_jsonschema_serializer.convert import converter, field_to_converter
@@ -40,13 +38,12 @@ class PrimaryKeyRelatedFieldConverter:
         return {"type": "integer"}
 
 
-class Command(BaseCommand):
+class SchemaBuilder:
     """Generate JSON Schema for blueprints"""
 
     schema: dict
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
         self.schema = {
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "https://goauthentik.io/blueprints/schema.json",
@@ -93,16 +90,6 @@ class Command(BaseCommand):
             "$defs": {"blueprint_entry": {"oneOf": []}},
         }
 
-    def add_arguments(self, parser):
-        parser.add_argument("--file", type=str)
-
-    @no_translations
-    def handle(self, *args, file: str, **options):
-        """Generate JSON Schema for blueprints"""
-        self.build()
-        with open(file, "w") as _schema:
-            _schema.write(dumps(self.schema, indent=4, default=Command.json_default))
-
     @staticmethod
     def json_default(value: Any) -> Any:
         """Helper that handles gettext_lazy strings that JSON doesn't handle"""
@@ -124,7 +111,7 @@ class Command(BaseCommand):
                 try:
                     serializer_class = model_instance.serializer
                 except NotImplementedError as exc:
-                    raise NotImplementedError(model_instance) from exc
+                    raise ValueError(f"SerializerModel not implemented by {model}") from exc
             serializer = serializer_class(
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: False,
