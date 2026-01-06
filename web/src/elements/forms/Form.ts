@@ -5,7 +5,7 @@ import {
     pluckErrorDetail,
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
 
 import { isControlElement } from "#elements/AkControlElement";
@@ -13,7 +13,6 @@ import { AKElement } from "#elements/Base";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
-import { APIMessage } from "#elements/messages/Message";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
