@@ -10,18 +10,25 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-access-denied")
 export class AccessDeniedStage extends BaseStage<
     AccessDeniedChallenge,
     FlowChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFTitle, PFFormControl];
+    static styles: CSSResult[] = [
+        // ---
+        PFLogin,
+        PFForm,
+        PFTitle,
+        PFFormControl,
+        PFButton,
+    ];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -47,6 +54,17 @@ export class AccessDeniedStage extends BaseStage<
                           `
                         : nothing}
                 </ak-empty-state>
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <a
+                        class="pf-c-button pf-m-primary pf-m-block"
+                        href=${this.challenge.flowInfo?.cancelUrl}
+                    >
+                        ${msg("Go back", {
+                            id: "flow.navigation.go-back",
+                        })}
+                    </a>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }
