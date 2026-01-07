@@ -16,6 +16,14 @@ class FailoverRouter:
     def db_for_read(self, model, **hints):
         if not self.replica_enabled:
             return "default"
+        # Stay on primary for the entire transaction to maintain consistency.
+        # Reading from a replica mid-transaction would give a different snapshot,
+        # breaking transactional semantics (not just read-your-writes, but the
+        # entire consistent point-in-time view that a transaction provides).
+        from django.db import connection
+
+        if connection.in_atomic_block:
+            return "default"
         return choice(self.read_replica_aliases)  # nosec
 
     def db_for_write(self, model, **hints):
