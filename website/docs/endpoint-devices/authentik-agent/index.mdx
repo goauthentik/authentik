@@ -21,18 +21,22 @@ The authentik Agent consists of several components:
 | Platform                  | Component                           | Description                                                                                                                                                                                                                                          | Dependencies                         |
 | ------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | **Linux, macOS, Windows** | `authentik-cli`                     | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                                        | `authentik-agent`                    |
-| **Linux, macOS, Windows** | `authentik-agent`                   | User service.                                                                                                                                                                                                                                        | `authentik-sysd`                     |
-| **Linux, macOS, Windows** | `authentik-sysd`                    | System service.                                                                                                                                                                                                                                      | None                                 |
+| **Linux, macOS, Windows** | `authentik-agent`                   | Authentication in a users' context, for CLI tools. service.                                                                                                                                                                                          | `authentik-sysd`                     |
+| **Linux, macOS, Windows** | `authentik-sysd`                    | Responsible for handling device-level authentication and compliance checks. service.                                                                                                                                                                 | None                                 |
 | **Linux only**            | `libpam-authentik`                  | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](../device-authentication/ssh-authentication.mdx) and [local device login](../device-authentication/local-device-login/index.mdx).             | `authentik-sysd`                     |
 | **Linux only**            | `libnss-authentik`                  | NSS Module that makes Linux aware of authentik users. All authentik users will be visible to Linux - but won't be able to login unless configured via device access groups. Provides a consistent `uid` and `gid` for users on all Endpoint Devices. | `authentik-sysd`, `libpam-authentik` |
 | **Windows only**          | `Windows Credential Provider` (WCP) | Enables logging in to Windows devices using authentik credentials.                                                                                                                                                                                   | `authentik-sysd`                     |
 
 ## Technical information
 
-All authentik Agent components communicate via gRPC and Unix domain sockets.
+All authentik Agent components communicate via gRPC and Unix domain sockets/Windows named pipes.
 
-- `sys.sock` for general communication
-- `sys-ctrl.sock` for domain join
+**Linux**: `/var/run/authentik/sys.sock` and `/var/run/authentik/sys-ctrl.sock`
+**macOS**: `/var/run/authentik-sysd.sock` and `/var/run/authentik-sysd-ctrl.sock`
+**Windows**: `\\.\pipe\authentik\sysd` and `\\.\pipe\authentik\sysd-ctrl`
+
+- `sys.sock`/`*sysd.sock` for general communication
+- `*-ctrl.sock` for domain join
 
 ## Important considerations
 
