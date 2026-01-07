@@ -3,13 +3,14 @@ import "#elements/forms/HorizontalFormElement";
 import { SlottedTemplateResult } from "../elements/types";
 
 import { AKElement, type AKElementProps } from "#elements/Base";
+import { FocusTarget } from "#elements/utils/focus";
 
 import { ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
@@ -29,6 +30,11 @@ export abstract class HorizontalLightComponent<T>
     extends AKElement
     implements HorizontalLightComponentProps<T>
 {
+    static shadowRootOptions = {
+        ...AKElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -39,6 +45,10 @@ export abstract class HorizontalLightComponent<T>
     protected createRenderRoot() {
         return this;
     }
+
+    protected autofocusTarget = new FocusTarget();
+
+    public override focus = this.autofocusTarget.focus;
 
     public override role = "presentation";
 
@@ -72,6 +82,9 @@ export abstract class HorizontalLightComponent<T>
     public set required(value: boolean) {
         this.ariaRequired = value ? "true" : "false";
     }
+
+    @property({ type: Boolean })
+    public autofocus: boolean = false;
 
     /**
      * Help text to display below the form element. Optional
@@ -152,9 +165,21 @@ export abstract class HorizontalLightComponent<T>
 
     //#region Lifecycle
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("aria-labelledby", this.labelID);
+
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+    }
+
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
+        if (this.autofocus) {
+            requestAnimationFrame(() => {
+                this.autofocusTarget.focus();
+            });
+        }
     }
 
     //#endregion

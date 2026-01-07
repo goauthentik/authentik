@@ -82,3 +82,9 @@ export class EndpointAgentStage extends BaseStage<
         </ak-flow-card>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-endpoint-agent": EndpointAgentStage;
+    }
+}
