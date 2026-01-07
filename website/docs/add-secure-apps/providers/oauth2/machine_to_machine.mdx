@@ -76,11 +76,11 @@ scope=profile
 
 The automatically generated service account will follow this naming scheme: `ak-<provider_name>-client_credentials`. Currently the service account creation settings can not be altered.
 
-### JWT authentication
+## JWT authentication
 
-For both externally and authentik issued JWTs, authentik will create a service account which is based on the provider name and the subject claim of the token that authentik is given. You many end up with multiple service accounts depending on the tokens that are provided to authentik. These service accounts will expire and be deleted based on the expiry claim (if set) of the token that authentik is given.
+For both externally and authentik issued JWTs, authentik will create a service account which is based on the provider name and the subject claim of the token that authentik is given. You may end up with multiple service accounts depending on the tokens that are provided to authentik. These service accounts will expire and be deleted based on the expiry claim (if set) of the token that authentik is given.
 
-#### Externally issued JWTs
+### Externally issued JWTs
 
 You can authenticate and get a token using an existing JWT. For readability we will refer to the JWT issued by the external issuer/platform as input JWT, and the resulting JWT from authentik as the output JWT.
 
@@ -99,7 +99,7 @@ client_assertion=<inputJWT>&
 client_id=<client_id>
 ```
 
-Alternatively, you can set the `client_secret` parameter to `inputJWT`, for applications that can set the password from a file but not other parameters.
+Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for applications that can set the password from a file but not other parameters.
 
 Input JWTs are checked to verify that they are signed by any of the selected _Federated OIDC Sources_, and that their `exp` attribute is not set as now or in the past.
 
@@ -117,13 +117,13 @@ Other information that's available in the policy expression context:
 
 If you're authorizing with a JWT, then `request.context["oauth_jwt"]` is available which is the parsed JWT as a dictionary.
 
-#### authentik-issued JWTs:ak-version[2024.12]
+### authentik-issued JWTs:ak-version[2024.12]
 
 To allow federation between providers, modify the provider settings of the application (whose token will be used for authentication) to select the provider of the application to which you want to federate.
 
 With this configuration, any JWT issued by the configured providers can be used to authenticate:
 
-```
+```http
 POST /application/o/token/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
@@ -134,7 +134,7 @@ client_assertion=<inputJWT>&
 client_id=<client_id>
 ```
 
-Alternatively, you can set the `client_secret` parameter to the `inputJWT`, for applications which can set the password from a file but not other parameters.
+Alternatively, you can set the `client_secret` parameter to `<inputJWT>`, for applications which can set the password from a file but not other parameters.
 
 Input JWTs must be valid access tokens issued by any of the configured _Federated OIDC Providers_, they must not have been revoked and must not have expired.
 
@@ -156,15 +156,15 @@ If you're authorizing with a JWT, then `request.context["oauth_jwt"]` is availab
 
 ### More detailed error information
 
-If you receiver any error response from authentik it will only be a generic error, error description, and the `request_id`.
+If you receive any error response from authentik it will only be a generic error, error description, and the `request_id`.
 
-However, more detailed error information can be obtained from the authentik server container logs by searching for the `request_id` that you're experiencing issues with.
+However, more detailed error information can be obtained from the [authentik server container logs](../../../troubleshooting/logs.mdx) by searching for the `request_id` that you're experiencing issues with.
 
 ### OAuth introspection endpoint
 
-To use the OAuth introspection endpoint to obtain more information on a token, you must first to authenticate to it.
+To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it.
 
-You are only able to introspect a token from the same provider that was used to authenticate, or you must exchange the token for a token from the provider as describe above.
+You are only able to introspect a token from the same provider that was used to authenticate, or you must exchange the token for a token from the provider as described above.
 
 ### Event logging
 
