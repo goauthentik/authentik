@@ -42,7 +42,7 @@ import Tabs from "@theme/Tabs";
     </TabItem>
 </Tabs>
 
-## Generate passwords
+## Generate password and secret key
 
 If this is a fresh authentik installation, you need to generate a password and a secret key. Use a secure password generator of your choice such as pwgen, or you can use `openssl` as below.
 
@@ -103,7 +103,7 @@ For more information, refer to our [Email configuration](../email.mdx) documenta
 All internal operations use UTC. Times displayed in the UI are automatically localized for the user. Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers; it will cause problems with OAuth and SAML authentication, as seen this [GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
 :::
 
-After you have downloaded the `docker-compose.yml` file, generated your generate a password and a secret key, and optionally configured your global email, run these commands to retrieve and install the current version of authentik:
+After you have downloaded the `docker-compose.yml` file, generated a password and a secret key, and optionally configured your global email, run these commands to retrieve and install the current version of authentik:
 
 ```shell
 docker compose pull
