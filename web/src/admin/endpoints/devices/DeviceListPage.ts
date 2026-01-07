@@ -10,8 +10,6 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { osFamilyToLabel } from "#admin/endpoints/devices/utils";
-
 import { DeviceSummary, EndpointDevice, EndpointsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -130,7 +128,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
                 <div>${item.facts.data.network?.hostname || item.name}</div>
             </a>`,
-            html`${osFamilyToLabel(item.facts.data.os?.family)} ${item.facts.data.os?.version}`,
+            html`${item.facts.data.os?.name} ${item.facts.data.os?.version}`,
             html`${item.accessGroupObj?.name || "-"}`,
             item.facts.created ? Timestamp(item.facts.created) : html`-`,
             html`<ak-forms-modal>

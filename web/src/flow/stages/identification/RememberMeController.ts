@@ -11,8 +11,9 @@ export class AkRememberMeController implements ReactiveController {
     static styles = [
         css`
             .remember-me-switch {
-                display: inline-block;
-                padding-top: 0.25rem;
+                display: flex;
+                padding-top: var(--pf-global--spacer--sm);
+                gap: var(--pf-global--spacer--sm);
             }
         `,
     ];

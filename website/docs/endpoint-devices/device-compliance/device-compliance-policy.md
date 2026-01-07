@@ -22,9 +22,11 @@ To access device facts within a flow, the flow must include an [Endpoint stage](
 The following example shows how to use these facts within an expression policy.
 
 ```python
-flow_plan = request.context.get("flow_plan") #set a flow_plan object
-device = flow_plan.context.get("device") #set a device object
-name = device.name #the name of the device
+flow_plan = request.context.get("flow_plan") # set a flow_plan object
+device = flow_plan.context.get("device") # set a device object
+name = device.name # the name of the device
+facts = device.cached_facts.data
+ak_logger.debug("device facts", facts=facts)
 ```
 
 ## Examples
@@ -87,6 +89,7 @@ The following example will only allow authentication via Apple devices.
         device = flow_plan.context.get("device")
         if device.manufacturer.lower() != "apple":
             return True
+        return False
         ```
         :::info Deny stage
         Because this is a deny stage, the policy must evaluate true when a requirement is not met.

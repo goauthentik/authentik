@@ -6,34 +6,6 @@
   <source>English</source>
   <target>Inglês</target>
 </trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-  <target>Pseudoidioma</target>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech</source>
-  <target>Tcheco</target>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German</source>
-  <target>Alemão</target>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish</source>
-  <target>Espanhol</target>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish</source>
-  <target>Finlandês</target>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French</source>
-  <target>Francês</target>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian</source>
-  <target>Italiano</target>
-</trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
   <target>Japonês</target>
@@ -42,32 +14,12 @@
   <source>Korean</source>
   <target>Coreano</target>
 </trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch</source>
-  <target>Holandês</target>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish</source>
-  <target>Polonês</target>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese</source>
-  <target>Português</target>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian</source>
-  <target>Russo</target>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish</source>
-  <target>Turco</target>
-</trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified</source>
+  <source>Chinese (Simplified)</source>
   <target>Chinês</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional</source>
+  <source>Chinese (Traditional)</source>
   <target>Chinês</target>
 </trans-unit>
 <!-- #endregion -->
@@ -84,8 +36,8 @@
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
-  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
-  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
 
@@ -108,18 +60,6 @@
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
   <target>Mensagens de status</target>
-</trans-unit>
-<trans-unit id="s364c4f177a2f8322">
-  <source>Open API drawer</source>
-  <target>Abrir painel da API</target>
-</trans-unit>
-<trans-unit id="sba65ae54d6585c1a">
-  <source>Unread notifications</source>
-  <target>Notificações não lidas</target>
-</trans-unit>
-<trans-unit id="s9ba989e69344ff29">
-  <source>Open Notification drawer</source>
-  <target>Abrir Notificações</target>
 </trans-unit>
 <trans-unit id="s9d8b8aa2b404c2c8">
   <source>Settings</source>
@@ -4395,9 +4335,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Click to change value</source>
   <target>Clique para alterar o valor</target>
 </trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
-</trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
 </trans-unit>
@@ -4462,19 +4399,12 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Expires on</source>
   <target>Expira em</target>
 </trans-unit>
-<trans-unit id="sb7fe62e7073eb6c9">
-  <source>Token name...</source>
-</trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
   <target>Expirando</target>
-</trans-unit>
-<trans-unit id="safcc54b2aedb1a17">
-  <source>If this is selected, the token will expire. Upon expiration, the token will be rotated.</source>
-  <target>Se selecionado, o token expirará. Após a expiração, o token será rotacionado.</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -4494,9 +4424,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
-</trans-unit>
-<trans-unit id="sc522b30adb9ff289">
-  <source>Update Enrollment token</source>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -8950,21 +8877,9 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <source>You don't have any notifications currently.</source>
   <target>Você não tem nenhuma notificação atualmente.</target>
 </trans-unit>
-<trans-unit id="sc0064c91ad2aa90b">
-  <source>Notification drawer</source>
-  <target>Painel de notificações</target>
-</trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
   <target>Notificações</target>
-</trans-unit>
-<trans-unit id="sa3438c7bb4e9cce8">
-  <source><x id="0" equiv-text="${this.unread}"/> unread</source>
-  <target><x id="0" equiv-text="${this.unread}"/> não lidas</target>
-</trans-unit>
-<trans-unit id="s8cda828dac449ea5">
-  <source>Clear all</source>
-  <target>Limpar tudo</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
@@ -9933,9 +9848,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
 </trans-unit>
-<trans-unit id="sa373520de40e9d44">
-  <source>Assign User to Groups</source>
-</trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
 </trans-unit>
@@ -9980,12 +9892,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
-</trans-unit>
-<trans-unit id="scdeb093efb1ac2f2">
-  <source>Data export requested successfully</source>
-</trans-unit>
-<trans-unit id="se5a360179bd5937e">
-  <source>You will receive a notification once the data is ready</source>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
@@ -10094,9 +10000,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
                             <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
                             <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
 </trans-unit>
-<trans-unit id="s813faec5ff1d32d1">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
-</trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
 </trans-unit>
@@ -10111,6 +10014,128 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sb4a957846c89fca1">
   <source>Primary disk usage</source>
+</trans-unit>
+<trans-unit id="s7b68229d885a34d3">
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+</trans-unit>
+<trans-unit id="s284f44964466ef38">
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+</trans-unit>
+<trans-unit id="s01f8cd92a0204da2">
+  <source>Data exports are not available as storage for reports is not configured.</source>
+</trans-unit>
+<trans-unit id="s7afef158aada7389">
+  <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+</trans-unit>
+<trans-unit id="sa8d2689c8fdfea22">
+  <source>Successfully requested data export</source>
+</trans-unit>
+<trans-unit id="s7e2ef0e26e7f5e6f">
+  <source>Failed to export data</source>
+</trans-unit>
+<trans-unit id="sc6991f3e377938fb">
+  <source>Start export</source>
+</trans-unit>
+<trans-unit id="sd69873a0783f8e39">
+  <source>Export data</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s3ec4da71c1a62754">
+  <source>Queued</source>
+</trans-unit>
+<trans-unit id="sd32298bb7d36024d">
+  <source>Configured file backend does not support file management.</source>
+</trans-unit>
+<trans-unit id="s4f1e04b9b4cb96ae">
+  <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+</trans-unit>
+<trans-unit id="s3a46b5964b3ecfac">
+  <source>View details...</source>
+</trans-unit>
+<trans-unit id="s6cbf6cd401ea3336">
+  <source>Type a connector name...</source>
+</trans-unit>
+<trans-unit id="s04be2edfb0d2218a">
+  <source>Type a name for the token...</source>
+</trans-unit>
+<trans-unit id="s84e29a714db544e9">
+  <source>Update Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s5a7055a44dc83b1e">
+  <source>Type a unique identifier...</source>
+</trans-unit>
+<trans-unit id="sdfe787aeeebbfbf1">
+  <source>Type a token description...</source>
+</trans-unit>
+<trans-unit id="s434805f916fbf657">
+  <source>Not allowed to change this field. Please contact your administrator.</source>
+</trans-unit>
+<trans-unit id="sd7c52e2ce408c542">
+  <source>Integrations synced in the last 12 hours.</source>
+</trans-unit>
+<trans-unit id="table-loading-bar-label">
+  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
+</trans-unit>
+<trans-unit id="s6ecf01b9b8304dba">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="sb6650552aaaf5da0">
+  <source>Assigned Roles</source>
+</trans-unit>
+<trans-unit id="s5cbf3cbb4cf38b05">
+  <source>All Roles</source>
+</trans-unit>
+<trans-unit id="s6a850cd00064d6e6">
+  <source>Inherited from parent group</source>
+</trans-unit>
+<trans-unit id="sd9e3b91f8d62cb04">
+  <source>Inherited from group</source>
+</trans-unit>
+<trans-unit id="s3d8c389ca77b97e1">
+  <source>Inherited</source>
+</trans-unit>
+<trans-unit id="s01730bc068a6cf07">
+  <source>Select roles to attach to the user</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-api-requests">
+  <source>Toggle API requests drawer</source>
+</trans-unit>
+<trans-unit id="s355e4737a0286070">
+  <source>API Drawer</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-notifications">
+  <source>Toggle notifications drawer</source>
+</trans-unit>
+<trans-unit id="drawer-invoker-tooltip-notifications">
+  <source>Notification Drawer</source>
+</trans-unit>
+<trans-unit id="s5fa7f18dcfc98131">
+  <source>Failed to fetch notifications.</source>
+</trans-unit>
+<trans-unit id="notification-drawer-clear-all">
+  <source>Clear all notifications</source>
+</trans-unit>
+<trans-unit id="notification-drawer-close">
+  <source>Close notification drawer</source>
+</trans-unit>
+<trans-unit id="s54e4d61fc46a14be">
+  <source>No MFA devices enrolled.</source>
+</trans-unit>
+<trans-unit id="s227aacd5a7fc6f50">
+  <source>User Tokens</source>
+</trans-unit>
+<trans-unit id="sea858aeacf6ae9b0">
+  <source>No User Tokens enrolled.</source>
+</trans-unit>
+<trans-unit id="notification-unread-count">
+  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
+  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
 </trans-unit>
 </body>
 </file>

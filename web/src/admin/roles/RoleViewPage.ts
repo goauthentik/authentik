@@ -61,7 +61,7 @@ export class RoleViewPage extends AKElement {
                 margin-bottom: 6px;
             }
             .ak-button-collection {
-                max-width: 12em;
+                max-width: 13em;
             }
         `,
     ];

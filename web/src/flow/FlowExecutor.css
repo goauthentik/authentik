@@ -8,46 +8,85 @@
 
 .inspector-toggle {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    inset-inline-end: var(--pf-global--spacer--md);
+    inset-block-start: var(--pf-global--spacer--md);
     z-index: 100;
 }
 
-.locale-selector {
-    position: absolute;
-    inset-block-start: 1rem;
-    inset-inline-start: 1rem;
-    z-index: 100;
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    gap: var(--pf-global--spacer--sm);
-    padding-inline-start: var(--pf-global--spacer--sm);
-    padding-block: var(--pf-global--spacer--xs);
-    border-radius: var(--pf-global--BorderRadius--sm);
-    border-style: solid;
-    border-color: transparent;
-    border-width: thin;
+[part="locale-select"] {
+    --ak-c-flow-executor__locale-select--Padding: var(--pf-global--spacer--md);
+    --ak-c-flow-executor__locale-select--Color: var(--pf-global--Color--light-100);
+    --ak-c-locale-select--label--Color: var(--ak-c-flow-executor__locale-select--Color);
 
-    &:has(select:hover) {
-        cursor: pointer;
-        border-color: var(--pf-global--Color--100);
+    /* Compatibility mode */
+    & {
+        color: var(--ak-c-flow-executor__locale-select--Color);
+        position: absolute;
+        inset-block-start: var(--ak-c-flow-executor__locale-select--Padding);
+        inset-inline-start: var(--ak-c-flow-executor__locale-select--Padding);
+        font-weight: 500;
+        z-index: 100;
     }
 
-    select {
-        background-color: transparent;
-        color: var(--pf-global--Color--100);
+    /* Slight differences in browser hover states. */
+    &:has(select:hover),
+    &:hover {
+        --ak-c-locale-select--label--Color: var(
+            --ak-c-flow-executor__locale-select--Color--hover,
+            var(--ak-c-flow-executor__locale-select--Color)
+        );
+        --ak-c-locale-select--BackgroundColor: var(
+            --ak-c-flow-executor__locale-select--BackgroundColor--hover
+        );
+        --ak-c-locale-select--TextDecorationColor: var(--ak-c-locale-select--label--Color);
+        --ak-c-locale-select__after--Opacity: 1;
 
-        border: none;
+        color: var(--ak-c-flow-executor__locale-select--Color--hover);
 
-        &:focus {
-            outline: none;
+        @media (prefers-contrast: more) {
+            --ak-c-flow-executor__locale-select--Color--hover: var(
+                --pf-global--primary-color--dark-100
+            );
+
+            --ak-c-locale--select--OutlineColor: var(
+                --ak-c-flow-executor__locale-select--Color--hover
+            );
         }
+    }
 
-        appearance: base-select;
+    &::part(select) {
+        color: var(--ak-c-flow-executor__locale-select--Color);
+    }
 
-        &::picker-icon {
-            color: transparent;
+    filter: var(--ak-global--background-contrast-Filter);
+
+    grid-area: header;
+
+    /* At least a third of the card cut-off is available. */
+    @media (width <= 61.25rem) and (height <= 61.25rem) {
+        --ak-global--background-contrast-Filter: none;
+        --ak-c-flow-executor__locale-select--Color: var(--ak-global--background-contrast);
+
+        grid-area: main;
+    }
+
+    @media (width <= 61.25rem) and (height <= 61.25rem) and (not (prefers-contrast: more)) {
+        --ak-c-locale-select--Opacity: 0;
+
+        &:hover {
+            --ak-c-locale-select--Opacity: 1;
+            --ak-c-locale-select__after--Opacity: 1;
         }
+    }
+
+    @media (width >= 61.25rem) and (prefers-contrast: more) {
+        --ak-c-flow-executor__locale-select--BackgroundColor--hover: var(
+            --pf-global--BackgroundColor--150
+        );
+    }
+
+    /* Card is fully masked to mobile background. */
+    @media (width <= 35rem) {
+        grid-row: header;
     }
 }

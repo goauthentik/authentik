@@ -144,3 +144,9 @@ declare global {
         "ak-application-roles-list": ApplicationEntitlementsPage;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-entitlements-list": ApplicationEntitlementsPage;
+    }
+}
