@@ -79,11 +79,11 @@ After the creation of the user, you can edit any parameter defined during the cr
 
 To modify a user object, go to **Directory** > **Users**, and click the edit icon beside the name. You can also go into [user details](#view-user-details), and click **Edit**.
 
-## Assign, modify, or remove permissions for a user
+## Manage user permissions
 
-You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions, and the user inherits all of the group's permissions.
+You cannot directly grant a user any permissions. Instead, either assign the user to a role with the appropriate permissions, or add a user to a group that has the appropriate permissions (via the group's role/roles).
 
-For more information, review ["Permissions"](../access-control/permissions.md).
+On the flipside, to grant permissions on a user object to a role, review ["Manage permissions"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Add a user to a group
 
@@ -96,6 +96,10 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 1. To add a user to a role, navigate to **Directory > Users** to display all users.
 2. Click the name of the user to display the full user details page.
 3. Click the **Roles** tab, and then click either **Add to existing role** (or **Add new role** first).
+
+:::info
+Users also inherit roles from the groups they belong to. The **Roles** tab has two sub-tabs: **Assigned Roles** shows roles directly assigned to the user, while **All Roles** shows all roles including those inherited from groups. Inherited roles are marked with an "Inherited" label.
+:::
 
 ## User credentials recovery
 
