@@ -34095,7 +34095,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 100
           minimum: 0
       required:
       - component
@@ -34126,7 +34126,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 100
           minimum: 0
       required:
       - name
@@ -45848,7 +45848,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 100
           minimum: 0
     PatchedAuthenticatorTOTPStageRequest:
       type: object
@@ -53840,7 +53840,7 @@ components:
       properties:
         token:
           type: string
-          maxLength: 16
+          maxLength: 100
       required:
       - token
     SubModeEnum:
