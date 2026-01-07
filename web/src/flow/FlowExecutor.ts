@@ -44,7 +44,7 @@ import {
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { msg } from "@lit/localize";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -85,20 +85,26 @@ export class FlowExecutor
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    #challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    public set challenge(value: ChallengeTypes | undefined) {
+    public set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+        const previousTitle = previousValue?.flowInfo?.title;
+        const nextTitle = value?.flowInfo?.title;
+
         this.#challenge = value;
-        if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
-        } else {
+
+        if (!nextTitle) {
             document.title = this.brandingTitle;
+        } else if (nextTitle !== previousTitle) {
+            document.title = `${nextTitle} - ${this.brandingTitle}`;
         }
-        this.requestUpdate();
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    public get challenge(): ChallengeTypes | undefined {
+    public get challenge(): ChallengeTypes | null {
         return this.#challenge;
     }
 
@@ -117,7 +123,7 @@ export class FlowExecutor
     @property({ type: Boolean })
     public inspectorAvailable?: boolean;
 
-    @property({ type: String, attribute: "data-layout", useDefault: true })
+    @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     @state()
@@ -159,6 +165,8 @@ export class FlowExecutor
         });
     }
 
+    //#region Listeners
+
     @listen(AKSessionAuthenticatedEvent)
     protected sessionAuthenticatedListener = () => {
         if (!document.hidden) {
@@ -169,17 +177,22 @@ export class FlowExecutor
         window.location.reload();
     };
 
+    @listen(LOCALE_STATUS_EVENT)
+    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status !== "ready") {
+            return;
+        }
+
+        this.refresh();
+    };
+
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
         WebsocketClient.close();
     }
 
-    public async firstUpdated(): Promise<void> {
-        if (this.can(CapabilitiesEnum.CanDebug)) {
-            this.inspectorAvailable = true;
-        }
-
+    protected refresh = () => {
         this.loading = true;
 
         return new FlowsApi(DEFAULT_CONFIG)
@@ -187,11 +200,7 @@ export class FlowExecutor
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
             })
-            .then((challenge: ChallengeTypes) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(new AKFlowAdvanceEvent());
-                }
-
+            .then((challenge) => {
                 this.challenge = challenge;
 
                 if (this.challenge.flowInfo) {
@@ -210,6 +219,20 @@ export class FlowExecutor
             .finally(() => {
                 this.loading = false;
             });
+    };
+
+    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+        super.firstUpdated(changed);
+
+        if (this.can(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
+        }
+
+        this.refresh().then(() => {
+            if (this.inspectorOpen) {
+                window.dispatchEvent(new AKFlowAdvanceEvent());
+            }
+        });
     }
 
     // DOM post-processing has to happen after the render.
