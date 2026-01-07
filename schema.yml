@@ -32811,12 +32811,18 @@ components:
           allOf:
           - $ref: '#/components/schemas/Config'
           readOnly: true
+        license_status:
+          allOf:
+          - $ref: '#/components/schemas/LicenseStatusEnum'
+          readOnly: true
+          nullable: true
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
       - device_id
       - jwks_auth
       - jwks_challenge
+      - license_status
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
@@ -40941,6 +40947,16 @@ components:
           minLength: 1
       required:
       - key
+    LicenseStatusEnum:
+      enum:
+      - unlicensed
+      - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
     LicenseSummary:
       type: object
       description: Serializer for license status
