@@ -3,6 +3,9 @@ import "#flow/components/ak-flow-card";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
+import { autoDetectLanguage, setSessionLocale } from "#common/ui/locale/utils";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -58,7 +61,7 @@ export class UserSettingsPromptStage extends PromptStage {
         return super.renderPromptHelpText(prompt);
     }
 
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<input
                 type="checkbox"
@@ -134,6 +137,38 @@ export class UserSettingsPromptStage extends PromptStage {
                 </form>
             </div>
             </ak-flow-card>`;
+    }
+
+    /**
+     * Detects if the locale was changed in a prompt stage and updates the session accordingly.
+     */
+    protected override onSubmitSuccess(payload: Record<string, unknown>): void {
+        super.onSubmitSuccess?.(payload);
+
+        if (this.challenge.component !== "ak-stage-prompt") return;
+
+        const localeField = this.challenge.fields.find(
+            (field) => field.type === PromptTypeEnum.AkLocale,
+        );
+
+        if (!localeField) return;
+
+        const previousLanguageTag = localeField.initialValue;
+        const languageTag = localeField?.fieldKey ? payload[localeField.fieldKey] : null;
+
+        if (typeof languageTag !== "string") return;
+
+        // Remove the temporary session locale...
+        setSessionLocale(null);
+
+        if (languageTag !== this.activeLanguageTag) {
+            this.logger.info("A prompt stage changed the locale", {
+                languageTag,
+                previousLanguageTag,
+            });
+
+            this.activeLanguageTag = autoDetectLanguage(languageTag);
+        }
     }
 }
 

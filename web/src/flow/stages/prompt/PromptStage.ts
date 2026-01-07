@@ -1,17 +1,17 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { formatLocaleDisplayNames, renderLocaleDisplayNames } from "#common/ui/locale/format";
-import { getBestMatchLocale } from "#common/ui/locale/utils";
-
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
 import { BaseStage } from "#flow/stages/base";
+import { LocalePrompt } from "#flow/stages/prompt/components/locale";
 
 import {
+    CapabilitiesEnum,
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
@@ -32,9 +32,6 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-// Fixes horizontal rule <hr> warning in select dropdowns.
-/* eslint-disable lit/no-invalid-html */
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
@@ -59,7 +56,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
-    renderPromptInner(prompt: StagePrompt, disabled = false): TemplateResult {
+    renderPromptInner(prompt: StagePrompt, disabled = false): SlottedTemplateResult {
         const fieldId = `field-${prompt.fieldKey}`;
 
         switch (prompt.type) {
@@ -233,31 +230,13 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const entries = formatLocaleDisplayNames(this.activeLanguageTag);
-
-                const currentLanguageTag = prompt.initialValue
-                    ? getBestMatchLocale(prompt.initialValue)
-                    : null;
-
-                return html`<select
-                    class="pf-c-form-control ak-m-capitalize"
-                    id=${fieldId}
-                    name="${prompt.fieldKey}"
-                    ?disabled=${disabled}
-                    aria-label=${msg("Select language", {
-                        id: "language-selector-label",
-                        desc: "Label for the language selection dropdown",
-                    })}
-                >
-                    <option value="" ?selected=${!currentLanguageTag}>
-                        ${msg("Auto-detect", {
-                            id: "locale-auto-detect-option",
-                            desc: "Label for the auto-detect locale option in language selection dropdown",
-                        })}
-                    </option>
-                    <hr />
-                    ${renderLocaleDisplayNames(entries, currentLanguageTag)}
-                </select>`;
+                return LocalePrompt({
+                    activeLanguageTag: this.activeLanguageTag,
+                    prompt,
+                    fieldId,
+                    disabled,
+                    debug: this.can(CapabilitiesEnum.CanDebug),
+                });
             }
             default:
                 return html`<p>invalid type '${prompt.type}'</p>`;
