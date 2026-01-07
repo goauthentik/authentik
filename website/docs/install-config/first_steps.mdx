@@ -8,10 +8,79 @@ After you have installed and started authentik, you are now ready to add your fi
 
 The following tutorial assumes that you have already:
 
-1. Installed and started authentik on either [Docker Compose](../install-config/install/docker-compose.mdx#install-and-start-authentik) or [Kubernetes](../install-config/install/kubernetes.md#install-authentik-helm-chart).
+1. Installed authentik on either [Docker Compose](../install-config/install/docker-compose.mdx#install-and-start-authentik) or [Kubernetes](../install-config/install/kubernetes.md#install-authentik-helm-chart), and then started the server and worker.
 
 2. Opened authentik in your browser and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik) or [Kubernetes](../install-config/install/kubernetes.md#access-authentik)).
 
+:::info Initial setup in browser
+If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that your server and worker are running.
+:::
+
+Other optional configurations that you might have already completed include:
+
+- [Configured your global email address](../email/#global-email-settings)
+- [Set your environment variables](../configuration/#set-your-environment-variables), and [verified them](../configuration/#verify-your-configuration-settings)
+- installed a production-ready Postgres DB
+- configured your Postgres settings (read-replica, connections, etc)
+- configure your storage settings
+- configure custom ports
+
+## Install your first application and provider
+
+Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../core/glossary/terms/application.mdx) and [provider](../core/glossary/terms/provider.mdx). Authentik supports hundreds of applications; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for many common ones.
+
+After that, we'll walk through how to add users, groups, and roles.
+
+### Configure authentik
+
+For this walk-through, let's use [Grafana](https://grafana.com/) as the example application to install, with an OAuth2/OIDC provider. These steps are purposefully simplified, to get you up and going with a new application, but for the full details refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
+    - Set the Logout URI to `https://grafana.company/logout`.
+    - Set the Logout Method to `Front-channel`.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/index.md) to manage the display and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Configure Grafana
+
+Next we will configure your Grafana application to use authentik for its IdP. These steps are for a Grafana instance that is running in Docker; if you are running authentik in Kubernetes or as a standalone instance, refer to the [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+
+Set the following environment variables in your `.env` file:
+
+```yaml
+environment:
+    GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+    GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
+    GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "<Client ID from above>"
+    GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "<Client Secret from above>"
+    GF_AUTH_GENERIC_OAUTH_SCOPES: "openid profile email"
+    GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.company/application/o/authorize/"
+    GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.company/application/o/token/"
+    GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.company/application/o/userinfo/"
+    GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
+    # Optionally enable auto-login (bypasses Grafana login screen)
+    GF_AUTH_OAUTH_AUTO_LOGIN: "true"
+    # Optionally map user groups to Grafana roles
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'"
+    # Required if Grafana is running behind a reverse proxy
+    GF_SERVER_ROOT_URL: "https://grafana.company"
+```
+
+validation steps
+common troubleshooting steps
+
 ## What's next?
 
-words here...
+- add users, set up groups and roles (go over using federated sources, link to full docs on sources)
+- set up MFA
+- define property mappings
+- create a simple policy (?)
