@@ -14,11 +14,11 @@ Creating an authentik LDAP provider requires the following steps:
 
 ## Create an LDAP authentication flow _(optional)_
 
-The `default-authentication-flow` validates MFA by default. DUO, TOTP and static authenticators are supported by the LDAP provider (not WebAuthn or SMS).
+The `default-authentication-flow` validates MFA by default. Duo, TOTP, and static authenticators are supported by the LDAP provider. WebAuthn and SMS are not supported.
 
-If you plan to use only dedicated service accounts to bind to LDAP, or only use LDAP supported MFA authenticators, then you can use the default authentictation flow and skip this section and continue at [Create LDAP Application and Provider](#create-an-ldap-application-and-provider)
+If you plan to use only dedicated service accounts to bind to LDAP, or only use LDAP supported MFA authenticators, then you can use the default authentication flow and skip this section and continue with the [Create an LDAP application and provider](#create-an-ldap-application-and-provider) section.
 
-Refer to [Code-based MFA support](./index.md#code-based-mfa-support) for more information on LDAP and MFA.
+Refer to [Code-Based MFA support](./index.md#code-based-mfa-support) for more information on LDAP and MFA.
 
 ### Create custom stages
 
