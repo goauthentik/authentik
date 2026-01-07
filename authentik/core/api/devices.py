@@ -13,6 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from authentik.api.validation import validate
 from authentik.core.api.users import ParamUserSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
@@ -71,13 +72,13 @@ class AdminDeviceViewSet(ViewSet):
     """Viewset for authenticator devices"""
 
     serializer_class = DeviceSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def get_devices(self, **kwargs):
         """Get all devices in all child classes"""
         for model in device_classes():
             device_set = get_objects_for_user(
-                self.request.user, f"{model._meta.app_label}.view_{model._meta.model_name}", model
+                self.request.user, f"{model._meta.app_label}.view_{model._meta.model_name}"
             ).filter(**kwargs)
             yield from device_set
 
@@ -85,8 +86,7 @@ class AdminDeviceViewSet(ViewSet):
         parameters=[ParamUserSerializer],
         responses={200: DeviceSerializer(many=True)},
     )
-    def list(self, request: Request) -> Response:
+    @validate(ParamUserSerializer, "query")
+    def list(self, request: Request, query: ParamUserSerializer) -> Response:
         """Get all devices for current user"""
-        args = ParamUserSerializer(data=request.query_params)
-        args.is_valid(raise_exception=True)
-        return Response(DeviceSerializer(self.get_devices(**args.validated_data), many=True).data)
+        return Response(DeviceSerializer(self.get_devices(**query.validated_data), many=True).data)

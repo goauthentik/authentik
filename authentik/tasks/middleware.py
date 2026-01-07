@@ -245,7 +245,10 @@ class WorkerStatusMiddleware(Middleware):
                 WorkerStatusMiddleware.keep(status)
             except DB_ERRORS:  # pragma: no cover
                 sleep(10)
-                pass
+                try:
+                    connections.close_all()
+                except DB_ERRORS:
+                    pass
 
     @staticmethod
     def keep(status: WorkerStatus):

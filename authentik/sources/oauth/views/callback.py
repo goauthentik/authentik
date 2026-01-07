@@ -79,6 +79,7 @@ class OAuthCallback(OAuthClientMixin, View):
         return sfm.get_flow(
             raw_info=raw_info,
             access_token=self.token.get("access_token"),
+            refresh_token=self.token.get("refresh_token"),
             expires=self.token.get("expires_in"),
         )
 
@@ -122,10 +123,12 @@ class OAuthSourceFlowManager(SourceFlowManager):
         self,
         connection: UserOAuthSourceConnection,
         access_token: str | None = None,
+        refresh_token: str | None = None,
         expires_in: int | None = None,
         **_,
     ) -> UserOAuthSourceConnection:
-        """Set the access_token on the connection"""
+        """Set the access_token and refresh_token on the connection"""
         connection.access_token = access_token
+        connection.refresh_token = refresh_token
         connection.expires = now() + timedelta(seconds=expires_in) if expires_in else now()
         return connection

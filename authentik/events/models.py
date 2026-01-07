@@ -8,6 +8,8 @@ from inspect import currentframe
 from typing import Any
 from uuid import uuid4
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
 from django.http import HttpRequest
@@ -41,6 +43,7 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
@@ -116,6 +119,8 @@ class EventAction(models.TextChoices):
     EMAIL_SENT = "email_sent"
 
     UPDATE_AVAILABLE = "update_available"
+
+    EXPORT_READY = "export_ready"
 
     CUSTOM_PREFIX = "custom_"
 
@@ -261,6 +266,14 @@ class Event(SerializerModel, ExpiringModel):
             return self.context["message"]
         return f"{self.action}: {self.context}"
 
+    @property
+    def hyperlink(self) -> str | None:
+        return self.context.get("hyperlink")
+
+    @property
+    def hyperlink_label(self) -> str | None:
+        return self.context.get("hyperlink_label")
+
     def __str__(self) -> str:
         return f"Event action={self.action} user={self.user} context={self.context}"
 
@@ -351,6 +364,15 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
         notification.save()
+        layer = get_channel_layer()
+        async_to_sync(layer.group_send)(
+            build_user_group(notification.user),
+            {
+                "type": "event.notification",
+                "id": str(notification.pk),
+                "data": notification.serializer(notification).data,
+            },
+        )
         return []
 
     def send_webhook(self, notification: "Notification") -> list[str]:
@@ -479,6 +501,11 @@ class NotificationTransport(TasksModel, SerializerModel):
             context["key_value"]["event_user_username"] = notification.event.user.get(
                 "username", None
             )
+        if notification.hyperlink:
+            context["link"] = {
+                "target": notification.hyperlink,
+                "label": notification.hyperlink_label,
+            }
         if notification.event:
             context["title"] += notification.event.action
             for key, value in notification.event.context.items():
@@ -532,6 +559,8 @@ class Notification(SerializerModel):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     severity = models.TextField(choices=NotificationSeverity.choices)
     body = models.TextField()
+    hyperlink = models.TextField(blank=True, null=True, max_length=4096)
+    hyperlink_label = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
     seen = models.BooleanField(default=False)

@@ -3,7 +3,6 @@ import "#flow/components/ak-flow-card";
 
 import { pluckErrorDetail } from "#common/errors/network";
 
-import autoDetectLanguage from "#elements/ak-locale-context/helpers";
 import { akEmptyState } from "#elements/EmptyState";
 import { ifPresent } from "#elements/utils/attributes";
 import { ListenerController } from "#elements/utils/listenerController";
@@ -12,11 +11,13 @@ import { randomId } from "#elements/utils/randomId";
 import { BaseStage } from "#flow/stages/base";
 import { CaptchaHandler, CaptchaProvider, iframeTemplate } from "#flow/stages/captcha/shared";
 
+import { ConsoleLogger } from "#logger/browser";
+
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
-import { msg } from "@lit/localize";
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -95,6 +96,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         `,
     ];
 
+    #logger = ConsoleLogger.prefix("flow:captcha");
+
     //#region Properties
 
     @property({ type: Boolean })
@@ -134,8 +137,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     #captchaDocumentContainer?: HTMLDivElement;
     #listenController = new ListenerController();
 
-    #locale: string | null = null;
-
     //#endregion
 
     //#region Getters/Setters
@@ -170,7 +171,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             .with({ message: "captcha" }, ({ token }) => this.onTokenChange(token))
             .with({ message: "load" }, this.#loadListener)
             .otherwise(({ message }) => {
-                console.debug(`authentik/stages/captcha: Unknown message: ${message}`);
+                this.#logger.debug(`Unknown message: ${message}`);
             });
     };
 
@@ -195,7 +196,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     sitekey: this.challenge.siteKey,
                     callback: this.onTokenChange,
                     size: "invisible",
-                    hl: this.#locale ?? undefined,
+                    hl: this.activeLanguageTag,
                 }),
             );
         });
@@ -230,7 +231,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 sitekey: this.challenge.siteKey,
                 callback: this.onTokenChange,
                 size: "invisible",
-                hl: this.#locale ?? undefined,
+                hl: this.activeLanguageTag,
             }),
         );
     }
@@ -248,7 +249,19 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Turnstile
 
+    /**
+     * Renders the Turnstile captcha frame.
+     *
+     * @remarks
+     *
+     * Turnstile will log a warning if the `data-language` attribute
+     * is not in lower-case format.
+     *
+     * @see {@link https://developers.cloudflare.com/turnstile/reference/supported-languages/ Turnstile Supported Languages}
+     */
     protected renderTurnstileFrame = () => {
+        const languageTag = this.activeLanguageTag.toLowerCase();
+
         return html`<div
             id="ak-container"
             class="cf-turnstile"
@@ -256,7 +269,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             data-theme="${this.activeTheme}"
             data-callback="callback"
             data-size="flexible"
-            data-language=${ifPresent(this.#locale)}
+            data-language=${ifPresent(languageTag)}
         ></div>`;
     };
 
@@ -375,8 +388,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
-
-        this.#locale = autoDetectLanguage();
     }
 
     public disconnectedCallback(): void {
@@ -414,14 +425,18 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             return;
         }
 
-        console.debug("authentik/stages/captcha: refresh triggered");
+        this.#logger.debug("refresh triggered");
 
         this.#run(this.activeHandler);
     }
 
     #refreshVendor() {
+        // First, remove any existing script & listeners...
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+
         this.#scriptElement?.remove();
 
+        // Then, load the new script...
         const scriptElement = document.createElement("script");
 
         scriptElement.src = this.challenge.jsUrl;
@@ -437,6 +452,26 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             document.body.appendChild(this.captchaDocumentContainer);
         }
     }
+
+    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (!this.activeHandler) {
+            return;
+        }
+
+        if (event.detail.status === "error") {
+            this.#logger.debug("Error loading locale:", event.detail);
+            return;
+        }
+
+        if (event.detail.status === "loading") {
+            return;
+        }
+
+        const { readyLocale } = event.detail;
+        this.#logger.debug(`Locale changed to \`${readyLocale}\``);
+
+        this.#run(this.activeHandler);
+    };
 
     //#endregion
 
@@ -491,6 +526,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                         // doesn't yet know the correct height, but at least the user can
                         // try to load the challenge again with the correct height.
 
+                        // eslint-disable-next-line @typescript-eslint/no-use-before-define
                         resizeObserver.observe(node as HTMLIFrameElement);
 
                         requestAnimationFrame(synchronizeHeight);
@@ -528,7 +564,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     //#region Loading
 
     #scriptLoadListener = async (): Promise<void> => {
-        console.debug("authentik/stages/captcha: script loaded");
+        this.#logger.debug("script loaded");
 
         this.error = null;
         this.#iframeLoaded = false;
@@ -540,17 +576,23 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
             try {
                 await this.#run(name);
-                console.debug(`authentik/stages/captcha[${name}]: handler succeeded`);
+                this.#logger.debug(`[${name}]: handler succeeded`);
 
                 this.activeHandler = name;
-
-                return;
             } catch (error) {
-                console.debug(`authentik/stages/captcha[${name}]: handler failed`);
-                console.debug(error);
+                this.#logger.debug(`[${name}]: handler failed`);
+                this.#logger.debug(error);
 
                 this.error = pluckErrorDetail(error, "Unspecified error");
             }
+
+            // We begin listening for locale changes once a handler has been successfully run
+            // to avoid interrupting the initial load.
+            window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
+                signal: this.#listenController.signal,
+            });
+
+            return;
         }
     };
 
@@ -561,21 +603,19 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             const iframe = this.#iframeRef.value;
 
             if (!iframe) {
-                console.debug(`authentik/stages/captcha: No iframe found, skipping.`);
+                this.#logger.debug(`No iframe found, skipping.`);
                 return;
             }
 
             const { contentDocument } = iframe;
 
             if (!contentDocument) {
-                console.debug(
-                    `authentik/stages/captcha: No iframe content window found, skipping.`,
-                );
+                this.#logger.debug("No iframe content window found, skipping.");
 
                 return;
             }
 
-            console.debug(`authentik/stages/captcha: Rendering interactive.`);
+            this.#logger.debug(`Rendering interactive.`);
 
             const captchaElement = handler.interactive();
             const template = iframeTemplate(captchaElement, {

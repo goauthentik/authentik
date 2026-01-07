@@ -10,7 +10,7 @@ import { reactConfig } from "./lib/react-config.js";
 import { typescriptConfig } from "./lib/typescript-config.js";
 
 import eslint from "@eslint/js";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 
 // @ts-check
@@ -56,8 +56,9 @@ export function createESLintPackageConfig({
     parserOptions = {},
 } = {}) {
     return defineConfig(
+        globalIgnores(ignorePatterns),
+
         {
-            ignores: ignorePatterns,
             languageOptions: {
                 parserOptions,
             },
@@ -66,8 +67,8 @@ export function createESLintPackageConfig({
         eslint.configs.recommended,
         javaScriptConfig,
 
-        wcconf?.configs["flat/recommended"] ?? {},
-        litconf?.configs["flat/recommended"] ?? {},
+        wcconf?.configs["flat/recommended"] ?? [{}],
+        litconf?.configs["flat/recommended"] ?? [{}],
 
         ...tseslint.configs.recommended,
 

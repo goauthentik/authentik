@@ -1,15 +1,13 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { UserDisplay } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -24,6 +22,30 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export class PageDetailsUpdate extends Event {
+    static readonly eventName = "ak-page-details-update";
+    header: PageHeaderInit;
+
+    constructor(header: PageHeaderInit) {
+        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
+        this.header = header;
+    }
+}
+
+export class PageNavMenuToggle extends Event {
+    static readonly eventName = "ak-page-nav-menu-toggle";
+    open: boolean;
+
+    constructor(open?: boolean) {
+        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
+        this.open = !!open;
+    }
+}
+
+export function setPageDetails(header: PageHeaderInit) {
+    window.dispatchEvent(new PageDetailsUpdate(header));
+}
+
 export interface PageHeaderInit {
     header?: string | null;
     description?: string | null;
@@ -36,6 +58,10 @@ export interface PageHeaderInit {
  *
  * Internally, this component listens for the `ak-page-header` event, which is
  * dispatched by the `ak-page-header` component.
+ *
+ * @event ak-page-nav-menu-toggle
+ * @event ak-page-details-update
+ *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
@@ -211,6 +237,12 @@ export class AKPageNavbar
                 & img {
                     height: 100%;
                 }
+
+                & i {
+                    font-size: var(--ak-brand-logo-height);
+                    height: var(--ak-brand-logo-height);
+                    line-height: var(--ak-brand-logo-height);
+                }
             }
 
             .sidebar-trigger,
@@ -288,10 +320,6 @@ export class AKPageNavbar
 
     //#region Event Handlers
 
-    #onWebSocket = () => {
-        this.firstUpdated();
-    };
-
     #onPageDetails = (ev: PageDetailsUpdate) => {
         const { header, description, icon, iconImage } = ev.header;
         this.header = header;
@@ -307,18 +335,12 @@ export class AKPageNavbar
 
     public connectedCallback(): void {
         super.connectedCallback();
-        window.addEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
         window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
     }
 
     public disconnectedCallback(): void {
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
         window.removeEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
         super.disconnectedCallback();
-    }
-
-    public async firstUpdated() {
-        this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
     willUpdate() {
@@ -355,11 +377,7 @@ export class AKPageNavbar
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
-                            <img
-                                src=${themeImage(this.brandingLogo, this.activeTheme)}
-                                alt="${msg("authentik Logo")}"
-                                loading="lazy"
-                            />
+                            ${renderImage(this.brandingLogo, msg("authentik Logo"), "")}
                         </div>
                     </a>
                 </aside>
@@ -409,30 +427,6 @@ export class AKPageNavbar
     }
 
     //#endregion
-}
-
-export class PageDetailsUpdate extends Event {
-    static readonly eventName = "ak-page-details-update";
-    header: PageHeaderInit;
-
-    constructor(header: PageHeaderInit) {
-        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
-        this.header = header;
-    }
-}
-
-export class PageNavMenuToggle extends Event {
-    static readonly eventName = "ak-page-nav-menu-toggle";
-    open: boolean;
-
-    constructor(open?: boolean) {
-        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
-        this.open = !!open;
-    }
-}
-
-export function setPageDetails(header: PageHeaderInit) {
-    window.dispatchEvent(new PageDetailsUpdate(header));
 }
 
 declare global {

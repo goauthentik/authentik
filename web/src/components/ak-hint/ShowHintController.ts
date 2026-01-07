@@ -1,3 +1,5 @@
+import "#components/ak-hint/ak-hint-footer";
+
 import { LOCALSTORAGE_AUTHENTIK_KEY } from "#common/constants";
 
 import { msg } from "@lit/localize";

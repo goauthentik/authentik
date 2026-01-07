@@ -1,0 +1,8 @@
+.pf-c-chip {
+    --pf-c-chip--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    border: 1px solid var(--pf-global--BorderColor--100);
+}
+
+:host([theme="dark"]) .pf-c-chip {
+    --pf-c-chip--BackgroundColor: var(--pf-global--BorderColor--300);
+}

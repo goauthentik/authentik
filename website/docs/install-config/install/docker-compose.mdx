@@ -1,5 +1,5 @@
 ---
-title: Docker Compose installation
+title: Compose installation
 ---
 
 This installation method is for test setups and small-scale production setups.
@@ -7,8 +7,8 @@ This installation method is for test setups and small-scale production setups.
 ## Requirements
 
 - A host with at least 2 CPU cores and 2 GB of RAM
-- Docker
-- Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
+- Podman or Docker
+- Podman or Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
 
 ## Video
 
@@ -24,7 +24,7 @@ This installation method is for test setups and small-scale production setups.
 
 ## Preparation
 
-To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
+To download the latest `compose.yml` open your terminal and navigate to the directory of your choice.
 Run the following command:
 
 import TabItem from "@theme/TabItem";
@@ -34,12 +34,12 @@ import Tabs from "@theme/Tabs";
 <Tabs groupId="OS">
     <TabItem value="Linux" label="Linux" default>
         ```shell
-        wget https://docs.goauthentik.io/docker-compose.yml
+        wget https://docs.goauthentik.io/compose.yml
         ```
     </TabItem>
     <TabItem value="macOS" label="macOS">
         ```shell
-        curl -O https://docs.goauthentik.io/docker-compose.yml
+        curl -O https://docs.goauthentik.io/compose.yml
         ```
     </TabItem>
 </Tabs>
@@ -83,7 +83,7 @@ docker compose pull
 docker compose up -d
 ```
 
-The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../../../releases/).
+The `compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../../../releases/).
 
 To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
@@ -105,3 +105,17 @@ COMPOSE_PORT_HTTPS=443
 ```
 
 See [Configuration](../configuration/configuration.mdx) to change the internal ports. Be sure to run `docker compose up -d` to rebuild with the new port numbers.
+
+## Docker socket
+
+By default, the authentik Docker Compose file mounts the Docker socket to the authentik worker container:
+
+```yaml
+- /var/run/docker.sock:/var/run/docker.sock
+```
+
+This is used for [automatic deployment and management of authentik Outposts](../../add-secure-apps/outposts/integrations/docker.md).
+
+Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can utilize a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
+
+Alternatively, you can remove this mount and instead [manually deploy and manage outposts](../../add-secure-apps/outposts/manual-deploy-docker-compose.md).

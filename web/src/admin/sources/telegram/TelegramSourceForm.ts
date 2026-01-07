@@ -1,8 +1,13 @@
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-slug-input";
+import "#components/ak-secret-text-input";
+import "#elements/forms/Radio";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#components/ak-switch-input";
+
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -22,7 +27,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
-export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<TelegramSource>) {
+export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
     async loadInstance(pk: string): Promise<TelegramSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramRetrieve({
             slug: pk,
@@ -64,21 +69,19 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
                 input-hint="code"
             ></ak-slug-input>
 
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
                 required
@@ -137,23 +140,11 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
                 ?required=${this.instance === undefined}
                 ?revealed=${this.instance === undefined}
             ></ak-secret-text-input>
-            <ak-form-element-horizontal required name="requestMessageAccess">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.requestMessageAccess ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Request access to send messages from your bot")}
-                    </span>
-                </label>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="requestMessageAccess"
+                label=${msg("Request access to send messages from your bot")}
+                ?checked=${this.instance?.requestMessageAccess ?? true}
+            ></ak-switch-input>
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal

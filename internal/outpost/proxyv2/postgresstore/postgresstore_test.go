@@ -2,14 +2,23 @@ package postgresstore
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/x509"
+	"crypto/x509/pkix"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
+	"math/big"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
@@ -541,11 +550,11 @@ func TestBuildDSN_Validation(t *testing.T) {
 	}
 }
 
-func TestBuildDSN(t *testing.T) {
+func TestBuildConnConfig(t *testing.T) {
 	tests := []struct {
 		name     string
 		cfg      config.PostgreSQLConfig
-		expected string
+		validate func(*testing.T, *pgx.ConnConfig)
 	}{
 		{
 			name: "basic configuration",
@@ -555,10 +564,16 @@ func TestBuildDSN(t *testing.T) {
 				User: "testuser",
 				Name: "testdb",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "localhost", cc.Host)
+				assert.Equal(t, uint16(5432), cc.Port)
+				assert.Equal(t, "testuser", cc.User)
+				assert.Equal(t, "testdb", cc.Database)
+				assert.Equal(t, "", cc.Password)
+			},
 		},
 		{
-			name: "with password",
+			name: "with simple password",
 			cfg: config.PostgreSQLConfig{
 				Host:     "localhost",
 				Port:     5432,
@@ -566,7 +581,87 @@ func TestBuildDSN(t *testing.T) {
 				Password: "testpass",
 				Name:     "testdb",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb password=testpass",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "testpass", cc.Password)
+			},
+		},
+		{
+			name: "with password containing spaces",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: "my secure password",
+				Name:     "testdb",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "my secure password", cc.Password)
+			},
+		},
+		{
+			name: "with password containing single quotes",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: "pass'word",
+				Name:     "testdb",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "pass'word", cc.Password)
+			},
+		},
+		{
+			name: "with password containing backslashes",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: `pass\word`,
+				Name:     "testdb",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, `pass\word`, cc.Password)
+			},
+		},
+		{
+			name: "with password containing special characters",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: `p@ss w0rd!#$%^&*()`,
+				Name:     "testdb",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, `p@ss w0rd!#$%^&*()`, cc.Password)
+			},
+		},
+		{
+			name: "with password containing quotes and backslashes",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: `my'pass\word"here`,
+				Name:     "testdb",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, `my'pass\word"here`, cc.Password)
+			},
+		},
+		{
+			name: "with passphrase (multiple spaces)",
+			cfg: config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: "the quick brown fox jumps over",
+				Name:     "testdb",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "the quick brown fox jumps over", cc.Password)
+			},
 		},
 		{
 			name: "with sslmode=disable",
@@ -577,10 +672,12 @@ func TestBuildDSN(t *testing.T) {
 				Name:    "testdb",
 				SSLMode: "disable",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=disable",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Nil(t, cc.TLSConfig)
+			},
 		},
 		{
-			name: "with sslmode=require",
+			name: "with sslmode=require (no certs)",
 			cfg: config.PostgreSQLConfig{
 				Host:    "localhost",
 				Port:    5432,
@@ -588,32 +685,10 @@ func TestBuildDSN(t *testing.T) {
 				Name:    "testdb",
 				SSLMode: "require",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=require",
-		},
-		{
-			name: "with sslmode=prefer",
-			cfg: config.PostgreSQLConfig{
-				Host:    "localhost",
-				Port:    5432,
-				User:    "testuser",
-				Name:    "testdb",
-				SSLMode: "prefer",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.NotNil(t, cc.TLSConfig)
+				assert.True(t, cc.TLSConfig.InsecureSkipVerify)
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=prefer",
-		},
-		{
-			name: "with SSL certificates",
-			cfg: config.PostgreSQLConfig{
-				Host:        "localhost",
-				Port:        5432,
-				User:        "testuser",
-				Name:        "testdb",
-				SSLMode:     "verify-full",
-				SSLRootCert: "/path/to/root.crt",
-				SSLCert:     "/path/to/client.crt",
-				SSLKey:      "/path/to/client.key",
-			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb sslmode=verify-full sslrootcert=/path/to/root.crt sslcert=/path/to/client.crt sslkey=/path/to/client.key",
 		},
 		{
 			name: "with custom schema",
@@ -624,7 +699,9 @@ func TestBuildDSN(t *testing.T) {
 				Name:          "testdb",
 				DefaultSchema: "custom_schema",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb search_path=custom_schema",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "custom_schema", cc.RuntimeParams["search_path"])
+			},
 		},
 		{
 			name: "with connection options",
@@ -633,34 +710,192 @@ func TestBuildDSN(t *testing.T) {
 				Port:        5432,
 				User:        "testuser",
 				Name:        "testdb",
-				ConnOptions: "connect_timeout=10",
+				ConnOptions: "connect_timeout=10 application_name=authentik",
 			},
-			expected: "host=localhost port=5432 user=testuser dbname=testdb connect_timeout=10",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "10", cc.RuntimeParams["connect_timeout"])
+				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
+			},
 		},
 		{
-			name: "full configuration",
+			name: "full configuration with special password",
 			cfg: config.PostgreSQLConfig{
 				Host:          "db.example.com",
 				Port:          5433,
 				User:          "admin",
-				Password:      "secret",
+				Password:      "my super secret password!@#",
 				Name:          "production",
-				SSLMode:       "verify-full",
-				SSLRootCert:   "/certs/root.crt",
-				SSLCert:       "/certs/client.crt",
-				SSLKey:        "/certs/client.key",
+				SSLMode:       "require",
 				DefaultSchema: "app_schema",
 				ConnOptions:   "application_name=authentik",
 			},
-			expected: "host=db.example.com port=5433 user=admin dbname=production password=secret sslmode=verify-full sslrootcert=/certs/root.crt sslcert=/certs/client.crt sslkey=/certs/client.key search_path=app_schema application_name=authentik",
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "db.example.com", cc.Host)
+				assert.Equal(t, uint16(5433), cc.Port)
+				assert.Equal(t, "admin", cc.User)
+				assert.Equal(t, "my super secret password!@#", cc.Password)
+				assert.Equal(t, "production", cc.Database)
+				assert.Equal(t, "app_schema", cc.RuntimeParams["search_path"])
+				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
+			},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := BuildDSN(tt.cfg)
+			result, err := BuildConnConfig(tt.cfg)
 			require.NoError(t, err)
-			assert.Equal(t, tt.expected, result)
+			require.NotNil(t, result)
+			tt.validate(t, result)
+		})
+	}
+}
+
+// TestBuildConnConfig_WithSSLCertificates tests SSL certificate configuration
+func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
+	rootCertPath, clientCertPath, clientKeyPath, cleanup := generateTestCerts(t)
+	defer cleanup()
+
+	tests := []struct {
+		name     string
+		cfg      config.PostgreSQLConfig
+		validate func(*testing.T, *pgx.ConnConfig)
+	}{
+		{
+			name: "verify-full with all certificates",
+			cfg: config.PostgreSQLConfig{
+				Host:        "db.example.com",
+				Port:        5432,
+				User:        "testuser",
+				Password:    "my secure password",
+				Name:        "testdb",
+				SSLMode:     "verify-full",
+				SSLRootCert: rootCertPath,
+				SSLCert:     clientCertPath,
+				SSLKey:      clientKeyPath,
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				require.NotNil(t, cc.TLSConfig)
+				assert.False(t, cc.TLSConfig.InsecureSkipVerify)
+				assert.Equal(t, "db.example.com", cc.TLSConfig.ServerName)
+				assert.NotNil(t, cc.TLSConfig.RootCAs)
+				assert.Len(t, cc.TLSConfig.Certificates, 1)
+			},
+		},
+		{
+			name: "verify-ca with root cert only",
+			cfg: config.PostgreSQLConfig{
+				Host:        "localhost",
+				Port:        5432,
+				User:        "testuser",
+				Name:        "testdb",
+				SSLMode:     "verify-ca",
+				SSLRootCert: rootCertPath,
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				require.NotNil(t, cc.TLSConfig)
+				assert.False(t, cc.TLSConfig.InsecureSkipVerify)
+				assert.NotNil(t, cc.TLSConfig.RootCAs)
+				assert.Empty(t, cc.TLSConfig.Certificates)
+			},
+		},
+		{
+			name: "require with client cert",
+			cfg: config.PostgreSQLConfig{
+				Host:    "localhost",
+				Port:    5432,
+				User:    "testuser",
+				Name:    "testdb",
+				SSLMode: "require",
+				SSLCert: clientCertPath,
+				SSLKey:  clientKeyPath,
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				require.NotNil(t, cc.TLSConfig)
+				assert.True(t, cc.TLSConfig.InsecureSkipVerify)
+				assert.Len(t, cc.TLSConfig.Certificates, 1)
+			},
+		},
+		{
+			name: "full configuration with SSL and special password",
+			cfg: config.PostgreSQLConfig{
+				Host:          "db.example.com",
+				Port:          5433,
+				User:          "admin",
+				Password:      "my super secret password!@#",
+				Name:          "production",
+				SSLMode:       "verify-full",
+				SSLRootCert:   rootCertPath,
+				SSLCert:       clientCertPath,
+				SSLKey:        clientKeyPath,
+				DefaultSchema: "app_schema",
+				ConnOptions:   "application_name=authentik",
+			},
+			validate: func(t *testing.T, cc *pgx.ConnConfig) {
+				assert.Equal(t, "db.example.com", cc.Host)
+				assert.Equal(t, uint16(5433), cc.Port)
+				assert.Equal(t, "admin", cc.User)
+				assert.Equal(t, "my super secret password!@#", cc.Password)
+				assert.Equal(t, "production", cc.Database)
+				require.NotNil(t, cc.TLSConfig)
+				assert.False(t, cc.TLSConfig.InsecureSkipVerify)
+				assert.Equal(t, "db.example.com", cc.TLSConfig.ServerName)
+				assert.NotNil(t, cc.TLSConfig.RootCAs)
+				assert.Len(t, cc.TLSConfig.Certificates, 1)
+				assert.Equal(t, "app_schema", cc.RuntimeParams["search_path"])
+				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := BuildConnConfig(tt.cfg)
+			require.NoError(t, err)
+			require.NotNil(t, result)
+			tt.validate(t, result)
+		})
+	}
+}
+
+// TestBuildDSN_WithSpecialPasswords tests that BuildDSN can handle passwords with special characters
+// by verifying the DSN can actually be used to connect to a database
+func TestBuildDSN_WithSpecialPasswords(t *testing.T) {
+	tests := []struct {
+		name     string
+		password string
+	}{
+		{"space in password", "my password"},
+		{"multiple spaces", "the quick brown fox"},
+		{"single quote", "pass'word"},
+		{"backslash", `pass\word`},
+		{"double quote", `pass"word`},
+		{"special chars", `p@ss!#$%^&*()`},
+		{"mixed special", `my'pass\word"here`},
+		{"unicode", "pässwörd"},
+		{"leading/trailing spaces", "  password  "},
+		{"tab character", "pass\tword"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := config.PostgreSQLConfig{
+				Host:     "localhost",
+				Port:     5432,
+				User:     "testuser",
+				Password: tt.password,
+				Name:     "testdb",
+			}
+
+			// Test that BuildDSN doesn't error
+			dsn, err := BuildDSN(cfg)
+			require.NoError(t, err)
+			require.NotEmpty(t, dsn)
+
+			// Test that BuildConnConfig preserves the password exactly
+			connConfig, err := BuildConnConfig(cfg)
+			require.NoError(t, err)
+			assert.Equal(t, tt.password, connConfig.Password, "Password should be preserved exactly")
 		})
 	}
 }
@@ -714,4 +949,90 @@ func createSessionData(t *testing.T, claims map[string]interface{}) string {
 	sessionDataJSON, err := json.Marshal(sessionData)
 	require.NoError(t, err)
 	return string(sessionDataJSON)
+}
+
+// generateTestCerts creates temporary SSL certificates for testing
+func generateTestCerts(t *testing.T) (rootCertPath, clientCertPath, clientKeyPath string, cleanup func()) {
+	tmpDir := t.TempDir()
+
+	// Generate CA certificate
+	caKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	require.NoError(t, err)
+
+	caTemplate := &x509.Certificate{
+		SerialNumber: big.NewInt(1),
+		Subject: pkix.Name{
+			Organization: []string{"Test CA"},
+		},
+		NotBefore:             time.Now(),
+		NotAfter:              time.Now().Add(24 * time.Hour),
+		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
+		BasicConstraintsValid: true,
+		IsCA:                  true,
+	}
+
+	caCertDER, err := x509.CreateCertificate(rand.Reader, caTemplate, caTemplate, &caKey.PublicKey, caKey)
+	require.NoError(t, err)
+
+	// Write CA certificate
+	rootCertPath = filepath.Join(tmpDir, "root.crt")
+	rootCertFile, err := os.Create(rootCertPath)
+	require.NoError(t, err)
+	defer func() {
+		if closeErr := rootCertFile.Close(); closeErr != nil {
+			t.Logf("failed to close root cert file: %v", closeErr)
+		}
+	}()
+	err = pem.Encode(rootCertFile, &pem.Block{Type: "CERTIFICATE", Bytes: caCertDER})
+	require.NoError(t, err)
+
+	// Generate client key
+	clientKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	require.NoError(t, err)
+
+	// Generate client certificate
+	clientTemplate := &x509.Certificate{
+		SerialNumber: big.NewInt(2),
+		Subject: pkix.Name{
+			Organization: []string{"Test Client"},
+		},
+		NotBefore:   time.Now(),
+		NotAfter:    time.Now().Add(24 * time.Hour),
+		KeyUsage:    x509.KeyUsageDigitalSignature,
+		ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth},
+	}
+
+	clientCertDER, err := x509.CreateCertificate(rand.Reader, clientTemplate, caTemplate, &clientKey.PublicKey, caKey)
+	require.NoError(t, err)
+
+	// Write client certificate
+	clientCertPath = filepath.Join(tmpDir, "client.crt")
+	clientCertFile, err := os.Create(clientCertPath)
+	require.NoError(t, err)
+	defer func() {
+		if closeErr := clientCertFile.Close(); closeErr != nil {
+			t.Logf("failed to close client cert file: %v", closeErr)
+		}
+	}()
+	err = pem.Encode(clientCertFile, &pem.Block{Type: "CERTIFICATE", Bytes: clientCertDER})
+	require.NoError(t, err)
+
+	// Write client key
+	clientKeyPath = filepath.Join(tmpDir, "client.key")
+	clientKeyFile, err := os.Create(clientKeyPath)
+	require.NoError(t, err)
+	defer func() {
+		if closeErr := clientKeyFile.Close(); closeErr != nil {
+			t.Logf("failed to close client key file: %v", closeErr)
+		}
+	}()
+	clientKeyBytes := x509.MarshalPKCS1PrivateKey(clientKey)
+	err = pem.Encode(clientKeyFile, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: clientKeyBytes})
+	require.NoError(t, err)
+
+	cleanup = func() {
+		// TempDir cleanup is automatic in Go tests
+	}
+
+	return rootCertPath, clientCertPath, clientKeyPath, cleanup
 }

@@ -89,6 +89,7 @@ export function createThemeConfig({ prism, navbarReplacements, ...overrides } = 
             indexName: "goauthentik",
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
+            contextualSearch: true,
         },
         footer: {
             copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,

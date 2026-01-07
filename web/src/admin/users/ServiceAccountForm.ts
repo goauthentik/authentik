@@ -10,29 +10,28 @@ import { dateTimeLocal } from "#common/temporal";
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import {
     CoreApi,
     Group,
+    RbacApi,
+    Role,
     UserServiceAccountRequest,
     UserServiceAccountResponse,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { createRef, ref } from "lit/directives/ref.js";
+
+const EXPIRATION_DURATION = 1000 * 60 ** 2 * 24 * 360; // 360 days
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
-    #initialExpirationValue = dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360));
-
-    //#region Refs
-
-    #expiringInputRef = createRef<HTMLInputElement>();
-    #expirationDateInputRef = createRef<HTMLInputElement>();
-
-    //#endregion
+    @state()
+    protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
     //#region Properties
 
@@ -40,13 +39,16 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
-    group?: Group;
+    public targetGroup: Group | null = null;
+
+    @property({ attribute: false })
+    public targetRole: Role | null = null;
 
     //#endregion
 
     getSuccessMessage(): string {
-        if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        if (this.targetGroup) {
+            return msg(str`Successfully created user and added to group ${this.targetGroup.name}`);
         }
         return msg("Successfully created user.");
     }
@@ -57,10 +59,18 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         });
         this.result = result;
         (this.parentElement as ModalForm).showSubmitButton = false;
-        if (this.group) {
+        if (this.targetGroup) {
             await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                groupUuid: this.group.pk,
+                groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
+                    pk: this.result.userPk,
+                },
+            });
+        }
+        if (this.targetRole) {
+            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                uuid: this.targetRole.pk,
+                userAccountSerializerForRoleRequest: {
                     pk: this.result.userPk,
                 },
             });
@@ -74,16 +84,30 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         (this.parentElement as ModalForm).showSubmitButton = true;
     }
 
+    //#region Event Listeners
+
+    #expiringChangeListener = (event: Event) => {
+        const expiringElement = event.target as HTMLInputElement;
+
+        this.expiresAt = expiringElement.checked
+            ? new Date(Date.now() + EXPIRATION_DURATION)
+            : null;
+    };
+
+    //#endregion
+
+    //#region Rendering
+
     renderForm(): TemplateResult {
         return html`<ak-text-input
                 name="name"
                 label=${msg("Username")}
                 placeholder=${msg("Type a username for the user...")}
-                autocomplete="off"
                 value=""
                 input-hint="code"
                 required
                 maxlength=${150}
+                autofocus
                 help=${msg(
                     "The user's primary identifier used for authentication. 150 characters or fewer.",
                 )}
@@ -96,35 +120,32 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             >
             </ak-switch-input>
 
-            <ak-form-element-horizontal name="expiring">
-                <label class="pf-c-switch">
-                    <input
-                        ${ref(this.#expiringInputRef)}
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        checked
-                        @change=${this.expiringChangeListener}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Expiring")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Whether the token will expire. Upon expiration, the token will be rotated.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="expiring"
+                label=${msg("Expiring")}
+                help=${msg(
+                    "Whether the token will expire. Upon expiration, the token will be rotated.",
+                )}
+                @change=${this.#expiringChangeListener}
+                ?checked=${this.expiresAt}
+            ></ak-switch-input>
 
-            <ak-form-element-horizontal label=${msg("Expires on")} name="expires">
+            <ak-form-element-horizontal name="expires">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "expiration-date-input",
+                    },
+                    msg("Expires on"),
+                )}
+
                 <input
-                    ${ref(this.#expirationDateInputRef)}
+                    id="expiration-date-input"
                     type="datetime-local"
                     data-type="datetime-local"
-                    value="${this.#initialExpirationValue}"
+                    value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
+                    ?disabled=${!this.expiresAt}
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>`;
@@ -159,21 +180,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    expiringChangeListener = () => {
-        const expiringElement = this.#expiringInputRef.value;
-        const expirationDateElement = this.#expirationDateInputRef.value;
-
-        if (!expiringElement || !expirationDateElement) return;
-
-        expirationDateElement.disabled = !expiringElement.checked;
-    };
-
     renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }
         return super.renderFormWrapper();
     }
+
+    //#endregion
 }
 
 declare global {

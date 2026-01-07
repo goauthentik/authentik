@@ -23,6 +23,12 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
@@ -40,10 +46,6 @@ export class ScheduleList extends Table<Schedule> {
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
         const relObjIdIsnull =

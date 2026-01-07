@@ -1,20 +1,16 @@
 import "#elements/messages/Message";
 
-import { EVENT_MESSAGE, EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "#common/constants";
 import { APIError, pluckErrorDetail } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 import { SentryIgnoredError } from "#common/sentry/index";
-import { WSMessage } from "#common/ws";
 
 import { AKElement } from "#elements/Base";
-import { APIMessage } from "#elements/messages/Message";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -113,15 +109,9 @@ export class MessageContainer extends AKElement {
         // Note: This seems to be susceptible to race conditions.
         // Events are dispatched regardless if the message container is listening.
 
-        window.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
-            if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
-
-            this.addMessage(e.detail as unknown as APIMessage);
-        }) as EventListener);
-
-        window.addEventListener(EVENT_MESSAGE, ((e: CustomEvent<APIMessage>) => {
-            this.addMessage(e.detail);
-        }) as EventListener);
+        window.addEventListener("ak-message", (event) => {
+            this.addMessage(event.message);
+        });
     }
 
     public addMessage(message: APIMessage, unique = false): void {
@@ -150,7 +140,7 @@ export class MessageContainer extends AKElement {
                 return html`<ak-message
                     ?live=${idx === 0}
                     level=${level}
-                    description=${ifDefined(description)}
+                    .description=${description}
                     .onDismiss=${() => this.#removeMessage(message)}
                 >
                     ${title}

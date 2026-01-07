@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import OuterRef, Subquery
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -14,7 +15,7 @@ from authentik.core.models import AttributesMixin, ExpiringModel
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -27,13 +28,15 @@ LOGGER = get_logger()
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
 
 
-class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
+class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
     identifier = models.TextField(unique=True)
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
-    group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
+    access_group = models.ForeignKey(
+        "DeviceAccessGroup", null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     @property
     def cache_key_facts(self):
@@ -64,6 +67,13 @@ class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
             last_updated = max(last_updated, snapshort_created)
         return DeviceFactSnapshot(data=data, created=last_updated)
 
+    def __str__(self):
+        return f"Device {self.name} {self.identifier} ({self.pk})"
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Device")
+        verbose_name_plural = _("Devices")
+
 
 class DeviceUserBinding(PolicyBinding):
     is_primary = models.BooleanField(default=False)
@@ -71,8 +81,12 @@ class DeviceUserBinding(PolicyBinding):
     # by a connector and not manually
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE, null=True)
 
+    class Meta(PolicyBinding.Meta):
+        verbose_name = _("Device User binding")
+        verbose_name_plural = _("Device User bindings")
 
-class DeviceConnection(SerializerModel):
+
+class DeviceConnection(InternallyManagedMixin, SerializerModel):
     device_connection_uuid = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
@@ -96,8 +110,12 @@ class DeviceConnection(SerializerModel):
 
         return DeviceConnectionSerializer
 
+    class Meta:
+        verbose_name = _("Device connection")
+        verbose_name_plural = _("Device connections")
 
-class DeviceFactSnapshot(ExpiringModel, SerializerModel):
+
+class DeviceFactSnapshot(InternallyManagedMixin, ExpiringModel, SerializerModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
     connection = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
     data = models.JSONField(default=dict)
@@ -112,18 +130,23 @@ class DeviceFactSnapshot(ExpiringModel, SerializerModel):
 
         return DeviceFactSnapshotSerializer
 
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Device fact snapshot")
+        verbose_name_plural = _("Device fact snapshots")
+
 
 class Connector(ScheduledModel, SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
     enabled = models.BooleanField(default=True)
-    objects = InheritanceManager()
 
     snapshot_expiry = models.TextField(
         default="hours=24",
         validators=[timedelta_string_validator],
     )
+
+    objects = InheritanceManager()
 
     @property
     def stage(self) -> type[StageView] | None:
@@ -152,14 +175,34 @@ class Connector(ScheduledModel, SerializerModel):
         ]
 
 
-class DeviceGroup(PolicyBindingModel):
+class DeviceAccessGroup(SerializerModel, PolicyBindingModel):
 
     name = models.TextField(unique=True)
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
+
+        return DeviceAccessGroupSerializer
+
+    class Meta:
+        verbose_name = _("Device access group")
+        verbose_name_plural = _("Device access groups")
+
+
+class StageMode(models.TextChoices):
+    """Modes the Stage can operate in"""
+
+    OPTIONAL = "optional"
+    REQUIRED = "required"
+
 
 class EndpointStage(Stage):
+    """Stage which associates the currently used device with the current session."""
 
     connector = InheritanceForeignKey(Connector, on_delete=models.CASCADE)
+
+    mode = models.TextField(choices=StageMode.choices, default=StageMode.OPTIONAL)
 
     @property
     def view(self) -> type["StageView"]:
@@ -175,4 +218,8 @@ class EndpointStage(Stage):
 
     @property
     def component(self) -> str:
-        return "ak-endpoints-stage"
+        return "ak-endpoints-stage-form"
+
+    class Meta(PolicyBinding.Meta):
+        verbose_name = _("Endpoint Stage")
+        verbose_name_plural = _("Endpoint Stages")

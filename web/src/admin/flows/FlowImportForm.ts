@@ -8,6 +8,8 @@ import { SentryIgnoredError } from "#common/sentry/index";
 
 import { Form } from "#elements/forms/Form";
 
+import { AKLabel } from "#components/ak-label";
+
 import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -66,20 +68,39 @@ export class FlowImportForm extends Form<Flow> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
-                <input type="file" value="" class="pf-c-form-control" />
-                <p class="pf-c-form__helper-text">
-                    ${msg(".yaml files, which can be found in the Example Flows documentation")}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("See more here:")}&nbsp;
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
-                        >${msg("Documentation")}</a
-                    >
-                </p>
+        return html`<ak-form-element-horizontal name="flow">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "flow",
+                    },
+                    msg("Flow"),
+                )}
+
+                <input
+                    type="file"
+                    value=""
+                    class="pf-c-form-control"
+                    id="flow"
+                    name="flow"
+                    aria-describedby="flow-help"
+                />
+
+                <div id="flow-help">
+                    <p class="pf-c-form__helper-text">
+                        ${msg(".yaml files, which can be found in the Example Flows documentation")}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Read more about")}&nbsp;
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
+                            >${msg("Flow Examples")}</a
+                        >
+                    </p>
+                </div>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : nothing}`;
     }

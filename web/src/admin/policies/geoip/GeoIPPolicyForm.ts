@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/index";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -61,50 +62,26 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-group label="${msg("Distance settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal name="checkHistoryDistance">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.checkHistoryDistance ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Check historical distance of logins")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="checkHistoryDistance"
+                        label=${msg("Check historical distance of logins")}
+                        ?checked=${this.instance?.checkHistoryDistance ?? false}
+                        help=${msg(
+                            "When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.",
+                        )}
+                    >
+                    </ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Maximum distance")}
                         name="historyMaxDistanceKm"
@@ -149,28 +126,15 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             ${msg("Amount of previous login events to check against.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="checkImpossibleTravel">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.checkImpossibleTravel ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Check impossible travel")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="checkImpossibleTravel"
+                        label=${msg("Check impossible travel")}
+                        ?checked=${this.instance?.checkImpossibleTravel ?? true}
+                        help=${msg(
+                            "When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.",
+                        )}
+                    >
+                    </ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Impossible travel tolerance")}
                         name="impossibleToleranceKm"
@@ -229,5 +193,11 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-geoip-form": GeoIPPolicyForm;
     }
 }

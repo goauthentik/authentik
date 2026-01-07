@@ -36,39 +36,37 @@
 <ak-skip-to-content></ak-skip-to-content>
 <ak-message-container></ak-message-container>
 
-<ak-locale-context>
-    <div class="pf-c-page__drawer">
-        <div class="pf-c-drawer pf-m-collapsed" id="flow-drawer">
-            <div class="pf-c-drawer__main">
-                <div class="pf-c-drawer__content">
-                    <div class="pf-c-drawer__body">
-                            <ak-flow-executor
-                                slug="{{ flow.slug }}"
-                                class="pf-c-login"
-                                data-layout="{{ flow.layout|default:'stacked' }}"
-                            >
-                                {% include "base/placeholder.html" %}
+<div class="pf-c-page__drawer">
+    <div class="pf-c-drawer pf-m-collapsed" id="flow-drawer">
+        <div class="pf-c-drawer__main">
+            <div class="pf-c-drawer__content">
+                <div class="pf-c-drawer__body">
+                        <ak-flow-executor
+                            slug="{{ flow.slug }}"
+                            class="pf-c-login"
+                            data-layout="{{ flow.layout|default:'stacked' }}"
+                        >
+                            {% include "base/placeholder.html" %}
 
-                                <ak-brand-links
-                                    slot="footer"
-                                    exportparts="list:brand-links-list, list-item:brand-links-list-item"
-                                    role="contentinfo"
-                                    aria-label="{% trans 'Site footer' %}"
-                                    class="pf-c-login__footer {% if flow.layout == 'stacked' %}pf-m-dark{% endif %}"
-                                ></ak-brand-links>
-                            </ak-flow-executor>
-                        </div>
+                            <ak-brand-links
+                                slot="footer"
+                                exportparts="list:brand-links-list, list-item:brand-links-list-item"
+                                role="contentinfo"
+                                aria-label="{% trans 'Site footer' %}"
+                                class="pf-c-login__footer {% if flow.layout == 'stacked' %}pf-m-dark{% endif %}"
+                            ></ak-brand-links>
+                        </ak-flow-executor>
                     </div>
-
-                    <ak-flow-inspector
-                        id="flow-inspector"
-                        data-registration="lazy"
-                        class="pf-c-drawer__panel pf-m-width-33"
-                        slug="{{ flow.slug }}"
-                    ></ak-flow-inspector>
                 </div>
+
+                <ak-flow-inspector
+                    id="flow-inspector"
+                    data-registration="lazy"
+                    class="pf-c-drawer__panel pf-m-width-33"
+                    slug="{{ flow.slug }}"
+                ></ak-flow-inspector>
             </div>
         </div>
     </div>
-</ak-locale-context>
+</div>
 {% endblock %}

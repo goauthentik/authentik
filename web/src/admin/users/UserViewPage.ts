@@ -1,4 +1,5 @@
 import "#admin/groups/RelatedGroupList";
+import "#admin/roles/RelatedRoleList";
 import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/users/UserActiveForm";
@@ -26,7 +27,6 @@ import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 
@@ -43,7 +43,7 @@ import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/Us
 import {
     CapabilitiesEnum,
     CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 
@@ -95,7 +95,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                 display: flex;
                 flex-direction: column;
                 gap: 0.375rem;
-                max-width: 12rem;
+                max-width: 13rem;
             }
             .ak-button-collection > * {
                 flex: 1 0 100%;
@@ -107,19 +107,10 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             #ak-email-recovery-request,
             #update-password-request .pf-c-button,
             #ak-email-recovery-request .pf-c-button {
-                margin: 0;
                 width: 100%;
             }
         `,
     ];
-
-    constructor() {
-        super();
-        this.addEventListener(EVENT_REFRESH, () => {
-            if (!this.user?.pk) return;
-            this.userId = this.user?.pk;
-        });
-    }
 
     renderUserCard() {
         if (!this.user) {
@@ -135,7 +126,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             [msg("Email"), user.email || "-"],
             [msg("Last login"), Timestamp(user.lastLogin)],
             [msg("Last password change"), Timestamp(user.passwordChangeDate)],
-            [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
+            [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
             [msg("Actions"), this.renderActionButtons(user)],
@@ -254,7 +245,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-sessions"
                     id="page-sessions"
-                    aria-label="${msg("Sessions")}"
+                    aria-label=${msg("Sessions")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -269,7 +260,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-reputation"
                     id="page-reputation"
-                    aria-label="${msg("Reputation scores")}"
+                    aria-label=${msg("Reputation scores")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -287,7 +278,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-consent"
                     id="page-consent"
-                    aria-label="${msg("Explicit Consent")}"
+                    aria-label=${msg("Explicit Consent")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -301,7 +292,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-oauth-access"
                     id="page-oauth-access"
-                    aria-label="${msg("OAuth Access Tokens")}"
+                    aria-label=${msg("OAuth Access Tokens")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -316,7 +307,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-oauth-refresh"
                     id="page-oauth-refresh"
-                    aria-label="${msg("OAuth Refresh Tokens")}"
+                    aria-label=${msg("OAuth Refresh Tokens")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -331,7 +322,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-mfa-authenticators"
                     id="page-mfa-authenticators"
-                    aria-label="${msg("MFA Authenticators")}"
+                    aria-label=${msg("MFA Authenticators")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -345,7 +336,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-source-connections"
                     id="page-source-connections"
-                    aria-label="${msg("Connected services")}"
+                    aria-label=${msg("Connected services")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -358,7 +349,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-rac-connection-tokens"
                     id="page-rac-connection-tokens"
-                    aria-label="${msg("RAC Connections")}"
+                    aria-label=${msg("RAC Connections")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -379,6 +370,42 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
         </div>`;
     }
 
+    protected renderTabRoles(user: User): TemplateResult {
+        return html`
+            <ak-tabs pageIdentifier="userRoles" vertical>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-assigned-roles"
+                    id="page-assigned-roles"
+                    aria-label=${msg("Assigned Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-all-roles"
+                    id="page-all-roles"
+                    aria-label=${msg("All Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${user} showInherited>
+                            </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+            </ak-tabs>
+        `;
+    }
+
     render() {
         if (!this.user) {
             return nothing;
@@ -390,7 +417,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-overview"
                     id="page-overview"
-                    aria-label="${msg("Overview")}"
+                    aria-label=${msg("Overview")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
@@ -445,7 +472,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-groups"
                     id="page-groups"
-                    aria-label="${msg("Groups")}"
+                    aria-label=${msg("Groups")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -458,9 +485,18 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                 <div
                     role="tabpanel"
                     tabindex="0"
+                    slot="page-roles"
+                    id="page-roles"
+                    aria-label=${msg("Roles")}
+                >
+                    ${this.renderTabRoles(this.user)}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-events"
                     id="page-events"
-                    aria-label="${msg("User events")}"
+                    aria-label=${msg("User events")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -474,7 +510,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-credentials"
                     id="page-credentials"
-                    aria-label="${msg("Credentials / Tokens")}"
+                    aria-label=${msg("Credentials / Tokens")}
                 >
                     ${this.renderTabCredentialsToken(this.user)}
                 </div>
@@ -483,7 +519,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-applications"
                     id="page-applications"
-                    aria-label="${msg("Applications")}"
+                    aria-label=${msg("Applications")}
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     ${this.renderTabApplications(this.user)}
@@ -493,8 +529,8 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
-                    aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
+                    aria-label=${msg("Permissions")}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser}
                     objectPk=${this.user.pk}
                 >
                 </ak-rbac-object-permission-page>

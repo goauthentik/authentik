@@ -1,3 +1,4 @@
+import "#elements/events/LogViewer";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
@@ -44,7 +45,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         return Promise.reject();
     };
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully triggered sync.");
     }
 

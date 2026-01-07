@@ -1,13 +1,15 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import CharField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.tokens import TokenViewSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.endpoints.api.device_group import DeviceGroupSerializer
+from authentik.endpoints.api.device_access_group import DeviceAccessGroupSerializer
 from authentik.endpoints.connectors.agent.models import EnrollmentToken
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
@@ -15,7 +17,14 @@ from authentik.rbac.decorators import permission_required
 
 class EnrollmentTokenSerializer(ModelSerializer):
 
-    device_group_obj = DeviceGroupSerializer(source="device_group", read_only=True, required=False)
+    device_group_obj = DeviceAccessGroupSerializer(
+        source="device_group", read_only=True, required=False
+    )
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["key"] = CharField(required=False)
 
     class Meta:
         model = EnrollmentToken

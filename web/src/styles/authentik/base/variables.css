@@ -23,6 +23,7 @@
 
 /* #region authentik extensions */
 
+/* #region Root */
 :root {
     --ak-accent: #fd4b2d;
 
@@ -32,6 +33,10 @@
     --ak-dark-background-lighter: #2b2e33;
 
     --ak-global--background-contrast: var(--pf-global--Color--100);
+    --ak-global--background-contrast-Filter: drop-shadow(
+        0 0 2px
+            var(--ak-locale-select--ShadowBlendColor, var(--pf-global--BackgroundColor--dark-200))
+    );
 
     /* Minimum width after which the sidebar becomes automatic */
     --ak-sidebar--minimum-auto-width: 80rem;

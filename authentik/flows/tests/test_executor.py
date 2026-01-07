@@ -36,6 +36,7 @@ from authentik.policies.types import PolicyResult
 from authentik.stages.deny.models import DenyStage
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
+from authentik.stages.password.models import PasswordStage
 
 POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False, "foo"))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
@@ -692,3 +693,49 @@ class TestFlowExecutor(FlowTestCase):
             self.client.logout()
             response = self.client.post(url, data="{", content_type="application/json")
             self.assertEqual(response.status_code, 200)
+
+    def test_cancel_next(self):
+        """Test cancel URL with ?next param set"""
+        flow = create_test_flow()
+
+        # Stage 0 is an identification stage
+        ident_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[UserFields.USERNAME],
+        )
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=ident_stage,
+            order=0,
+        )
+
+        # Stage 1 is a password stage
+        password_stage = PasswordStage.objects.create(name=generate_id(), backends=[])
+        FlowStageBinding.objects.create(
+            target=flow,
+            stage=password_stage,
+            order=1,
+        )
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: "/foo"})})}"
+        )
+        self.assertStageResponse(res, flow, component="ak-stage-identification")
+
+        res = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+            + f"?{urlencode({QS_QUERY: urlencode({NEXT_ARG_NAME: "/foo"})})}",
+            data={"component": "ak-stage-identification", "uid_field": generate_id()},
+            follow=True,
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertStageResponse(
+            res,
+            flow,
+            flow_info={
+                "background": "/static/dist/assets/images/flow_background.jpg",
+                "cancel_url": "/flows/-/cancel/?next=%2Ffoo",
+                "layout": "stacked",
+                "title": flow.title,
+            },
+        )
