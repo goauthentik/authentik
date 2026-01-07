@@ -1,6 +1,7 @@
 from random import choice
 
 from django.conf import settings
+from django.db import connections
 
 
 class FailoverRouter:
@@ -20,9 +21,7 @@ class FailoverRouter:
         # Reading from a replica mid-transaction would give a different snapshot,
         # breaking transactional semantics (not just read-your-writes, but the
         # entire consistent point-in-time view that a transaction provides).
-        from django.db import connection
-
-        if connection.in_atomic_block:
+        if connections["default"].in_atomic_block:
             return "default"
         return choice(self.read_replica_aliases)  # nosec
 
