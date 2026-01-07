@@ -72,7 +72,7 @@ Delegated Subject is a required field when creating the Google Workspace provide
 ### Delegated Subject permissions
 
 :::warning
-We do not recommend using an administrator account for the Delegated Subject user. A custom role should be used instead, see the [Google Admin Console documenation](https://support.google.com/a/answer/2406043?hl=en) for more details.
+We do not recommend using an administrator account for the Delegated Subject user. A custom role should be used instead, see the [Google Admin Console documentation](https://support.google.com/a/answer/2406043?hl=en) for more details.
 :::
 
 The Delagated Subject user requires the following permissions:
