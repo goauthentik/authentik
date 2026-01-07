@@ -18,12 +18,12 @@ class Migration(migrations.Migration):
             model_name="authenticatorstaticstage",
             name="token_length",
             field=models.PositiveIntegerField(
-                default=12, validators=[django.core.validators.MaxValueValidator(50)]
+                default=12, validators=[django.core.validators.MaxValueValidator(100)]
             ),
         ),
         migrations.AlterField(
             model_name="statictoken",
             name="token",
-            field=models.CharField(db_index=True, max_length=50),
+            field=models.CharField(db_index=True, max_length=100),
         ),
     ]
