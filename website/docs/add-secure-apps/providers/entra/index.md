@@ -46,7 +46,7 @@ There are several considerations regarding how authentik data is mapped to Entra
 
 For users, authentik only saves the full display name, not separate first and family names.
 
-By default, authentik maps a user's email address, name, and wether the user is active..
+By default, authentik maps a user's email address, name, and whether the user is active..
 
 Refer to Entra ID documentation for further details on which attributes can be mapped: [Microsoft Graph - Create User](https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body)
 
