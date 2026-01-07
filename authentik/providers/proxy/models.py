@@ -13,7 +13,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import (
     ClientTypes,
@@ -27,7 +27,7 @@ SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
-class ProxySession(ExpiringModel):
+class ProxySession(InternallyManagedMixin, ExpiringModel):
     """Session storage for proxyv2 outposts using PostgreSQL"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)

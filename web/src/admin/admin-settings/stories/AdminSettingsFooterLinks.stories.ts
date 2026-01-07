@@ -71,8 +71,5 @@ type Story = StoryObj;
 
 export const Default: Story = {
     render: () =>
-        html` <ak-admin-settings-footer-link
-            id="footer-link"
-            name="the-footer"
-        ></ak-admin-settings-footer-link>`,
+        html` <ak-admin-settings-footer-link id="footer-link"></ak-admin-settings-footer-link>`,
 };
