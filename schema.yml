@@ -32811,12 +32811,18 @@ components:
           allOf:
           - $ref: '#/components/schemas/Config'
           readOnly: true
+        license_status:
+          allOf:
+          - $ref: '#/components/schemas/LicenseSummary'
+          readOnly: true
+          nullable: true
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
       - device_id
       - jwks_auth
       - jwks_challenge
+      - license_status
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval

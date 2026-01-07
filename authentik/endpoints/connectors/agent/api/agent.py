@@ -14,6 +14,12 @@ from authentik.endpoints.models import Device
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.views.jwks import JWKSView
 
+try:
+    from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
+except ImportError:
+    class LicenseSummarySerializer(dict): ...
+    class LicenseKey(dict): ...
+
 
 class AgentConfigSerializer(PassiveSerializer):
 
@@ -29,6 +35,7 @@ class AgentConfigSerializer(PassiveSerializer):
     auth_terminate_session_on_expiry = BooleanField()
 
     system_config = SerializerMethodField()
+    license_status = SerializerMethodField(required=False, allow_null=True)
 
     def get_device_id(self, instance: AgentConnector) -> str:
         device: Device = self.context["device"]
@@ -53,6 +60,11 @@ class AgentConfigSerializer(PassiveSerializer):
 
     def get_system_config(self, instance: AgentConnector) -> ConfigSerializer:
         return ConfigView.get_config(self.context["request"]).data
+
+    def get_license_status(self, instance: AgentConnector) -> "LicenseSummarySerializer":
+        if not LicenseSummarySerializer:
+            return None
+        return LicenseSummarySerializer(instance=LicenseKey.cached_summary()).data
 
 
 class EnrollSerializer(PassiveSerializer):
