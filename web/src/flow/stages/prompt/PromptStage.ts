@@ -59,7 +59,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
-    renderPromptInner(prompt: StagePrompt, disabled = false): TemplateResult {
+    renderPromptInner(prompt: StagePrompt): TemplateResult {
         const fieldId = `field-${prompt.fieldKey}`;
 
         switch (prompt.type) {
@@ -71,7 +71,6 @@ export class PromptStage extends WithCapabilitiesConfig(
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -82,7 +81,6 @@ export class PromptStage extends WithCapabilitiesConfig(
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                 >
 ${prompt.initialValue}</textarea
@@ -116,7 +114,6 @@ ${prompt.initialValue}</textarea
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -128,7 +125,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -140,7 +136,6 @@ ${prompt.initialValue}</textarea
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                 />`;
             case PromptTypeEnum.Number:
@@ -150,7 +145,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -161,7 +155,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -172,7 +165,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -183,7 +175,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -201,11 +192,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
             case PromptTypeEnum.Dropdown:
-                return html`<select
-                    class="pf-c-form-control"
-                    name="${prompt.fieldKey}"
-                    ?disabled=${disabled}
-                >
+                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
                         return html`<option
                             value="${choice.value}"
@@ -225,7 +212,6 @@ ${prompt.initialValue}</textarea
                             name="${prompt.fieldKey}"
                             id="${id}"
                             ?checked="${prompt.initialValue === choice.value}"
-                            ?disabled=${disabled}
                             ?required="${prompt.required}"
                             value="${choice.value}"
                         />
@@ -243,7 +229,6 @@ ${prompt.initialValue}</textarea
                     class="pf-c-form-control ak-m-capitalize"
                     id=${fieldId}
                     name="${prompt.fieldKey}"
-                    ?disabled=${disabled}
                     aria-label=${msg("Select language", {
                         id: "language-selector-label",
                         desc: "Label for the language selection dropdown",
