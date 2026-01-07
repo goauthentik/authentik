@@ -14,7 +14,7 @@ Upon creating the Entra ID provider, it will run a discovery task to query your 
 
 Users are matched on their email address. Groups are matched based on their names.
 
-This discovery also takes into consideration any **User filtering** options configured in the provider, such as only linking to authentik users in a specific group or excluding service accounts. This discovery process occurs each time a full sync is initiated.
+This discovery also takes into consideration any **User filtering** options configured in the provider, such as only linking to authentik users in a specific group or excluding service accounts. This discovery process occurs each time a [full sync](#full-sync) is initiated.
 
 ## Synchronization
 
@@ -26,7 +26,7 @@ A direct sync occurs when a user or group is created, updated or deleted in auth
 
 ### Full sync
 
-A full sync occurs when the provider is initially created and when it is saved. During a full sync, all users and groups that match the **User filtering** settings are processed and created or updated in Entra ID. After the initial sync, authentik automatically performs a full sync every four hours to maintain consistency between users and groups.
+A full sync occurs when the provider is initially created and when it is saved. During a full sync, all users and groups that match the **User filtering** settings are processed and created or updated in Entra ID. After the initial sync, authentik automatically performs a full sync every four hours by default to maintain consistency between users and groups.
 
 During the full sync, if a user or group exists in both authentik and Entra ID, authentik will automatically link them.
 
@@ -46,12 +46,12 @@ There are several considerations regarding how authentik data is mapped to Entra
 
 For users, authentik only saves the full display name, not separate first and family names.
 
-By default, authentik maps a user's email address, name, and whether the user is active..
+By default, authentik maps a user's email address, name, and whether the user is active.
 
-Refer to Entra ID documentation for further details on which attributes can be mapped: [Microsoft Graph - Create User](https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body)
+Refer to the Entra ID documentation for further details on which attributes can be mapped: [Microsoft Graph - Create User](https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body)
 
 ### Groups
 
 By default, authentik only maps a group's name, `mail_enabled` status, `security_enabled` status and `mail_nickname` (equivalent to name).
 
-Refer to Entra ID documentation for further details on these attributes and which attributes can be mapped: [Microsoft Graph - Create Group](https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body)
+Refer to the Entra ID documentation for further details on these attributes and which attributes can be mapped: [Microsoft Graph - Create Group](https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body)
