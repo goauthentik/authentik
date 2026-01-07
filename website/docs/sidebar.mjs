@@ -710,7 +710,7 @@ const items = [
                             id: "endpoint-devices/authentik-agent/agent-deployment/index",
                         },
                         items: [
-                            "endpoint-devices/authentik-agent/agent-deployment/mdm",
+                            "endpoint-devices/authentik-agent/agent-deployment/automated",
                             "endpoint-devices/authentik-agent/agent-deployment/linux",
                             "endpoint-devices/authentik-agent/agent-deployment/macos",
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
