@@ -13712,7 +13712,7 @@
                 "token_length": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 2147483647,
+                    "maximum": 100,
                     "title": "Token length"
                 }
             },
