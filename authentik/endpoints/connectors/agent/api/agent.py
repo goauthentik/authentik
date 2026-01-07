@@ -1,3 +1,4 @@
+from django.db import models
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -15,10 +16,10 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.views.jwks import JWKSView
 
 try:
-    from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
+    from authentik.enterprise.models import LicenseUsageStatus
 except ImportError:
-    class LicenseSummarySerializer(dict): ...
-    class LicenseKey(dict): ...
+
+    class LicenseUsageStatus(models.TextChoices): ...
 
 
 class AgentConfigSerializer(PassiveSerializer):
@@ -61,10 +62,13 @@ class AgentConfigSerializer(PassiveSerializer):
     def get_system_config(self, instance: AgentConnector) -> ConfigSerializer:
         return ConfigView.get_config(self.context["request"]).data
 
-    def get_license_status(self, instance: AgentConnector) -> "LicenseSummarySerializer":
-        if not LicenseSummarySerializer:
+    def get_license_status(self, instance: AgentConnector) -> "LicenseUsageStatus":
+        try:
+            from authentik.enterprise.license import LicenseKey
+
+            return LicenseKey.cached_summary().status
+        except ModuleNotFoundError:
             return None
-        return LicenseSummarySerializer(instance=LicenseKey.cached_summary()).data
 
 
 class EnrollSerializer(PassiveSerializer):
