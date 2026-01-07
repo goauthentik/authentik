@@ -18,7 +18,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
@@ -303,7 +303,7 @@ class SAMLProviderImportModel(CreatableType, Provider):
         verbose_name_plural = _("SAML Providers from Metadata")
 
 
-class SAMLSession(SerializerModel, ExpiringModel):
+class SAMLSession(InternallyManagedMixin, SerializerModel, ExpiringModel):
     """Track active SAML sessions for Single Logout support"""
 
     saml_session_id = models.UUIDField(default=uuid4, primary_key=True)

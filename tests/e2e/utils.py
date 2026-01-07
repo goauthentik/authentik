@@ -2,10 +2,12 @@
 
 import socket
 from collections.abc import Callable
-from functools import lru_cache, wraps
+from functools import cached_property, lru_cache, wraps
 from json import JSONDecodeError, dumps, loads
 from os import environ, getenv
+from pathlib import Path
 from sys import stderr
+from tempfile import gettempdir
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
@@ -21,6 +23,7 @@ from docker import DockerClient, from_env
 from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
+from requests import RequestException
 from selenium import webdriver
 from selenium.common.exceptions import (
     DetachedShadowRootException,
@@ -43,6 +46,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.http import get_http_session
 from authentik.root.test_runner import get_docker_tag
 
 IS_CI = "CI" in environ
@@ -177,7 +181,9 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         count = 0
         opts = webdriver.ChromeOptions()
+        opts.accept_insecure_certs = True
         opts.add_argument("--disable-search-engine-choice-screen")
+        opts.add_extension(self._get_chrome_extension())
         # This breaks selenium when running remotely...?
         # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         opts.add_experimental_option(
@@ -198,6 +204,31 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 self.logger.warning("Failed to setup webdriver", exc=exc)
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
+
+    def _get_chrome_extension(self):
+        path = Path(gettempdir()) / "ak-chrome.crx"
+        try:
+            self.logger.info("Downloading chrome extension...", path=path)
+            res = get_http_session().get(
+                "https://pkg.goauthentik.io/packages/authentik_browser-ext/browser-ext/authentik_chrome.zip",
+                stream=True,
+            )
+            with open(path, "w+b") as _ext:
+                for chunk in res.iter_content(chunk_size=1024):
+                    if chunk:
+                        _ext.write(chunk)
+        except RequestException as exc:
+            if path.exists() and not IS_CI:
+                self.logger.info(
+                    "Failed to download chrome extension, using cached copy", path=path
+                )
+                return path
+            raise exc
+        return path
+
+    @cached_property
+    def driver_container(self) -> Container:
+        return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
 
     def tearDown(self):
         if IS_CI:

@@ -710,7 +710,7 @@ const items = [
                             id: "endpoint-devices/authentik-agent/agent-deployment/index",
                         },
                         items: [
-                            "endpoint-devices/authentik-agent/agent-deployment/mdm",
+                            "endpoint-devices/authentik-agent/agent-deployment/automated",
                             "endpoint-devices/authentik-agent/agent-deployment/linux",
                             "endpoint-devices/authentik-agent/agent-deployment/macos",
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
@@ -730,7 +730,7 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/temp"],
+                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
                     },
                 ],
             },
@@ -765,7 +765,6 @@ const items = [
                         ],
                     },
                     "endpoint-devices/device-authentication/ssh-authentication",
-                    "endpoint-devices/device-authentication/sudo-authorization",
                     {
                         //#endregion
 
