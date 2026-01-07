@@ -11,7 +11,7 @@ import {
     AuthenticatorEmailChallengeResponseRequest,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -88,6 +88,8 @@ export class AuthenticatorEmailStage extends BaseStage<
     }
 
     renderEmailOTPInput(): TemplateResult {
+        const { email } = this.challenge;
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <ak-form-static
                 class="pf-c-form__group"
@@ -102,6 +104,20 @@ export class AuthenticatorEmailStage extends BaseStage<
             </ak-form-static>
             A verification token has been sent to your configured email address
             ${ifDefined(this.challenge.email)}
+            <p>
+                ${email
+                    ? msg(
+                          str`A verification token has been sent to your configured email address: ${email}`,
+                          {
+                              id: "stage.authenticator.email.sent-to-address",
+                              desc: "Displayed when a verification token has been sent to the user's configured email address.",
+                          },
+                      )
+                    : msg("A verification token has been sent to your email address.", {
+                          id: "stage.authenticator.email.sent",
+                          desc: "Displayed when a verification token has been sent to the user's email address.",
+                      })}
+            </p>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">
                     ${AKLabel({ required: true, htmlFor: "code-input" }, msg("Code"))}
