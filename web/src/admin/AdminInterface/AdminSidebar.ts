@@ -19,6 +19,14 @@ export type SidebarEntry = [
 ];
 
 /**
+ * Recursively renders a collection of sidebar entries.
+ */
+export function renderSidebarItems(entries: readonly SidebarEntry[]) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
+}
+
+/**
  * Recursively renders a sidebar entry.
  */
 export function renderSidebarItem([
@@ -44,13 +52,6 @@ export function renderSidebarItem([
     </ak-sidebar-item>`;
 }
 
-/**
- * Recursively renders a collection of sidebar entries.
- */
-export function renderSidebarItems(entries: readonly SidebarEntry[]) {
-    return repeat(entries, ([path, label]) => path || label, renderSidebarItem);
-}
-
 // prettier-ignore
 export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { "?expanded": true }, [
@@ -71,7 +72,8 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Events"), null, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
         ["/events/rules", msg("Notification Rules")],
-        ["/events/transports", msg("Notification Transports")]]
+        ["/events/transports", msg("Notification Transports")],
+        ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
     [null, msg("Customization"), null, [
         ["/policy/policies", msg("Policies")],

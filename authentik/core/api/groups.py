@@ -17,10 +17,11 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ValidationError
-from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import TokenAuthentication
@@ -32,6 +33,16 @@ from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
+PARTIAL_USER_SERIALIZER_MODEL_FIELDS = [
+    "pk",
+    "username",
+    "name",
+    "is_active",
+    "last_login",
+    "email",
+    "attributes",
+]
+
 
 class PartialUserSerializer(ModelSerializer):
     """Partial User Serializer, does not include child relations."""
@@ -41,20 +52,11 @@ class PartialUserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            "pk",
-            "username",
-            "name",
-            "is_active",
-            "last_login",
-            "email",
-            "attributes",
-            "uid",
-        ]
+        fields = PARTIAL_USER_SERIALIZER_MODEL_FIELDS + ["uid"]
 
 
-class GroupChildSerializer(ModelSerializer):
-    """Stripped down group serializer to show relevant children for groups"""
+class RelatedGroupSerializer(ModelSerializer):
+    """Stripped down group serializer to show relevant children/parents for groups"""
 
     attributes = JSONDictField(required=False)
 
@@ -73,15 +75,17 @@ class GroupSerializer(ModelSerializer):
     """Group Serializer"""
 
     attributes = JSONDictField(required=False)
-    users_obj = SerializerMethodField(allow_null=True)
+    parents = PrimaryKeyRelatedField(queryset=Group.objects.all(), many=True, required=False)
+    parents_obj = SerializerMethodField(allow_null=True)
     children_obj = SerializerMethodField(allow_null=True)
+    users_obj = SerializerMethodField(allow_null=True)
     roles_obj = ListSerializer(
         child=RoleSerializer(),
         read_only=True,
         source="roles",
         required=False,
     )
-    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
+    inherited_roles_obj = SerializerMethodField(allow_null=True)
     num_pk = IntegerField(read_only=True)
 
     @property
@@ -98,25 +102,46 @@ class GroupSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_children", "false")).lower() == "true"
 
+    @property
+    def _should_include_parents(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_parents", "false")).lower() == "true"
+
+    @property
+    def _should_include_inherited_roles(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_inherited_roles", "false")).lower() == "true"
+
     @extend_schema_field(PartialUserSerializer(many=True))
     def get_users_obj(self, instance: Group) -> list[PartialUserSerializer] | None:
         if not self._should_include_users:
             return None
         return PartialUserSerializer(instance.users, many=True).data
 
-    @extend_schema_field(GroupChildSerializer(many=True))
-    def get_children_obj(self, instance: Group) -> list[GroupChildSerializer] | None:
+    @extend_schema_field(RelatedGroupSerializer(many=True))
+    def get_children_obj(self, instance: Group) -> list[RelatedGroupSerializer] | None:
         if not self._should_include_children:
             return None
-        return GroupChildSerializer(instance.children, many=True).data
+        return RelatedGroupSerializer(instance.children, many=True).data
 
-    def validate_parent(self, parent: Group | None):
-        """Validate group parent (if set), ensuring the parent isn't itself"""
-        if not self.instance or not parent:
-            return parent
-        if str(parent.group_uuid) == str(self.instance.group_uuid):
-            raise ValidationError(_("Cannot set group as parent of itself."))
-        return parent
+    @extend_schema_field(RelatedGroupSerializer(many=True))
+    def get_parents_obj(self, instance: Group) -> list[RelatedGroupSerializer] | None:
+        if not self._should_include_parents:
+            return None
+        return RelatedGroupSerializer(instance.parents, many=True).data
+
+    @extend_schema_field(RoleSerializer(many=True))
+    def get_inherited_roles_obj(self, instance: Group) -> list | None:
+        """Return only inherited roles from ancestor groups (excludes direct roles)"""
+        if not self._should_include_inherited_roles:
+            return None
+        direct_role_pks = instance.roles.values_list("pk", flat=True)
+        inherited_roles = instance.all_roles().exclude(pk__in=direct_role_pks)
+        return RoleSerializer(inherited_roles, many=True).data
 
     def validate_is_superuser(self, superuser: bool):
         """Ensure that the user creating this group has permissions to set the superuser flag"""
@@ -152,13 +177,14 @@ class GroupSerializer(ModelSerializer):
             "num_pk",
             "name",
             "is_superuser",
-            "parent",
-            "parent_name",
+            "parents",
+            "parents_obj",
             "users",
             "users_obj",
             "attributes",
             "roles",
             "roles_obj",
+            "inherited_roles_obj",
             "children",
             "children_obj",
         ]
@@ -170,9 +196,10 @@ class GroupSerializer(ModelSerializer):
                 "required": False,
                 "default": list,
             },
-            # TODO: This field isn't unique on the database which is hard to backport
-            # hence we just validate the uniqueness here
-            "name": {"validators": [UniqueValidator(Group.objects.all())]},
+            "parents": {
+                "required": False,
+                "default": list,
+            },
         }
 
 
@@ -247,14 +274,21 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         return [
             StrField(Group, "name"),
             BoolField(Group, "is_superuser", nullable=True),
-            JSONSearchField(Group, "attributes", suggest_nested=False),
+            JSONSearchField(Group, "attributes"),
         ]
 
     def get_queryset(self):
-        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
+        base_qs = Group.objects.all().prefetch_related("roles")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
-            base_qs = base_qs.prefetch_related("users")
+            # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation
+            # time
+            base_qs = base_qs.prefetch_related(
+                Prefetch(
+                    "users",
+                    queryset=User.objects.all().only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS),
+                )
+            )
         else:
             base_qs = base_qs.prefetch_related(
                 Prefetch("users", queryset=User.objects.all().only("id"))
@@ -263,12 +297,17 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         if self.serializer_class(context={"request": self.request})._should_include_children:
             base_qs = base_qs.prefetch_related("children")
 
+        if self.serializer_class(context={"request": self.request})._should_include_parents:
+            base_qs = base_qs.prefetch_related("parents")
+
         return base_qs
 
     @extend_schema(
         parameters=[
             OpenApiParameter("include_users", bool, default=True),
             OpenApiParameter("include_children", bool, default=False),
+            OpenApiParameter("include_parents", bool, default=False),
+            OpenApiParameter("include_inherited_roles", bool, default=False),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -278,6 +317,8 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         parameters=[
             OpenApiParameter("include_users", bool, default=True),
             OpenApiParameter("include_children", bool, default=False),
+            OpenApiParameter("include_parents", bool, default=False),
+            OpenApiParameter("include_inherited_roles", bool, default=False),
         ]
     )
     def retrieve(self, request, *args, **kwargs):
@@ -296,7 +337,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
+        permission_classes=[IsAuthenticated],
     )
     @validate(UserAccountSerializer)
     def add_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:
@@ -327,7 +368,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         pagination_class=None,
         filter_backends=[],
-        permission_classes=[],
+        permission_classes=[IsAuthenticated],
     )
     @validate(UserAccountSerializer)
     def remove_user(self, request: Request, body: UserAccountSerializer, pk: str) -> Response:

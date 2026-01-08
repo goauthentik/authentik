@@ -1,6 +1,8 @@
+import "#elements/forms/Radio";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
@@ -62,11 +64,11 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 slug: this.instance.slug,
                 plexSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
-                plexSourceRequest: data,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesPlexCreate({
+            plexSourceRequest: data,
+        });
     }
 
     async doAuth(): Promise<void> {
@@ -107,25 +109,13 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             >
                 ${msg("Re-authenticate with Plex")}
             </button>
-            <ak-form-element-horizontal name="allowFriends">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.allowFriends ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg(
-                            "Allow friends to authenticate via Plex, even if you don't share any servers",
-                        )}</span
-                    >
-                </label>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="allowFriends"
+                label=${msg(
+                    "Allow friends to authenticate via Plex, even if you don't share any servers",
+                )}
+                ?checked=${this.instance?.allowFriends ?? true}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Allowed servers")}
                 required
@@ -169,41 +159,19 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 input-hint="code"
             ></ak-slug-input>
 
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="promoted">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.promoted ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Promoted")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
                 required

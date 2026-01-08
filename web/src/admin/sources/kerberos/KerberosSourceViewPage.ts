@@ -1,3 +1,4 @@
+import "#elements/tasks/ScheduleList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
@@ -19,7 +20,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     KerberosSource,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -212,7 +213,7 @@ export class KerberosSourceViewPage extends AKElement {
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesKerberosKerberossource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesKerberosKerberossource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

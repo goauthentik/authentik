@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker compose run --rm worker dump_config
+    docker compose run --rm worker ak dump_config
     ```
 
   </TabItem>
@@ -589,7 +589,7 @@ Defaults to `50`.
 
 ### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
-Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
+Allows configuration of TLS Ciphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
 
@@ -631,7 +631,7 @@ Defaults to 4.
 Requires authentik 2024.8
 :::
 
-Configure the path under which authentik is serverd. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
+Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
 

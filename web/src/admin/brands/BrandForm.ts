@@ -13,7 +13,6 @@ import "#components/ak-file-search-input";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { DefaultBrand } from "#common/ui/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { AKLabel } from "#components/ak-label";
@@ -127,13 +126,18 @@ export class BrandForm extends ModelForm<Brand, string> {
                     ></ak-file-search-input>
 
                     <ak-form-element-horizontal name="brandingCustomCss">
-                        <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "branding-custom-css" }, msg("Custom CSS"))}
-                        </div>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "branding-custom-css",
+                            },
+                            msg("Custom CSS"),
+                        )}
 
                         <ak-codemirror
                             id="branding-custom-css"
-                            mode=${CodeMirrorMode.CSS}
+                            mode="css"
                             value="${this.instance?.brandingCustomCss ??
                             DefaultBrand.brandingCustomCss}"
                         >
@@ -298,17 +302,23 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal name="attributes">
-                        <div slot="label" class="pf-c-form__group-label">
-                            ${AKLabel({ htmlFor: "attributes" }, msg("Attributes"))}
-                        </div>
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "attributes",
+                            },
+                            msg("Attributes"),
+                        )}
                         <ak-codemirror
                             id="attributes"
                             name="attributes"
-                            mode=${CodeMirrorMode.YAML}
+                            mode="yaml"
                             value="${YAML.stringify(this.instance?.attributes ?? {})}"
+                            aria-describedby="attributes-help"
                         >
                         </ak-codemirror>
-                        <p class="pf-c-form__helper-text">
+                        <p class="pf-c-form__helper-text" id="attributes-help">
                             ${msg(
                                 "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this brand.",
                             )}

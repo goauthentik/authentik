@@ -318,6 +318,7 @@ const items = [
                             "add-secure-apps/flows-stages/stages/captcha/index",
                             "add-secure-apps/flows-stages/stages/deny",
                             "add-secure-apps/flows-stages/stages/email/index",
+                            "add-secure-apps/flows-stages/stages/endpoint/index",
                             "add-secure-apps/flows-stages/stages/identification/index",
                             "add-secure-apps/flows-stages/stages/invitation/index",
                             "add-secure-apps/flows-stages/stages/mtls/index",
@@ -615,6 +616,7 @@ const items = [
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
+                            "users-sources/sources/social-logins/wechat/index",
                         ],
                     },
                 ],
@@ -668,6 +670,138 @@ const items = [
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
+            "sys-mgmt/data-exports",
+        ],
+    },
+    {
+        //#endregion
+
+        //#region Endpoint Devices
+        type: "category",
+        label: "Endpoint Devices (Early Preview)",
+        collapsed: true,
+        link: {
+            type: "doc",
+            id: "endpoint-devices/index",
+        },
+        items: [
+            {
+                //#endregion
+
+                //#region authentik Agent
+                type: "category",
+                label: "authentik Agent",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/authentik-agent/index",
+                },
+                items: [
+                    "endpoint-devices/authentik-agent/configuration",
+                    {
+                        //#endregion
+
+                        //#region authentik Agent Deployment
+                        type: "category",
+                        label: "Deployment",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/agent-deployment/index",
+                        },
+                        items: [
+                            "endpoint-devices/authentik-agent/agent-deployment/automated",
+                            "endpoint-devices/authentik-agent/agent-deployment/linux",
+                            "endpoint-devices/authentik-agent/agent-deployment/macos",
+                            "endpoint-devices/authentik-agent/agent-deployment/windows",
+                        ],
+                    },
+                    "endpoint-devices/authentik-agent/authentik-cli",
+                    "endpoint-devices/authentik-agent/development",
+                    {
+                        //#endregion
+
+                        //#region authentik Agent Release Notes
+                        type: "category",
+                        label: "Release notes",
+                        description: "Release Notes for recent authentik agent versions",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/release-notes/index",
+                        },
+                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
+                    },
+                ],
+            },
+            "endpoint-devices/manage-devices",
+            {
+                //#endregion
+
+                //#region Device Authentication
+                type: "category",
+                label: "Device authentication",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/device-authentication/index",
+                },
+                items: [
+                    "endpoint-devices/device-authentication/device-access-groups",
+                    {
+                        //#endregion
+
+                        //#region local device login
+                        type: "category",
+                        label: "Local device login",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-authentication/local-device-login/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-authentication/local-device-login/linux",
+                            "endpoint-devices/device-authentication/local-device-login/windows",
+                        ],
+                    },
+                    "endpoint-devices/device-authentication/ssh-authentication",
+                    {
+                        //#endregion
+
+                        //#region cli app authentication
+                        type: "category",
+                        label: "CLI application authentication",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-authentication/cli-app-authentication/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-authentication/cli-app-authentication/aws",
+                            "endpoint-devices/device-authentication/cli-app-authentication/k8s",
+                        ],
+                    },
+                ],
+            },
+            {
+                //#endregion
+
+                //#region Device Compliance
+                type: "category",
+                label: "Device compliance",
+                collapsed: true,
+                link: {
+                    type: "doc",
+                    id: "endpoint-devices/device-compliance/index",
+                },
+                items: [
+                    "endpoint-devices/device-compliance/configuration",
+                    "endpoint-devices/device-compliance/connectors",
+                    "endpoint-devices/device-compliance/device-reporting",
+                    "endpoint-devices/device-compliance/device-compliance-policy",
+                    "endpoint-devices/device-compliance/browser-extension",
+                ],
+            },
         ],
     },
     {

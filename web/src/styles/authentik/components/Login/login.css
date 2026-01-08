@@ -18,7 +18,7 @@
     --ak-login--MaxWidth: 35rem;
 
     --ak-login__main-ColumnWidth: minmax(
-        min(100dvw, var(--ak-login--MaxWidth)),
+        min(100%, var(--ak-login--MaxWidth)),
         var(--ak-login--MaxWidth)
     );
 
@@ -131,6 +131,7 @@
 .pf-c-login__main {
     --pf-c-login__container--PaddingLeft: 0 !important;
     --pf-c-login__container--PaddingRight: 0 !important;
+    box-shadow: var(--pf-global--BoxShadow--md);
 
     grid-area: main;
     margin: 0;
@@ -147,8 +148,9 @@
         position: relative;
         flex: 1 1 auto;
     }
-    @media (min-width: 35rem) and (min-height: 17.5rem) {
-        box-shadow: var(--pf-global--BoxShadow--md);
+
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        box-shadow: none;
     }
 }
 
@@ -285,7 +287,7 @@
     flex-direction: column;
     align-self: end;
     justify-content: center;
-    padding-inline: var(--pf-global--spacer--2xl);
+    padding-inline: var(--pf-global--spacer--xl) !important;
     padding-block: var(--ak-login__footer--PaddingBlock) !important;
     min-height: calc((var(--ak-login__footer--PaddingBlock) * 2) + 1rem);
     line-height: var(--pf-global--LineHeight--md);
@@ -295,6 +297,10 @@
 
     @media (max-width: 35rem) {
         color: var(--pf-global--Color--200);
+    }
+
+    @media (min-width: 35rem) and (min-height: 17.5rem) {
+        filter: var(--ak-global--background-contrast-Filter);
     }
 }
 

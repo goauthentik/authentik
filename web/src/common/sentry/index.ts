@@ -2,6 +2,8 @@ import { globalAK } from "#common/global";
 
 import { readInterfaceRouteParam } from "#elements/router/utils";
 
+import { ConsoleLogger } from "#logger/browser";
+
 import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
 
 import {
@@ -41,13 +43,15 @@ function beforeSend(
     return event;
 }
 
-export function configureSentry(canDoPpi = false): void {
+export function configureSentry(): void {
     const cfg = globalAK().config;
     const debug = cfg.capabilities.includes(CapabilitiesEnum.CanDebug);
 
     if (!cfg.errorReporting?.enabled && !debug) {
         return;
     }
+
+    const logger = ConsoleLogger.prefix("sentry");
 
     const integrations: Integration[] = [
         browserTracingIntegration({
@@ -59,7 +63,7 @@ export function configureSentry(canDoPpi = false): void {
     ];
 
     if (debug) {
-        console.debug("authentik/config: Enabled Sentry Spotlight");
+        logger.debug("Enabled Spotlight");
         integrations.push(spotlightBrowserIntegration());
     }
 
@@ -90,5 +94,5 @@ export function configureSentry(canDoPpi = false): void {
         setTag(TAG_SENTRY_COMPONENT, `web/${readInterfaceRouteParam()}`);
     }
 
-    console.debug("authentik/config: Sentry enabled.");
+    logger.debug("Initialized!");
 }

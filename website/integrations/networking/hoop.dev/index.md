@@ -67,4 +67,4 @@ hoop login
 
 ## Resources
 
-- [Hoop.dev Documentation - Oauth2/OIDC Authentication](https://hoop.dev/docs/setup/configuration/env-vars#oauth2%2Foidc-authentication)
+- [Hoop.dev Documentation - OAuth2/OIDC Authentication](https://hoop.dev/docs/setup/configuration/env-vars#oauth2%2Foidc-authentication)

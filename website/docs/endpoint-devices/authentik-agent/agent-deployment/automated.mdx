@@ -1,0 +1,57 @@
+---
+title: Automated authentik Agent deployment
+sidebar_label: Automated
+tags: [authentik Agent, mdm, fleet, deploy]
+---
+
+authentik Agent can be deployed at scale to multiple devices via Mobile Device Management (MDM) and automation tools.
+
+## Prerequisites
+
+You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
+
+## Create an enrollment token
+
+If you have already created have an enrollment token, skip to the next section.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Enrollment Tokens**, click **Create**, and configure the following settings:
+    - **Token name**: provide a descriptive name for the token
+    - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
+    - **Expiring _(optional)_**: set whether or not the enrollment token will expire
+5. Click **Create**.
+
+## Windows
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
+5. Click **Windows** and then click either **Download** or **Copy** to obtain your SyncML MDM configuration snippet.
+
+This SyncML snippet can be used by Microsoft Intune, Microsoft Endpoint Manager and other MDM tools to deploy the changes required to support the authentik Agent.
+
+The following two registry keys (`REG_SZ`) are added by the configuration snippet:
+
+- `HKLM/SOFTWARE/authentik Security Inc./Platform/ManagedConfig/RegistrationToken`
+- `HKLM/SOFTWARE/authentik Security Inc./Platform/ManagedConfig/URL`
+
+## macOS
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors**.
+3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
+4. Under **Setup**, select the enrollment token that you wish to use for enrolling devices.
+5. Click **macOS** and then click either **Download** or **Copy** to obtain your MDM policy.
+
+This policy can be used by Apple Business Manager, Fleet, and other MDM tools to deploy the changes required to support the authentik Agent.
+
+:::warning MDM only
+Apple requires that this policy be applied to a device via an MDM tool. It will not function if manually applied to a device.
+:::
+
+### User registration
+
+Upon deploying the authentik Agent to a device, the user will receive a notification asking them to register with authentik. When a user follows the registration they are asked to authenticate with authentik, once authenticated the device is enrolled in authentik and associated with the user.

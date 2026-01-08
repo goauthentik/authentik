@@ -1,3 +1,4 @@
+import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

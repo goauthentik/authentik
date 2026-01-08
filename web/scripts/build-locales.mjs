@@ -12,7 +12,6 @@
  * summary of how many strings are missing with respect to the source locale.
  *
  * @import { Stats } from "node:fs";
- * @import { RuntimeOutputConfig } from "@lit/localize-tools/lib/types/modes.js"
  */
 
 import * as fs from "node:fs/promises";
@@ -53,7 +52,7 @@ const EmittedLocalesDirectory = resolve(
 );
 
 const targetLocales = localizeRules.targetLocales.filter((localeCode) => {
-    return localeCode !== "pseudo_LOCALE";
+    return localeCode !== "en-XA";
 });
 
 //#endregion
@@ -215,7 +214,7 @@ export async function generateLocaleModules() {
         .map(([locale, count]) => `${locale}: ${count.toLocaleString()}`)
         .join("\n");
 
-    logger.info(`Missing translations:\n${missingTranslationsReport}`);
+    logger.info(`Missing translations:\n${missingTranslationsReport || "None"}`);
 
     const outdatedTranslationsReport = Array.from(outdatedTranslationWarnings)
         .filter(([, count]) => count)
@@ -225,7 +224,7 @@ export async function generateLocaleModules() {
         .map(([locale, count]) => `${locale}: ${count.toLocaleString()}`)
         .join("\n");
 
-    logger.info(`Outdated translations:\n${outdatedTranslationsReport}`);
+    logger.info(`Outdated translations:\n${outdatedTranslationsReport || "None"}`);
 
     localizer.assertTranslationsAreValid();
 

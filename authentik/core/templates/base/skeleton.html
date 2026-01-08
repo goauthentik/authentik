@@ -1,9 +1,11 @@
 {% load static %}
 {% load i18n %}
 {% load authentik_core %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
 <html
+    lang="{{ LANGUAGE_CODE }}"
     data-theme="{% if ui_theme == "dark" %}dark{% else %}light{% endif %}"
     data-theme-choice="{% if ui_theme == "dark" %}dark{% elif ui_theme == "light" %}light{% else %}auto{% endif %}"
 >
@@ -15,6 +17,7 @@
         <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
         <link rel="icon" href="{{ brand.branding_favicon_url }}">
         <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
+
         {% block head_before %}
         {% endblock %}
 

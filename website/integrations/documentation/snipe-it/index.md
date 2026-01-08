@@ -69,7 +69,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 
 ## Snipe-IT LDAP Setup
 
-Configure Snipe-IT LDAP settings by going to settings (he gear icon), and selecting `LDAP`
+Configure Snipe-IT LDAP settings by going to settings (the gear icon), and selecting `LDAP`
 
 Change the following fields
 
@@ -81,7 +81,7 @@ Change the following fields
 - Use TLS : **unticked**
 - LDAP SSL certificate validation : **ticked**
 - Bind credentials:
-    - LDAP Bind USername: `cn=snipeit-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - LDAP Bind Username: `cn=snipeit-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     - LDAP Bind Password: `<snipeit-user password from step 2>`
 - Base Bind DN: `ou=users,DC=ldap,DC=goauthentik,DC=io`
   :::info
@@ -90,19 +90,19 @@ Change the following fields
 - LDAP Filter: &(objectClass=user)
 - Username Field: mail
   :::info
-  Setting the Username field to mail is recommended in order to ensure the usernameisunique. See https://snipe-it.readme.io/docs/ldap-sync-login
+  Setting the Username field to mail is recommended in order to ensure the username is unique. See https://snipe-it.readme.io/docs/ldap-sync-login
   :::
 - Allow unauthenticated bind: **unticked**
 - Last Name: sn
 - LDAP First Name: givenname
-- LDAP AUthentication query: cn=
+- LDAP Authentication query: cn=
 - LDAP Email: mail
 
 :::info
 authentik does not support other LDAP attributes like Employee Number, Department, etc out of the box. If you need these fields, you will need to setup custom attributes.
 :::
 
-Save your config, then click on Test LDAP Synchorization. This does not import any users, just verifies everything is working and the account can search the directory.
+Save your config, then click on Test LDAP Synchronization. This does not import any users, just verifies everything is working and the account can search the directory.
 
 To test your settings, enter a username and password and click Test LDAP.
 
@@ -110,7 +110,7 @@ To test your settings, enter a username and password and click Test LDAP.
 
 You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu.
 
-- CLick `LDAP Sync`
+- Click `LDAP Sync`
 - Select your Location
 - Click Synchronize
   :::info
@@ -142,11 +142,11 @@ Either copy the information under SAML Metadata, or click the Download button un
 
 ## Snipe-IT SAML Config
 
-Configure Snipe-IT SAML settings by going to settings (he gear icon), and selecting `SAML`
+Configure Snipe-IT SAML settings by going to settings (the gear icon), and selecting `SAML`
 
 - SAML enabled: **ticked**
 - SAML IdP Metadata: (paste information copied in Step 2 above -or-
-- Click `Select File`and select the file you downloaded in Step 2
+- Click `Select File` and select the file you downloaded in Step 2
 - Attribute Mapping - Username: mail
 - SAML Force Login: **ticked**
 - SAML Single Log Out: **ticked**

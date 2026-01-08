@@ -1,11 +1,13 @@
 import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-number-input";
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#elements/utils/TimeDeltaHelp";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -13,7 +15,10 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { gidStartNumberHelp, uidStartNumberHelp } from "#admin/providers/ldap/LDAPOptionsAndHelp";
+import {
+    oauth2ProvidersProvider,
+    oauth2ProvidersSelector,
+} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
 
 import {
     AgentConnector,
@@ -56,9 +61,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${ifDefined(this.instance?.name)}
+                input-hint="code"
+                autofocus
                 required
             ></ak-text-input>
             <ak-text-input
@@ -73,21 +80,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
             </ak-text-input>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            >
+            </ak-switch-input>
             <ak-form-group label="${msg("Authentication settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -115,22 +113,29 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
-                    <ak-form-element-horizontal name="authTerminateSessionOnExpiry">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.authTerminateSessionOnExpiry ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Terminate authenticated sessions on token expiry")}</span
-                            >
-                        </label>
+                    <ak-switch-input
+                        name="authTerminateSessionOnExpiry"
+                        label=${msg("Terminate authenticated sessions on token expiry")}
+                        ?checked=${this.instance?.authTerminateSessionOnExpiry ?? true}
+                    >
+                    </ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Federated OIDC Providers")}
+                        name="jwtFederationProviders"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2ProvidersProvider}
+                            .selector=${oauth2ProvidersSelector(
+                                this.instance?.jwtFederationProviders,
+                            )}
+                            available-label=${msg("Available Providers")}
+                            selected-label=${msg("Selected Providers")}
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "JWTs signed by the selected providers can be used to authenticate to devices.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -165,23 +170,12 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
-                    <ak-form-element-horizontal name="challengeTriggerCheckIn">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.challengeTriggerCheckIn ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Trigger check-in on device")}</span
-                            >
-                        </label>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="challengeTriggerCheckIn"
+                        label=${msg("Trigger check-in on device")}
+                        ?checked=${this.instance?.challengeTriggerCheckIn ?? true}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Unix settings")}">
@@ -190,15 +184,19 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         label=${msg("NSS User ID offset")}
                         required
                         name="nssUidOffset"
-                        value="${this.instance?.nssUidOffset ?? 1000}"
-                        help=${uidStartNumberHelp}
+                        value="${this.instance?.nssUidOffset ?? 2000}"
+                        help=${msg(
+                            "The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.",
+                        )}
                     ></ak-number-input>
                     <ak-number-input
                         label=${msg("NSS Group ID offset")}
                         required
                         name="nssGidOffset"
-                        value="${this.instance?.nssGidOffset ?? 1000}"
-                        help=${gidStartNumberHelp}
+                        value="${this.instance?.nssGidOffset ?? 4000}"
+                        help=${msg(
+                            "The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.",
+                        )}
                     ></ak-number-input>
                 </div>
             </ak-form-group>`;

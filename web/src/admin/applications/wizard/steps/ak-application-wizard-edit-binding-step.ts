@@ -1,3 +1,4 @@
+import "#components/ak-number-input";
 import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";

@@ -15,7 +15,7 @@ from authentik.core.models import AttributesMixin, ExpiringModel
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -28,7 +28,7 @@ LOGGER = get_logger()
 DEVICE_FACTS_CACHE_TIMEOUT = 3600
 
 
-class Device(ExpiringModel, AttributesMixin, PolicyBindingModel):
+class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindingModel):
     device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField(unique=True)
@@ -86,7 +86,7 @@ class DeviceUserBinding(PolicyBinding):
         verbose_name_plural = _("Device User bindings")
 
 
-class DeviceConnection(SerializerModel):
+class DeviceConnection(InternallyManagedMixin, SerializerModel):
     device_connection_uuid = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
@@ -115,7 +115,7 @@ class DeviceConnection(SerializerModel):
         verbose_name_plural = _("Device connections")
 
 
-class DeviceFactSnapshot(ExpiringModel, SerializerModel):
+class DeviceFactSnapshot(InternallyManagedMixin, ExpiringModel, SerializerModel):
     snapshot_id = models.UUIDField(primary_key=True, default=uuid4)
     connection = models.ForeignKey(DeviceConnection, on_delete=models.CASCADE)
     data = models.JSONField(default=dict)
@@ -175,7 +175,7 @@ class Connector(ScheduledModel, SerializerModel):
         ]
 
 
-class DeviceAccessGroup(PolicyBindingModel):
+class DeviceAccessGroup(SerializerModel, PolicyBindingModel):
 
     name = models.TextField(unique=True)
 

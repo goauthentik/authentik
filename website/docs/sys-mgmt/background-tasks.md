@@ -27,6 +27,10 @@ Here is a non-exhaustive list of what background tasks are used for:
 
 authentik runs some tasks on a schedule. Schedules can be [configured](#schedule-configuration) or manually triggered by clicking the play arrow.
 
+:::info Manual triggering behavior
+When you manually trigger a schedule using the play arrow, it will run immediately but the "Next run" time will not be updated. The "Next run" field only reflects when the automatic scheduler will dispatch the task according to its cron schedule.
+:::
+
 ## Tasks statuses
 
 A task can have the following statuses:
@@ -62,6 +66,10 @@ To change that interval, click the Edit icon for the specific schedule and updat
 
 :::warning
 Some tasks are required to run at regular intervals. For tuning reasons we recommend editing the intervals only for synchronization schedules, not for other types of schedules.
+:::
+
+:::info "Next run" in the past
+If the "Next run" field appears to be in the past, this is normal and expected. It simply means the scheduler will dispatch the task the next time the scheduler runs. By default, the scheduler runs every 60 seconds (configurable via [`AUTHENTIK_WORKER__SCHEDULER_INTERVAL`](../install-config/configuration/configuration.mdx#authentik_worker__scheduler_interval)).
 :::
 
 Schedules can also be _paused_ to prevent new tasks to be created from them. They can still be triggered manually while paused. When you un-pause a schedule, it will be triggered immediately.

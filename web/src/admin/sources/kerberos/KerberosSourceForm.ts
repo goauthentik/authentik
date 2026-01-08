@@ -2,6 +2,7 @@ import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
+import "#components/ak-radio-input";
 import "#components/ak-file-search-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
@@ -15,6 +16,8 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSo
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { RadioOption } from "#elements/forms/Radio";
+
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
@@ -27,6 +30,7 @@ import {
     KerberosSource,
     KerberosSourceRequest,
     SourcesApi,
+    SyncOutgoingTriggerModeEnum,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -34,6 +38,31 @@ import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTriggerModeEnum>[] {
+    return [
+        {
+            label: msg("None"),
+            value: SyncOutgoingTriggerModeEnum.None,
+            description: html`${msg("Outgoing syncs will not be triggered.")}`,
+        },
+        {
+            label: msg("Immediate"),
+            value: SyncOutgoingTriggerModeEnum.Immediate,
+            description: html`${msg(
+                "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
+            )}`,
+        },
+        {
+            label: msg("Deferred until end"),
+            value: SyncOutgoingTriggerModeEnum.DeferredEnd,
+            default: true,
+            description: html`${msg(
+                "Outgoing syncs will be triggered at the end of the source synchronization.",
+            )}`,
+        },
+    ];
+}
 
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
@@ -49,11 +78,11 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                 slug: this.instance.slug,
                 patchedKerberosSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
-                kerberosSourceRequest: data as unknown as KerberosSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosCreate({
+            kerberosSourceRequest: data as unknown as KerberosSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -365,6 +394,14 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         help=${placeholderHelperText}
                     ></ak-text-input>
                 </div>
+                <ak-radio-input
+                    label=${msg("Outgoing sync trigger mode")}
+                    required
+                    name="syncOutgoingTriggerMode"
+                    .value=${this.instance?.syncOutgoingTriggerMode}
+                    .options=${createSyncOutgoingTriggerModeOptions}
+                >
+                </ak-radio-input>
                 <ak-file-search-input
                     name="icon"
                     label=${msg("Icon")}
