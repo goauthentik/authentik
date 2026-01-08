@@ -328,14 +328,6 @@ export function applyBackgroundImageProperty(
     const { backgroundImage } = getComputedStyle(document.body, "::before");
 
     const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
-    const sameOrigin = nextURL.origin === baseOrigin;
-
-    // Same origin? Only compare pathnames to avoid unnecessary repaints
-    // due to search params or hashes.
-    if (sameOrigin && currentURL?.pathname === nextURL.pathname) {
-        return;
-    }
-
     if (currentURL?.href === nextURL.href) {
         return;
     }

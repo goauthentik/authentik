@@ -1,3 +1,4 @@
+import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";

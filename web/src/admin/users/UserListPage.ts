@@ -30,7 +30,7 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
-import { CoreApi, User, UserPath } from "@goauthentik/api";
+import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -156,14 +156,6 @@ export class UserListPage extends WithBrandConfig(
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
-
-    #createExport = async () => {
-        await new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate({
-            ...(await this.defaultEndpointConfig()),
-            pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
-        });
-    };
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -409,7 +401,16 @@ export class UserListPage extends WithBrandConfig(
                 </button>
             </ak-forms-modal>
             <ak-reports-export-button
-                .createExport=${this.#createExport}
+                .createExport=${(params: CoreUsersExportCreateRequest) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);
+                }}
+                .exportParams=${async () => {
+                    return {
+                        ...(await this.defaultEndpointConfig()),
+                        pathStartswith: this.activePath,
+                        isActive: this.hideDeactivated ? true : undefined,
+                    };
+                }}
             ></ak-reports-export-button>
         `;
     }

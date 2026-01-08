@@ -1,3 +1,5 @@
+import "#components/ak-switch-input";
+import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";

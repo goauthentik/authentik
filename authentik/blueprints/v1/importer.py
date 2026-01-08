@@ -15,7 +15,6 @@ from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from django_channels_postgres.models import GroupChannel, Message
 from guardian.models import RoleObjectPermission, UserObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -41,55 +40,17 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
-from authentik.endpoints.connectors.agent.models import (
-    AgentDeviceConnection,
-    AppleNonce,
-    DeviceAuthenticationToken,
-)
-from authentik.endpoints.connectors.agent.models import (
-    DeviceToken as EndpointDeviceToken,
-)
-from authentik.endpoints.models import Connector, Device, DeviceConnection, DeviceFactSnapshot
+from authentik.endpoints.models import Connector
 from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import LicenseUsage
-from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceProviderGroup,
-    GoogleWorkspaceProviderUser,
-)
-from authentik.enterprise.providers.microsoft_entra.models import (
-    MicrosoftEntraProviderGroup,
-    MicrosoftEntraProviderUser,
-)
-from authentik.enterprise.providers.ssf.models import StreamEvent
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
-    EndpointDevice,
-    EndpointDeviceConnection,
-)
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
-from authentik.flows.models import FlowToken, Stage
-from authentik.lib.models import SerializerModel
+from authentik.flows.models import Stage
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
-from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import (
-    AccessToken,
-    AuthorizationCode,
-    DeviceToken,
-    RefreshToken,
-)
-from authentik.providers.proxy.models import ProxySession
-from authentik.providers.rac.models import ConnectionToken
-from authentik.providers.saml.models import SAMLSession
-from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
-from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
-from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
-from authentik.stages.consent.models import UserConsent
-from authentik.tasks.models import Task, TaskLog
-from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
 # Update website/docs/customize/blueprints/v1/models.md when used
@@ -125,49 +86,16 @@ def excluded_models() -> list[type[Model]]:
         # Classes that have other dependencies
         Session,
         AuthenticatedSession,
-        # Classes which are only internally managed
-        # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
-        FlowToken,
-        LicenseUsage,
-        SCIMProviderGroup,
-        SCIMProviderUser,
-        Tenant,
-        Task,
-        TaskLog,
-        ConnectionToken,
-        AuthorizationCode,
-        AccessToken,
-        RefreshToken,
-        ProxySession,
-        Reputation,
-        WebAuthnDeviceType,
-        SCIMSourceUser,
-        SCIMSourceGroup,
-        GoogleWorkspaceProviderUser,
-        GoogleWorkspaceProviderGroup,
-        MicrosoftEntraProviderUser,
-        MicrosoftEntraProviderGroup,
-        EndpointDevice,
-        EndpointDeviceConnection,
-        EndpointDeviceToken,
-        Device,
-        DeviceConnection,
-        DeviceAuthenticationToken,
-        AppleNonce,
-        AgentDeviceConnection,
-        DeviceFactSnapshot,
-        DeviceToken,
-        StreamEvent,
-        UserConsent,
-        SAMLSession,
-        Message,
-        GroupChannel,
     )
 
 
 def is_model_allowed(model: type[Model]) -> bool:
     """Check if model is allowed"""
-    return model not in excluded_models() and issubclass(model, SerializerModel | BaseMetaModel)
+    return (
+        model not in excluded_models()
+        and issubclass(model, SerializerModel | BaseMetaModel)
+        and not issubclass(model, InternallyManagedMixin)
+    )
 
 
 class DoRollback(SentryIgnoredException):

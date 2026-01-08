@@ -19,12 +19,18 @@ import { fromLonLat } from "ol/proj.js";
 import Icon from "ol/style/Icon.js";
 import Style from "ol/style/Style.js";
 
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import OL from "ol/ol.css";
+
+export const SELECTED_FEATURE_EVENT = "feature-selected";
+
+export interface SelectedFeatureEventDetail {
+    feature: Feature;
+}
 
 @customElement("ak-map")
 export class Map extends OlMap {
@@ -76,11 +82,29 @@ export class EventMap extends AKElement {
             ol-map {
                 height: 24rem;
             }
-            :host([theme="dark"]) ol-map {
+            :host([theme="dark"]) ak-map {
                 filter: invert(100%) hue-rotate(180deg);
             }
         `,
     ];
+
+    constructor() {
+        super();
+        this.addEventListener(SELECTED_FEATURE_EVENT, this.#dispatchSelectedFeature);
+    }
+
+    #dispatchSelectedFeature = (event: CustomEvent<SelectedFeatureEventDetail>) => {
+        const eventId = event.detail.feature.getId();
+        this.dispatchEvent(
+            new CustomEvent("select-event", {
+                composed: true,
+                bubbles: true,
+                detail: {
+                    eventId,
+                },
+            }),
+        );
+    };
 
     updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {
@@ -144,23 +168,23 @@ export class EventMap extends AKElement {
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <ak-map>
-                <ol-select
-                    @feature-selected=${(ev: CustomEvent<{ feature: Feature }>) => {
-                        const eventId = ev.detail.feature.getId();
-                        this.dispatchEvent(
-                            new CustomEvent("select-event", {
-                                composed: true,
-                                bubbles: true,
-                                detail: {
-                                    eventId: eventId,
-                                },
-                            }),
-                        );
-                    }}
-                ></ol-select>
+                <ol-select></ol-select>
                 <ol-layer-openstreetmap></ol-layer-openstreetmap>
                 <ol-layer-vector></ol-layer-vector>
             </ak-map>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-map": Map;
+        "ak-events-map": EventMap;
+    }
+}
+
+declare global {
+    interface HTMLElementEventMap {
+        [SELECTED_FEATURE_EVENT]: CustomEvent<SelectedFeatureEventDetail>;
     }
 }

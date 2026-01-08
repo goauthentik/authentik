@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-12 15:51+0000\n"
+"POT-Creation-Date: 2026-01-07 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,9 +27,11 @@ msgid "File name cannot be empty"
 msgstr ""
 
 #: authentik/admin/files/validation.py
+#, python-format
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
-"hyphens (-), underscores (_), and forward slashes (/)"
+"hyphens (-), underscores (_), forward slashes (/), and the special "
+"placeholder %(theme)s for theme-specific files"
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -559,6 +561,30 @@ msgid ""
 msgstr ""
 
 #: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
 msgstr ""
 
@@ -686,6 +712,10 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
+msgstr ""
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
 msgstr ""
 
 #: authentik/enterprise/models.py

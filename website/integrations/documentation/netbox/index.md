@@ -141,7 +141,7 @@ def remove_groups(response, user, backend, *args, **kwargs):
 
 
 def set_roles(response, user, backend, *args, **kwargs):
-    # Remove Roles temporary
+    # Remove Roles temporarily
     user.is_superuser = False
     user.is_staff = False
     try:
