@@ -9,6 +9,8 @@ import { FocusTarget } from "#elements/utils/focus";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 
+import { ConsoleLogger } from "#logger/browser";
+
 import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
 
 import { html, LitElement, nothing, PropertyValues } from "lit";
@@ -64,6 +66,8 @@ export abstract class BaseStage<
         ...LitElement.shadowRootOptions,
         delegatesFocus: true,
     };
+
+    protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
 
     // TODO: Should have a property but this needs some refactoring first.
     // @property({ attribute: false })
@@ -137,11 +141,11 @@ export abstract class BaseStage<
             }
         }
 
-        return this.host?.submit(payload).then((successful) => {
+        return this.host?.submit(payload).then(async (successful) => {
             if (successful) {
-                this.onSubmitSuccess();
+                await this.onSubmitSuccess?.(payload);
             } else {
-                this.onSubmitFailure();
+                await this.onSubmitFailure?.(payload);
             }
 
             return successful;
@@ -188,12 +192,17 @@ export abstract class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
-        // Method that can be overridden by stages
-        return;
-    }
-    onSubmitFailure(): void {
-        // Method that can be overridden by stages
-        return;
-    }
+    /**
+     * Callback method for successful form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitSuccess?(payload: Record<string, unknown>): void | Promise<void>;
+
+    /**
+     * Callback method for failed form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitFailure?(payload: Record<string, unknown>): void | Promise<void>;
 }
