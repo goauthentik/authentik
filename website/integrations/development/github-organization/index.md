@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of AWX Tower with authentik, you need to create an application/provider pair in authentik.
+To support the integration of GitHub Organization with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
