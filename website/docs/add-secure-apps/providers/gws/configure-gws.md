@@ -13,9 +13,8 @@ The main steps to configure your Google Workspace organization are:
 
 1. [Create a Google Cloud project](#create-a-google-cloud-project)
 2. [Create a service account](#create-a-service-account)
-3. [Set credentials for the service account](#set-credentials-for-the-service-account)
-4. [Define access and scope in the Admin Console](#set-credentials-for-the-service-account)
-5. [Select email address for the Delegated Subject](#select-email-address-for-the-delegated-subject)
+3. [Configure service account key and scopes](#configure-service-account-key-and-scopes)
+4. [Select a user for the Delegated Subject](#select-a-user-for-the-delegated-subject)
 
 ## Create a Google Cloud project
 
@@ -36,7 +35,7 @@ The main steps to configure your Google Workspace organization are:
     - Under **Grant this service account access to project** you do not need to define a role, so click **Continue**.
     - Under **Grant users access to project** you do not need to define a role, so click **Done** to complete the creation of the service account.
 
-## Set credentials for the service account
+## Configure service account key and scopes
 
 1. On the **Service accounts** page, click the account that you just created.
 2. Click the **Keys** tab at top of the page, then click **Add Key** > **Create new key**.
