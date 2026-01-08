@@ -35,7 +35,7 @@ Adhering to the following guidelines will help us get your PRs merged much easie
     - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
 
 :::tip
-If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
+If you encounter build check fails, or issues with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
 :::
 
 ## Setting up a docs development environment
@@ -116,7 +116,7 @@ Starts a local development server for the documentation site and opens a preview
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (https://integrations.goauthentik.io/).
 
-- For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+- For new integration documentation, please use the Integrations template in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 - For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 

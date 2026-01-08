@@ -38,7 +38,8 @@ In order to use GitHub Enterprise Cloud EMU, SCIM must also be set up.
 :::
 
 :::info
-GitHub will create usenames for your EMU users based on the SAML `NameID` property which must also match SCIM's `_userName_` attribute.
+GitHub will create usernames for your EMU users based on the SAML `NameID` property which must also match 
+SCIM's `_userName_` attribute.
 :::info
 
 ### Create an application and provider in authentik
