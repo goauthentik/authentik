@@ -12,7 +12,7 @@ dependencies = [
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
-  "django==5.2.9",
+  "django==5.2.10",
   "django-channels-postgres",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
@@ -146,30 +146,33 @@ exclude_dirs = ["**/node_modules/**"]
 
 [tool.codespell]
 skip = [
-  "**/node_modules",
-  "**/package-lock.json",
-  "schema.yml",
-  "unittest.xml",
-  "./blueprints/schema.json",
-  "go.sum",
-  "locale",
-  "**/web/src/locales",
-  "**/dist",                    # Distributed build output
-  "**/storybook-static",
-  "**/web/xliff",
+  "**/.env",                    # Environment files
+  "**/.venv",                   # Python virtual environment
+  "**/node_modules",            # Node modules
+  "**/package-lock.json",       # NPM package lock
+  "schema.yml",                 # OpenAPI schema
+  "./blueprints/schema.json",   # Generated blueprint schema
+  "go.sum",                     # Go module file
+  "locale",                     # Django locale files
+  "**/web/src/locales",         # Generated TypeScript locale
+  "**/web/xliff",               # XLIFF translation files
+  "**/custom-elements.json",    # TypeScript custom element definitions
+  "**/storybook-static",        # Storybook build output
   "**/playwright-report",       # Playwright test output
+  "unittest.xml",               # Pytest output
+  "./htmlcov",                  # Coverage HTML output
   "**/out",                     # TypeScript type-checking output
-  "./web/custom-elements.json", # TypeScript custom element definitions
+  "**/dist",                    # Distributed build output
   "./website/build",            # TODO: Remove this after moving website to docs
   "./website/**/build",         # TODO: Remove this after moving website to docs
   "./docs/build",               # Docusaurus Topic docs build output
   "./docs/**/build",            # Docusaurus workspaces output
   "*.api.mdx",                  # Generated API docs
-  "./gen-ts-api",
-  "./gen-py-api",
-  "./gen-go-api",
-  "./htmlcov",
-  "./media",
+  "./gen-ts-api",               # Generated TypeScript API
+  "./gen-py-api",               # Generated Python API
+  "./gen-go-api",               # Generated Go API
+  "./data",                     # Media files
+  "./media",                    # Legacy media files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
@@ -284,6 +287,7 @@ module = [
   "lifecycle.*",
   "tests.e2e.*",
   "tests.integration.*",
+  "tests.openid_conformance.*",
 ]
 ignore_errors = true
 

@@ -64,6 +64,10 @@ class DeprecatedMixin:
     """Mixin for classes that are deprecated"""
 
 
+class InternallyManagedMixin:
+    """Mixin for models that should _not_ be manageable via blueprint."""
+
+
 class DomainlessURLValidator(URLValidator):
     """Subclass of URLValidator which doesn't check the domain
     (to allow hostnames without domain)"""

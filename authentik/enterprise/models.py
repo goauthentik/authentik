@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import ExpiringModel
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 
 if TYPE_CHECKING:
     from authentik.enterprise.license import LicenseKey
@@ -81,7 +81,7 @@ class LicenseUsageStatus(models.TextChoices):
         return self in [LicenseUsageStatus.VALID, LicenseUsageStatus.EXPIRY_SOON]
 
 
-class LicenseUsage(ExpiringModel):
+class LicenseUsage(InternallyManagedMixin, ExpiringModel):
     """a single license usage record"""
 
     expires = models.DateTimeField(default=usage_expiry)

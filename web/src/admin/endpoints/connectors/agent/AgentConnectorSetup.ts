@@ -77,7 +77,11 @@ export class AgentConnectorSetup extends AKElement {
                     <p>${msg("Afterwards, select the enrollment token you want to use:")}</p>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
-                    <p>${msg("Then download the configuration to deploy the authentik Agent")}</p>
+                    <p>
+                        ${msg(
+                            "Next, download the configuration to deploy the authentik Agent via MDM",
+                        )}
+                    </p>
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-6-col pf-l-grid">

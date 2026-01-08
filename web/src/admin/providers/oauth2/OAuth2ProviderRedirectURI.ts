@@ -41,7 +41,10 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
         url: "",
     };
 
-    @property({ type: String })
+    @property({ type: String, useDefault: true })
+    public name = "";
+
+    @property({ type: String, attribute: "input-id" })
     public inputID?: string;
 
     @queryAll(".ak-form-control")

@@ -65,7 +65,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         type="email"
                         name="email"
                         placeholder="${msg("Please enter your email address.")}"
-                        autofocus=""
+                        autofocus
                         autocomplete="email"
                         class="pf-c-form-control"
                         required
@@ -112,7 +112,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         inputmode="numeric"
                         pattern="[0-9]*"
                         placeholder="${msg("Please enter the code you received via email")}"
-                        autofocus=""
+                        autofocus
                         autocomplete="one-time-code"
                         class="pf-c-form-control pf-m-monospace"
                         required

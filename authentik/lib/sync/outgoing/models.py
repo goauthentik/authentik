@@ -84,7 +84,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         raise NotImplementedError
 
     def sync_dispatch(self) -> None:
-        for schedule in self.schedules:
+        for schedule in self.schedules.all():
             schedule.send()
 
     @property

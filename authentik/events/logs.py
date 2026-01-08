@@ -7,7 +7,7 @@ from typing import Any
 from django.utils.timezone import now
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, DictField
 from structlog import configure, get_config
-from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter
+from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter, get_logger
 from structlog.testing import LogCapture
 from structlog.types import EventDict
 
@@ -35,6 +35,9 @@ class LogEvent:
         return LogEvent(
             event, log_level, item.pop("logger"), timestamp, attributes=sanitize_dict(item)
         )
+
+    def log(self):
+        get_logger(self.logger).log(NAME_TO_LEVEL[self.log_level], self.event, **self.attributes)
 
 
 class LogEventSerializer(PassiveSerializer):

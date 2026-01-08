@@ -9,6 +9,13 @@ NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	SED_INPLACE = sed -i ''
+else
+	SED_INPLACE = sed -i
+endif
+
 GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
 GEN_API_GO = gen-go-api
@@ -119,8 +126,8 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
-	sed -i 's/^version = ".*"/version = "$(version)"/' pyproject.toml
-	sed -i 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
+	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' pyproject.toml
+	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
 	npm version --no-git-tag-version --allow-same-version $(version)
 	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
@@ -134,14 +141,10 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak make_blueprint_schema --file blueprints/schema.json
-	AUTHENTIK_DEBUG=true \
-		AUTHENTIK_TENANTS__ENABLED=true \
-		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak spectacular --file schema.yml
+		uv run ak build_schema
 
 gen-compose:
-	uv run scripts/generate_docker_compose.py
+	uv run scripts/generate_compose.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
@@ -149,14 +152,14 @@ gen-changelog:  ## (Release) generate the changelog based from the commits since
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
 	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
-	docker compose -f scripts/api/docker-compose.yml run --rm --user "${UID}:${GID}" diff \
+	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \
 		/local/schema-old.yml \
 		/local/schema.yml
 	rm schema-old.yml
-	sed -i 's/{/&#123;/g' diff.md
-	sed -i 's/}/&#125;/g' diff.md
+	$(SED_INPLACE) 's/{/&#123;/g' diff.md
+	$(SED_INPLACE) 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
 gen-clean-ts:  ## Remove generated API client for TypeScript
@@ -172,7 +175,7 @@ gen-clean-go:  ## Remove generated API client for Go
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker compose -f scripts/api/docker-compose.yml run --rm --user "${UID}:${GID}" gen \
+	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
 		generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
@@ -293,7 +296,7 @@ docs-api-clean: ## Clean generated API documentation
 
 docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
-	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
 	BUILD=true ${PWD}/scripts/test_docker.sh
@@ -327,6 +330,6 @@ ci-pending-migrations: ci--meta-debug
 	uv run ak makemigrations --check
 
 ci-test: ci--meta-debug
-	uv run coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
+	uv run coverage run manage.py test --keepdb authentik
 	uv run coverage report
 	uv run coverage xml

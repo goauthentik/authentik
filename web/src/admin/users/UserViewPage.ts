@@ -95,7 +95,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                 display: flex;
                 flex-direction: column;
                 gap: 0.375rem;
-                max-width: 12rem;
+                max-width: 13rem;
             }
             .ak-button-collection > * {
                 flex: 1 0 100%;
@@ -107,7 +107,6 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             #ak-email-recovery-request,
             #update-password-request .pf-c-button,
             #ak-email-recovery-request .pf-c-button {
-                margin: 0;
                 width: 100%;
             }
         `,
@@ -127,7 +126,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             [msg("Email"), user.email || "-"],
             [msg("Last login"), Timestamp(user.lastLogin)],
             [msg("Last password change"), Timestamp(user.passwordChangeDate)],
-            [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
+            [msg("Active"), html`<ak-status-label ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
             [msg("Actions"), this.renderActionButtons(user)],
@@ -371,6 +370,42 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
         </div>`;
     }
 
+    protected renderTabRoles(user: User): TemplateResult {
+        return html`
+            <ak-tabs pageIdentifier="userRoles" vertical>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-assigned-roles"
+                    id="page-assigned-roles"
+                    aria-label=${msg("Assigned Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-all-roles"
+                    id="page-all-roles"
+                    aria-label=${msg("All Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${user} showInherited>
+                            </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+            </ak-tabs>
+        `;
+    }
+
     render() {
         if (!this.user) {
             return nothing;
@@ -453,13 +488,8 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     slot="page-roles"
                     id="page-roles"
                     aria-label=${msg("Roles")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetUser=${this.user}> </ak-role-related-list>
-                        </div>
-                    </div>
+                    ${this.renderTabRoles(this.user)}
                 </div>
                 <div
                     role="tabpanel"
