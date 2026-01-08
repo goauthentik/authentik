@@ -110,7 +110,7 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
 
 ## Microsoft365 configuration
 
-You must use the [Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/) module to federate your Microsoft Entra domain with authentik. The module can be installed by running the following Powershell command:
+You must use the [Microsoft Graph PowerShell](https://learn.microsoft.com/en-us/powershell/microsoftgraph/) module to federate your Microsoft Entra domain with authentik. The module can be installed by running the following PowerShell command:
 
 ```powershell
 Install-Module Microsoft.Graph -Scope CurrentUser
@@ -126,7 +126,7 @@ If you're synchronizing users from Active Directory to authentik, the `Immutable
 
 #### For cloud-only users
 
-If your users aren't synchronized from Active Directory and only exist in authentik, run the following Powershell commands:
+If your users aren't synchronized from Active Directory and only exist in authentik, run the following PowerShell commands:
 
 ```powershell showLineNumbers
 # 1. Connect to Microsoft Graph
@@ -182,7 +182,7 @@ New-MgDomainFederationConfiguration `
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting the [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address which is in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticeted, redirected back to Microsoft and logged in.
+To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address which is in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticated, redirected back to Microsoft and logged in. the [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address which is in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticeted, redirected back to Microsoft and logged in.
 
 ## References
 
