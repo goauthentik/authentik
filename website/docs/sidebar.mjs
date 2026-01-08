@@ -170,8 +170,8 @@ const items = [
                             id: "add-secure-apps/providers/entra/index",
                         },
                         items: [
-                            "add-secure-apps/providers/entra/setup-entra",
-                            "add-secure-apps/providers/entra/add-entra-provider",
+                            "add-secure-apps/providers/entra/configure-entra",
+                            "add-secure-apps/providers/entra/create-entra-provider",
                         ],
                     },
                     {
