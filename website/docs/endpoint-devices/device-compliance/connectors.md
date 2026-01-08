@@ -8,7 +8,7 @@ Connectors allow device information to be reported to authentik.
 
 They can be used standalone or alongside the [authentik Agent](../authentik-agent/index.mdx).
 
-Currently, the only supported connectors is the [authentik Agent](#authentik-agent)
+Currently, the only supported connector is the [authentik Agent](#authentik-agent).
 
 ## Connectors
 
@@ -38,7 +38,7 @@ To configure a Challenge Key:
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
 3. Select the connector type and click **Next**, and configure the following required settings:
     - **Connector name**: provide a descriptive name for the connector.
-    - **Refresh interval**: select how often the agent will attempt to update it's configuration.
+    - **Refresh interval**: select how often the agent will attempt to update its configuration.
     - **Enabled**: enable or disable the connector.
 4. Click **Finish**.
 
