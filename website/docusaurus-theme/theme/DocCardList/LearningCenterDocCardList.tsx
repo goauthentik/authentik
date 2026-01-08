@@ -1,9 +1,8 @@
 import styles from "../../components/LearningCenter/styles.module.css";
-import { formatCategory, formatTag } from "../../components/LearningCenter/utils";
+import { formatTag } from "../../components/LearningCenter/utils";
 import {
     type DifficultyLevel,
     getDifficultyLabel,
-    getResourceTypeLabel,
     type LearningCenterResource,
     type ResourceType,
     safeDifficultyExtract,

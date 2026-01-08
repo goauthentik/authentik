@@ -14,10 +14,7 @@ import { VersionBadge } from "#components/VersionBadge.tsx";
 import { useSyntheticTitle } from "#hooks/title.ts";
 import { LearningCenterContent } from "#theme/DocItem/Content/LearningCenterContent.tsx";
 import { PreReleaseAdmonition } from "#theme/DocItem/Content/PreReleaseAdmonition.tsx";
-import {
-    safeStringArrayExtract,
-    safeStringExtract,
-} from "#theme/utils/learningCenterUtils.ts";
+import { safeStringArrayExtract, safeStringExtract } from "#theme/utils/learningCenterUtils.ts";
 
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";
@@ -107,12 +104,18 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
     const customProps = sidebar_custom_props as Record<string, unknown> | undefined;
     const isLearningCenter = isLearningCenterPage(id);
 
-    const learningCenterData = isLearningCenter && customProps ? {
-        tags: safeStringArrayExtract(customProps.tags),
-        shortDescription: safeStringExtract(customProps.shortDescription),
-        difficulty: safeStringExtract(customProps.difficulty, "beginner") as "beginner" | "intermediate" | "advanced",
-        estimatedTime: safeStringExtract(customProps.estimatedTime),
-    } : null;
+    const learningCenterData =
+        isLearningCenter && customProps
+            ? {
+                  tags: safeStringArrayExtract(customProps.tags),
+                  shortDescription: safeStringExtract(customProps.shortDescription),
+                  difficulty: safeStringExtract(customProps.difficulty, "beginner") as
+                      | "beginner"
+                      | "intermediate"
+                      | "advanced",
+                  estimatedTime: safeStringExtract(customProps.estimatedTime),
+              }
+            : null;
 
     const preReleaseDoc = frontMatter.beta && metadata.id.startsWith("releases");
 
