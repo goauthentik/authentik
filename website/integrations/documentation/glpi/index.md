@@ -24,7 +24,7 @@ This documentation lists only the settings that you need to change from their de
 ## GLPI samlSSO plugin configuration
 
 :::info
-By default, GLPI only offers OAuth authentication to subscribers. This guide describes how to integrate authentik with GLPI via SAML using the community plugin named [samlSO](https://github.com/DontsNL/samlsso).
+By default, GLPI only offers OAuth authentication to subscribers. This guide describes how to integrate authentik with GLPI via SAML using the community plugin named [samlSSO](https://github.com/DonutsNL/samlsso).
 :::
 
 ### Install the samlSSO plugin

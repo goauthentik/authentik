@@ -16,7 +16,7 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 ## Create an enrollment token
 
-If you have already created have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-macos).
+If you already have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-macos).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
@@ -31,7 +31,7 @@ If you have already created have an enrollment token, skip to the [next section]
 ## Install the authentik Agent on macOS
 
 :::info Automated deployment is recommended
-It's recommended to deploy the Agent via [MDM or automatiation tools](./automated.mdx) instead of manually configuring it.
+It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
