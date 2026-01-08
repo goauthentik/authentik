@@ -44,17 +44,20 @@ export class AccessDeniedStage extends BaseStage<
                           `
                         : nothing}
                 </ak-empty-state>
-                <fieldset class="pf-c-form__group pf-m-action">
-                    <legend class="sr-only">${msg("Form actions")}</legend>
-                    <a
-                        class="pf-c-button pf-m-primary pf-m-block"
-                        href=${this.challenge.flowInfo?.cancelUrl}
-                    >
-                        ${msg("Go back", {
-                            id: "flow.navigation.go-back",
-                        })}
-                    </a>
-                </fieldset>
+                ${this.challenge.flowInfo?.cancelUrl
+                    ? html`<fieldset class="pf-c-form__group pf-m-action">
+                          <legend class="sr-only">${msg("Form actions")}</legend>
+                          <a
+                              class="pf-c-button pf-m-primary pf-m-block"
+                              href=${this.challenge.flowInfo?.cancelUrl}
+                          >
+                              ${msg("Go back", {
+                                  id: "flow.navigation.go-back",
+                              })}
+                          </a>
+                      </fieldset>`
+                    : nothing}
+                }
             </form>
         </ak-flow-card>`;
     }
