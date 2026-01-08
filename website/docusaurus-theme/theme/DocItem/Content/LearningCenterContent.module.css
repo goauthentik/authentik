@@ -1,11 +1,7 @@
 .learningCenterContent {
     margin-bottom: 2.5rem;
     padding: 1.5rem;
-    background: linear-gradient(
-        135deg,
-        var(--ifm-color-emphasis-100) 0%,
-        transparent 100%
-    );
+    background: linear-gradient(135deg, var(--ifm-color-emphasis-100) 0%, transparent 100%);
     border-radius: 12px;
     border-left: 4px solid var(--ifm-color-primary);
 }
