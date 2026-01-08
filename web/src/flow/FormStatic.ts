@@ -1,5 +1,6 @@
 import { AKElement } from "#elements/Base";
 import { LitFC } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { isDefaultAvatar } from "#elements/utils/images";
 
 import {
@@ -138,8 +139,8 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
         () =>
             html`<ak-form-static
                 class="pf-c-form__group"
-                avatar=${pendingUserAvatar}
-                username=${pendingUser}
+                avatar=${ifPresent(pendingUserAvatar)}
+                username=${ifPresent(pendingUser)}
             >
                 ${flowInfo?.cancelUrl
                     ? html`
