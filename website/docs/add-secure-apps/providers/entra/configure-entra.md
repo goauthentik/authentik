@@ -33,6 +33,6 @@ This involves creating an app registration, generating a secret, and configuring
     - `User.Read`
     - `User.ReadWrite.All`
 12. Click **Add permissions**.
-13. Under Configured permissions, click **Grant admin consent for default directory**.
+13. Under **Configured permissions**, click **Grant admin consent for default directory**.
 
 Now that you have configured your Entra ID tenant, you are ready to [create an Entra ID provider](./create-entra-provider.md).

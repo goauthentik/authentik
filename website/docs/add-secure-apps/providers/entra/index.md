@@ -5,8 +5,8 @@ authentik_enterprise: true
 
 The Entra ID provider allows you to integrate with your Entra ID tenant. It supports syncing users and groups from authentik to Entra ID, allowing authentik to act as a source of truth for all users and groups.
 
-- For instructions on configuring your Entra ID tenant in prepation for creating an Entra ID provider, refer to the [Configure Entra ID](./configure-entra.md) documentation.
-- For instructions on creating an Entra ID provider, refer to the [Create an Entra ID provider](./create-entra-provider.md) documentation.
+- For instructions on configuring your Entra ID tenant in prepation for creating an Entra ID provider, refer to [Configure Entra ID](./configure-entra.md).
+- For instructions on creating an Entra ID provider, refer to [Create an Entra ID provider](./create-entra-provider.md).
 
 ## Discovery
 
