@@ -10,7 +10,7 @@ tags: [authentik Agent, windows]
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 
-:::warn Supported Windows Versions
+:::warning Supported Windows Versions
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
 :::
 
@@ -24,7 +24,7 @@ It currently only supports local login; RDP login is not supported.
 
 - When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
 - WCP can cause issues with user encrypted directories.
-- Support with Active directory has not been confirmed yet.
+- Support with Active Directory has not been confirmed yet.
 - Offline login is currently not supported.
 
 :::
@@ -35,7 +35,7 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 ## Create an enrollment token
 
-If you have already created have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-windows).
+If you already have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-windows).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
@@ -50,7 +50,7 @@ If you have already created have an enrollment token, skip to the [next section]
 ## Install the authentik Agent on Windows
 
 :::info Automated deployment is recommended
-It's recommended to deploy the Agent via [MDM or automatiation tools](./automated.mdx) instead of manually configuring it.
+It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.

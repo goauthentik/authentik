@@ -8,7 +8,7 @@ authentik provides a central place for storing all such files, the `authentik/da
 
 ## Upload and manage files
 
-To upload and use images files, follow these steps:
+To upload and use image files, follow these steps:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Files**.

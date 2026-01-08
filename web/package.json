@@ -184,7 +184,7 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.52.0",
         "unist-util-visit": "^5.0.0",
-        "vite": "^7.3.0",
+        "vite": "^7.3.1",
         "vitest": "^4.0.15",
         "webcomponent-qr-code": "^1.3.0",
         "wireit": "^0.14.12",
@@ -194,9 +194,9 @@
         "@esbuild/darwin-arm64": "^0.27.0",
         "@esbuild/linux-arm64": "^0.27.0",
         "@esbuild/linux-x64": "^0.27.0",
-        "@rollup/rollup-darwin-arm64": "^4.54.0",
-        "@rollup/rollup-linux-arm64-gnu": "^4.54.0",
-        "@rollup/rollup-linux-x64-gnu": "^4.54.0",
+        "@rollup/rollup-darwin-arm64": "^4.55.1",
+        "@rollup/rollup-linux-arm64-gnu": "^4.55.1",
+        "@rollup/rollup-linux-x64-gnu": "^4.55.1",
         "chromedriver": "^143.0.3"
     },
     "wireit": {

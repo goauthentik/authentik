@@ -20,7 +20,7 @@ user_email_local = regex_replace(request.user.email, '(.+)@.+', '')
 
 ### `list_flatten(value: list[Any] | Any) -> Optional[Any]`
 
-Flatten a list by either returning its first element, None if the list is empty, or the passed in object if its not a list.
+Flatten a list by either returning its first element, None if the list is empty, or the passed in object if it's not a list.
 
 Example:
 
@@ -95,9 +95,9 @@ return ak_user_has_authenticator(request.user)
 
 Create a new event with the action set to `action`. Any additional key-word parameters will be saved in the event context. Additionally, `context` will be set to the context in which this function is called.
 
-Before saving, any data-structure which are not representable in JSON are flattened, and credentials are removed.
+Before saving, any data structures which are not representable in JSON are flattened, and credentials are removed.
 
-The event is saved automatically
+The event is saved automatically.
 
 Example:
 
@@ -113,7 +113,7 @@ This function will only work when there is an HTTP request in the current contex
 
 Create a new JWT signed by the given `provider` for `user`.
 
-The `provider` parameter can either be an instance of `OAuth2Provider` or a the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
 
 The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
 
@@ -137,7 +137,7 @@ jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile
 
 Similar to [`ak_create_jwt`](#ak_create_jwtuser-user-provider-oauth2provider--str-scopes-liststr-validity--seconds60---str--none), however this function does _not_ require an HTTP request and allows for setting custom claims via `**kwargs`.
 
-The `provider` parameter can either be an instance of `OAuth2Provider` or a the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
 
 The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
 
@@ -229,8 +229,8 @@ To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(
 
 ```python
 resolve_dns("google.com")  # return a list of all IPv4 and IPv6 addresses
-resolve_dns("google.com", 4)  # return a list of only IP4 addresses
-resolve_dns("google.com", 6)  # return a list of only IP6 addresses
+resolve_dns("google.com", 4)  # return a list of only IPv4 addresses
+resolve_dns("google.com", 6)  # return a list of only IPv6 addresses
 ```
 
 You can also do reverse DNS lookups.

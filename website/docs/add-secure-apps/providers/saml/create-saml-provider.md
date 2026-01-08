@@ -35,7 +35,7 @@ To download the metadata of an authentik SAML provider, follow these steps:
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications > Providers**.
 3. Click the name of the provider you want metadata from to open its overview tab.
-4. In the **Related objects** section, under **Metadata** click on **Download**. This will download the metadata xml file for that provider.
+4. In the **Related objects** section, under **Metadata** click on **Download**. This will download the metadata XML file for that provider.
 
 ### Access metadata tab
 

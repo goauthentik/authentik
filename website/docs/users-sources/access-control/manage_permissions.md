@@ -61,7 +61,7 @@ To assign or remove _object_ permissions for a specific role:
 To assign or remove _global_ permissions for a role:
 
 1. Go to the Admin interface and navigate to **Directory > Roles**.
-2. Select a specific role the clicking on the role's name.
+2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
 4. Click **Assigned Global Permissions** to the left.
 5. To assign permissions that another _role_ has on this specific role: 2. In the **Assign permissions** area, click **Assign Permission**. 3. In the **Assign permission to role** box, click the plus sign (**+**) and then click the checkbox beside each permission that you want to assign to the user. 4. Click **Add**, and then click **Assign** to save your changes and close the box.
