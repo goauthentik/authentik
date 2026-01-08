@@ -2,13 +2,21 @@
 
 from typing import TypedDict
 
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import (
+    extend_schema,
+    inline_serializer,
+)
 from rest_framework import mixins, serializers
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import CharField, DateTimeField, IPAddressField, ListField, UUIDField
+from rest_framework.serializers import (
+    CharField,
+    DateTimeField,
+    IPAddressField,
+    ListField,
+)
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
@@ -60,7 +68,9 @@ class UserAgentDict(TypedDict):
 class BulkDeleteSessionSerializer(PassiveSerializer):
     """Serializer for bulk deleting authenticated sessions by user"""
 
-    user_pks = ListField(child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for")
+    user_pks = ListField(
+        child=serializers.IntegerField(), help_text="List of user IDs to revoke all sessions for"
+    )
 
 
 class AuthenticatedSessionSerializer(ModelSerializer):
