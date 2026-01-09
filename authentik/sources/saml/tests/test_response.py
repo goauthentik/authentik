@@ -226,7 +226,7 @@ class TestResponseProcessor(TestCase):
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
 
-    @patch("authentik.sources.saml.models.now")
+    @patch("authentik.sources.saml.processors.response.now")
     def test_transient(self, mocked_now):
         """Test SAML transient NameID with attributes"""
         fixed_time = timezone.make_aware(timezone.datetime(2020, 10, 30, 19, 30))
@@ -243,27 +243,21 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
-        username = "_8506547b023fc02080023cfacdfcb527"
         self.assertEqual(
             sfm.user_properties,
             {
-                "username": username,
+                "username": "test001@example.org",
+                "eppn": "test001@example.org",
                 "path": self.source.get_user_path(),
                 "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
                 "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
                 "urn:oid:0.9.2342.19200300.100.1.1": "test001",
                 "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
-                "attributes": {
-                    "goauthentik.io/user/expires": 1604172600.0,
-                    "goauthentik.io/user/generated": True,
-                    "goauthentik.io/user/transient-token": sha256(
-                        username.encode("utf-8")
-                    ).hexdigest(),
-                },
+                "attributes": {},
             },
         )
 
-    @patch("authentik.sources.saml.models.now")
+    @patch("authentik.sources.saml.processors.response.now")
     def test_transient_simple(self, mocked_now):
         """Test SAML transient NameID without attributes"""
         mocked_now.return_value = timezone.make_aware(timezone.datetime(2020, 10, 30, 19, 30))
@@ -346,7 +340,7 @@ class TestResponseProcessor(TestCase):
                 "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
                 "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
                 "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
-                "username": "test001@example.org",
+                "username": "LHPJHTQTRBOHWQRFZIYHL7PASE67UJVM",
                 "path": self.source.get_user_path(),
                 "attributes": {},
             },

@@ -1,51 +1,36 @@
 """saml sp models"""
 
-from hashlib import sha256
-from time import mktime
 from typing import Any
 
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
-    USER_ATTRIBUTE_EXPIRES,
-    USER_ATTRIBUTE_GENERATED,
-    USER_ATTRIBUTE_TRANSIENT_TOKEN,
     GroupSourceConnection,
     PropertyMapping,
     Source,
-    SourceUserMatchingModes,
     UserSourceConnection,
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.models import DomainlessURLValidator
-from authentik.lib.utils.time import (
-    timedelta_from_string,
-    timedelta_string_validator,
-)
+from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
     ECDSA_SHA384,
     ECDSA_SHA512,
-    NS_SAML_ASSERTION,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
-    SAML_ATTR_EPPN,
-    SAML_ATTR_MAIL,
-    SAML_ATTRIBUTES_GROUP,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -229,63 +214,10 @@ class SAMLSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return SAMLSourcePropertyMapping
 
-    def get_base_user_properties(self, root: Any, name_id: Any, **kwargs):
-        attributes = {}
-        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
-        if assertion is None:
-            raise ValueError("Assertion element not found")
-        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
-        if attribute_statement is None:
-            raise ValueError("Attribute statement element not found")
-        # Get all attributes and their values into a dict
-        for attribute in attribute_statement.iterchildren():
-            key = attribute.attrib["Name"]
-            attributes.setdefault(key, [])
-            for value in attribute.iterchildren():
-                attributes[key].append(value.text)
-        if SAML_ATTRIBUTES_GROUP in attributes:
-            attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
-            del attributes[SAML_ATTRIBUTES_GROUP]
-        # Flatten all lists in the dict
-        for key, value in attributes.items():
-            if key == "groups":
-                continue
-            attributes[key] = BaseEvaluator.expr_flatten(value)
-        attributes["username"] = name_id.text
-
-        # Try to fill email from attributes if matching mode requires it
-        if self.user_matching_mode in [
-            SourceUserMatchingModes.EMAIL_LINK,
-            SourceUserMatchingModes.EMAIL_DENY,
-        ]:
-            if SAML_ATTR_MAIL in attributes:
-                attributes["email"] = attributes[SAML_ATTR_MAIL]
-                attributes["username"] = attributes[SAML_ATTR_MAIL]
-
-        # Try to fill username with ePPN if matching mode requires it
-        if self.user_matching_mode in [
-            SourceUserMatchingModes.USERNAME_LINK,
-            SourceUserMatchingModes.USERNAME_DENY,
-        ]:
-            if SAML_ATTR_EPPN in attributes:
-                attributes["username"] = attributes[SAML_ATTR_EPPN]
-
-        if (
-            name_id.attrib.get("Format") == SAML_NAME_ID_FORMAT_TRANSIENT
-            and attributes["username"] == name_id.text
-        ):
-            if "attributes" not in attributes:
-                attributes["attributes"] = {}
-            attributes["attributes"][USER_ATTRIBUTE_TRANSIENT_TOKEN] = sha256(
-                name_id.text.encode("utf-8")
-            ).hexdigest()
-
-            expiry = mktime(
-                (now() + timedelta_from_string(self.temporary_user_delete_after)).timetuple()
-            )
-            attributes["attributes"][USER_ATTRIBUTE_EXPIRES] = expiry
-            attributes["attributes"][USER_ATTRIBUTE_GENERATED] = True
-        return attributes
+    def get_base_user_properties(self, name_id: Any, info: dict[str, Any], **kwargs):
+        if "username" not in info:
+            info["username"] = name_id.text
+        return info
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {

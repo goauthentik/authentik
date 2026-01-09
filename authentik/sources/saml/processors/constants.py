@@ -66,18 +66,24 @@ DIGEST_ALGORITHM_TRANSLATION_MAP = {
     SHA512: xmlsec.constants.TransformSha512,
 }
 
-SAML_ATTR_UID = "urn:oid:0.9.2342.19200300.100.1.1"
-#    "urn:mace:dir:attribute-def:uid",
-#    "uid",
+SAML_ATTRIBUTES_MAIL = [
+    "urn:oid:0.9.2342.19200300.100.1.3",
+    "urn:mace:dir:attribute-def:mail",
+    "mail",
+]
 
-SAML_ATTR_MAIL = "urn:oid:0.9.2342.19200300.100.1.3"
-#    "urn:mace:dir:attribute-def:mail",
-#    "mail",
+SAML_ATTRIBUTES_EPPN = [
+    "urn:oid:1.3.6.1.4.1.5923.1.1.1.6",
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName",
+    "eduPersonPrincipalName",
+]
 
-SAML_ATTR_EPPN = "urn:oid:1.3.6.1.4.1.5923.1.1.1.6"
-#    "urn:mace:dir:attribute-def:eduPersonPrincipalName",
-#   "eduPersonPrincipalName",
+SAML_ATTRIBUTES_EPTID = [
+    "urn:oid:1.3.6.1.4.1.5923.1.1.1.10" "urn:mace:dir:attribute-def:eduPersonTargetedID",
+    "eduPersonTargetedID",
+]
 
-SAML_ATTR_EPTID = "urn:oid:1.3.6.1.4.1.5923.1.1.1.10"
-#    "urn:mace:dir:attribute-def:eduPersonTargetedID",
-#    "eduPersonTargetedID",
+SAML_ATTRIBUTES_UID = [
+    "urn:oid:0.9.2342.19200300.100.1.1" "urn:mace:dir:attribute-def:uid",
+    "uid",
+]

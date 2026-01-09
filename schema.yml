@@ -25912,7 +25912,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stage.
+        description: A UUID string identifying this authentik.stages.email.flow.EmailTokenRevocationConsentStageView.
         required: true
       tags:
       - stages
@@ -25938,7 +25938,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stage.
+        description: A UUID string identifying this authentik.stages.email.flow.EmailTokenRevocationConsentStageView.
         required: true
       tags:
       - stages
@@ -25961,7 +25961,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stage.
+        description: A UUID string identifying this authentik.stages.email.flow.EmailTokenRevocationConsentStageView.
         required: true
       tags:
       - stages
