@@ -59,4 +59,4 @@ To confirm that authentik is properly configured with Coder, log out and attempt
 
 ## Resources
 
-- [Coder OIDC authentication documentatiom](https://coder.com/docs/admin/users/oidc-auth/)
+- [Coder OIDC authentication documentation](https://coder.com/docs/admin/users/oidc-auth/)

@@ -176,8 +176,8 @@ const items = [
                             id: "add-secure-apps/providers/entra/index",
                         },
                         items: [
-                            "add-secure-apps/providers/entra/setup-entra",
-                            "add-secure-apps/providers/entra/add-entra-provider",
+                            "add-secure-apps/providers/entra/configure-entra",
+                            "add-secure-apps/providers/entra/create-entra-provider",
                         ],
                     },
                     {
@@ -710,7 +710,7 @@ const items = [
                             id: "endpoint-devices/authentik-agent/agent-deployment/index",
                         },
                         items: [
-                            "endpoint-devices/authentik-agent/agent-deployment/mdm",
+                            "endpoint-devices/authentik-agent/agent-deployment/automated",
                             "endpoint-devices/authentik-agent/agent-deployment/linux",
                             "endpoint-devices/authentik-agent/agent-deployment/macos",
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
