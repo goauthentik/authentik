@@ -126,7 +126,7 @@ django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
 django-postgres-cache = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
-python-kadmin-rs = { git = "https://github.com/authentik-community/kadmin-rs.git", rev = "2e82b7a59466b6267890f937054a97b8be006c99" }
+python-kadmin-rs = { git = "https://github.com/authentik-community/kadmin-rs.git", rev = "942d0a0e68e85386f7e1668e6ddd4d84a00ff8b3" }
 
 [tool.uv.workspace]
 members = [

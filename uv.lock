@@ -327,7 +327,7 @@ requires-dist = [
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "pyrad", specifier = "==2.4" },
-    { name = "python-kadmin-rs", git = "https://github.com/authentik-community/kadmin-rs.git?rev=2e82b7a59466b6267890f937054a97b8be006c99" },
+    { name = "python-kadmin-rs", git = "https://github.com/authentik-community/kadmin-rs.git?rev=942d0a0e68e85386f7e1668e6ddd4d84a00ff8b3" },
     { name = "pyyaml", specifier = "==6.0.2" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
     { name = "scim2-filter-parser", specifier = "==0.7.0" },
@@ -2899,7 +2899,7 @@ wheels = [
 [[package]]
 name = "python-kadmin-rs"
 version = "0.6.3"
-source = { git = "https://github.com/authentik-community/kadmin-rs.git?rev=2e82b7a59466b6267890f937054a97b8be006c99#2e82b7a59466b6267890f937054a97b8be006c99" }
+source = { git = "https://github.com/authentik-community/kadmin-rs.git?rev=942d0a0e68e85386f7e1668e6ddd4d84a00ff8b3#942d0a0e68e85386f7e1668e6ddd4d84a00ff8b3" }
 
 [[package]]
 name = "pywin32"
