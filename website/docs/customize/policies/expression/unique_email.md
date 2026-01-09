@@ -17,7 +17,7 @@ other_user = ak_user_by(email__iexact=email)
 if other_user:
   # Ensure that it is another user
   if ( request.user.username != other_user.username):
-    ak_message(other_user.username + " already use this email")
+    ak_message("Email address in use")
     return False
 
 return True
