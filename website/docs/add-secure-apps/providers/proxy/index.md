@@ -182,7 +182,3 @@ return {
 ```
 
 Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
-
-## Troubleshooting
-
-To obtain more detailed information on a failure, you can [search the logs](../../../troubleshooting/logs.mdx) of the server container. You will need to search for the `client_id` of the proxy provider that you're experiencing issues with. The `client_id` of a proxy provider can be obtained from its **Authentication** tab.
