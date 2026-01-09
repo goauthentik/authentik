@@ -2,13 +2,12 @@ import "#elements/EmptyState";
 import "#elements/Expand";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { AKRequestPostEvent } from "#common/api/events";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
 
-import { AKFlowInspectorChangeEvent } from "#flow/events";
+import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import Styles from "#flow/FlowInspector.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
@@ -56,7 +55,7 @@ export class FlowInspector extends AKElement {
 
     //#endregion
 
-    @listen(AKRequestPostEvent)
+    @listen(AKFlowAdvanceEvent)
     protected advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
