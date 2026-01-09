@@ -185,7 +185,7 @@ Afterwards, edit the proxy provider and add this new mapping. The expression is 
 
 ## Proxy authentication
 
-When a user authenticates to the proxy, authentik uses the OAuth client credentials grant as described in the [Header authentication](./header_authentication.mdx) and [Machine-to-Machine](../oauth2/machine_to_machine.mdx) documents.
+When a user authenticates to the proxy, authentik uses the OAuth client credentials grant as described in the [Header authentication](./header_authentication.mdx) and [Machine-to-Machine](../oauth2/machine_to_machine.mdx) documentation.
 
 ## Troubleshooting
 
