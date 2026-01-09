@@ -78,7 +78,6 @@ const items = [
                 ],
                 //#endregion
             },
-            "install-config/first_steps",
             {
                 //#region Configuration
                 type: "category",
@@ -89,6 +88,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/first_steps",
             "install-config/email",
             "install-config/upgrade",
             "install-config/beta",

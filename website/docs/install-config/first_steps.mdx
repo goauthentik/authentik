@@ -36,23 +36,13 @@ After that, we'll walk through how to add users, groups, and roles.
 For this walk-through, let's use [Grafana](https://grafana.com/) as the example application to install, with an OAuth2/OIDC provider. These steps are purposefully simplified, to get you up and going with a new application, but for the full details refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
-    - Set the Logout URI to `https://grafana.company/logout`.
-    - Set the Logout Method to `Front-channel`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](../add-secure-apps/flows-stages/bindings/index.md) to manage the display and access to applications on a user's **My applications** page.
-
-3. Click **Submit** to save the new application and provider.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+3. Provide the details for the application and provider. For guidance on each specific field, refer to the refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+4. Click **Submit** to save the new application and provider.
 
 ### Configure Grafana
 
-Next we will configure your Grafana application to use authentik for its IdP. These steps are for a Grafana instance that is running in Docker; if you are running authentik in Kubernetes or as a standalone instance, refer to the [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+Next you need to configure your Grafana application to use authentik as its IdP. These steps are for a Grafana instance that is running in Docker; if you are running authentik in Kubernetes or as a standalone instance, refer to the [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
 
 Set the following environment variables in your `.env` file:
 
@@ -75,12 +65,42 @@ environment:
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
 
-validation steps
-common troubleshooting steps
+### Configuration verification
+
+To confirm that authentik is properly configured with Grafana, log out and log back in using an account that is a member of the appropriate authentik group (e.g. grafana-administrators).
+
+## Add your first users
+
+Now that you can access the authentik Admin interface, and you have added an application and provider, let's add a couple of users and assign them appropriate groups and roles.
+
+TODO add basic steps here with lots of handholding tips....
+
+## Things to know and troubleshooting tips
+
+### Modifying the docker compose file
+
+Especially when you are just starting out with authentik, we recommend that you use the default `docker-compose.yml` file that comes with the download, instead of trying to write the file from scratch. After you have successfully installed, configured, and accessed authentik, you can edit the file to do more advanced configs documented in the [Configuration section](../install-config/configuration/configuration.mdx).
+
+### Reverse proxy
+
+authentik is typically set up with a reverse proxy in front of it. TODO WORDS HERE ABOUT WHY. For more details see the [Reverse proxy guide](./reverse-proxy.md).
+
+### The `latest` tag is deprecated
+
+We highly recommend against using the `:latest` tag with container images because it can lead to unintentional updates and potentially broken setups. Instead, use a specific version tag for authentik instances' container images, such as `:2025.12`.
+
+### Using bindings to allow or restrict access to applications
+
+Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [authorization](../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization) and [hiding an application](../add-secure-apps/applications/manage_apps.mdx#hide-applications).
 
 ## What's next?
 
-- add users, set up groups and roles (go over using federated sources, link to full docs on sources)
+These are all one or two sentences, then link to full docs
+
+- using federated sources, link to full docs on sources)
 - set up MFA
 - define property mappings
+- create a custom flow
+- reverse proxy
+- install an enterprise license
 - create a simple policy (?)
