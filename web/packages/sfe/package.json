@@ -19,7 +19,7 @@
         "@swc/core": "^1.13.19",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "base64-js": "^1.5.1",
-        "bootstrap": "^5.3.8",
+        "bootstrap": "^4.6.2",
         "formdata-polyfill": "^4.0.10",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",

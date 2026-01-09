@@ -15,7 +15,7 @@ from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
-from django.utils.functional import SimpleLazyObject, cached_property
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_cte import CTE, with_cte
@@ -524,6 +524,10 @@ class ApplicationQuerySet(QuerySet):
         qs = self.select_related("provider")
         for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
             qs = qs.select_related(f"provider__{subclass}")
+            # Also prefetch/select through each subclass path to ensure casted instances have access
+            qs = qs.prefetch_related(f"provider__{subclass}__property_mappings")
+            qs = qs.select_related(f"provider__{subclass}__application")
+            qs = qs.select_related(f"provider__{subclass}__backchannel_application")
         return qs
 
 
@@ -583,20 +587,28 @@ class Application(SerializerModel, PolicyBindingModel):
             return CONFIG.get("web.path", "/")[:-1] + self.meta_icon.name
         return self.meta_icon.url
 
-    def get_launch_url(self, user: Optional["User"] = None) -> str | None:
-        """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
+    def get_launch_url(
+        self, user: Optional["User"] = None, user_data: dict | None = None
+    ) -> str | None:
+        """Get launch URL if set, otherwise attempt to get launch URL based on provider.
+
+        Args:
+            user: User instance for formatting the URL
+            user_data: Pre-serialized user data to avoid re-serialization (performance optimization)
+        """
+        from authentik.core.api.users import UserSerializer
+
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
         elif provider := self.get_provider():
             url = provider.launch_url
         if user and url:
-            if isinstance(user, SimpleLazyObject):
-                user._setup()
-                user = user._wrapped
             try:
-                return url % user.__dict__
-
+                # Use pre-serialized data if available, otherwise serialize now
+                if user_data is None:
+                    user_data = UserSerializer(instance=user).data
+                return url % user_data
             except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url

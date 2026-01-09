@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker compose run --rm worker dump_config
+    docker compose run --rm worker ak dump_config
     ```
 
   </TabItem>
@@ -214,12 +214,6 @@ Defaults to 5.
 Configure the default duration a task can run for before it is aborted. Some tasks will override this setting based on other settings, such as LDAP source synchronization tasks.
 
 Defaults to `minutes=10`.
-
-##### `AUTHENTIK_WORKER__LOCK_PURGE_INTERVAL`
-
-Configure the interval at which old PostgreSQL locks are cleaned up.
-
-Defaults to `minutes=1`.
 
 ##### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
 

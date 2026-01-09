@@ -574,8 +574,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 theme: this.activeTheme,
             });
 
-            if (captchaProvider === CaptchaProvider.reCAPTCHA) {
-                // reCAPTCHA's domain verification can't seem to penetrate the true origin
+            if (
+                captchaProvider === CaptchaProvider.reCAPTCHA ||
+                captchaProvider === CaptchaProvider.hCaptcha
+            ) {
+                // reCAPTCHA's & hCaptcha's domain verification can't seem to penetrate the true origin
                 // of the page when loaded from a blob URL, likely due to their double-nested
                 // iframe structure.
                 // We fallback to the deprecated `document.write` to get around this.

@@ -88,6 +88,7 @@ const items = [
             "install-config/beta",
             "install-config/reverse-proxy",
             "install-config/automated-install",
+            "install-config/high-availability",
             "install-config/air-gapped",
         ],
     },
@@ -169,8 +170,8 @@ const items = [
                             id: "add-secure-apps/providers/entra/index",
                         },
                         items: [
-                            "add-secure-apps/providers/entra/setup-entra",
-                            "add-secure-apps/providers/entra/add-entra-provider",
+                            "add-secure-apps/providers/entra/configure-entra",
+                            "add-secure-apps/providers/entra/create-entra-provider",
                         ],
                     },
                     {
@@ -433,6 +434,7 @@ const items = [
                     id: "customize/blueprints/index",
                 },
                 items: [
+                    "customize/blueprints/working_with_blueprints",
                     "customize/blueprints/export",
                     "customize/blueprints/v1/structure",
                     "customize/blueprints/v1/tags",
@@ -773,6 +775,8 @@ const items = [
                         type: "category",
                         label: "2025",
                         items: [
+                            "security/cves/CVE-2025-64708",
+                            "security/cves/CVE-2025-64521",
                             "security/cves/CVE-2025-53942",
                             "security/cves/CVE-2025-52553",
                             "security/cves/CVE-2025-29928",

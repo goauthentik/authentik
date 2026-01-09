@@ -1,12 +1,15 @@
 """Group client"""
 
 from itertools import batched
+from typing import Any
 
 from django.db import transaction
+from orjson import dumps
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 
 from authentik.core.models import Group
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
@@ -113,10 +116,23 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self._patch_add_users(connection, users)
         return connection
 
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+        """Check if a group is different than what we last wrote to the remote system.
+        Returns true if there is a difference in data."""
+        local_known = connection.attributes
+        local_updated = {}
+        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        MERGE_LIST_UNIQUE.merge(local_updated, local_created)
+        return dumps(local_updated) != dumps(local_known)
+
     def update(self, group: Group, connection: SCIMProviderGroup):
         """Update existing group"""
         scim_group = self.to_schema(group, connection)
         scim_group.id = connection.scim_id
+        payload = scim_group.model_dump(mode="json", exclude_unset=True)
+        if not self.diff(payload, connection):
+            self.logger.debug("Skipping group write as data has not changed")
+            return self.patch_compare_users(group)
         try:
             if self._config.patch.supported:
                 return self._update_patch(group, scim_group, connection)

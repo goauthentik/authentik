@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.10.1
+  version: 2025.10.3
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -33919,7 +33919,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
       required:
@@ -45908,7 +45911,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
@@ -50265,7 +50271,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
       required:
       - flags
@@ -50327,7 +50336,10 @@ components:
           properties:
             policies_buffered_access_view:
               type: boolean
+            flows_refresh_others:
+              type: boolean
           required:
+          - flows_refresh_others
           - policies_buffered_access_view
       required:
       - flags
