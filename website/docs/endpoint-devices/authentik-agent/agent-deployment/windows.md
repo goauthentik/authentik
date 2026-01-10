@@ -10,7 +10,7 @@ tags: [authentik Agent, windows]
 - SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
 - Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
 
-:::warn Supported Windows Versions
+:::warning Supported Windows Versions
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
 :::
 
@@ -24,9 +24,10 @@ It currently only supports local login; RDP login is not supported.
 
 - When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
 - WCP can cause issues with user encrypted directories.
-- Support with Active directory has not been confirmed yet.
+- Support with Active Directory has not been confirmed yet.
 - Offline login is currently not supported.
-  :::
+
+:::
 
 ## Prerequisites
 
@@ -34,7 +35,7 @@ You must [configure your authentik deployment](../configuration.md) to support t
 
 ## Create an enrollment token
 
-If you have already created have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-windows).
+If you already have an enrollment token, skip to the [next section](#install-the-authentik-agent-on-windows).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
@@ -44,9 +45,13 @@ If you have already created have an enrollment token, skip to the [next section]
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether or not the enrollment token will expire
 5. Click **Create**.
-6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance).
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance-and-local-device-login).
 
 ## Install the authentik Agent on Windows
+
+:::info Automated deployment is recommended
+It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
+:::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
@@ -57,23 +62,11 @@ If you have already created have an enrollment token, skip to the [next section]
 7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
    You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Enable device authentication
-
-To enable [device authentication features](../../device-authentication/index.mdx), you must connect the device to an authentik deployment. To do so, follow these steps:
-
-1. Open a Terminal and run the following command:
-
-```sh
-ak config setup --authentik-url https://authentik.company
-```
-
-2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
-
-## Enable device compliance
+## Enable device compliance and local device login
 
 To enable [device compliance features](../../device-compliance/index.mdx), you must join the device to an authentik domain.
 
-1. Open a Terminal session and run the following command:
+1. Open a Terminal session as Administrator and run the following command:
 
 ```sh
 ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
@@ -84,6 +77,18 @@ ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
+
+## Enable SSH client authentication and CLI application authentication
+
+To enable [initiating SSH connections](../../device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
+
+1. Open a Terminal session and run the following command:
+
+```sh
+ak config setup --authentik-url https://authentik.company
+```
+
+2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
 ## Logging
 

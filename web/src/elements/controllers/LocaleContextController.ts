@@ -7,6 +7,8 @@ import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { kAKLocale, LocaleContext, LocaleMixin } from "#elements/mixins/locale";
 import type { ReactiveElementHost } from "#elements/types";
 
+import { ConsoleLogger } from "#logger/browser";
+
 import { ContextProvider } from "@lit/context";
 import { configureLocalization, LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
 import type { ReactiveController } from "lit";
@@ -21,7 +23,7 @@ export class LocaleContextController implements ReactiveController {
         attributeOldValue: true,
     };
 
-    #log = console.debug.bind(console, `authentik/controller/locale`);
+    protected logger = ConsoleLogger.prefix("controller/locale");
 
     /**
      * Attempts to apply the given locale code.
@@ -37,14 +39,14 @@ export class LocaleContextController implements ReactiveController {
         const displayName = formatDisplayName(nextLocale, nextLocale, languageNames);
 
         if (activeLanguageTag === nextLocale) {
-            this.#log("Skipping locale update, already set to:", displayName);
+            this.logger.debug("Skipping locale update, already set to:", displayName);
             return;
         }
 
         this.#context.value.setLocale(nextLocale);
         this.#host.activeLanguageTag = nextLocale;
 
-        this.#log("Applied locale:", displayName);
+        this.logger.info("Applied locale:", displayName);
     }
 
     // #region Attribute Observation
@@ -69,10 +71,10 @@ export class LocaleContextController implements ReactiveController {
                 current: document.documentElement.lang,
             };
 
-            this.#log("Detected document `lang` attribute change", attribute);
+            this.logger.debug("Detected document `lang` attribute change", attribute);
 
             if (attribute.previous === attribute.current) {
-                this.#log("Skipping locale update, `lang` unchanged", attribute);
+                this.logger.debug("Skipping locale update, `lang` unchanged", attribute);
                 continue;
             }
 
@@ -121,7 +123,7 @@ export class LocaleContextController implements ReactiveController {
 
         const displayName = formatDisplayName(locale, locale, languageNames);
 
-        this.#log(`Loading "${displayName}" module...`);
+        this.logger.debug(`Loading "${displayName}" module...`);
 
         const loader = LocaleLoaderRecord[locale];
 
@@ -160,7 +162,7 @@ export class LocaleContextController implements ReactiveController {
 
     #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
         if (event.detail.status === "error") {
-            this.#log("Error loading locale:", event.detail);
+            this.logger.debug("Error loading locale:", event.detail);
             return;
         }
 
@@ -169,7 +171,7 @@ export class LocaleContextController implements ReactiveController {
         }
 
         const { readyLocale } = event.detail;
-        this.#log(`Updating \`lang\` attribute to: \`${readyLocale}\``);
+        this.logger.debug(`Updating \`lang\` attribute to: \`${readyLocale}\``);
 
         // Prevent observation while we update the `lang` attribute...
         this.#disconnectDocumentObserver();

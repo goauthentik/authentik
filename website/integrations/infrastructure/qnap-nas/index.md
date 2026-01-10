@@ -20,7 +20,7 @@ The following placeholders are used in this guide:
   it is just the components of your base DN. For example, if
   `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
   might be `ldap.goauthentik.io`.
-- `ldap.searchGroup` is the "Search Group" that can can see all
+- `ldap.searchGroup` is the "Search Group" that can see all
   users and groups in authentik.
 - `qnap.serviceAccount` is a service account created in authentik
 - `qnap.serviceAccountToken` is the service account token generated

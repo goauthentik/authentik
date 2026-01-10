@@ -15,7 +15,7 @@ It currently only supports local login; RDP login is not supported.
 - WCP is currently only tested on Windows 11 and Windows Server 2022.
 - When WCP is enabled, the password of the Windows user account that's used to login is set to a random string.
 - WCP can cause issues with user encrypted directories.
-- Support with Active directory has not been confirmed yet.
+- Support with Active Directory has not been confirmed yet.
 - Offline login is currently not supported.
   :::
 
@@ -26,9 +26,9 @@ You need to have deployed the authentik Agent including the WCP component on the
 ## How it works
 
 - The system agent requests an authentication and authorization URL from authentik, using its token.
-- This URL is opened in a browser which also injects the device token information, allowing authenitk to know that the login request is executed on the same machine.
-- The end user logs in normally using the standard authentik interface and flows
-- Once finished, the browser is redirect to a well-defined location and uses the token it receives to finish authentication and authorization through the system agent
+- This URL is opened in a browser which also injects the device token information, allowing authentik to know that the login request is executed on the same machine.
+- The end user logs in normally using the standard authentik interface and flows.
+- Once finished, the browser is redirected to a well-defined location and uses the token it receives to finish authentication and authorization through the system agent.
 
 ## How to log in to a Windows device
 
