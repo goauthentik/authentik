@@ -23,8 +23,6 @@ class Command(BaseCommand):
             raise CommandError("Password cannot be empty")
         try:
             hashed = make_password(password)
-            if not hashed:
-                raise CommandError("Failed to hash password")
             self.stdout.write(hashed)
-        except Exception as exc:
+        except ValueError as exc:
             raise CommandError(f"Error hashing password: {exc}") from exc
