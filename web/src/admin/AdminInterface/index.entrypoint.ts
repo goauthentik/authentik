@@ -2,15 +2,8 @@ import "#admin/AdminInterface/AboutModal";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
-import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
-
-import {
-    createAdminSidebarEnterpriseEntries,
-    createAdminSidebarEntries,
-    renderSidebarItems,
-} from "./AdminSidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
@@ -29,8 +22,19 @@ import {
     readDrawerParams,
     renderNotificationDrawerPanel,
 } from "#elements/notifications/utils";
+import { SidebarPinToggleEvent } from "#elements/sidebar/SidebarItem";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import {
+    createAdminSidebarEnterpriseEntries,
+    createAdminSidebarEntries,
+} from "#admin/AdminInterface/AdminSidebar";
+import {
+    getPinnedPaths,
+    handlePinToggle,
+    renderPinnedSection,
+    renderSidebarEntries,
+} from "#admin/AdminInterface/AdminSidebarPinned";
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
@@ -99,6 +103,16 @@ export class AdminInterface extends WithCapabilitiesConfig(
         persistDrawerParams(event.drawer);
     };
 
+    #onPinToggleEvent = (event: Event) => {
+        const pinEvent = event as SidebarPinToggleEvent;
+        const user = this.currentUser;
+        if (!user) return;
+
+        handlePinToggle(user, getPinnedPaths(user), pinEvent.path, pinEvent.pinned, async () => {
+            await this.refreshSession();
+        });
+    };
+
     constructor() {
         configureSentry();
 
@@ -116,12 +130,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
         });
+        this.addEventListener(SidebarPinToggleEvent.eventName, this.#onPinToggleEvent);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
+        this.removeEventListener(SidebarPinToggleEvent.eventName, this.#onPinToggleEvent);
 
         WebsocketClient.close();
     }
@@ -157,6 +173,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
             "pf-m-collapsed": openDrawerCount === 0,
         };
 
+        const pinnedPaths = getPinnedPaths(this.currentUser);
+        const allEntries = [
+            ...createAdminSidebarEntries(),
+            ...(this.can(CapabilitiesEnum.IsEnterprise)
+                ? createAdminSidebarEnterpriseEntries()
+                : []),
+        ];
+
         return html`<div class="pf-c-page">
             <ak-page-navbar>
                 <button
@@ -177,9 +201,10 @@ export class AdminInterface extends WithCapabilitiesConfig(
             </ak-page-navbar>
 
             <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                >${renderSidebarItems(createAdminSidebarEntries())}
+                >${renderPinnedSection(allEntries, pinnedPaths)}
+                ${renderSidebarEntries(createAdminSidebarEntries(), pinnedPaths)}
                 ${this.can(CapabilitiesEnum.IsEnterprise)
-                    ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
+                    ? renderSidebarEntries(createAdminSidebarEnterpriseEntries(), pinnedPaths)
                     : nothing}
             </ak-sidebar>
 
