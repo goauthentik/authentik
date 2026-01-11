@@ -80,7 +80,8 @@ fi
 
 if [[ "$1" == "server" ]]; then
     set_mode "server"
-    run_authentik
+    shift
+    run_authentik $@
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
     shift
