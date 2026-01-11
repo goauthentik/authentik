@@ -38,7 +38,8 @@ When using Docker Compose with a `.env` file, escape the `$` characters in the p
 
 ```bash
 # .env file
-AUTHENTIK_BOOTSTRAP_PASSWORD_HASH="pbkdf2_sha256$$870000$$salt$$hash..."
+# Original hash: pbkdf2_sha256$1000000$3emW1FZkrfjCKYpndtaYPQ$OZNNrcCc+cZ+paHV+kGRAOENTg5+Xny/de1/dNTgfg0=
+AUTHENTIK_BOOTSTRAP_PASSWORD_HASH="pbkdf2_sha256$$1000000$$3emW1FZkrfjCKYpndtaYPQ$$OZNNrcCc+cZ+paHV+kGRAOENTg5+Xny/de1/dNTgfg0="
 ```
 
 This prevents Docker Compose from interpreting `$` as variable references.
@@ -79,8 +80,14 @@ For improved security, you can use a pre-hashed password directly in your Helm v
 
 ```yaml
 authentik:
-    bootstrap_password_hash: "pbkdf2_sha256$870000$abc123$xyz..."
+    bootstrap_password_hash: "pbkdf2_sha256$1000000$3emW1FZkrfjCKYpndtaYPQ$OZNNrcCc+cZ+paHV+kGRAOENTg5+Xny/de1/dNTgfg0="
     bootstrap_email: "admin@example.com"
 ```
+
+:::note Helm escaping
+When using password hashes in quoted YAML strings as shown above, no escaping of `$` characters is required. The `$` character only needs escaping when:
+- Using Helm templating syntax (e.g., `{{ .Values.something }}`) where `$` has special meaning
+- Referencing values from environment variable substitution in your values file
+:::
 
 Or store the password hash in a secret and reference it via `envFrom` (same method as shown above for storing password and token in a secret).

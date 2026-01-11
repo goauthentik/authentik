@@ -5,6 +5,7 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import identify_hasher
 from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -219,29 +220,27 @@ class UserSerializer(ModelSerializer):
         pre-hashed password via password_hash parameter."""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             # password_hash takes precedence over password
-            if password_hash:
+            if password_hash and password_hash.strip():
                 # Validate the hash format before setting
-                from django.contrib.auth.hashers import identify_hasher
-                from rest_framework.exceptions import ValidationError
-
                 try:
                     identify_hasher(password_hash)
                 except ValueError as exc:
-                    LOGGER.exception("Failed to identify password hash format")
+                    LOGGER.warning("Failed to identify password hash format", exc_info=exc)
                     raise ValidationError(
                         "Invalid password hash format. Must be a valid Django password hash."
                     ) from exc
 
                 # Directly set the hashed password without re-hashing
                 instance.password = password_hash
-                from django.utils.timezone import now
-
                 instance.password_change_date = now()
                 instance.save()
+                return
             elif password:
                 instance.set_password(password)
                 instance.save()
-        if len(instance.password) == 0:
+                return
+
+        if not instance.password:
             instance.set_unusable_password()
             instance.save()
 
