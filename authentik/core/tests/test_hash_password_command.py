@@ -261,6 +261,23 @@ class TestUserSerializerPasswordHash(TestCase):
         # User should have an unusable password since no valid password was provided
         self.assertFalse(user.has_usable_password())
 
+    def test_both_password_and_password_hash_null_creates_unusable_password(self):
+        """Test that explicitly null password and password_hash results in unusable password"""
+        username = generate_id()
+        data = {
+            "username": username,
+            "name": "Test User",
+            "password": None,
+            "password_hash": None,
+        }
+
+        serializer = UserSerializer(data=data, context={SERIALIZER_CONTEXT_BLUEPRINT: True})
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        user = serializer.save()
+
+        # User should have an unusable password since no valid password was provided
+        self.assertFalse(user.has_usable_password())
+
     def test_password_hash_not_available_outside_blueprint_context(self):
         """Test that password_hash field is not available outside blueprint context"""
         username = generate_id()
