@@ -42,7 +42,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
@@ -462,7 +462,7 @@ class BaseGrantModel(models.Model):
         self._scope = " ".join(value)
 
 
-class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
+class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
@@ -497,7 +497,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         )
 
 
-class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
@@ -545,7 +545,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
     token = models.TextField(default=generate_client_secret)
@@ -585,7 +585,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class DeviceToken(ExpiringModel):
+class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(

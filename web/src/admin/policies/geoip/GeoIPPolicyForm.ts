@@ -195,3 +195,9 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-geoip-form": GeoIPPolicyForm;
+    }
+}

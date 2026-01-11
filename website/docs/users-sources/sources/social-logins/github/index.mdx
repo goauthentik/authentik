@@ -65,6 +65,8 @@ To check if the user is member of an organization, you can use the following pol
 4. Provide a name for the policy and set the following expression:
 
 ```python
+from authentik.sources.oauth.models import OAuthSource
+
 # Set this value
 accepted_org = "your_organization"
 

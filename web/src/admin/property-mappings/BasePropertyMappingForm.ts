@@ -1,3 +1,5 @@
+import "#elements/CodeMirror/ak-codemirror";
+
 import { docLink } from "#common/global";
 
 import { ModelForm } from "#elements/forms/ModelForm";
