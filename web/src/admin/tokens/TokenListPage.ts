@@ -17,7 +17,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     CoreApi,
     IntentEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     Token,
 } from "@goauthentik/api";
 
@@ -124,7 +124,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreToken}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

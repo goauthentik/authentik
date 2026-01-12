@@ -7,6 +7,25 @@
     --pf-c-drawer__content--BackgroundColor: transparent;
 }
 
+.pf-c-drawer {
+    .pf-c-drawer__panel {
+        background-color: var(--pf-c-drawer__panel--BackgroundColor);
+
+        transition-behavior: allow-discrete;
+
+        gap: var(--pf-global--spacer--sm);
+
+        @media (width > 768px) {
+            flex-flow: row;
+
+            .pf-c-drawer__panel_content {
+                flex: 1 1 auto;
+                max-width: 33dvw;
+            }
+        }
+    }
+}
+
 /* #region Dark Theme */
 
 [data-theme="dark"] .pf-c-drawer,

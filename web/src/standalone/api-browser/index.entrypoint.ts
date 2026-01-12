@@ -1,6 +1,5 @@
 // sort-imports-ignore
 import "rapidoc";
-import "#elements/ak-locale-context/index";
 
 import styles from "./index.entrypoint.css";
 
@@ -10,12 +9,20 @@ import { getCookie } from "#common/utils";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { themeImage } from "#elements/utils/images";
+import { renderImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+export const BEFORE_TRY_EVENT = "before-try";
+
+export interface BeforeTryEventDetail {
+    request: {
+        headers: Headers;
+    };
+}
 
 function rgba2hex(cssValue: string) {
     const matches = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/.exec(cssValue);
@@ -45,6 +52,15 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @state()
     textColor = "#000000";
 
+    #appendCSRFHeader = (event: CustomEvent<BeforeTryEventDetail>) => {
+        event.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
+    };
+
+    constructor() {
+        super();
+        this.addEventListener(BEFORE_TRY_EVENT, this.#appendCSRFHeader);
+    }
+
     #synchronizeTheme = () => {
         const style = getComputedStyle(document.body);
 
@@ -61,51 +77,33 @@ export class APIBrowser extends WithBrandConfig(Interface) {
 
     render(): TemplateResult {
         return html`
-            <ak-locale-context>
-                <rapi-doc
-                    part="rapi-doc"
-                    spec-url=${ifDefined(this.schemaPath)}
-                    heading-text=""
-                    theme="light"
-                    render-style="read"
-                    default-schema-tab="schema"
-                    primary-color="#fd4b2d"
-                    nav-bg-color="#212427"
-                    bg-color=${this.bgColor}
-                    text-color=${this.textColor}
-                    nav-text-color="#ffffff"
-                    nav-hover-bg-color="#3c3f42"
-                    nav-accent-color="#4f5255"
-                    nav-hover-text-color="#ffffff"
-                    use-path-in-nav-bar="true"
-                    nav-item-spacing="relaxed"
-                    allow-server-selection="false"
-                    show-header="false"
-                    allow-spec-url-load="false"
-                    allow-spec-file-load="false"
-                    show-method-in-nav-bar="as-colored-text"
-                    @before-try=${(
-                        e: CustomEvent<{
-                            request: {
-                                headers: Headers;
-                            };
-                        }>,
-                    ) => {
-                        e.detail.request.headers.append(
-                            CSRFHeaderName,
-                            getCookie("authentik_csrf"),
-                        );
-                    }}
-                >
-                    <div slot="nav-logo">
-                        <img
-                            alt="${msg("authentik Logo")}"
-                            class="logo"
-                            src="${themeImage(this.brandingLogo, this.activeTheme)}"
-                        />
-                    </div>
-                </rapi-doc>
-            </ak-locale-context>
+            <rapi-doc
+                part="rapi-doc"
+                spec-url=${ifDefined(this.schemaPath)}
+                heading-text=""
+                theme="light"
+                render-style="read"
+                default-schema-tab="schema"
+                primary-color="#fd4b2d"
+                nav-bg-color="#212427"
+                bg-color=${this.bgColor}
+                text-color=${this.textColor}
+                nav-text-color="#ffffff"
+                nav-hover-bg-color="#3c3f42"
+                nav-accent-color="#4f5255"
+                nav-hover-text-color="#ffffff"
+                use-path-in-nav-bar="true"
+                nav-item-spacing="relaxed"
+                allow-server-selection="false"
+                show-header="false"
+                allow-spec-url-load="false"
+                allow-spec-file-load="false"
+                show-method-in-nav-bar="as-colored-text"
+            >
+                <div slot="nav-logo">
+                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "logo")}
+                </div>
+            </rapi-doc>
         `;
     }
 }
@@ -113,5 +111,11 @@ export class APIBrowser extends WithBrandConfig(Interface) {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-api-browser": APIBrowser;
+    }
+}
+
+declare global {
+    interface HTMLElementEventMap {
+        [BEFORE_TRY_EVENT]: CustomEvent<BeforeTryEventDetail>;
     }
 }

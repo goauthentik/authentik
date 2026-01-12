@@ -1,3 +1,28 @@
+@import "./colors.css";
+@import "./colors-dark.css";
+@import "./spacers.css";
+@import "./icons.css";
+@import "./shadows.css";
+@import "./z-indexes.css";
+@import "./borders.css";
+
+/* #region Miscellaneous */
+
+:root {
+    --pf-global--ListStyle: disc outside;
+    --pf-global--Transition: all 250ms cubic-bezier(0.42, 0, 0.58, 1);
+    --pf-global--TimingFunction: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --pf-global--TransitionDuration: 250ms;
+    --pf-global--arrow--width: 0.9375rem;
+    --pf-global--arrow--width-lg: 1.5625rem;
+    --pf-global--target-size--MinWidth: 44px;
+    --pf-global--target-size--MinHeight: 44px;
+}
+
+/* #endregion */
+
+/* #region authentik extensions */
+
 /* #region Root */
 :root {
     --ak-accent: #fd4b2d;
@@ -8,62 +33,13 @@
     --ak-dark-background-lighter: #2b2e33;
 
     --ak-global--background-contrast: var(--pf-global--Color--100);
+    --ak-global--background-contrast-Filter: drop-shadow(
+        0 0 2px
+            var(--ak-locale-select--ShadowBlendColor, var(--pf-global--BackgroundColor--dark-200))
+    );
 
     /* Minimum width after which the sidebar becomes automatic */
     --ak-sidebar--minimum-auto-width: 80rem;
-
-    --pf-global--disabled-color--100: GrayText;
-    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 100%, transparent 100%);
-    --pf-global--disabled-color--300: color-mix(in srgb, GrayText 75%, Canvas 100%);
-}
-
-/* #endregion */
-
-/* #region Dark theme */
-
-html[data-theme="dark"] {
-    --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
-    --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
-    --pf-global--Color--300: var(--pf-global--Color--light-300) !important;
-
-    /* TODO: We've seemed to have drifted from PF's dark-100 usage. Revisit this after PF 5. */
-    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100) !important;
-
-    --pf-global--BackgroundColor--dark-100: #18191a !important;
-    --pf-global--BackgroundColor--150: var(--pf-global--BackgroundColor--dark-100) !important;
-    --pf-global--BackgroundColor--200: var(--pf-global--BackgroundColor--dark-200) !important;
-    --pf-global--BackgroundColor--300: var(--pf-global--BackgroundColor--dark-300) !important;
-
-    --pf-global--BorderColor--100: var(--pf-global--palette--black-800) !important;
-    --pf-global--BorderColor--200: var(--pf-global--palette--black-500) !important;
-    --pf-global--BorderColor--300: var(--pf-global--palette--black-300) !important;
-
-    --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
-    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
-
-    --pf-global--disabled-color--100: color-mix(in srgb, GrayText 100%, CanvasText 25%);
-    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 10%, transparent 100%);
-
-    /* #region Dispositions */
-
-    /* TODO: Revisit this after PF 5. */
-
-    --pf-global--default-color--100: var(--pf-global--palette--cyan-100);
-    --pf-global--default-color--300: var(--pf-global--palette--cyan-200);
-
-    --pf-global--info-color--100: var(--pf-global--palette--blue-200);
-    --pf-global--info-color--200: var(--pf-global--palette--blue-50);
-
-    --pf-global--warning-color--100: var(--pf-global--palette--gold-300);
-    --pf-global--warning-color--200: var(--pf-global--palette--gold-50);
-
-    --pf-global--danger-color--100: var(--pf-global--palette--red-100);
-    --pf-global--danger-color--200: var(--pf-global--palette--red-50);
-
-    --pf-global--success-color--100: var(--pf-global--palette--green-300);
-    --pf-global--success-color--200: var(--pf-global--palette--green-50);
-
-    /* #endregion */
 }
 
 /* #endregion */

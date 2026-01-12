@@ -7,6 +7,7 @@ import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
 
 import { resolvePackage } from "@goauthentik/core/paths/node";
 
+import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vite";
 
 const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
@@ -19,10 +20,15 @@ export default defineConfig({
             "./assets/pficon": join(patternflyPath, "assets", "pficon"),
         },
     },
+    optimizeDeps: {
+        // Fixes dependency resolution issue associated with `npm link`ed packages.
+        include: ["@goauthentik/api"],
+    },
     plugins: [
         // ---
         inlineCSSPlugin(),
     ],
+
     test: {
         dir: "./test",
         exclude: [
@@ -48,7 +54,7 @@ export default defineConfig({
                     name: "browser",
                     browser: {
                         enabled: true,
-                        provider: "playwright",
+                        provider: playwright(),
 
                         instances: [
                             {

@@ -1,10 +1,11 @@
+import "#elements/forms/HorizontalFormElement";
+
 import { AKElement } from "#elements/Base";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { html, nothing } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-switch-input")
 export class AkSwitchInput extends AKElement {
@@ -49,19 +50,21 @@ export class AkSwitchInput extends AKElement {
             <label class="pf-c-switch" for="${this.#fieldID}">
                 <input
                     id="${this.#fieldID}"
+                    aria-describedby="${this.#fieldID}-help"
                     class="pf-c-switch__input"
                     type="checkbox"
                     ?checked=${doCheck}
-                    aria-label=${ifDefined(this.label)}
                 />
                 <span class="pf-c-switch__toggle">
                     <span class="pf-c-switch__toggle-icon">
                         <i class="fas fa-check" aria-hidden="true"></i>
                     </span>
                 </span>
-                <span class="pf-c-switch__label">${this.label}</span>
+                <span class="pf-c-switch__label" id="${this.#fieldID}-label">${this.label}</span>
             </label>
-            ${helpText ? html`<p class="pf-c-form__helper-text">${helpText}</p>` : nothing}
+            ${helpText
+                ? html`<p id="${this.#fieldID}-help" class="pf-c-form__helper-text">${helpText}</p>`
+                : nothing}
         </ak-form-element-horizontal>`;
     }
 }

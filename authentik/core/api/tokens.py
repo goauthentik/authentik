@@ -3,8 +3,7 @@
 from typing import Any
 
 from django.utils.timezone import now
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
-from guardian.shortcuts import assign_perm, get_anonymous_user
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
@@ -12,6 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.validation import validate
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
@@ -107,6 +107,12 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         }
 
 
+class TokenSetKeySerializer(PassiveSerializer):
+    """Set token's key"""
+
+    key = CharField()
+
+
 class TokenViewSerializer(PassiveSerializer):
     """Show token's current key"""
 
@@ -138,19 +144,15 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     owner_field = "user"
     rbac_allow_create_without_perm = True
 
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
-
     def perform_create(self, serializer: TokenSerializer):
         if not self.request.user.is_superuser:
             instance = serializer.save(
                 user=self.request.user,
                 expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
             )
-            assign_perm("authentik_core.view_token_key", self.request.user, instance)
+            self.request.user.assign_perms_to_managed_role(
+                "authentik_core.view_token_key", instance
+            )
             return instance
         return super().perform_create(serializer)
 
@@ -170,12 +172,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.set_token_key")
     @extend_schema(
-        request=inline_serializer(
-            "TokenSetKey",
-            {
-                "key": CharField(),
-            },
-        ),
+        request=TokenSetKeySerializer(),
         responses={
             204: OpenApiResponse(description="Successfully changed key"),
             400: OpenApiResponse(description="Missing key"),
@@ -183,11 +180,12 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def set_key(self, request: Request, identifier: str) -> Response:
+    @validate(TokenSetKeySerializer)
+    def set_key(self, request: Request, identifier: str, body: TokenSetKeySerializer) -> Response:
         """Set token key. Action is logged as event. `authentik_core.set_token_key` permission
         is required."""
         token: Token = self.get_object()
-        key = request.data.get("key")
+        key = body.validated_data.get("key")
         if not key:
             return Response(status=400)
         token.key = key

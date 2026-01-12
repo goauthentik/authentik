@@ -1,3 +1,6 @@
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -38,7 +41,6 @@ const serviceProviderBindingOptions: RadioOption<SAMLBindingsEnum>[] = [
     {
         label: msg("Post"),
         value: SAMLBindingsEnum.Post,
-        default: true,
     },
 ];
 
@@ -95,7 +97,7 @@ function renderHasSlsUrl(
             label=${msg("SLS Binding")}
             name="slsBinding"
             .options=${serviceProviderBindingOptions}
-            .value=${provider?.slsBinding}
+            .value=${provider?.slsBinding ?? SAMLBindingsEnum.Redirect}
             help=${msg(
                 "Determines how authentik sends the logout response back to the Service Provider.",
             )}
@@ -165,6 +167,9 @@ export function renderForm({
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    inputmode="url"
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
@@ -174,7 +179,7 @@ export function renderForm({
                     name="spBinding"
                     required
                     .options=${serviceProviderBindingOptions}
-                    .value=${provider.spBinding}
+                    .value=${provider.spBinding ?? SAMLBindingsEnum.Post}
                     help=${msg(
                         "Determines how authentik sends the response back to the Service Provider.",
                     )}
@@ -193,13 +198,16 @@ export function renderForm({
                     label=${msg("Audience")}
                     placeholder="https://..."
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
                 <ak-text-input
                     name="slsUrl"
                     label=${msg("SLS URL")}
+                    placeholder=${msg("https://...")}
+                    input-hint="code"
+                    inputmode="url"
                     value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(
@@ -310,7 +318,6 @@ export function renderForm({
                     name="nameIdMapping"
                 >
                     <ak-search-select
-                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
@@ -346,7 +353,6 @@ export function renderForm({
                     name="authnContextClassRefMapping"
                 >
                     <ak-search-select
-                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",

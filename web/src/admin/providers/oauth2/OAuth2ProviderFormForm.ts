@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-hidden-text-input";
@@ -22,6 +23,8 @@ import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { RadioOption } from "#elements/forms/Radio";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { AKLabel } from "#components/ak-label";
 
 import {
     ClientTypeEnum,
@@ -157,12 +160,19 @@ export function renderForm({
             required
         ></ak-text-input>
 
-        <ak-form-element-horizontal
-            name="authorizationFlow"
-            label=${msg("Authorization flow")}
-            required
-        >
+        <ak-form-element-horizontal name="authorizationFlow" required>
+            ${AKLabel(
+                {
+                    className: "pf-c-form__group-label",
+                    slot: "label",
+                    htmlFor: "authorizationFlow",
+                    required: true,
+                },
+                msg("Authorization flow"),
+            )}
+
             <ak-flow-search
+                id="authorizationFlow"
                 label=${msg("Authorization flow")}
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -233,7 +243,7 @@ export function renderForm({
                     value="${provider?.logoutUri ?? ""}"
                     input-hint="code"
                     inputmode="url"
-                    placeholder="https://..."
+                    placeholder=${msg("https://...")}
                     .help=${msg(
                         "URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.",
                     )}

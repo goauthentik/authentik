@@ -1,3 +1,4 @@
+import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/chips/Chip";
@@ -14,6 +15,7 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
@@ -23,6 +25,8 @@ import { ifPresent } from "#elements/utils/attributes";
 import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
 
+import { ConsoleLogger, Logger } from "#logger/browser";
+
 import { Pagination } from "@goauthentik/api";
 
 import { kebabCase } from "change-case";
@@ -31,9 +35,9 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
-import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -42,7 +46,6 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export * from "./shared.js";
 export * from "./TableColumn.js";
@@ -75,7 +78,6 @@ export abstract class Table<T extends object>
     implements TableLike
 {
     static styles: CSSResult[] = [
-        PFBase,
         PFTable,
         PFBullseye,
         PFButton,
@@ -85,6 +87,8 @@ export abstract class Table<T extends object>
         PFPagination,
         Styles,
     ];
+
+    //#region Abstract members
 
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     /**
@@ -100,6 +104,50 @@ export abstract class Table<T extends object>
      * @abstract
      */
     protected abstract row(item: T): SlottedTemplateResult[];
+
+    //#endregion
+
+    //#region Protected Properties
+
+    /**
+     * Customize the "No objects found" message.
+     */
+    protected emptyStateMessage = msg("No objects found.");
+
+    /**
+     * Whether the table is currently fetching data.
+     */
+    @state()
+    protected loading = false;
+
+    /**
+     * A timestamp of the last attempt to refresh the table data.
+     */
+    @state()
+    protected lastRefreshedAt: Date | null = null;
+
+    /**
+     * Logger instance for this table.
+     */
+    protected logger: Logger;
+
+    /**
+     * A cached grouping of the last fetched results.
+     *
+     * @see {@linkcode Table.fetch}
+     */
+    @state()
+    protected groups: GroupResult<T>[] = [];
+
+    @state()
+    protected expandedElements = new Set<string | number>();
+
+    @state()
+    protected error: APIError | null = null;
+
+    //#endregion
+
+    //#region Private Members
 
     /**
      * The total number of defined and additional columns in the table.
@@ -126,19 +174,41 @@ export abstract class Table<T extends object>
         }
     }
 
-    @state()
-    protected loading = false;
+    /**
+     * Timestamp of when a fetch was requested, but deferred due to the table not being visible.
+     */
+    #deferredRefreshRequestAt: Date | null = null;
 
-    @state()
-    protected lastRefreshedAt: Date | null = null;
+    #synchronizeRefreshSchedule(): Promise<void> {
+        if (!this.visible) {
+            if (!this.#deferredRefreshRequestAt) {
+                this.#deferredRefreshRequestAt = new Date();
+            }
 
-    #pageParam = `${this.tagName.toLowerCase()}-page`;
-    #searchParam = `${this.tagName.toLowerCase()}-search`;
+            return Promise.resolve();
+        }
+
+        if (!this.#deferredRefreshRequestAt) {
+            return Promise.resolve();
+        }
+
+        return this.fetch();
+    }
+
+    readonly #pageParam: string;
+    readonly #searchParam: string;
+
+    /**
+     * A mapping of the current items to their respective identifiers.
+     */
+    #itemKeys = new WeakMap<T, string | number>();
+
+    //#endregion
 
     @property({ type: Boolean })
     public supportsQL: boolean = false;
 
-    //#region Properties
+    //#region Public Properties
 
     @property({ type: String })
     public toolbarLabel: string | null = null;
@@ -150,7 +220,7 @@ export abstract class Table<T extends object>
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page = getURLParam(this.#pageParam, 1);
+    public page: number;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -179,38 +249,21 @@ export abstract class Table<T extends object>
     @property({ type: Boolean })
     public checkboxChip = false;
 
-    #itemKeys = new WeakMap<T, string | number>();
+    /**
+     * Whether the table is visible in the viewport.
+     */
+    @intersectionObserver()
+    public visible = false;
 
+    /**
+     * A mapping of item keys to selected items.
+     */
     @property({ attribute: false })
+    public selectedMap = new Map<string | number, T>();
+
     public get selectedElements(): T[] {
-        const items = this.data?.results ?? [];
-
-        return items.filter((item) => {
-            const itemKey = this.#itemKeys.get(item);
-
-            if (!itemKey) return false;
-
-            return this.#selectedElements.has(itemKey);
-        });
+        return Array.from(this.selectedMap.values());
     }
-
-    public set selectedElements(value: Iterable<T>) {
-        const nextSelected = new Map<string | number, T>();
-
-        for (const item of value) {
-            const itemKey = hasPrimaryKey(item) ? item.pk : JSON.stringify(item);
-
-            this.#itemKeys.set(item, itemKey);
-
-            if (this.#selectedElements.has(itemKey)) {
-                nextSelected.set(itemKey, item);
-            }
-        }
-
-        this.#selectedElements = nextSelected;
-    }
-
-    #selectedElements = new Map<string | number, T>();
 
     @property({ type: Boolean })
     public paginated = true;
@@ -228,17 +281,22 @@ export abstract class Table<T extends object>
 
     //#region Lifecycle
 
-    @state()
-    protected expandedElements = new Set<string | number>();
-
-    @state()
-    protected error: APIError | null = null;
-
     #selectAllCheckboxRef = createRef<HTMLInputElement>();
 
     #refreshListener = () => {
         return this.fetch();
     };
+
+    constructor() {
+        super();
+        const tagName = this.tagName.toLowerCase();
+
+        this.#pageParam = `${tagName}-page`;
+        this.#searchParam = `${tagName}-search`;
+        this.page = getURLParam(this.#pageParam, 1);
+
+        this.logger = ConsoleLogger.prefix(tagName);
+    }
 
     public override connectedCallback(): void {
         super.connectedCallback();
@@ -282,15 +340,20 @@ export abstract class Table<T extends object>
         ) {
             this.#synchronizeColumnProperties();
         }
+
+        if (changedProperties.has("visible") && this.hasUpdated) {
+            this.#synchronizeRefreshSchedule();
+        }
     }
 
-    firstUpdated(): void {
-        this.fetch();
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+        this.#synchronizeRefreshSchedule();
     }
 
     //#endregion
 
-    async defaultEndpointConfig(): Promise<BaseTableListRequest> {
+    protected async defaultEndpointConfig(): Promise<BaseTableListRequest> {
         return {
             ordering: this.order,
             page: this.page,
@@ -299,7 +362,27 @@ export abstract class Table<T extends object>
         };
     }
 
-    public fetch(): Promise<void> {
+    /**
+     * Fetch data from the API endpoint.
+     *
+     * @see {@linkcode Table.apiEndpoint}
+     * @todo Make this protected.
+     */
+    public async fetch(): Promise<void> {
+        if (!this.visible) {
+            if (this.#deferredRefreshRequestAt) {
+                this.logger.debug("Skipping fetch; already scheduled");
+
+                return Promise.resolve();
+            }
+
+            this.logger.debug("Scheduling fetch for when table becomes visible");
+
+            this.#deferredRefreshRequestAt = new Date();
+
+            return Promise.resolve();
+        }
+
         if (this.loading) {
             return Promise.resolve();
         }
@@ -310,6 +393,8 @@ export abstract class Table<T extends object>
             .then((data) => {
                 this.data = data;
                 this.error = null;
+
+                this.groups = this.groupBy(this.data.results);
 
                 this.page = this.data.pagination.current;
                 const nextExpanded = new Set<string | number>();
@@ -327,8 +412,8 @@ export abstract class Table<T extends object>
                 this.expandedElements = nextExpanded;
 
                 if (this.clearOnRefresh) {
-                    if (this.#selectedElements.size) {
-                        this.#selectedElements.clear();
+                    if (this.selectedMap.size) {
+                        this.selectedMap = new Map();
 
                         const selectAllCheckbox = this.#selectAllCheckboxRef.value;
 
@@ -347,20 +432,25 @@ export abstract class Table<T extends object>
             .finally(() => {
                 this.loading = false;
                 this.lastRefreshedAt = new Date();
+                this.#deferredRefreshRequestAt = null;
                 this.requestUpdate();
             });
     }
 
     //#region Render
 
-    protected renderLoading(): TemplateResult {
-        return html`<tr role="presentation">
-            <td role="presentation" colspan=${this.#columnCount}>
-                <div class="pf-l-bullseye">
-                    <ak-empty-state default-label></ak-empty-state>
-                </div>
-            </td>
-        </tr>`;
+    protected renderLoading(): SlottedTemplateResult {
+        return guard(
+            [this.loading, this.#columnCount],
+            () =>
+                html`<tr role="presentation" class="ak-fade-in">
+                    <td role="presentation" colspan=${this.#columnCount}>
+                        <div class="pf-l-bullseye">
+                            <ak-empty-state default-label></ak-empty-state>
+                        </div>
+                    </td>
+                </tr>`,
+        );
     }
 
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
@@ -370,7 +460,7 @@ export abstract class Table<T extends object>
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span>${this.emptyStateMessage}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -443,7 +533,7 @@ export abstract class Table<T extends object>
         if (this.error) {
             return this.renderEmpty(this.renderError());
         }
-        if (this.loading && this.data === null) {
+        if (!this.visible || (this.loading && this.data === null)) {
             return this.renderLoading();
         }
 
@@ -451,53 +541,35 @@ export abstract class Table<T extends object>
             return this.renderEmpty();
         }
 
-        const groups = this.groupBy(this.data.results);
-
-        if (groups.length === 1) {
-            const [firstGroup] = groups;
+        if (this.groups.length === 1) {
+            const [firstGroup] = this.groups;
             const [groupKey, groupItems] = firstGroup;
 
             if (!groupKey) {
                 return html`<tbody>
-                    ${repeat(
-                        groupItems,
-                        (item, itemIndex) => this.#itemKeys.get(item) ?? itemIndex,
-                        (item, itemIndex) =>
-                            this.#renderRowGroupItem(item, itemIndex, groupItems, 0, groups),
+                    ${groupItems.map((item, itemIndex) =>
+                        this.#renderRowGroupItem(item, itemIndex, groupItems, 0),
                     )}
                 </tbody>`;
             }
         }
 
-        return repeat(
-            groups,
-            ([group]) => group,
-            ([group, items], groupIndex) => {
-                const groupHeaderID = `table-group-${groupIndex}`;
+        return this.groups.map(([groupName, items], groupIndex) => {
+            const groupHeaderID = `table-group-${groupIndex}`;
 
-                return html`<thead>
-                        <tr>
-                            <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
-                                ${group}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${repeat(
-                            items,
-                            (item, itemIndex) => this.#itemKeys.get(item) ?? itemIndex,
-                            (item, itemIndex) =>
-                                this.#renderRowGroupItem(
-                                    item,
-                                    itemIndex,
-                                    items,
-                                    groupIndex,
-                                    groups,
-                                ),
-                        )}
-                    </tbody>`;
-            },
-        ) as SlottedTemplateResult[];
+            return html`<thead>
+                    <tr>
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${this.#columnCount}>
+                            ${groupName}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${items.map((item, itemIndex) =>
+                        this.#renderRowGroupItem(item, itemIndex, items, groupIndex),
+                    )}
+                </tbody>`;
+        });
     }
 
     //#region Expansion
@@ -516,9 +588,11 @@ export abstract class Table<T extends object>
             this.expandedElements.delete(itemKey);
         } else {
             this.expandedElements.add(itemKey);
+
             requestAnimationFrame(() => {
                 currentTarget?.scrollIntoView({
                     behavior: "smooth",
+                    block: "center",
                 });
             });
         }
@@ -529,10 +603,10 @@ export abstract class Table<T extends object>
     };
 
     #selectItemListener(item: T, event?: InputEvent | PointerEvent) {
-        const { target, currentTarget } = event ?? {};
+        const { target } = event ?? {};
 
         const itemKey = this.#itemKeys.get(item);
-        const selected = !!(itemKey && this.#selectedElements.has(itemKey));
+        const selected = !!(itemKey && this.selectedMap.has(itemKey));
         let checked: boolean;
 
         if (target instanceof HTMLInputElement) {
@@ -550,22 +624,22 @@ export abstract class Table<T extends object>
 
         if (itemKey) {
             if (checked) {
-                this.#selectedElements.set(itemKey, item);
+                this.selectedMap.set(itemKey, item);
             } else {
-                this.#selectedElements.delete(itemKey);
+                this.selectedMap.delete(itemKey);
             }
+
+            this.requestUpdate("selectedMap");
         }
 
         const selectAllCheckbox = this.#selectAllCheckboxRef.value;
         const pageItemCount = this.data?.results?.length ?? 0;
-        const selectedCount = this.#selectedElements.size;
+        const selectedCount = this.selectedMap.size;
 
         if (selectAllCheckbox) {
             selectAllCheckbox.checked = pageItemCount !== 0 && selectedCount !== 0;
             selectAllCheckbox.indeterminate = selectedCount !== 0 && selectedCount < pageItemCount;
         }
-
-        this.requestUpdate();
     }
 
     //#region Grouping
@@ -574,26 +648,22 @@ export abstract class Table<T extends object>
         return [["", items]];
     }
 
-    #renderRowGroupItem(
-        item: T,
-        rowIndex: number,
-        items: T[],
-        groupIndex: number,
-        groups: GroupResult<T>[],
-    ): TemplateResult {
-        const groupHeaderID = groups.length > 1 ? `table-group-${groupIndex}` : null;
+    #renderRowGroupItem(item: T, rowIndex: number, items: T[], groupIndex: number): TemplateResult {
+        const groupHeaderID = this.groups.length > 1 ? `table-group-${groupIndex}` : null;
 
         const itemKey = this.#itemKeys.get(item);
         const expanded = !!(itemKey && this.expandedElements.has(itemKey));
-        const selected = !!(itemKey && this.#selectedElements.has(itemKey));
+        const selected = !!(itemKey && this.selectedMap.has(itemKey));
 
-        const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
-        const rowKey = `row-${groupIndex}-${rowIndex}`;
+        const memoizedCheckbox = guard([this.checkbox, item, selected], () => {
+            if (!this.checkbox) {
+                return nothing;
+            }
 
-        const selectItem = this.#selectItemListener.bind(this, item);
+            const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
+            const selectItem = this.#selectItemListener.bind(this, item);
 
-        const renderCheckbox = () =>
-            html`<td class="pf-c-table__check" role="presentation" @click=${selectItem}>
+            return html`<td class="pf-c-table__check" role="presentation" @click=${selectItem}>
                 <label aria-label="${msg(str`Select "${rowLabel}" row`)}"
                     ><input
                         type="checkbox"
@@ -602,10 +672,14 @@ export abstract class Table<T extends object>
                         @click=${(event: PointerEvent) => event.stopPropagation()}
                 /></label>
             </td>`;
+        });
 
-        const expandItem = this.#toggleExpansion.bind(this, itemKey);
+        const memoizedExpansion = guard([this.expandable, itemKey, expanded], () => {
+            if (!this.expandable) {
+                return nothing;
+            }
+            const expandItem = this.#toggleExpansion.bind(this, itemKey);
 
-        const renderExpansion = () => {
             return html`<td
                 class="pf-c-table__toggle pf-m-pressable"
                 role="presentation"
@@ -624,7 +698,7 @@ export abstract class Table<T extends object>
                     </div>
                 </button>
             </td>`;
-        };
+        });
 
         let expansionContent: SlottedTemplateResult = nothing;
 
@@ -651,30 +725,25 @@ export abstract class Table<T extends object>
             <tr
                 aria-selected=${selected.toString()}
                 class="${classMap({
-                    "pf-m-hoverable": this.checkbox || this.clickable,
+                    "pf-m-hoverable": this.checkbox || this.expandable || this.clickable,
                 })}"
             >
-                ${this.checkbox ? renderCheckbox() : nothing}
-                ${this.expandable ? renderExpansion() : nothing}
-                ${repeat(
-                    this.row(item),
-                    (_cell, columnIndex) => columnIndex,
-                    (cell, columnIndex) => {
-                        const columnID = this.#columnIDs.get(this.columns[columnIndex]);
+                ${memoizedCheckbox} ${memoizedExpansion}
+                ${this.row(item).map((cell, columnIndex) => {
+                    const columnID = this.#columnIDs.get(this.columns[columnIndex]);
 
-                        const headers = groupHeaderID
-                            ? `${groupHeaderID} ${columnID}`.trim()
-                            : columnID;
+                    const headers = groupHeaderID
+                        ? `${groupHeaderID} ${columnID}`.trim()
+                        : columnID;
 
-                        return html`<td
-                            @click=${this.rowClickListener.bind(this, item)}
-                            class=${ifPresent(!columnID, "presentational")}
-                            headers=${ifPresent(headers)}
-                        >
-                            ${cell}
-                        </td>`;
-                    },
-                )}
+                    return html`<td
+                        @click=${this.rowClickListener.bind(this, item)}
+                        class=${ifPresent(!columnID, "presentational")}
+                        headers=${ifPresent(headers)}
+                    >
+                        ${cell}
+                    </td>`;
+                })}
             </tr>
             ${expansionContent}
         `;
@@ -685,13 +754,8 @@ export abstract class Table<T extends object>
     //#region Toolbar
 
     protected renderToolbar(): TemplateResult {
-        return html` ${this.renderObjectCreate()}
-            <ak-spinner-button
-                .callAction=${() => {
-                    return this.fetch();
-                }}
-                class="pf-m-secondary"
-            >
+        return html`${this.renderObjectCreate()}
+            <ak-spinner-button .callAction=${this.#refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button
             >`;
     }
@@ -788,9 +852,10 @@ export abstract class Table<T extends object>
 
         checkbox.indeterminate = false;
 
+        const nextSelected = new Map<string | number, T>();
+
         if (checkbox.checked) {
             const items = this.data?.results || [];
-            const nextSelected = new Map<string | number, T>();
 
             for (const item of items) {
                 const itemKey = this.#itemKeys.get(item);
@@ -799,13 +864,9 @@ export abstract class Table<T extends object>
                     nextSelected.set(itemKey, item);
                 }
             }
-
-            this.#selectedElements = nextSelected;
-        } else {
-            this.#selectedElements.clear();
         }
 
-        this.requestUpdate();
+        this.selectedMap = nextSelected;
     };
 
     /**
@@ -814,7 +875,7 @@ export abstract class Table<T extends object>
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const selectedCount = this.#selectedElements.size;
+        const selectedCount = this.selectedMap.size;
         const pageItemCount = this.data?.results?.length ?? 0;
 
         const checked = pageItemCount !== 0 && selectedCount === pageItemCount;
@@ -852,9 +913,14 @@ export abstract class Table<T extends object>
     }
 
     protected renderChipGroup(): TemplateResult {
-        return html`<ak-chip-group>
-            ${Array.from(this.#selectedElements.values(), (item) => {
-                return html`<ak-chip>${this.renderSelectedChip(item)}</ak-chip>`;
+        return html`<ak-chip-group
+            exportparts="chip-group:selected-chip-group"
+            class="selected-chips"
+        >
+            ${Array.from(this.selectedMap.values(), (item) => {
+                return html`<ak-chip exportparts="chip:selected-chip"
+                    >${this.renderSelectedChip(item)}</ak-chip
+                >`;
             })}
         </ak-chip-group>`;
     }
@@ -882,6 +948,21 @@ export abstract class Table<T extends object>
         `;
     }
 
+    protected renderLoadingBar(): SlottedTemplateResult {
+        return guard([this.loading, this.label], () => {
+            if (!this.loading) return nothing;
+
+            return html`<ak-progress-bar
+                indeterminate
+                ?inert=${!this.loading}
+                label=${msg(str`Loading ${this.label ?? "table"} data`, {
+                    id: "table-loading-bar-label",
+                    desc: "Label for progress bar shown when table data is loading",
+                })}
+            ></ak-progress-bar>`;
+        });
+    }
+
     protected renderTable(): TemplateResult {
         const totalItemCount = this.data?.pagination.count ?? -1;
 
@@ -893,10 +974,14 @@ export abstract class Table<T extends object>
                 ${this.renderTablePagination()}
             </div>`;
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
+        return html`${this.renderLoadingBar()}${this.needChipGroup
+                ? this.renderChipGroup()
+                : nothing}
             ${this.renderToolbarContainer()}
             <div part="table-container">
                 <table
+                    aria-live="polite"
+                    aria-busy=${this.loading.toString()}
                     aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
                     aria-rowcount=${totalItemCount}
                     class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
@@ -905,32 +990,28 @@ export abstract class Table<T extends object>
                         <tr class="pf-c-table__header-row">
                             ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                             ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
-                            ${repeat(
-                                this.columns,
-                                ([label], idx) => label ?? idx,
-                                (column, idx) => {
-                                    const [label, orderBy, ariaLabel] = column;
-                                    const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
+                            ${this.columns.map((column, idx) => {
+                                const [label, orderBy, ariaLabel] = column;
+                                const columnID = this.#columnIDs.get(column) ?? `column-${idx}`;
 
-                                    return renderTableColumn({
-                                        label,
-                                        id: columnID,
-                                        ariaLabel,
-                                        orderBy,
-                                        table: this,
-                                        columnIndex: idx,
-                                    });
-                                },
-                            )}
+                                return renderTableColumn({
+                                    label,
+                                    id: columnID,
+                                    ariaLabel,
+                                    orderBy,
+                                    table: this,
+                                    columnIndex: idx,
+                                });
+                            })}
                         </tr>
                     </thead>
                     ${this.renderRows()}
                 </table>
             </div>
-            ${this.paginated ? renderBottomPagination() : nothing}`;
+            ${guard([this.paginated, this.lastRefreshedAt], renderBottomPagination)}`;
     }
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         return this.renderTable();
     }
 }

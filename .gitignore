@@ -211,7 +211,8 @@ source_docs/
 /vendor/
 
 ### Docker ###
-docker-compose.override.yml
+tests/openid_conformance/exports/*.zip
+compose.override.yml
 
-
+### Rust ###
 /target

@@ -1,0 +1,194 @@
+import { sourceLocale, targetLocales } from "../../locale-codes.js";
+
+import { LocaleLoaderRecord, TargetLanguageTag } from "#common/ui/locale/definitions";
+import { formatDisplayName } from "#common/ui/locale/format";
+import { autoDetectLanguage } from "#common/ui/locale/utils";
+
+import { kAKLocale, LocaleContext, LocaleMixin } from "#elements/mixins/locale";
+import type { ReactiveElementHost } from "#elements/types";
+
+import { ConsoleLogger } from "#logger/browser";
+
+import { ContextProvider } from "@lit/context";
+import { configureLocalization, LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
+import type { ReactiveController } from "lit";
+
+/**
+ * A controller that provides the application configuration to the element.
+ */
+export class LocaleContextController implements ReactiveController {
+    protected static DocumentObserverInit: MutationObserverInit = {
+        attributes: true,
+        attributeFilter: ["lang"],
+        attributeOldValue: true,
+    };
+
+    protected logger = ConsoleLogger.prefix("controller/locale");
+
+    /**
+     * Attempts to apply the given locale code.
+     * @param nextLocale A user or agent preferred locale code.
+     */
+    #applyLocale(nextLocale: TargetLanguageTag) {
+        const activeLanguageTag = this.#context.value.getLocale();
+
+        const languageNames = new Intl.DisplayNames([nextLocale, sourceLocale], {
+            type: "language",
+        });
+
+        const displayName = formatDisplayName(nextLocale, nextLocale, languageNames);
+
+        if (activeLanguageTag === nextLocale) {
+            this.logger.debug("Skipping locale update, already set to:", displayName);
+            return;
+        }
+
+        this.#context.value.setLocale(nextLocale);
+        this.#host.activeLanguageTag = nextLocale;
+
+        this.logger.info("Applied locale:", displayName);
+    }
+
+    // #region Attribute Observation
+
+    /**
+     * Synchronizes changes to the document's `lang` attribute to the locale context.
+     *
+     * @remarks
+     * While we don't expect the document's `lang` attribute to change outside of
+     * this controller, we observe it to respect a possible external change,
+     * such as from the user agent's language settings, or a browser extension which
+     * modifies the attribute.
+     */
+    #attributeListener = (mutations: MutationRecord[]) => {
+        for (const mutation of mutations) {
+            if (mutation.type !== "attributes" || mutation.attributeName !== "lang") {
+                continue;
+            }
+
+            const attribute = {
+                previous: mutation.oldValue,
+                current: document.documentElement.lang,
+            };
+
+            this.logger.debug("Detected document `lang` attribute change", attribute);
+
+            if (attribute.previous === attribute.current) {
+                this.logger.debug("Skipping locale update, `lang` unchanged", attribute);
+                continue;
+            }
+
+            const nextLocale = autoDetectLanguage(attribute.current);
+
+            this.#applyLocale(nextLocale);
+
+            return;
+        }
+    };
+
+    #documentObserver = new MutationObserver(this.#attributeListener);
+
+    #connectDocumentObserver() {
+        this.#documentObserver.observe(
+            document.documentElement,
+            LocaleContextController.DocumentObserverInit,
+        );
+    }
+
+    #disconnectDocumentObserver() {
+        this.#documentObserver.disconnect();
+    }
+
+    //#endregion
+
+    //#region Lifecycle
+
+    /**
+     * Loads the locale module for the given locale code.
+     *
+     * @param _locale The locale code to load.
+     *
+     * @remarks
+     * This is used by `@lit/localize` to dynamically load locale modules,
+     * as well synchronizing the document's `lang` attribute.
+     */
+    #loadLocale = (_locale: string) => {
+        // TypeScript cannot infer the type here, but Lit Localize will only call this
+        // function with one of the `targetLocales`.
+        const locale = _locale as TargetLanguageTag;
+
+        const languageNames = new Intl.DisplayNames([locale, sourceLocale], {
+            type: "language",
+        });
+
+        const displayName = formatDisplayName(locale, locale, languageNames);
+
+        this.logger.debug(`Loading "${displayName}" module...`);
+
+        const loader = LocaleLoaderRecord[locale];
+
+        return loader();
+    };
+
+    #host: ReactiveElementHost<LocaleMixin>;
+    #context: ContextProvider<LocaleContext>;
+
+    /**
+     * @param host The host element.
+     * @param localeHint The initial locale code to set.
+     */
+    constructor(host: ReactiveElementHost<LocaleMixin>, localeHint?: TargetLanguageTag) {
+        this.#host = host;
+
+        const contextValue = configureLocalization({
+            sourceLocale,
+            targetLocales,
+            loadLocale: this.#loadLocale,
+        });
+
+        this.#context = new ContextProvider(this.#host, {
+            context: LocaleContext,
+            initialValue: contextValue,
+        });
+
+        this.#host[kAKLocale] = contextValue;
+
+        const nextLocale = localeHint || autoDetectLanguage();
+
+        if (nextLocale !== sourceLocale) {
+            this.#applyLocale(nextLocale);
+        }
+    }
+
+    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status === "error") {
+            this.logger.debug("Error loading locale:", event.detail);
+            return;
+        }
+
+        if (event.detail.status === "loading") {
+            return;
+        }
+
+        const { readyLocale } = event.detail;
+        this.logger.debug(`Updating \`lang\` attribute to: \`${readyLocale}\``);
+
+        // Prevent observation while we update the `lang` attribute...
+        this.#disconnectDocumentObserver();
+
+        document.documentElement.lang = readyLocale;
+
+        this.#connectDocumentObserver();
+    };
+
+    public hostConnected() {
+        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
+    public hostDisconnected() {
+        this.#documentObserver.disconnect();
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
+    //#endregion
+}

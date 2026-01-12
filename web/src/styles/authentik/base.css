@@ -1,8 +1,9 @@
 @import "./base/common.css";
 @import "./base/scrollbars.css";
 @import "./components/Alert/alert.css";
+@import "./components/Banner/banner.css";
+@import "./components/Label/label.css";
 @import "./components/Icon/icon.css";
-@import "./components/Tabs/tabs.css";
 @import "./components/Page/page.css";
 @import "./components/Button/button.css";
 @import "./components/Dropdown/dropdown.css";
@@ -15,6 +16,5 @@
 @import "./components/Form/form.css";
 @import "./components/Switch/switch.css";
 @import "./components/Select/select.css";
-@import "./components/Nav/nav.css";
 @import "./components/Notification/notification.css";
 @import "./components/Wizard/wizard.css";

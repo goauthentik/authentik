@@ -57,7 +57,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
      * moved (removed) if the user so requests.
      */
     @state()
-    public toMove: Set<string> = new Set();
+    public toMove: Set<string | number> = new Set();
 
     //#endregion
 
@@ -88,7 +88,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     //#region Event Listeners
 
-    #clickListener = (key: string): void => {
+    #clickListener = (key: string | number): void => {
         if (this.toMove.has(key)) {
             this.toMove.delete(key);
         } else {
@@ -105,7 +105,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
         this.requestUpdate();
     };
 
-    #moveListener = (key: string): void => {
+    #moveListener = (key: string | number): void => {
         this.toMove.delete(key);
 
         this.dispatchCustomEvent(DualSelectEventType.RemoveOne, key);

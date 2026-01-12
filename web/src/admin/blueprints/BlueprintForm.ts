@@ -1,5 +1,6 @@
 import "#components/ak-text-input";
 import "#components/ak-toggle-group";
+import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -8,7 +9,6 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
@@ -75,24 +75,13 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Disabled blueprints are never applied.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+                help=${msg("Disabled blueprints are never applied.")}
+            >
+            </ak-switch-input>
             <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">
                     <ak-toggle-group
@@ -175,7 +164,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
-                                  mode=${CodeMirrorMode.YAML}
+                                  mode="yaml"
                                   raw
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
@@ -188,7 +177,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.YAML}
+                            mode="yaml"
                             value="${YAML.stringify(this.instance?.context ?? {})}"
                         >
                         </ak-codemirror>

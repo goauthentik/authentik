@@ -19,6 +19,7 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, f
 	state, err := a.createState(r, rw, fwd)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to create state")
+		rw.WriteHeader(400)
 		return
 	}
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)

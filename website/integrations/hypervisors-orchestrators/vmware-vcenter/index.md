@@ -73,6 +73,7 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Create a SCIM provider with the name `vcenter-scim`.
     - Paste the Tenant URL into **URL** field for the provider.
     - Paste the token you saved into the **Token** field.
+    - Set **SCIM Compatibility Mode** to `vCenter`.
     - If your vCenter certificate is self-signed (which is the default), toggle **Verify SCIM server's certificates** to be off.
     - Configure options under `User filtering` to your needs.
     - Save the provider.

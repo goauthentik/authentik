@@ -1,0 +1,96 @@
+---
+title: Kubernetes CLI authentication
+sidebar_label: Kubernetes
+tags: [authentik Agent, authentik cli, kubernetes, k8s, kubectl, cli]
+---
+
+You can use the authentik Agent to authenticate to `kubectl` with authentik credentials.
+
+## Prerequisites
+
+- The device that you're using must have the [authentik Agent deployed on it](../../authentik-agent/agent-deployment/index.mdx).
+
+## authentik configuration
+
+To support the integration of authentik Agent with `kubectl`, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik for Kubernetes
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name (e.g. `kubernetes-cluster`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **Client type** to `Public`.
+        - Set the **Client ID** to `kubernetes-cluster`.
+        - Select any available signing key.
+        - Under **Machine-to-Machine authentication settings** add the `authentik-cli` provider as a **Federated OIDC Provider**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](../../../../add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage access to the application.
+
+3. Click **Submit** to save the new application and provider.
+
+## Kubernetes configuration
+
+These instructions depend on how you're running Kubernetes and are specifically for kubeadm. The same instructions can't be applied to a hosted/cloud Kubernetes platform where you don't have control over the Kubernetes API server.
+
+:::info Reverse proxy for Kubernetes API servers
+[kube-oidc-proxy](https://github.com/TremoloSecurity/kube-oidc-proxy) is a useful project that provides a reverse proxy to authenticate to managed Kubernetes API servers via OIDC.
+:::
+
+To integrate the authentik Agent with your Kubernetes deployment, you'll need to configure kubeadm.
+
+### Configure kubeadm settings
+
+Update your kubeadm config file using the template below:
+
+```yaml
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: ClusterConfiguration
+apiServer:
+    # [...]
+    extraArgs:
+        - name: oidc-client-id
+          value: kubernetes-cluster
+        - name: oidc-groups-claim
+          value: groups
+        - name: oidc-groups-prefix
+          value: "oidc:"
+        - name: oidc-issuer-url
+          value: https://authentik.company/application/o/<application-slug>/
+        - name: oidc-username-claim
+          value: email
+```
+
+Run the following command to apply the changes to an existing Kubernetes cluster:
+
+:::warning
+This command will restart the API server. Plan accordingly for production environments.
+:::
+
+```sh
+kubeadm upgrade apply <version> --config=kubeadm_config.yml
+```
+
+Where `<version>` matches the target Kubernetes version specified in your config file.
+
+### Configure kubectl to authenticate with authentik CLI
+
+Update your kubeconfig file (~/.kube/config) to use the `ak` command to authenticate
+
+```yaml
+users:
+    - name: kubernetes-cluster
+      user:
+          exec:
+              apiVersion: client.authentication.k8s.io/v1
+              args:
+                  - auth
+                  - kubectl
+                  - --client-id=kubernetes-cluster
+              command: ak
+              env: null
+              interactiveMode: IfAvailable
+              provideClusterInfo: false
+```
+
+To verify, run `kubectl auth whoami`, which should output your authentik email address as a username.

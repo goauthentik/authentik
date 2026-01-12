@@ -11,20 +11,19 @@ import "#admin/admin-overview/charts/SyncStatusChart";
 import "#elements/cards/AggregatePromiseCard";
 import "#elements/cards/QuickActionsCard";
 
-import { me } from "#common/users";
+import { formatUserDisplayName } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { WithSession } from "#elements/mixins/session";
 import { paramURL } from "#elements/router/RouterOutlet";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { SessionUser } from "@goauthentik/api";
-
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -33,7 +32,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const AdminOverviewBase = WithLicenseSummary(AKElement);
+const AdminOverviewBase = WithLicenseSummary(WithSession(AKElement));
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
@@ -71,13 +70,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
         [msg("Check the release notes"), import.meta.env.AK_DOCS_RELEASE_NOTES_URL, true],
     ];
 
-    @state()
-    user?: SessionUser;
-
-    async firstUpdated(): Promise<void> {
-        this.user = await me();
-    }
-
     render(): TemplateResult {
         return html` <main class="pf-c-page__main-section" aria-label=${msg("Overview")}>
             <div class="pf-l-grid pf-m-gutter">
@@ -99,7 +91,11 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl">
-                        <ak-aggregate-card icon="fa fa-sync-alt" label=${msg("Sync status")}>
+                        <ak-aggregate-card
+                            icon="fa fa-sync-alt"
+                            label=${msg("Sync status")}
+                            tooltip=${msg("Integrations synced in the last 12 hours.")}
+                        >
                             <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                         </ak-aggregate-card>
                     </div>
@@ -169,9 +165,10 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
-        const username = this.user?.user.name || this.user?.user.username;
+        const displayName = formatUserDisplayName(this.currentUser);
+
         setPageDetails({
-            header: username ? msg(str`Welcome, ${username}`) : msg("Welcome"),
+            header: displayName ? msg(str`Welcome, ${displayName}`) : msg("Welcome"),
             description: msg("General system status"),
         });
     }

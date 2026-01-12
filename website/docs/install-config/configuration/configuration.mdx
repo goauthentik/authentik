@@ -49,7 +49,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="docker-compose" label="Docker Compose" default>
 
     ```
-    docker compose run --rm worker dump_config
+    docker compose run --rm worker ak dump_config
     ```
 
   </TabItem>
@@ -301,21 +301,151 @@ Requests directly coming from one an address within a CIDR specified here are ab
 
 Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
-## Media Storage Settings
+## Storage settings
+
+These settings affect where files are stored. By default, they are stored on disk in the `/data` directory of the authentik container. S3 storage is also supported.
+
+#### `AUTHENTIK_STORAGE__BACKEND`
+
+This parameter defines where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/data` directory in the container. For `s3`, see below.
+
+Defaults to `file`.
+
+### File storage backend settings
+
+#### `AUTHENTIK_STORAGE__FILE__PATH`
+
+Where to store files on disk.
+
+Defaults to `/data`.
+
+#### `AUTHENTIK_STORAGE__FILE__URL_EXPIRY`
+
+How long generated URLs for file access are valid for.
+
+Defaults to `minutes=15`.
+
+### S3 storage backend settings
+
+#### `AUTHENTIK_STORAGE__S3__REGION`
+
+S3 region where the bucket has been created. May be omitted depending on which S3 provider you use.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__ENDPOINT`
+
+Endpoint to use to talk to the S3 storage provider. Overrides the previous region and use_ssl settings.
+
+Must be a valid URL in the form of `https://s3.provider`.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__USE_SSL`
+
+Whether to use HTTPS when talking to the S3 storage providers.
+
+Defaults to `true`.
+
+#### `AUTHENTIK_STORAGE__S3__ADDRESSING_STYLE`
+
+Configure the addressing style used to address a bucket.
+
+Valid values are `auto` and `path`.
+
+Defaults to `auto`.
+
+#### `AUTHENTIK_STORAGE__S3__SESSION_PROFILE`
+
+Profile to use when using AWS SDK authentication.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__ACCESS_KEY`
+
+Access key to authenticate to S3. May be omitted if using AWS SDK authentication.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__SECRET_KEY`
+
+Secret key to authenticate to S3. May be omitted if using AWS SDK authentication.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__SECURITY_TOKEN`
+
+Security token to authenticate to S3. May be omitted.
+
+Supports hot-reloading.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__BUCKET_NAME`
+
+Name of the bucket to use to store files.
+
+#### `AUTHENTIK_STORAGE__S3__CUSTOM_DOMAIN`
+
+Domain to use to create URLs for users. Mainly useful for non-AWS providers.
+
+May include a port. Must include the bucket.
+
+Example: `s3.company:8080/authentik-data`.
+
+Defaults to not set.
+
+#### `AUTHENTIK_STORAGE__S3__SECURE_URLS`
+
+Whether URLs created use HTTPS or HTTP.
+
+Defaults to `true`.
+
+#### `AUTHENTIK_STORAGE__S3__URL_EXPIRY`
+
+How long generated URLs for file access are valid for.
+
+Defaults to `minutes=15`.
+
+### Media storage settings
+
+These settings affect where media files are stored. Those files include applications and sources icons.
+
+#### `AUTHENTIK_STORAGE__MEDIA__BACKEND`
+
+Overrides [`AUTHENTIK_STORAGE__BACKEND`](#authentik_storage__backend)
+
+#### `AUTHENTIK_STORAGE__MEDIA__FILE__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
+
+#### `AUTHENTIK_STORAGE__MEDIA__S3__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
 
 These settings affect where media files are stored. Those files include applications and sources icons. By default, they are stored on disk in the `/media` directory of the authentik container. S3 storage is also supported.
 
-- `AUTHENTIK_STORAGE__MEDIA__BACKEND`: Where to store files. Valid values are `file` and `s3`. For `file` storage, files are stored in a `/media` directory in the container. For `s3`, see below.
-- `AUTHENTIK_STORAGE__MEDIA__S3__REGION`: S3 region where the bucket has been created. May be omitted depending on which S3 provider you use. No default.
-- `AUTHENTIK_STORAGE__MEDIA__S3__USE_SSL`: Whether to use HTTPS when talking to the S3 storage providers. Defaults to `true`.
-- `AUTHENTIK_STORAGE__MEDIA__S3__ENDPOINT`: Endpoint to use to talk to the S3 storage provider. Override the previous region and use_ssl settings. Must be a valid URL in the form of `https://s3.provider`. No default.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE`: Profile to use when using AWS SDK authentication. No default. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY`: Access key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY`: Secret key to authenticate to S3. May be omitted if using AWS SDK authentication. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SECURITY_TOKEN`: Security token to authenticate to S3. May be omitted. Supports hot-reloading.
-- `AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME`: Name of the bucket to use to store files.
-- `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
-- `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
+### Reports storage settings
+
+These settings affect where CSV reports are stored.
+
+#### `AUTHENTIK_STORAGE__REPORTS__BACKEND`
+
+Overrides [`AUTHENTIK_STORAGE__BACKEND`](#authentik_storage__backend)
+
+#### `AUTHENTIK_STORAGE__REPORTS__FILE__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
+
+#### `AUTHENTIK_STORAGE__REPORTS__S3__[...]`
+
+Overrides [`AUTHENTIK_STORAGE__S3__[...]`](#s3-storage-backend-settings) settings.
 
 ## authentik Settings
 
@@ -459,7 +589,7 @@ Defaults to `50`.
 
 ### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
-Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
+Allows configuration of TLS Ciphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
 
@@ -501,7 +631,7 @@ Defaults to 4.
 Requires authentik 2024.8
 :::
 
-Configure the path under which authentik is serverd. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
+Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
 

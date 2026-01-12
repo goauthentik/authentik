@@ -1,10 +1,9 @@
 import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
-import { APIMessage } from "#elements/messages/Message";
 
 import { AdminApi, CoreApi, ImpersonationRequest } from "@goauthentik/api";
 
@@ -24,7 +23,8 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
         try {
             const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
             this.requireReason = settings.impersonationRequireReason ?? false;
-        } catch (e) {
+        } catch (error) {
+            console.error("Failed to fetch impersonation settings:", error);
             // fallback to reason not required as the backend will still validate it
             this.requireReason = false;
         }
