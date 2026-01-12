@@ -6271,10 +6271,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Token length</source>
   <target>토큰 길이</target>
 </trans-unit>
-<trans-unit id="s6931695c4f563bc4">
-  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
-  <target>개별적으로 생성된 토큰의 길이입니다. 보안을 강화하기 위해 늘릴 수 있습니다.</target>
-</trans-unit>
 <trans-unit id="sc5a4711395ffb043">
   <source>Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).</source>
   <target>TOTP 인증자를 구성하는 데 사용되는 단계(예: Authy/Google 인증자)입니다.</target>
@@ -9479,6 +9475,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="notification-unread-count">
   <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
   <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+</trans-unit>
+<trans-unit id="s42636dae6e29892e">
+  <source>Agent version: <x id="0" equiv-text="${this.agentVersion(conn) ?? &quot;-&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s6dd24e14615f1369">
+  <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
+</trans-unit>
+<trans-unit id="sa6cd3315b7c53ab7">
+  <source>You should only import files from trusted sources and review blueprints before importing them.</source>
+</trans-unit>
+<trans-unit id="sd8309fdcb0478b0f">
+  <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
 </trans-unit>
 </body>
 </file>
