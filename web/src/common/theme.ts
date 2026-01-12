@@ -338,7 +338,7 @@ export function applyBackgroundImageProperty(
 /**
  * Returns the root interface element of the page.
  *
- * @todo Can this be handled with a Lit Mixin?
+ * @deprecated Use context controllers to access the interface root instead.
  */
 export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
     const element = document.body.querySelector<T>("[data-test-id=interface-root]");
