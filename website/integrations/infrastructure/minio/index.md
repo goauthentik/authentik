@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::warning
-MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
+[MinIO](https://github.com/minio/minio) is currently under maintenance. [AIStor Free](https://www.min.io/download) is a full-featured, single-node deployment method which supports SSO.
 :::
 
 :::info
@@ -80,17 +80,41 @@ You can assign multiple policies to a user by returning a list, and returning `N
 
 ## MinIO configuration
 
-You can set up OpenID in two different ways: via the web interface or the command line.
+You can set up OpenID in three different ways: via environment variables, the web interface or the command line.
+
+### Environment variables
+
+MinIO OpenID Connect configuration can be configured using [environment variables](https://docs.min.io/enterprise/aistor-object-store/reference/aistor-server/settings/iam/openid/?tab=role-policy-environment-variable)
+
+If you're using Docker Compose, add this to your `docker-compose.yml` file :
+
+```yaml
+services:
+  minio:
+    environment:
+      MINIO_IDENTITY_OPENID_CONFIG_URL: "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
+      MINIO_IDENTITY_OPENID_CLIENT_ID: "<client id>"
+      MINIO_IDENTITY_OPENID_CLIENT_SECRET: "<client secret>"
+      MINIO_IDENTITY_OPENID_DISPLAY_NAME: "authentik"
+      MINIO_IDENTITY_OPENID_CLAIM_NAME: "policy"
+      MINIO_IDENTITY_OPENID_SCOPES: "openid,profile,email"
+```
+
+You then have to restart your MinIO Docker Compose stack.
+
+```bash
+# docker compose up -d
+```
 
 ### From the web interface
 
-From the sidebar of the main page, go to **Identity > OpenID**, click **Create**, and then define the configuration as follows:
+From the sidebar of the main page, go to **Access > OpenID**, click **Add Configuration**, and then define the configuration as follows:
 
 - Name: MinIO
 - Config URL: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 - Client ID: Your client ID from the previous step
 - Client Secret: Your client secret from the previous step
-- Scopes: `openid, email, profile, minio`
+- Scopes: `openid, email, profile`
 - Redirect URI: `https://minio.company/oauth_callback`
 
 Finally, click **Save** and follow the instructions in the popup to restart your instance.
@@ -106,7 +130,7 @@ After that is done, run the following command to configure the OpenID provider:
   config_url="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration" \
   client_id="<client id>" \
   client_secret="<client secret>" \
-  scopes="openid,profile,email,minio"
+  scopes="openid,profile,email"
 ```
 
 The [upstream MinIO docs on OIDC](https://min.io/docs/minio/linux/reference/minio-mc-admin/mc-admin-config.html#openid-identity-management) indicate that the `client_secret` (and thus confidential client type) are optional depending on provider. Experimentally with a single-node MinIO instance, the client secret was required and worked without further issue.
