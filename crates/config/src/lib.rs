@@ -113,6 +113,7 @@ pub struct ListenConfig {
     pub radius: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
     pub debug: Vec<SocketAddr>,
+    pub debug_py: Vec<SocketAddr>,
     // TODO: subnet type
     pub trusted_proxy_cidrs: Vec<String>,
 }
@@ -249,14 +250,11 @@ pub struct WorkerConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StorageConfig {
-    pub media: StorageMediaConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageMediaConfig {
     pub backend: String,
     pub file: StorageFileConfig,
     pub s3: StorageS3Config,
+    pub media: StorageMediaConfig,
+    pub reports: StorageReportsConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -268,7 +266,6 @@ pub struct StorageFileConfig {
 pub struct StorageS3Config {
     #[serde(default)]
     pub region: Option<String>,
-    // #[serde(default = "true")]
     pub use_ssl: bool,
     #[serde(default)]
     pub endpoint: Option<String>,
@@ -282,60 +279,127 @@ pub struct StorageS3Config {
     pub secure_urls: bool,
 }
 
-// impl Config {
-//     fn config_paths() -> Vec<PathBuf> {
-//         let mut config_paths = vec![
-//             PathBuf::from("/etc/authentik/config.yml"),
-//             PathBuf::from(""),
-//         ];
-//         if let Ok(workspace) = env::var("WORKSPACE_DIR") {
-//             let _ = env::set_current_dir(workspace);
-//         }
-//
-//         if let Ok(paths) = glob::glob("/etc/authentik/config.d/*.yml") {
-//             config_paths.extend(paths.filter_map(Result::ok));
-//         }
-//
-//         let environment = env::var("AUTHENTIK_ENV").unwrap_or_else(|_| "local".to_owned());
-//
-//         let mut computed_paths = Vec::new();
-//
-//         for path in config_paths {
-//             let Ok(abs_path) = path.canonicalize().or_else(|_| fs::canonicalize(&path)) else {
-//                 continue;
-//             };
-//
-//             if let Ok(metadata) = fs::metadata(&abs_path) {
-//                 if !metadata.is_dir() {
-//                     computed_paths.push(abs_path);
-//                 } else {
-//                     let env_paths = vec![
-//                         abs_path.join(format!("{}.yml", environment)),
-//                         abs_path.join(format!("{}.env.yml", environment)),
-//                     ];
-//                     for env_path in env_paths {
-//                         if let Ok(metadata) = fs::metadata(&env_path)
-//                             && !metadata.is_dir()
-//                         {
-//                             computed_paths.push(env_path);
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//
-//         computed_paths
-//     }
-//
-//     fn load_raw() {
-//         let mut builder = config::Config::builder();
-//         for path in Self::config_paths() {
-//             builder = builder.add_source(config::File::from(path));
-//         }
-//         builder = builder.add_source(config::Environment::with_prefix("AUTHENTIK"));
-//     }
-//
-//     pub fn setup() {
-//         let config = Self::default();
-//     }
-// }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageMediaConfig {
+    pub backend: String,
+    pub file: StorageFileConfig,
+    pub s3: StorageS3Config,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageReportsConfig {
+    pub backend: String,
+    pub file: StorageFileConfig,
+    pub s3: StorageS3Config,
+}
+
+impl Config {
+    fn config_paths() -> Vec<PathBuf> {
+        let mut config_paths = vec![
+            PathBuf::from("/etc/authentik/config.yml"),
+            PathBuf::from(""),
+        ];
+        if let Ok(workspace) = env::var("WORKSPACE_DIR") {
+            let _ = env::set_current_dir(workspace);
+        }
+
+        if let Ok(paths) = glob::glob("/etc/authentik/config.d/*.yml") {
+            config_paths.extend(paths.filter_map(Result::ok));
+        }
+
+        let environment = env::var("AUTHENTIK_ENV").unwrap_or_else(|_| "local".to_owned());
+
+        let mut computed_paths = Vec::new();
+
+        for path in config_paths {
+            let Ok(abs_path) = path.canonicalize().or_else(|_| fs::canonicalize(&path)) else {
+                continue;
+            };
+
+            if let Ok(metadata) = fs::metadata(&abs_path) {
+                if !metadata.is_dir() {
+                    computed_paths.push(abs_path);
+                } else {
+                    let env_paths = vec![
+                        abs_path.join(format!("{}.yml", environment)),
+                        abs_path.join(format!("{}.env.yml", environment)),
+                    ];
+                    for env_path in env_paths {
+                        if let Ok(metadata) = fs::metadata(&env_path)
+                            && !metadata.is_dir()
+                        {
+                            computed_paths.push(env_path);
+                        }
+                    }
+                }
+            }
+        }
+
+        computed_paths
+    }
+
+    fn load_raw() -> Result<Value> {
+        let mut builder = config::Config::builder();
+        builder = builder.add_source(config::File::from_str(
+            DEFAULT_CONFIG,
+            config::FileFormat::Yaml,
+        ));
+        for path in Self::config_paths() {
+            builder = builder.add_source(config::File::from(path));
+        }
+        builder = builder.add_source(config::Environment::with_prefix("AUTHENTIK"));
+        let config = builder.build()?;
+        let raw = config.try_deserialize::<Value>()?;
+        Ok(raw)
+    }
+
+    fn expand_value(value: &str) -> Result<String> {
+        let trimmed = value.trim();
+        let value = if let Some(path) = trimmed.strip_prefix("file://") {
+            fs::read_to_string(path).map(|s| s.trim().to_owned())?
+        } else if let Some(env_var) = trimmed.strip_prefix("env://") {
+            env::var(env_var)?
+        } else {
+            value.to_owned()
+        };
+        Ok(value)
+    }
+
+    fn expand(mut raw: Value) -> Value {
+        match &mut raw {
+            Value::String(s) => {
+                if let Ok(expanded) = Self::expand_value(s) {
+                    Value::String(expanded)
+                } else {
+                    raw
+                }
+            }
+            Value::Array(arr) => {
+                Value::Array(arr.iter().map(|v| Self::expand(v.clone())).collect())
+            }
+            Value::Object(map) => Value::Object(
+                map.iter()
+                    .map(|(k, v)| (k.clone(), Self::expand(v.clone())))
+                    .collect(),
+            ),
+            _ => raw,
+        }
+    }
+
+    fn load() -> Result<Self> {
+        let raw = Self::load_raw()?;
+        let expanded = Self::expand(raw);
+        let config: Config = serde_json::from_value(expanded)?;
+        Ok(config)
+    }
+
+    pub fn setup() -> Result<()> {
+        let config = Self::load()?;
+        CONFIG.get_or_init(|| config);
+        Ok(())
+    }
+}
+
+pub fn get_config() -> &'static Config {
+    CONFIG.get_or_init(|| Config::load().unwrap())
+}
