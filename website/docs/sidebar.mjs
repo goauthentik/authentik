@@ -176,8 +176,8 @@ const items = [
                             id: "add-secure-apps/providers/entra/index",
                         },
                         items: [
-                            "add-secure-apps/providers/entra/setup-entra",
-                            "add-secure-apps/providers/entra/add-entra-provider",
+                            "add-secure-apps/providers/entra/configure-entra",
+                            "add-secure-apps/providers/entra/create-entra-provider",
                         ],
                     },
                     {
@@ -189,7 +189,7 @@ const items = [
                         },
                         items: [
                             "add-secure-apps/providers/oauth2/create-oauth2-provider",
-                            "add-secure-apps/providers/oauth2/client_credentials",
+                            "add-secure-apps/providers/oauth2/machine_to_machine",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
                             "add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout",
