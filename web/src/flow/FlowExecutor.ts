@@ -44,7 +44,7 @@ import {
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
@@ -175,15 +175,6 @@ export class FlowExecutor
 
         console.debug("authentik/ws: Reloading after session authenticated event");
         window.location.reload();
-    };
-
-    @listen(LOCALE_STATUS_EVENT)
-    protected localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (event.detail.status !== "ready") {
-            return;
-        }
-
-        this.refresh();
     };
 
     public disconnectedCallback(): void {
