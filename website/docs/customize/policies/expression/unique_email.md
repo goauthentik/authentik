@@ -10,13 +10,14 @@ The snippet below can be used in an expression policy within enrollment flows. T
 # Ensure this matches the *Field Key* value of the prompt
 field_name = "email"
 email = request.context["prompt_data"][field_name]
+pending_user = request.context.get("pending_user")
 
-# Search for users with this email
-other_user = ak_user_by(email__iexact=email)
+from authentik.core.models import User
+query = User.objects.filter(email__iexact=email)
+if pending_user:
+    query = query.exclude(pk=pending_user.pk)
 
-if other_user:
-  # Ensure that it is another user
-  if ( request.user.username != other_user.username):
+if query.exists():
     ak_message("Email address in use")
     return False
 
