@@ -1,0 +1,26 @@
+
+╭─── Claude Code v2.0.76 ──────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                  Welcome back Ken!                 │ started                 │
+│                                                    │ Run /init to create a … │
+│                    * ▗ ▗   ▖ ▖ *                   │ ─────────────────────── │
+│                   *             *                  │ Recent activity         │
+│                    *   ▘▘ ▝▝   *                   │ No recent activity      │
+│                                                    │                         │
+│    Sonnet 4.5 · Claude Pro ·                       │                         │
+│    kenneth.m.sternberg@gmail.com's Organization    │                         │
+│                 ~/projects/dev/web                 │                         │
+╰──────────────────────────────────────────────────────────────────────────────╯
+══════════════════ Conversation compacted · ctrl+o for history ═════════════════
+
+> /compact preserve to-do notions and as much as context as necessary for them 
+to make sense the next time around 
+  ⎿  Compacted (ctrl+o to see full summary)
+  ⎿  Read ../../../CLAUDE.md (84 lines)
+  ⎿  Read package.json (321 lines)
+  ⎿  Read src/user/index.entrypoint.ts (190 lines)
+  ⎿  Read src/elements/router/RouterOutlet.ts (214 lines)
+  ⎿  Read src/elements/controllers/ContextControllerRegistry.ts (13 lines)
+
+
+

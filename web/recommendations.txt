@@ -1,0 +1,5334 @@
+ Read package.json (321 lines)
+ Read src/user/index.entrypoint.ts (190 lines)
+ Read src/elements/router/RouterOutlet.ts (214 lines)
+ Read src/elements/controllers/ContextControllerRegistry.ts (13 lines)
+
+> # Agent Guidelines for the authentik WebUI
+> 
+> This document provides guidelines for analyzing a large and complex 
+> single-page application written in Typescript, Lit-Element, and Patternfly-5
+>  which provides a set of User Interfaces for a Single Sign-On Application. 
+> The backend of the application is written in Django, and uses the Django 
+> Rest Framework and OpenAPI tools to generate the schema and Typescript API 
+> library for this application.
+> 
+> ## Core Principles
+> 
+> - The initial draft of this UI was written by the founder, who was not a 
+> Javascript expert. They chose the Patternfly & Lit combination. It has 
+> proven an awkward fit, and we are committed to making it less so.
+> 
+> - The code should be as aggressive as possible in determining the user’s 
+> preferences with respect to language and locale, light or dark mode, and 
+> prefers-reduced motion.
+> 
+> - Each layer of the code should be as independent as possible from the layer
+>  above or below it. We are seeking loose integration without sacrificing 
+> user experience.
+> 
+> # Architectural Overview
+> 
+> The authentik WebUI is built around three major experiences:
+> 
+> - The Flow library, which provides a dialogue between the authentik SSO 
+> server and the third-party applications with which one integrates and 
+> accesses via authentik. It is written around a request/response cycle in 
+> which forms are specified programmatically and on-demand from the back-end.
+> - The User library, which provides an ordinary user with a page listing the 
+> applications that User has access to, as well as a handful of facilities for
+>  customizing their experience, adding passkeys and other two-factor 
+> solutions, and changing their password.
+> - The Administrative library, which provides access to the objects (Django 
+> models) that administrators need to see, review, and update, such as the 
+> applications that can be accessed via an authentik instance, the 
+> authentication providers used to access them, identity sources such as LDAP,
+>  and a myriad of other tools and capabilities, as well as monitoring and 
+> notification facilities.
+> 
+> The *intent* of the architecture is as follows:
+> 
+> - An application shell that determines the user’s preferences such as 
+> language, locale, and tsheme, and provides Lit controllers with access to the
+>  basic configuration, “brand” information (the SSO can support multiple 
+> custom themes for different brands on a single product), and managing 
+> modals.
+> - Additional controllers for features specific to the User or Administrator,
+> - A routing system that can access pages within a given interface,
+> 
+> Within the *admin* application specifically, we have the following 
+> divisions:
+> 
+> - Table pages, which allow sysadmins to see and sometimes manage lists of 
+> collections that are managed by authentik
+> - Form pages (and Form modals), which allow sysadmins to edit single items
+> - Custom pages: the dashboard, enterprise status, notifications, and other 
+> pages that are not of themselves tied to a single Django model.
+> - Wizards: There are a handful that provide a multi-page experience.
+> 
+> The source code for this is read in the folder `./src`.
+> 
+> The authentik API is located in the folder 
+> `./node_modules/@goauthentik/api/src/`.
+> 
+> # Tasks
+> 
+> ## Preface
+> 
+> This past year the UI has experienced explosive growth in the number of new 
+> features, all of which are made difficult to streamline and isolate by what 
+> is, unfortunately, a baroque architecture built by an amateur. The UI team 
+> attempting to fix its shortcomings has been bitten time and time again by 
+> “unravelling”: attempts to fix one subsystem, such as the language & locale,
+>  or such as theme, results in our having to touch the entire application and
+>  modify dozens if not hundreds of files, and often intersects with other 
+> subsystems.
+> 
+> Despite its shortcomings, the existing UI has won praise for its usability. 
+> We would like to preserve and improve on that usability.
+> 
+> <important>
+> 
+> DO NOT WRITE ANY CODE TO ANY FILE. We are not generating code for this 
+> project at the moment.
+> </important>
+> 
+> ## Task:
+> 
+> 1.  Analyze this code base and provide a *high level* overview of its 
+> architecture. Be clear about where the description in *this* document fails 
+> to correspond with the reality of the code base.
+> 
+> 2.  With that analysis, provide a recommended set of steps for correcting 
+> what faults the high-level subsystems of AppShell, Router, Sidebar, and 
+> Controllers, and what consequences correcting such faults may have on our 
+> process. The goal is to isolate subsystems in a way that reduces coupling 
+> without damaging the existing user experience. 
+
+---
+
+Architectural Analysis of authentik WebUI
+
+Part 2: Root Causes of the "Unravelling" Problem
+
+Why Changing Theme/Locale Touches Everything
+
+Let's trace a theme change through the system to see the cascade:
+
+1. Initialization (global.ts:35-68):
+  - Backend injects window.authentik.brand object
+  - globalAK() reads it and converts to TypeScript
+2. Interface Construction (Interface.ts:22-28):
+  - Calls globalAK() to get initial brand
+  - Calls createUIThemeEffect(applyDocumentTheme) - mutates document
+  - Creates BrandingContextController with brand data
+3. Controller (BrandContextController.ts - not shown but inferred):
+  - Fetches current brand from API
+  - Stores in context
+  - Notifies consumers on change
+4. Mixins (branding.ts:65-97):
+  - WithBrandConfig creates abstract class that consumes BrandingContext
+  - Every component using this mixin subscribes to brand changes
+5. Theme Application (theme.ts:1-100):
+  - Document-level stylesheet manipulation
+  - CSS custom properties updated
+  - Individual components may have theme-specific styles
+
+The Unravelling:
+- To change theme initialization: touch global.ts, Interface.ts, theme.ts
+- To change theme propagation: touch BrandContextController.ts, BrandingContext
+- To change how components consume theme: touch branding.ts mixin, all components using it
+- To add a new theme: touch theme.ts, branding types, potentially component stylesheets
+
+There's no single "theme subsystem" - it's fractured across 7+ modules in 4+ directories.
+
+The Mixin Depth Problem
+
+AdminInterface has this composition:
+WithCapabilitiesConfig(
+  WithNotifications(
+    WithSession(
+      AuthenticatedInterface  // which itself extends Interface
+    )
+  )
+)
+
+Problems:
+1. Order dependency: WithSession must come before WithNotifications (notifications need user session)
+2. Type complexity: Each wrapper adds complexity to type inference
+3. Debugging difficulty: Stack traces go through 4 mixin layers
+4. Testability: Cannot test mixins in isolation easily
+5. Mental overhead: Must understand the entire chain to add capabilities
+
+---
+
+Part 3: Detailed Subsystem Critique
+
+AppShell / Interface Layer
+
+Current State:
+- Interface (base): Creates 4 controllers (Locale, Config, Branding, Modal) (Interface.ts:26-29)
+- AuthenticatedInterface: Adds 4 more controllers (License, Session, Version, Notifications) (AuthenticatedInterface.ts:13-16)
+- AdminInterface: Uses 3 mixins (AdminInterface/index.entrypoint.ts:55-56)
+- Each interface renders its own layout structure
+
+Problems:
+1. Duplicated initialization logic - each interface builds its controller set manually
+2. No interface swapping - cannot switch User → Admin without full page reload
+3. Testing requires full interface - cannot test components in isolation
+4. Global side effects - createUIThemeEffect(applyDocumentTheme) mutates document (Interface.ts:24)
+
+Why This Is Hard:
+- Controllers are created in constructor, impossible to inject or mock
+- No dependency injection system
+- Theme initialization has side effects on document
+- Each interface has hard-coded layout in render()
+
+Router Subsystem
+
+Current State:
+- RouterOutlet component watches hashchange (RouterOutlet.ts:91)
+- Routes defined as Route[] with regex + lazy import function
+- Parameter encoding: #/path;{"json":"params"} (RouterOutlet.ts:54)
+- No nested routes, no route guards, no metadata
+
+Problems:
+1. Hash-based routing is outdated - breaks browser UX (back button, bookmarks with params)
+2. Parameter encoding is non-standard - ; separator is fragile, JSON in URL is ugly
+3. Routes are disconnected from metadata - no way to attach permissions, titles, icons
+4. Flat structure - no parent/child relationships, every route is top-level
+5. No type safety for parameters - route regex has named groups but no TypeScript types
+6. Testing is difficult - routes use dynamic imports, hard to test without bundler
+
+Example of brittleness:
+// AdminSidebar.ts:63
+["/core/applications", msg("Applications"),
+  [`^/core/applications/(?<slug>${SLUG_REGEX})$`]]
+
+The regex pattern is duplicated from the route definition, and manually kept in sync.
+
+Sidebar Subsystem
+
+Current State:
+- Sidebar component is purely presentational (Sidebar.ts:25-40)
+- Structure defined as nested tuples (AdminSidebar.ts:56-105)
+- Rendered in AdminInterface with function call (index.entrypoint.ts:166-169)
+
+Problems:
+1. Tuple format is brittle:
+["/path", msg("Label"), { attr: value }, [children]]
+1. No type safety, easy to mix up parameter order
+2. Duplicates route patterns:
+Sidebar has activeWhen regexes that duplicate Routes.ts definitions (AdminSidebar.ts:63, 68, 73, etc.)
+3. Manual maintenance:
+Adding a route requires updating both Routes.ts and AdminSidebar.ts
+4. No validation:
+Nothing prevents sidebar links that point to non-existent routes
+5. Cannot be derived from routes:
+Routes have no metadata, so can't auto-generate sidebar
+
+Why This Matters:
+When you add a new admin page, you must:
+1. Add route to Routes.ts
+2. Add sidebar entry to AdminSidebar.ts
+3. Ensure regex patterns match
+4. Remember to update both if URL pattern changes
+
+This is 3 edits minimum, all manual, all error-prone.
+
+Controllers Subsystem
+
+Current State:
+- Base class: ReactiveContextController (not shown, but referenced)
+- 8 specialized controllers for different contexts
+- Registered in Interface via addController() (Interface.ts:32-41)
+- Accessed via mixins that consume contexts (branding.ts:65-97)
+- Global registry for programmatic access (ContextControllerRegistry.ts:12)
+
+What Works:
+- Reactive updates via Lit's context API
+- Clean separation between data source (controller) and consumer (mixin/component)
+- Controllers are focused and single-purpose
+
+Problems:
+1. Coupled to Interface:
+Controllers are created in Interface constructor (Interface.ts:26-29)
+Cannot use controllers without an Interface instance
+2. Mixin composition is deep:
+WithA(WithB(WithC(BaseClass)))
+2. Fragile, order-dependent, hard to debug
+3. Global registry is a hack:
+ContextControllerRegistry as a WeakMap singleton suggests architectural problems (ContextControllerRegistry.ts:12)
+If context API was sufficient, wouldn't need this
+4. No lazy loading:
+All controllers created upfront, even if not used
+5. Testing is coupled:
+To test a component with WithSession, you need SessionContextController, which needs an API, which needs...
+
+---
+
+Part 4: Recommended Decoupling Steps
+
+These recommendations are ordered by dependency and risk, not priority. Lower-numbered steps should be completed before higher ones where noted.
+
+Step 1: Establish Clear Layer Boundaries
+
+Goal: Define architectural layers and enforce separation.
+
+Action: Create explicit layers with defined dependencies:
+
+┌─────────────────────────────────────┐
+│   Presentation (Components, Pages)  │  ← Can use Application & Domain
+├─────────────────────────────────────┤
+│   Application (Interface, Router)   │  ← Can use Domain, not Components
+├─────────────────────────────────────┤
+│   Domain (Models, API, Services)    │  ← Pure business logic, no UI
+├─────────────────────────────────────┤
+│   Infrastructure (Theme, Locale, WS)│  ← Shared utilities
+└─────────────────────────────────────┘
+
+Concrete Changes:
+1. Create layer directories:
+  - /src/app/ - Application shell, routing, orchestration
+  - /src/domain/ - API client, models, business logic
+  - /src/ui/ - Components, forms, tables (currently /elements + /components)
+  - /src/infrastructure/ - Theme, locale, websockets (currently /common)
+2. Enforce boundaries:
+  - Add ESLint rule to prevent upward dependencies (e.g., domain importing from ui)
+  - Create explicit "public API" files (index.ts) for each layer
+
+Why This First:
+- Establishes vocabulary and mental model for remaining work
+- Makes it obvious where code belongs
+- Prevents backsliding during refactoring
+
+Consequences:
+- Requires moving many files (but not changing their content)
+- Import paths will change across codebase
+- Could use path aliases to minimize churn: #app/, #domain/, #ui/, #infra/
+
+Risk: Medium - mostly mechanical changes, but high volume
+
+---
+
+Step 2: Extract Theme & Locale as Infrastructure Services
+
+Goal: Make theme and locale into injectable services rather than controller-based state.
+
+Why This Matters:
+This is the #1 cause of unravelling. Theme and locale touch:
+- Interface initialization (Interface.ts:22-28)
+- Controllers (LocaleContextController, BrandContextController)
+- Mixins (branding.ts, locale.ts)
+- Individual components (reading theme-specific styles)
+- Document-level mutations (theme.ts)
+
+Action: Create service-based architecture:
+
+// infrastructure/theme/ThemeService.ts
+class ThemeService {
+  readonly theme$: Observable<ResolvedUITheme>
+
+  applyTheme(theme: UIThemeHint): void
+  getCurrentTheme(): ResolvedUITheme
+  observeSystemPreference(): Observable<ResolvedUITheme>
+}
+
+// infrastructure/locale/LocaleService.ts
+class LocaleService {
+  readonly locale$: Observable<TargetLanguageTag>
+
+  setLocale(locale: TargetLanguageTag): void
+  getCurrentLocale(): TargetLanguageTag
+  autoDetectLocale(): TargetLanguageTag
+}
+
+Benefits:
+1. Single responsibility: Each service does ONE thing
+2. Testable in isolation: Mock service in tests, no Interface needed
+3. No controllers/mixins needed: Components import service directly
+4. Observable pattern: Reactive updates without Lit context API
+5. Lazy loading: Only initialize when first accessed
+
+Migration Strategy:
+- Phase 1: Create services alongside existing controllers
+- Phase 2: Update Interface to use services, keep controllers for compatibility
+- Phase 3: Deprecate mixins, update components to use services
+- Phase 4: Remove controllers and context providers
+
+Consequences:
+- Touches: Interface, 2 controllers, 2 mixins, all components using theme/locale
+- Risk: High (affects entire app)
+- Benefit: Eliminates ~40% of the unravelling problem
+
+---
+
+Step 3: Unify Interface Layer into True "AppShell"
+
+Goal: Single AppShell component that composes sections, not inheritance hierarchy.
+
+Current Problem:
+Three different interface classes with duplicate initialization logic.
+
+Action: Create composition-based shell:
+
+// app/shell/AppShell.ts
+class AppShell extends LitElement {
+  @property() section!: 'admin' | 'user' | 'flow'
+
+  #services = {
+    theme: new ThemeService(),
+    locale: new LocaleService(),
+    api: new APIService(),
+    // ... other services
+  }
+
+  render() {
+    return html`
+      <app-navbar></app-navbar>
+      ${this.#renderSection()}
+    `
+  }
+
+  #renderSection() {
+    switch (this.section) {
+      case 'admin': return html`<admin-shell></admin-shell>`
+      case 'user': return html`<user-shell></user-shell>`
+      case 'flow': return html`<flow-shell></flow-shell>`
+    }
+  }
+}
+
+Benefits:
+1. Single initialization point: Services created once
+2. Section swapping: Can switch admin ↔ user without reload
+3. Testable: Each section can be tested with mock services
+4. Clear ownership: AppShell owns global concerns, sections own their layouts
+
+Migration Strategy:
+- Step 3a: Create new AppShell alongside existing Interface classes
+- Step 3b: Move controller logic into services
+- Step 3c: Update entrypoints to use AppShell instead of Interface
+- Step 3d: Remove Interface/AuthenticatedInterface/AdminInterface classes
+
+Consequences:
+- Touches: All 3 entrypoint files, Interface hierarchy, admin/user/flow roots
+- Breaks: Controllers (move to services), mixins (replace with service imports)
+- Risk: High - affects entire app initialization
+- Benefit: Eliminates inheritance complexity, enables section swapping
+
+Dependency: Requires Step 2 (services) to be complete
+
+---
+
+Step 4: Modernize Router
+
+Goal: Replace hash-based router with History API, add metadata, enable composition.
+
+Current Problems:
+- Hash-based routing (breaks UX)
+- Non-standard param encoding (; separator)
+- Flat structure (no nesting)
+- No metadata (can't attach permissions, titles, icons)
+- Manual relationship to sidebar
+
+Action: Create declarative router with metadata:
+
+// app/router/Route.ts
+interface Route {
+  path: string  // e.g., "/applications/:id"
+  component: () => Promise<unknown>  // lazy import
+
+  // Metadata
+  title?: () => string
+  permissions?: string[]
+  icon?: string
+  showInSidebar?: boolean
+  parent?: string  // path of parent route
+
+  // Guards
+  canActivate?: () => boolean
+
+  // Data
+  data?: Record<string, unknown>
+}
+
+Example:
+const routes: Route[] = [
+  {
+    path: '/applications',
+    component: () => import('./ApplicationListPage'),
+    title: () => msg('Applications'),
+    icon: 'pf-icon-applications',
+    showInSidebar: true,
+  },
+  {
+    path: '/applications/:slug',
+    component: () => import('./ApplicationViewPage'),
+    title: (params) => msg('Application: {slug}', params),
+    parent: '/applications',  // nested under /applications
+  },
+]
+
+Benefits:
+1. Sidebar auto-generation: Filter routes where showInSidebar: true
+2. Type-safe params: Extract :slug param types from path
+3. Route guards: Check permissions before rendering
+4. Breadcrumbs: Use parent relationships to build navigation
+5. Better URLs: /applications/my-app instead of #/applications;{"slug":"my-app"}
+
+Migration Strategy:
+- Step 4a: Create new Router alongside RouterOutlet
+- Step 4b: Support both hash and history modes during transition
+- Step 4c: Update all route definitions to new format
+- Step 4d: Generate sidebar from routes
+- Step 4e: Remove RouterOutlet and hash mode
+
+Consequences:
+- Touches: RouterOutlet, all Routes.ts files, AdminSidebar.ts, navigation helpers
+- Breaks: All existing URLs (need redirect handling)
+- Risk: Medium-High - routing is critical, but changes are localized
+- Benefit: Eliminates sidebar duplication, improves UX
+
+Dependency: Can be done in parallel with Steps 1-3, but Step 3 makes integration easier
+
+---
+
+Step 5: Decouple Controllers from Interface
+
+Goal: Make controllers usable without Interface inheritance, eliminate mixin composition.
+
+Current Problem:
+- Controllers are created in Interface constructor
+- Consumed via mixins that create deep composition chains
+- Cannot use controllers outside Interface hierarchy
+
+Action: Implement proper dependency injection:
+
+// app/services/ServiceContainer.ts
+class ServiceContainer {
+  private static instances = new Map()
+
+  static register<T>(key: symbol, factory: () => T): void {
+    this.instances.set(key, factory())
+  }
+
+  static get<T>(key: symbol): T {
+    return this.instances.get(key)
+  }
+}
+
+// Usage in components
+class MyComponent extends LitElement {
+  #session = ServiceContainer.get(SessionService)
+
+  render() {
+    return html`User: ${this.#session.currentUser}`
+  }
+}
+
+Benefits:
+1. No mixins needed: Components get services directly
+2. Testable: Mock services in tests via ServiceContainer.register()
+3. Lazy loading: Services created on-demand
+4. Clear dependencies: Component explicitly declares what it needs
+5. No composition chains: No more WithA(WithB(WithC(...)))
+
+Alternative Approach: Use Lit context API properly, without mixins:
+
+class MyComponent extends LitElement {
+  @consume({ context: SessionContext })
+  session!: SessionState
+
+  // No mixin, just direct consumption
+}
+
+Migration Strategy:
+- Step 5a: Create ServiceContainer or improve context usage
+- Step 5b: Convert one controller/mixin pair (e.g., Session)
+- Step 5c: Update all components using that mixin
+- Step 5d: Repeat for remaining controllers
+- Step 5e: Remove mixin infrastructure
+
+Consequences:
+- Touches: All components using mixins (~100+ files)
+- Breaks: Current mixin composition pattern
+- Risk: High - affects entire component tree
+- Benefit: Massive simplification, easier testing
+
+Dependency: Easier after Step 3 (AppShell) is complete
+
+---
+
+Step 6: Consolidate UI Component Libraries
+
+Goal: Establish clear boundary between infrastructure (elements/) and reusable components (components/).
+
+Current Problem:
+- /elements/ contains both infrastructure (Interface, Router) and reusable UI (Table, Form)
+- /components/ contains field inputs and some custom components
+- Unclear which directory to use for new components
+
+Action:
+1. Move infrastructure to /app/:
+  - Interface → app/shell/
+  - Router → app/router/
+  - Controllers → (converted to services in /infrastructure/)
+2. Move reusable UI to /ui/:
+  - Table, Form, Modal → ui/patterns/
+  - Buttons, inputs → ui/primitives/
+  - Messages, banners → ui/feedback/
+3. Establish conventions:
+  - ui/primitives/ - Atomic components (buttons, inputs)
+  - ui/patterns/ - Composed patterns (forms, tables, modals)
+  - ui/layout/ - Layout components (page, section, grid)
+  - ui/feedback/ - User feedback (toasts, banners, alerts)
+
+Benefits:
+- Clear mental model for where components belong
+- Easier to find existing components
+- Can extract UI library into separate package later
+
+Consequences:
+- Touches: All imports across entire codebase
+- Risk: Medium - mechanical changes but high volume
+- Benefit: Long-term maintainability
+
+Dependency: Can be done anytime, but easier after Step 1 (layer boundaries)
+
+---
+
+Step 7: Standardize Form and Table Abstractions
+
+Goal: Simplify the complex Form/Table inheritance hierarchies.
+
+Current Problem:
+- Multiple inheritance levels: Form → ModelForm → ModalForm → ProxyForm
+- Similar complexity for tables
+- Hard to understand which class to extend
+
+This is a lower priority than the above issues, but worth noting:
+
+Action:
+1. Flatten hierarchy: Use composition instead of inheritance
+2. Separate concerns:
+  - Data binding (model) from presentation (modal/page)
+  - Table logic from layout
+3. Provide builders: Factory functions for common cases
+
+Example:
+// Instead of extending ModelForm + ModalForm
+const userForm = createModelForm({
+  model: User,
+  fields: ['username', 'email'],
+  mode: 'modal',  // or 'page'
+})
+
+Dependency: Requires Steps 1-5 to be stable first
+
+---
+
+Part 5: Migration Consequences & Risk Assessment
+
+High-Risk Changes (Affect Entire App)
+
+1. Step 2 (Theme/Locale Services):
+  - Touches: ~150+ files
+  - Risk: Breaking theme/locale everywhere
+  - Mitigation: Feature-flag new system, run in parallel during migration
+2. Step 3 (AppShell):
+  - Touches: All entry points, initialization
+  - Risk: App won't boot if done wrong
+  - Mitigation: Create new AppShell first, switch entrypoints one at a time
+3. Step 5 (Remove Mixins):
+  - Touches: ~100+ components
+  - Risk: Breaking component access to services
+  - Mitigation: Use codemod to automate conversion
+
+Medium-Risk Changes
+
+4. Step 4 (Router):
+  - Touches: ~60 files (Routes.ts, navigation, sidebar)
+  - Risk: Breaking all URLs, navigation
+  - Mitigation: Support both hash and history routing during transition
+5. Step 6 (UI Organization):
+  - Touches: Every file (imports)
+  - Risk: Breaking imports
+  - Mitigation: Use automated refactoring tools, update in batches
+
+Low-Risk Changes
+
+6. Step 1 (Layer Boundaries):
+  - Mostly organizational
+  - Risk: Import path changes
+  - Mitigation: Use path aliases, update in one commit
+7. Step 7 (Form/Table Simplification):
+  - Isolated to form/table usage
+  - Risk: Breaking admin forms
+  - Mitigation: Do incrementally, one form pattern at a time
+
+---
+
+Part 6: The Path Forward
+
+Recommended Sequence
+
+If you have limited time and want maximum impact, do this sequence:
+
+1. Step 2 (Theme/Locale Services) - Eliminates 40% of unravelling problem
+2. Step 4 (Router) - Eliminates sidebar duplication, improves UX
+3. Step 3 (AppShell) - Consolidates initialization, enables future work
+
+This sequence gives you:
+- Decoupled theme/locale (biggest pain point)
+- Unified routing + sidebar (second biggest pain point)
+- Foundation for remaining work
+
+If you have more time, continue with:
+
+4. Step 5 (Remove Mixins) - Simplifies component development
+5. Step 1 (Layer Boundaries) - Makes codebase navigable
+6. Step 6 (UI Organization) - Finishing touches
+
+What You'll Achieve
+
+After Steps 2-4 (Core Decoupling):
+- Adding a new admin page requires editing ONE file (routes), not three
+- Changing theme/locale doesn't cascade through entire app
+- Components can be tested in isolation
+- New developers can understand routing system
+
+After Steps 1-6 (Full Refactor):
+- Clear architectural layers
+- No inheritance hierarchies (composition instead)
+- Services instead of controllers/mixins
+- Codebase is approachable for new contributors
+
+What You Won't Solve (Out of Scope)
+
+These are separate problems:
+
+- PatternFly integration awkwardness (requires CSS/design system work)
+- Form validation complexity (requires form library evaluation)
+- API client code generation (OpenAPI tooling issue)
+- Wizard complexity (need specialized wizard framework)
+
+---
+
+Conclusion
+
+The authentik WebUI has grown into a tangled ball of dependencies where changing one subsystem requires touching dozens of files across multiple directories. This is a textbook case of insufficient architectural boundaries combined with premature abstraction (mixins, deep inheritance).
+
+The root causes are:
+
+1. No layer separation: Application shell, routing, business logic, and UI all mixed together
+2. Cross-cutting concerns as controllers: Theme/locale implemented as stateful controllers instead of services
+3. Inheritance over composition: Multiple 4+ level deep class hierarchies
+4. Manual duplication: Routes and sidebar maintained separately
+5. Tight coupling: Cannot use one subsystem without pulling in entire dependency chain
+
+The recommended solution is architectural refactoring focused on:
+
+- Services over controllers (Step 2)
+- Composition over inheritance (Steps 3, 5)
+- Declarative over imperative (Step 4)
+- Explicit over implicit (Step 1)
+
+This won't be quick—expect 4-8 weeks for core changes (Steps 1-4), but the payoff is sustainable development velocity and the ability to make isolated changes without unravelling the entire application.
+
+The existing UI has earned praise for usability, and these changes preserve that while making the codebase maintainable. The key is doing this incrementally using the phased migration strategies outlined above, rather than attempting a "big bang" rewrite.
+
+> We would like, as much as possible, to be able to transpile and bundle the
+> Admin, Flow, User applications independently of one another, rather than 
+> just bundle them all into the `./src/app` folder.  We would also like to 
+> distinguish between Elements, which do not need to know about the Authentik 
+> API, and Components, which are informed about the authentik API types and 
+> may need to pull information from that API.  If these goals are added, what 
+> changes to the recommendations would you make? 
+
+⏺ Adding independent bundling and API-awareness boundaries fundamentally changes the architecture. You're moving from a "single app with sections" to a "micro-frontends" or "monorepo with independent apps" model. This requires more radical changes but provides much better isolation.
+
+
+Your additional requirements fundamentally shift the architecture from "decoupled monolith" to "micro-frontend monorepo". Let me analyze how this changes everything:
+
+Constraint 1: Independent Bundling
+
+What you have now:
+- ESBuild with 3 entry points (Admin, User, Flow) via paths/node.js:56-68
+- Shared code splitting enabled (splitting: true in build-web.mjs:68)
+- All apps share chunks at runtime - they're code-split, not independent
+
+What you want:
+- Each app as a completely independent bundle
+- No shared runtime chunks between Admin/User/Flow
+- Separate transpilation, bundling, deployment possible
+
+Implication: Admin, User, and Flow become separate applications that happen to live in the same repository. They cannot import from each other at runtime.
+
+Constraint 2: Elements vs Components API Boundary
+
+What you have now:
+- 60 files in /src/elements/ import from @goauthentik/api
+- Massive boundary violation includes:
+  - Table.ts, Form.ts - core abstractions
+  - All mixins (session, capabilities, config, branding, license)
+  - All controllers
+  - User-related elements
+  - Charts, tasks, OAuth components
+
+What you want:
+- /elements/ = Pure UI primitives, zero API imports, reusable anywhere
+- /components/ = Authentik-specific, API-aware business components
+
+Implication: Requires massive refactoring of ~60 files to separate API concerns from presentation.
+
+---
+
+Current State Analysis
+
+Build System (Good Foundation)
+
+You already have:
+- Separate entry points defined (paths/node.js)
+- ESBuild with code splitting
+- Watch mode for development
+- Path aliases (#elements/, #common/, etc.)
+
+Problem: Code splitting creates shared chunks, not independent bundles.
+
+Shared Code Reality
+
+All three apps currently share:
+1. Elements infrastructure: Interface, Router, Sidebar, Controllers
+2. Common utilities: global.ts, theme.ts, API config, WebSocket client
+3. Lit & PatternFly: Framework dependencies
+4. API client: @goauthentik/api package
+
+The Pattern:
+// user/index.entrypoint.ts:17-27
+import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithSession } from "#elements/mixins/session";
+// ... etc
+
+Every app pulls in the same infrastructure, which creates shared chunks.
+
+API Coupling in Elements/
+
+Critical violations (60 files):
+
+Infrastructure components:
+- Table.ts, TablePagination.ts - import API pagination types
+- Form.ts, DeleteForm.ts - import API response types
+- All controllers import API types
+- All mixins consume API-typed contexts
+
+This means: The entire elements/ layer is tightly coupled to authentik, not reusable.
+
+---
+
+Revised Architecture: Monorepo with Independent Apps
+
+Given your constraints, here's the recommended structure:
+
+/web/
+├── packages/
+│   ├── ui/                      # Pure UI (NO API imports)
+│   │   ├── primitives/          # Buttons, inputs, layouts
+│   │   ├── patterns/            # Generic tables, forms, modals
+│   │   ├── charts/              # API-agnostic chart components
+│   │   └── utils/               # DOM helpers, formatters
+│   │
+│   ├── authentik-components/    # API-aware components
+│   │   ├── tables/              # Table<T extends ApiModel>
+│   │   ├── forms/               # ModelForm, DeleteForm
+│   │   ├── user/                # User-specific widgets
+│   │   ├── oauth/               # OAuth widgets
+│   │   └── charts/              # EventChart, etc.
+│   │
+│   ├── infrastructure/          # Shared services
+│   │   ├── theme/               # ThemeService
+│   │   ├── locale/              # LocaleService
+│   │   ├── api/                 # API client config
+│   │   ├── websocket/           # WebSocket client
+│   │   └── sentry/              # Error tracking
+│   │
+│   ├── router/                  # Standalone router library
+│   │   ├── core/                # Router engine
+│   │   ├── types/               # Route definitions
+│   │   └── components/          # RouterOutlet, Link
+│   │
+│   └── api/                     # (existing @goauthentik/api)
+│
+└── apps/                        # Independent applications
+    ├── admin/
+    │   ├── src/
+    │   │   ├── pages/           # Admin pages
+    │   │   ├── routes.ts        # Route definitions
+    │   │   ├── shell.ts         # AdminShell component
+    │   │   └── main.ts          # Entry point
+    │   ├── package.json         # App-specific deps
+    │   └── vite.config.ts       # App-specific build
+    │
+    ├── user/
+    │   ├── src/
+    │   │   ├── pages/
+    │   │   ├── routes.ts
+    │   │   ├── shell.ts
+    │   │   └── main.ts
+    │   ├── package.json
+    │   └── vite.config.ts
+    │
+    └── flow/
+        ├── src/
+        │   ├── stages/
+        │   ├── executor.ts
+        │   └── main.ts
+        ├── package.json
+        └── vite.config.ts
+
+Key Principles
+
+1. Packages are libraries - Publishable, versioned, independent
+2. Apps are applications - Import from packages, never from each other
+3. No circular dependencies - Apps → packages, never packages → apps
+4. API boundary enforced - Only authentik-components/ imports from api/
+
+---
+
+Revised Steps (Prioritized for New Constraints)
+
+STEP 0: Establish Monorepo Infrastructure ⭐ (NEW - REQUIRED FIRST)
+
+Goal: Set up monorepo tooling to support independent apps + shared packages.
+
+Actions:
+1. Choose monorepo tool:
+  - Option A: npm workspaces (you already use this - see package.json exports)
+  - Option B: pnpm workspaces (better dependency isolation)
+  - Option C: Turborepo (adds caching, better for large teams)
+
+Recommendation: Stick with npm workspaces since you already have it.
+2. Restructure directories:
+mkdir -p packages/{ui,authentik-components,infrastructure,router}
+mkdir -p apps/{admin,user,flow}
+3. Configure workspace root package.json:
+{
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}
+4. Create per-app package.json:
+// apps/admin/package.json
+{
+  "name": "@goauthentik/admin",
+  "type": "module",
+  "dependencies": {
+    "@goauthentik/ui": "workspace:*",
+    "@goauthentik/authentik-components": "workspace:*",
+    "@goauthentik/infrastructure": "workspace:*",
+    "@goauthentik/router": "workspace:*",
+    "@goauthentik/api": "workspace:*"
+  }
+}
+5. Create per-app build configs:
+// apps/admin/vite.config.js
+export default defineConfig({
+  build: {
+    lib: false, // App mode, not library
+    rollupOptions: {
+      input: './src/main.ts',
+      output: {
+        dir: '../../dist/admin',
+        entryFileNames: 'admin.[hash].js',
+        chunkFileNames: 'chunks/[hash].js'
+      }
+    }
+  }
+})
+
+Why This First:
+- Foundation for all other changes
+- Enables independent builds
+- Enforces package boundaries via workspace dependencies
+
+Risk: Medium - structural change but mostly mechanical
+
+Time: 1-2 weeks (setup + migration)
+
+---
+
+STEP 1: Split Elements into UI + Authentik-Components ⭐ (CRITICAL)
+
+Goal: Separate API-agnostic UI from API-aware components.
+
+Current Problem: 60 files in elements/ import from @goauthentik/api.
+
+Action Plan:
+
+Phase 1A: Create Package Structure
+
+# Create new packages
+mkdir -p packages/ui/{primitives,patterns,utils}
+mkdir -p packages/authentik-components/{tables,forms,user,oauth,charts}
+
+Phase 1B: Classify Every Element
+
+Audit all src/elements/ files and classify:
+
+→ Pure UI (move to packages/ui/):
+- Sidebar.ts, SidebarItem.ts (presentation only)
+- Basic layouts, wrappers
+- Generic utilities (DOM helpers, formatters)
+
+→ API-Aware (move to packages/authentik-components/):
+- Table.ts, TablePagination.ts (uses API pagination)
+- Form.ts, ModelForm.ts, DeleteForm.ts (uses API types)
+- All controllers (fetch API data)
+- All mixins (consume API-typed contexts)
+- User-related elements
+- OAuth elements
+- Charts that fetch API data
+
+→ Infrastructure (move to packages/infrastructure/):
+- Router (RouterOutlet, Route, RouteMatch)
+- Theme management
+- Locale management
+- WebSocket client
+- Sentry config
+
+Phase 1C: Refactor API Coupling
+
+For components that need to become pure UI, extract API logic:
+
+Before (elements/table/Table.ts):
+import { PaginatedResponse } from "@goauthentik/api";
+
+export class Table<T> {
+  @property() data?: PaginatedResponse<T>;
+
+  render() {
+    return html`${this.data?.results.map(...)}`;
+  }
+}
+
+After (ui/patterns/GenericTable.ts):
+// NO API imports
+export interface TableData<T> {
+  results: T[];
+  pagination: {
+    count: number;
+    current: number;
+    totalPages: number;
+  };
+}
+
+export class GenericTable<T> {
+  @property() data?: TableData<T>;
+
+  render() {
+    return html`${this.data?.results.map(...)}`;
+  }
+}
+
+After (authentik-components/tables/ApiTable.ts):
+import { PaginatedResponse } from "@goauthentik/api";
+import { GenericTable, TableData } from "@goauthentik/ui/patterns";
+
+export class ApiTable<T> extends GenericTable<T> {
+  @property() apiData?: PaginatedResponse<T>;
+
+  // Adapter: convert API format to generic format
+  protected get data(): TableData<T> | undefined {
+    if (!this.apiData) return undefined;
+
+    return {
+      results: this.apiData.results,
+      pagination: {
+        count: this.apiData.pagination.count,
+        current: this.apiData.pagination.current,
+        totalPages: Math.ceil(this.apiData.pagination.count / this.apiData.pagination.pageSize)
+      }
+    };
+  }
+}
+
+Pattern: Create adapter components in authentik-components/ that wrap pure UI from ui/.
+
+Phase 1D: Enforce Boundaries
+
+Add ESLint rule:
+// eslint.config.mjs
+{
+  files: ['packages/ui/**/*.ts'],
+  rules: {
+    'no-restricted-imports': ['error', {
+      patterns: ['@goauthentik/api*']
+    }]
+  }
+}
+
+Migration Strategy:
+1. Start with smallest violations (utilities, simple components)
+2. Move to patterns (tables, forms)
+3. Finally tackle controllers/mixins
+4. Update all imports across codebase
+
+Why This Is Critical:
+- Enables independent bundling - apps can choose which packages to include
+- Allows UI reuse - pure UI can be extracted to separate project later
+- Reduces bundle size - apps not using certain features don't pay for them
+- Improves testability - pure UI has no API mocks needed
+
+Risk: High - touches 60+ files, all apps, all imports
+
+Time: 4-6 weeks (classification + refactor + testing)
+
+---
+
+STEP 2: Extract Infrastructure as Services (REVISED)
+
+Goal: Make theme, locale, API config, etc. into standalone packages.
+
+Original Plan: Services within same app
+Revised Plan: Separate packages/infrastructure/ with sub-packages
+
+Structure:
+packages/infrastructure/
+├── theme/
+│   ├── ThemeService.ts
+│   ├── types.ts
+│   └── package.json
+├── locale/
+│   ├── LocaleService.ts
+│   ├── definitions.ts
+│   └── package.json
+├── api/
+│   ├── client.ts
+│   ├── config.ts
+│   └── package.json
+└── websocket/
+    ├── WebSocketClient.ts
+    └── package.json
+
+Key Change: Each service is a workspace package with its own package.json:
+
+// packages/infrastructure/theme/package.json
+{
+  "name": "@goauthentik/infrastructure-theme",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./types": "./types.ts"
+  },
+  "dependencies": {
+    // ONLY dependencies this service needs
+  }
+}
+
+Benefits:
+- Apps only include services they need
+- Services can be tested independently
+- Clear dependency graph
+- Can version independently
+
+Migration: Same as original Step 2, but with workspace packages.
+
+Risk: Medium - well-isolated changes
+
+Time: 2-3 weeks
+
+---
+
+STEP 3: Refactor Interface Layer into App Shells (MAJOR REVISION)
+
+Original Plan: Single AppShell that switches sections
+Revised Plan: Each app gets its own shell that composes shared infrastructure
+
+Why the Change: Apps are independent bundles - they can't share a parent shell.
+
+New Structure:
+
+// packages/infrastructure/shell/BaseShell.ts
+export abstract class BaseShell extends LitElement {
+  // Shared shell behaviors
+  protected themeService = new ThemeService();
+  protected localeService = new LocaleService();
+
+  abstract renderContent(): TemplateResult;
+
+  render() {
+    return html`
+      <div class="shell">
+        ${this.renderContent()}
+      </div>
+    `;
+  }
+}
+
+// apps/admin/src/shell.ts
+export class AdminShell extends BaseShell {
+  #router = new Router(ADMIN_ROUTES);
+
+  renderContent() {
+    return html`
+      <ak-navbar></ak-navbar>
+      <ak-sidebar .items=${this.sidebarItems}></ak-sidebar>
+      <router-outlet .router=${this.#router}></router-outlet>
+    `;
+  }
+}
+
+// apps/user/src/shell.ts
+export class UserShell extends BaseShell {
+  #router = new Router(USER_ROUTES);
+
+  renderContent() {
+    return html`
+      <user-header></user-header>
+      <router-outlet .router=${this.#router}></router-outlet>
+    `;
+  }
+}
+
+Pattern:
+- BaseShell provides shared infrastructure (theme, locale)
+- Each app's shell composes its own layout
+- No runtime dependency between app shells
+- Shared code via BaseShell package
+
+Benefits:
+- Apps are truly independent
+- Can deploy/version separately
+- Can use different routers or layouts
+- Clear ownership
+
+Consequences:
+- More code duplication than unified shell
+- Each app manages its own lifecycle
+- Communication between apps requires postMessage or URL params
+
+Risk: High - affects entire app initialization
+
+Time: 3-4 weeks
+
+---
+
+STEP 4: Modernize Router as Standalone Package (REVISED)
+
+Original Plan: Replace RouterOutlet
+Revised Plan: Extract router as packages/router/
+
+Structure:
+packages/router/
+├── src/
+│   ├── core/
+│   │   ├── Router.ts          # Router class
+│   │   ├── Route.ts           # Route definition
+│   │   ├── matcher.ts         # Path matching
+│   │   └── history.ts         # History API wrapper
+│   ├── components/
+│   │   ├── RouterOutlet.ts    # <router-outlet> component
+│   │   └── RouterLink.ts      # <router-link> component
+│   └── types/
+│       ├── Route.ts           # Route interface
+│       └── Match.ts           # Match types
+├── package.json
+└── README.md
+
+Key Difference: Router is a publishable package, not just internal code.
+
+Route Definition:
+// packages/router/src/types/Route.ts
+export interface Route {
+  path: string;                    // "/applications/:id"
+  component: () => Promise<any>;   // Lazy load
+
+  // Metadata
+  title?: (params) => string;
+  icon?: string;
+  showInNav?: boolean;
+
+  // Guards
+  canActivate?: () => boolean;
+
+  // Hierarchy
+  children?: Route[];
+}
+
+Usage in Apps:
+// apps/admin/src/routes.ts
+import { Route } from '@goauthentik/router';
+
+export const ADMIN_ROUTES: Route[] = [
+  {
+    path: '/applications',
+    component: () => import('./pages/ApplicationList'),
+    title: () => msg('Applications'),
+    icon: 'pf-icon-apps',
+    showInNav: true,
+    children: [
+      {
+        path: ':slug',
+        component: () => import('./pages/ApplicationDetail'),
+        title: (params) => msg('Application: {slug}', params)
+      }
+    ]
+  }
+];
+
+Auto-Generate Sidebar:
+// apps/admin/src/shell.ts
+const sidebarItems = ADMIN_ROUTES
+  .filter(r => r.showInNav)
+  .map(r => ({
+    path: r.path,
+    label: r.title?.({}) ?? r.path,
+    icon: r.icon,
+    children: r.children?.filter(c => c.showInNav)
+  }));
+
+Benefits:
+- Router can be open-sourced
+- Sidebar auto-synced with routes
+- Type-safe parameters
+- Better URLs (History API)
+
+Risk: Medium - routing is critical but isolated
+
+Time: 2-3 weeks
+
+---
+
+STEP 5: Controllers → Services with DI (REVISED FOR MONOREPO)
+
+Original Plan: ServiceContainer in single app
+Revised Plan: Service package with injection utilities
+
+Structure:
+packages/infrastructure/services/
+├── ServiceContainer.ts
+├── decorators.ts
+└── types.ts
+
+Service Container:
+// Singleton registry for all apps
+export class ServiceContainer {
+  private static instances = new Map();
+
+  static register<T>(key: symbol, instance: T): void {
+    this.instances.set(key, instance);
+  }
+
+  static get<T>(key: symbol): T {
+    return this.instances.get(key);
+  }
+}
+
+// Decorator for easy injection
+export function inject(key: symbol) {
+  return (target: any, propertyKey: string) => {
+    Object.defineProperty(target, propertyKey, {
+      get() {
+        return ServiceContainer.get(key);
+      }
+    });
+  };
+}
+
+Usage:
+// apps/admin/src/main.ts
+import { ServiceContainer } from '@goauthentik/infrastructure/services';
+import { SessionService, ThemeService } from '@goauthentik/infrastructure';
+
+// Register services at app boot
+ServiceContainer.register(SessionService.key, new SessionService());
+ServiceContainer.register(ThemeService.key, new ThemeService());
+
+// In components
+class MyComponent extends LitElement {
+  @inject(SessionService.key) session!: SessionService;
+
+  render() {
+    return html`User: ${this.session.currentUser}`;
+  }
+}
+
+Benefits:
+- No mixins needed
+- Testable (mock services)
+- Clear dependencies
+- Shared across app
+
+Risk: Medium - requires converting all mixin users
+
+Time: 3-4 weeks
+
+---
+
+STEP 6: Independent Build System (NEW - CRITICAL)
+
+Goal: Enable independent transpilation and bundling of each app.
+
+Current: Single ESBuild with multiple entry points, shared chunks
+Target: Per-app Vite configs, no shared chunks
+
+Actions:
+
+6A: Per-App Vite Configs
+
+// apps/admin/vite.config.js
+export default defineConfig({
+  root: './src',
+  build: {
+    outDir: '../../dist/admin',
+    rollupOptions: {
+      input: './src/main.ts',
+      output: {
+        // NO manualChunks - each app bundles independently
+        entryFileNames: 'admin-[hash].js',
+        chunkFileNames: 'chunks/[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]'
+      }
+    }
+  },
+  resolve: {
+    alias: {
+      '@goauthentik/ui': resolve(__dirname, '../../packages/ui'),
+      '@goauthentik/authentik-components': resolve(__dirname, '../../packages/authentik-components'),
+      // ... other packages
+    }
+  }
+})
+
+6B: Shared Dependencies Strategy
+
+Problem: If all apps bundle Lit, PatternFly, etc., total size is huge.
+
+Options:
+
+Option 1: Duplicate everything (simplest)
+- Each app bundles all dependencies
+- ✅ Truly independent
+- ❌ Larger total download
+
+Option 2: External shared deps (complex)
+- Mark common deps as external
+- Load via CDN or import maps
+- ✅ Smaller total size
+- ❌ Coordination needed
+
+Option 3: Vite Module Federation (modern)
+- Use @originjs/vite-plugin-federation
+- Share deps at runtime
+- ✅ Best of both worlds
+- ❌ Complex setup
+
+Recommendation: Start with Option 1 (duplicate), optimize later if needed.
+
+6C: Build Scripts
+
+// package.json (root)
+{
+  "scripts": {
+    "build": "npm run build -ws",
+    "build:admin": "npm run build -w @goauthentik/admin",
+    "build:user": "npm run build -w @goauthentik/user",
+    "build:flow": "npm run build -w @goauthentik/flow",
+    "dev:admin": "npm run dev -w @goauthentik/admin",
+    "dev:user": "npm run dev -w @goauthentik/user",
+    "dev:flow": "npm run dev -w @goauthentik/flow"
+  }
+}
+
+Benefits:
+- Each app can build independently
+- Parallel builds in CI
+- Deploy one app without rebuilding others
+- Different optimization strategies per app
+
+Risk: Low - build infrastructure is isolated
+
+Time: 1-2 weeks
+
+---
+
+STEP 7: Enforce Package Boundaries (NEW - ONGOING)
+
+Goal: Prevent architectural violations via automation.
+
+Tools:
+
+1. ESLint import rules:
+// eslint.config.mjs
+export default [
+  {
+    files: ['packages/ui/**'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: ['@goauthentik/api', '@goauthentik/authentik-components']
+      }]
+    }
+  },
+  {
+    files: ['apps/**'],
+    rules: {
+      'no-restricted-imports': ['error', {
+        patterns: ['apps/*']  // Apps can't import from each other
+      }]
+    }
+  }
+]
+
+2. Dependency Cruiser:
+// .dependency-cruiser.js
+module.exports = {
+  forbidden: [
+    {
+      name: 'no-api-in-ui',
+      from: { path: '^packages/ui' },
+      to: { path: '@goauthentik/api' }
+    },
+    {
+      name: 'no-app-interdependencies',
+      from: { path: '^apps/[^/]+' },
+      to: { path: '^apps/(?!\\1)' }
+    }
+  ]
+};
+
+3. Package.json validation:
+- CI check that packages/ui/package.json doesn't list @goauthentik/api as dependency
+- Verify workspace protocols used correctly
+
+Risk: Low - just tooling
+
+Time: 1 week
+
+---
+
+Revised Migration Sequence
+
+Given the new constraints, here's the recommended order:
+
+Phase 1: Foundation (Weeks 1-4)
+
+1. Step 0: Set up monorepo structure
+2. Step 6: Configure independent builds
+3. Step 7: Add boundary enforcement
+
+Goal: Can build apps independently, boundaries enforced by tooling.
+
+Phase 2: UI Decoupling (Weeks 5-10)
+
+4. Step 1: Split elements/ into ui/ + authentik-components/
+5. Step 2: Extract infrastructure as packages
+
+Goal: API-agnostic UI layer, reusable infrastructure.
+
+Phase 3: Architecture Refactor (Weeks 11-16)
+
+6. Step 3: Refactor Interface → app shells
+7. Step 4: Modernize router as package
+8. Step 5: Replace controllers/mixins with services
+
+Goal: Clean architecture with proper separation.
+
+---
+
+What You Gain
+
+Immediately (Phase 1):
+
+- ✅ Independent app builds
+- ✅ Parallel development (admin team, user team, flow team)
+- ✅ Selective deployment (deploy only changed app)
+- ✅ Enforced boundaries (linting prevents violations)
+
+After Phase 2:
+
+- ✅ Reusable UI library (can extract to separate project)
+- ✅ Smaller bundles (apps only include what they need)
+- ✅ Clearer ownership (UI team, components team, app teams)
+- ✅ Easier testing (pure UI has no mocks needed)
+
+After Phase 3:
+
+- ✅ Clean architecture (no inheritance hierarchies, no mixins)
+- ✅ Unified routing (auto-generated sidebars)
+- ✅ Service-based (testable, injectable)
+- ✅ Maintainable (clear dependencies, enforced boundaries)
+
+---
+
+What You Sacrifice
+
+Tradeoffs:
+
+1. Code Duplication:
+  - Each app bundles its own dependencies
+  - Mitigate: Use Module Federation if total size becomes issue
+2. Initial Complexity:
+  - Monorepo adds cognitive overhead
+  - Mitigate: Good documentation, clear conventions
+3. Build Time:
+  - Building all apps separately takes longer than one bundle
+  - Mitigate: Caching (Turborepo), parallel builds, only build changed apps
+4. Cross-App Features:
+  - Shared features (like notifications) need coordination
+  - Mitigate: Publish shared components as packages
+
+---
+
+Key Architectural Decisions
+
+1. Elements Split Strategy
+
+Decision: Two-tier split (ui/ + authentik-components/)
+
+Rationale:
+- Clean API boundary enforcement
+- Allows UI layer extraction
+- authentik-components acts as adapter layer
+
+Alternative: Three-tier (primitives, patterns, domain) - more complex, not worth it yet.
+
+2. Build Strategy
+
+Decision: Independent builds with duplicated dependencies (initially)
+
+Rationale:
+- Simplest to implement
+- Truly independent apps
+- Optimize later if needed
+
+Alternative: Module Federation - complex, would delay other work.
+
+3. Service Architecture
+
+Decision: Services with injection, not controllers/mixins
+
+Rationale:
+- Testable without Interface
+- No composition complexity
+- Can be used in pure functions (not just components)
+
+Alternative: Keep Lit contexts - but still coupled to component tree.
+
+4. Monorepo Tool
+
+Decision: Stick with npm workspaces
+
+Rationale:
+- Already in use
+- Simple
+- No new tool to learn
+
+Alternative: Turborepo - better caching, but overkill for 3 apps.
+
+---
+
+Final Recommendation
+
+The combination of independent bundling + API boundary enforcement is ambitious but achievable. The key is phased migration:
+
+DO immediately:
+- Step 0 (monorepo structure)
+- Step 6 (independent builds)
+- Step 7 (boundary enforcement)
+
+This gives you the foundation to proceed incrementally.
+
+DO next:
+- Step 1 (elements split) - this is the hard one, but most valuable
+
+DO later:
+- Steps 2-5 (architecture cleanup) - these are quality improvements but not blockers
+
+Expected timeline: 16-20 weeks for full migration, but value delivered incrementally starting Week 4.
+
+The good news: Your existing entry point structure (paths/node.js) shows you were already thinking about separation. You're not starting from zero.
+
+> The recommendations discuss the problem of having so many controllers, and thus so many sources of
+> truth within an application. We have many sources of configuration information: there is the
+> site's configuration, the user's configuration, the brand's configuration, and the *browser's*
+> configuration. Each of which may contribute to the some state of the configuration. For example,
+> every one of those configurations may carry information about the user's experience with theme and
+> locale; that's part of the reason we use browser events to notify theme and language handlers to
+> update their maps as new information comes in asynchronously and in no set order. This feels like
+> a tight coupling issue that's hard to work around. How would we address that?
+
+⏺ This is the core architectural problem you're facing, and you've diagnosed it perfectly. You have a multi-source configuration cascade with async loading, browser events, and overlapping concerns. The controller architecture makes this worse because each controller is a separate "source of truth" that components have to coordinate.
+
+Let me show you how to solve this properly.
+
+---
+
+The Problem: Configuration Cascade Hell
+
+You have 4+ configuration sources that overlap:
+
+Browser Config:
+  ├─ prefers-color-scheme: dark
+  ├─ navigator.language: 'en-US'
+  ├─ localStorage.theme: 'light'
+  └─ prefers-reduced-motion: reduce
+
+Site Config (from backend):
+  ├─ default_theme: 'auto'
+  ├─ available_locales: ['en', 'de', 'fr']
+  └─ enable_dark_mode: true
+
+Brand Config (from backend):
+  ├─ theme: 'dark'  // Brand override
+  ├─ logo: '/brand1/logo.png'
+  └─ primary_color: '#ff0000'
+
+User Config (from backend):
+  ├─ theme: 'light'  // User preference
+  ├─ locale: 'de'
+  └─ timezone: 'Europe/Berlin'
+
+The Questions:
+1. What's the user's effective theme? (User > Brand > Site > Browser)
+2. What if user config hasn't loaded yet?
+3. What if browser fires prefers-color-scheme change mid-session?
+4. How do components get the "right" value without knowing about all sources?
+
+Current Solution (Controllers + Mixins):
+- ConfigContextController fetches site config
+- BrandingContextController fetches brand config
+- SessionContextController fetches user config
+- global.ts reads browser config
+- Components use mixins to access all of them
+- Theme resolution scattered across multiple files
+
+Why This Is Tight Coupling:
+Every component that needs theme must:
+1. Understand which controller has what
+2. Know the precedence rules
+3. Handle async loading states
+4. Subscribe to all relevant changes
+
+That's why you have mixins - to hide this complexity. But it's still coupled because the resolution logic is distributed.
+
+---
+
+Solution: Configuration Layer Manager
+
+Create a single service that manages the configuration cascade with explicit precedence and reactive resolution.
+
+Architecture Overview
+
+┌─────────────────────────────────────────────────┐
+│         ConfigurationManager                     │
+│  (Single source of derived truth)               │
+│                                                  │
+│  resolvedConfig$ ──► Observable<ResolvedConfig> │
+└─────────────────────────────────────────────────┘
+                        ▲
+                        │ Merges with precedence
+                        │
+     ┌──────────────────┼──────────────────┐
+     │                  │                  │
+┌────▼────┐      ┌──────▼───┐      ┌──────▼───┐
+│ Browser │      │   Site   │      │   User   │
+│  Layer  │      │  Layer   │      │  Layer   │
+│ (sync)  │      │ (async)  │      │ (async)  │
+└─────────┘      └──────────┘      └──────────┘
+     │                  │                  │
+     └─── Each emits on change ───────────┘
+
+Components subscribe to only resolvedConfig$, never to individual layers.
+
+---
+
+Implementation
+
+⏺ Step 1: Define Configuration Shape
+
+// packages/infrastructure/config/types.ts
+
+/**
+ * Browser-detected configuration
+ * Always available, synchronous
+ */
+export interface BrowserConfig {
+  theme: 'light' | 'dark' | null;  // from prefers-color-scheme
+  locale: string;                   // from navigator.language
+  reducedMotion: boolean;           // from prefers-reduced-motion
+  localStorage: {
+    theme?: string;
+    locale?: string;
+  };
+}
+
+/**
+ * Site-wide configuration
+ * Loaded from backend, async
+ */
+export interface SiteConfig {
+  theme?: 'light' | 'dark' | 'auto';
+  availableLocales: string[];
+  defaultLocale: string;
+  enableDarkMode: boolean;
+  // ... other site settings
+}
+
+/**
+ * Brand-specific configuration
+ * Loaded from backend, async
+ * May override site defaults
+ */
+export interface BrandConfig {
+  theme?: 'light' | 'dark';
+  logo: string;
+  favicon: string;
+  primaryColor?: string;
+  // ... other brand settings
+}
+
+/**
+ * User preferences
+ * Loaded from backend, async
+ * Highest priority for user-specific settings
+ */
+export interface UserConfig {
+  theme?: 'light' | 'dark';
+  locale?: string;
+  timezone?: string;
+  // ... other user preferences
+}
+
+/**
+ * Final resolved configuration
+ * This is what components actually consume
+ */
+export interface ResolvedConfig {
+  theme: 'light' | 'dark';  // Always resolved to concrete value
+  locale: string;            // Always resolved to concrete value
+  reducedMotion: boolean;
+  brand: {
+    logo: string;
+    favicon: string;
+    primaryColor: string;
+  };
+  // ... other resolved values
+}
+
+/**
+ * Loading state for async config layers
+ */
+export type ConfigState<T> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'ready', data: T }
+  | { status: 'error', error: Error };
+
+Step 2: Configuration Layer Base Class
+
+// packages/infrastructure/config/ConfigLayer.ts
+
+import { BehaviorSubject, Observable } from 'rxjs';
+
+/**
+ * Base class for a configuration layer
+ * Each layer manages one source of config and emits on changes
+ */
+export abstract class ConfigLayer<T> {
+  protected state$ = new BehaviorSubject<ConfigState<T>>({ status: 'idle' });
+
+  /**
+   * Observable of this layer's config state
+   */
+  get config$(): Observable<ConfigState<T>> {
+    return this.state$.asObservable();
+  }
+
+  /**
+   * Current state (synchronous access)
+   */
+  get current(): ConfigState<T> {
+    return this.state$.value;
+  }
+
+  /**
+   * Get config data if ready, undefined otherwise
+   */
+  get data(): T | undefined {
+    const state = this.current;
+    return state.status === 'ready' ? state.data : undefined;
+  }
+
+  /**
+   * Update the config state
+   */
+  protected setState(state: ConfigState<T>): void {
+    this.state$.next(state);
+  }
+
+  /**
+   * Subclasses implement initialization logic
+   */
+  abstract initialize(): Promise<void>;
+}
+
+Step 3: Concrete Layer Implementations
+
+// packages/infrastructure/config/BrowserConfigLayer.ts
+
+export class BrowserConfigLayer extends ConfigLayer<BrowserConfig> {
+  async initialize(): Promise<void> {
+    // Browser config is always available synchronously
+    const config: BrowserConfig = {
+      theme: this.detectColorScheme(),
+      locale: navigator.language,
+      reducedMotion: this.detectReducedMotion(),
+      localStorage: {
+        theme: localStorage.getItem('authentik.theme') ?? undefined,
+        locale: localStorage.getItem('authentik.locale') ?? undefined,
+      }
+    };
+
+    this.setState({ status: 'ready', data: config });
+
+    // Listen for browser changes
+    this.watchColorScheme();
+    this.watchReducedMotion();
+    this.watchLanguageChange();
+    this.watchLocalStorage();
+  }
+
+  private detectColorScheme(): 'light' | 'dark' | null {
+    if (!window.matchMedia) return null;
+
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+      return 'light';
+    }
+    return null;
+  }
+
+  private watchColorScheme(): void {
+    const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const lightQuery = window.matchMedia('(prefers-color-scheme: light)');
+
+    const handler = () => {
+      const current = this.data!;
+      this.setState({
+        status: 'ready',
+        data: {
+          ...current,
+          theme: this.detectColorScheme()
+        }
+      });
+    };
+
+    darkQuery.addEventListener('change', handler);
+    lightQuery.addEventListener('change', handler);
+  }
+
+  private detectReducedMotion(): boolean {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  private watchReducedMotion(): void {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    query.addEventListener('change', (e) => {
+      const current = this.data!;
+      this.setState({
+        status: 'ready',
+        data: {
+          ...current,
+          reducedMotion: e.matches
+        }
+      });
+    });
+  }
+
+  private watchLanguageChange(): void {
+    window.addEventListener('languagechange', () => {
+      const current = this.data!;
+      this.setState({
+        status: 'ready',
+        data: {
+          ...current,
+          locale: navigator.language
+        }
+      });
+    });
+  }
+
+  private watchLocalStorage(): void {
+    window.addEventListener('storage', (e) => {
+      if (!e.key?.startsWith('authentik.')) return;
+
+      const current = this.data!;
+      this.setState({
+        status: 'ready',
+        data: {
+          ...current,
+          localStorage: {
+            theme: localStorage.getItem('authentik.theme') ?? undefined,
+            locale: localStorage.getItem('authentik.locale') ?? undefined,
+          }
+        }
+      });
+    });
+  }
+}
+
+// packages/infrastructure/config/SiteConfigLayer.ts
+
+export class SiteConfigLayer extends ConfigLayer<SiteConfig> {
+  constructor(private api: ApiClient) {
+    super();
+  }
+
+  async initialize(): Promise<void> {
+    this.setState({ status: 'loading' });
+
+    try {
+      const config = await this.api.core.coreConfigRetrieve();
+
+      this.setState({
+        status: 'ready',
+        data: {
+          theme: config.theme,
+          availableLocales: config.availableLocales,
+          defaultLocale: config.defaultLocale,
+          enableDarkMode: config.enableDarkMode,
+          // ... map other fields
+        }
+      });
+    } catch (error) {
+      this.setState({
+        status: 'error',
+        error: error as Error
+      });
+    }
+  }
+}
+
+// packages/infrastructure/config/UserConfigLayer.ts
+
+export class UserConfigLayer extends ConfigLayer<UserConfig> {
+  constructor(private api: ApiClient) {
+    super();
+  }
+
+  async initialize(): Promise<void> {
+    this.setState({ status: 'loading' });
+
+    try {
+      const user = await this.api.core.coreUsersRetrieveMe();
+
+      this.setState({
+        status: 'ready',
+        data: {
+          theme: user.settings?.theme,
+          locale: user.settings?.locale?.locale,
+          timezone: user.settings?.timezone,
+          // ... map other fields
+        }
+      });
+    } catch (error) {
+      this.setState({
+        status: 'error',
+        error: error as Error
+      });
+    }
+  }
+
+  /**
+   * Allow updating user preferences
+   */
+  async updateTheme(theme: 'light' | 'dark'): Promise<void> {
+    // Optimistic update
+    const current = this.data;
+    if (current) {
+      this.setState({
+        status: 'ready',
+        data: { ...current, theme }
+      });
+    }
+
+    // Persist to backend
+    try {
+      await this.api.core.coreUsersMePartialUpdate({
+        settings: { theme }
+      });
+    } catch (error) {
+      // Revert on error
+      if (current) {
+        this.setState({
+          status: 'ready',
+          data: current
+        });
+      }
+      throw error;
+    }
+  }
+}
+
+Step 4: Configuration Manager with Resolution Logic
+
+⏺ // packages/infrastructure/config/ConfigurationManager.ts
+
+import { combineLatest, map, Observable, shareReplay } from 'rxjs';
+
+/**
+ * Manages configuration cascade with precedence rules
+ * 
+ * Precedence (highest to lowest):
+ * 1. User preferences (authenticated users only)
+ * 2. LocalStorage overrides (allows guest customization)
+ * 3. Brand configuration (multi-tenant)
+ * 4. Site configuration (global defaults)
+ * 5. Browser detection (fallback)
+ */
+export class ConfigurationManager {
+  private browserLayer: BrowserConfigLayer;
+  private siteLayer: SiteConfigLayer;
+  private brandLayer: BrandConfigLayer;
+  private userLayer: UserConfigLayer;
+
+  /**
+   * Resolved configuration observable
+   * Emits whenever any layer changes
+   */
+  readonly resolved$: Observable<ResolvedConfig>;
+
+  constructor(apiClient: ApiClient) {
+    // Initialize layers
+    this.browserLayer = new BrowserConfigLayer();
+    this.siteLayer = new SiteConfigLayer(apiClient);
+    this.brandLayer = new BrandConfigLayer(apiClient);
+    this.userLayer = new UserConfigLayer(apiClient);
+
+    // Combine all layers reactively
+    this.resolved$ = combineLatest([
+      this.browserLayer.config$,
+      this.siteLayer.config$,
+      this.brandLayer.config$,
+      this.userLayer.config$,
+    ]).pipe(
+      map(([browser, site, brand, user]) =>
+        this.resolveConfig(browser, site, brand, user)
+      ),
+      shareReplay(1)  // Cache latest value for new subscribers
+    );
+  }
+
+  /**
+   * Initialize all layers
+   * Browser layer initializes immediately
+   * API-backed layers load in parallel
+   */
+  async initialize(): Promise<void> {
+    await this.browserLayer.initialize();
+
+    // Load API-backed configs in parallel
+    await Promise.allSettled([
+      this.siteLayer.initialize(),
+      this.brandLayer.initialize(),
+      this.userLayer.initialize(),
+    ]);
+  }
+
+  /**
+   * Resolve configuration from all layers
+   * Implements precedence rules
+   */
+  private resolveConfig(
+    browser: ConfigState<BrowserConfig>,
+    site: ConfigState<SiteConfig>,
+    brand: ConfigState<BrandConfig>,
+    user: ConfigState<UserConfig>
+  ): ResolvedConfig {
+    // Extract data from ready states, undefined for pending/error
+    const browserData = browser.status === 'ready' ? browser.data : undefined;
+    const siteData = site.status === 'ready' ? site.data : undefined;
+    const brandData = brand.status === 'ready' ? brand.data : undefined;
+    const userData = user.status === 'ready' ? user.data : undefined;
+
+    return {
+      theme: this.resolveTheme(browserData, siteData, brandData, userData),
+      locale: this.resolveLocale(browserData, siteData, userData),
+      reducedMotion: browserData?.reducedMotion ?? false,
+      brand: {
+        logo: brandData?.logo ?? '/static/dist/assets/icons/icon_left_brand.svg',
+        favicon: brandData?.favicon ?? '/static/dist/assets/icons/icon.png',
+        primaryColor: brandData?.primaryColor ?? '#fd4b2d',
+      },
+    };
+  }
+
+  /**
+   * Theme resolution with explicit precedence
+   */
+  private resolveTheme(
+    browser?: BrowserConfig,
+    site?: SiteConfig,
+    brand?: BrandConfig,
+    user?: UserConfig
+  ): 'light' | 'dark' {
+    // 1. User preference (highest priority)
+    if (user?.theme) {
+      return user.theme;
+    }
+
+    // 2. LocalStorage override (allows guests to set preference)
+    if (browser?.localStorage.theme) {
+      return browser.localStorage.theme as 'light' | 'dark';
+    }
+
+    // 3. Brand override (multi-tenant customization)
+    if (brand?.theme) {
+      return brand.theme;
+    }
+
+    // 4. Site default
+    if (site?.theme && site.theme !== 'auto') {
+      return site.theme;
+    }
+
+    // 5. Browser preference (if site allows auto)
+    if (browser?.theme && site?.enableDarkMode !== false) {
+      return browser.theme;
+    }
+
+    // 6. Ultimate fallback
+    return 'light';
+  }
+
+  /**
+   * Locale resolution with explicit precedence
+   */
+  private resolveLocale(
+    browser?: BrowserConfig,
+    site?: SiteConfig,
+    user?: UserConfig
+  ): string {
+    // 1. User preference
+    if (user?.locale) {
+      return user.locale;
+    }
+
+    // 2. LocalStorage override
+    if (browser?.localStorage.locale) {
+      return browser.localStorage.locale;
+    }
+
+    // 3. Browser language (if available in site)
+    if (browser?.locale && site?.availableLocales.includes(browser.locale)) {
+      return browser.locale;
+    }
+
+    // 4. Site default
+    if (site?.defaultLocale) {
+      return site.defaultLocale;
+    }
+
+    // 5. Fallback
+    return 'en';
+  }
+
+  /**
+   * Access to individual layers for updates
+   */
+  get layers() {
+    return {
+      browser: this.browserLayer,
+      site: this.siteLayer,
+      brand: this.brandLayer,
+      user: this.userLayer,
+    };
+  }
+
+  /**
+   * Get current resolved config (synchronous)
+   * Returns best-effort resolution with whatever has loaded
+   */
+  getCurrent(): ResolvedConfig {
+    return this.resolveConfig(
+      this.browserLayer.current,
+      this.siteLayer.current,
+      this.brandLayer.current,
+      this.userLayer.current
+    );
+  }
+}
+
+Step 5: Usage in Components
+
+// apps/admin/src/main.ts
+
+import { ConfigurationManager } from '@goauthentik/infrastructure/config';
+import { ApiClient } from '@goauthentik/api';
+
+// Create singleton instance
+const apiClient = new ApiClient();
+export const configManager = new ConfigurationManager(apiClient);
+
+// Initialize on app boot
+await configManager.initialize();
+
+// Start rendering
+const shell = document.createElement('admin-shell');
+document.body.appendChild(shell);
+
+// apps/admin/src/components/MyComponent.ts
+
+import { LitElement, html } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+import { configManager } from '../main.js';
+import type { ResolvedConfig } from '@goauthentik/infrastructure/config';
+
+@customElement('my-component')
+export class MyComponent extends LitElement {
+  @state()
+  private config?: ResolvedConfig;
+
+  private configSubscription?: Subscription;
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    // Subscribe to resolved config
+    this.configSubscription = configManager.resolved$.subscribe(config => {
+      this.config = config;
+    });
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.configSubscription?.unsubscribe();
+  }
+
+  render() {
+    if (!this.config) {
+      return html`<div>Loading configuration...</div>`;
+    }
+
+    return html`
+      <div class="theme-${this.config.theme}">
+        <h1>${this.config.locale === 'de' ? 'Hallo' : 'Hello'}</h1>
+        <img src="${this.config.brand.logo}" alt="Logo" />
+      </div>
+    `;
+  }
+}
+
+Even Better: Reactive Controller for Components
+
+// packages/infrastructure/config/ConfigController.ts
+
+import { ReactiveController, ReactiveControllerHost } from 'lit';
+import { Subscription } from 'rxjs';
+
+/**
+ * Lit reactive controller that automatically subscribes to config
+ */
+export class ConfigController implements ReactiveController {
+  private subscription?: Subscription;
+
+  public config?: ResolvedConfig;
+
+  constructor(
+    private host: ReactiveControllerHost,
+    private manager: ConfigurationManager
+  ) {
+    host.addController(this);
+  }
+
+  hostConnected() {
+    this.subscription = this.manager.resolved$.subscribe(config => {
+      this.config = config;
+      this.host.requestUpdate();
+    });
+  }
+
+  hostDisconnected() {
+    this.subscription?.unsubscribe();
+  }
+}
+
+// Usage in component
+@customElement('my-component')
+export class MyComponent extends LitElement {
+  private configCtrl = new ConfigController(this, configManager);
+
+  render() {
+    const config = this.configCtrl.config;
+    if (!config) return html`<div>Loading...</div>`;
+
+    return html`<div class="theme-${config.theme}">...</div>`;
+  }
+}
+
+⏺ Step 6: Comparison with Current Architecture
+
+Before (Current Controllers):
+
+// src/elements/Interface.ts
+export abstract class Interface extends AKElement {
+  constructor() {
+    super();
+    const { config, brand, locale } = globalAK();
+
+    // Multiple controllers, each is a separate source of truth
+    this.addController(new LocaleContextController(this, locale));
+    this.addController(new ConfigContextController(this, config));
+    this.addController(new BrandingContextController(this, brand));
+    // ... more controllers
+  }
+}
+
+// Component needs multiple mixins to access config
+class MyComponent extends WithBrandConfig(WithAuthConfig(WithLocale(LitElement))) {
+  render() {
+    // Accesses:
+    // - this.brand (from WithBrandConfig mixin)
+    // - this.config (from WithAuthConfig mixin)  
+    // - this.locale (from WithLocale mixin)
+    // But who resolves conflicts? Scattered logic!
+    const theme = this.brand.theme ?? this.config.theme ?? 'light';
+  }
+}
+
+After (Configuration Manager):
+
+// app/main.ts
+const configManager = new ConfigurationManager(apiClient);
+await configManager.initialize();
+
+// Component needs one controller
+class MyComponent extends LitElement {
+  private config = new ConfigController(this, configManager);
+
+  render() {
+    // Single resolved config
+    // Resolution logic is in ConfigurationManager.resolveTheme()
+    const theme = this.config.theme;  // Already resolved!
+  }
+}
+
+Key Differences:
+
+| Aspect             | Before (Controllers)                | After (Config Manager)          |
+|--------------------|-------------------------------------|---------------------------------|
+| Sources of truth   | 4+ controllers                      | 1 manager with 4 layers         |
+| Resolution logic   | Scattered in components/mixins      | Centralized in resolveConfig()  |
+| Precedence rules   | Implicit (depends on mixin order)   | Explicit (documented in code)   |
+| Async handling     | Each controller loads independently | All layers combined reactively  |
+| Component coupling | Needs multiple mixins               | Needs one controller            |
+| Testability        | Must mock 4+ contexts               | Mock one manager                |
+| Browser events     | Scattered listeners                 | Contained in BrowserConfigLayer |
+
+---
+
+Migration Strategy
+
+Phase 1: Parallel Implementation (Weeks 1-2)
+
+1. Create new packages:
+mkdir -p packages/infrastructure/config
+2. Implement layer classes:
+  - ConfigLayer base
+  - BrowserConfigLayer
+  - SiteConfigLayer (wraps existing API call)
+  - BrandConfigLayer (wraps existing API call)
+  - UserConfigLayer (wraps existing API call)
+3. Implement ConfigurationManager
+4. Add to apps:
+// apps/admin/src/main.ts
+import { configManager } from './config';  // Singleton
+
+await configManager.initialize();
+
+At this point: New system exists alongside old controllers, nothing breaks.
+
+Phase 2: Add Reactive Controller (Week 3)
+
+5. Create ConfigController for Lit components
+6. Pick one simple component to migrate:
+// Before
+class SimpleComponent extends WithBrandConfig(LitElement) {
+  render() {
+    return html`<img src="${this.brandingLogo}" />`;
+  }
+}
+
+// After
+class SimpleComponent extends LitElement {
+  private config = new ConfigController(this, configManager);
+
+  render() {
+    return html`<img src="${this.config.config?.brand.logo}" />`;
+  }
+}
+7. Verify it works, write tests
+
+At this point: Both systems coexist, one component uses new system.
+
+Phase 3: Gradual Migration (Weeks 4-8)
+
+8. Component-by-component migration:
+  - Start with leaf components (no children)
+  - Move to parent components
+  - Replace mixin usage with ConfigController
+9. Update routing/shell components:
+  - AdminShell uses ConfigController
+  - UserShell uses ConfigController
+  - FlowExecutor uses ConfigController
+
+At this point: Most components use new system, controllers still exist for compatibility.
+
+Phase 4: Remove Controllers (Weeks 9-10)
+
+10. Remove controller initialization from Interface:
+// src/elements/Interface.ts
+constructor() {
+  super();
+  // DELETE: this.addController(new ConfigContextController(...))
+  // DELETE: this.addController(new BrandingContextController(...))
+  // etc.
+}
+11. Remove mixin definitions:
+  - Delete src/elements/mixins/branding.ts
+  - Delete src/elements/mixins/config.ts
+  - Delete src/elements/mixins/locale.ts
+12. Remove controller classes:
+  - Delete src/elements/controllers/ConfigContextController.ts
+  - Delete src/elements/controllers/BrandContextController.ts
+  - Delete src/elements/controllers/LocaleContextController.ts
+
+At this point: Clean architecture, single source of truth.
+
+---
+
+Addressing Your Specific Concerns
+
+Concern 1: "Many sources of configuration information"
+
+Solution: Layers make sources explicit and isolated:
+- BrowserConfigLayer - owns browser detection
+- SiteConfigLayer - owns site API call
+- BrandConfigLayer - owns brand API call
+- UserConfigLayer - owns user API call
+
+Each layer is independent. They don't know about each other.
+
+Concern 2: "Information comes in asynchronously and in no set order"
+
+Solution: RxJS combineLatest handles this:
+
+combineLatest([browser$, site$, brand$, user$]).pipe(
+  map(layers => resolveConfig(...layers))
+)
+
+This emits whenever any layer changes, regardless of order:
+
+Time  0: browser$ emits (ready immediately)
+      → resolveConfig([browser, idle, idle, idle])
+      → Resolved config with browser defaults
+
+Time  5: site$ emits (loaded from API)
+      → resolveConfig([browser, site, idle, idle])
+      → Resolved config with site defaults
+
+Time 10: brand$ emits (loaded from API)
+      → resolveConfig([browser, site, brand, idle])
+      → Resolved config with brand overrides
+
+Time 12: user$ emits (loaded from API)
+      → resolveConfig([browser, site, brand, user])
+      → Resolved config with user preferences
+
+Time 50: browser$ emits (user changed system theme)
+      → resolveConfig([browser, site, brand, user])
+      → Resolved config re-evaluated with new browser pref
+         (but user pref still wins due to precedence)
+
+Components don't care about timing. They just consume resolved$.
+
+Concern 3: "Browser events notify handlers to update"
+
+Solution: Browser events are encapsulated in BrowserConfigLayer:
+
+class BrowserConfigLayer {
+  private watchColorScheme() {
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
+    query.addEventListener('change', () => {
+      // Update this layer's state
+      this.setState({ status: 'ready', data: {...} });
+    });
+    // This automatically triggers resolveConfig() via combineLatest!
+  }
+}
+
+Components never touch browser events directly. The layer handles it, emits new state, manager re-resolves, components react.
+
+Concern 4: "Tight coupling that's hard to work around"
+
+Solution: Components are decoupled from config sources:
+
+// Component doesn't know about:
+// - How many config sources exist
+// - Which APIs are called
+// - What precedence rules are
+// - When things load
+// - How browser events work
+
+class MyComponent extends LitElement {
+  private config = new ConfigController(this, configManager);
+
+  render() {
+    // Just uses resolved config
+    return html`<div class="theme-${this.config.config?.theme}">`;
+  }
+}
+
+All coupling is in one place: ConfigurationManager.resolveConfig().
+
+That method has ~50 lines that implement all precedence rules. Easy to test, easy to understand, easy to change.
+
+---
+
+Benefits of This Architecture
+
+1. Single Source of Derived Truth
+
+- Components consume resolved$ only
+- Don't need to know about layers
+- Don't need to implement precedence logic
+
+2. Explicit Precedence
+
+private resolveTheme(...) {
+  // Order is VISIBLE in code:
+  return user?.theme           // 1. User (highest)
+    ?? localStorage.theme       // 2. LocalStorage  
+    ?? brand?.theme             // 3. Brand
+    ?? site?.theme              // 4. Site
+    ?? browser?.theme           // 5. Browser
+    ?? 'light';                 // 6. Fallback
+}
+
+Want to change precedence? Edit one function.
+
+3. Handles Async Naturally
+
+- Layers load in any order
+- combineLatest waits for all
+- resolveConfig() handles partial data
+- Components get updates automatically
+
+4. Testable
+
+// Test precedence rules
+describe('ConfigurationManager', () => {
+  it('user preference overrides brand', () => {
+    const browser = { status: 'ready', data: { theme: 'light' } };
+    const site = { status: 'ready', data: { theme: 'dark' } };
+    const brand = { status: 'ready', data: { theme: 'light' } };
+    const user = { status: 'ready', data: { theme: 'dark' } };
+
+    const resolved = manager['resolveConfig'](browser, site, brand, user);
+
+    expect(resolved.theme).toBe('dark');  // User wins
+  });
+
+  it('falls back to browser when user not loaded', () => {
+    const browser = { status: 'ready', data: { theme: 'dark' } };
+    const site = { status: 'loading' };
+    const brand = { status: 'loading' };
+    const user = { status: 'loading' };
+
+    const resolved = manager['resolveConfig'](browser, site, brand, user);
+
+    expect(resolved.theme).toBe('dark');  // Browser fallback
+  });
+});
+
+No mocking needed - just pass config states.
+
+5. Easy to Extend
+
+Want to add a new config source (e.g., URL parameters)?
+
+class URLConfigLayer extends ConfigLayer<URLConfig> {
+  async initialize() {
+    const params = new URLSearchParams(location.search);
+    this.setState({
+      status: 'ready',
+      data: {
+        theme: params.get('theme') as 'light' | 'dark' | null
+      }
+    });
+
+    // Watch for URL changes
+    window.addEventListener('popstate', () => {
+      // Update state
+    });
+  }
+}
+
+// In ConfigurationManager:
+constructor() {
+  // ...
+  this.urlLayer = new URLConfigLayer();
+
+  this.resolved$ = combineLatest([
+    this.browserLayer.config$,
+    this.urlLayer.config$,      // Just add it!
+    this.siteLayer.config$,
+    // ...
+  ])
+}
+
+// Update resolveTheme():
+private resolveTheme(..., url?: URLConfig) {
+  return user?.theme
+    ?? url?.theme         // Add to precedence chain
+    ?? localStorage.theme
+    // ...
+}
+
+One new layer class, add to combineLatest, update resolution function. Done.
+
+6. Observable for Advanced Uses
+
+// Derive other observables
+const isDark$ = configManager.resolved$.pipe(
+  map(config => config.theme === 'dark')
+);
+
+// React to specific changes
+configManager.resolved$
+  .pipe(
+    map(config => config.theme),
+    distinctUntilChanged()  // Only when theme changes
+  )
+  .subscribe(theme => {
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+  });
+
+// Combine with other streams
+const ready$ = combineLatest([
+  configManager.resolved$,
+  sessionManager.session$,
+  routerManager.route$
+]).pipe(
+  map(([config, session, route]) => ({
+    config, session, route
+  }))
+);
+
+---
+
+Comparison with Other State Management
+
+You might ask: "Is this just Redux?"
+
+Similar to Redux:
+- Single source of derived truth ✓
+- Predictable state updates ✓
+- Time-travel debugging possible ✓
+
+Better than Redux for this use case:
+- No actions/reducers boilerplate
+- Reactive by default (observables)
+- Type-safe without extra effort
+- Built for configuration cascade specifically
+- Handles async sources naturally
+
+Similar to MobX:
+- Reactive updates ✓
+- Observable state ✓
+- Derived values ✓
+
+Better than MobX for this use case:
+- More explicit precedence rules
+- Better async handling (RxJS operators)
+- No decorator magic needed
+- Clearer architecture
+
+---
+
+
+⏺ Summary: Solving the Tight Coupling Problem
+
+Your instinct is correct - the current architecture has tight coupling because:
+
+1. Multiple sources of truth (controllers) with no coordination
+2. Implicit precedence (depends on mixin order, scattered ?? chains)
+3. Async timing issues (what if brand loads before site?)
+4. Event handling scattered (browser events in multiple places)
+5. Components must understand all sources (need multiple mixins)
+
+The Configuration Manager architecture solves all of this by:
+
+1. Single source of derived truth (resolved$ observable)
+2. Explicit precedence (one function: resolveConfig())
+3. Reactive composition (RxJS handles async naturally)
+4. Encapsulated event handling (each layer owns its events)
+5. Components only know about resolved config (one controller)
+
+---
+
+Recommendation: Adopt This Pattern for Other State
+
+This same pattern can solve other state management problems you likely have:
+
+Session State
+
+class SessionManager {
+  private tokenLayer: TokenConfigLayer;      // From localStorage/cookies
+  private apiSessionLayer: APISessionLayer;  // From /api/me
+  private oauthLayer: OAuthSessionLayer;     // From OAuth flow
+
+  readonly session$: Observable<ResolvedSession>;
+}
+
+Permissions/Capabilities
+
+class CapabilitiesManager {
+  private licenseLayer: LicenseCapabilitiesLayer;
+  private roleLayer: RoleCapabilitiesLayer;
+  private userLayer: UserCapabilitiesLayer;
+
+  readonly capabilities$: Observable<ResolvedCapabilities>;
+
+  can(action: string): boolean {
+    // Resolved from all layers
+  }
+}
+
+Notifications
+
+class NotificationManager {
+  private websocketLayer: WebSocketNotificationLayer;
+  private pollingLayer: PollingNotificationLayer;
+  private localLayer: LocalNotificationLayer;
+
+  readonly notifications$: Observable<Notification[]>;
+}
+
+Pattern: Whenever you have multiple async sources that need conflict resolution, use the Layer Manager pattern.
+
+---
+
+Implementation Priority
+
+Given your goal of independent bundling + API boundary:
+
+CRITICAL PATH:
+1. ✅ Step 0: Monorepo setup (from previous analysis)
+2. Step 2 (revised): Configuration Manager ← Start here!
+3. ✅ Step 1: Elements/Components split
+4. Step 3: App shells
+5. Step 4: Router
+
+Why Configuration Manager first?
+- It's the root cause of coupling issues
+- Can be implemented alongside current controllers
+- Provides immediate value (clearer precedence, better async handling)
+- Sets pattern for other state management
+- Doesn't require monorepo restructuring
+
+You can implement Configuration Manager in the current structure, then move it to packages/infrastructure/config/ when you do the monorepo split.
+
+---
+
+Final Thoughts
+
+The "tight coupling that's hard to work around" you're experiencing is a classic symptom of distributed state management without a resolution strategy.
+
+Your current architecture treats each config source as independent, then forces components to reconcile them. That's backwards.
+
+The Configuration Manager inverts the dependency:
+- Layers are still independent (good!)
+- But resolution is centralized (better!)
+- Components consume only resolved config (best!)
+
+This is the single most impactful architectural change you can make, because it:
+- Solves the unravelling problem (theme/locale changes touch one file)
+- Enables proper testing (precedence rules in one place)
+- Simplifies components (no mixin chains)
+- Handles async naturally (RxJS composition)
+- Documents behavior (precedence is explicit in code)
+
+And it can be done incrementally without breaking existing code.
+
+⎿  Conversation exported to: recommendations.txt
+
+> A slightly different topic: our use of Patternfly 4 has been an awkward fit at best. The shadowDOM
+> is a wonderful isolation tool, and the distinction between a component's theming and its
+> position/responsibilities in the larger layout has usually proven useful. But Patternfly 4 was
+> written to support React and a global styling system, not one with the shadowDOM. Having to import
+> the Patternfly base classes into every component in a way that, as far as I can tell, fails to
+> exploit the `adoptedStylesheets` mechanism of modern web components, is sub-optimal. We would like
+> to upgrade to Patternfly 5, or to maintain that sort of look and feel, while also providing a
+> customization layer into which users may inject their preferred color themes, spacing, padding,
+> and typography, as it suits them and their branding needs. Our vision for "branding" has always
+> been "just white label enough that they can make it look like theirs without wiping out the
+> presence of our identity and contribution." And obviously we would like to retain our capacity to
+> improve or update the UI as we see fit. What recommendations emerge from this (admittedly somewhat
+> conflicting) set of requirements and desires?
+
+⏺ This is an excellent design challenge with genuinely conflicting requirements. You're caught between PatternFly's React/global-CSS assumptions and the Shadow DOM's encapsulation model. Let me analyze the problem and provide a path forward.
+
+---
+
+The Core Problem
+
+PatternFly's Design Assumptions:
+- Global CSS cascade
+- BEM naming for scoping
+- Shared stylesheet across entire app
+- Built for React's className model
+
+Your Architecture:
+- Shadow DOM encapsulation (valuable isolation)
+- Per-component style imports
+- Web Components (Lit)
+- Need for themability
+
+Current Pain Points:
+1. Duplicated CSS - Every component imports PF base styles into its shadow root
+2. No adoptedStyleSheets - Missing the optimization mechanism
+3. Upgrade difficulty - PF updates require touching every component
+4. Theming is hard - Global CSS overrides don't reach into shadow roots
+5. Bundle bloat - PF CSS repeated in every component chunk
+
+---
+
+The PatternFly 5 Opportunity
+
+PatternFly 5 introduces design tokens (CSS custom properties), which fundamentally changes the game. This is your opportunity to fix the architecture.
+
+PF5's Token System:
+/* PatternFly 5 design tokens */
+:root {
+  --pf-v5-global--Color--100: #151515;
+  --pf-v5-global--Color--200: #6a6e73;
+  --pf-v5-global--primary-color--100: #06c;
+  --pf-v5-global--primary-color--200: #004080;
+
+  --pf-v5-global--FontSize--sm: 0.875rem;
+  --pf-v5-global--FontSize--md: 1rem;
+  --pf-v5-global--FontSize--lg: 1.125rem;
+
+  --pf-v5-global--spacer--sm: 0.5rem;
+  --pf-v5-global--spacer--md: 1rem;
+  --pf-v5-global--spacer--lg: 1.5rem;
+}
+
+CSS custom properties pierce Shadow DOM boundaries, making them perfect for theming.
+
+---
+
+Recommended Architecture: Three-Layer Token System
+
+┌─────────────────────────────────────────────┐
+│  User Theme Layer (Customer Branding)       │
+│  --ak-primary-color: #ff6b35               │
+│  --ak-font-family: "Custom Font"           │
+└─────────────────────────────────────────────┘
+                    ↓ (overrides)
+┌─────────────────────────────────────────────┐
+│  Authentik Brand Layer (Your Design)        │
+│  Maps PF tokens → Authentik tokens         │
+│  --ak-primary-color: var(--pf-v5-global...)│
+│  Adds authentik identity                    │
+└─────────────────────────────────────────────┘
+                    ↓ (consumes)
+┌─────────────────────────────────────────────┐
+│  PatternFly 5 Token Foundation              │
+│  --pf-v5-global--primary-color--100        │
+│  --pf-v5-global--FontSize--md              │
+└─────────────────────────────────────────────┘
+
+Layer 1: PatternFly 5 Foundation (Read-Only)
+
+What: PF5's design tokens, loaded globally
+
+/* packages/ui/styles/foundation.css */
+@import '@patternfly/patternfly/patternfly-base.css';
+
+Where: Loaded once in document <head>, NOT in shadow roots
+
+Purpose:
+- Provides base token values
+- Updated when you upgrade PF5
+- Never modified by you
+
+Layer 2: Authentik Brand Tokens (Your Control)
+
+What: Your semantic tokens that map to PF tokens
+
+/* packages/infrastructure/theme/authentik-tokens.css */
+
+:root {
+  /* Color Palette - maps to PF but establishes YOUR semantic meaning */
+  --ak-color-primary: var(--pf-v5-global--primary-color--100);
+  --ak-color-primary-hover: var(--pf-v5-global--primary-color--200);
+  --ak-color-danger: var(--pf-v5-global--danger-color--100);
+  --ak-color-success: var(--pf-v5-global--success-color--100);
+
+  /* Brand Identity - your specific colors */
+  --ak-color-brand-accent: #fd4b2d;  /* authentik orange */
+  --ak-color-brand-dark: #151515;
+
+  /* Typography */
+  --ak-font-family: var(--pf-v5-global--FontFamily--sans-serif);
+  --ak-font-size-base: var(--pf-v5-global--FontSize--md);
+  --ak-font-size-heading: var(--pf-v5-global--FontSize--2xl);
+  --ak-font-weight-normal: var(--pf-v5-global--FontWeight--normal);
+  --ak-font-weight-bold: var(--pf-v5-global--FontWeight--bold);
+
+  /* Spacing */
+  --ak-spacing-xs: var(--pf-v5-global--spacer--xs);
+  --ak-spacing-sm: var(--pf-v5-global--spacer--sm);
+  --ak-spacing-md: var(--pf-v5-global--spacer--md);
+  --ak-spacing-lg: var(--pf-v5-global--spacer--lg);
+
+  /* Layout */
+  --ak-border-radius-default: var(--pf-v5-global--BorderRadius--sm);
+  --ak-border-width-default: var(--pf-v5-global--BorderWidth--sm);
+
+  /* Elevation (shadows) */
+  --ak-elevation-100: var(--pf-v5-global--BoxShadow--sm);
+  --ak-elevation-200: var(--pf-v5-global--BoxShadow--md);
+
+  /* Animation */
+  --ak-transition-duration: var(--pf-v5-global--TransitionDuration);
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --ak-color-primary: var(--pf-v5-global--primary-color--100);
+  --ak-color-background: var(--pf-v5-global--BackgroundColor--dark-100);
+  --ak-color-text: var(--pf-v5-global--Color--light-100);
+}
+
+Where: Loaded globally in <head>
+
+Purpose:
+- Establishes YOUR semantic token names
+- Insulates components from PF token changes
+- Provides upgrade buffer (you control the mapping)
+- Enables theme switching (light/dark/custom)
+
+Layer 3: User Customization Tokens (Customer Control)
+
+What: Override layer for white-labeling
+
+/* Injected by brand configuration */
+:root {
+  --ak-color-primary: #ff6b35;           /* Customer's brand color */
+  --ak-color-brand-accent: #ff6b35;
+  --ak-font-family: "Roboto", sans-serif; /* Customer's font */
+  --ak-border-radius-default: 0.25rem;   /* Customer's corner style */
+
+  /* Customer can override specific components */
+  --ak-button-padding: 0.75rem 1.5rem;
+  --ak-card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+Where: Loaded from brand API, injected into <head> or <style> tag
+
+Purpose:
+- Customer white-labeling
+- Overrides Layer 2 tokens
+- Non-destructive (just CSS vars)
+- Can be changed without code deployment
+
+---
+
+Component Implementation Strategy
+
+Problem: Current Approach
+
+// Current (bad) - imports PF CSS into every shadow root
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+
+class MyComponent extends LitElement {
+  static styles = [PFButton, PFPage, /* ... */];
+}
+
+Issues:
+- Duplicated CSS in every component
+- No adoptedStyleSheets optimization
+- Can't theme from outside shadow root (PF classes are hardcoded)
+
+Solution 1: Token-Based Components (Recommended)
+
+Don't import PatternFly CSS into components. Use tokens instead.
+
+// packages/ui/primitives/Button.ts
+import { css, html, LitElement } from 'lit';
+
+class AkButton extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-block;
+    }
+
+    button {
+      /* Use Authentik tokens, not PF classes */
+      padding: var(--ak-spacing-sm) var(--ak-spacing-md);
+      background: var(--ak-color-primary);
+      color: var(--ak-color-text-on-primary);
+      border: none;
+      border-radius: var(--ak-border-radius-default);
+      font-family: var(--ak-font-family);
+      font-size: var(--ak-font-size-base);
+      font-weight: var(--ak-font-weight-bold);
+      cursor: pointer;
+      transition: background var(--ak-transition-duration);
+    }
+
+    button:hover {
+      background: var(--ak-color-primary-hover);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Variants */
+    :host([variant="danger"]) button {
+      background: var(--ak-color-danger);
+    }
+
+    :host([variant="secondary"]) button {
+      background: var(--ak-color-secondary);
+    }
+  `;
+
+  render() {
+    return html`<button><slot></slot></button>`;
+  }
+}
+
+Benefits:
+- No PF imports = no duplication
+- Tokens pierce shadow DOM = themeable
+- Your own implementations = full control
+- Can still look like PF (tokens map to PF values)
+- Easy to upgrade (tokens are stable, not classes)
+
+Solution 2: Hybrid Approach (Pragmatic)
+
+Use PF components where valuable, wrap with tokens where needed.
+
+For complex components (like DataTable, Charts), use PF. For simple ones (Button, Input), use tokens.
+
+// Complex component - use PF
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+
+class AkDataTable extends LitElement {
+  static styles = [PFTable];  // OK to use PF for complex components
+
+  render() {
+    return html`<table class="pf-c-table">...</table>`;
+  }
+}
+
+// Simple component - use tokens
+class AkButton extends LitElement {
+  static styles = css`
+    button {
+      padding: var(--ak-spacing-sm) var(--ak-spacing-md);
+      background: var(--ak-color-primary);
+      /* ... */
+    }
+  `;
+}
+
+Strategy:
+- Primitives (button, input, card, badge): Token-based, your implementation
+- Patterns (table, form, modal, wizard): PF-based, complex to rebuild
+- Layouts (page, grid, stack): Token-based, simple to implement
+
+---
+
+Using adoptedStyleSheets Properly
+
+PatternFly CSS is static and shared. Use adoptedStyleSheets to share it across components.
+
+// packages/infrastructure/theme/adoptedSheets.ts
+
+// Load PF stylesheets once
+const pfButtonSheet = new CSSStyleSheet();
+await pfButtonSheet.replace(
+  await fetch('/node_modules/@patternfly/patternfly/components/Button/button.css')
+    .then(r => r.text())
+);
+
+const pfTableSheet = new CSSStyleSheet();
+await pfTableSheet.replace(/* ... */);
+
+// Export for reuse
+export const PatternFlySheets = {
+  button: pfButtonSheet,
+  table: pfTableSheet,
+  // ... other components
+};
+
+// In components
+import { PatternFlySheets } from '@goauthentik/infrastructure/theme';
+
+class AkDataTable extends LitElement {
+  // Share the same CSSStyleSheet instance across all components
+  static styles = [PatternFlySheets.table];
+}
+
+Benefits:
+- Stylesheet parsed once, shared across all shadow roots
+- Browser optimizes memory usage
+- Still encapsulated (shadow DOM)
+- Can mix with your own styles
+
+Caveat: This requires build-time processing or runtime fetching. Vite/ESBuild plugins can help.
+
+---
+
+Migration Strategy
+
+Phase 1: Establish Token Foundation (2-3 weeks)
+
+1. Add PF5 base tokens globally:
+<!-- index.html -->
+<link rel="stylesheet" href="/patternfly/patternfly-base.css">
+2. Create Authentik token layer:
+/* packages/infrastructure/theme/authentik-tokens.css */
+:root {
+  --ak-color-primary: var(--pf-v5-global--primary-color--100);
+  /* ... map all tokens */
+}
+3. Load token layer globally:
+<link rel="stylesheet" href="/styles/authentik-tokens.css">
+4. Test that tokens are available:
+console.log(
+  getComputedStyle(document.documentElement)
+    .getPropertyValue('--ak-color-primary')
+);
+
+Phase 2: Rebuild Primitives with Tokens (4-6 weeks)
+
+5. Identify primitive components:
+  - Button, Input, Checkbox, Radio, Switch
+  - Badge, Label, Chip
+  - Card, Alert
+  - Link, Breadcrumb
+6. Implement with tokens (one per week):
+// packages/ui/primitives/Button.ts
+class AkButton extends LitElement {
+  static styles = css`
+    button {
+      background: var(--ak-color-primary);
+      /* ... */
+    }
+  `;
+}
+7. Replace PF versions in codebase:
+// Before
+html`<button class="pf-c-button pf-m-primary">Click</button>`
+
+// After
+html`<ak-button variant="primary">Click</ak-button>`
+
+Phase 3: Hybrid Approach for Complex Components (2-3 weeks)
+
+8. Identify complex components to keep:
+  - DataTable, TreeView
+  - Wizard, Drawer
+  - Charts, Graphs
+9. Use adoptedStyleSheets for these:
+// Setup once
+const pfSheets = await loadPatternFlySheets();
+
+// Use in components
+class AkDataTable extends LitElement {
+  static styles = [pfSheets.table, customStyles];
+}
+
+Phase 4: Brand Customization Layer (2 weeks)
+
+10. Create brand configuration API:
+interface BrandTheme {
+  primaryColor: string;
+  fontFamily: string;
+  borderRadius: string;
+  // ... other customizable tokens
+}
+
+function applyBrandTheme(theme: BrandTheme): void {
+  const style = document.createElement('style');
+  style.textContent = `
+    :root {
+      --ak-color-primary: ${theme.primaryColor};
+      --ak-font-family: ${theme.fontFamily};
+      --ak-border-radius-default: ${theme.borderRadius};
+    }
+  `;
+  document.head.appendChild(style);
+}
+11. Fetch brand config from backend:
+const brandConfig = await api.brands.retrieve();
+applyBrandTheme(brandConfig.theme);
+12. Provide UI for brand customization:
+  - Color picker for primary/accent colors
+  - Font family selector
+  - Border radius slider
+  - Preview panel
+
+Phase 5: Documentation & Theming Guide (1 week)
+
+13. Document available tokens:
+# Authentik Theming Guide
+
+## Available Tokens
+
+### Colors
+- `--ak-color-primary`: Primary brand color
+- `--ak-color-accent`: Accent highlights
+- ...
+
+### Typography
+- `--ak-font-family`: Base font family
+- `--ak-font-size-base`: Body text size
+- ...
+14. Provide examples:
+/* Example: Red theme */
+:root {
+  --ak-color-primary: #dc3545;
+  --ak-color-primary-hover: #c82333;
+}
+
+---
+
+Addressing Your Specific Requirements
+
+Requirement 1: "Just white label enough"
+
+Solution: Limited token override set
+
+// packages/infrastructure/theme/customizable-tokens.ts
+
+/**
+ * Tokens that customers can customize
+ * Everything else is locked to preserve authentik identity
+ */
+export const CustomizableTokens = {
+  // Colors (yes)
+  'ak-color-primary': 'Primary brand color',
+  'ak-color-accent': 'Accent color for highlights',
+
+  // Typography (yes)
+  'ak-font-family': 'Font family',
+
+  // Spacing (no - keeps layout consistent)
+  // 'ak-spacing-md': NOT customizable
+
+  // Border radius (yes - aesthetic only)
+  'ak-border-radius-default': 'Corner roundness',
+
+  // Shadows (no - keeps depth hierarchy)
+  // 'ak-elevation-100': NOT customizable
+} as const;
+
+Customers can change colors/fonts/corners, but not layout/spacing/structure.
+
+Requirement 2: "Without wiping out our identity"
+
+Solution: Non-overridable branding tokens
+
+/* packages/infrastructure/theme/authentik-tokens.css */
+
+:root {
+  /* Customer can override */
+  --ak-color-primary: var(--pf-v5-global--primary-color--100);
+
+  /* Customer CANNOT override - used for authentik-specific elements */
+  --ak-color-authentik-brand: #fd4b2d;  /* Always authentik orange */
+  --ak-logo-authentik: url('/static/logo.svg');  /* Always authentik logo */
+}
+
+// In footer component
+class AkFooter extends LitElement {
+  static styles = css`
+    .branding {
+      color: var(--ak-color-authentik-brand);  /* Not customizable */
+    }
+
+    .logo {
+      background-image: var(--ak-logo-authentik);  /* Not customizable */
+    }
+  `;
+}
+
+Requirement 3: "Retain capacity to improve/update UI"
+
+Solution: Semantic token abstraction
+
+/* You control the mapping, customers override the tokens */
+
+/* Version 1.0 */
+:root {
+  --ak-button-background: var(--ak-color-primary);
+}
+
+/* Version 2.0 - change implementation, customer overrides still work */
+:root {
+  --ak-button-background: linear-gradient(
+    var(--ak-color-primary),
+    var(--ak-color-primary-hover)
+  );
+}
+
+Customers override --ak-color-primary, you change how it's used.
+
+Requirement 4: "Maintain PatternFly look and feel"
+
+Solution: Token values default to PF
+
+/* Authentik tokens map to PF by default */
+:root {
+  --ak-color-primary: var(--pf-v5-global--primary-color--100);
+  --ak-spacing-md: var(--pf-v5-global--spacer--md);
+  /* ... */
+}
+
+Without customization, looks identical to PatternFly.
+
+With customization, looks like "PatternFly but branded."
+
+---
+
+Alternative: PatternFly Elements
+
+PatternFly has a Web Components version: @patternfly/elements (formerly Patternfly Elements / PFE)
+
+Pros:
+- Built for Shadow DOM
+- Uses design tokens
+- Official PF support
+
+Cons:
+- Still incomplete (not all PF components)
+- Less mature than PF React
+- May still need customization
+
+Recommendation: Monitor PFE progress, but don't bet on it yet. Use token-based approach as described above, which gives you the flexibility to adopt PFE components later if they mature.
+
+---
+
+Example: Complete Button Implementation
+
+// packages/ui/primitives/Button.ts
+
+import { css, html, LitElement } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+
+@customElement('ak-button')
+export class AkButton extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-block;
+    }
+
+    button {
+      /* Layout */
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ak-spacing-xs);
+      padding: var(--ak-button-padding-y, var(--ak-spacing-sm))
+               var(--ak-button-padding-x, var(--ak-spacing-md));
+
+      /* Colors - uses customer-overridable tokens */
+      background: var(--ak-button-background, var(--ak-color-primary));
+      color: var(--ak-button-color, var(--ak-color-text-inverse));
+      border: var(--ak-button-border-width, var(--ak-border-width-default))
+              solid
+              var(--ak-button-border-color, transparent);
+
+      /* Typography */
+      font-family: var(--ak-font-family);
+      font-size: var(--ak-button-font-size, var(--ak-font-size-base));
+      font-weight: var(--ak-button-font-weight, var(--ak-font-weight-bold));
+      line-height: 1.5;
+      text-decoration: none;
+
+      /* Shape */
+      border-radius: var(--ak-button-border-radius, var(--ak-border-radius-default));
+
+      /* Interaction */
+      cursor: pointer;
+      transition: all var(--ak-transition-duration);
+      user-select: none;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--ak-button-background-hover, var(--ak-color-primary-hover));
+      transform: translateY(-1px);
+      box-shadow: var(--ak-elevation-100);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Variants */
+    :host([variant="secondary"]) button {
+      background: var(--ak-color-secondary);
+      color: var(--ak-color-text);
+    }
+
+    :host([variant="danger"]) button {
+      background: var(--ak-color-danger);
+    }
+
+    :host([variant="outline"]) button {
+      background: transparent;
+      color: var(--ak-color-primary);
+      border-color: var(--ak-color-primary);
+    }
+
+    /* Sizes */
+    :host([size="small"]) button {
+      padding: var(--ak-spacing-xs) var(--ak-spacing-sm);
+      font-size: var(--ak-font-size-sm);
+    }
+
+    :host([size="large"]) button {
+      padding: var(--ak-spacing-md) var(--ak-spacing-lg);
+      font-size: var(--ak-font-size-lg);
+    }
+  `;
+
+  @property({ reflect: true })
+  variant: 'primary' | 'secondary' | 'danger' | 'outline' = 'primary';
+
+  @property({ reflect: true })
+  size: 'small' | 'medium' | 'large' = 'medium';
+
+  @property({ type: Boolean, reflect: true })
+  disabled = false;
+
+  render() {
+    return html`
+      <button ?disabled=${this.disabled}>
+        <slot></slot>
+      </button>
+    `;
+  }
+}
+
+Usage:
+// Default (looks like PatternFly)
+html`<ak-button>Click me</ak-button>`
+
+// Branded (customer override)
+html`
+  <style>
+    :root {
+      --ak-color-primary: #ff6b35;
+    }
+  </style>
+  <ak-button>Branded button</ak-button>
+`
+
+// Variant
+html`<ak-button variant="danger">Delete</ak-button>`
+
+---
+
+Build System Integration
+
+Vite Plugin for Token Extraction
+
+// packages/infrastructure/theme/vite-plugin-tokens.ts
+
+export function tokenExtractionPlugin() {
+  return {
+    name: 'extract-pf-tokens',
+    transformIndexHtml(html: string) {
+      // Inject token stylesheets into <head>
+      return html.replace(
+        '</head>',
+        `
+          <link rel="stylesheet" href="/patternfly/patternfly-base.css">
+          <link rel="stylesheet" href="/styles/authentik-tokens.css">
+          <style id="brand-theme"></style>
+        </head>
+        `
+      );
+    }
+  };
+}
+
+PostCSS Plugin for Token Validation
+
+// Validate that components only use --ak-* tokens, not --pf-* directly
+module.exports = {
+  postcssPlugin: 'validate-tokens',
+  Declaration(decl) {
+    if (decl.value.includes('--pf-v5-') && !decl.source.input.file.includes('authentik-tokens.css')) {
+      throw new Error(
+        `Component ${decl.source.input.file} uses PF token directly. Use --ak-* tokens instead.`
+      );
+    }
+  }
+};
+
+---
+
+Final Recommendations
+
+Do This:
+
+1. Upgrade to PatternFly 5 - Token support is critical
+2. Implement three-layer token system:
+  - PF5 foundation (global, read-only)
+  - Authentik semantic tokens (your control)
+  - Brand customization (customer overrides)
+3. Rebuild primitives with tokens - Button, Input, Card, etc.
+4. Use adoptedStyleSheets for complex PF components - DataTable, Charts
+5. Limit customization scope - Colors, fonts, corners only
+6. Preserve authentik identity - Non-overridable brand tokens
+
+Timeline:
+
+- Phase 1 (Token foundation): 2-3 weeks
+- Phase 2 (Rebuild primitives): 4-6 weeks
+- Phase 3 (Hybrid complex components): 2-3 weeks
+- Phase 4 (Brand customization): 2 weeks
+- Phase 5 (Documentation): 1 week
+
+Total: 11-15 weeks for complete migration
+
+Benefits:
+
+✅ Solves PF/Shadow DOM conflict - Tokens pierce shadow boundaries
+✅ Enables white-labeling - Customer override layer
+✅ Preserves your identity - Non-overridable tokens
+✅ Efficient - adoptedStyleSheets where needed
+✅ Maintainable - Insulated from PF changes
+✅ Upgradable - Token mapping is your upgrade buffer
+✅ Flexible - Can adopt PFE components later if they mature
+
+This approach gives you the "best of both worlds": PatternFly's design language + Shadow DOM encapsulation + White-label customization + Your retained control.
+
+> /export recommendations.txt 
+⎿  Conversation exported to: recommendations.txt
+
+> /stats 
+⎿  Stats dialog dismissed
+
+> /usage 
+⎿  Status dialog dismissed
+
+> /export recommendations.txt 
+⎿  Conversation exported to: recommendations.txt
+
+> If we were to document the proposed architecture, what package diagrams 
+and class diagrams would be most helpful to illuminating our course of 
+action? 
+
+⏺ Excellent question. Documentation is critical for an architecture this complex. Here are the diagrams that would be most valuable, organized by purpose:
+
+---
+
+1. Strategic Overview Diagrams
+
+1.1 Monorepo Structure Diagram (C4 System Context)
+
+Purpose: Show the overall organization and what lives where
+
+Format: Nested boxes showing directory structure with annotations
+
+┌─────────────────────────────────────────────────────────────────┐
+│ @goauthentik/web (monorepo root)                                │
+│                                                                  │
+│ ┌─────────────────────────────────────────────────────────┐    │
+│ │ apps/ (Independent Applications)                        │    │
+│ │                                                          │    │
+│ │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │    │
+│ │  │ admin/       │  │ user/        │  │ flow/        │ │    │
+│ │  │              │  │              │  │              │ │    │
+│ │  │ - pages/     │  │ - pages/     │  │ - stages/    │ │    │
+│ │  │ - routes.ts  │  │ - routes.ts  │  │ - executor/  │ │    │
+│ │  │ - shell.ts   │  │ - shell.ts   │  │ - main.ts    │ │    │
+│ │  │ - main.ts    │  │ - main.ts    │  │              │ │    │
+│ │  │              │  │              │  │              │ │    │
+│ │  │ Build: ✓     │  │ Build: ✓     │  │ Build: ✓     │ │    │
+│ │  │ Deploy: ✓    │  │ Deploy: ✓    │  │ Deploy: ✓    │ │    │
+│ │  └──────────────┘  └──────────────┘  └──────────────┘ │    │
+│ └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+│ ┌─────────────────────────────────────────────────────────┐    │
+│ │ packages/ (Shared Libraries)                            │    │
+│ │                                                          │    │
+│ │  ┌──────────────────────────────────────────────┐      │    │
+│ │  │ ui/ (API-Agnostic UI)                        │      │    │
+│ │  │ 🚫 NO @goauthentik/api imports               │      │    │
+│ │  │                                               │      │    │
+│ │  │  - primitives/ (Button, Input, Card)        │      │    │
+│ │  │  - patterns/ (Table, Form, Modal)           │      │    │
+│ │  │  - layout/ (Page, Grid, Stack)              │      │    │
+│ │  └──────────────────────────────────────────────┘      │    │
+│ │                                                          │    │
+│ │  ┌──────────────────────────────────────────────┐      │    │
+│ │  │ authentik-components/ (API-Aware)            │      │    │
+│ │  │ ✅ Uses @goauthentik/api                     │      │    │
+│ │  │                                               │      │    │
+│ │  │  - tables/ (ApiTable, TablePage)            │      │    │
+│ │  │  - forms/ (ModelForm, DeleteForm)           │      │    │
+│ │  │  - user/ (UserSettings, SessionList)        │      │    │
+│ │  │  - charts/ (EventChart, MetricsChart)       │      │    │
+│ │  └──────────────────────────────────────────────┘      │    │
+│ │                                                          │    │
+│ │  ┌──────────────────────────────────────────────┐      │    │
+│ │  │ infrastructure/                              │      │    │
+│ │  │                                               │      │    │
+│ │  │  - config/ (ConfigurationManager)           │      │    │
+│ │  │  - theme/ (ThemeService, Tokens)            │      │    │
+│ │  │  - router/ (Router, Route, RouterOutlet)    │      │    │
+│ │  │  - api/ (API client configuration)          │      │    │
+│ │  │  - websocket/ (WebSocket client)            │      │    │
+│ │  └──────────────────────────────────────────────┘      │    │
+│ │                                                          │    │
+│ │  ┌──────────────────────────────────────────────┐      │    │
+│ │  │ api/ (@goauthentik/api)                      │      │    │
+│ │  │ Generated from OpenAPI schema                │      │    │
+│ │  └──────────────────────────────────────────────┘      │    │
+│ └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+
+Legend:
+  apps/ → Can import from packages/, never from other apps/
+  packages/ → Can import from other packages/ following dependency rules
+  🚫 → Enforced boundary (ESLint + Dependency Cruiser)
+
+Why This Matters:
+- Shows physical organization
+- Makes API boundary visible
+- Clarifies what can depend on what
+- Illustrates independent bundling
+
+---
+
+1.2 Dependency Flow Diagram (Package Dependencies)
+
+Purpose: Show which packages can depend on which others
+
+Format: Directed graph with dependency arrows
+
+┌─────────────────────────────────────────────────────────────┐
+│                     Dependency Rules                        │
+│                                                             │
+│  ┌───────┐                                                 │
+│  │ admin │────┐                                            │
+│  └───────┘    │                                            │
+│               │                                            │
+│  ┌───────┐    │    ┌──────────────────────┐              │
+│  │ user  │────┼───→│ authentik-components │              │
+│  └───────┘    │    └──────────────────────┘              │
+│               │              │                             │
+│  ┌───────┐    │              │                             │
+│  │ flow  │────┘              ↓                             │
+│  └───────┘           ┌──────────────┐                     │
+│                      │      ui      │                     │
+│                      └──────────────┘                     │
+│                              │                             │
+│                              ↓                             │
+│                      ┌──────────────────┐                 │
+│                      │ infrastructure   │                 │
+│                      └──────────────────┘                 │
+│                                                             │
+│  ┌──────────────────────┐                                 │
+│  │ authentik-components │────────┐                        │
+│  └──────────────────────┘        │                        │
+│                                   ↓                        │
+│                           ┌─────────────┐                 │
+│                           │     api     │                 │
+│                           └─────────────┘                 │
+│                                                             │
+│  Rules:                                                    │
+│  • Apps can import from ANY package                       │
+│  • Apps CANNOT import from other apps                     │
+│  • ui CANNOT import from api or authentik-components      │
+│  • authentik-components CAN import from ui and api        │
+│  • infrastructure has NO business logic dependencies      │
+└─────────────────────────────────────────────────────────────┘
+
+Why This Matters:
+- Prevents circular dependencies
+- Enforces API boundary
+- Guides where new code should live
+- Shows upgrade impact radius
+
+---
+
+2. Configuration Architecture Diagrams
+
+2.1 Configuration Layer Stack (Detailed Architecture)
+
+Purpose: Show how configuration sources combine into resolved config
+
+Format: Layered stack with data flow
+
+┌────────────────────────────────────────────────────────────────┐
+│                      Component Layer                           │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │
+│  │  MyComponent │  │AnotherComp.  │  │  ThirdComp   │        │
+│  │              │  │              │  │              │        │
+│  │ config.theme │  │ config.locale│  │ config.brand │        │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘        │
+│         │                 │                 │                 │
+│         └─────────────────┼─────────────────┘                 │
+│                           │                                    │
+│                           ↓                                    │
+│         ┌─────────────────────────────────────┐               │
+│         │    ConfigController                 │               │
+│         │    (Lit Reactive Controller)        │               │
+│         │    • Subscribes to resolved$        │               │
+│         │    • Updates host on change         │               │
+│         └─────────────────┬───────────────────┘               │
+│                           │                                    │
+└───────────────────────────┼────────────────────────────────────┘
+                            │
+┌───────────────────────────┼────────────────────────────────────┐
+│                           ↓                                    │
+│         ┌─────────────────────────────────────┐               │
+│         │   ConfigurationManager              │               │
+│         │   (Single Source of Derived Truth)  │               │
+│         │                                      │               │
+│         │   resolveConfig():                  │               │
+│         │   • Applies precedence rules        │               │
+│         │   • Handles partial data            │               │
+│         │   • Emits ResolvedConfig            │               │
+│         │                                      │               │
+│         │   resolved$ = combineLatest([       │               │
+│         │     browser$, site$, brand$, user$  │               │
+│         │   ]).pipe(                           │               │
+│         │     map(resolveConfig)              │               │
+│         │   )                                  │               │
+│         └──────────┬──────────────────────────┘               │
+│                    │                                           │
+│       ┌────────────┼────────────┬─────────────┐              │
+│       ↓            ↓            ↓             ↓              │
+│  ┌─────────┐ ┌─────────┐ ┌──────────┐ ┌───────────┐        │
+│  │Browser  │ │  Site   │ │  Brand   │ │   User    │        │
+│  │Layer    │ │ Layer   │ │  Layer   │ │  Layer    │        │
+│  └─────────┘ └─────────┘ └──────────┘ └───────────┘        │
+│      │            │            │             │               │
+└──────┼────────────┼────────────┼─────────────┼───────────────┘
+       │            │            │             │
+┌──────┼────────────┼────────────┼─────────────┼───────────────┐
+│      ↓            ↓            ↓             ↓               │
+│  ┌─────────┐ ┌─────────┐ ┌──────────┐ ┌───────────┐        │
+│  │prefers- │ │GET      │ │GET       │ │GET        │        │
+│  │color-   │ │/api/    │ │/api/     │ │/api/      │        │
+│  │scheme   │ │config   │ │brands/   │ │core/users/│        │
+│  │         │ │         │ │current   │ │me         │        │
+│  │navigator│ │         │ │          │ │           │        │
+│  │.language│ │         │ │          │ │           │        │
+│  │         │ │         │ │          │ │           │        │
+│  │local    │ │         │ │          │ │           │        │
+│  │Storage  │ │         │ │          │ │           │        │
+│  └─────────┘ └─────────┘ └──────────┘ └───────────┘        │
+│   (sync)      (async)      (async)       (async)            │
+│  Data Sources                                                │
+└──────────────────────────────────────────────────────────────┘
+
+Timeline:
+  t=0:   Browser layer ready immediately
+         → resolved$ emits with browser defaults
+
+  t=5:   Site layer loads
+         → resolved$ emits with site overrides
+
+  t=10:  Brand layer loads
+         → resolved$ emits with brand overrides
+
+  t=15:  User layer loads
+         → resolved$ emits with user preferences (highest priority)
+
+  t=50:  User changes system theme (browser event)
+         → Browser layer updates
+         → resolved$ re-evaluates
+         → Components re-render
+         (but user preference still wins due to precedence)
+
+Why This Matters:
+- Clarifies data flow
+- Shows async handling
+- Explains precedence
+- Illustrates reactivity
+
+---
+
+2.2 Configuration Resolution Flowchart
+
+Purpose: Document the precedence logic
+
+Format: Decision tree showing resolution algorithm
+
+┌─────────────────────────────────────────────────────┐
+│           Theme Resolution Algorithm                │
+│                                                     │
+│  resolveTheme(browser, site, brand, user) {        │
+│                                                     │
+│    ┌──────────────────────────┐                   │
+│    │ User preference exists?  │                   │
+│    └──────────┬───────────────┘                   │
+│               │                                    │
+│         YES ──┤                                    │
+│               │                                    │
+│               ↓                                    │
+│    ┌──────────────────────┐                       │
+│    │ Return user.theme    │ ← Highest Priority   │
+│    └──────────────────────┘                       │
+│               │                                    │
+│          NO ──┤                                    │
+│               │                                    │
+│               ↓                                    │
+│    ┌──────────────────────────┐                   │
+│    │ LocalStorage override?   │                   │
+│    └──────────┬───────────────┘                   │
+│               │                                    │
+│         YES ──┤                                    │
+│               ↓                                    │
+│    ┌─────────────────────────────┐                │
+│    │ Return localStorage.theme   │                │
+│    └─────────────────────────────┘                │
+│               │                                    │
+│          NO ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────────┐                   │
+│    │ Brand override exists?   │                   │
+│    └──────────┬───────────────┘                   │
+│               │                                    │
+│         YES ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────┐                       │
+│    │ Return brand.theme   │                       │
+│    └──────────────────────┘                       │
+│               │                                    │
+│          NO ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────────┐                   │
+│    │ Site theme !== 'auto'?   │                   │
+│    └──────────┬───────────────┘                   │
+│               │                                    │
+│         YES ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────┐                       │
+│    │ Return site.theme    │                       │
+│    └──────────────────────┘                       │
+│               │                                    │
+│          NO ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────────┐                   │
+│    │ Browser preference       │                   │
+│    │ available?               │                   │
+│    └──────────┬───────────────┘                   │
+│               │                                    │
+│         YES ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────┐                       │
+│    │ Return browser.theme │                       │
+│    └──────────────────────┘                       │
+│               │                                    │
+│          NO ──┤                                    │
+│               ↓                                    │
+│    ┌──────────────────────┐                       │
+│    │ Return 'light'       │ ← Ultimate Fallback  │
+│    └──────────────────────┘                       │
+│                                                     │
+│  }                                                  │
+└─────────────────────────────────────────────────────┘
+
+Precedence Order (Highest → Lowest):
+  1. User preference (authenticated users)
+  2. LocalStorage (guests can customize)
+  3. Brand configuration (multi-tenant)
+  4. Site configuration (global default)
+  5. Browser detection (OS preference)
+  6. Fallback ('light')
+
+Why This Matters:
+- Documents business logic
+- Shows all edge cases
+- Explains why config resolves the way it does
+- Guides testing strategy
+
+---
+
+2.3 Configuration State Machine
+
+Purpose: Show lifecycle and state transitions
+
+Format: State diagram
+
+┌──────────────────────────────────────────────────────┐
+│          Configuration Layer State Machine           │
+│                                                      │
+│                  ┌──────────┐                       │
+│                  │   idle   │                       │
+│                  └────┬─────┘                       │
+│                       │                              │
+│              initialize() called                     │
+│                       │                              │
+│                       ↓                              │
+│                  ┌──────────┐                       │
+│                  │ loading  │                       │
+│                  └────┬─────┘                       │
+│                       │                              │
+│              ┌────────┴────────┐                    │
+│              │                 │                    │
+│      API success      API failure                   │
+│              │                 │                    │
+│              ↓                 ↓                    │
+│         ┌────────┐      ┌──────────┐              │
+│         │ ready  │      │  error   │              │
+│         └───┬────┘      └────┬─────┘              │
+│             │                │                      │
+│             │           retry()                     │
+│             │                │                      │
+│             │                └─────→ loading        │
+│             │                                       │
+│      Event triggers                                 │
+│    (browser change,                                 │
+│     API update)                                     │
+│             │                                       │
+│             └────────→ ready (with new data)       │
+│                                                      │
+└──────────────────────────────────────────────────────┘
+
+State Properties:
+  idle:    { status: 'idle' }
+  loading: { status: 'loading' }
+  ready:   { status: 'ready', data: T }
+  error:   { status: 'error', error: Error }
+
+Observable Behavior:
+  • Layers emit state changes
+  • ConfigurationManager subscribes to all layers
+  • Components subscribe to resolved config
+  • Updates are automatic and reactive
+
+Why This Matters:
+- Clarifies async behavior
+- Shows error handling
+- Documents retry logic
+- Guides implementation
+
+---
+
+3. Theme System Diagrams
+
+3.1 Three-Layer Token Architecture
+
+Purpose: Show how theming works
+
+Format: Layered stack with token flow
+
+┌─────────────────────────────────────────────────────────────┐
+│                     Component                               │
+│  ┌───────────────────────────────────────────────┐         │
+│  │  ak-button {                                  │         │
+│  │    background: var(--ak-color-primary);       │         │
+│  │    font-family: var(--ak-font-family);        │         │
+│  │    border-radius: var(--ak-border-radius);    │         │
+│  │  }                                             │         │
+│  └───────────────────────────────────────────────┘         │
+│                        ↑                                    │
+│                        │ Uses Authentik tokens              │
+│                        │                                    │
+└────────────────────────┼───────────────────────────────────┘
+                         │
+┌────────────────────────┼───────────────────────────────────┐
+│  Layer 3: Customer Customization (Injected via API)       │
+│  ┌───────────────────────────────────────────────┐        │
+│  │  :root {                                      │        │
+│  │    --ak-color-primary: #ff6b35;   ⟵ Override │        │
+│  │    --ak-font-family: "Roboto";    ⟵ Override │        │
+│  │  }                                             │        │
+│  └───────────────────────────────────────────────┘        │
+│                        ↓ Overrides                         │
+└────────────────────────┼───────────────────────────────────┘
+                         │
+┌────────────────────────┼───────────────────────────────────┐
+│  Layer 2: Authentik Brand Tokens (Your Control)           │
+│  ┌───────────────────────────────────────────────┐        │
+│  │  :root {                                      │        │
+│  │    /* Customizable by customers */            │        │
+│  │    --ak-color-primary:                        │        │
+│  │      var(--pf-v5-global--primary-color--100); │        │
+│  │    --ak-font-family:                          │        │
+│  │      var(--pf-v5-global--FontFamily);         │        │
+│  │                                                │        │
+│  │    /* NOT customizable */                     │        │
+│  │    --ak-color-authentik-brand: #fd4b2d;       │        │
+│  │    --ak-logo-authentik: url('/logo.svg');     │        │
+│  │  }                                             │        │
+│  └───────────────────────────────────────────────┘        │
+│                        ↓ Maps to                           │
+└────────────────────────┼───────────────────────────────────┘
+                         │
+┌────────────────────────┼───────────────────────────────────┐
+│  Layer 1: PatternFly 5 Foundation (Read-Only)             │
+│  ┌───────────────────────────────────────────────┐        │
+│  │  :root {                                      │        │
+│  │    --pf-v5-global--primary-color--100: #06c;  │        │
+│  │    --pf-v5-global--FontFamily: RedHat, sans;  │        │
+│  │    --pf-v5-global--spacer--md: 1rem;          │        │
+│  │    --pf-v5-global--BorderRadius--sm: 3px;     │        │
+│  │    /* ... hundreds more tokens */             │        │
+│  │  }                                             │        │
+│  └───────────────────────────────────────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+
+Token Flow:
+  PF Token → Authentik Token → Customer Override → Component
+
+Example Resolution:
+  Component uses:    var(--ak-color-primary)
+  Layer 3 defines:   --ak-color-primary: #ff6b35
+  Final value:       #ff6b35 (customer wins)
+
+  Component uses:    var(--ak-color-authentik-brand)
+  Layer 3 tries:     --ak-color-authentik-brand: #123456 (ignored)
+  Layer 2 defines:   --ak-color-authentik-brand: #fd4b2d
+  Final value:       #fd4b2d (your identity preserved)
+
+Why This Matters:
+- Shows white-labeling mechanism
+- Clarifies what customers can/can't override
+- Documents token naming convention
+- Explains PatternFly integration
+
+---
+
+3.2 Token Customization Scope
+
+Purpose: Document what's customizable
+
+Format: Table/matrix diagram
+
+┌──────────────────────────────────────────────────────────────┐
+│           Token Customization Matrix                         │
+├──────────────────────┬────────────┬──────────────────────────┤
+│ Token Category       │ Customer   │ Rationale                │
+│                      │ Override?  │                          │
+├──────────────────────┼────────────┼──────────────────────────┤
+│ Colors               │            │                          │
+│  --ak-color-primary  │     ✅     │ Brand identity           │
+│  --ak-color-accent   │     ✅     │ Brand identity           │
+│  --ak-color-danger   │     ❌     │ Semantic consistency     │
+│  --ak-color-success  │     ❌     │ Semantic consistency     │
+├──────────────────────┼────────────┼──────────────────────────┤
+│ Typography           │            │                          │
+│  --ak-font-family    │     ✅     │ Brand identity           │
+│  --ak-font-size-*    │     ❌     │ Accessibility/hierarchy  │
+│  --ak-font-weight-*  │     ❌     │ Hierarchy consistency    │
+├──────────────────────┼────────────┼──────────────────────────┤
+│ Spacing              │            │                          │
+│  --ak-spacing-*      │     ❌     │ Layout consistency       │
+│  --ak-border-radius  │     ✅     │ Aesthetic preference     │
+├──────────────────────┼────────────┼──────────────────────────┤
+│ Elevation            │            │                          │
+│  --ak-elevation-*    │     ❌     │ Depth hierarchy          │
+├──────────────────────┼────────────┼──────────────────────────┤
+│ Authentik Identity   │            │                          │
+│  --ak-color-authen-  │     ❌     │ Preserve your identity   │
+│    tik-brand         │            │                          │
+│  --ak-logo-authentik │     ❌     │ Preserve your identity   │
+└──────────────────────┴────────────┴──────────────────────────┘
+
+Implementation:
+  ✅ Customizable: Defined in Layer 2, overridable by Layer 3
+  ❌ Not Customizable: Hardcoded in Layer 2, ignored by Layer 3
+
+Why This Matters:
+- Sets customer expectations
+- Guides which tokens to create
+- Documents business rules
+- Prevents scope creep
+
+---
+
+4. Component Architecture Diagrams
+
+4.1 Elements vs Components Split
+
+Purpose: Show the API boundary enforcement
+
+Format: Package diagram with import rules
+
+┌──────────────────────────────────────────────────────────────┐
+│                    Component Hierarchy                        │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  apps/admin/pages/ApplicationListPage.ts           │    │
+│  │  (Admin-specific page)                             │    │
+│  └─────────────────┬──────────────────────────────────┘    │
+│                    │ imports                                │
+│                    ↓                                        │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  authentik-components/tables/ApiTable.ts           │    │
+│  │  (API-aware business component)                    │    │
+│  │                                                     │    │
+│  │  import { PaginatedResponse } from '@goauthentik/  │    │
+│  │    api';                                            │    │
+│  │  import { GenericTable } from '@goauthentik/ui';   │    │
+│  └─────────────────┬──────────────────────────────────┘    │
+│                    │ imports                                │
+│                    ↓                                        │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  ui/patterns/GenericTable.ts                       │    │
+│  │  (Pure UI pattern component)                       │    │
+│  │                                                     │    │
+│  │  🚫 NO API imports                                 │    │
+│  │  ✅ Uses only: lit, ui/primitives                  │    │
+│  └─────────────────┬──────────────────────────────────┘    │
+│                    │ imports                                │
+│                    ↓                                        │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  ui/primitives/Button.ts                           │    │
+│  │  (Atomic UI component)                             │    │
+│  │                                                     │    │
+│  │  🚫 NO API imports                                 │    │
+│  │  🚫 NO business logic                              │    │
+│  │  ✅ Uses only: lit, CSS tokens                     │    │
+│  └────────────────────────────────────────────────────┘    │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+
+Import Rules:
+  apps/            → Can import from: packages/*
+  authentik-       → Can import from: ui/*, api/*, infrastructure/*
+    components/
+  ui/              → Can import from: lit, infrastructure/theme
+                     🚫 CANNOT import from: api/*, authentik-components/*
+  infrastructure/  → Can import from: (varies by subpackage)
+
+Enforcement:
+  • ESLint: no-restricted-imports rule
+  • Dependency Cruiser: dependency graph validation
+  • CI: Fails build on violation
+
+Why This Matters:
+- Makes boundary crystal clear
+- Shows how to compose components
+- Guides where new components should live
+- Documents enforcement mechanism
+
+---
+
+4.2 Component Composition Pattern
+
+Purpose: Show the adapter pattern for API integration
+
+Format: Class diagram with relationships
+
+┌──────────────────────────────────────────────────────────────┐
+│              Component Adapter Pattern                        │
+│                                                              │
+│  ┌───────────────────────────────────────┐                  │
+│  │  GenericTable<T>                      │                  │
+│  │  (Pure UI - in ui/patterns/)          │                  │
+│  ├───────────────────────────────────────┤                  │
+│  │  @property() data?: TableData<T>      │                  │
+│  │  @property() loading: boolean         │                  │
+│  │  @property() error?: string           │                  │
+│  ├───────────────────────────────────────┤                  │
+│  │  render(): TemplateResult             │                  │
+│  │  renderRow(item: T): TemplateResult   │                  │
+│  │  renderPagination(): TemplateResult   │                  │
+│  └───────────────────────────────────────┘                  │
+│                      ▲                                       │
+│                      │ extends                               │
+│                      │                                       │
+│  ┌───────────────────────────────────────┐                  │
+│  │  ApiTable<T>                          │                  │
+│  │  (API adapter - in authentik-         │                  │
+│  │   components/tables/)                 │                  │
+│  ├───────────────────────────────────────┤                  │
+│  │  @property() apiData?:                │                  │
+│  │    PaginatedResponse<T>               │  ← From @goauth- │
+│  │                                        │    entik/api     │
+│  │  @property() apiCall:                 │                  │
+│  │    () => Promise<PaginatedResponse>   │                  │
+│  ├───────────────────────────────────────┤                  │
+│  │  // Adapts API format to UI format    │                  │
+│  │  get data(): TableData<T> {           │                  │
+│  │    return {                            │                  │
+│  │      results: apiData.results,        │                  │
+│  │      pagination: {                     │                  │
+│  │        count: apiData.pagination.count│                  │
+│  │        // ... adapter logic           │                  │
+│  │      }                                 │                  │
+│  │    }                                   │                  │
+│  │  }                                     │                  │
+│  │                                        │                  │
+│  │  async fetchData(): Promise<void>     │                  │
+│  └───────────────────────────────────────┘                  │
+│                      ▲                                       │
+│                      │ extends                               │
+│                      │                                       │
+│  ┌───────────────────────────────────────┐                  │
+│  │  UserTable                            │                  │
+│  │  (Business component - in authentik-  │                  │
+│  │   components/user/)                   │                  │
+│  ├───────────────────────────────────────┤                  │
+│  │  // Configures for specific use case  │                  │
+│  │  apiCall = () =>                      │                  │
+│  │    api.core.coreUsersList()           │                  │
+│  │                                        │                  │
+│  │  renderRow(user: User) {              │                  │
+│  │    return html`                        │                  │
+│  │      <td>${user.username}</td>        │                  │
+│  │      <td>${user.email}</td>           │                  │
+│  │    `                                   │                  │
+│  │  }                                     │                  │
+│  └───────────────────────────────────────┘                  │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+
+Pattern Benefits:
+  • GenericTable is reusable (not tied to authentik API)
+  • ApiTable provides API integration (adapter layer)
+  • UserTable adds business logic (specific use case)
+  • Clear separation of concerns
+  • Testable at each level
+
+Why This Matters:
+- Documents the adapter pattern
+- Shows how to maintain API boundary
+- Guides component creation
+- Illustrates composition over inheritance
+
+---
+
+5. Build & Deploy Diagrams
+
+5.1 Independent Build Pipeline
+
+Purpose: Show how apps build separately
+
+Format: Pipeline diagram
+
+┌──────────────────────────────────────────────────────────────┐
+│                 Independent Build Pipeline                    │
+│                                                              │
+│  Developer runs: npm run build:admin                         │
+│                                                              │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  Step 1: Build Package Dependencies                │    │
+│  │  • packages/ui/                                     │    │
+│  │  • packages/authentik-components/                   │    │
+│  │  • packages/infrastructure/                         │    │
+│  │  • packages/router/                                 │    │
+│  │                                                     │    │
+│  │  (Cached if unchanged)                              │    │
+│  └─────────────────┬──────────────────────────────────┘    │
+│                    │                                        │
+│                    ↓                                        │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  Step 2: Build Admin App                           │    │
+│  │  • Vite bundles apps/admin/src/main.ts             │    │
+│  │  • Imports packages as ESM                          │    │
+│  │  • Tree-shakes unused code                          │    │
+│  │  • Generates:                                       │    │
+│  │    - dist/admin/admin.[hash].js                     │    │
+│  │    - dist/admin/chunks/[hash].js                    │    │
+│  │    - dist/admin/assets/*                            │    │
+│  └─────────────────┬──────────────────────────────────┘    │
+│                    │                                        │
+│                    ↓                                        │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  Output: dist/admin/                                │    │
+│  │  • Self-contained bundle                            │    │
+│  │  • No shared chunks with user/ or flow/             │    │
+│  │  • Can be deployed independently                    │    │
+│  └────────────────────────────────────────────────────┘    │
+│                                                              │
+│  Similarly:                                                  │
+│  npm run build:user → dist/user/                            │
+│  npm run build:flow → dist/flow/                            │
+│                                                              │
+│  CI/CD:                                                      │
+│  • Detects changed apps (git diff)                          │
+│  • Builds only changed apps                                 │
+│  • Deploys only changed bundles                             │
+└──────────────────────────────────────────────────────────────┘
+
+Parallel Build:
+  npm run build (builds all apps)
+  
+  ┌─────────┐  ┌─────────┐  ┌─────────┐
+  │ Admin   │  │ User    │  │ Flow    │
+  │ Build   │  │ Build   │  │ Build   │
+  └────┬────┘  └────┬────┘  └────┬────┘
+       │            │            │
+       └────────────┴────────────┘
+                    │
+              All complete in parallel
+
+Why This Matters:
+- Shows build independence
+- Clarifies deployment strategy
+- Documents caching opportunities
+- Illustrates CI/CD optimization
+
+---
+
+5.2 Bundle Size Comparison
+
+Purpose: Show the impact of independent bundling
+
+Format: Bar chart / comparison table
+
+┌──────────────────────────────────────────────────────────────┐
+│              Bundle Size Analysis                            │
+│                                                              │
+│  Before (Shared Chunks):                                     │
+│                                                              │
+│    shared-vendor.js:     500 KB  ████████████████████████   │
+│    shared-pf.js:         200 KB  ████████                    │
+│    admin-app.js:         300 KB  ████████████                │
+│    user-app.js:          100 KB  ████                        │
+│    flow-app.js:           80 KB  ███                         │
+│    ─────────────────────────────                            │
+│    Total first load:    1180 KB (admin)                      │
+│                         800 KB (user, from admin)            │
+│                                                              │
+│  After (Independent Bundles):                                │
+│                                                              │
+│    admin/admin.js:       800 KB  ████████████████████████    │
+│    user/user.js:         600 KB  ████████████████████        │
+│    flow/flow.js:         500 KB  ████████████████            │
+│    ─────────────────────────────                            │
+│    Total first load:     800 KB (admin, standalone)          │
+│                         600 KB (user, standalone)            │
+│                                                              │
+│  Trade-offs:                                                 │
+│  ✅ Pros:                                                    │
+│    • True independence (can deploy one app)                 │
+│    • No coordination needed (different versions OK)         │
+│    • Simpler build (no shared chunk config)                 │
+│                                                              │
+│  ⚠️  Cons:                                                   │
+│    • Larger total download (if user visits all 3 apps)     │
+│    • Duplicated code (Lit, PF tokens in each bundle)       │
+│                                                              │
+│  Mitigation:                                                 │
+│    • HTTP/2 (parallel downloads)                            │
+│    • Aggressive caching (immutable bundles)                 │
+│    • Optional: Module Federation (future optimization)      │
+└──────────────────────────────────────────────────────────────┘
+
+Why This Matters:
+- Sets expectations about bundle sizes
+- Documents the trade-off
+- Justifies the architecture decision
+- Shows optimization path
+
+---
+
+6. Migration Sequence Diagrams
+
+6.1 Phased Migration Timeline
+
+Purpose: Show the migration sequence
+
+Format: Gantt chart / timeline
+
+┌──────────────────────────────────────────────────────────────┐
+│                   Migration Timeline                         │
+│                                                              │
+│  Phase 1: Foundation (Weeks 1-4)                             │
+│  ┌────────────────────────────────────────────────┐         │
+│  │ Week 1-2: Monorepo setup                       │         │
+│  │  • Create packages/ and apps/ structure        │         │
+│  │  • Configure npm workspaces                    │         │
+│  │  • Add boundary enforcement (ESLint)           │         │
+│  ├────────────────────────────────────────────────┤         │
+│  │ Week 3-4: Independent builds                   │         │
+│  │  • Per-app Vite configs                        │         │
+│  │  • Verify independent bundling                 │         │
+│  │  • Update CI/CD                                │         │
+│  └────────────────────────────────────────────────┘         │
+│                                                              │
+│  Phase 2: UI Decoupling (Weeks 5-10)                         │
+│  ┌────────────────────────────────────────────────┐         │
+│  │ Week 5-7: Elements → UI split                  │         │
+│  │  • Classify elements/ files                    │         │
+│  │  • Create ui/ package structure                │         │
+│  │  • Move pure UI components                     │         │
+│  ├────────────────────────────────────────────────┤         │
+│  │ Week 8-10: API-aware components                │         │
+│  │  • Create authentik-components/ package        │         │
+│  │  • Implement adapter pattern                   │         │
+│  │  • Update app imports                          │         │
+│  └────────────────────────────────────────────────┘         │
+│                                                              │
+│  Phase 3: Configuration Manager (Weeks 11-14)                │
+│  ┌────────────────────────────────────────────────┐         │
+│  │ Week 11-12: Implement ConfigurationManager     │         │
+│  │  • Layer classes                               │         │
+│  │  • Manager with resolution logic               │         │
+│  │  • ConfigController for components             │         │
+│  ├────────────────────────────────────────────────┤         │
+│  │ Week 13-14: Migrate from controllers           │         │
+│  │  • Update components to use ConfigController   │         │
+│  │  • Remove old controllers/mixins               │         │
+│  └────────────────────────────────────────────────┘         │
+│                                                              │
+│  Phase 4: Theme System (Weeks 15-20)                         │
+│  ┌────────────────────────────────────────────────┐         │
+│  │ Week 15-16: PF5 token foundation               │         │
+│  │  • Upgrade to PatternFly 5                     │         │
+│  │  • Create Authentik token layer                │         │
+│  ├────────────────────────────────────────────────┤         │
+│  │ Week 17-19: Rebuild primitives                 │         │
+│  │  • Token-based Button, Input, Card, etc.      │         │
+│  │  • Replace PF components in apps               │         │
+│  ├────────────────────────────────────────────────┤         │
+│  │ Week 20: Brand customization                   │         │
+│  │  • Customer token override layer               │         │
+│  │  • Admin UI for customization                  │         │
+│  └────────────────────────────────────────────────┘         │
+│                                                              │
+│  Deliverables:                                               │
+│  ✅ Week 4:  Independent builds working                     │
+│  ✅ Week 10: API boundary enforced                          │
+│  ✅ Week 14: Single source of config truth                  │
+│  ✅ Week 20: White-label theming                            │
+└──────────────────────────────────────────────────────────────┘
+
+Why This Matters:
+- Shows realistic timeline
+- Identifies dependencies between phases
+- Defines deliverables
+- Guides resource planning
+
+---
+
+6.2 Migration Risk Map
+
+Purpose: Identify high-risk changes
+
+Format: Risk matrix
+
+┌──────────────────────────────────────────────────────────────┐
+│                    Migration Risk Matrix                     │
+│                                                              │
+│  High Impact                                                 │
+│     ▲                                                        │
+│     │                                                        │
+│     │  ┌─────────────────┐  ┌─────────────────┐           │
+│     │  │ Configuration   │  │ API Boundary    │           │
+│     │  │ Manager         │  │ Split           │           │
+│     │  │                 │  │                 │           │
+│     │  │ Risk: HIGH      │  │ Risk: HIGH      │           │
+│     │  │ • Touches all   │  │ • 60+ files     │           │
+│     │  │   components    │  │ • All imports   │           │
+│     │  └─────────────────┘  └─────────────────┘           │
+│     │                                                        │
+│     │  ┌─────────────────┐  ┌─────────────────┐           │
+│     │  │ Theme System    │  │ Shell Refactor  │           │
+│     │  │                 │  │                 │           │
+│     │  │ Risk: MEDIUM    │  │ Risk: MEDIUM    │           │
+│     │  │ • Visual impact │  │ • Init logic    │           │
+│     │  └─────────────────┘  └─────────────────┘           │
+│     │                                                        │
+│     │  ┌─────────────────┐  ┌─────────────────┐           │
+│     │  │ Monorepo Setup  │  │ Independent     │           │
+│     │  │                 │  │ Builds          │           │
+│     │  │ Risk: LOW       │  │                 │           │
+│     │  │ • Structural    │  │ Risk: LOW       │           │
+│     │  │   only          │  │ • Build system  │           │
+│     │  └─────────────────┘  └─────────────────┘           │
+│     │                                                        │
+│  Low│                                                        │
+│     └────────────────────────────────────────────────────► │
+│         Low Complexity           High Complexity            │
+│                                                              │
+│  Mitigation Strategies:                                      │
+│                                                              │
+│  High Risk Items:                                            │
+│  • Implement alongside existing code (parallel path)        │
+│  • Extensive testing before cutover                         │
+│  • Feature flags for gradual rollout                        │
+│  • Detailed rollback plan                                   │
+│                                                              │
+│  Medium Risk Items:                                          │
+│  • Thorough visual regression testing                       │
+│  • Staged rollout (one app at a time)                       │
+│  • Monitor error rates post-deployment                      │
+│                                                              │
+│  Low Risk Items:                                             │
+│  • Standard testing and review                              │
+│  • Can be done in one shot                                  │
+└──────────────────────────────────────────────────────────────┘
+
+Why This Matters:
+- Identifies what needs extra attention
+- Guides mitigation strategies
+- Sets stakeholder expectations
+- Informs rollout planning
+
+---
+
+7. Summary: Most Critical Diagrams
+
+If you can only create 5 diagrams, prioritize these:
+
+1. Monorepo Structure Diagram (1.1) - Shows the big picture
+2. Configuration Layer Stack (2.1) - Solves your tight coupling problem
+3. Three-Layer Token Architecture (3.1) - Enables white-labeling
+4. Elements vs Components Split (4.1) - Clarifies API boundary
+5. Phased Migration Timeline (6.1) - Guides execution
+
+These five diagrams answer:
+- Where does code live? (1)
+- How does config work? (2)
+- How does theming work? (3)
+- What's the API boundary? (4)
+- What's the plan? (5)
+
+---
+
+Tool Recommendations
+
+For creating these diagrams:
+
+Simple ASCII (for documentation):
+- Can be versioned in Git
+- Renders in any text editor
+- Easy to update
+
+Mermaid (for generated diagrams):
+graph TB
+    A[Admin App] --> B[authentik-components]
+    B --> C[ui]
+    B --> D[api]
+- Renders in GitHub/GitLab
+- Version controlled
+- Easy syntax
+
+Draw.io / Excalidraw (for complex visuals):
+- Better for presentations
+- More visual polish
+- Can export to PNG/SVG
+
+PlantUML (for UML diagrams):
+- Great for class diagrams
+- Text-based (version control friendly)
+- Auto-layout
+
+Recommendation: Start with Mermaid for dependency graphs and sequence diagrams, use ASCII art for simpler conceptual diagrams, and Draw.io for the high-level overview that you'll present to stakeholders.
+
+Would you like me to generate any of these diagrams in Mermaid or another format?
+
+> Yes, generate them in mermaid 
+
+⏺ Here are the key diagrams in Mermaid format. You can paste these directly into any Markdown file, and they'll render on GitHub, GitLab, or any Mermaid-compatible viewer.
+
+---
+
+1. Monorepo Structure & Dependencies
+
+graph TB
+    subgraph "Apps (Independent Applications)"
+        Admin[admin/]
+        User[user/]
+        Flow[flow/]
+    end
+
+    subgraph "Packages (Shared Libraries)"
+        subgraph "UI Layer (No API)"
+            UI[ui/<br/>primitives, patterns, layout]
+        end
+
+        subgraph "Business Layer (API-Aware)"
+            AC[authentik-components/<br/>tables, forms, user, charts]
+        end
+
+        subgraph "Infrastructure"
+            Infra[infrastructure/<br/>config, theme, router, api, websocket]
+        end
+
+        API[api/<br/>Generated from OpenAPI]
+    end
+
+    Admin --> AC
+    Admin --> UI
+    Admin --> Infra
+    User --> AC
+    User --> UI
+    User --> Infra
+    Flow --> AC
+    Flow --> UI
+    Flow --> Infra
+
+    AC --> UI
+    AC --> API
+    AC --> Infra
+
+    UI --> Infra
+
+    style UI fill:#90EE90
+    style AC fill:#FFB6C1
+    style API fill:#87CEEB
+    style Infra fill:#DDA0DD
+
+    classDef appStyle fill:#FFE4B5,stroke:#333,stroke-width:2px
+    class Admin,User,Flow appStyle
+
+---
+
+2. Package Dependency Rules
+
+graph LR
+    subgraph "Applications"
+        Admin[Admin App]
+        User[User App]
+        Flow[Flow App]
+    end
+
+    subgraph "Packages"
+        AC[authentik-components]
+        UI[ui]
+        Infra[infrastructure]
+        API[api]
+    end
+
+    Admin --> AC
+    Admin --> UI
+    Admin --> Infra
+
+    User --> AC
+    User --> UI
+    User --> Infra
+
+    Flow --> AC
+    Flow --> UI
+    Flow --> Infra
+
+    AC --> UI
+    AC --> API
+    AC --> Infra
+
+    UI --> Infra
+
+    Admin -.X.- User
+    Admin -.X.- Flow
+    User -.X.- Flow
+
+    UI -.X.- API
+    UI -.X.- AC
+
+    style Admin fill:#FFE4B5
+    style User fill:#FFE4B5
+    style Flow fill:#FFE4B5
+    style UI fill:#90EE90
+    style AC fill:#FFB6C1
+
+---
+
+3. Configuration Layer Architecture
+
+graph TB
+    subgraph "Component Layer"
+        Comp1[MyComponent]
+        Comp2[AnotherComponent]
+        Comp3[ThirdComponent]
+    end
+
+    subgraph "Controller Layer"
+        ConfigCtrl[ConfigController<br/>Subscribes to resolved$<br/>Updates components]
+    end
+
+    subgraph "Configuration Manager"
+        Manager[ConfigurationManager<br/>Single Source of Derived Truth]
+        Resolver[resolveConfig&#40;&#41;<br/>Applies precedence rules]
+        Combined[combineLatest&#40;layers&#41;]
+    end
+
+    subgraph "Layer Sources"
+        Browser[BrowserConfigLayer<br/>prefers-color-scheme<br/>navigator.language<br/>localStorage<br/>Status: ready &#40;sync&#41;]
+
+        Site[SiteConfigLayer<br/>GET /api/config<br/>Status: loading → ready]
+
+        Brand[BrandConfigLayer<br/>GET /api/brands/current<br/>Status: loading → ready]
+
+        UserL[UserConfigLayer<br/>GET /api/users/me<br/>Status: loading → ready]
+    end
+
+    Comp1 --> ConfigCtrl
+    Comp2 --> ConfigCtrl
+    Comp3 --> ConfigCtrl
+
+    ConfigCtrl --> Manager
+
+    Manager --> Combined
+    Combined --> Resolver
+
+    Browser --> Combined
+    Site --> Combined
+    Brand --> Combined
+    UserL --> Combined
+
+    Resolver --> ConfigCtrl
+
+    style Browser fill:#90EE90
+    style Site fill:#FFB6C1
+    style Brand fill:#FFB6C1
+    style UserL fill:#FFB6C1
+    style Manager fill:#FFD700
+    style Resolver fill:#FFD700
+
+---
+
+4. Configuration Resolution Precedence
+
+flowchart TD
+    Start[resolveTheme&#40;browser, site, brand, user&#41;] --> CheckUser{User preference<br/>exists?}
+
+    CheckUser -->|Yes| ReturnUser[Return user.theme<br/>🏆 Highest Priority]
+    CheckUser -->|No| CheckLocal{LocalStorage<br/>override exists?}
+
+    CheckLocal -->|Yes| ReturnLocal[Return localStorage.theme<br/>Allows guest customization]
+    CheckLocal -->|No| CheckBrand{Brand override<br/>exists?}
+
+    CheckBrand -->|Yes| ReturnBrand[Return brand.theme<br/>Multi-tenant customization]
+    CheckBrand -->|No| CheckSite{Site theme<br/>!== 'auto'?}
+
+    CheckSite -->|Yes| ReturnSite[Return site.theme<br/>Global default]
+    CheckSite -->|No| CheckBrowser{Browser preference<br/>available?}
+
+    CheckBrowser -->|Yes| ReturnBrowser[Return browser.theme<br/>OS preference]
+    CheckBrowser -->|No| ReturnFallback[Return 'light'<br/>💡 Ultimate fallback]
+
+    ReturnUser --> End[Theme resolved]
+    ReturnLocal --> End
+    ReturnBrand --> End
+    ReturnSite --> End
+    ReturnBrowser --> End
+    ReturnFallback --> End
+
+    style ReturnUser fill:#FFD700
+    style ReturnFallback fill:#D3D3D3
+
+---
+
+5. Configuration State Machine
+
+stateDiagram-v2
+    [*] --> idle: Layer created
+
+    idle --> loading: initialize() called
+
+    loading --> ready: API success
+    loading --> error: API failure
+
+    error --> loading: retry()
+
+    ready --> ready: Event triggers<br/>(browser change,<br/>API update)
+
+    note right of idle
+        { status: 'idle' }
+    end note
+
+    note right of loading
+        { status: 'loading' }
+    end note
+
+    note right of ready
+        { status: 'ready',<br/>data: T }
+    end note
+
+    note right of error
+        { status: 'error',<br/>error: Error }
+    end note
+
+---
+
+6. Three-Layer Token Architecture
+
+graph TB
+    subgraph "Component"
+        CompStyle["ak-button {<br/>  background: var&#40;--ak-color-primary&#41;;<br/>  font-family: var&#40;--ak-font-family&#41;;<br/>  border-radius: var&#40;--ak-border-radius&#41;;<br/>}"]
+    end
+
+    subgraph "Layer 3: Customer Customization"
+        Customer[":root {<br/>  --ak-color-primary: #ff6b35;<br/>  --ak-font-family: 'Roboto';<br/>}<br/>✅ Injected via Brand API"]
+    end
+
+    subgraph "Layer 2: Authentik Tokens"
+        Authentik[":root {<br/>  /* Customizable */<br/>  --ak-color-primary:<br/>    var&#40;--pf-v5-global--primary-color--100&#41;;<br/>  <br/>  /* NOT Customizable */<br/>  --ak-color-authentik-brand: #fd4b2d;<br/>  --ak-logo-authentik: url&#40;'/logo.svg'&#41;;<br/>}"]
+    end
+
+    subgraph "Layer 1: PatternFly Foundation"
+        PF[":root {<br/>  --pf-v5-global--primary-color--100: #06c;<br/>  --pf-v5-global--FontFamily: RedHat, sans;<br/>  --pf-v5-global--spacer--md: 1rem;<br/>  /* ...hundreds more tokens */<br/>}<br/>🔒 Read-only, updated on PF upgrade"]
+    end
+
+    CompStyle --> |uses| Customer
+    Customer --> |overrides| Authentik
+    Authentik --> |maps to| PF
+
+    style CompStyle fill:#E8F5E9
+    style Customer fill:#FFE0B2
+    style Authentik fill:#B3E5FC
+    style PF fill:#F3E5F5
+
+---
+
+7. Elements vs Components Split
+
+graph TB
+    subgraph "Application Layer"
+        Page[apps/admin/pages/<br/>ApplicationListPage.ts<br/>Admin-specific page]
+    end
+
+    subgraph "Business Components (API-Aware)"
+        ApiTable[authentik-components/tables/<br/>ApiTable.ts<br/>✅ imports @goauthentik/api<br/>✅ imports ui/patterns]
+    end
+
+    subgraph "Pure UI Components"
+        GenTable[ui/patterns/<br/>GenericTable.ts<br/>🚫 NO API imports<br/>✅ imports ui/primitives]
+
+        Button[ui/primitives/<br/>Button.ts<br/>🚫 NO API imports<br/>🚫 NO business logic<br/>✅ Uses CSS tokens only]
+    end
+
+    Page --> ApiTable
+    ApiTable --> GenTable
+    GenTable --> Button
+
+    style Page fill:#FFE4B5
+    style ApiTable fill:#FFB6C1
+    style GenTable fill:#90EE90
+    style Button fill:#87CEEB
+
+---
+
+8. Component Adapter Pattern
+
+classDiagram
+    class GenericTable~T~ {
+        <<Pure UI - ui/patterns/>>
+        +TableData~T~ data
+        +boolean loading
+        +string error
+        +render() TemplateResult
+        +renderRow(item: T) TemplateResult
+        +renderPagination() TemplateResult
+    }
+
+    class ApiTable~T~ {
+        <<API Adapter - authentik-components/tables/>>
+        +PaginatedResponse~T~ apiData
+        +Function apiCall
+        +get data() TableData~T~
+        +fetchData() Promise~void~
+    }
+
+    class UserTable {
+        <<Business Component - authentik-components/user/>>
+        +apiCall = api.core.coreUsersList()
+        +renderRow(user: User) TemplateResult
+    }
+
+    GenericTable <|-- ApiTable : extends
+    ApiTable <|-- UserTable : extends
+
+    note for GenericTable "No API dependencies\nReusable anywhere"
+    note for ApiTable "Adapts PaginatedResponse\nto TableData format"
+    note for UserTable "Specific to authentik\nUser management"
+
+---
+
+9. Independent Build Pipeline
+
+flowchart TB
+    Start[Developer: npm run build:admin]
+
+    subgraph "Step 1: Build Dependencies"
+        BuildUI[Build packages/ui/]
+        BuildAC[Build packages/authentik-components/]
+        BuildInfra[Build packages/infrastructure/]
+        BuildRouter[Build packages/router/]
+    end
+
+    subgraph "Step 2: Build Admin App"
+        Vite[Vite bundles apps/admin/src/main.ts]
+        Import[Imports packages as ESM]
+        TreeShake[Tree-shakes unused code]
+        Generate[Generates:<br/>- dist/admin/admin.hash.js<br/>- dist/admin/chunks/hash.js<br/>- dist/admin/assets/*]
+    end
+
+    Output[Output: dist/admin/<br/>✅ Self-contained bundle<br/>✅ No shared chunks<br/>✅ Deploy independently]
+
+    Start --> BuildUI
+    Start --> BuildAC
+    Start --> BuildInfra
+    Start --> BuildRouter
+
+    BuildUI --> Vite
+    BuildAC --> Vite
+    BuildInfra --> Vite
+    BuildRouter --> Vite
+
+    Vite --> Import
+    Import --> TreeShake
+    TreeShake --> Generate
+    Generate --> Output
+
+    style Start fill:#FFE4B5
+    style Output fill:#90EE90
+
+    parallel1[Similarly: npm run build:user → dist/user/]
+    parallel2[Similarly: npm run build:flow → dist/flow/]
+
+    Output -.-> parallel1
+    Output -.-> parallel2
+
+---
+
+10. Parallel Build Execution
+
+gantt
+    title Independent App Builds (Parallel)
+    dateFormat X
+    axisFormat %s
+
+    section Packages
+    Build ui                :done, p1, 0, 10s
+    Build authentik-comp.   :done, p2, 0, 12s
+    Build infrastructure    :done, p3, 0, 8s
+    Build router            :done, p4, 0, 7s
+
+    section Apps (Parallel)
+    Build Admin             :active, a1, 12, 20s
+    Build User              :active, a2, 12, 15s
+    Build Flow              :active, a3, 12, 18s
+
+    section Output
+    All Builds Complete     :milestone, m1, 32, 0s
+
+---
+
+11. Migration Timeline
+
+gantt
+    title Migration Phased Timeline
+    dateFormat YYYY-MM-DD
+
+    section Phase 1: Foundation
+    Monorepo setup          :p1, 2024-01-01, 14d
+    Independent builds      :p2, after p1, 14d
+    Boundary enforcement    :p3, after p1, 7d
+
+    section Phase 2: UI Decoupling
+    Elements classification :p4, after p2, 14d
+    Create ui/ package      :p5, after p4, 7d
+    Create authentik-comp/  :p6, after p5, 14d
+    Update imports          :p7, after p6, 7d
+
+    section Phase 3: Config Manager
+    Implement layers        :p8, after p7, 14d
+    Migrate components      :p9, after p8, 14d
+
+    section Phase 4: Theme System
+    PF5 upgrade + tokens    :p10, after p9, 14d
+    Rebuild primitives      :p11, after p10, 21d
+    Brand customization     :p12, after p11, 7d
+
+    section Milestones
+    Independent builds ✅   :milestone, m1, after p2, 0d
+    API boundary enforced ✅:milestone, m2, after p7, 0d
+    Config centralized ✅   :milestone, m3, after p9, 0d
+    White-label ready ✅    :milestone, m4, after p12, 0d
+
+---
+
+12. Migration Risk Matrix
+
+quadrantChart
+    title Migration Risk Assessment
+    x-axis Low Complexity --> High Complexity
+    y-axis Low Impact --> High Impact
+
+    quadrant-1 Monitor Closely
+    quadrant-2 Critical - Extra Care
+    quadrant-3 Standard Approach
+    quadrant-4 Plan Carefully
+
+    Monorepo Setup: [0.2, 0.3]
+    Independent Builds: [0.3, 0.3]
+    Configuration Manager: [0.7, 0.9]
+    API Boundary Split: [0.8, 0.9]
+    Theme System: [0.6, 0.6]
+    Shell Refactor: [0.5, 0.6]
+
+---
+
+13. Token Customization Scope
+
+graph LR
+    subgraph "Customizable by Customers ✅"
+        C1[--ak-color-primary<br/>Brand identity]
+        C2[--ak-color-accent<br/>Highlights]
+        C3[--ak-font-family<br/>Typography]
+        C4[--ak-border-radius<br/>Aesthetics]
+    end
+
+    subgraph "NOT Customizable ❌"
+        N1[--ak-spacing-*<br/>Layout consistency]
+        N2[--ak-elevation-*<br/>Depth hierarchy]
+        N3[--ak-color-danger<br/>Semantic meaning]
+        N4[--ak-color-authentik-brand<br/>Your identity]
+        N5[--ak-logo-authentik<br/>Your identity]
+    end
+
+    Customer[Customer Brand Config] --> C1
+    Customer --> C2
+    Customer --> C3
+    Customer --> C4
+
+    Authentik[Authentik Core] --> N1
+    Authentik --> N2
+    Authentik --> N3
+    Authentik --> N4
+    Authentik --> N5
+
+    style Customer fill:#FFE0B2
+    style Authentik fill:#B3E5FC
+
+---
+
+14. Data Flow: Configuration Resolution
+
+sequenceDiagram
+    participant Browser
+    participant BrowserLayer
+    participant Manager
+    participant Component
+
+    Note over Browser,Component: Application Start
+
+    Browser->>BrowserLayer: Page load
+    BrowserLayer->>BrowserLayer: Read prefers-color-scheme
+    BrowserLayer->>BrowserLayer: Read localStorage
+    BrowserLayer->>Manager: Emit ready (sync)
+    Manager->>Component: resolved$ emits (browser defaults)
+    Component->>Component: Render with defaults
+
+    Note over Browser,Component: API Layers Load
+
+    par Async API Calls
+        Manager->>Manager: SiteLayer: GET /api/config
+        Manager->>Manager: BrandLayer: GET /api/brands/current
+        Manager->>Manager: UserLayer: GET /api/users/me
+    end
+
+    Manager->>Manager: SiteLayer ready
+    Manager->>Manager: resolveConfig()
+    Manager->>Component: resolved$ emits (with site)
+    Component->>Component: Re-render
+
+    Manager->>Manager: BrandLayer ready
+    Manager->>Manager: resolveConfig()
+    Manager->>Component: resolved$ emits (with brand)
+    Component->>Component: Re-render
+
+    Manager->>Manager: UserLayer ready
+    Manager->>Manager: resolveConfig()
+    Manager->>Component: resolved$ emits (with user prefs)
+    Component->>Component: Re-render
+
+    Note over Browser,Component: Runtime Change
+
+    Browser->>Browser: User changes system theme
+    Browser->>BrowserLayer: prefers-color-scheme change event
+    BrowserLayer->>Manager: Emit updated state
+    Manager->>Manager: resolveConfig() re-evaluates
+    Note over Manager: User pref still wins via precedence
+    Manager->>Component: resolved$ emits (unchanged)
+    Component->>Component: No re-render needed
+
+---
+
+15. Deployment Architecture
+
+graph TB
+    subgraph "CI/CD Pipeline"
+        GitPush[Git Push]
+        Detect[Detect Changed Apps]
+
+        subgraph "Parallel Builds"
+            BuildA[Build Admin<br/>if changed]
+            BuildU[Build User<br/>if changed]
+            BuildF[Build Flow<br/>if changed]
+        end
+
+        Test[Run Tests]
+    end
+
+    subgraph "Deployment"
+        subgraph "CDN / Static Hosting"
+            DistA[/admin/*<br/>admin.hash.js]
+            DistU[/user/*<br/>user.hash.js]
+            DistF[/flow/*<br/>flow.hash.js]
+        end
+
+        subgraph "Backend Routing"
+            Route["/if/admin/ → /admin/index.html<br/>/if/user/ → /user/index.html<br/>/if/flow/ → /flow/index.html"]
+        end
+    end
+
+    GitPush --> Detect
+    Detect --> BuildA
+    Detect --> BuildU
+    Detect --> BuildF
+
+    BuildA --> Test
+    BuildU --> Test
+    BuildF --> Test
+
+    Test --> DistA
+    Test --> DistU
+    Test --> DistF
+
+    DistA --> Route
+    DistU --> Route
+    DistF --> Route
+
+    style GitPush fill:#FFE4B5
+    style DistA fill:#90EE90
+    style DistU fill:#90EE90
+    style DistF fill:#90EE90
+
+---
+
+How to Use These Diagrams
+
+In Documentation
+
+Create a docs/architecture/ directory:
+
+docs/architecture/
+├── README.md                      # Overview with all diagrams
+├── 01-monorepo-structure.md       # Diagrams 1-2
+├── 02-configuration-system.md     # Diagrams 3-5
+├── 03-theme-system.md             # Diagrams 6
+├── 04-component-architecture.md   # Diagrams 7-8
+├── 05-build-deployment.md         # Diagrams 9-10, 15
+└── 06-migration-plan.md           # Diagrams 11-12
+
+In README.md
+
+Add a top-level architecture overview:
+
+# Architecture
+
+## System Overview
+
+```mermaid
+[Paste Diagram 1 here]
+
+See ./docs/architecture/README.md for details.
+
+### In Pull Requests
+
+Reference specific diagrams to explain changes:
+
+```markdown
+## Architecture Changes
+
+This PR implements Phase 1 of the migration plan:
+
+```mermaid
+[Paste relevant timeline section]
+
+Changes align with the monorepo structure:
+
+[Paste structure diagram]
+
+### In Presentations
+
+Export Mermaid diagrams to PNG/SVG using:
+- [Mermaid Live Editor](https://mermaid.live)
+- `mmdc` CLI tool
+- GitHub's Mermaid rendering (screenshot)
+
+---
+
+
+## Bonus: Quick Reference Diagram
+
+```mermaid
+mindmap
+  root((Authentik WebUI<br/>Architecture))
+    Organization
+      Monorepo
+        apps/
+        packages/
+      Independent Builds
+      Workspace Dependencies
+
+    Configuration
+      ConfigurationManager
+        Browser Layer
+        Site Layer
+        Brand Layer
+        User Layer
+      Precedence Rules
+      Reactive Updates
+
+    Components
+      Pure UI
+        No API imports
+        Token-based styling
+      API-Aware
+        Business logic
+        authentik-components/
+      Adapter Pattern
+
+    Theming
+      PF5 Foundation
+      Authentik Tokens
+      Customer Override
+      White Labeling
+
+    Migration
+      Phase 1: Foundation
+      Phase 2: UI Split
+      Phase 3: Config Manager
+      Phase 4: Theme System
+
+---
+
+These Mermaid diagrams will render automatically on GitHub, GitLab, and in most modern Markdown viewers. They're version-controlled, easy to update, and can be embedded directly in your documentation.
+
+
+
