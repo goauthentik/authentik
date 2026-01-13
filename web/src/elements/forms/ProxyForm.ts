@@ -4,29 +4,51 @@ import type { OwnPropertyRecord } from "#common/types";
 
 import type { AKElement } from "#elements/Base";
 import { Form } from "#elements/forms/Form";
-import { HTMLElementTagNameMapOf } from "#elements/types";
+import { ElementTagNamesOf, SlottedTemplateResult } from "#elements/types";
 
-import { html, TemplateResult } from "lit";
+import { LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
-type CustomFormElementTagName = keyof HTMLElementTagNameMapOf<Form>;
+type CustomFormElementTagName = ElementTagNamesOf<Form>;
 type CustomFormElement = HTMLElementTagNameMap[CustomFormElementTagName];
-
 type FormAttributes = Partial<OwnPropertyRecord<CustomFormElement, AKElement>>;
 
 @customElement("ak-proxy-form")
-export abstract class ProxyForm<T = unknown> extends Form<T> {
-    //#region Properties
+export class ProxyForm<T = unknown> extends Form<T> {
+    static shadowRootOptions = {
+        ...Form.shadowRootOptions,
+        delegatesFocus: true,
+    };
 
-    @property()
-    public type?: CustomFormElementTagName;
+    protected override createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
+
+    //#region Properties
 
     @property({ attribute: false })
     public args: FormAttributes = {};
 
-    //#endregion
+    protected innerElement: CustomFormElement | null = null;
 
-    protected innerElement?: CustomFormElement;
+    @property({ type: String })
+    public set type(tagName: CustomFormElementTagName | null) {
+        if (!tagName) {
+            this.innerElement = null;
+            return;
+        }
+
+        this.innerElement = document.createElement(tagName);
+    }
+
+    public get type(): CustomFormElementTagName | null {
+        return this.innerElement
+            ? (this.innerElement.tagName.toLowerCase() as CustomFormElementTagName)
+            : null;
+    }
+
+    //#endregion
 
     //#region Public methods
 
@@ -46,6 +68,10 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
         return this.innerElement?.getSuccessMessage() || "";
     }
 
+    //#endregion
+
+    //#region Lifecycle
+
     public override async requestUpdate(name?: PropertyKey, oldValue?: unknown): Promise<unknown> {
         const result = super.requestUpdate(name, oldValue);
 
@@ -58,25 +84,36 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
 
     //#region Render
 
-    public override renderVisible(): TemplateResult {
-        const elementName = this.type;
-        if (!elementName) {
-            throw new TypeError("No element name provided");
-        }
+    public override renderVisible(): SlottedTemplateResult {
+        return guard([this.innerElement, this.args, this.viewportCheck], () => {
+            if (!this.innerElement) {
+                return nothing;
+            }
 
-        if (!this.innerElement) {
-            this.innerElement = document.createElement(elementName);
-        }
+            const tagName = this.innerElement.tagName.toLowerCase();
+            const ElementConstructor = window.customElements.get(tagName) as
+                | typeof LitElement
+                | undefined;
 
-        this.innerElement.viewportCheck = this.viewportCheck;
+            if (!ElementConstructor) {
+                throw new TypeError(`Custom element ${tagName} is not defined`);
+            }
 
-        for (const [key, value] of Object.entries(this.args)) {
-            this.innerElement.setAttribute(key, String(value));
-        }
+            this.innerElement.viewportCheck = this.viewportCheck;
 
-        Object.assign(this.innerElement, this.args);
+            const attributeNames = new Set(ElementConstructor.observedAttributes || []);
 
-        return html`${this.innerElement}`;
+            for (const [key, value] of Object.entries(this.args)) {
+                if (attributeNames.has(key)) {
+                    this.innerElement.setAttribute(key, String(value));
+                    continue;
+                }
+
+                (this.innerElement as unknown as Record<string, unknown>)[key] = value;
+            }
+
+            return this.innerElement;
+        });
     }
 
     //#endregion
