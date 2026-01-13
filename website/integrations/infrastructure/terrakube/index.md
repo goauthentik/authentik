@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Terrakube
 
-> Terrakube is an open-source collaboration platform designed for managing remote Infrastructure-as-Code (IaC) operations with Terraform. It serves as a alternative to proprietary tools like Terraform Enterprise.
+> Terrakube is an open-source collaboration platform designed for managing remote Infrastructure-as-Code (IaC) operations with Terraform. It serves as an alternative to proprietary tools like Terraform Enterprise.
 >
 > -- https://terrakube.io/
 

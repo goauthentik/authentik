@@ -12,7 +12,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -79,9 +79,9 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         return nothing;
     }
 
-    firstUpdated(): void {
+    firstUpdated(changedProperties: PropertyValues<this>): void {
         this.expandable = this.usedBy !== undefined;
-        super.firstUpdated();
+        super.firstUpdated(changedProperties);
     }
 
     renderExpanded(item: T): TemplateResult {

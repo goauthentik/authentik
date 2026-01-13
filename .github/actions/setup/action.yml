@@ -22,7 +22,7 @@ runs:
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867 # v5
+      uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -44,7 +44,7 @@ runs:
         registry-url: 'https://registry.npmjs.org'
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v5
+      uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v5
       with:
         go-version-file: "go.mod"
     - name: Setup docker cache

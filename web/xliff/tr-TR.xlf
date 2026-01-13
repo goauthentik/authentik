@@ -57,18 +57,6 @@
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
 </trans-unit>
-<trans-unit id="s364c4f177a2f8322">
-  <source>Open API drawer</source>
-  <target>API çekmecesini aç</target>
-</trans-unit>
-<trans-unit id="sba65ae54d6585c1a">
-  <source>Unread notifications</source>
-  <target>Okunmamış bildirimler</target>
-</trans-unit>
-<trans-unit id="s9ba989e69344ff29">
-  <source>Open Notification drawer</source>
-  <target>Bildirim çekmecesini aç</target>
-</trans-unit>
 <trans-unit id="s9d8b8aa2b404c2c8">
   <source>Settings</source>
   <target>Ayarlar</target>
@@ -6340,10 +6328,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Token length</source>
   <target>Belirteç uzunluğu</target>
 </trans-unit>
-<trans-unit id="s6931695c4f563bc4">
-  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
-  <target>Bireysel olarak oluşturulan belirteçlerin uzunluğu. Güvenliği artırmak için artırılabilir.</target>
-</trans-unit>
 <trans-unit id="sc5a4711395ffb043">
   <source>Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).</source>
   <target>Bir TOTP kimlik doğrulayıcısını (Authy/Google Authenticator) yapılandırmak için kullanılan aşama.</target>
@@ -8382,20 +8366,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
 </trans-unit>
-<trans-unit id="sc0064c91ad2aa90b">
-  <source>Notification drawer</source>
-</trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
   <target>Bildirimler</target>
-</trans-unit>
-<trans-unit id="sa3438c7bb4e9cce8">
-  <source><x id="0" equiv-text="${this.unread}"/> unread</source>
-  <target><x id="0" equiv-text="${this.unread}"/> okunmamış</target>
-</trans-unit>
-<trans-unit id="s8cda828dac449ea5">
-  <source>Clear all</source>
-  <target>Hepsini temizle</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
@@ -9310,9 +9283,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
 </trans-unit>
-<trans-unit id="sa373520de40e9d44">
-  <source>Assign User to Groups</source>
-</trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
 </trans-unit>
@@ -9465,9 +9435,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
                             <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
                             <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
 </trans-unit>
-<trans-unit id="s813faec5ff1d32d1">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
-</trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
 </trans-unit>
@@ -9542,6 +9509,80 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s434805f916fbf657">
   <source>Not allowed to change this field. Please contact your administrator.</source>
+</trans-unit>
+<trans-unit id="sd7c52e2ce408c542">
+  <source>Integrations synced in the last 12 hours.</source>
+</trans-unit>
+<trans-unit id="table-loading-bar-label">
+  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
+</trans-unit>
+<trans-unit id="s6ecf01b9b8304dba">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="sb6650552aaaf5da0">
+  <source>Assigned Roles</source>
+</trans-unit>
+<trans-unit id="s5cbf3cbb4cf38b05">
+  <source>All Roles</source>
+</trans-unit>
+<trans-unit id="s6a850cd00064d6e6">
+  <source>Inherited from parent group</source>
+</trans-unit>
+<trans-unit id="sd9e3b91f8d62cb04">
+  <source>Inherited from group</source>
+</trans-unit>
+<trans-unit id="s3d8c389ca77b97e1">
+  <source>Inherited</source>
+</trans-unit>
+<trans-unit id="s01730bc068a6cf07">
+  <source>Select roles to attach to the user</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-api-requests">
+  <source>Toggle API requests drawer</source>
+</trans-unit>
+<trans-unit id="s355e4737a0286070">
+  <source>API Drawer</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-notifications">
+  <source>Toggle notifications drawer</source>
+</trans-unit>
+<trans-unit id="drawer-invoker-tooltip-notifications">
+  <source>Notification Drawer</source>
+</trans-unit>
+<trans-unit id="s5fa7f18dcfc98131">
+  <source>Failed to fetch notifications.</source>
+</trans-unit>
+<trans-unit id="notification-drawer-clear-all">
+  <source>Clear all notifications</source>
+</trans-unit>
+<trans-unit id="notification-drawer-close">
+  <source>Close notification drawer</source>
+</trans-unit>
+<trans-unit id="s54e4d61fc46a14be">
+  <source>No MFA devices enrolled.</source>
+</trans-unit>
+<trans-unit id="s227aacd5a7fc6f50">
+  <source>User Tokens</source>
+</trans-unit>
+<trans-unit id="sea858aeacf6ae9b0">
+  <source>No User Tokens enrolled.</source>
+</trans-unit>
+<trans-unit id="notification-unread-count">
+  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
+  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+</trans-unit>
+<trans-unit id="s42636dae6e29892e">
+  <source>Agent version: <x id="0" equiv-text="${this.agentVersion(conn) ?? &quot;-&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s6dd24e14615f1369">
+  <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
+</trans-unit>
+<trans-unit id="sa6cd3315b7c53ab7">
+  <source>You should only import files from trusted sources and review blueprints before importing them.</source>
+</trans-unit>
+<trans-unit id="sd8309fdcb0478b0f">
+  <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
 </trans-unit>
 </body>
 </file>
