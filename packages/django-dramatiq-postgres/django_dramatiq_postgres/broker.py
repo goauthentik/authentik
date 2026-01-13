@@ -449,6 +449,7 @@ class _PostgresConsumer(Consumer):
             pass
         self.to_unlock.add(str(message.message_id))
         task = message.options.pop("task", None)
+        m = b"" if state == TaskState.DONE else message.encode()
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -456,7 +457,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.QUEUED,
         ).update(
             state=state,
-            message=message.encode(),
+            message=m,
             mtime=timezone.now(),
             eta=None,
         )
