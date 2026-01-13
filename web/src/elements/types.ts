@@ -12,16 +12,27 @@ import { DirectiveResult } from "lit-html/directive.js";
 
 //#region HTML Helpers
 
+export type AKElementTagPrefix = `ak-${string}`;
+
 /**
  * Utility type to extract a record of tag names which correspond to a given type.
  *
  * This is useful when selecting a subset of elements that share a common base class.
+ *
+ * ```ts
+ * declare global {
+ *     interface HTMLElementTagNameMap {
+ *         "ak-foo-form": FooForm;
+ *         "ak-bar-form": BarForm;
+ *         "ak-baz-form": BazForm;
+ *     }
+ * }
+ *
+ * type FormElements = HTMLElementTagNamesOf<Form>;
  */
-export type HTMLElementTagNameMapOf<T> = {
-    [K in keyof HTMLElementTagNameMap as HTMLElementTagNameMap[K] extends T
-        ? K
-        : never]: HTMLElementTagNameMap[K];
-};
+export type ElementTagNamesOf<T, Map = HTMLElementTagNameMap> = {
+    [K in keyof Map]: Map[K] extends T ? K & AKElementTagPrefix : never;
+}[keyof Map];
 
 //#endregion
 
@@ -280,5 +291,7 @@ export type SlottedTemplateResult =
     | TemplateResult
     | typeof nothing
     | null
-    | DirectiveResult;
+    | DirectiveResult
+    | HTMLElement;
+
 export type Spread = { [key: string]: unknown };

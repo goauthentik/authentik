@@ -26,6 +26,7 @@ import { snakeCase } from "change-case";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -219,7 +220,14 @@ function reportInvalidFields(
  *
  */
 export abstract class Form<T = Record<string, unknown>> extends AKElement {
-    abstract send(data: T): Promise<unknown>;
+    /**
+     * Send the serialized form to its destination.
+     *
+     * @param data The serialized form data.
+     * @returns A promise that resolves when the data has been sent.
+     * @abstract
+     */
+    protected send?(data: T): Promise<unknown>;
 
     viewportCheck = true;
 
@@ -238,7 +246,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     @state()
-    nonFieldErrors?: string[];
+    protected nonFieldErrors: readonly string[] | null = null;
 
     static styles: CSSResult[] = [
         PFCard,
@@ -363,6 +371,12 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
         if (!data) return Promise.resolve(false);
 
+        if (!this.send) {
+            throw new TypeError(
+                `authentik/forms: No send() method implemented on form ${this.tagName}`,
+            );
+        }
+
         return this.send(data)
             .then((response) => {
                 showMessage(this.formatAPISuccessMessage(response));
@@ -423,7 +437,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Render
 
-    public renderFormWrapper(): TemplateResult {
+    protected renderFormWrapper(): TemplateResult {
         const inline = this.renderForm();
 
         if (!inline) {
@@ -449,31 +463,33 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     public renderNonFieldErrors(): SlottedTemplateResult {
-        if (!this.nonFieldErrors) {
-            return nothing;
-        }
+        return guard([this.nonFieldErrors], () => {
+            if (!this.nonFieldErrors) {
+                return nothing;
+            }
 
-        return html`<div class="pf-c-form__alert">
-            ${this.nonFieldErrors.map((err, idx) => {
-                return html`<div
-                    class="pf-c-alert pf-m-inline pf-m-danger"
-                    role="alert"
-                    aria-labelledby="error-message-${idx}"
-                >
-                    <div class="pf-c-alert__icon">
-                        <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <p id="error-message-${idx}" class="pf-c-alert__title">${err}</p>
-                </div>`;
-            })}
-        </div>`;
+            return html`<div class="pf-c-form__alert">
+                ${this.nonFieldErrors.map((err, idx) => {
+                    return html`<div
+                        class="pf-c-alert pf-m-inline pf-m-danger"
+                        role="alert"
+                        aria-labelledby="error-message-${idx}"
+                    >
+                        <div class="pf-c-alert__icon">
+                            <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <p id="error-message-${idx}" class="pf-c-alert__title">${err}</p>
+                    </div>`;
+                })}
+            </div>`;
+        });
     }
 
-    public renderVisible(): TemplateResult {
-        return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
+    protected renderVisible(): SlottedTemplateResult {
+        return html`${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
     }
 
-    public render(): SlottedTemplateResult {
+    protected override render(): SlottedTemplateResult {
         if (this.viewportCheck && !this.isInViewport) {
             return nothing;
         }
