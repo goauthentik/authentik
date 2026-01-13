@@ -190,6 +190,7 @@ source = { editable = "." }
 dependencies = [
     { name = "ak-guardian" },
     { name = "argon2-cffi" },
+    { name = "cachetools" },
     { name = "channels" },
     { name = "cryptography" },
     { name = "dacite" },
@@ -294,6 +295,7 @@ dev = [
 requires-dist = [
     { name = "ak-guardian", editable = "packages/ak-guardian" },
     { name = "argon2-cffi", specifier = "==25.1.0" },
+    { name = "cachetools", specifier = "==6.2.4" },
     { name = "channels", specifier = "==4.3.1" },
     { name = "cryptography", specifier = "==45.0.5" },
     { name = "dacite", specifier = "==1.9.2" },
@@ -658,6 +660,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ba/dd/cc02bf66f342a4673867fdf6c1f9fce90ec1e91e651b21bc4af4890101da/bpython-0.25.tar.gz", hash = "sha256:c246fc909ef6dcc26e9d8cb4615b0e6b1613f3543d12269b19ffd0782166c65b", size = 207610, upload-time = "2025-01-17T09:35:22.382Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/74/5470df025854d5e213793b62cbea032fd66919562662955789fcc5dc17d6/bpython-0.25-py3-none-any.whl", hash = "sha256:28fd86008ca5ef6100ead407c9743aa60c51293a18ba5b18fcacea7f5b7f2257", size = 176131, upload-time = "2025-01-17T09:35:19.444Z" },
+]
+
+[[package]]
+name = "cachetools"
+version = "6.2.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/1d/ede8680603f6016887c062a2cf4fc8fdba905866a3ab8831aa8aa651320c/cachetools-6.2.4.tar.gz", hash = "sha256:82c5c05585e70b6ba2d3ae09ea60b79548872185d2f24ae1f2709d37299fd607", size = 31731, upload-time = "2025-12-15T18:24:53.744Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/fc/1d7b80d0eb7b714984ce40efc78859c022cd930e402f599d8ca9e39c78a4/cachetools-6.2.4-py3-none-any.whl", hash = "sha256:69a7a52634fed8b8bf6e24a050fb60bff1c9bd8f6d24572b99c32d4e71e62a51", size = 11551, upload-time = "2025-12-15T18:24:52.332Z" },
 ]
 
 [[package]]
