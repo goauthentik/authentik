@@ -44,7 +44,7 @@ There are several considerations regarding how authentik data is mapped to Googl
 
 ### Users
 
-For users, authentik only saves the full display name, while Google requires given/family name separately, and as such authentik attempts to separate the full name automatically with the `authentik default Google Workspace Mapping: User` property mapping.
+For users, authentik only saves the full display name, while Google requires the first (given) name and the family name separately, and as such authentik attempts to separate the full name automatically with the `authentik default Google Workspace Mapping: User` property mapping.
 
 By default, authentik maps a user’s: email address, name, and active status.
 
