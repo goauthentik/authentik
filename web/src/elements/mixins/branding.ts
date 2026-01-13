@@ -13,9 +13,7 @@ import { consume, Context, createContext } from "@lit/context";
  * @see {@linkcode BrandingMixin}
  * @see {@linkcode WithBrandConfig}
  */
-export const BrandingContext = createContext<CurrentBrand>(
-    Symbol.for("authentik-branding-context"),
-);
+export const BrandingContext = createContext<CurrentBrand>(Symbol("authentik-branding-context"));
 
 export type BrandingContext = Context<symbol, CurrentBrand>;
 
