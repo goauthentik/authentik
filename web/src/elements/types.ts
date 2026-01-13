@@ -100,6 +100,7 @@ export interface ContextControllerRegistryMap {
         key: ContextType<T>,
         controller: ReactiveContextController<T, object>,
     ): void;
+    delete<T extends Context<unknown, unknown>>(key: ContextType<T>): void;
 }
 
 export interface ReactiveControllerHostRegistry extends ReactiveControllerHost {

@@ -171,7 +171,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 
 1. Navigate to **Setup** > **External Client App Manager**.
 2. Find your Connected App and click on it.
-3. Under **Settings** > **Oauth Settings**, click **Consumer Key and Secret**.
+3. Under **Settings** > **OAuth Settings**, click **Consumer Key and Secret**.
 4. Copy the **Consumer Key** and **Consumer Secret**.
 
 ### authentik configuration
@@ -195,7 +195,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 
 ## SCIM Provisioning _(optional)_
 
-You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers the Oauth2 SCIM integration, which requires an enterprise authentik account.
+You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers OAuth2 SCIM integration, which requires an enterprise authentik account. the Oauth2 SCIM integration, which requires an enterprise authentik account.
 
 ### Create SCIM property mappings
 
