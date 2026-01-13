@@ -1,6 +1,5 @@
 from hashlib import sha256
 from json import loads
-from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlparse
 
 from django.urls import reverse
@@ -13,9 +12,7 @@ from authentik.endpoints.connectors.agent.api.connectors import AgentDeviceConne
 from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceToken, EnrollmentToken
 from authentik.endpoints.models import Device, DeviceAccessGroup
 from authentik.enterprise.endpoints.connectors.agent.views.auth_interactive import QS_AGENT_IA_TOKEN
-from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import License
-from authentik.enterprise.tests.test_license import expiry_valid
+from authentik.enterprise.tests import enterprise_test
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
@@ -43,41 +40,17 @@ class TestConnectorAuthIA(FlowTestCase):
         )
         self.user = create_test_user()
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     def test_auth_ia_initiate(self):
-        License.objects.create(key=generate_id())
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-ia"),
             HTTP_AUTHORIZATION=f"Bearer+agent {self.device_token.key}",
         )
         self.assertEqual(response.status_code, 200)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @reconcile_app("authentik_crypto")
     def test_auth_ia_fulfill(self):
-        License.objects.create(key=generate_id())
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-ia"),
@@ -94,21 +67,9 @@ class TestConnectorAuthIA(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Permission denied", response.content)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @reconcile_app("authentik_crypto")
     def test_auth_ia_fulfill_policy(self):
-        License.objects.create(key=generate_id())
         device_group = DeviceAccessGroup.objects.create(name=generate_id())
         self.device.access_group = device_group
         self.device.save()
