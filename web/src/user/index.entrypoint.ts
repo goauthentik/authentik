@@ -26,7 +26,7 @@ import {
     renderNotificationDrawerPanel,
 } from "#elements/notifications/utils";
 import { ifPresent } from "#elements/utils/attributes";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
@@ -150,7 +150,12 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                 <header part="page__header" class="pf-c-page__header">
                     <div part="brand" class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
-                            ${renderImage(this.brandingLogo, this.brandingTitle, "pf-c-brand")}
+                            ${ThemedImage({
+                                src: this.brandingLogo,
+                                alt: this.brandingTitle,
+                                className: "pf-c-brand",
+                                theme: this.activeTheme,
+                            })}
                         </a>
                     </div>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
