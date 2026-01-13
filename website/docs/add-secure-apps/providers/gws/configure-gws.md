@@ -16,7 +16,7 @@ The main steps to configure your Google Workspace organization are:
 3. [Configure service account key and scopes](#configure-service-account-key-and-scopes)
 4. [Select a user for the Delegated Subject](#select-a-user-for-the-delegated-subject)
 
-## Create a Google Cloud project
+### Create a Google Cloud project
 
 1. Open the [Google Cloud console](https://cloud.google.com/cloud-console).
 2. In the upper left, click the drop-down box to open the **Select a project** box, then select **New Project**.
@@ -25,7 +25,7 @@ The main steps to configure your Google Workspace organization are:
 5. On the **API Library** page, use the search bar again to find `Admin SDK API`.
 6. On the **Admin SDK API** page, click **Enable**.
 
-## Create a service account
+### Create a service account
 
 1. After the new Admin SDK API is enabled (it might take a few minutes), return to the Google Cloud console home page by clicking on **Google Cloud** in the upper left.
 2. Use the search bar to find and navigate to the **IAM** page.
@@ -35,7 +35,7 @@ The main steps to configure your Google Workspace organization are:
     - Under **Grant this service account access to project** you do not need to define a role, so click **Continue**.
     - Under **Grant users access to project** you do not need to define a role, so click **Done** to complete the creation of the service account.
 
-## Configure service account key and scopes
+### Configure service account key and scopes
 
 1. On the **Service accounts** page, click the account that you just created.
 2. Click the **Keys** tab at top of the page, then click **Add Key** > **Create new key**.
@@ -60,7 +60,7 @@ The main steps to configure your Google Workspace organization are:
     - `https://www.googleapis.com/auth/admin.directory.group.member`
     - `https://www.googleapis.com/auth/admin.directory.domain.readonly`
 
-## Select a user for the Delegated Subject
+### Select a user for the Delegated Subject
 
 **Delegated Subject** is a required field when creating the Google Workspace provider in authentik. This field must be populated with the email address of a Google Workspace user with [suitable permissions](#delegated-subject-permissions).
 
@@ -68,7 +68,7 @@ The main steps to configure your Google Workspace organization are:
 2. Either select an existing user's email address or **Add new user** and define the user and email address to use as the Delegated Subject.
 3. Take note of this email address as it will be required when creating the Google Workspace provider in authentik.
 
-### Delegated Subject permissions
+#### Delegated Subject permissions
 
 :::warning
 We do not recommend using an administrator account for the Delegated Subject user. A custom role should be used instead, see the [Google Admin console documentation](https://support.google.com/a/answer/2406043?hl=en) for more details.
@@ -76,12 +76,12 @@ We do not recommend using an administrator account for the Delegated Subject use
 
 The Delagated Subject user requires the following permissions:
 
-#### Admin console privilieges
+##### Admin console privilieges
 
 - Users
 - Groups
 
-#### Admin API privileges
+##### Admin API privileges
 
 - Domain management
 - Users
