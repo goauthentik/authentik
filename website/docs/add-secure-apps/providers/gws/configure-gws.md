@@ -18,7 +18,7 @@ The main steps to configure your Google Workspace organization are:
 
 ## Create a Google Cloud project
 
-1. Open the [Google Cloud Console](https://cloud.google.com/cloud-console).
+1. Open the [Google Cloud console](https://cloud.google.com/cloud-console).
 2. In the upper left, click the drop-down box to open the **Select a project** box, then select **New Project**.
 3. Create a new project and provide a name (e.g. `authentik GWS`).
 4. Use the search bar at the top of your new project page to search for `API Library`.
