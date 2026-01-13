@@ -1,3 +1,4 @@
+import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
@@ -16,25 +17,22 @@ import { PFSize } from "#common/enums";
 import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
-import { formatElapsedTime } from "#common/temporal";
-import { rootInterface } from "#common/theme";
-import { DefaultUIConfig, uiConfig } from "#common/ui/config";
-import { me } from "#common/users";
+import { DefaultUIConfig } from "#common/ui/config";
 
 import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
-import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
-
-import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
+import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -62,8 +60,8 @@ export const requestRecoveryLink = (user: User) =>
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
-        <span slot="submit"> ${msg("Send link")} </span>
-        <span slot="header"> ${msg("Send recovery link to user")} </span>
+        <span slot="submit">${msg("Send link")}</span>
+        <span slot="header">${msg("Send recovery link to user")}</span>
         <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
         <button slot="trigger" class="pf-c-button pf-m-secondary">
             ${msg("Email recovery link")}
@@ -84,24 +82,21 @@ const recoveryButtonStyles = css`
 `;
 
 @customElement("ak-user-list")
-export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePage<User>)) {
+export class UserListPage extends WithBrandConfig(
+    WithCapabilitiesConfig(WithSession(TablePage<User>)),
+) {
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
     supportsQL = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Users");
-    }
-    pageDescription(): string {
-        return "";
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-user";
-    }
+    protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by username, email, etc...");
+    public override searchLabel = msg("User Search");
+
+    public pageTitle = msg("Users");
+    public pageDescription = "";
+    public pageIcon = "pf-icon pf-icon-user";
 
     @property()
     order = "last_login";
@@ -115,9 +110,6 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     @state()
     userPaths?: UserPath;
 
-    @state()
-    me?: SessionUser;
-
     static styles: CSSResult[] = [
         ...TablePage.styles,
         PFDescriptionList,
@@ -128,13 +120,11 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     constructor() {
         super();
-        const defaultPath = new DefaultUIConfig().defaults.userPath;
+        const defaultPath = DefaultUIConfig.defaults.userPath;
         this.activePath = getURLParam<string>("path", defaultPath);
-        uiConfig().then((c) => {
-            if (c.defaults.userPath !== defaultPath) {
-                this.activePath = c.defaults.userPath;
-            }
-        });
+        if (this.uiConfig.defaults.userPath !== defaultPath) {
+            this.activePath = this.uiConfig.defaults.userPath;
+        }
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -147,25 +137,31 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
             search: this.search,
         });
-        this.me = await me();
         return users;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: User): string {
+        if (item.name) {
+            return msg(str`${item.username} (${item.name})`);
+        }
+
+        return item.username;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+        [msg("Type"), "type"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
-        const currentUser = rootInterface<AdminInterface>()?.user;
+        const { currentUser, originalUser } = this;
+
         const shouldShowWarning = this.selectedElements.find((el) => {
-            return el.pk === currentUser?.user.pk || el.pk === currentUser?.original?.pk;
+            return el.pk === currentUser?.pk || el.pk === originalUser?.pk;
         });
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
@@ -192,7 +188,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 ? html`<div slot="notice" class="pf-c-form__alert">
                       <div class="pf-c-alert pf-m-inline pf-m-warning">
                           <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle"></i>
+                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                           </div>
                           <h4 class="pf-c-alert__title">
                               ${msg(
@@ -201,7 +197,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                           </h4>
                       </div>
                   </div>`
-                : html``}
+                : nothing}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
@@ -209,61 +205,68 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.hideDeactivated}
-                                @change=${() => {
-                                    this.hideDeactivated = !this.hideDeactivated;
-                                    this.page = 1;
-                                    this.fetch();
-                                    updateURLParams({
-                                        hideDeactivated: this.hideDeactivated,
-                                    });
-                                }}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <label
+                        class="pf-c-switch"
+                        for="hide-deactivated-users"
+                        aria-labelledby="hide-deactivated-users-label"
+                    >
+                        <input
+                            id="hide-deactivated-users"
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${!this.hideDeactivated}
+                            @change=${() => {
+                                this.hideDeactivated = !this.hideDeactivated;
+                                this.page = 1;
+                                this.fetch();
+                                updateURLParams({
+                                    hideDeactivated: this.hideDeactivated,
+                                });
+                            }}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Hide deactivated user")}</span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
+                            ${msg("Show deactivated users")}
+                        </span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
-    row(item: User): TemplateResult[] {
-        const canImpersonate =
-            this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
+    row(item: User): SlottedTemplateResult[] {
+        const { currentUser } = this;
+
+        const impersionationVisible =
+            this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
+
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
                 <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update User")} </span>
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${canImpersonate
+                ${impersionationVisible
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
                               <span slot="submit">${msg("Impersonate")}</span>
@@ -282,143 +285,144 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                               </button>
                           </ak-forms-modal>
                       `
-                    : html``}`,
+                    : nothing}
+            </div>`,
         ];
     }
 
     renderExpanded(item: User): TemplateResult {
-        return html`<td role="cell" colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("User status")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.isActive ? msg("Active") : msg("Inactive")}
-                                </div>
-                                <div class="pf-c-description-list__text">
-                                    ${item.isSuperuser ? msg("Superuser") : msg("Regular user")}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
-                                    >${msg("Change status")}</span
-                                >
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-user-active-form
-                                        .obj=${item}
-                                        objectLabel=${msg("User")}
-                                        .delete=${() => {
-                                            return new CoreApi(
-                                                DEFAULT_CONFIG,
-                                            ).coreUsersPartialUpdate({
-                                                id: item.pk,
-                                                patchedUserRequest: {
-                                                    isActive: !item.isActive,
-                                                },
-                                            });
-                                        }}
-                                    >
-                                        <button slot="trigger" class="pf-c-button pf-m-warning">
-                                            ${item.isActive ? msg("Deactivate") : msg("Activate")}
-                                        </button>
-                                    </ak-user-active-form>
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Recovery")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div
-                                    class="pf-c-description-list__text"
-                                    id="recovery-request-buttons"
-                                >
-                                    <ak-forms-modal
-                                        size=${PFSize.Medium}
-                                        id="update-password-request"
-                                    >
-                                        <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">
-                                            ${msg(
-                                                str`Update ${item.name || item.username}'s password`,
-                                            )}
-                                        </span>
-                                        <ak-user-password-form
-                                            username=${item.username}
-                                            email=${ifDefined(item.email)}
-                                            slot="form"
-                                            .instancePk=${item.pk}
-                                        ></ak-user-password-form>
-                                        <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                            ${msg("Set password")}
-                                        </button>
-                                    </ak-forms-modal>
-                                    ${this.brand.flowRecovery
-                                        ? html`
-                                              <ak-action-button
-                                                  class="pf-m-secondary"
-                                                  .apiRequest=${() => requestRecoveryLink(item)}
-                                              >
-                                                  ${msg("Create recovery link")}
-                                              </ak-action-button>
-                                              ${item.email
-                                                  ? renderRecoveryEmailRequest(item)
-                                                  : html`<span
-                                                        >${msg(
-                                                            "Recovery link cannot be emailed, user has no email address saved.",
-                                                        )}</span
-                                                    >`}
-                                          `
-                                        : html` <p>
-                                              ${msg(
-                                                  "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
-                                              )}
-                                          </p>`}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("User status")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${item.isActive ? msg("Active") : msg("Inactive")}
+                    </div>
+                    <div class="pf-c-description-list__text">
+                        ${item.isSuperuser ? msg("Superuser") : msg("Regular user")}
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Change status")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-user-active-form
+                            .obj=${item}
+                            objectLabel=${msg("User")}
+                            .delete=${() => {
+                                return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                    id: item.pk,
+                                    patchedUserRequest: {
+                                        isActive: !item.isActive,
+                                    },
+                                });
+                            }}
+                        >
+                            <button slot="trigger" class="pf-c-button pf-m-warning">
+                                ${item.isActive ? msg("Deactivate") : msg("Activate")}
+                            </button>
+                        </ak-user-active-form>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Recovery")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text" id="recovery-request-buttons">
+                        <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
+                            <span slot="submit">${msg("Update password")}</span>
+                            <span slot="header">
+                                ${msg(str`Update ${item.name || item.username}'s password`)}
+                            </span>
+                            <ak-user-password-form
+                                username=${item.username}
+                                email=${ifDefined(item.email)}
+                                slot="form"
+                                .instancePk=${item.pk}
+                            ></ak-user-password-form>
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                ${msg("Set password")}
+                            </button>
+                        </ak-forms-modal>
+                        ${this.brand.flowRecovery
+                            ? html`
+                                  <ak-action-button
+                                      class="pf-m-secondary"
+                                      .apiRequest=${() => requestRecoveryLink(item)}
+                                  >
+                                      ${msg("Create recovery link")}
+                                  </ak-action-button>
+                                  ${item.email
+                                      ? renderRecoveryEmailRequest(item)
+                                      : html`<span
+                                            >${msg(
+                                                "Recovery link cannot be emailed, user has no email address saved.",
+                                            )}</span
+                                        >`}
+                              `
+                            : html` <p>
+                                  ${msg(
+                                      "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
+                                  )}
+                              </p>`}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create User")} </span>
+                <span slot="submit">${msg("Create User")}</span>
+                <span slot="header">${msg("New User")}</span>
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New User")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Service account")} </span>
+                <span slot="submit">${msg("Create Service Account")}</span>
+                <span slot="header">${msg("New Service Account")}</span>
                 <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create Service account")}
+                    ${msg("New Service Account")}
                 </button>
             </ak-forms-modal>
+            <ak-reports-export-button
+                .createExport=${(params: CoreUsersExportCreateRequest) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersExportCreate(params);
+                }}
+                .exportParams=${async () => {
+                    return {
+                        ...(await this.defaultEndpointConfig()),
+                        pathStartswith: this.activePath,
+                        isActive: this.hideDeactivated ? true : undefined,
+                    };
+                }}
+            ></ak-reports-export-button>
         `;
     }
 
     protected renderSidebarBefore(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+        return html`<aside aria-labelledby="sidebar-left-panel-header" class="pf-c-sidebar__panel">
             <div class="pf-c-card">
-                <div class="pf-c-card__title">${msg("User folders")}</div>
+                <div
+                    role="heading"
+                    aria-level="2"
+                    id="sidebar-left-panel-header"
+                    class="pf-c-card__title"
+                >
+                    ${msg("User folders")}
+                </div>
                 <div class="pf-c-card__body">
                     <ak-treeview
+                        label=${msg("User paths")}
                         .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
                         @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
@@ -427,7 +431,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     ></ak-treeview>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 

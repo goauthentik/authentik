@@ -20,7 +20,7 @@ user_email_local = regex_replace(request.user.email, '(.+)@.+', '')
 
 ### `list_flatten(value: list[Any] | Any) -> Optional[Any]`
 
-Flatten a list by either returning its first element, None if the list is empty, or the passed in object if its not a list.
+Flatten a list by either returning its first element, None if the list is empty, or the passed in object if it's not a list.
 
 Example:
 
@@ -67,7 +67,11 @@ Returns "None" if no user was found, otherwise returns the [User](../users-sourc
 Example:
 
 ```python
+# Find user by username
 other_user = ak_user_by(username="other_user")
+
+# Find user by custom attribute
+other_user = ak_user_by(attributes__<custom_attribute_name>="<value>")
 ```
 
 ### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool`
@@ -91,9 +95,9 @@ return ak_user_has_authenticator(request.user)
 
 Create a new event with the action set to `action`. Any additional key-word parameters will be saved in the event context. Additionally, `context` will be set to the context in which this function is called.
 
-Before saving, any data-structure which are not representable in JSON are flattened, and credentials are removed.
+Before saving, any data structures which are not representable in JSON are flattened, and credentials are removed.
 
-The event is saved automatically
+The event is saved automatically.
 
 Example:
 
@@ -103,9 +107,13 @@ ak_create_event("my_custom_event", foo=request.user)
 
 ### `ak_create_jwt(user: User, provider: OAuth2Provider | str, scopes: list[str], validity = "seconds=60") -> str | None`:ak-version[2025.2]
 
+:::info Requires HTTP Request
+This function will only work when there is an HTTP request in the current context.
+:::
+
 Create a new JWT signed by the given `provider` for `user`.
 
-The `provider` parameter can either be an instance of `OAuth2Provider` or a the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
 
 The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
 
@@ -125,6 +133,85 @@ Example:
 jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile", "email"])
 ```
 
+### `ak_create_jwt_raw(provider: OAuth2Provider | str, validity = "seconds=60", **kwargs) -> str | None`:ak-version[2025.12]
+
+Similar to [`ak_create_jwt`](#ak_create_jwtuser-user-provider-oauth2provider--str-scopes-liststr-validity--seconds60---str--none), however this function does _not_ require an HTTP request and allows for setting custom claims via `**kwargs`.
+
+The `provider` parameter can either be an instance of `OAuth2Provider` or the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+
+The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
+
+    - Microseconds
+    - Milliseconds
+    - Seconds
+    - Minutes
+    - Hours
+    - Days
+    - Weeks
+
+    All values accept floating-point values.
+
+Example:
+
+```python
+jwt = ak_create_jwt_raw("my-oauth2-provider-name", my_claim="my_value")
+```
+
+### `ak_send_email(address: str | list[str], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None) -> bool`:ak-version[2025.10]
+
+Send an email using authentik's email system.
+
+The `address` parameter specifies the recipient email address(es). It can be:
+
+- A single email address as a string: `"user@example.com"`
+- A list of email addresses: `["user1@example.com", "user2@example.com"]`
+
+:::info
+When using multiple recipients, all email addresses will be visible in the "To:" field of the email. If you need to send to multiple recipients without revealing all addresses to each other, send individual emails instead.
+:::
+
+The `subject` parameter sets the email subject line.
+
+You must provide either `body` (for plain text/HTML content) or `template` (for template rendering), but not both.
+
+The `stage` parameter can be an `EmailStage` instance for custom email settings. If `None`, global email settings are used.
+
+The `template` parameter specifies a template name to render. When using templates, you can pass additional context variables via the `context` parameter.
+
+If the email is queued successfully, the function returns `True`; otherwise, it returns `False`.
+
+Examples:
+
+```python
+# Send email with plain body to single recipient
+ak_send_email("user@example.com", "Welcome!", body="Welcome to our platform!")
+
+# Send email to multiple recipients
+ak_send_email(
+    ["user1@example.com", "user2@example.com", "admin@example.com"],
+    "System Maintenance",
+    body="Scheduled maintenance will occur tonight."
+)
+
+# Send email using a template
+ak_send_email("user@example.com", "Password Reset", template="email/password_reset.html")
+
+# Send email with custom context for template to multiple recipients
+ak_send_email(
+    ["user@example.com", "admin@example.com"],
+    "Account Update",
+    template="email/event_notification.html",
+    context={
+        "title": "Profile Updated",
+        "body": "Your account profile has been successfully updated.",
+        "key_value": {"Updated Field": "Email Address", "Date": "2025-01-01"}
+    }
+)
+
+# Send email with custom email stage
+ak_send_email("admin@example.com", "Report", body="Daily report", stage=my_custom_stage)
+```
+
 ## Comparing IP Addresses
 
 To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).
@@ -142,8 +229,8 @@ To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(
 
 ```python
 resolve_dns("google.com")  # return a list of all IPv4 and IPv6 addresses
-resolve_dns("google.com", 4)  # return a list of only IP4 addresses
-resolve_dns("google.com", 6)  # return a list of only IP6 addresses
+resolve_dns("google.com", 4)  # return a list of only IPv4 addresses
+resolve_dns("google.com", 6)  # return a list of only IPv6 addresses
 ```
 
 You can also do reverse DNS lookups.

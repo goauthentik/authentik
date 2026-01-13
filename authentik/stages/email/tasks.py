@@ -7,7 +7,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from structlog.stdlib import get_logger
@@ -17,27 +16,31 @@ from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
 
 def send_mails(
-    stage: EmailStage | AuthenticatorEmailStage, *messages: list[EmailMultiAlternatives]
+    stage: EmailStage | AuthenticatorEmailStage | None, *messages: EmailMultiAlternatives
 ):
     """Wrapper to convert EmailMessage to dict and send it from worker
 
     Args:
-        stage: Either an EmailStage or AuthenticatorEmailStage instance
+        stage: Either an EmailStage or AuthenticatorEmailStage instance,
+            or nothing to use global settings
         messages: List of email messages to send
     Returns:
         Dramatiq group promise for the email sending tasks
     """
     tasks = []
     # Use the class path instead of the class itself for serialization
-    stage_class_path = class_to_path(stage.__class__)
+    stage_class_path, stage_pk = None, None
+    if stage:
+        stage_class_path = class_to_path(stage.__class__)
+        stage_pk = str(stage.pk)
     for message in messages:
-        tasks.append(send_mail.message(message.__dict__, stage_class_path, str(stage.pk)))
+        tasks.append(send_mail.message(message.__dict__, stage_class_path, stage_pk))
     return group(tasks).run()
 
 
@@ -56,7 +59,7 @@ def send_mail(
     email_stage_pk: str | None = None,
 ):
     """Send Email for Email Stage. Retries are scheduled automatically."""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     if not stage_class_path or not email_stage_pk:

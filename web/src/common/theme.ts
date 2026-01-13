@@ -1,41 +1,10 @@
-import AKBase from "#common/styles/authentik.css";
-import AKBaseDark from "#common/styles/theme-dark.css";
 /**
  * @file Theme utilities.
  */
-import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
+
+import { setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
 import { UiThemeEnum } from "@goauthentik/api";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-//#region Stylesheet Exports
-
-/**
- * A global style sheet for the Patternfly base styles.
- *
- * @remarks
- *
- * While a component *may* import its own instance of the PFBase style sheet,
- * this instance ensures referential identity.
- */
-export const $PFBase = createStyleSheetUnsafe(PFBase);
-
-/**
- * A global style sheet for the authentik base styles.
- *
- * @see {@linkcode $PFBase} for details.
- */
-export const $AKBase = createStyleSheetUnsafe(AKBase);
-
-/**
- * A global style sheet for the authentik dark theme.
- *
- * @see {@linkcode $PFBase} for details.
- */
-export const $AKBaseDark = createStyleSheetUnsafe(AKBaseDark);
-
-//#endregion
 
 //#region Scheme Types
 
@@ -112,8 +81,8 @@ export function formatColorScheme(theme: ResolvedUITheme): ResolvedCSSColorSchem
 export function formatColorScheme(
     colorScheme: ResolvedCSSColorSchemeValue,
 ): ResolvedCSSColorSchemeValue;
-export function formatColorScheme(hint?: UIThemeHint): CSSColorSchemeValue;
-export function formatColorScheme(hint?: UIThemeHint): CSSColorSchemeValue {
+export function formatColorScheme(hint?: string): CSSColorSchemeValue;
+export function formatColorScheme(hint?: string): CSSColorSchemeValue {
     if (!hint) return "auto";
 
     switch (hint) {
@@ -144,7 +113,7 @@ export function formatColorScheme(hint?: UIThemeHint): CSSColorSchemeValue {
  * @category CSS
  */
 export function resolveUITheme(
-    hint?: UIThemeHint,
+    hint?: string,
     defaultUITheme: ResolvedUITheme = UiThemeEnum.Light,
 ): ResolvedUITheme {
     const colorScheme = formatColorScheme(hint);
@@ -181,35 +150,59 @@ export function createUIThemeEffect(
     effect: UIThemeListener,
     listenerOptions?: AddEventListenerOptions,
 ): UIThemeDestructor {
-    const colorSchemeTarget = resolveUITheme();
-    const invertedColorSchemeTarget = UIThemeInversion[colorSchemeTarget];
+    const colorSchemeTarget: ResolvedUITheme = "light";
+    const inversionTarget = UIThemeInversion[colorSchemeTarget];
 
-    let previousUITheme: ResolvedUITheme | undefined;
+    const mediaQueryList = createColorSchemeTarget(colorSchemeTarget);
 
     // First, wrap the effect to ensure we can abort it.
-    const changeListener = (event: MediaQueryListEvent) => {
+    const mediaChangeListener = (event: MediaQueryListEvent) => {
         if (listenerOptions?.signal?.aborted) return;
 
-        const currentUITheme = event.matches ? colorSchemeTarget : invertedColorSchemeTarget;
+        const { themeChoice, theme: previousTheme } = document.documentElement.dataset;
 
-        if (previousUITheme === currentUITheme) return;
+        if (themeChoice && themeChoice !== "auto") {
+            console.debug(
+                `authentik/theme (document): skipping media query change due to explicit choice (${themeChoice})`,
+            );
+            return;
+        }
 
-        previousUITheme = currentUITheme;
+        const currentUITheme = event.matches ? colorSchemeTarget : inversionTarget;
+
+        if (previousTheme === currentUITheme) return;
 
         effect(currentUITheme);
     };
 
-    const mediaQueryList = createColorSchemeTarget(colorSchemeTarget);
+    const themeChoiceListener = () => {
+        let theme = formatColorScheme(document.documentElement.dataset.themeChoice);
 
-    // Trigger the effect immediately.
-    effect(colorSchemeTarget);
+        if (theme === "auto") {
+            theme = mediaQueryList.matches
+                ? colorSchemeTarget
+                : UIThemeInversion[colorSchemeTarget];
+        }
+
+        document.documentElement.dataset.theme = theme;
+
+        effect(theme);
+    };
+
+    const documentObserver = new MutationObserver(themeChoiceListener);
+
+    documentObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme-choice"],
+    });
 
     // Listen for changes to the color scheme...
-    mediaQueryList.addEventListener("change", changeListener, listenerOptions);
+    mediaQueryList.addEventListener("change", mediaChangeListener);
 
     // Finally, allow the caller to remove the effect.
     const cleanup = () => {
-        mediaQueryList.removeEventListener("change", changeListener);
+        documentObserver.disconnect();
+        mediaQueryList.removeEventListener("change", mediaChangeListener);
     };
 
     listenerOptions?.signal?.addEventListener("abort", cleanup);
@@ -233,21 +226,31 @@ export function createUIThemeEffect(
  */
 export function applyUITheme(
     styleRoot: StyleRoot,
-    currentUITheme: ResolvedUITheme = resolveUITheme(),
     ...additionalStyleSheets: Array<CSSStyleSheet | undefined | null>
 ): void {
     setAdoptedStyleSheets(styleRoot, (currentStyleSheets) => {
         const appendedSheets = additionalStyleSheets.filter(Boolean) as CSSStyleSheet[];
 
-        if (currentUITheme === UiThemeEnum.Dark) {
-            return [...currentStyleSheets, $AKBaseDark, ...appendedSheets];
-        }
-
-        return [
-            ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
-            ...appendedSheets,
-        ];
+        return [...currentStyleSheets, ...appendedSheets];
     });
+}
+
+export class ThemeChangeEvent extends Event {
+    static readonly eventName = "ak-theme-change";
+
+    public readonly theme: ResolvedUITheme;
+
+    constructor(hint?: string) {
+        super(ThemeChangeEvent.eventName, { bubbles: true, composed: true });
+
+        this.theme = resolveUITheme(hint);
+    }
+}
+
+declare global {
+    interface GlobalEventHandlersEventMap {
+        [ThemeChangeEvent.eventName]: ThemeChangeEvent;
+    }
 }
 
 /**
@@ -255,41 +258,87 @@ export function applyUITheme(
  *
  * @param hint The color scheme hint to use.
  */
-export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "auto"): void {
-    const preferredColorScheme = formatColorScheme(hint);
+export const applyDocumentTheme = ((currentUITheme = resolveUITheme()): void => {
+    console.debug(`authentik/theme (document): want to switch to ${currentUITheme} theme`);
 
-    if (document.documentElement.dataset.theme === preferredColorScheme) return;
+    const { themeChoice } = document.documentElement.dataset;
 
-    const applyStyleSheets: UIThemeListener = (currentUITheme) => {
-        console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
+    if (themeChoice && themeChoice !== "auto") {
+        console.debug(
+            `authentik/theme (document): skipping theme application due to explicit choice (${themeChoice})`,
+        );
 
-        setAdoptedStyleSheets(document, (currentStyleSheets) => {
-            if (currentUITheme === "dark") {
-                return [...currentStyleSheets, $PFBase, $AKBase, $AKBaseDark];
-            }
+        document.dispatchEvent(new ThemeChangeEvent(themeChoice));
 
-            return [
-                ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
-                $PFBase,
-                $AKBase,
-            ];
-        });
-
-        document.documentElement.dataset.theme = currentUITheme;
-    };
-
-    if (preferredColorScheme === "auto") {
-        createUIThemeEffect(applyStyleSheets);
         return;
     }
 
-    applyStyleSheets(preferredColorScheme);
+    document.documentElement.dataset.theme = currentUITheme;
+
+    console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
+
+    document.dispatchEvent(new ThemeChangeEvent(currentUITheme));
+}) satisfies UIThemeListener;
+
+/**
+ * A CSS variable representing the global background image.
+ */
+export const AKBackgroundImageProperty = "--ak-global--background-image";
+
+/**
+ * Given a CSS background-image property value, plucks the URL from it.
+ *
+ * @param backgroundValue The CSS background-image property value.
+ * @param baseOrigin The base origin to use for relative URLs.
+ * @returns The plucked URL, if any.
+ */
+function pluckCurrentBackgroundURL(
+    backgroundValue: string,
+    baseOrigin = window.location.origin,
+): URL | null {
+    if (!backgroundValue || backgroundValue === "none") {
+        return null;
+    }
+
+    const match = backgroundValue.match(/url\(["']?([^"']*)["']?\)/);
+    const urlString = match?.[1];
+
+    if (urlString && URL.canParse(urlString, baseOrigin)) {
+        return new URL(urlString, baseOrigin);
+    }
+
+    return null;
+}
+
+/**
+ * Applies the given background image URL to the document body.
+ *
+ * This method is very defensive to avoid unnecessary DOM repaints.
+ */
+export function applyBackgroundImageProperty(
+    value?: string | null,
+    baseOrigin = window.location.origin,
+): void {
+    if (!value || !URL.canParse(value, baseOrigin)) {
+        return;
+    }
+
+    const nextURL = new URL(value, baseOrigin);
+
+    const { backgroundImage } = getComputedStyle(document.body, "::before");
+
+    const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
+    if (currentURL?.href === nextURL.href) {
+        return;
+    }
+
+    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
 }
 
 /**
  * Returns the root interface element of the page.
  *
- * @todo Can this be handled with a Lit Mixin?
+ * @deprecated Use context controllers to access the interface root instead.
  */
 export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
     const element = document.body.querySelector<T>("[data-test-id=interface-root]");

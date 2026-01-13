@@ -97,21 +97,25 @@ func NewWebServer() *WebServer {
 	if sp := config.Get().Web.Path; sp != "/" {
 		ws.mainRouter.Path("/").Handler(http.RedirectHandler(sp, http.StatusFound))
 	}
-	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.upstreamURL.String(), config.Get().Web.Path)
 	ws.g = gounicorn.New(func() bool {
-		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
-		if err != nil {
-			ws.log.WithError(err).Warning("failed to create request for healthcheck")
-			return false
-		}
-		req.Header.Set("User-Agent", "goauthentik.io/router/healthcheck")
-		res, err := ws.upstreamHttpClient().Do(req)
-		if err == nil && res.StatusCode >= 200 && res.StatusCode < 300 {
-			return true
-		}
-		return false
+		return ws.upstreamHealthcheck()
 	})
 	return ws
+}
+
+func (ws *WebServer) upstreamHealthcheck() bool {
+	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.upstreamURL.String(), config.Get().Web.Path)
+	req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
+	if err != nil {
+		ws.log.WithError(err).Warning("failed to create request for healthcheck")
+		return false
+	}
+	req.Header.Set("User-Agent", "goauthentik.io/router/healthcheck")
+	res, err := ws.upstreamHttpClient().Do(req)
+	if err == nil && res.StatusCode >= 200 && res.StatusCode < 300 {
+		return true
+	}
+	return false
 }
 
 func (ws *WebServer) prepareKeys() {
@@ -241,9 +245,7 @@ func (ws *WebServer) listenPlain() {
 }
 
 func (ws *WebServer) serve(listener net.Listener) {
-	srv := &http.Server{
-		Handler: ws.mainRouter,
-	}
+	srv := web.Server(ws.mainRouter)
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})

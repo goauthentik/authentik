@@ -57,7 +57,6 @@ export class ProviderWizard extends AKElement {
                 .finalHandler=${this.finalHandler}
             >
                 <ak-wizard-page-type-create
-                    name="selectProviderType"
                     slot="initial"
                     layout=${TypeCreateWizardPageLayouts.grid}
                     .types=${this.providerTypes}
@@ -72,7 +71,7 @@ export class ProviderWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
@@ -82,6 +81,7 @@ export class ProviderWizard extends AKElement {
                     aria-label=${msg("New Provider")}
                     aria-description="${msg("Open the wizard to create a new provider.")}"
                     type="button"
+                    part="button trigger"
                     slot="trigger"
                     class="pf-c-button pf-m-primary"
                 >

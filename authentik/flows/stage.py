@@ -1,6 +1,7 @@
 """authentik stage Base view"""
 
 from typing import TYPE_CHECKING
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -160,9 +161,19 @@ class ChallengeStageView(StageView):
                 "user": self.get_pending_user(for_display=True),
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title
+
+    @property
+    def cancel_url(self) -> str:
+        from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+
+        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(NEXT_ARG_NAME)
+        url = reverse("authentik_flows:cancel")
+        if next_param:
+            return f"{url}?{urlencode({NEXT_ARG_NAME: next_param})}"
+        return url
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         with (
@@ -186,7 +197,7 @@ class ChallengeStageView(StageView):
                     data={
                         "title": self.format_title(),
                         "background": self.executor.flow.background_url(self.request),
-                        "cancel_url": reverse("authentik_flows:cancel"),
+                        "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
                     }
                 )
@@ -286,6 +297,12 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        if not self.request.user.is_authenticated:
+            return RedirectChallenge(
+                data={
+                    "to": reverse("authentik_core:root-redirect"),
+                },
+            )
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
         data = {
             "component": "ak-stage-session-end",

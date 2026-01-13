@@ -116,27 +116,43 @@ class ResponseProcessor:
 
     def _verify_signed(self):
         """Verify SAML Response's Signature"""
-        signature_nodes = self._root.xpath(
-            "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
-        )
-        if len(signature_nodes) != 1:
+        signatures = []
+
+        if self._source.signed_response:
+            signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
+
+            if len(signature_nodes) != 1:
+                raise InvalidSignature("No Signature exists in the Response element.")
+            signatures.extend(signature_nodes)
+
+        if self._source.signed_assertion:
+            signature_nodes = self._root.xpath(
+                "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
+            )
+
+            if len(signature_nodes) != 1:
+                raise InvalidSignature("No Signature exists in the Assertion element.")
+            signatures.extend(signature_nodes)
+
+        if len(signatures) == 0:
             raise InvalidSignature()
-        signature_node = signature_nodes[0]
-        xmlsec.tree.add_ids(self._root, ["ID"])
 
-        ctx = xmlsec.SignatureContext()
-        key = xmlsec.Key.from_memory(
-            self._source.verification_kp.certificate_data,
-            xmlsec.constants.KeyDataFormatCertPem,
-        )
-        ctx.key = key
+        for signature_node in signatures:
+            xmlsec.tree.add_ids(self._root, ["ID"])
 
-        ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
-        try:
-            ctx.verify(signature_node)
-        except xmlsec.Error as exc:
-            raise InvalidSignature() from exc
-        LOGGER.debug("Successfully verified signature")
+            ctx = xmlsec.SignatureContext()
+            key = xmlsec.Key.from_memory(
+                self._source.verification_kp.certificate_data,
+                xmlsec.constants.KeyDataFormatCertPem,
+            )
+            ctx.key = key
+
+            ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
+            try:
+                ctx.verify(signature_node)
+            except xmlsec.Error as exc:
+                raise InvalidSignature() from exc
+            LOGGER.debug("Successfully verified signature")
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:

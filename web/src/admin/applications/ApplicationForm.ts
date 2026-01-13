@@ -1,5 +1,5 @@
 import "#admin/applications/ProviderSelectModal";
-import "#components/ak-file-input";
+import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-switch-input";
@@ -19,13 +19,13 @@ import "./components/ak-provider-search-input.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { navigate } from "#elements/router/RouterOutlet";
+import { ifPresent } from "#elements/utils/attributes";
 
-import { iconHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { Application, CoreApi, Provider } from "@goauthentik/api";
+import { AdminFileListUsageEnum, Application, CoreApi, Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -41,7 +41,6 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             slug: pk,
         });
 
-        this.clearIcon = false;
         this.backchannelProviders = app.backchannelProvidersObj || [];
 
         return app;
@@ -53,10 +52,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @state()
     protected backchannelProviders: Provider[] = [];
 
-    @property({ type: Boolean })
-    public clearIcon = false;
-
-    protected override getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated application.")
             : msg("Successfully created application.");
@@ -76,27 +72,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
         const nextSlug = app.slug;
 
-        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.files().get("metaIcon");
-
-            if (icon || this.clearIcon) {
-                await this.#api.coreApplicationsSetIconCreate({
-                    slug: nextSlug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
-            }
-        } else {
-            await this.#api.coreApplicationsSetIconUrlCreate({
-                slug: nextSlug,
-                filePathRequest: {
-                    url: applicationRequest.metaIcon || "",
-                },
-            });
-        }
-
         if (currentSlug && currentSlug !== nextSlug) {
-            // TODO: This needs refining.
             this.instancePk = nextSlug;
             navigate(`/core/applications/${nextSlug}`);
         }
@@ -119,33 +95,28 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         };
     };
 
-    handleClearIcon(ev: Event) {
-        ev.stopPropagation();
-        if (!(ev instanceof InputEvent) || !ev.target) {
-            return;
-        }
-        this.clearIcon = !!(ev.target as HTMLInputElement).checked;
-    }
-
     public override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
+        const providerFromInstance = this.instance?.provider;
+        const providerValue = providerFromInstance ?? this.provider;
+        const providerPrefilled = !this.instance && this.provider !== undefined;
 
         return html`
             ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
                 autocomplete="off"
-                placeholder=${msg("Application name")}
+                placeholder=${msg("Type an application name...")}
                 value=${ifDefined(this.instance?.name)}
-                label=${msg("Name")}
+                label=${msg("Application Name")}
+                spellcheck="false"
                 required
                 help=${msg("The name displayed in the application library.")}
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
-                autocomplete="off"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -165,9 +136,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             <ak-provider-search-input
                 name="provider"
                 label=${msg("Provider")}
-                value=${ifDefined(this.instance?.provider ?? undefined)}
+                .value=${providerValue}
+                .readOnly=${providerPrefilled}
+                ?blankable=${!providerPrefilled}
                 help=${msg("Select a provider that this application should use.")}
-                blankable
             ></ak-provider-search-input>
             <ak-backchannel-providers-input
                 name="backchannelProviders"
@@ -196,7 +168,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     <ak-text-input
                         name="metaLaunchUrl"
                         label=${msg("Launch URL")}
-                        placeholder="https://..."
+                        placeholder=${msg("https://...")}
                         value=${ifDefined(this.instance?.metaLaunchUrl)}
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
@@ -212,30 +184,16 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         )}
                     >
                     </ak-switch-input>
-                    ${this.can(CapabilitiesEnum.CanSaveMedia)
-                        ? html`<ak-file-input
-                                  label="${msg("Icon")}"
-                                  name="metaIcon"
-                                  value=${ifDefined(this.instance?.metaIcon ?? undefined)}
-                                  current=${msg("Currently set to:")}
-                              ></ak-file-input>
-                              ${this.instance?.metaIcon
-                                  ? html`
-                                        <ak-switch-input
-                                            name=""
-                                            label=${msg("Clear icon")}
-                                            help=${msg("Delete currently set icon.")}
-                                            @change=${this.handleClearIcon}
-                                        ></ak-switch-input>
-                                    `
-                                  : html``}`
-                        : html` <ak-text-input
-                              label=${msg("Icon")}
-                              name="metaIcon"
-                              value=${this.instance?.metaIcon ?? ""}
-                              help=${iconHelperText}
-                          >
-                          </ak-text-input>`}
+                    <ak-file-search-input
+                        name="metaIcon"
+                        label=${msg("Icon")}
+                        value=${ifPresent(this.instance?.metaIcon)}
+                        .usage=${AdminFileListUsageEnum.Media}
+                        help=${msg(
+                            "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
+                        )}
+                        blankable
+                    ></ak-file-search-input>
                     <ak-text-input
                         label=${msg("Publisher")}
                         name="metaPublisher"

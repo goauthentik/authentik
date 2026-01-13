@@ -35,7 +35,7 @@ The configuration for each application is nearly identical, except for the **Cli
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - **Protocol settings:**
 
         **Web UI:**
@@ -101,7 +101,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
 
         The location of the `config.php` file depends on your deployment method. Consult the setup guide for your chosen deployment method to identify the file’s location within your installation.
 
-        :::note
+        :::info
 
     Instructions for configuring the OIDC plugin using the ownCloud database can be found in the OIDC plugin's [README.md file](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database). Both methods produce identical configurations, differing only in whether the settings are stored in a `php` file or in the database (via an `occ` command).
     :::
@@ -126,11 +126,10 @@ $CONFIG = [
   'openid-connect' => [
     'provider-url' => 'https://authentik.company/application/o/owncloud/',
     'client-id' => '<Client ID from authentik>',
-    'client-secret' => '<Client secret from authentik',
+    'client-secret' => '<Client secret from authentik>',
     'loginButtonName' => 'Log in with authentik',
     'mode' => 'userid',
     'search-attribute' => 'preferred_username',
-    ],
   ],
 ];
 ```
@@ -160,7 +159,7 @@ $CONFIG = [
 ];
 ```
 
-:::note
+:::info
 The configuration above will result in new ownCloud users being assigned the same username as the authentik username. If you prefer to use the user's email address as the ownCloud username, you can remove the `mode` and `search-attribute` settings.
 
 Note that using email as the username may cause mobile app interfaces to display usernames in an unusual format (e.g., `user@email.com@owncloud.company`).

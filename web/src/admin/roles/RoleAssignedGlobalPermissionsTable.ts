@@ -1,3 +1,4 @@
+import "#elements/forms/DeleteBulkForm";
 import "#admin/roles/RolePermissionForm";
 import "#elements/forms/ModalForm";
 
@@ -5,6 +6,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
@@ -18,9 +20,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     @property()
     roleUuid?: string;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -40,19 +40,18 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Model"), "model"],
+        [msg("Permission"), ""],
+        ["", null, msg("Assigned to role")],
+    ];
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Assign")} </span>
-                <span slot="header"> ${msg("Assign permission to role")} </span>
+                <span slot="submit">${msg("Assign")}</span>
+                <span slot="header">${msg("Assign permission to role")}</span>
                 <ak-role-permission-form roleUuid=${ifDefined(this.roleUuid)} slot="form">
                 </ak-role-permission-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -84,11 +83,11 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

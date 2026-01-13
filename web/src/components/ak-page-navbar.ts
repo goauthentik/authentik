@@ -1,19 +1,13 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { getConfigForUser, UIConfig, UserDisplay } from "#common/ui/config";
-import { me } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
-import { themeImage } from "#elements/utils/images";
-
-import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
-
-import { SessionUser } from "@goauthentik/api";
+import { ThemedImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -28,38 +22,53 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export class PageDetailsUpdate extends Event {
+    static readonly eventName = "ak-page-details-update";
+    header: PageHeaderInit;
+
+    constructor(header: PageHeaderInit) {
+        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
+        this.header = header;
+    }
+}
+
+export class PageNavMenuToggle extends Event {
+    static readonly eventName = "ak-page-nav-menu-toggle";
+    open: boolean;
+
+    constructor(open?: boolean) {
+        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
+        this.open = !!open;
+    }
+}
+
+export function setPageDetails(header: PageHeaderInit) {
+    window.dispatchEvent(new PageDetailsUpdate(header));
+}
+
+export interface PageHeaderInit {
+    header?: string | null;
+    description?: string | null;
+    icon?: string | null;
+    iconImage?: boolean;
+}
+
 /**
  * A global navbar component at the top of the page.
  *
  * Internally, this component listens for the `ak-page-header` event, which is
  * dispatched by the `ak-page-header` component.
+ *
+ * @event ak-page-nav-menu-toggle
+ * @event ak-page-details-update
+ *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
-    extends WithBrandConfig(AKElement)
-    implements PageHeaderInit, SidebarToggleEventDetail
+    extends WithBrandConfig(WithSession(AKElement))
+    implements PageHeaderInit
 {
     //#region Static Properties
-
-    private static elementRef: AKPageNavbar | null = null;
-
-    static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
-        const { elementRef } = AKPageNavbar;
-        if (!elementRef) {
-            console.debug(
-                `ak-page-header: Could not find ak-page-navbar, skipping event dispatch.`,
-            );
-            return;
-        }
-
-        const { header, description, icon, iconImage } = detail;
-
-        elementRef.header = header;
-        elementRef.description = description;
-        elementRef.icon = icon;
-        elementRef.iconImage = iconImage || false;
-        elementRef.hasIcon = !!icon;
-    };
 
     static styles: CSSResult[] = [
         PFBase,
@@ -75,27 +84,30 @@ export class AKPageNavbar
             :host {
                 position: sticky;
                 top: 0;
-                z-index: var(--pf-global--ZIndex--lg);
+                z-index: var(--pf-c-page__header--ZIndex);
                 --pf-c-page__header-tools--MarginRight: 0;
                 --ak-brand-logo-height: var(--pf-global--FontSize--4xl, 2.25rem);
-                --ak-brand-background-color: var(--pf-c-page__sidebar--m-light--BackgroundColor);
+                --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
                 --host-navbar-height: var(--ak-c-page-header--height, 7.5rem);
             }
 
             :host([theme="dark"]) {
                 --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
-                --pf-c-page__sidebar--BackgroundColor: var(--ak-dark-background-light);
-                color: var(--ak-dark-foreground);
+
+                .sidebar-trigger,
+                .notification-trigger {
+                    background-color: transparent !important;
+                }
             }
 
             .main-content {
-                border-bottom: var(--pf-global--BorderWidth--sm);
+                border-bottom-width: 0.5px;
                 border-bottom-style: solid;
                 border-bottom-color: var(--pf-global--BorderColor--100);
-                background-color: var(--pf-c-page--BackgroundColor);
-
+                background-color: var(--pf-c-page__main-nav--BackgroundColor);
                 display: flex;
                 flex-direction: row;
+                box-shadow: var(--pf-global--BoxShadow--sm-bottom);
 
                 display: grid;
                 column-gap: var(--pf-global--spacer--sm);
@@ -225,6 +237,12 @@ export class AKPageNavbar
                 & img {
                     height: 100%;
                 }
+
+                & i {
+                    font-size: var(--ak-brand-logo-height);
+                    height: var(--ak-brand-logo-height);
+                    line-height: var(--ak-brand-logo-height);
+                }
             }
 
             .sidebar-trigger,
@@ -259,36 +277,28 @@ export class AKPageNavbar
     //#region Properties
 
     @state()
-    icon?: string;
+    icon?: string | null = null;
 
     @state()
     iconImage = false;
 
     @state()
-    header?: string;
+    header?: string | null = null;
 
     @state()
-    description?: string;
+    description?: string | null = null;
 
     @state()
     hasIcon = true;
 
-    @property({
-        type: Boolean,
-    })
+    @property({ type: Boolean, reflect: true })
     public open?: boolean;
-
-    @state()
-    protected session?: SessionUser;
-
-    @state()
-    protected uiConfig!: UIConfig;
 
     //#endregion
 
     //#region Private Methods
 
-    #setTitle(header?: string) {
+    #setTitle(header?: string | null) {
         let title = this.brandingTitle;
 
         if (isAdminRoute()) {
@@ -303,15 +313,21 @@ export class AKPageNavbar
 
     #toggleSidebar() {
         this.open = !this.open;
-
-        this.dispatchEvent(
-            new CustomEvent<SidebarToggleEventDetail>("sidebar-toggle", {
-                bubbles: true,
-                composed: true,
-                detail: { open: this.open },
-            }),
-        );
+        this.dispatchEvent(new PageNavMenuToggle(!!this.open));
     }
+
+    //#endregion
+
+    //#region Event Handlers
+
+    #onPageDetails = (ev: PageDetailsUpdate) => {
+        const { header, description, icon, iconImage } = ev.header;
+        this.header = header;
+        this.description = description;
+        this.icon = icon;
+        this.iconImage = iconImage || false;
+        this.hasIcon = !!icon;
+    };
 
     //#endregion
 
@@ -319,22 +335,12 @@ export class AKPageNavbar
 
     public connectedCallback(): void {
         super.connectedCallback();
-        AKPageNavbar.elementRef = this;
-
-        window.addEventListener(EVENT_WS_MESSAGE, () => {
-            this.firstUpdated();
-        });
+        window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
     }
 
     public disconnectedCallback(): void {
+        window.removeEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
         super.disconnectedCallback();
-        AKPageNavbar.elementRef = null;
-    }
-
-    public async firstUpdated() {
-        this.session = await me();
-        this.uiConfig = getConfigForUser(this.session.user);
-        this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
     willUpdate() {
@@ -360,7 +366,7 @@ export class AKPageNavbar
 
             const icon = this.icon.replaceAll("fa://", "fa ");
 
-            return html`<i class="accent-icon ${icon}"></i>`;
+            return html`<i class="accent-icon ${icon}" aria-hidden="true"></i>`;
         }
         return nothing;
     }
@@ -371,11 +377,11 @@ export class AKPageNavbar
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
-                            <img
-                                src=${themeImage(this.brandingLogo)}
-                                alt="${msg("authentik Logo")}"
-                                loading="lazy"
-                            />
+                            ${ThemedImage({
+                                src: this.brandingLogo,
+                                alt: msg("authentik Logo"),
+                                theme: this.activeTheme,
+                            })}
                         </div>
                     </a>
                 </aside>
@@ -410,7 +416,7 @@ export class AKPageNavbar
 
                 <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
-                        <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
+                        <ak-nav-buttons>
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
@@ -430,5 +436,10 @@ export class AKPageNavbar
 declare global {
     interface HTMLElementTagNameMap {
         "ak-page-navbar": AKPageNavbar;
+    }
+
+    interface GlobalEventHandlersEventMap {
+        [PageDetailsUpdate.eventName]: PageDetailsUpdate;
+        [PageNavMenuToggle.eventName]: PageNavMenuToggle;
     }
 }

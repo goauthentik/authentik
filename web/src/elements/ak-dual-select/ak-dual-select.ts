@@ -37,7 +37,7 @@ function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     return aSortBy.localeCompare(bSortBy);
 }
 
-function keyfinder(key: string) {
+function keyfinder(key: string | number) {
     return ([k]: DualSelectPair) => k === key;
 }
 
@@ -98,7 +98,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     @state()
     protected selectedFilter: string = "";
 
-    #selectedKeys: Set<string> = new Set();
+    #selectedKeys: Set<string | number> = new Set();
 
     //#endregion
 
@@ -188,7 +188,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     // updating the list of currently visible options;
     protected addAllVisible() {
         // Create a new array of all current options and selected, and de-dupe.
-        const selected = new Map<string, DualSelectPair>([
+        const selected = new Map<string | number, DualSelectPair>([
             ...this.options.map((pair) => [pair[0], pair] as const),
             ...this.selected.map((pair) => [pair[0], pair] as const),
         ]);
@@ -312,7 +312,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar name="ak-dual-list-available-search"></ak-search-bar>
+                    <ak-search-bar
+                        placeholder=${msg(str`Search ${this.availableLabel}...`)}
+                        name="ak-dual-list-available-search"
+                    ></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"
@@ -346,7 +349,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
                             </div>
                         </div>
                     </div>
-                    <ak-search-bar name="ak-dual-list-selected-search"></ak-search-bar>
+                    <ak-search-bar
+                        placeholder=${msg(str`Search ${this.selectedLabel}...`)}
+                        name="ak-dual-list-selected-search"
+                    ></ak-search-bar>
                     <div class="pf-c-dual-list-selector__status">
                         <span
                             class="pf-c-dual-list-selector__status-text"

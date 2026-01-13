@@ -104,19 +104,6 @@ export class Wizard extends ModalButton {
             this.steps.push(ApplyActionsSlot);
         }
 
-        for (const step of this._steps) {
-            const existingStepElement = this.getStepElementByName(step);
-
-            if (existingStepElement) continue;
-
-            const stepElement = document.createElement(step);
-
-            stepElement.slot = step;
-            stepElement.dataset.wizardmanaged = "true";
-
-            this.appendChild(stepElement);
-        }
-
         this.requestUpdate();
     }
 
@@ -314,8 +301,6 @@ export class Wizard extends ModalButton {
 
                                 if (!stepEl) return html`<p>Unexpected missing step: ${step}</p>`;
 
-                                const sidebarLabel = stepEl.sidebarLabel();
-
                                 return html`
                                     <li role="presentation" class="pf-c-wizard__nav-item">
                                         <button
@@ -329,7 +314,7 @@ export class Wizard extends ModalButton {
                                                 this.activeStepElement = stepEl;
                                             }}
                                         >
-                                            ${sidebarLabel}
+                                            ${stepEl.label ?? msg("UNNAMED")}
                                         </button>
                                     </li>
                                 `;

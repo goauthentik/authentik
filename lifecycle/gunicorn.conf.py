@@ -136,7 +136,7 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
                 timeout=5,
             )
 
-        except Exception:  # nosec
+        except Exception:  # nosec # noqa
             pass
 
 start_debug_server()

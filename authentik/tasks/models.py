@@ -1,4 +1,5 @@
-from typing import Any
+from collections.abc import Iterable
+from typing import Self
 from uuid import UUID, uuid4
 
 import pgtrigger
@@ -9,7 +10,7 @@ from django_dramatiq_postgres.models import TaskBase, TaskState
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
 
@@ -19,6 +20,9 @@ class TaskStatus(models.TextChoices):
 
     QUEUED = TaskState.QUEUED
     CONSUMED = TaskState.CONSUMED
+    PREPROCESS = TaskState.PREPROCESS
+    RUNNING = TaskState.RUNNING
+    POSTPROCESS = TaskState.POSTPROCESS
     REJECTED = TaskState.REJECTED
     DONE = TaskState.DONE
     INFO = "info"
@@ -26,7 +30,7 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-class Task(SerializerModel, TaskBase):
+class Task(InternallyManagedMixin, SerializerModel, TaskBase):
     tenant = models.ForeignKey(
         Tenant,
         on_delete=models.CASCADE,
@@ -94,55 +98,116 @@ class Task(SerializerModel, TaskBase):
             self.save()
 
     @classmethod
-    def _make_message(
+    def _make_log(
         cls, logger: str, log_level: TaskStatus, message: str | Exception, **attributes
-    ) -> dict[str, Any]:
+    ) -> LogEvent:
         if isinstance(message, Exception):
             attributes = {
                 "exception": exception_to_dict(message),
                 **attributes,
             }
             message = str(message)
-        log = LogEvent(
+        return LogEvent(
             message,
             logger=logger,
             log_level=log_level.value,
             attributes=attributes,
         )
-        return sanitize_item(log)
 
-    def logs(self, logs: list[LogEvent]):
-        for log in logs:
-            self._messages.append(sanitize_item(log))
+    def logs(self, logs: Iterable[LogEvent]):
+        TaskLog.bulk_create_from_log_events(self, logs)
 
     def log(
         self,
         logger: str,
         log_level: TaskStatus,
         message: str | Exception,
-        save: bool = False,
         **attributes,
-    ):
-        self._messages: list
-        self._messages.append(
-            self._make_message(
+    ) -> None:
+        TaskLog.create_from_log_event(
+            self,
+            self._make_log(
                 logger,
                 log_level,
                 message,
                 **attributes,
-            )
+            ),
         )
-        if save:
-            self.save()
 
-    def info(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(self.uid, TaskStatus.INFO, message, save=save, **attributes)
+    def info(self, message: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.INFO, message, **attributes)
 
-    def warning(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(self.uid, TaskStatus.WARNING, message, save=save, **attributes)
+    def warning(self, message: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.WARNING, message, **attributes)
 
-    def error(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(self.uid, TaskStatus.ERROR, message, save=save, **attributes)
+    def error(self, message: str | Exception, **attributes) -> None:
+        self.log(self.uid, TaskStatus.ERROR, message, **attributes)
+
+
+class TaskLog(InternallyManagedMixin, models.Model):
+    id = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="tasklogs")
+    event = models.TextField()
+    log_level = models.TextField()
+    logger = models.TextField()
+    timestamp = models.DateTimeField()
+    attributes = models.JSONField()
+
+    previous = models.BooleanField(default=False, db_index=True)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Task log")
+        verbose_name_plural = _("Task logs")
+        indexes = (models.Index(fields=("task", "previous")),)
+
+    def __str__(self):
+        return str(self.pk)
+
+    @classmethod
+    def create_from_log_event(cls, task: Task, log_event: LogEvent) -> Self | None:
+        if not task.message:
+            return None
+        return cls.objects.create(
+            task=task,
+            event=log_event.event,
+            log_level=log_event.log_level,
+            logger=log_event.logger,
+            timestamp=log_event.timestamp,
+            attributes=sanitize_item(log_event.attributes),
+        )
+
+    @classmethod
+    def bulk_create_from_log_events(
+        cls,
+        task: Task,
+        log_events: Iterable[LogEvent],
+    ) -> list[Self] | None:
+        if not task.message:
+            return None
+        return cls.objects.bulk_create(
+            [
+                cls(
+                    task=task,
+                    event=log_event.event,
+                    log_level=log_event.log_level,
+                    logger=log_event.logger,
+                    timestamp=log_event.timestamp,
+                    attributes=sanitize_item(log_event.attributes),
+                )
+                for log_event in log_events
+            ]
+        )
+
+    def to_log_event(self) -> LogEvent:
+        return LogEvent(
+            event=self.event,
+            log_level=self.log_level,
+            logger=self.logger,
+            timestamp=self.timestamp,
+            attributes=self.attributes,
+        )
 
 
 class TasksModel(models.Model):

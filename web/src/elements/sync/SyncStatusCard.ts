@@ -18,10 +18,17 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {
+    public static styles: CSSResult[] = [
+        // ---
+        PFButton,
+        PFCard,
+        PFDescriptionList,
+        PFStack,
+    ];
+
     @state()
     syncState?: SyncStatus;
 
@@ -30,10 +37,6 @@ export class SyncStatusCard extends AKElement {
 
     @property({ attribute: false })
     fetch!: () => Promise<SyncStatus>;
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFCard, PFDescriptionList, PFStack];
-    }
 
     firstUpdated() {
         this.loading = true;
@@ -104,7 +107,7 @@ export class SyncStatusCard extends AKElement {
                             });
                         }}
                     >
-                        <i class="fa fa-sync"></i>
+                        <i class="fa fa-sync" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="pf-c-card__title">${msg("Sync status")}</div>

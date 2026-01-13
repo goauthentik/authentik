@@ -1,11 +1,12 @@
 """authentik core signals"""
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
-from django.core.signals import Signal
 from django.db.models import Model
 from django.db.models.signals import post_delete, post_save, pre_save
-from django.dispatch import receiver
+from django.dispatch import Signal, receiver
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
@@ -18,6 +19,8 @@ from authentik.core.models import (
     User,
     default_token_duration,
 )
+from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
+from authentik.root.ws.consumer import build_device_group
 
 # Arguments: user: User, password: str
 password_changed = Signal()
@@ -47,6 +50,16 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     session = AuthenticatedSession.from_request(request, user)
     if session:
         session.save()
+
+    if not RefreshOtherFlowsAfterAuthentication().get():
+        return
+    layer = get_channel_layer()
+    device_cookie = request.COOKIES.get("authentik_device")
+    if device_cookie:
+        async_to_sync(layer.group_send)(
+            build_device_group(device_cookie),
+            {"type": "event.session.authenticated"},
+        )
 
 
 @receiver(post_delete, sender=AuthenticatedSession)

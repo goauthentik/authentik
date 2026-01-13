@@ -8,20 +8,24 @@ on:
       - "schema.yml"
   workflow_dispatch:
 
+permissions:
+  # Required for NPM OIDC trusted publisher
+  id-token: write
+  contents: read
+
 jobs:
   build:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v5
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
         with:
           node-version-file: web/package.json
           registry-url: "https://registry.npmjs.org"
@@ -32,8 +36,6 @@ jobs:
         run: |
           npm i
           npm publish --tag generated
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
         working-directory: web
         run: |
@@ -44,7 +46,7 @@ jobs:
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v7
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
@@ -57,7 +59,7 @@ jobs:
           # ID from https://api.github.com/users/authentik-automation[bot]
           author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
           labels: dependencies
-      - uses: peter-evans/enable-pull-request-automerge@v3
+      - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3
         with:
           token: ${{ steps.generate_token.outputs.token }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}

@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from dramatiq.message import Message
@@ -12,8 +11,11 @@ from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
+from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.utils.reflection import class_to_path, path_to_class
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+from authentik.lib.utils.reflection import all_subclasses, class_to_path, path_to_class
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
@@ -21,6 +23,7 @@ from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDele
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
 LOGGER = get_logger()
@@ -53,11 +56,10 @@ def ldap_connectivity_check(pk: str | None = None):
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
-    task: Task = CurrentTask.get_task()
+    task = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
-    task.set_uid(f"{source.slug}")
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
             task.info("Synchronization is already running. Skipping")
@@ -103,6 +105,11 @@ def ldap_sync(source_pk: str):
             timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
         )
 
+    if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
+        for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
+            for provider in outgoing_sync_provider_cls.objects.all():
+                provider.sync_dispatch()
+
 
 def ldap_sync_paginator(
     task: Task, source: LDAPSource, sync: type[BaseLDAPSynchronizer]
@@ -111,11 +118,13 @@ def ldap_sync_paginator(
     sync_inst: BaseLDAPSynchronizer = sync(source, task)
     messages = []
     for page in sync_inst.get_objects():
-        page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
+        page_uid = str(uuid4())
+        page_cache_key = CACHE_KEY_PREFIX + page_uid
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
         page_sync = ldap_sync_page.message_with_options(
             args=(source.pk, class_to_path(sync), page_cache_key),
             rel_obj=task.rel_obj,
+            uid=f"{source.slug}:{sync_inst.name()}:{page_uid}",
         )
         messages.append(page_sync)
     return messages
@@ -127,15 +136,13 @@ def ldap_sync_paginator(
 )
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         # Because the source couldn't be found, we don't have a UID
         # to set the state with
         return
     sync: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
-    uid = page_cache_key.replace(CACHE_KEY_PREFIX, "")
-    self.set_uid(f"{source.slug}:{sync.name()}:{uid}")
     try:
         sync_inst: BaseLDAPSynchronizer = sync(source, self)
         page = cache.get(page_cache_key)
@@ -148,7 +155,11 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
             self.error(error_message)
             return
         cache.touch(page_cache_key)
-        count = sync_inst.sync(page)
+        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
+            count = sync_inst.sync(page)
+        else:
+            with sync_outgoing_inhibit_dispatch():
+                count = sync_inst.sync(page)
         self.info(f"Synced {count} objects.")
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:

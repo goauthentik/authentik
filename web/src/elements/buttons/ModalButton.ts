@@ -27,8 +27,9 @@ export const MODAL_BUTTON_STYLES = css`
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
 
-        /* Fixes issue where browser inherits cursor from parent, typically a button. */
+        /* Fixes issue where browser inherits from modal parent with more restrictive style. */
         cursor: initial;
+        user-select: text;
     }
     .pf-c-modal-box > .pf-c-button + * {
         margin-right: 0;
@@ -90,7 +91,8 @@ export abstract class ModalButton extends AKElement {
     /**
      * Show the modal.
      */
-    public show = (): void => {
+    public show = (event?: PointerEvent): void => {
+        event?.preventDefault();
         this.open = true;
 
         this.dispatchEvent(new ModalShowEvent(this));

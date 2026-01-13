@@ -5,6 +5,7 @@ from pickle import dumps, loads  # nosec
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.core.validators import validate_slug
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -12,11 +13,14 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.admin.files.fields import FileField
+from authentik.admin.files.manager import get_file_manager
+from authentik.admin.files.usage import FileUsage
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
 
@@ -137,7 +141,11 @@ class Flow(SerializerModel, PolicyBindingModel):
     flow_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
-    slug = models.SlugField(unique=True, help_text=_("Visible in the URL."))
+    slug = models.TextField(
+        validators=[validate_slug],
+        unique=True,
+        help_text=_("Visible in the URL."),
+    )
 
     title = models.TextField(help_text=_("Shown as the Title in Flow pages."))
     layout = models.TextField(default=FlowLayout.STACKED, choices=FlowLayout.choices)
@@ -151,12 +159,10 @@ class Flow(SerializerModel, PolicyBindingModel):
         ),
     )
 
-    background = models.FileField(
-        upload_to="flow-backgrounds/",
-        default=None,
-        null=True,
+    background = FileField(
+        blank=True,
+        default="",
         help_text=_("Background shown during execution"),
-        max_length=500,
     )
 
     compatibility_mode = models.BooleanField(
@@ -180,19 +186,15 @@ class Flow(SerializerModel, PolicyBindingModel):
     )
 
     def background_url(self, request: HttpRequest | None = None) -> str:
-        """Get the URL to the background image. If the name is /static or starts with http
-        it is returned as-is"""
+        """Get the URL to the background image"""
         if not self.background:
             if request:
                 return request.brand.branding_default_flow_background_url()
             return (
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
-        if self.background.name.startswith("http"):
-            return self.background.name
-        if self.background.name.startswith("/static"):
-            return CONFIG.get("web.path", "/")[:-1] + self.background.name
-        return self.background.url
+
+        return get_file_manager(FileUsage.MEDIA).file_url(self.background, request)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
@@ -258,6 +260,8 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
+        if not self.target_id and self.stage_id:
+            return f"In-memory Flow-stage binding {self.stage}"
         return f"Flow-stage binding #{self.order} to {self.target_id}"
 
     class Meta:
@@ -291,13 +295,13 @@ class ConfigurableStage(models.Model):
 class FriendlyNamedStage(models.Model):
     """Abstract base class for a Stage that can have a user friendly name configured."""
 
-    friendly_name = models.TextField(null=True)
+    friendly_name = models.TextField(blank=True)
 
     class Meta:
         abstract = True
 
 
-class FlowToken(Token):
+class FlowToken(InternallyManagedMixin, Token):
     """Subclass of a standard Token, stores the currently active flow plan upon creation.
     Can be used to later resume a flow."""
 

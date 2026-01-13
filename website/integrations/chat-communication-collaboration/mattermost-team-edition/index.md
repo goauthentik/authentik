@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `mattermost.company` is the FQDN of the Mattermost installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -43,7 +43,7 @@ To support the integration of Mattermost Team Edition with authentik, you need t
         }
         ```
 
-:::note
+:::info
 The following `id` property mapping is optional. If omitted, Mattermost will generate user IDs based on email addresses, resulting in names such as `person-example.com` for `person@example.com`. Since these IDs serve as nicknames, this format may be undesirable.
 :::
 
@@ -66,7 +66,7 @@ The following `id` property mapping is optional. If omitted, Mattermost will gen
 - **Application**: provide a descriptive name, an optional group for the type of application, and the policy engine mode.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://mattermost.company/signup/gitlab/complete`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the scopes you just created to the list of selected scopes.

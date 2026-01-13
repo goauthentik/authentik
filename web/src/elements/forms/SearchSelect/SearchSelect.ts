@@ -10,77 +10,121 @@ import { groupBy } from "#common/utils";
 import { AkControlElement } from "#elements/AkControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
-    blankable: boolean;
+    blankable?: boolean;
+    readOnly?: boolean;
     query?: string;
     objects?: T[];
-    selectedObject?: T;
+    selectedObject: T | null;
     name?: string;
-    placeholder: string;
-    emptyOption: string;
+    placeholder: string | null;
+    emptyOption?: string;
 }
 
-export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
+export abstract class SearchSelectBase<T>
+    extends AkControlElement<string>
+    implements ISearchSelectBase<T>
+{
     static styles = [PFBase];
 
-    // A function which takes the query state object (accepting that it may be empty) and returns a
-    // new collection of objects.
-    fetchObjects!: (query?: string) => Promise<T[]>;
+    //#region Properties
 
-    // A function passed to this object that extracts a string representation of items of the
-    // collection under search.
-    renderElement!: (element: T) => string;
+    /**
+     * A function which takes the query state object (accepting that it may be empty)
+     * and returns a
+     * new collection of objects.
+     */
+    public abstract fetchObjects: (query?: string) => Promise<T[]>;
 
-    // A function passed to this object that extracts an HTML representation of additional
-    // information for items of the collection under search.
-    renderDescription?: (element: T) => string | TemplateResult;
+    /**
+     * Render a string representation of items of the collection under search.
+     */
+    public abstract renderElement: (element: T) => string;
 
-    // A function which returns the currently selected object's primary key, used for serialization
-    // into forms.
-    value!: (element: T | undefined) => string;
+    /**
+     * Render a string description representation of items of the collection under search.
+     */
+    public abstract renderDescription?: (element: T) => string | TemplateResult;
 
-    // A function passed to this object that determines an object in the collection under search
-    // should be automatically selected. Only used when the search itself is responsible for
-    // fetching the data; sets an initial default value.
-    selected?: (element: T, elements: T[]) => boolean;
+    /**
+     * A function which returns the currently selected object's primary key, used for serialization
+     * into forms.
+     */
+    public abstract value: (element: T | null) => string;
 
-    // A function passed to this object (or using the default below) that groups objects in the
-    // collection under search into categories.
-    groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
-        return groupBy(items, () => {
-            return "";
-        });
+    /**
+     * A function passed to this object that determines an object in the collection under search
+     * should be automatically selected. Only used when the search itself is responsible for
+     * fetching the data; sets an initial default value.
+     */
+    public abstract selected?: (element: T, elements: T[]) => boolean;
+
+    /**
+     * A function passed to this object (or using the default below) that groups objects in the
+     * collection under search into categories.
+     */
+    public groupBy: (items: T[]) => [string, T[]][] = (items) => {
+        return groupBy(items, () => "");
     };
 
-    // Whether or not the dropdown component can be left blank
+    /**
+     * Whether or not the dropdown component can be left blank
+     * @property
+     * @attr
+     */
     @property({ type: Boolean })
-    blankable = false;
+    public blankable?: boolean;
 
-    // An initial string to filter the search contents, and the value of the input which further
-    // serves to restrict the search
-    @property()
-    query?: string;
+    /**
+     * Whether or not the component allows creating custom values not in the list
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean })
+    public creatable?: boolean;
+
+    /**
+     * Prevent user interaction while still rendering the current value.
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
+
+    /**
+     * An initial string to filter the search contents,
+     * and the value of the input which further serves to restrict the search.
+     * @property
+     */
+    @property({ type: String })
+    public query?: string;
 
     // The objects currently available under search
     @property({ attribute: false })
-    objects?: T[];
+    public objects?: T[];
 
-    // The currently selected object
+    /**
+     * The currently selected object.
+     * @property
+     */
     @property({ attribute: false })
-    selectedObject?: T;
+    public selectedObject: T | null = null;
 
-    // Used to inform the form of the name of the object
+    /**
+     * Used to inform the form of the name of the object
+     * @property
+     */
     @property()
     public name?: string;
 
@@ -91,29 +135,72 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     @property({ type: String, reflect: false })
     public fieldID?: string;
 
-    // Used to inform the form of the input label.
+    /**
+     * Used to inform the form of the input label.
+     * @property
+     */
     @property()
     public label?: string;
 
-    // The textual placeholder for the search's <input> object, if currently empty. Used as the
-    // native <input> object's `placeholder` field.
-    @property()
-    placeholder: string = msg("Select an object.");
+    /**
+     * The textual placeholder for the search's <input> object, if currently empty.
+     *
+     * Used as the native <input> object's `placeholder` field.
+     * @property
+     * @attr
+     */
+    @property({ type: String })
+    public placeholder: string | null = msg("Select an object.");
 
-    // A textual string representing "The user has affirmed they want to leave the selection blank."
-    // Only used if `blankable` above is true.
-    @property()
-    emptyOption = "---------";
+    /**
+     * A textual string representing "The user has affirmed they want to leave the selection blank."
+     * Only used if `blankable` above is true.
+     *
+     * @property
+     */
+    @property({ type: String })
+    public emptyOption?: string = "---------";
 
-    isFetchingData = false;
+    //#endregion
+
+    //#region State
+
+    #loading = false;
 
     @state()
-    error?: APIError;
+    protected error?: APIError;
+
+    //#endregion
 
     public toForm(): string {
-        if (!this.objects) {
-            throw new PreventFormSubmit(msg("Loading options..."));
+        if (!this.objects && !this.blankable) {
+            // TODO: The loading state needs more exposure to forms.
+            // For E2E tests that run significantly faster than humans,
+            // there isn't enough context to know that the data is still being fetched.
+
+            throw new PreventFormSubmit("SearchSelect has not yet loaded data", this);
         }
+
+        // When the user types a value and submits the form without explicitly selecting
+        // an option (e.g., typing "fa://fa-shield-alt" and clicking Update without pressing Enter),
+        // the selectedObject may not be synced with the current input value.
+        // So, on form submission, check if the current input value differs from selectedObject
+        // and if so, create a synthetic object with the current value.
+        if (this.creatable) {
+            const view = this.renderRoot.querySelector("ak-search-select-view") as SearchSelectView;
+            const currentValue = view?.rawValue;
+
+            if (currentValue) {
+                // Check if the current input value matches what we have selected
+                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+
+                if (selectedValue !== currentValue) {
+                    // Input has changed but hasn't been committed yet so create synthetic object
+                    this.selectedObject = { name: currentValue } as T;
+                }
+            }
+        }
+
         return this.value(this.selectedObject) || "";
     }
 
@@ -121,7 +208,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         return this.toForm();
     }
 
-    protected dispatchChangeEvent(value: T | undefined) {
+    protected dispatchChangeEvent(value: T | null) {
         this.dispatchEvent(
             new CustomEvent("ak-change", {
                 composed: true,
@@ -132,26 +219,27 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     }
 
     public async updateData() {
-        if (this.isFetchingData) {
+        if (this.#loading) {
             return Promise.resolve();
         }
-        this.isFetchingData = true;
+
+        this.#loading = true;
         this.dispatchEvent(new Event("loading"));
 
         return this.fetchObjects(this.query)
             .then((nextObjects) => {
-                nextObjects.forEach((obj) => {
-                    if (this.selected && this.selected(obj, nextObjects || [])) {
-                        this.selectedObject = obj;
-                        this.dispatchChangeEvent(this.selectedObject);
-                    }
-                });
+                const selectedObject = nextObjects.find((obj) => this.selected?.(obj, nextObjects));
+
+                if (selectedObject) {
+                    this.selectedObject = selectedObject;
+                    this.dispatchChangeEvent(this.selectedObject);
+                }
 
                 this.objects = nextObjects;
-                this.isFetchingData = false;
+                this.#loading = false;
             })
             .catch(async (error: unknown) => {
-                this.isFetchingData = false;
+                this.#loading = false;
                 this.objects = undefined;
 
                 const parsedError = await parseAPIResponseError(error);
@@ -174,30 +262,68 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    private onSearch(event: InputEvent) {
+    #searchListener = (event: InputEvent) => {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).rawValue;
-        if (value === undefined) {
-            this.selectedObject = undefined;
+
+        if (!value) {
+            this.selectedObject = null;
+            this.query = undefined;
+            this.updateData();
             return;
         }
 
         this.query = value;
         this.updateData()?.then(() => {
+            // If creatable, check if selectedObject's value matches the typed value exactly
+            if (this.creatable) {
+                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+                if (selectedValue !== value) {
+                    // No exact match so create a synthetic object with the raw value
+                    // "synthetic" isn't an official term or anything, it's just called like that here
+                    this.selectedObject = { name: value } as T;
+                }
+            }
             this.dispatchChangeEvent(this.selectedObject);
         });
-    }
+    };
 
     private onSelect(event: InputEvent) {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).value;
-        if (value === undefined) {
-            this.selectedObject = undefined;
-            this.dispatchChangeEvent(undefined);
+
+        if (!value) {
+            this.selectedObject = null;
+            this.dispatchChangeEvent(null);
+
             return;
         }
-        const selected = (this.objects ?? []).find((obj) => `${this.value(obj)}` === value);
+        const selected =
+            this.objects?.find((obj) => {
+                // TODO: Despite the return of `value()` being a string,
+                // a lack of type on the property can lead to non-string returns,
+                // a common occurrence in the user primary keys.
+                //
+                // We fix this by forcing a string cast here.
+                // Remove this after migrating to Lit JSX.
+
+                const serialized = `${this.value(obj)}`;
+
+                return serialized && serialized === value;
+            }) || null;
+
         if (!selected) {
+            if (this.creatable) {
+                // Create a synthetic object with the user's custom value
+                this.selectedObject = { name: value } as T;
+                this.dispatchChangeEvent(this.selectedObject);
+                return;
+            }
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
+
         this.selectedObject = selected;
         this.dispatchChangeEvent(this.selectedObject);
     }
@@ -268,23 +394,25 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
             managed
             .fieldID=${this.fieldID}
             .options=${options}
-            value=${ifDefined(value)}
+            value=${ifPresent(value)}
             ?blankable=${this.blankable}
-            name=${ifDefined(this.name)}
-            placeholder=${this.placeholder}
-            emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}
-            @input=${this.onSearch}
+            ?readonly=${this.readOnly}
+            label=${ifPresent(this.label)}
+            name=${ifPresent(this.name)}
+            placeholder=${ifPresent(this.placeholder)}
+            emptyOption=${ifPresent(this.blankable ? this.emptyOption : undefined)}
+            @input=${this.#searchListener}
             @change=${this.onSelect}
         ></ak-search-select-view> `;
     }
 
     public override updated(changed: PropertyValues<this>) {
-        if (!this.isFetchingData && changed.has("objects")) {
+        if (!this.#loading && changed.has("objects")) {
             this.dispatchEvent(new Event("ready"));
         }
         // It is not safe for automated tests to interact with this component while it is fetching
         // data.
-        if (!this.isFetchingData) {
+        if (!this.#loading) {
             this.setAttribute("data-ouia-component-safe", "true");
         }
     }

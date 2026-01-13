@@ -6,7 +6,7 @@ import { WizardPage } from "#elements/wizard/WizardPage";
 import { ResponseError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -39,15 +39,11 @@ export class ActionWizardPage extends WizardPage {
     currentStep?: ActionStateBundle;
 
     activeCallback = async (): Promise<void> => {
-        this.states = [];
-
-        this.host.actions.map((act, idx) => {
-            this.states.push({
-                action: act,
-                state: ActionState.pending,
-                idx: idx,
-            });
-        });
+        this.states = this.host.actions.map((act, idx) => ({
+            action: act,
+            state: ActionState.pending,
+            idx: idx,
+        }));
 
         this.host.canBack = false;
         this.host.canCancel = false;
@@ -58,7 +54,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.isValid = true;
     };
 
-    sidebarLabel = () => msg("Apply changes");
+    public label = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
@@ -144,7 +140,7 @@ export class ActionWizardPage extends WizardPage {
                                               >
                                                   ${state.action.subText}
                                               </div>`
-                                            : html``}
+                                            : nothing}
                                     </div>
                                 </li>`;
                             })}

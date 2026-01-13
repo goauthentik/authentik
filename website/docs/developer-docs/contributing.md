@@ -60,16 +60,17 @@ authentik
 │   ├── oauth2 - OIDC-compliant OAuth2 provider
 │   ├── proxy - Provides an identity-aware proxy using an outpost
 │   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 Provider
-│   └── scim - SCIM Provider
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
 │   ├── kerberos - Sync Kerberos users into authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 Source
+│   ├── oauth - OAuth1 and OAuth2 source
 │   ├── plex - Plex source
-│   └── saml - SAML2 Source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
 │   ├── authenticator_duo - Configure a DUO authenticator
 │   ├── authenticator_static - Configure TOTP backup keys
@@ -93,7 +94,7 @@ authentik
 └── tenants - Soft tenancy, configure defaults and branding per domain
 ```
 
-This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application which reverse-proxies it, handles static files and will eventually gain more functionality as more code is migrated to Go.
+This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application that reverse-proxies the application and handles static files.
 
 There are also several background tasks that run in Dramatiq, via the `django-dramatiq-postgres` package, with some additional helpers in `authentik.tasks`.
 
@@ -125,7 +126,7 @@ This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
-Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 ### Pull requests
 
@@ -135,6 +136,24 @@ The process described here has several goals:
 - Fix problems that are important to users
 - Engage the community in working toward the best possible authentik
 - Enable a sustainable system for authentik's maintainers to review contributions
+
+#### Always use feature branches
+
+**DO NOT open pull requests from your `main` branch.** Always create a feature branch for your changes.
+
+Here's one way to do it correctly (your own preferred git commands may differ):
+
+```bash
+# Create and switch to a new feature branch
+git checkout -b feature/my-awesome-feature
+
+# Make your changes, then commit and push
+git add .
+git commit -m "providers/oauth2: add awesome feature"
+git push -u origin feature/my-awesome-feature
+```
+
+Then open your PR from the feature branch.
 
 Please follow these steps to have your contribution considered by the maintainers:
 

@@ -11,8 +11,6 @@ from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django_prometheus.exports import ExportToDjangoView
-from django_redis import get_redis_connection
-from redis.exceptions import RedisError
 
 monitoring_set = Signal()
 
@@ -44,19 +42,17 @@ class LiveView(View):
 
 
 class ReadyView(View):
-    """View for readiness probe, always returns Http 200, unless sql or redis is down"""
+    """View for readiness probe, always returns Http 200, unless sql is down"""
+
+    def check_db(self):
+        for db_conn in connections.all():
+            # Force connection reload
+            db_conn.connect()
+            _ = db_conn.cursor()
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
+            self.check_db()
         except OperationalError:  # pragma: no cover
-            return HttpResponse(status=503)
-        try:
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
-        except RedisError:  # pragma: no cover
             return HttpResponse(status=503)
         return HttpResponse(status=200)

@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `weblate-slug` is the slug of the Weblate application.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -75,7 +75,7 @@ To support the integration of Weblate with authentik, you need to create an appl
     - Set the **Audience** to `https://weblate.company/accounts/metadata/saml/`.
     - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate. Then, under **Property mappings**, add the ones you just created.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**. Then, under **Property mappings**, add the ones you just created.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

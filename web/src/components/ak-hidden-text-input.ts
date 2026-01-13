@@ -6,18 +6,19 @@ import {
     HorizontalLightComponentProps,
 } from "./HorizontalLightComponent.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 type BaseProps = HorizontalLightComponentProps<string> &
     Pick<VisibilityToggleProps, "showMessage" | "hideMessage">;
 
 export interface AkHiddenTextInputProps extends BaseProps {
     revealed: boolean;
-    placeholder?: string;
+    placeholder: string | null;
 }
 
 export type InputLike = HTMLTextAreaElement | HTMLInputElement;
@@ -70,16 +71,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String })
-    public placeholder?: string;
-
-    /**
-     * Text for when the input has no set value
-     *
-     * @property
-     * @attribute
-     */
-    @property({ type: String })
-    public label?: string;
+    public placeholder: string | null = null;
 
     /**
      * Specify kind of help the browser should try to provide
@@ -89,6 +81,9 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      */
     @property({ type: String })
     public autocomplete?: AutoFill;
+
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly: boolean = false;
 
     /**
      * @property
@@ -114,18 +109,21 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     protected renderInputField(setValue: InputListener, code: boolean) {
         return html` <input
             part="input"
-            autocomplete=${ifDefined(this.autocomplete)}
+            autocomplete=${ifPresent(this.autocomplete)}
             type=${this.revealed ? "text" : "password"}
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifPresent(this.label)}
             @input=${setValue}
-            value=${ifDefined(this.value)}
-            placeholder=${ifDefined(this.placeholder)}
+            value=${ifPresent(this.value)}
+            placeholder=${ifPresent(this.placeholder)}
             class="${classMap({
                 "pf-c-form-control": true,
                 "pf-m-monospace": code,
             })}"
             spellcheck=${code ? "false" : "true"}
+            id=${ifPresent(this.fieldID)}
+            aria-describedby=${this.helpID}
             ?required=${this.required}
+            ?readonly=${this.readOnly}
         />`;
     }
 
@@ -135,7 +133,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
             this.value = (ev.target as T).value;
         };
 
-        return html` <div style="display: flex; gap: 0.25rem">
+        return html`<div style="display: flex;" part="control">
             ${this.renderInputField(setValue, code)}
             <ak-visibility-toggle
                 part="toggle"

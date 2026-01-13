@@ -23,13 +23,19 @@ from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
 from authentik.providers.radius.models import RadiusProvider, RadiusProviderPropertyMapping
 
 
-class RadiusProviderSerializer(ProviderSerializer):
+class RadiusProviderSerializer(
+    ConditionalInheritance(
+        "authentik.enterprise.providers.radius.api.RadiusProviderSerializerMixin"
+    ),
+    ProviderSerializer,
+):
     """RadiusProvider Serializer"""
 
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
@@ -43,6 +49,7 @@ class RadiusProviderSerializer(ProviderSerializer):
             "shared_secret",
             "outpost_set",
             "mfa_support",
+            "certificate",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
@@ -78,6 +85,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
             "client_networks",
             "shared_secret",
             "mfa_support",
+            "certificate",
         ]
 
 

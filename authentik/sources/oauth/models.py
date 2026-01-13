@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -24,6 +25,12 @@ if TYPE_CHECKING:
 class AuthorizationCodeAuthMethod(models.TextChoices):
     BASIC_AUTH = "basic_auth", _("HTTP Basic Authentication")
     POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
+
+
+class PKCEMethod(models.TextChoices):
+    NONE = "none", _("No PKCE")
+    PLAIN = "plain", _("Plain")
+    S256 = "S256", _("S256")
 
 
 class OAuthSource(NonCreatableType, Source):
@@ -66,6 +73,9 @@ class OAuthSource(NonCreatableType, Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    pkce = models.TextField(
+        choices=PKCEMethod.choices, default=PKCEMethod.NONE, verbose_name=_("PKCE")
+    )
     authorization_code_auth_method = models.TextField(
         choices=AuthorizationCodeAuthMethod.choices,
         default=AuthorizationCodeAuthMethod.BASIC_AUTH,
@@ -127,6 +137,7 @@ class OAuthSource(NonCreatableType, Source):
             name=self.name,
             challenge=provider.login_challenge(self, request),
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -213,6 +224,15 @@ class DiscordOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Discord OAuth Sources")
 
 
+class SlackOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Slack."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Slack OAuth Source")
+        verbose_name_plural = _("Slack OAuth Sources")
+
+
 class PatreonOAuthSource(CreatableType, OAuthSource):
     """Social Login using Patreon."""
 
@@ -287,6 +307,15 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Reddit OAuth Sources")
 
 
+class WeChatOAuthSource(CreatableType, OAuthSource):
+    """Social Login using WeChat."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("WeChat OAuth Source")
+        verbose_name_plural = _("WeChat OAuth Sources")
+
+
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 
@@ -311,6 +340,12 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
+    refresh_token = models.TextField(blank=True, null=True, default=None)
+    expires = models.DateTimeField(default=now)
+
+    @property
+    def is_valid(self):
+        return self.expires > now()
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -319,10 +354,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
         )
 
         return UserOAuthSourceConnectionSerializer
-
-    def save(self, *args, **kwargs):
-        self.access_token = self.access_token or None
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("User OAuth Source Connection")

@@ -2,10 +2,11 @@ import "../ak-hidden-text-input.js";
 
 import { type AkHiddenTextInput, type AkHiddenTextInputProps } from "../ak-hidden-text-input.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<AkHiddenTextInputProps> = {
     title: "Components / <ak-hidden-text-input>",
@@ -72,14 +73,14 @@ const Template: Story = {
     },
     render: (args) => html`
         <ak-hidden-text-input
-            label=${ifDefined(args.label)}
-            value=${ifDefined(args.value)}
+            label=${ifPresent(args.label)}
+            value=${ifPresent(args.value)}
             ?revealed=${args.revealed}
-            placeholder=${ifDefined(args.placeholder)}
+            placeholder=${ifPresent(args.placeholder)}
             ?required=${args.required}
-            input-hint=${ifDefined(args.inputHint)}
-            show-message=${ifDefined(args.showMessage)}
-            hide-message=${ifDefined(args.hideMessage)}
+            input-hint=${ifPresent(args.inputHint)}
+            show-message=${ifPresent(args.showMessage)}
+            hide-message=${ifPresent(args.hideMessage)}
         ></ak-hidden-text-input>
     `,
 };

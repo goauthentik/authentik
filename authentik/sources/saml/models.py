@@ -200,6 +200,9 @@ class SAMLSource(Source):
         default=RSA_SHA256,
     )
 
+    signed_assertion = models.BooleanField(default=True)
+    signed_response = models.BooleanField(default=False)
+
     @property
     def component(self) -> str:
         return "ak-source-saml-form"
@@ -276,6 +279,7 @@ class SAMLSource(Source):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

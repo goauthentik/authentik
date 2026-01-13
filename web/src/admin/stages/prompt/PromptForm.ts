@@ -5,8 +5,8 @@ import "#flow/stages/prompt/PromptStage";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { StageHost } from "#flow/stages/base";
 
@@ -19,7 +19,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
@@ -166,7 +166,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         </div> `;
     }
 
-    renderPreview(): TemplateResult {
+    renderPreview(): SlottedTemplateResult {
         return html`
             <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
             <div class="pf-l-grid pf-m-gutter">
@@ -188,7 +188,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                               </div>
                           </div>
                       `
-                    : html``}
+                    : nothing}
                 ${this.previewResult
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
@@ -198,7 +198,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                               </div>
                           </div>
                       `
-                    : html``}
+                    : nothing}
             </div>
         `;
     }
@@ -309,7 +309,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
+                    mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
                         this._shouldRefresh = true;
@@ -348,10 +348,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
-                    value="${ifDefined(this.instance?.initialValue)}"
-                >
+                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -363,7 +360,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.HTML}
+                    mode="html"
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
                         this._shouldRefresh = true;

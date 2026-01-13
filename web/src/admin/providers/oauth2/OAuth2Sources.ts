@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { DualSelectPair } from "#elements/ak-dual-select/types";
+import { DualSelectPair, DualSelectPairSource } from "#elements/ak-dual-select/types";
 
 import { OAuthSource, SourcesApi } from "@goauthentik/api";
 
-const sourceToSelect = (source: OAuthSource) => [
+const sourceToSelect = (source: OAuthSource): DualSelectPair<OAuthSource> => [
     source.pk,
     `${source.name} (${source.slug})`,
     source.name,
@@ -26,15 +26,12 @@ export async function oauth2SourcesProvider(page = 1, search = "") {
     };
 }
 
-export function oauth2SourcesSelector(instanceMappings?: string[]) {
+export function oauth2SourcesSelector(instanceMappings?: string[]): DualSelectPairSource {
     if (!instanceMappings) {
-        return async (mappings: DualSelectPair<OAuthSource>[]) =>
-            mappings.filter(
-                ([_0, _1, _2, source]: DualSelectPair<OAuthSource>) => source !== undefined,
-            );
+        return async () => [];
     }
 
-    return async () => {
+    const fetchAvailableOauth2Sources: DualSelectPairSource = async () => {
         const oauthSources = new SourcesApi(DEFAULT_CONFIG);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
@@ -49,4 +46,6 @@ export function oauth2SourcesSelector(instanceMappings?: string[]) {
             .map((s) => s.results[0])
             .map(sourceToSelect);
     };
+
+    return fetchAvailableOauth2Sources;
 }

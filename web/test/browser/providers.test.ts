@@ -1,6 +1,5 @@
 import { expect, test } from "#e2e";
-import { createRandomName } from "#e2e/utils/generators";
-import { ConsoleLogger } from "#logger/node";
+import { randomName } from "#e2e/utils/generators";
 
 import { IDGenerator } from "@goauthentik/core/id";
 import { series } from "@goauthentik/core/promises";
@@ -12,7 +11,7 @@ test.describe("Provider Wizard", () => {
 
     test.beforeEach("Configure Providers", async ({ page, session }, { testId }) => {
         const seed = IDGenerator.randomID(6);
-        const providerName = `${createRandomName({ seed })} (${seed})`;
+        const providerName = `${randomName(seed)} (${seed})`;
 
         providerNames.set(testId, providerName);
 
@@ -45,50 +44,13 @@ test.describe("Provider Wizard", () => {
         });
     });
 
-    test.afterEach("Verification", async ({ page }, { testId }) => {
+    test.afterEach("Verification", async ({ form }, { testId }) => {
         //#region Confirm provider
 
         const providerName = providerNames.get(testId)!;
+        const { search } = form;
 
-        const $provider = await test.step("Find provider via search", async () => {
-            const searchInput = page.getByRole("search").getByPlaceholder("Search for providers");
-
-            await searchInput.fill(providerName);
-
-            // We have to wait for the provider to appear in the table,
-            // but several UI elements will be rendered asynchronously.
-            // We attempt several times to find the provider to avoid flakiness.
-
-            const tries = 10;
-            let found = false;
-
-            for (let i = 0; i < tries; i++) {
-                await searchInput.press("Enter");
-                await searchInput.blur();
-
-                const $rowEntry = page.getByRole("row", {
-                    name: providerName,
-                });
-
-                ConsoleLogger.info(
-                    `${i + 1}/${tries} Waiting for provider ${providerName} to appear in the table`,
-                );
-
-                found = await $rowEntry
-                    .waitFor({
-                        timeout: 1500,
-                    })
-                    .then(() => true)
-                    .catch(() => false);
-
-                if (found) {
-                    ConsoleLogger.info(`Provider ${providerName} found in the table`);
-                    return $rowEntry;
-                }
-            }
-
-            throw new Error(`Provider ${providerName} not found in the table`);
-        });
+        const $provider = await test.step("Find provider via search", () => search(providerName));
 
         await expect($provider, "Provider is visible").toBeVisible();
 
@@ -150,7 +112,6 @@ test.describe("Provider Wizard", () => {
                 ).toBeVisible,
             ],
             [selectSearchValue, "Signing Key", /authentik Self-signed Certificate/],
-            [selectSearchValue, "Encryption Key", /authentik Self-signed Certificate/],
             [setFormGroup, "Advanced flow settings", true],
             [selectSearchValue, "Authentication flow", /default-source-authentication/],
             [selectSearchValue, "Invalidation flow", /default-invalidation-flow/],
@@ -158,6 +119,7 @@ test.describe("Provider Wizard", () => {
             [fill, "Access code validity", "minutes=2"],
             [fill, "Access token validity", "minutes=10"],
             [fill, "Refresh token validity", "days=40"],
+            [selectSearchValue, "Encryption Key", /authentik Self-signed Certificate/],
             [setInputCheck, "Include claims in id_token", false],
             [setRadio, "Subject mode", "Based on the User's username"],
             [setRadio, "Issuer mode", "Same identifier is used for all providers"],
@@ -201,7 +163,7 @@ test.describe("Provider Wizard", () => {
 
     test("Complete RADIUS Provider", async ({ page, pointer, form }, testInfo) => {
         const providerName = providerNames.get(testInfo.testId)!;
-        const { fill, selectSearchValue } = form;
+        const { fill, selectSearchValue, setFormGroup } = form;
         const { click } = pointer;
 
         await series(
@@ -209,6 +171,8 @@ test.describe("Provider Wizard", () => {
             [click, "Next"],
             [fill, "Provider name", providerName],
             [selectSearchValue, "Authentication flow", /default-authentication-flow/],
+            [setFormGroup, "Protocol settings", true],
+            [selectSearchValue, "Certificate", /------/],
             [click, "Finish", "button", page.getByRole("dialog", { name: "New Provider" })],
         );
     });

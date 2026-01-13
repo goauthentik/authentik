@@ -1,14 +1,13 @@
 """OAuth2 Provider Tasks"""
 
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2LogoutMethod, OAuth2Provider
 from authentik.providers.oauth2.utils import create_logout_token
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
@@ -31,7 +30,7 @@ def send_backchannel_logout_request(
     Returns:
         bool: True if the request was sent successfully, False otherwise
     """
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     LOGGER.debug("Sending back-channel logout request", provider_pk=provider_pk, sub=sub)
 
     provider = OAuth2Provider.objects.filter(pk=provider_pk).first()
@@ -41,16 +40,17 @@ def send_backchannel_logout_request(
     # Generate the logout token
     logout_token = create_logout_token(provider, iss, sub, session_key)
 
-    # Get the back-channel logout URI from the provider's dedicated backchannel_logout_uri field
-    # Back-channel logout requires explicit configuration - no fallback to redirect URIs
-    backchannel_logout_uri = provider.backchannel_logout_uri
-    if not backchannel_logout_uri:
-        self.info("No back-channel logout URI found for provider")
+    if provider.logout_method != OAuth2LogoutMethod.BACKCHANNEL:
+        self.info("Provider not configured for back-channel logout")
+        return
+
+    if not provider.logout_uri:
+        self.info("No logout URI configured for provider")
         return
 
     # Send the back-channel logout request
     response = get_http_session().post(
-        backchannel_logout_uri,
+        provider.logout_uri,
         data={"logout_token": logout_token},
         headers={"Content-Type": "application/x-www-form-urlencoded"},
         allow_redirects=True,

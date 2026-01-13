@@ -22,15 +22,14 @@ from structlog.stdlib import get_logger
 from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
-    Source,
     UserSourceConnection,
     UserTypes,
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
-from authentik.tasks.schedules.models import ScheduledModel
 
 LOGGER = get_logger()
 
@@ -46,7 +45,7 @@ class KAdminType(models.TextChoices):
     OTHER = "other"
 
 
-class KerberosSource(ScheduledModel, Source):
+class KerberosSource(IncomingSyncSource):
     """Federate Kerberos realm with authentik"""
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
@@ -171,6 +170,7 @@ class KerberosSource(ScheduledModel, Source):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -188,7 +188,7 @@ class KerberosSource(ScheduledModel, Source):
 
     @property
     def sync_lock(self) -> pglock.advisory:
-        """Redis lock for syncing Kerberos to prevent multiple parallel syncs happening"""
+        """Lock for syncing Kerberos to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/kerberos/sync/{self.slug}",
             timeout=0,

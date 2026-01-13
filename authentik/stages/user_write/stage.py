@@ -13,7 +13,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.events.utils import sanitize_item
+from authentik.events.utils import sanitize_dict, sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
@@ -42,7 +42,7 @@ class UserWriteStageView(StageView):
     def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
-        parts = key.replace("_", ".").split(".")
+        parts = key.replace("attributes_", "attributes.", 1).split(".")
         if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attributes.
@@ -115,7 +115,10 @@ class UserWriteStageView(StageView):
                 continue
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
-                user.attributes.update(value)
+                if isinstance(value, dict):
+                    user.attributes.update(sanitize_dict(value))
+                else:
+                    raise ValidationError("Attempt to overwrite complete attributes")
             # If using dot notation, use the correct helper to update the nested value
             elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)

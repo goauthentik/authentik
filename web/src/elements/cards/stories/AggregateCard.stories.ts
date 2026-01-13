@@ -2,10 +2,11 @@ import "../AggregateCard.js";
 
 import { AggregateCard, type IAggregateCard } from "../AggregateCard.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<AggregateCard> = {
     title: "Elements/<ak-aggregate-card>",
@@ -35,10 +36,9 @@ import "#elements/cards/AggregateCard";
     },
     argTypes: {
         icon: { control: "text" },
-        header: { control: "text" },
+        label: { control: "text" },
         headerLink: { control: "text" },
         subtext: { control: "text" },
-        leftJustified: { control: "boolean" },
     },
 };
 
@@ -46,13 +46,12 @@ export default metadata;
 
 export const DefaultStory: StoryObj = {
     args: {
-        icon: undefined,
-        header: "Default",
-        headerLink: undefined,
-        subtext: undefined,
-        leftJustified: false,
+        icon: null,
+        label: "Default",
+        headerLink: null,
+        subtext: null,
     },
-    render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregateCard) => {
+    render: ({ icon, label, headerLink, subtext }: IAggregateCard) => {
         return html`
             <style>
                 ak-aggregate-card {
@@ -62,11 +61,10 @@ export const DefaultStory: StoryObj = {
                 }
             </style>
             <ak-aggregate-card
-                header=${ifDefined(header)}
-                headerLink=${ifDefined(headerLink)}
-                subtext=${ifDefined(subtext)}
-                icon=${ifDefined(icon)}
-                ?left-justified=${leftJustified}
+                label=${ifPresent(label)}
+                headerLink=${ifPresent(headerLink)}
+                subtext=${ifPresent(subtext)}
+                icon=${ifPresent(icon)}
             >
                 <p>
                     Form without content style without meaning quick-win, for that is a good problem

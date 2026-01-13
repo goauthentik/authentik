@@ -4,7 +4,6 @@ from uuid import UUID
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
@@ -20,7 +19,7 @@ from authentik.enterprise.providers.ssf.models import (
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 session = get_http_session()
 LOGGER = get_logger()
@@ -43,6 +42,8 @@ def send_ssf_events(
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         events_data[stream.uuid] = event_data
+    if not events_data:
+        return
     ssf_events_dispatch.send(events_data)
 
 
@@ -74,7 +75,7 @@ def _check_app_access(stream: Stream, event_data: dict) -> bool:
 
 @actor(description=_("Send an SSF event."))
 def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
 
     stream = Stream.objects.filter(pk=stream_uuid).first()
     if not stream:

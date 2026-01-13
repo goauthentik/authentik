@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.portainer.io/
 
-:::note
+:::info
 This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `portainer.company` is the FQDN of Portainer installation.
 - `authentik.company` is the FQDN of authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -37,7 +37,7 @@ To support the integration of Portainer with authentik, you need to create an ap
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://portainer.company/`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -58,7 +58,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 - User Identifier: `preferred_username` (Or `email` if you want to use email addresses as identifiers)
 - Scopes: `email openid profile`
 
-:::note
+:::info
 Portainer by default shows commas between each item in the Scopes field. Do **NOT** use commas. Use a _space_
 :::
 
@@ -66,6 +66,6 @@ Portainer by default shows commas between each item in the Scopes field. Do **NO
 
 ## Notes
 
-:::note
+:::info
 Portainer Reference link: https://documentation.portainer.io/v2.0/auth/oauth/
 :::

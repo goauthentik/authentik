@@ -64,6 +64,8 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
+    public role = "status";
+
     static styles = [
         PFBase,
         PFEmptyState,
@@ -96,7 +98,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         };
 
         return html`<div aria-label=${this.localAriaLabel ?? nothing} class="${classMap(classes)}">
-            <div class="pf-c-empty-state__content" role="progressbar">
+            <div class="pf-c-empty-state__content">
                 ${loading
                     ? html`<div part="spinner" class="pf-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
@@ -133,7 +135,6 @@ interface IEmptyStateContent {
     primary?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

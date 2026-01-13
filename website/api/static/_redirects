@@ -5,6 +5,9 @@
 # Note: The order of the rules defines the priority of the redirect.
 #       i.e. The first rule that matches the URL will take precedence.
 
+#region OpenAPI
+/schema.yaml                                              /schema.yml 301!
+#endregion
 
 #region api prefix
 /api/*                                                     /:splat 301!

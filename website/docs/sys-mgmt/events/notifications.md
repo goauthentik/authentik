@@ -3,7 +3,7 @@ title: Notification rules
 sidebar_label: Notification rules
 ---
 
-:::note
+:::info
 To prevent infinite loops of cause and effect (events created by policies which are attached to a notification rule), _any events created by a policy which is attached to any notification rules do not trigger notifications._
 :::
 

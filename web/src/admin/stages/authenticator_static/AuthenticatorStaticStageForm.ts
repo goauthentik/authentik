@@ -94,14 +94,16 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                         name="tokenLength"
                     >
                         <input
-                            type="text"
+                            type="number"
                             value="${this.instance?.tokenLength ?? 12}"
+                            min="1"
+                            max="100"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "The length of the individual generated tokens. Can be increased to improve security.",
+                                "The length of the individual generated tokens. Can be set to a maximum of 100 characters.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

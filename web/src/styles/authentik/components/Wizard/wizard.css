@@ -1,0 +1,10 @@
+/* #region Dark Theme */
+
+:host([theme="dark"]) .pf-c-wizard {
+    --pf-c-wizard__outer-wrap--BackgroundColor: var(--pf-global--BackgroundColor--300);
+    --pf-c-wizard__footer--BackgroundColor: var(--pf-global--BackgroundColor--300);
+    --pf-c-wizard__nav--BackgroundColor: var(--ak-dark-background-lighter);
+    --pf-c-wizard__nav--lg--BorderRightColor: transparent;
+}
+
+/* #endregion */

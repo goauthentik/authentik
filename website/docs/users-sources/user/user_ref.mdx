@@ -17,7 +17,12 @@ The User object has the following properties:
 - `path`: User's path, see [Path](#path)
 - `attributes`: Dynamic attributes, see [Attributes](#attributes)
 - `group_attributes()`: Merged attributes of all groups the user is a member of and the user's own attributes. Read-only.
-- `ak_groups`: This is a queryset of all the user's groups.
+- `ak_groups`: This is a queryset of all the user's direct groups.
+- `all_groups()`: This is a queryset of all the user's direct and indirect groups.
+
+:::info Clarifying direct vs indirect group membership
+A user is a member of a group (direct member). If that group in turn has a parent group, then the user is an indirect member of that parent group.
+:::
 
 ## Examples
 
@@ -25,7 +30,7 @@ These are examples of how User objects can be used within Policies and Property 
 
 ### List a user's group memberships
 
-Use the following example to list all groups that a user object is a member of:
+Use the following example to list all groups that a user object is a direct member of:
 
 ```python
 for group in user.ak_groups.all():
@@ -34,7 +39,7 @@ for group in user.ak_groups.all():
 
 ### List a user's group memberships and filter based on group name
 
-Use the following example to list groups that a user object is a member of, but filter based on group name:
+Use the following example to list groups that a user object is a direct member of, filtered based on group name:
 
 ```python
 user.ak_groups.filter(name__startswith='test')
@@ -42,7 +47,7 @@ user.ak_groups.filter(name__startswith='test')
 
 ### List a user's group memberships including parent groups
 
-Use the following example to list all groups that a user object is a member of, including parent groups:
+Use the following example to list all groups that a user object is a direct and indirect member of:
 
 ```python
 groups = [group.name for group in request.user.all_groups()]

@@ -3,7 +3,7 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
@@ -14,7 +14,7 @@ class WebAuthnDeviceSerializer(ModelSerializer):
     """Serializer for WebAuthn authenticator devices"""
 
     device_type = WebAuthnDeviceTypeSerializer(read_only=True, allow_null=True)
-    user = GroupMemberSerializer(read_only=True)
+    user = PartialUserSerializer(read_only=True)
 
     class Meta:
         model = WebAuthnDevice

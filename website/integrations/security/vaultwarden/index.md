@@ -17,13 +17,33 @@ The following placeholders are used in this guide:
 - `vaultwarden.company` is the FQDN of the Vaultwarden installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
 To support the integration of Vaultwarden with authentik, you need to create an application/provider pair in authentik.
+
+### Create custom scope mapping
+
+Vaultwarden either requires the email scope to return a true value for whether the email address is verified, or no value at all. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Vaultwarden to allow authentication.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **Scope Mapping**.
+    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Vaultwarden Email Scope`), and an optional description.
+        - **Scope name**: `email`
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "email": request.user.email,
+            "email_verified": True
+        }
+        ```
+
+3. Click **Finish** to save the property mapping.
 
 ### Create an application and provider in authentik
 
@@ -32,12 +52,13 @@ To support the integration of Vaultwarden with authentik, you need to create an 
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://vaultwarden.company/identity/connect/oidc-signin`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Set **Access token validity** to more than 5 minutes.
             - Ensure the `offline_access` scope mapping is available by adding `authentik default OAuth Mapping: OpenID 'offline_access'` to the selected scopes.
+            - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope, and add the custom scope mapping you created above.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

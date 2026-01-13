@@ -20,6 +20,24 @@ While this certificate can be used for SAML providers/sources, remember that it'
 
 For SAML use-cases, you can generate a certificate with a longer validity period (at your own risk).
 
+## Certificate considerations
+
+### OAuth and SAML
+
+For OAuth and SAML providers, in the vast majority of cases, certificate expiry does not matter. Most service providers don't check whether certificates are expired. What usually matters is that the signature is valid.
+
+However, there are some notable exceptions; for example, the Slack SAML integration does check for certificate expiry.
+
+We recommend checking your service provider's documentation for specific requirements.
+
+### Proxy provider and brands
+
+We recommend using a certificate generated outside of authentik that matches your Fully Qualified Domain Name (FQDN), preferably issued by a publicly trusted certificate authority.
+
+### Radius EAP-TLS
+
+We recommend using a certificate generated outside of authentik. A privately issued certificate is sufficient.
+
 ## Downloading SAML certificates
 
 To download a certificate for SAML configuration:
@@ -27,6 +45,10 @@ To download a certificate for SAML configuration:
 1. Log into authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider.
 3. Click the **Download** button found under **Download signing certificate**. The contents of this certificate will be required when configuring the service provider.
+
+## Certificate recommendations
+
+It is generally not recommended to use short-lived certificates for SAML/OIDC signing operations as the main priority is that the signature is valid. Frequently changing certificates can be problematic as it requires updating configuration in authentik and potentially in connected applications.
 
 ## External certificates
 
@@ -36,7 +58,7 @@ To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), 
 
 authentik can automatically discover and import certificates from a designated directory. This allows you to use externally managed certificates with minimal configuration.
 
-:::note
+:::info
 Certificate discovery can be manually initiated by restarting the `certificate_discovery` system task from the authentik Admin interface under **Dashboards** > **System Tasks**.
 :::
 
@@ -45,7 +67,9 @@ Certificate discovery can be manually initiated by restarting the `certificate_d
 - **Docker Compose**: A `certs` directory is mapped to `/certs` within the worker container.
 - **Kubernetes**: You can mount custom Secrets or Volumes under `/certs` and configure them in the worker Pod specification.
 
-authentik checks for new or changed files every hour and automatically triggers an outpost refresh when changes are detected.
+When a new key pair is added or changed, authentik automatically triggers an outpost refresh.
+
+When a new key pair is added with a private key that already exists in the database, authentik updates the existing key pair's certificate instead of creating a duplicate one.
 
 ### Manual imports
 
@@ -105,7 +129,7 @@ You can configure the certificate used by authentik's core webserver, which allo
 
 ### Let's Encrypt integration
 
-To use Let's Encrypt certificates with Certbot in Docker Compose deployments, create or edit the `docker-compose.override.yml` file in the same directory as your authentik Docker Compose file. The example below demonstrates the use of the AWS Route 53 DNS plugin:
+To use Let's Encrypt certificates with Certbot in Docker Compose deployments, create or edit the `compose.override.yml` file in the same directory as your authentik Docker Compose file. The example below demonstrates the use of the AWS Route 53 DNS plugin:
 
 ```yaml
 services:

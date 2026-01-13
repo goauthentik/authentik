@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ProvidersApi,
@@ -22,9 +23,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     @property({ type: Number })
     providerId?: number;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     expandable = true;
     checkbox = true;
@@ -72,11 +71,17 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: SCIMProviderGroup): string {
+        return item.groupObj.name;
     }
 
-    row(item: SCIMProviderGroup): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
+
+    row(item: SCIMProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -85,11 +90,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         ];
     }
     renderExpanded(item: SCIMProviderGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

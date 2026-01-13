@@ -1,6 +1,14 @@
 import { OwnPropertyRecord, Writeable } from "#common/types";
 
-import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
+import { Context, ContextProvider, ContextType } from "@lit/context";
+import type {
+    LitElement,
+    nothing,
+    ReactiveController,
+    ReactiveControllerHost,
+    TemplateResult,
+} from "lit";
+import { DirectiveResult } from "lit-html/directive.js";
 
 //#region HTML Helpers
 
@@ -64,21 +72,49 @@ export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
  */
 export type LitFC<P> = (
     props: P,
-    children?: SlottedTemplateResult,
-) => SlottedTemplateResult | SlottedTemplateResult[];
+    children?: null | SlottedTemplateResult,
+) => SlottedTemplateResult | SlottedTemplateResult[] | null;
 
 //#endregion
 
 //#region Host/Controller
 
+export interface ReactiveContextController<
+    T extends Context<unknown, unknown> = Context<unknown, unknown>,
+    Host extends object = object,
+> extends ReactiveController {
+    context: ContextProvider<T>;
+    host: ReactiveElementHost<Host>;
+    refresh(): Promise<ContextType<T> | null>;
+}
+
 /**
- * A custom element which may be used as a host for a ReactiveController.
+ * A registry mapping context keys to their respective ReactiveControllers.
+ */
+export interface ContextControllerRegistryMap {
+    get<T extends Context<unknown, unknown>>(
+        key: T,
+    ): ReactiveContextController<T, object> | undefined;
+
+    set<T extends Context<unknown, unknown>>(
+        key: ContextType<T>,
+        controller: ReactiveContextController<T, object>,
+    ): void;
+}
+
+export interface ReactiveControllerHostRegistry extends ReactiveControllerHost {
+    contextControllers: ContextControllerRegistryMap;
+}
+
+/**
+ * A custom element which may be used as a host for a {@linkcode ReactiveController}.
  *
  * @remarks
  *
  * This type is derived from an internal type in Lit.
  */
-export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & Writeable<T>> & HTMLElement;
+export type ReactiveElementHost<T> = Partial<ReactiveControllerHostRegistry & Writeable<T>> &
+    HTMLElement;
 
 //#endregion
 
@@ -236,7 +272,12 @@ export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
  *
  * - A string, which will be rendered as text.
  * - A TemplateResult, which will be rendered as HTML.
- * - `nothing`, which will not be rendered.
+ * - `nothing` or `null`, which will not be rendered.
  */
-export type SlottedTemplateResult = string | TemplateResult | typeof nothing;
+export type SlottedTemplateResult =
+    | string
+    | TemplateResult
+    | typeof nothing
+    | null
+    | DirectiveResult;
 export type Spread = { [key: string]: unknown };

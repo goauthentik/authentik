@@ -1,6 +1,7 @@
 """Test authorize view"""
 
 from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs, urlparse
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -670,3 +671,57 @@ class TestAuthorize(OAuthTestCase):
         )
         parsed = OAuthAuthorizationParams.from_request(request)
         self.assertNotIn(SCOPE_OFFLINE_ACCESS, parsed.scope)
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_ui_locales(self):
+        """Test OIDC ui_locales authorization"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        self.client.logout()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "ui_locales": "invalid fr",
+            },
+        )
+        parsed = parse_qs(urlparse(response.url).query)
+        self.assertEqual(parsed["locale"], ["fr"])
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_ui_locales_invalid(self):
+        """Test OIDC ui_locales authorization"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        self.client.logout()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "ui_locales": "invalid",
+            },
+        )
+        parsed = parse_qs(urlparse(response.url).query)
+        self.assertNotIn("locale", parsed)

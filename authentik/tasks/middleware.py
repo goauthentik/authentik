@@ -1,36 +1,55 @@
 import socket
 from http.server import BaseHTTPRequestHandler
 from time import sleep
-from typing import Any
+from typing import Any, cast
 
 import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import (
+    CurrentTask as BaseCurrentTask,
+)
 from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
-from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
-from redis.exceptions import RedisError
+from psycopg.errors import Error
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
-from authentik.tasks.models import Task, TaskStatus, WorkerStatus
+from authentik.lib.utils.reflection import class_to_path
+from authentik.root.signals import post_startup, pre_startup, startup
+from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
+DB_ERRORS = (OperationalError, Error)
+
+
+class StartupSignalsMiddleware(Middleware):
+    def after_process_boot(self, broker: Broker):
+        _startup_sender = type("WorkerStartup", (object,), {})
+        pre_startup.send(sender=_startup_sender)
+        startup.send(sender=_startup_sender)
+        post_startup.send(sender=_startup_sender)
+
+
+class CurrentTask(BaseCurrentTask):
+    @classmethod
+    def get_task(cls) -> Task:
+        return cast(Task, super().get_task())
 
 
 class TenantMiddleware(Middleware):
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        message.options["model_defaults"]["tenant"] = get_current_tenant()
+        message.options["model_create_defaults"]["tenant"] = get_current_tenant()
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
@@ -42,44 +61,47 @@ class TenantMiddleware(Middleware):
     after_skip_message = after_process_message
 
 
-class RelObjMiddleware(Middleware):
+class ModelDataMiddleware(Middleware):
     @property
     def actor_options(self):
-        return {"rel_obj"}
+        return {"rel_obj", "uid"}
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
         if "rel_obj" in message.options:
             message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
+        if "uid" in message.options:
+            message.options["model_defaults"]["_uid"] = message.options.pop("uid")
 
 
-class MessagesMiddleware(Middleware):
-    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+class TaskLogMiddleware(Middleware):
+    def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
         if task_created:
-            task._messages.append(
-                Task._make_message(
-                    str(type(self)),
+            TaskLog.create_from_log_event(
+                task,
+                Task._make_log(
+                    class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task has been queued",
                     delay=delay,
-                )
+                ),
             )
         else:
-            task._previous_messages.extend(task._messages)
-            task._messages = [
-                Task._make_message(
-                    str(type(self)),
+            TaskLog.objects.filter(task=task).update(previous=True)
+            TaskLog.create_from_log_event(
+                task,
+                Task._make_log(
+                    class_to_path(type(self)),
                     TaskStatus.INFO,
                     "Task will be retried",
                     delay=delay,
-                )
-            ]
-        task.save(update_fields=("_messages", "_previous_messages"))
+                ),
+            )
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
-        task.log(str(type(self)), TaskStatus.INFO, "Task is being processed")
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task is being processed")
 
     def after_process_message(
         self,
@@ -91,15 +113,19 @@ class MessagesMiddleware(Middleware):
     ):
         task: Task = message.options["task"]
         if exception is None:
-            task.log(str(type(self)), TaskStatus.INFO, "Task finished processing without errors")
-            return
-        if should_ignore_exception(exception):
+            task.log(
+                class_to_path(type(self)),
+                TaskStatus.INFO,
+                "Task finished processing without errors",
+            )
             return
         task.log(
-            str(type(self)),
+            class_to_path(type(self)),
             TaskStatus.ERROR,
             exception,
         )
+        if should_ignore_exception(exception):
+            return
         event_kwargs = {
             "actor": task.actor_name,
         }
@@ -113,7 +139,7 @@ class MessagesMiddleware(Middleware):
 
     def after_skip_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
-        task.log(str(type(self)), TaskStatus.INFO, "Task has been skipped")
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task has been skipped")
 
 
 class LoggingMiddleware(Middleware):
@@ -172,10 +198,8 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
                 # Force connection reload
                 db_conn.connect()
                 _ = db_conn.cursor()
-            redis_conn = get_redis_connection()
-            redis_conn.ping()
             self.send_response(200)
-        except (OperationalError, RedisError):  # pragma: no cover
+        except DB_ERRORS:  # pragma: no cover
             self.send_response(503)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", "0")
@@ -216,6 +240,18 @@ class WorkerStatusMiddleware(Middleware):
             hostname=socket.gethostname(),
             version=authentik_full_version(),
         )
+        while True:
+            try:
+                WorkerStatusMiddleware.keep(status)
+            except DB_ERRORS:  # pragma: no cover
+                sleep(10)
+                try:
+                    connections.close_all()
+                except DB_ERRORS:
+                    pass
+
+    @staticmethod
+    def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
             while True:

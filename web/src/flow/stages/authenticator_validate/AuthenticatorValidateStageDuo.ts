@@ -27,6 +27,8 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     authenticating = false;
 
     updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.authenticating = true;
             this.host
@@ -61,7 +63,10 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
                 >
             </ak-empty-state>
             ${this.showBackButton
-                ? html`<div class="pf-c-form__group">${this.renderReturnToDevicePicker()}</div>`
+                ? html`<fieldset class="pf-c-form__group pf-m-action">
+                      <legend class="sr-only">${msg("Form actions")}</legend>
+                      ${this.renderReturnToDevicePicker()}
+                  </fieldset>`
                 : nothing}
         </form>`;
     }

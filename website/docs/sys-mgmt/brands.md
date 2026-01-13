@@ -21,11 +21,11 @@ To create or edit a brand, follow these steps:
 
 The brand settings define the visual identity of the brand, including:
 
-- **Branding title**: Displayed in the browser tab (document title) and throughout the UI;
-- **Logo**: Appears in the sidebar/header;
+- **Branding title**: Displayed in the browser tab (document title) and throughout the UI.
+- **Logo**: Displayed in the upper-left corner.
 
     :::info
-    Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
+    The placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
     :::
 
 - **Favicon**: Shown on the browser tab.
@@ -67,7 +67,7 @@ The **Web Certificate** option can be used to configure which certificate authen
 
 #### Client Certificates:ak-version[2025.4]
 
-When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this option configures which certificate authorities clients' certificates can be issued by.
+When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this setting specifies which certificate authorities are trusted to issue client certificates.
 
 #### Attributes
 

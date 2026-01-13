@@ -61,7 +61,8 @@ class InitialPermissionsMiddleware:
     ):
         if not created:
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user: User = request.user
         if not user or user.is_anonymous:

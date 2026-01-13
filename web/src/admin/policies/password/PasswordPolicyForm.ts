@@ -8,7 +8,7 @@ import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 import { PasswordPolicy, PoliciesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -303,7 +303,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg("For more info see:")}
-                    <a href="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange"
+                    <a href="https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange"
                         >haveibeenpwned.com</a
                     >
                 </p>
@@ -331,9 +331,9 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>
                 </p>
             </ak-form-element-horizontal>
-            ${this.showStatic ? this.renderStaticRules() : html``}
-            ${this.showHIBP ? this.renderHIBP() : html``}
-            ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
+            ${this.showStatic ? this.renderStaticRules() : nothing}
+            ${this.showHIBP ? this.renderHIBP() : nothing}
+            ${this.showZxcvbn ? this.renderZxcvbn() : nothing}`;
     }
 }
 

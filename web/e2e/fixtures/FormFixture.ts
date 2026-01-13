@@ -1,7 +1,7 @@
 import { PageFixture } from "#e2e/fixtures/PageFixture";
 import type { LocatorContext } from "#e2e/selectors/types";
 
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 
 export class FormFixture extends PageFixture {
     static fixtureName = "Form";
@@ -18,25 +18,101 @@ export class FormFixture extends PageFixture {
      * @param fieldName The name of the form element.
      * @param value the value to set.
      */
-    public fill = async (
-        fieldName: string,
-        value: string,
-        parent: LocatorContext = this.page,
-    ): Promise<void> => {
-        const control = parent
-            .getByRole("textbox", {
-                name: fieldName,
+    public findTextualInput = async (
+        fieldName: string | RegExp,
+        context: LocatorContext = this.page,
+    ) => {
+        const control = context
+            .getByLabel(fieldName, { exact: true })
+            .filter({
+                hasNot: context.getByRole("presentation"),
             })
             .or(
-                parent.getByRole("spinbutton", {
+                context.getByRole("textbox", {
                     name: fieldName,
                 }),
             )
-            .first();
+            .or(
+                context.getByRole("spinbutton", {
+                    name: fieldName,
+                }),
+            );
+
+        const role = await control.getAttribute("role");
+
+        if (role === "combobox") {
+            // Comboboxes, such as our Query Language input need additional handling...
+            const textbox = control.getByRole("textbox");
+
+            return textbox;
+        }
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
+        return control;
+    };
+
+    /**
+     * Set the value of a text input.
+     *
+     * @param target The name of the form element.
+     * @param value the value to set.
+     */
+    public fill = async (
+        target: string | RegExp | Locator,
+        value: string,
+        context: LocatorContext = this.page,
+    ): Promise<void> => {
+        let control: Locator;
+
+        if (typeof target === "string" || target instanceof RegExp) {
+            control = await this.findTextualInput(target, context);
+        } else {
+            control = target;
+        }
+
         await control.fill(value);
+    };
+
+    /**
+     * Search for a row containing the given text.
+     */
+    public search = async (
+        query: string,
+        context: LocatorContext = this.page,
+    ): Promise<Locator> => {
+        const searchInput = await this.findTextualInput(/search/i, context);
+        // We have to wait for the user to appear in the table,
+        // but several UI elements will be rendered asynchronously.
+        // We attempt several times to find the user to avoid flakiness.
+
+        const tries = 10;
+        let found = false;
+
+        for (let i = 0; i < tries; i++) {
+            await this.fill(searchInput, query);
+            await searchInput.press("Enter");
+
+            const $rowEntry = context.getByRole("row", {
+                name: query,
+            });
+
+            this.logger.info(`${i + 1}/${tries} Waiting for "${query}" to appear in the table`);
+
+            found = await $rowEntry
+                .waitFor({
+                    timeout: 1500,
+                })
+                .then(() => true)
+                .catch(() => false);
+
+            if (found) {
+                this.logger.info(`"${query}" found in the table`);
+                return $rowEntry;
+            }
+        }
+
+        throw new Error(`"${query}" not found in the table`);
     };
 
     /**
@@ -80,14 +156,12 @@ export class FormFixture extends PageFixture {
         fieldName: string,
         parent: LocatorContext = this.page,
     ): Promise<void> => {
-        const group = parent.getByRole("group", { name: groupName });
+        const group = parent.getByRole("radiogroup", { name: groupName });
 
         await expect(group, `Field "${groupName}" should be visible`).toBeVisible();
         const control = parent.getByRole("radio", { name: fieldName });
 
-        await control.setChecked(true, {
-            force: true,
-        });
+        await control.setChecked(true);
     };
 
     /**

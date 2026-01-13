@@ -13,15 +13,16 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMSource,
     SourcesApi,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -70,139 +71,164 @@ export class SCIMSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.source) {
-            return html``;
+            return nothing;
         }
-        return html`<ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
-                <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.source.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Slug")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.source.slug}
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="pf-c-card__footer">
-                            <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update SCIM Source")} </span>
-                                <ak-source-scim-form slot="form" .instancePk=${this.source.slug}>
-                                </ak-source-scim-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${msg("Edit")}
-                                </button>
-                            </ak-forms-modal>
-                        </div>
-                    </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card">
+        return html`<main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    <div
+                        class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+                    >
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">
-                                <form class="pf-c-form">
-                                    <div class="pf-c-form__group">
-                                        <label class="pf-c-form__label">
-                                            <span class="pf-c-form__label-text"
-                                                >${msg("SCIM Base URL")}</span
+                                <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Name")}</span
                                             >
-                                        </label>
-                                        <input
-                                            class="pf-c-form-control"
-                                            readonly
-                                            type="text"
-                                            value="${this.source.rootUrl}"
-                                        />
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.name}
+                                            </div>
+                                        </dd>
                                     </div>
-                                    <div class="pf-c-form__group">
-                                        <label class="pf-c-form__label">
-                                            <span class="pf-c-form__label-text"
-                                                >${msg("Token")}</span
+                                    <div class="pf-c-description-list__group">
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Slug")}</span
                                             >
-                                        </label>
-                                        <div>
-                                            <ak-token-copy-button
-                                                class="pf-m-primary"
-                                                identifier="${this.source?.tokenObj.identifier}"
-                                            >
-                                                ${msg("Click to copy token")}
-                                            </ak-token-copy-button>
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.source.slug}
+                                            </div>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="pf-c-card__footer">
+                                <ak-forms-modal>
+                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="header">${msg("Update SCIM Source")}</span>
+                                    <ak-source-scim-form
+                                        slot="form"
+                                        .instancePk=${this.source.slug}
+                                    >
+                                    </ak-source-scim-form>
+                                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>
+                            </div>
+                        </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card">
+                                <div class="pf-c-card__body">
+                                    <form class="pf-c-form">
+                                        <div class="pf-c-form__group">
+                                            <label class="pf-c-form__label">
+                                                <span class="pf-c-form__label-text"
+                                                    >${msg("SCIM Base URL")}</span
+                                                >
+                                            </label>
+                                            <input
+                                                class="pf-c-form-control"
+                                                readonly
+                                                type="text"
+                                                value="${this.source.rootUrl}"
+                                            />
                                         </div>
-                                    </div>
-                                </form>
+                                        <div class="pf-c-form__group">
+                                            <label class="pf-c-form__label">
+                                                <span class="pf-c-form__label-text"
+                                                    >${msg("Token")}</span
+                                                >
+                                            </label>
+                                            <div>
+                                                <ak-token-copy-button
+                                                    class="pf-m-primary"
+                                                    identifier="${this.source?.tokenObj.identifier}"
+                                                >
+                                                    ${msg("Click to copy token")}
+                                                </ak-token-copy-button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.source.pk || ""}
-                                targetModelApp="authentik_sources_scim"
-                                targetModelName="scimsource"
-                            >
-                            </ak-object-changelog>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <div class="pf-c-card__body">
+                                <ak-object-changelog
+                                    targetModelPk=${this.source.pk || ""}
+                                    targetModelApp="authentik_sources_scim"
+                                    targetModelName="scimsource"
+                                >
+                                </ak-object-changelog>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
-                slot="page-users"
-                data-tab-title="${msg("Provisioned Users")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <ak-source-scim-users-list
-                        sourceSlug=${this.source.slug}
-                    ></ak-source-scim-users-list>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Provisioned Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-source-scim-users-list
+                            sourceSlug=${this.source.slug}
+                        ></ak-source-scim-users-list>
+                    </div>
                 </div>
-            </section>
-            <section
-                slot="page-groups"
-                data-tab-title="${msg("Provisioned Groups")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <ak-source-scim-groups-list
-                        sourceSlug=${this.source.slug}
-                    ></ak-source-scim-groups-list>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Provisioned Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-source-scim-groups-list
+                            sourceSlug=${this.source.slug}
+                        ></ak-source-scim-groups-list>
+                    </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
-                objectPk=${this.source.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesScimScimsource}
+                    objectPk=${this.source.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 }
 

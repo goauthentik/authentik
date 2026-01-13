@@ -1,0 +1,119 @@
+---
+title: Entra ID OAuth authentication
+sidebar_label: Entra ID OAuth
+description: Authenticating to authentik with Entra ID credentials via the OAuth 2.0 protocol
+tags:
+    - source
+    - entra
+    - azure
+    - oauth
+---
+
+Allows users to authenticate to authentik using their Entra ID credentials, by configuring Entra ID as a federated identity provider via OAuth2.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+## Entra ID configuration
+
+To integrate Entra ID with authentik you will need to create an App Registration in the Entra ID portal.
+
+1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
+2. Navigate to **Applications** > **App registrations**.
+3. Click **New registration** and set the following required configurations:
+    - **Name**: provide a descriptive name (e.g. `authentik`).
+    - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
+    - Under **Redirect URI**:
+        - **Platform**: `Web`
+        - **URI**: `https://authentik.company/source/oauth/callback/entra-id/`
+
+4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
+5. In the leftmost sidebar, navigate to **Certificates & secrets**.
+6. Select the **Client secrets** tab and click **New Secret**. Configure the following required settings:
+    - **Description**: provide a description for the secret (e.g. `authentik secret`).
+    - **Expires**: choose an expiration period. As authentik does not yet support automatic secret rotation, either manual rotation or API-based updates are required. As a result, a duration of at least 12 months is recommended.
+7. Copy the secret's value from the **Value** column.
+
+:::info
+The secret value is only displayed once at the time of creation. Make sure to copy and store it securely, as it cannot be retrieved later.
+:::
+
+8. In the sidebar, navigate to **API Permissions**, then click **Add a permission** and select **Microsoft Graph** as the API.
+9. Select **Delegated permissions** as the permission type and assign the following permissions:
+    - Under **OpenID Permissions**: select `email`, `profile`, and `openid`.
+    - Under **User**: select `User.Read`.
+    - Under **Group Member** _(optional)_: if you need authentik to sync group membership information from Entra ID, select the `GroupMember.Read.All` permission.
+10. Click **Add permissions**.
+11. Under **Configured permissions**, click **Grant admin consent for default directory**.
+
+## authentik configuration
+
+To support the integration of Entra ID with authentik, you need to create an Entra ID OAuth source in authentik.
+
+### Create Entra ID OAuth source
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Entra ID OAuth Source** as the source type.
+    - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations:
+        - Under **Protocol Settings**:
+            - **Consumer key**: `Application (client) ID` from Entra ID.
+            - **Consumer secret**: value of the secret created in Entra ID.
+            - **Scopes** _(optional)_: if you need authentik to sync group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
+        - Under **URL Settings**:
+            - For **Single tenant** Entra ID applications:
+                - **Authorization URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/authorize`
+                - **Access token URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/token`
+                - **Profile URL**: `https://graph.microsoft.com/v1.0/me`
+                - **OIDC JWKS URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/discovery/v2.0/keys`
+            - For **Multi tenant** Entra ID applications:
+                - **Authorization URL**: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`
+                - **Access token URL**: `https://login.microsoftonline.com/common/oauth2/v2.0/token`
+                - **Profile URL**: `https://graph.microsoft.com/v1.0/me`
+                - **OIDC JWKS URL**: `https://login.microsoftonline.com/common/discovery/v2.0/keys`
+
+3. Click **Save**.
+
+:::info Group Membership
+When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of. This sync process is carried out upon each user login, which can cause login delays for organizations with large numbers of groups.
+
+For organizations with larger numbers of users and groups, we recommend using the [Entra ID SCIM integration](../scim/) to provision users and groups. These users are then automatically linked to matching users logging in via this Entra ID OAuth source.
+:::
+
+:::info Display new source on login screen
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
+:::
+
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../../add-secure-apps/flows-stages/stages/source).
+:::
+
+### Machine-to-machine authentication :ak-version[2024.12]
+
+If using [Machine-to-Machine](../../../../../add-secure-apps/providers/oauth2/machine_to_machine.mdx#jwt-authentication) authentication, some specific steps need to be considered.
+
+When getting the JWT token from Entra ID, set the scope to the **Application ID URI**, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
+
+```http
+POST /<entra_tenant_id>/oauth2/v2.0/token/ HTTP/1.1
+Host: login.microsoftonline.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&
+client_id=<application_client_id>&
+scope=api://<application_client_id>/.default&
+client_secret=<application_client_secret>
+```
+
+The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../../add-secure-apps/providers/oauth2/machine_to_machine/#authentik-issued-jwts).
+
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../../property-mappings/index.md) for more information.
+
+## Resources
+
+- [Entra ID Documentation - Register an application in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)

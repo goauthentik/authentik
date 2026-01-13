@@ -11,11 +11,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -87,9 +88,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 export class RelatedGroupList extends Table<Group> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -105,14 +104,11 @@ export class RelatedGroupList extends Table<Group> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Parent"), "parent"),
-            new TableColumn(msg("Superuser privileges?")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Superuser privileges?")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -140,18 +136,17 @@ export class RelatedGroupList extends Table<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
-            html`${item.parentName || msg("-")}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Group")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
@@ -162,18 +157,18 @@ export class RelatedGroupList extends Table<Group> {
         return html`
             ${this.targetUser
                 ? html`<ak-forms-modal>
-                      <span slot="submit"> ${msg("Add")} </span>
-                      <span slot="header"> ${msg("Add Group")} </span>
+                      <span slot="submit">${msg("Add")}</span>
+                      <span slot="header">${msg("Add Group")}</span>
                       <ak-group-related-add .user=${this.targetUser} slot="form">
                       </ak-group-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">
                           ${msg("Add to existing group")}
                       </button>
                   </ak-forms-modal>`
-                : html``}
+                : nothing}
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Group")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Group")}</span>
                 <ak-group-form slot="form"> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Add new group")}

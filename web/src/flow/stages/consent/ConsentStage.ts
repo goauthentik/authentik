@@ -1,6 +1,7 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -12,7 +13,6 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -54,7 +54,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-md">
+                <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge.headerText}
                 </h3>
                 ${this.challenge.permissions.length > 0
@@ -74,7 +74,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderAdditional(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-md">
+                <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
                     ${this.challenge.headerText}
                 </h3>
                 ${this.challenge.permissions.length > 0
@@ -113,26 +113,21 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     });
                 }}
             >
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
                 ${this.challenge.additionalPermissions.length > 0
                     ? this.renderAdditional()
                     : this.renderNoPrevious()}
 
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

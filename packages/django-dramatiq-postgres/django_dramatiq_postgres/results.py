@@ -1,3 +1,6 @@
+from datetime import timedelta
+from typing import Any, cast
+
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models import QuerySet
 from django.utils import timezone
@@ -11,26 +14,27 @@ from django_dramatiq_postgres.models import TaskBase
 
 
 class PostgresBackend(ResultBackend):
-    def __init__(self, *args, db_alias: str = DEFAULT_DB_ALIAS, **kwargs):
+    def __init__(self, *args: Any, db_alias: str = DEFAULT_DB_ALIAS, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.db_alias = db_alias
 
     @cached_property
     def model(self) -> type[TaskBase]:
-        return import_string(Conf().task_model)
+        model: type[TaskBase] = import_string(Conf().task_model)
+        return model
 
     @property
-    def query_set(self) -> QuerySet:
-        return self.model.objects.using(self.db_alias).defer("message")
+    def query_set(self) -> QuerySet[TaskBase]:
+        return self.model._default_manager.using(self.db_alias).defer("message")
 
-    def build_message_key(self, message: Message) -> str:
+    def build_message_key(self, message: Message[Result]) -> str:
         return str(message.message_id)
 
     def _get(self, message_key: str) -> MResult:
         message = self.query_set.filter(message_id=message_key).first()
         if message is None:
             return Missing
-        data = message.result
+        data = cast(bytes | None, message.result)
         if data is None:
             return Missing
         return self.encoder.decode(data)
@@ -39,5 +43,5 @@ class PostgresBackend(ResultBackend):
         self.query_set.filter(message_id=message_key).update(
             mtime=timezone.now(),
             result=self.encoder.encode(result),
-            result_expiry=timezone.now() + timezone.timedelta(milliseconds=ttl),
+            result_expiry=timezone.now() + timedelta(milliseconds=ttl),
         )

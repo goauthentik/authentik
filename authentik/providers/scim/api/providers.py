@@ -5,11 +5,15 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
 
 
-class SCIMProviderSerializer(ProviderSerializer):
+class SCIMProviderSerializer(
+    ConditionalInheritance("authentik.enterprise.providers.scim.api.SCIMProviderSerializerMixin"),
+    ProviderSerializer,
+):
     """SCIMProvider Serializer"""
 
     class Meta:
@@ -28,9 +32,15 @@ class SCIMProviderSerializer(ProviderSerializer):
             "url",
             "verify_certificates",
             "token",
+            "auth_mode",
+            "auth_oauth",
+            "auth_oauth_params",
             "compatibility_mode",
+            "service_provider_config_cache_timeout",
             "exclude_users_service_account",
             "filter_group",
+            "sync_page_size",
+            "sync_page_timeout",
             "dry_run",
         ]
         extra_kwargs = {}

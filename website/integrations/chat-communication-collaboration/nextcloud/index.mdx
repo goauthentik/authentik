@@ -46,7 +46,7 @@ The following placeholders are used in this guide:
 - `nextcloud.company` is the FQDN of the Nextcloud installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -104,11 +104,11 @@ If you want to control user storage and designate Nextcloud administrators, you 
 
 3. Click **Finish**.
 
-:::note
+:::info
 To set a quota, define the `nextcloud_quota` attribute for individual users or groups. For example, setting it to `1 GB` will restrict the user to 1GB of storage. If not set, storage is unlimited.
 :::
 
-:::note
+:::info
 To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute to match the Nextcloud username (found under the user's `Display name` in Nextcloud).
 :::
 
@@ -122,14 +122,14 @@ To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute 
         - Note the **Client ID** and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://nextcloud.company/apps/user_oidc/code`.
         - Select any available signing key.
-        - Under **Advanced Protocol Settings**:
+        - Under **Advanced protocol settings**:
             - _(optional)_ If you created the `Nextcloud Profile` scope mapping, add it to **Selected Scopes**.
             - **Subject Mode**: `Based on the User's UUID`
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-:::note
+:::info
 Depending on your Nextcloud configuration, you may need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`.
 :::
 
@@ -156,7 +156,7 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
     - **Use unique user ID**: If this option is disabled, Nextcloud will use the mapped user ID as the Federated Cloud ID.
 
-    :::note
+    :::info
     If authentik and Nextcloud are running on the same host, you will need to add `'allow_local_remote_servers' => true` to your nextcloud `config.php` file. This setting allows remote servers with local addresses.
     :::
 
@@ -190,7 +190,7 @@ The following placeholders are used in this guide:
     - `nextcloud.company` is the FQDN of the Nextcloud installation.
     - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -210,12 +210,12 @@ If you require [server side encryption](https://docs.nextcloud.com/server/latest
         - Set the **Issuer** to `https://authentik.company`.
         - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
         - Set the **Service Provider Binding** to `Post`.
-        - Under **Advanced protocol settings**, set an available signing certificate.
+        - Under **Advanced protocol settings**, set an available **Signing certificate**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-:::note
+:::info
 Depending on your Nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`.
 :::
 
@@ -251,7 +251,7 @@ To configure group quotas you will need to create groups in authentik for each q
             return user.group_attributes().get("nextcloud_quota", "1 GB")
             ```
 
-            :::note
+            :::info
             Where `"1 GB"` is the default if a quota is not set.
             :::
 
@@ -310,7 +310,7 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
     - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
     - **Attribute to map the user's groups to**: `http://schemas.xmlsoap.org/claims/Group` _(optional)_
 
-:::note
+:::info
 If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
 :::
 
@@ -328,7 +328,7 @@ The following placeholders are used in this guide:
 - `nextcloud.company` is the FQDN of the Nextcloud installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -391,7 +391,7 @@ This documentation lists only the settings that you need to change from their de
         - Set **Only these object classes** to `groups`.
         - Select the authentik groups that require Nextcloud access.
 
-    :::note
+    :::info
     If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [the Nextcloud admin manual](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
     :::
 

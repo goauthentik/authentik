@@ -12,21 +12,13 @@ Parameters:
     Default: 10
     Description: RDS PostgreSQL storage size in GB
     MinValue: 10
-  RedisInstanceType:
-    Type: String
-    Default: cache.t4g.medium
-    Description: ElastiCache Redis instance type (with the leading cache.)
-  RedisVersion:
-    Type: String
-    Default: "7.1"
-    Description: ElastiCache Redis version
   AuthentikImage:
     Type: String
     Default: ghcr.io/goauthentik/server
     Description: authentik Docker image
   AuthentikVersion:
     Type: String
-    Default: 2025.10.0-rc1
+    Default: 2026.2.0-rc1
     Description: authentik Docker image tag
   AuthentikServerCPU:
     Type: Number
@@ -342,35 +334,6 @@ Resources:
       ToPort: 5432
     Metadata:
       aws:cdk:path: AuthentikStack/DatabaseSG/from AuthentikStackAuthentikSG23C19B28:5432
-  RedisSGEA80AC17:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Security Group for authentik ElastiCache Redis
-      SecurityGroupEgress:
-        - CidrIp: 0.0.0.0/0
-          Description: Allow all outbound traffic by default
-          IpProtocol: "-1"
-      VpcId:
-        Ref: AuthentikVpcA1ABE6C2
-    Metadata:
-      aws:cdk:path: AuthentikStack/RedisSG/Resource
-  RedisSGfromAuthentikStackAuthentikSG23C19B2863790C4BCCDE:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      Description: Allow authentik to connect to ElastiCache Redis
-      FromPort: 6379
-      GroupId:
-        Fn::GetAtt:
-          - RedisSGEA80AC17
-          - GroupId
-      IpProtocol: tcp
-      SourceSecurityGroupId:
-        Fn::GetAtt:
-          - AuthentikSG3040E46F
-          - GroupId
-      ToPort: 6379
-    Metadata:
-      aws:cdk:path: AuthentikStack/RedisSG/from AuthentikStackAuthentikSG23C19B28:6379
   AuthentikSG3040E46F:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -481,34 +444,6 @@ Resources:
     DeletionPolicy: Snapshot
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikDB/Resource
-  AuthentikRedisSubnetGroup:
-    Type: AWS::ElastiCache::SubnetGroup
-    Properties:
-      Description: Subnet group for authentik ElastiCache Redis
-      SubnetIds:
-        - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
-        - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
-    Metadata:
-      aws:cdk:path: AuthentikStack/AuthentikRedisSubnetGroup
-  AuthentikRedis:
-    Type: AWS::ElastiCache::ReplicationGroup
-    Properties:
-      AutomaticFailoverEnabled: true
-      CacheNodeType:
-        Ref: RedisInstanceType
-      CacheSubnetGroupName:
-        Ref: AuthentikRedisSubnetGroup
-      Engine: redis
-      EngineVersion:
-        Ref: RedisVersion
-      NumCacheClusters: 2
-      ReplicationGroupDescription: Redis cluster for authentik
-      SecurityGroupIds:
-        - Fn::GetAtt:
-            - RedisSGEA80AC17
-            - GroupId
-    Metadata:
-      aws:cdk:path: AuthentikStack/AuthentikRedis
   AuthentikMediaEFSSecurityGroup1840BA29:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -653,11 +588,6 @@ Resources:
                   - Endpoint.Address
             - Name: AUTHENTIK_POSTGRESQL__USER
               Value: authentik
-            - Name: AUTHENTIK_REDIS__HOST
-              Value:
-                Fn::GetAtt:
-                  - AuthentikRedis
-                  - PrimaryEndPoint.Address
           Essential: true
           HealthCheck:
             Command:
@@ -874,11 +804,6 @@ Resources:
                   - Endpoint.Address
             - Name: AUTHENTIK_POSTGRESQL__USER
               Value: authentik
-            - Name: AUTHENTIK_REDIS__HOST
-              Value:
-                Fn::GetAtt:
-                  - AuthentikRedis
-                  - PrimaryEndPoint.Address
           Essential: true
           HealthCheck:
             Command:

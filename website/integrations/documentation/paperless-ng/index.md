@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 
 - `paperless.company` is the FQDN of the Paperless-ng installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -30,7 +30,7 @@ Also set up your proxy server to use forward auth with paperless.company: https:
 
 ## Paperless
 
-Start by adding the following environment variables to your Paperless-ng setup. If you are using docker-compose, then add the following to your docker-compose.env file:
+Start by adding the following environment variables to your Paperless-ng setup. If you are using Docker Compose, then add the following to your Compose file:
 
 ```
 PAPERLESS_ENABLE_HTTP_REMOTE_USER=TRUE

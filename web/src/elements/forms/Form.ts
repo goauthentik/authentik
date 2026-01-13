@@ -5,7 +5,7 @@ import {
     pluckErrorDetail,
     pluckFallbackFieldErrors,
 } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
 
 import { isControlElement } from "#elements/AkControlElement";
@@ -13,7 +13,6 @@ import { AKElement } from "#elements/Base";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
-import { APIMessage } from "#elements/messages/Message";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
@@ -193,7 +192,7 @@ function reportInvalidFields(
  * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
  * will not render at all if it's not actually in the viewport?[2]
  *
- * @element ak-form
+ * @class Form
  *
  * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires eventname - description
@@ -270,14 +269,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      *
      * @deprecated Use `formatAPISuccessMessage` instead.
      */
-    protected getSuccessMessage(): string | undefined {
+    public getSuccessMessage(): string | undefined {
         return this.successMessage;
     }
 
     /**
      * An overridable method for returning a formatted message after a successful submission.
      */
-    protected formatAPISuccessMessage(response: unknown): APIMessage | null {
+    protected formatAPISuccessMessage(_response: unknown): APIMessage | null {
         const message = this.getSuccessMessage();
 
         if (!message) return null;
@@ -374,7 +373,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 return response;
             })
             .catch(async (error: unknown) => {
-                if (error instanceof PreventFormSubmit && error.element) {
+                if (
+                    error instanceof PreventFormSubmit &&
+                    error.element instanceof HorizontalFormElement
+                ) {
                     error.element.errorMessages = [error.message];
                 }
 

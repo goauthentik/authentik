@@ -469,3 +469,361 @@ class TestUsersAPI(APITestCase):
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 2)
         self.assertEqual(body["results"][0]["pk"], user.pk)
+
+    def test_service_account_validation_empty_username(self):
+        """Test service account creation with empty/blank username validation"""
+        self.client.force_login(self.admin)
+
+        # Test with empty string
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"name": ["This field may not be blank."]},
+        )
+
+        # Test with only whitespace
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "   ",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"name": ["This field may not be blank."]},
+        )
+
+        # Test with tab and newline characters
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "\t\n",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"name": ["This field may not be blank."]},
+        )
+
+    def test_service_account_validation_valid_username(self):
+        """Test service account creation with valid username"""
+        self.client.force_login(self.admin)
+
+        # Test with valid username
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "valid-service-account",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Verify response structure
+        body = loads(response.content)
+        self.assertIn("username", body)
+        self.assertIn("user_uid", body)
+        self.assertIn("user_pk", body)
+        self.assertIn("group_pk", body)  # Should exist since create_group=True
+        self.assertIn("token", body)
+
+        # Verify field types
+        self.assertEqual(body["username"], "valid-service-account")
+        self.assertIsInstance(body["user_pk"], int)
+        self.assertIsInstance(body["user_uid"], str)
+        self.assertIsInstance(body["token"], str)
+        self.assertIsInstance(body["group_pk"], str)
+
+    def test_service_account_validation_without_group(self):
+        """Test service account creation without creating a group"""
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "no-group-service-account",
+                "create_group": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertIn("username", body)
+        self.assertIn("user_uid", body)
+        self.assertIn("user_pk", body)
+        self.assertIn("token", body)
+        # Should NOT have group_pk when create_group=False
+        self.assertNotIn("group_pk", body)
+
+    def test_service_account_validation_duplicate_username(self):
+        """Test service account creation with duplicate username"""
+        self.client.force_login(self.admin)
+
+        # Create first service account
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "duplicate-test",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Attempt to create second with same username
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "duplicate-test",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"name": ["This field must be unique."]},
+        )
+
+    def test_service_account_validation_invalid_create_group(self):
+        """Test service account creation with invalid create_group field"""
+        self.client.force_login(self.admin)
+
+        # Test with string instead of boolean
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": "invalid",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"create_group": ["Must be a valid boolean."]},
+        )
+
+        # Test with number instead of boolean
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": 123,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"create_group": ["Must be a valid boolean."]},
+        )
+
+    def test_service_account_validation_invalid_expiring(self):
+        """Test service account creation with invalid expiring field"""
+        self.client.force_login(self.admin)
+
+        # Test with string instead of boolean
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "expiring": "invalid",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"expiring": ["Must be a valid boolean."]},
+        )
+
+    def test_service_account_validation_invalid_expires(self):
+        """Test service account creation with invalid expires field"""
+        self.client.force_login(self.admin)
+
+        # Test with invalid datetime string
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "expires": "invalid-datetime",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "expires": [
+                    "Datetime has wrong format. Use one of these formats instead: "
+                    "YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]."
+                ]
+            },
+        )
+
+        # Test with invalid format
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "expires": "2024-13-45",  # Invalid month/day
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "expires": [
+                    "Datetime has wrong format. Use one of these formats instead: "
+                    "YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]."
+                ]
+            },
+        )
+
+    def test_service_account_validation_multiple_errors(self):
+        """Test service account creation with multiple validation errors"""
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "",  # Empty username
+                "create_group": "invalid",  # Invalid boolean
+                "expiring": 123,  # Invalid boolean
+                "expires": "not-a-date",  # Invalid datetime
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "name": ["This field may not be blank."],
+                "create_group": ["Must be a valid boolean."],
+                "expiring": ["Must be a valid boolean."],
+                "expires": [
+                    "Datetime has wrong format. Use one of these formats instead: "
+                    "YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]."
+                ],
+            },
+        )
+
+    def test_service_account_validation_user_friendly_duplicate_error(self):
+        """Test that duplicate username returns user-friendly error, not database error"""
+        self.client.force_login(self.admin)
+
+        # Create first service account
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "duplicate-username-test",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Attempt to create second with same username
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "duplicate-username-test",
+                "create_group": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"name": ["This field must be unique."]},
+        )
+
+    def test_filter_last_login(self):
+        """Test API filtering by last_login"""
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        # Create users with different last_login values
+        user_recent = create_test_user()
+        user_recent.last_login = timezone.now()
+        user_recent.save()
+
+        user_old = create_test_user()
+        user_old.last_login = timezone.now() - timedelta(days=400)  # Over 1 year ago
+        user_old.save()
+
+        user_never = create_test_user()
+        user_never.last_login = None  # Never logged in
+        user_never.save()
+
+        # Filter users who logged in before 1 year ago
+        one_year_ago = (timezone.now() - timedelta(days=365)).isoformat()
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"last_login__lt": one_year_ago},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1)
+        self.assertEqual(body["results"][0]["pk"], user_old.pk)
+
+        # Filter users who have never logged in
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"last_login__isnull": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        # Should include user_never and admin (who hasn't logged in via the app)
+        pks = [r["pk"] for r in body["results"]]
+        self.assertIn(user_never.pk, pks)
+
+    def test_sort_by_last_login(self):
+        """Test API sorting by last_login"""
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        user1 = create_test_user()
+        user1.last_login = timezone.now() - timedelta(days=10)
+        user1.save()
+
+        user2 = create_test_user()
+        user2.last_login = timezone.now() - timedelta(days=5)
+        user2.save()
+
+        # Ascending order (oldest first)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"ordering": "last_login"},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        # Users with null last_login come first, then user1 (older), then user2 (newer)
+        self.assertEqual(len(body["results"]), 3)
+
+        # Descending order (newest first)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"ordering": "-last_login"},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        # user2 should come before user1 (more recent login)
+        pks = [r["pk"] for r in body["results"]]
+        self.assertIn(user1.pk, pks)
+        self.assertIn(user2.pk, pks)
+        # Verify user2 comes before user1 in descending order
+        self.assertLess(pks.index(user2.pk), pks.index(user1.pk))

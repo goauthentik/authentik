@@ -1,60 +1,81 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { IDGenerator } from "@goauthentik/core/id";
 
-import {
-    adjectives,
-    colors,
-    Config as NameConfig,
-    uniqueNamesGenerator,
-} from "unique-names-generator";
+import { capitalCase } from "change-case";
 
-/**
- * Given a dictionary of words, slice the dictionary to only include words that start with the given letter.
- */
-export function alliterate(dictionary: string[], letter: string): string[] {
-    let firstIndex = 0;
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-    for (let i = 0; i < dictionary.length; i++) {
-        if (dictionary[i][0] === letter) {
-            firstIndex = i;
-            break;
-        }
+const dictionaries = join(__dirname, "dictionaries");
+
+function simpleHash(seed: string) {
+    let hash = 0;
+
+    for (let i = 0; i < seed.length; i++) {
+        hash = (hash * 31 + seed.charCodeAt(i)) | 0; // keep it 32-bit
     }
-
-    let lastIndex = firstIndex;
-
-    for (let i = firstIndex; i < dictionary.length; i++) {
-        if (dictionary[i][0] !== letter) {
-            lastIndex = i;
-            break;
-        }
-    }
-
-    return dictionary.slice(firstIndex, lastIndex);
+    return Math.abs(hash);
 }
 
-export function createRandomName({
-    seed = IDGenerator.randomID(),
-    ...config
-}: Partial<NameConfig> = {}) {
-    const randomLetterIndex =
-        typeof seed === "number"
-            ? seed
-            : Array.from(seed).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+class LazyDictionary {
+    #entries: string[] = [];
+    #filePath: string;
+    #loaded = false;
 
-    const letter = adjectives[randomLetterIndex % adjectives.length][0];
+    constructor(filePath: string) {
+        this.#filePath = filePath;
+    }
 
-    const availableAdjectives = alliterate(adjectives, letter);
+    public load() {
+        if (this.#loaded) return;
 
-    const availableColors = alliterate(colors, letter);
+        this.#entries = readFileSync(this.#filePath, "utf8").split("\n").filter(Boolean);
+        this.#loaded = true;
 
-    const name = uniqueNamesGenerator({
-        dictionaries: [availableAdjectives, availableAdjectives, availableColors],
-        style: "capital",
-        separator: " ",
-        length: 3,
-        seed,
-        ...config,
-    });
+        return this.#entries;
+    }
 
-    return name;
+    public random(seed: string) {
+        this.load();
+
+        // We use modulo to ensure that the seed is always within the range of the dictionary
+        const index = Math.floor(simpleHash(seed) % this.#entries.length);
+
+        return this.#entries[index];
+    }
+}
+
+const Adjectives = new LazyDictionary(join(dictionaries, "adjectives.txt"));
+const Colors = new LazyDictionary(join(dictionaries, "colors.txt"));
+
+/**
+ * Generate a random phrase consisting of an two adjectives and a color.
+ *
+ * @param seeds Seeds to use for the random number generator.
+ */
+export function randomPhrases(...seeds: string[]) {
+    const [
+        adjectiveSeed1 = IDGenerator.randomID(),
+        adjectiveSeed2 = IDGenerator.randomID(),
+        // Ensure a pairing of the first adjective and color is always used
+        // allow for a more predictable result.
+        colorSeed = adjectiveSeed1,
+    ] = seeds;
+
+    const adjective1 = Adjectives.random(adjectiveSeed1);
+    const adjective2 = Adjectives.random(adjectiveSeed2);
+    const color = Colors.random(colorSeed);
+
+    return [adjective1, adjective2, color];
+}
+
+/**
+ * Generate a random name consisting of an adjective, a color, and a phrase.
+ *
+ * @param seeds Seeds to use for the random number generator.
+ */
+export function randomName(...seeds: string[]) {
+    return capitalCase(randomPhrases(...seeds).join(" "));
 }

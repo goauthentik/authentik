@@ -1,29 +1,77 @@
 import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
+
+import { AKLabel } from "#components/ak-label";
 
 import { PromptStage } from "#flow/stages/prompt/PromptStage";
 
-import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
+import { AdminApi, PromptTypeEnum, Settings, StagePrompt } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
+    @state()
+    private settings?: Settings;
+
+    constructor() {
+        super();
+        new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
+            this.settings = settings;
+        });
+    }
+
+    isFieldReadOnly(prompt: StagePrompt): boolean {
+        if (
+            prompt.type === PromptTypeEnum.Email &&
+            this.settings?.defaultUserChangeEmail === false
+        ) {
+            return true;
+        }
+        if (
+            prompt.type === PromptTypeEnum.Username &&
+            this.settings?.defaultUserChangeUsername === false
+        ) {
+            return true;
+        }
+        if (
+            prompt.type === PromptTypeEnum.Text &&
+            prompt.fieldKey === "name" &&
+            this.settings?.defaultUserChangeName === false
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    renderPromptHelpText(prompt: StagePrompt) {
+        if (this.isFieldReadOnly(prompt)) {
+            return html`<p class="pf-c-form__helper-text">
+                ${msg("Not allowed to change this field. Please contact your administrator.")}
+            </p>`;
+        }
+        return super.renderPromptHelpText(prompt);
+    }
+
     renderPromptInner(prompt: StagePrompt): TemplateResult {
-        return prompt.type === PromptTypeEnum.Checkbox
-            ? html`<input
-                  type="checkbox"
-                  class="pf-c-check__input"
-                  name="${prompt.fieldKey}"
-                  ?checked=${prompt.initialValue !== ""}
-                  ?required=${prompt.required}
-                  style="vertical-align: bottom"
-              />`
-            : super.renderPromptInner(prompt);
+        if (prompt.type === PromptTypeEnum.Checkbox) {
+            return html`<input
+                type="checkbox"
+                class="pf-c-check__input"
+                name=${prompt.fieldKey}
+                ?checked=${prompt.initialValue !== ""}
+                ?required=${prompt.required}
+                style="vertical-align: bottom"
+            />`;
+        }
+
+        const disabled = this.isFieldReadOnly(prompt);
+        return super.renderPromptInner(prompt, disabled);
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
@@ -32,11 +80,19 @@ export class UserSettingsPromptStage extends PromptStage {
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
                 <ak-form-element-horizontal
-                    label=${msg(str`${prompt.label}`)}
                     ?required=${prompt.required}
                     name=${prompt.fieldKey}
                     .errorMessages=${errors}
                 >
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: `field-${prompt.fieldKey}`,
+                            required: prompt.required,
+                        },
+                        prompt.label,
+                    )}
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
             `;
@@ -48,7 +104,9 @@ export class UserSettingsPromptStage extends PromptStage {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
-                    <button type="submit" class="pf-c-button pf-m-primary">${msg("Save")}</button>
+                    <button name="continue" type="submit" class="pf-c-button pf-m-primary">
+                        ${msg("Save")}
+                    </button>
                     ${this.host.brand?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
@@ -57,7 +115,7 @@ export class UserSettingsPromptStage extends PromptStage {
                           >
                               ${msg("Delete account")}
                           </a>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
         </div>`;

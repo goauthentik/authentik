@@ -12,7 +12,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -28,6 +28,8 @@ export class OAuth2DeviceCode extends BaseStage<
     OAuthDeviceCodeChallenge,
     OAuthDeviceCodeChallengeResponseRequest
 > {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles: CSSResult[] = [
         PFBase,
         PFLogin,
@@ -45,13 +47,14 @@ export class OAuth2DeviceCode extends BaseStage<
                     ${AKLabel({ required: true, htmlFor: "device-code-input" }, msg("Device Code"))}
 
                     <input
+                        ${this.autofocusTarget.toRef()}
                         id="device-code-input"
                         type="text"
                         name="code"
                         inputmode="numeric"
                         pattern="[0-9]*"
-                        placeholder="${msg("Please enter your Code")}"
-                        autofocus=""
+                        placeholder="${msg("Please enter your code")}"
+                        autofocus
                         autocomplete="off"
                         class="pf-c-form-control"
                         value=""
@@ -61,7 +64,11 @@ export class OAuth2DeviceCode extends BaseStage<
                 </div>
 
                 <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
                 </div>

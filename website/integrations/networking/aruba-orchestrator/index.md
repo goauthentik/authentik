@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -49,7 +49,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** and **Issuer** to `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
     - Under **Advanced protocol settings**, add the newly created property mapping under **Property Mappings**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -60,7 +60,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 ## Aruba Orchestrator Configuration
 
 1. Log in to the Aruba Orchestrator.
-2. Create a new Remote Authentication Server under **Orchestrator** -> **Authentication** -> **Add New Server**.
+2. Create a new Remote Authentication Server under **Orchestrator** > **Authentication** > **Add New Server**.
     - **Type**: `SAML`
     - **Name**: `authentik`
     - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`

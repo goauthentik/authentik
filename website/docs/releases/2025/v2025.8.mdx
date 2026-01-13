@@ -5,7 +5,7 @@ slug: "/releases/2025.8"
 
 ## Highlights
 
-- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/backchannel-logout.mdx).
+- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.mdx).
 
 - **Event map**: :ak-enterprise View geolocation of user events on a map.
 
@@ -28,7 +28,7 @@ For instances with a high level of traffic, such as many users logging in, many 
 To prevent losing tasks during the upgrade, instances with a high level of traffic should follow these instructions:
 
 1. Start by upgrading the authentik server.
-2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-ugpraded worker container:
+2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-upgraded worker container:
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -84,7 +84,7 @@ The PostgreSQL database must now use the `UTF8` encoding. This is the default en
 
 ### Renamed/removed settings
 
-The `AUTHENTIK_WORKER__CONCURRENCY` setting has been renamed `AUTHENTIK_WORKER__PROCESSES`. The old setting is still available as an alias and will be removed in a future release.
+The `AUTHENTIK_WORKER__CONCURRENCY` setting has been renamed `AUTHENTIK_WORKER__THREADS`. The old setting is still available as an alias and will be removed in a future release.
 
 The following settings have been removed and no longer have an effect:
 
@@ -146,7 +146,7 @@ From this point on, we recommend using the bundled PostgreSQL dependency for dem
 
 ## New integration guides
 
-An integration is a how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
+An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
 
 - [1Password](https://integrations.goauthentik.io/security/1password/)
 - [Bitwarden](https://integrations.goauthentik.io/security/bitwarden/)
@@ -161,7 +161,7 @@ An integration is a how authentik connects to third-party applications, director
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
 
 :::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
@@ -369,6 +369,68 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web: Improvements to ReCaptcha resizing (cherry-pick #16171) (#16281)
 - web: Username truncation, field alignment. (cherry-pick #16283) (#16284)
 - web: fix "Explore integrations" link in Quick actions (cherry-pick #16274) (#16285)
+
+## Fixed in 2025.8.2
+
+- core: bump django from 5.1.11 to v5.1.12 (cherry-pick #16584) (#16591)
+- core: bump h2 from 4.2.0 to 4.3.0 (cherry-pick #16446) (#16449)
+- core: fix client-side only validation allowing admin to set blank user password (cherry-pick #16467) (#16469)
+- lib/logging: only show locals when in debug mode (cherry-pick #16772) #16774
+- lib/sync/outgoing: fix single object sync timeout (cherry-pick #16447) (#16453)
+- lib/sync: fix missing f for string (cherry-pick #16423) (#16427)
+- lifecycle: fix PROMETHEUS_MULTIPROC_DIR missing suffix (cherry-pick #16401) (#16407)
+- policies: remove object pk from authentik_policies_execution_time to reduce cardinality (cherry-pick #16500) (#16501)
+- providers/oauth2: add missing exp claim for logout token (cherry-pick #16593) (#16598)
+- providers/oauth2: avoid deadlock during session migration (cherry-pick #16361) (#16364)
+- providers/rac: fix AuthenticatedSession migration (cherry-pick #16400) (#16419)
+- providers/scim: improve error message when object fails to sync (cherry-pick #16625) (#16643)
+- sources/ldap: fix malformed filter error with special characters in group DN (cherry-pick #16243) (#16585)
+- sources/oauth/entra_id: do not assume group_id comes from entra (cherry-pick #16456) (#16777)
+- tasks/schedules: fix api search fields (cherry-pick #16405) (#16410)
+- tasks: fix status and healthcheck breaking with connection issues (cherry-pick #16504) (#16673)
+- web/flows: only disable login button when interactive captcha is configured and not loaded (cherry-pick #16586) (#16590)
+
+## Fixed in 2025.8.3
+
+- lifecycle: fix permission error when running worker as root (cherry-pick #16735) (#16784)
+- stages/email_authenticator: Fix email mfa loop (cherry-pick #16579) (#16807)
+- website/docs: fix docker tabs not rendering properly (cherry-pick #16799) (#16802)
+- website/docs: update create oauth provider page (cherry-pick #16617) (#16806)
+
+## Fixed in 2025.8.4
+
+- \*/bindings: order by pk (cherry-pick #17027) (#17053)
+- cmd/server/healthcheck: info log success instead of debug (cherry-pick #17093 to version-2025.8) (#17097)
+- core: add index on Group.is_superuser (cherry-pick #17011) (#17017)
+- lib: match exception_to_dict locals behaviour (cherry-pick #17006) (#17016)
+- lib/config: fix listen settings (cherry-pick #17005) (#17023)
+- outposts/ldap: add pwdChangeTime attribute (cherry-pick #17010 to version-2025.8) (#17101)
+- packages/django-dramatiq-postgres: broker: fix new messages not being picked up when too many messages are waiting (cherry-pick #17106 to version-2025.8) (#17108)
+- providers/ldap: add include_children parameter to cached search mode (cherry-pick #16918) (#17000)
+- providers/oauth2: fix authentication error with identical app passwords (cherry-pick #17100 to version-2025.8) (#17103)
+- providers/scim: fix string formatting for SCIM user filter (cherry-pick #16465) (#16852)
+- rbac: fix typo (cherry-pick #16476) (#17018)
+- rbac: optimize rbac assigned by users query (cherry-pick #17015 to version-2025.8) (#17092)
+- stages/identification: fix mismatched error messages (cherry-pick #17090 to version-2025.8) (#17104)
+- tasks: fix logger name (cherry-pick #17009 to version-2025.8) (#17060)
+- tasks: reduce default number of retries and max backoff (cherry-pick #17107 to version-2025.8) (#17109)
+- web: Fix layout class for row in LibraryPage (cherry-pick #16752 to version-2025.8) (#17091)
+- web/admin: fix federation sources automatically selected (cherry-pick #17069 to version-2025.8) (#17070)
+
+## Fixed in 2025.8.5
+
+- blueprints: ensure tasks retry on database errors (cherry-pick #17333 to version-2025.8) (#17334)
+- build(deps): bump django from 5.1.12 to 5.1.13 (cherry-pick #17198 to version-2025.8) (#17199)
+- core: bump Django from 5.1.13 to 5.1.14 for 2025.8 (#17968)
+- core: fix absolute and relative path file uploads (cherry-pick #17269 to version-2025.8) (#17272)
+- internal: Automated internal backport: 1487-invitation-expiry.sec.patch to authentik-2025.8 (#18261)
+- internal: Automated internal backport: 1498-oauth2-cc-user-active.sec.patch to authentik-2025.8 (#18262)
+- lib/sync/outgoing: revert reduce number of db queries made (revert #14177) (cherry-pick #17306 to version-2025.8) (#17330)
+- packages/django-dramatiq-postgres: broker: fix task expiration (cherry-pick #17178 to version-2025.8) (#17217)
+- packages/django-dramatiq-postgres: fix error when updating task with no changes (cherry-pick #16728 to version-2025.8) (#17238)
+- tasks/middlewares/messages: make sure exceptions are always logged (cherry-pick #17237 to version-2025.8) (#17248)
+- web: Fix behavior for modals configured with closeAfterSuccessfulSubmit (cherry-pick #17277 to version-2025.8) (#17299)
+- web/admin: fix incorrect placeholder for scim provider (cherry-pick #17308 to version-2025.8) (#17309)
 
 ## API Changes
 
@@ -671,7 +733,7 @@ Changed response : **200 OK**
     - `group_obj`
     * Added property `destination_group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Added property `destination_group_obj` (object)
         - Property `pk` (string)
@@ -753,7 +815,7 @@ Changed response : **200 OK**
 
     * Deleted property `group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Deleted property `group_obj` (object)
 
@@ -765,14 +827,14 @@ Changed content type : `application/json`
 
 - Added property `destination_group` (string)
 
-    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
 - Added property `destination_event_user` (boolean)
 
     > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
 
 - Deleted property `group` (string)
-    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
 ###### Return Type:
 
@@ -787,7 +849,7 @@ Changed response : **200 OK**
     - `group_obj`
     * Added property `destination_group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Added property `destination_group_obj` (object)
 
@@ -797,7 +859,7 @@ Changed response : **200 OK**
 
     * Deleted property `group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Deleted property `group_obj` (object)
 
@@ -809,14 +871,14 @@ Changed content type : `application/json`
 
 - Added property `destination_group` (string)
 
-    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
 - Added property `destination_event_user` (boolean)
 
     > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
 
 - Deleted property `group` (string)
-    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
 ###### Return Type:
 
@@ -831,7 +893,7 @@ Changed response : **200 OK**
     - `group_obj`
     * Added property `destination_group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Added property `destination_group_obj` (object)
 
@@ -841,7 +903,7 @@ Changed response : **200 OK**
 
     * Deleted property `group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Deleted property `group_obj` (object)
 
@@ -1882,14 +1944,14 @@ Changed content type : `application/json`
 
 - Added property `destination_group` (string)
 
-    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
 - Added property `destination_event_user` (boolean)
 
     > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
 
 - Deleted property `group` (string)
-    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
 ###### Return Type:
 
@@ -1904,7 +1966,7 @@ Changed response : **201 Created**
     - `group_obj`
     * Added property `destination_group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Added property `destination_group_obj` (object)
 
@@ -1914,7 +1976,7 @@ Changed response : **201 Created**
 
     * Deleted property `group` (string)
 
-        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
     * Deleted property `group_obj` (object)
 
@@ -1947,7 +2009,7 @@ Changed response : **200 OK**
         - `group_obj`
         * Added property `destination_group` (string)
 
-            > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+            > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
         * Added property `destination_group_obj` (object)
 
@@ -1957,7 +2019,7 @@ Changed response : **200 OK**
 
         * Deleted property `group` (string)
 
-            > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
+            > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
 
         * Deleted property `group_obj` (object)
 

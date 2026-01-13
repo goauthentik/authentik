@@ -54,7 +54,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
      * can be marked and their clicks ignored.
      */
     @property({ type: Object })
-    public readonly selected: Set<string> = new Set();
+    public readonly selected: Set<string | number> = new Set();
 
     //#endregion
 
@@ -69,7 +69,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
      * moved (removed) if the user so requests.
      */
     @state()
-    public toMove: Set<string> = new Set();
+    public toMove: Set<string | number> = new Set();
 
     //#endregion
 
@@ -117,7 +117,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
     //#region Event Listeners
 
-    #clickListener(key: string): void {
+    #clickListener(key: string | number): void {
         if (this.selected.has(key)) return;
 
         if (this.toMove.has(key)) {
@@ -136,7 +136,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
         this.requestUpdate();
     }
 
-    #moveListener(key: string): void {
+    #moveListener(key: string | number): void {
         this.toMove.delete(key);
 
         this.dispatchCustomEvent(DualSelectEventType.AddOne, key);
@@ -175,7 +175,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
                                             ><span>${label}</span>${this.selected.has(key)
                                                 ? html`<span
                                                       class="pf-c-dual-list-selector__item-text-selected-indicator"
-                                                      ><i class="fa fa-check"></i
+                                                      ><i class="fa fa-check" aria-hidden="true"></i
                                                   ></span>`
                                                 : nothing}</span
                                         ></span

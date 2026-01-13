@@ -1,6 +1,5 @@
-import { PageFixture } from "#e2e/fixtures/PageFixture";
-
-import { Page } from "@playwright/test";
+import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
+import { PageFixture, PageFixtureInit } from "#e2e/fixtures/PageFixture";
 
 export const GOOD_USERNAME = "test-admin@goauthentik.io";
 export const GOOD_PASSWORD = "test-runner";
@@ -14,10 +13,16 @@ export interface LoginInit {
     to?: URL | string;
 }
 
+export interface SessionFixtureInit extends PageFixtureInit {
+    navigator: NavigatorFixture;
+}
+
 export class SessionFixture extends PageFixture {
     static fixtureName = "Session";
 
     public static readonly pathname = "/if/flow/default-authentication-flow/";
+
+    protected navigator: NavigatorFixture;
 
     //#region Selectors
 
@@ -46,8 +51,9 @@ export class SessionFixture extends PageFixture {
 
     //#endregion
 
-    constructor(page: Page, testName: string) {
+    constructor({ page, testName, navigator }: SessionFixtureInit) {
         super({ page, testName });
+        this.navigator = navigator;
     }
 
     //#region Specific interactions
@@ -89,9 +95,7 @@ export class SessionFixture extends PageFixture {
 
         await this.$submitButton.click();
 
-        const expectedPathname = typeof to === "string" ? to : to.pathname;
-
-        await this.page.waitForURL(`**${expectedPathname}`);
+        await this.navigator.waitForPathname(to);
     }
 
     //#endregion

@@ -19,11 +19,11 @@ The following placeholders are used in this guide:
 - `organizr.company` is the FQDN of the Service installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create a new user account _(or reuse an existing)_ for organizr to use for LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
+Create a new user account _(or reuse an existing)_ for organizr to use for LDAP bind under **Directory > Users > Create**, in this example called `ldapservice`.
 
      Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 
@@ -53,7 +53,7 @@ _Optionally_, create a new group like `organizr users` to scope access to the or
 Ensure any local usernames/email addresses in organizr do not conflict with usernames/email addresses in authentik.
 :::
 
-1. Enable Auth Proxy in organizr _system settings_ -> _main_ -> _Auth Proxy_
+1. Enable Auth Proxy in organizr _system settings_ > _main_ > _Auth Proxy_
 
 Auth Proxy Header Name: `X-authentik-username`
 Auth Proxy Whitelist: _your network subnet in CIDR notation IE_ `10.0.0.0/8`
@@ -61,7 +61,7 @@ Auth Proxy Header Name for Email: `X-authentik-email`
 Logout URL: `/outpost.goauthentik.io/sign_out`
 ![](./organizr6.png)
 
-2. Setup Authentication in organizr _system settings_ -> _main_ -> _Authentication_
+2. Setup Authentication in organizr _system settings_ > _main_ > _Authentication_
 
 Authentication Type: `Organizr DB + Backend`
 Authentication Backend: `Ldap`

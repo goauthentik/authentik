@@ -26,7 +26,6 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
         "binding_order",
         "binding_target_type",
         "binding_target_name",
-        "object_pk",
         "object_type",
         "mode",
     ],

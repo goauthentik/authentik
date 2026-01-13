@@ -6,7 +6,6 @@ import "#elements/forms/Radio";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import type { RadioOption } from "#elements/forms/Radio";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
@@ -137,7 +136,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Expression")} name="expression">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>
@@ -146,9 +145,9 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href="${docLink(
-                                    "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink(
+                                    "/add-secure-apps/providers/property-mappings/expression",
+                                )}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

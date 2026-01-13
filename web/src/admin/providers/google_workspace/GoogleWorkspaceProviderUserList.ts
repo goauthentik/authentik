@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     GoogleWorkspaceProviderUser,
@@ -22,9 +23,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     @property({ type: Number })
     providerId?: number;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     expandable = true;
 
@@ -75,11 +74,17 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: GoogleWorkspaceProviderUser): string {
+        return item.userObj.name || item.userObj.username;
     }
 
-    row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
+
+    row(item: GoogleWorkspaceProviderUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -90,11 +95,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     }
 
     renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

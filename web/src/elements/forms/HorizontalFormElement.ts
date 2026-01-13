@@ -130,14 +130,19 @@ export class HorizontalFormElement extends AKElement {
     render(): TemplateResult {
         this.#synchronizeAttributes();
 
-        return html`<div class="pf-c-form__group" role="group">
-            <div class="pf-c-form__group-label">
-                ${this.label
-                    ? html`
-                      ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+        return html`<div class="pf-c-form__group">
+            ${this.label
+                ? html`
+                      ${AKLabel(
+                          {
+                              className: "pf-c-form__group-label",
+                              htmlFor: this.fieldID,
+                              required: this.required,
+                          },
+                          this.label,
+                      )}
                   </div>`
-                    : html`<slot name="label"></slot>`}
-            </div>
+                : html`<slot name="label"></slot>`}
 
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>

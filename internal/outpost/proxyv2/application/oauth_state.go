@@ -68,11 +68,19 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	return u.String(), true
 }
 
-func (a *Application) createState(r *http.Request, fwd string) (string, error) {
-	s, _ := a.sessions.Get(r, a.SessionName())
+func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		return "", fmt.Errorf("failed to get session: %w", err)
+	}
 	if s.ID == "" {
 		// Ensure session has an ID
 		s.ID = base32RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+		// Save the session immediately so it persists
+		err := s.Save(r, w)
+		if err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
 	}
 	st := &OAuthState{
 		Issuer:    fmt.Sprintf("goauthentik.io/outpost/%s", a.proxyConfig.GetClientId()),
@@ -88,7 +96,7 @@ func (a *Application) createState(r *http.Request, fwd string) (string, error) {
 	return tokenString, nil
 }
 
-func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
+func (a *Application) stateFromRequest(rw http.ResponseWriter, r *http.Request) *OAuthState {
 	stateJwt := r.URL.Query().Get("state")
 	token, err := jwt.Parse(stateJwt, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
@@ -116,7 +124,18 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 		a.log.WithError(err).Warning("failed to mapdecode")
 		return nil
 	}
-	s, _ := a.sessions.Get(r, a.SessionName())
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		a.log.WithError(err).Warning("failed to get session")
+		// Delete the stale session cookie if it exists
+		if rw != nil {
+			s.Options.MaxAge = -1
+			if saveErr := s.Save(r, rw); saveErr != nil {
+				a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
+			}
+		}
+		return nil
+	}
 	if claims.SessionID != s.ID {
 		a.log.WithField("is", claims.SessionID).WithField("should", s.ID).Warning("mismatched session ID")
 		return nil

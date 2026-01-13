@@ -6,11 +6,12 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
+from django.utils import http as utils_http
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
-from authentik.lib.config import CONFIG, django_db_config, redis_url
+from authentik.lib.config import CONFIG, django_db_config
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -51,11 +52,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
 SHARED_APPS = [
+    "authentik.commands",
     "django_tenants",
     "authentik.tenants",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.contrib.postgres",
+    "psqlextra",
     "rest_framework",
     "django_filters",
     "drf_spectacular",
@@ -64,6 +68,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "django_channels_postgres",
     "django_dramatiq_postgres",
     "authentik.tasks",
 ]
@@ -72,12 +77,16 @@ TENANT_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "pgtrigger",
+    "django_postgres_cache",
     "authentik.admin",
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
+    "authentik.endpoints",
+    "authentik.endpoints.connectors.agent",
     "authentik.enterprise",
     "authentik.events",
+    "authentik.admin.files",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -103,6 +112,7 @@ TENANT_APPS = [
     "authentik.sources.plex",
     "authentik.sources.saml",
     "authentik.sources.scim",
+    "authentik.sources.telegram",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_email",
@@ -138,7 +148,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH_USER = False
+GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -173,8 +183,14 @@ SPECTACULAR_SETTINGS = {
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "SAMLBindingsEnum": "authentik.providers.saml.models.SAMLBindings",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
+        "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
+        "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
+        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
+        "StageModeEnum": "authentik.endpoints.models.StageMode",
+        "LicenseSummaryStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -182,14 +198,16 @@ SPECTACULAR_SETTINGS = {
         "authentik.api.schema.preprocess_schema_exclude_non_api",
     ],
     "POSTPROCESSING_HOOKS": [
+        "authentik.api.schema.postprocess_schema_register",
         "authentik.api.schema.postprocess_schema_responses",
+        "authentik.api.schema.postprocess_schema_query_params",
+        "authentik.api.schema.postprocess_schema_remove_unused",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
-    "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -222,20 +240,11 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db")),
-        "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-        "KEY_PREFIX": "authentik_cache",
+        "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
-DJANGO_REDIS_SCAN_ITERSIZE = 1000
-DJANGO_REDIS_IGNORE_EXCEPTIONS = True
-DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
@@ -245,16 +254,17 @@ SESSION_COOKIE_AGE = timedelta_from_string(
 ).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
+MESSAGE_STORAGE = "authentik.root.ws.storage.ChannelsStorage"
 
 MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "django_tenants.middleware.default.DefaultTenantMiddleware",
+    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",
@@ -292,27 +302,34 @@ TEMPLATES = [
 
 ASGI_APPLICATION = "authentik.root.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
-        "CONFIG": {
-            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
-            "prefix": "authentik_channels_",
-        },
-    },
-}
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# Custom overrides for database backends
+# The tree looks like this:
+# psqlextra backend
+#   -> authentik custom backend
+#     -> django_tenants backend
+#       -> django_prometheus backend
+#         -> django built-in backend
 ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
+POSTGRES_EXTRA_DB_BACKEND_BASE = "authentik.root.db"
 DATABASES = django_db_config()
 
 DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",
     "django_tenants.routers.TenantSyncRouter",
 )
+
+# We don't use HStore
+POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "django_channels_postgres.layer.PostgresChannelLayer",
+    },
+}
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
@@ -368,9 +385,6 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
-    "lock_purge_interval": timedelta_from_string(
-        CONFIG.get("worker.lock_purge_interval")
-    ).total_seconds(),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -395,9 +409,8 @@ DRAMATIQ = {
     ).total_seconds(),
     "middlewares": (
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
-        # TODO: fixme
-        # ("dramatiq.middleware.prometheus.Prometheus", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
+        ("django_dramatiq_postgres.middleware.TaskStateBeforeMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
             "dramatiq.middleware.time_limit.TimeLimit",
@@ -413,13 +426,17 @@ DRAMATIQ = {
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+            {
+                "max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0,
+                "max_backoff": 60 * 60 * 1000,  # 1 hour
+            },
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
-        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.StartupSignalsMiddleware", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
-        ("authentik.tasks.middleware.RelObjMiddleware", {}),
-        ("authentik.tasks.middleware.MessagesMiddleware", {}),
+        ("authentik.tasks.middleware.ModelDataMiddleware", {}),
+        ("authentik.tasks.middleware.TaskLogMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
         ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
@@ -430,6 +447,7 @@ DRAMATIQ = {
                 "prefix": "authentik",
             },
         ),
+        ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
     ),
     "test": TEST,
 }
@@ -457,45 +475,11 @@ STORAGES = {
     },
 }
 
-
-# Media files
-if CONFIG.get("storage.media.backend", "file") == "s3":
-    STORAGES["default"] = {
-        "BACKEND": "authentik.root.storages.S3Storage",
-        "OPTIONS": {
-            # How to talk to S3
-            "session_profile": CONFIG.get("storage.media.s3.session_profile", None),
-            "access_key": CONFIG.get("storage.media.s3.access_key", None),
-            "secret_key": CONFIG.get("storage.media.s3.secret_key", None),
-            "security_token": CONFIG.get("storage.media.s3.security_token", None),
-            "region_name": CONFIG.get("storage.media.s3.region", None),
-            "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
-            "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
-            "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
-            "default_acl": "private",
-            "querystring_auth": True,
-            "signature_version": "s3v4",
-            "file_overwrite": False,
-            "location": "media",
-            "url_protocol": (
-                "https:" if CONFIG.get("storage.media.s3.secure_urls", True) else "http:"
-            ),
-            "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
-        },
-    }
-# Fallback on file storage backend
-else:
-    STORAGES["default"] = {
-        "BACKEND": "authentik.root.storages.FileStorage",
-        "OPTIONS": {
-            "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": CONFIG.get("web.path", "/") + "media/",
-        },
-    }
-    # Compatibility for apps not supporting top-level STORAGES
-    # such as django-tenants
-    MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
-    MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
+# Django 5.2.8 and CVE-2025-64458 added a strong enforcement of 2048 characters
+# as the maximum for a URL to redirect to, mostly for running on Windows.
+# However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
+# 8192 should cover most cases.
+utils_http.MAX_URL_LENGTH = utils_http.MAX_URL_LENGTH * 4
 
 structlog_configure()
 LOGGING = get_logger_config()

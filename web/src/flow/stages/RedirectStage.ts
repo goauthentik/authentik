@@ -5,7 +5,7 @@ import { BaseStage } from "#flow/stages/base";
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -41,7 +41,12 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
-    firstUpdated(): void {
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (!changed.has("challenge")) {
+            return;
+        }
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
@@ -89,7 +94,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     <p>${msg("You're about to be redirect to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
@@ -100,7 +106,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     >
                         ${msg("Follow redirect")}
                     </a>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

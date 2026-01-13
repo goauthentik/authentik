@@ -1,94 +1,25 @@
 ---
 title: Entra ID
-support_level: community
+tags:
+    - source
+    - entra
+    - azure
+    - scim
+    - oauth
 ---
 
-## Preparation
+There are several ways that Entra ID can be integrated with authentik to allow for user and group provisioning and authentication with Entra ID user credentials.
 
-The following placeholders are used in this guide:
+## OAuth
 
-- `authentik.company` is the FQDN of the authentik install.
+The [Entra ID OAuth](./oauth/index.mdx) guide explains how to set up Entra ID as a federated OAuth identity provider for authentik.
 
-## Entra ID configuration
+This enables users to sign in to authentik using their Entra ID credentials. User accounts are created in authentik upon first login and updated on each subsequent login.
 
-1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
-2. Navigate to **Applications** > **App registrations**.
-3. Click **New registration** and set the following required configurations:
-    - **Name**: provide a descriptive name (e.g. `authentik`).
-    - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
-    - Under **Redirect URI**:
-        - **Platform**: `Web`
-        - **URI**: `https://authentik.company/source/oauth/callback/entra-id/
+Alternatively, Entra ID authentication can be embedded into a flow via a [Source stage](../../../../../add-secure-apps/flows-stages/stages/source).
 
-4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
-5. In the leftmost sidebar, navigate to **Certificates & secrets**.
-6. Select the **Client secrets** tab and click **New Secret**. Configure the following required settings:
-    - **Description**: provide a description for the secret (e.g. `authentik secret`.
-    - **Expires**: choose an expiration period. As authentik does not yet support automatic secret rotation, either manual rotation or API-based updates are required. As a result, a duration of at least 12 months is recommended.
-7. Copy the secret's value from the **Value** column.
+## SCIM
 
-:::note
-The secret value is only displayed once at the time of creation. Make sure to copy and store it securely, as it cannot be retrieved later.
-:::
+The [Entra ID SCIM](./scim/index.mdx) guide explains how you can provision users and groups from Entra ID into authentik via the SCIM protocol.
 
-8. In the sidebar, navigate to **API Permissions**, then click **Add a permission** and select **Microsoft Graph** as the API.
-9. Select **Delegated permissions** as the permission type and assign the following permissions:
-    - Under **OpenID Permissions**: select `email`, `profile`, and `openid`.
-    - Under **Group Member** _(optional)_: if you need authentik to sync group membership information from Entra ID, select the `GroupMember.Read.All` permission.
-10. Click **Add permissions**.
-11. _(optional)_ If the `GroupMember.Read.All` permission has been selected, under **Configured permissions**, click **Grant admin consent for default directory**.
-
-## authentik configuration
-
-To support the integration of Entra ID with authentik, you need to create an Entra ID OAuth source in authentik.
-
-### Create Entra ID OAuth source
-
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
-    - **Select type**: select **Entra ID OAuth Source** as the source type.
-    - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations:
-        - Under **Protocol Settings**:
-            - **Consumer key**: `Application (client) ID` from Entra ID.
-            - **Consumer secret**: value of the secret created in Entra ID.
-            - **Scopes**_(optional)_: if you need authentik to sync group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
-        - Under **URL Settings**:
-            - For **Single tenant** Entra ID applications:
-                - **Authorization URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/authorize`
-                - **Access token URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/token`
-                - **Profile URL**: `https://graph.microsoft.com/v1.0/me`
-                - **OIDC JWKS URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/discovery/v2.0/keys`
-            - For **Multi tenant** Entra ID applications:
-                - **Authorization URL**: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`
-                - **Access token URL**: `https://login.microsoftonline.com/common/oauth2/v2.0/token`
-                - **Profile URL**: `https://graph.microsoft.com/v1.0/me`
-                - **OIDC JWKS URL**: `https://login.microsoftonline.com/common/discovery/v2.0/keys`
-
-3. Click **Save**.
-
-:::note
-When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of.
-:::
-
-### Machine-to-machine authentication :ak-version[2024.12]
-
-If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
-
-When getting the JWT token from Entra ID, set the scope to the **Application ID URI**, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
-
-```http
-POST /<entra_tenant_id>/oauth2/v2.0/token/ HTTP/1.1
-Host: login.microsoftonline.com
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=client_credentials&
-client_id=<application_client_id>&
-scope=api://<application_client_id>/.default&
-client_secret=<application_client_secret>
-```
-
-The JWT returned from the request above can be used in authentik and exchanged for an authentik JWT.
-
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
-:::
+Optionally, both the OAuth and SCIM integrations can be used in conjunction so that users and groups are provisioned before a user signs in using their Entra ID credentials. This is the recommended setup for organizations with large numbers of users and groups.

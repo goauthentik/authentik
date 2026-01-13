@@ -2,6 +2,8 @@ from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
+PRIORITY_HIGH = 1000
+
 
 class AuthentikTasksConfig(ManagedAppConfig):
     name = "authentik.tasks"

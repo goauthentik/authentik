@@ -1,9 +1,10 @@
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/forms/Radio.css";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -22,8 +23,13 @@ export interface RadioOption<T> {
 
 @customElement("ak-radio")
 export class Radio<T> extends CustomEmitterElement(AKElement) {
+    /**
+     * Options to display in the radio group.
+     *
+     * Can be either an array of RadioOption<T> or a function returning such an array.
+     */
     @property({ attribute: false })
-    public options: RadioOption<T>[] = [];
+    public options: RadioOption<T>[] | (() => RadioOption<T>[]) = [];
 
     @property()
     public name = "";
@@ -34,31 +40,22 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
     #fieldID: string = this.name || IDGenerator.randomID();
 
     static styles: CSSResult[] = [
+        // ---
         PFBase,
         PFRadio,
         PFForm,
-        css`
-            .pf-c-form__group-control {
-                padding-top: calc(
-                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                );
-            }
-            .pf-c-radio {
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .pf-c-radio__description {
-                text-wrap: balance;
-            }
-        `,
+        Styles,
     ];
+
+    #optionsArray(): RadioOption<T>[] {
+        return typeof this.options === "function" ? this.options() : this.options;
+    }
 
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
     // not trigger an element update.
     willUpdate() {
         if (!this.value) {
-            const maybeDefault = this.options.filter((opt) => opt.default);
+            const maybeDefault = this.#optionsArray().filter((opt) => opt.default);
             if (maybeDefault.length > 0) {
                 this.value = maybeDefault[0].value;
             }
@@ -91,7 +88,10 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
         const changeListener = this.#buildChangeListener(option);
 
-        return html`<div class="pf-c-radio" @click=${changeListener}>
+        return html`<div
+            class="pf-c-radio ${option.disabled ? "pf-m-disabled" : ""}"
+            @click=${changeListener}
+        >
             <input
                 class="pf-c-radio__input"
                 type="radio"
@@ -112,7 +112,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     render() {
         return html`<div class="pf-c-form__group-control pf-m-stack">
-            ${map(this.options, this.#renderRadio)}
+            ${map(this.#optionsArray(), this.#renderRadio)}
         </div>`;
     }
 }

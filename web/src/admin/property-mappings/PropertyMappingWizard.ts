@@ -12,6 +12,7 @@ import "#admin/property-mappings/PropertyMappingSourceOAuthForm";
 import "#admin/property-mappings/PropertyMappingSourcePlexForm";
 import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
 import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
+import "#admin/property-mappings/PropertyMappingSourceTelegramForm";
 import "#admin/property-mappings/PropertyMappingTestForm";
 import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
@@ -73,7 +74,7 @@ export class PropertyMappingWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            label=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>

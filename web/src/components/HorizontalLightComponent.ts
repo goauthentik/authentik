@@ -3,20 +3,21 @@ import "#elements/forms/HorizontalFormElement";
 import { SlottedTemplateResult } from "../elements/types";
 
 import { AKElement, type AKElementProps } from "#elements/Base";
+import { FocusTarget } from "#elements/utils/focus";
 
 import { ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
-    label?: string;
+    label: string | null;
     required?: boolean;
-    help?: string;
+    help: string | null;
     bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
     hidden?: boolean;
     invalid?: boolean;
@@ -29,6 +30,11 @@ export abstract class HorizontalLightComponent<T>
     extends AKElement
     implements HorizontalLightComponentProps<T>
 {
+    static shadowRootOptions = {
+        ...AKElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -39,6 +45,12 @@ export abstract class HorizontalLightComponent<T>
     protected createRenderRoot() {
         return this;
     }
+
+    protected autofocusTarget = new FocusTarget();
+
+    public override focus = this.autofocusTarget.focus;
+
+    public override role = "presentation";
 
     //#region Properties
 
@@ -55,23 +67,32 @@ export abstract class HorizontalLightComponent<T>
      * @property
      * @attribute
      */
-    @property({ type: String, reflect: true })
-    label?: string;
+    @property({ type: String })
+    label: string | null = null;
 
     /**
      * @property
      * @attribute
      */
-    @property({ type: Boolean, reflect: true })
-    public required?: boolean;
+    @property({ type: Boolean, reflect: false })
+    public get required() {
+        return this.ariaRequired === "true";
+    }
+
+    public set required(value: boolean) {
+        this.ariaRequired = value ? "true" : "false";
+    }
+
+    @property({ type: Boolean })
+    public autofocus: boolean = false;
 
     /**
      * Help text to display below the form element. Optional
      * @property
      * @attribute
      */
-    @property({ type: String, reflect: true })
-    help = "";
+    @property({ reflect: false })
+    help: string | null = null;
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
@@ -84,8 +105,14 @@ export abstract class HorizontalLightComponent<T>
      * @property
      * @attribute
      */
-    @property({ type: Boolean, reflect: true })
-    hidden = false;
+    @property({ type: Boolean })
+    public get hidden() {
+        return this.ariaHidden === "true";
+    }
+
+    public set hidden(value: boolean) {
+        this.ariaHidden = value ? "true" : "false";
+    }
 
     /**
      * @property
@@ -115,12 +142,45 @@ export abstract class HorizontalLightComponent<T>
     @property({ type: String, attribute: "input-hint" })
     inputHint?: string;
 
+    #fieldID = IDGenerator.elementID().toString();
+    protected helpID = `field-help-${this.#fieldID}`;
+    protected labelID = `field-label-${this.#fieldID}`;
+
     /**
      * A unique ID to associate with the input and label.
      * @property
      */
     @property({ type: String, reflect: false })
-    public fieldID?: string = IDGenerator.elementID().toString();
+    public get fieldID() {
+        return this.#fieldID;
+    }
+
+    public set fieldID(value: string) {
+        this.#fieldID = value;
+        this.helpID = `field-help-${this.#fieldID}`;
+        this.labelID = `field-label-${this.#fieldID}`;
+    }
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override connectedCallback() {
+        super.connectedCallback();
+        this.setAttribute("aria-labelledby", this.labelID);
+
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+    }
+
+    protected override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
+        if (this.autofocus) {
+            requestAnimationFrame(() => {
+                this.autofocusTarget.focus();
+            });
+        }
+    }
 
     //#endregion
 
@@ -148,13 +208,21 @@ export abstract class HorizontalLightComponent<T>
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
+            role="presentation"
             .errorMessages=${this.errorMessages}
         >
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-            </div>
-
-            ${this.renderControl()} ${this.renderHelp()}
+            ${AKLabel(
+                {
+                    id: this.labelID,
+                    className: "pf-c-form__group-label",
+                    slot: "label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label || "",
+            )}
+            ${this.renderControl()}
+            <div id=${this.helpID}>${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
 

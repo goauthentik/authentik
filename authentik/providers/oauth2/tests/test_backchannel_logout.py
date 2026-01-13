@@ -15,6 +15,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
     AccessToken,
+    OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -158,7 +159,9 @@ class TestBackChannelLogout(OAuthTestCase):
     def test_send_backchannel_logout_request_scenarios(self, mock_get_session):
         """Test various scenarios for backchannel logout request task"""
         # Setup provider with backchannel logout URI
-        self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
+
+        self.provider.logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
         self.provider.save()
 
         # Setup mock session and response
@@ -193,7 +196,7 @@ class TestBackChannelLogout(OAuthTestCase):
 
         # Scenario 3: No URI configured
         mock_session.post.reset_mock()
-        self.provider.backchannel_logout_uri = ""
+        self.provider.logout_uri = ""
         self.provider.save()
         result = send_backchannel_logout_request.send(
             self.provider.pk, "http://testserver", sub="test-user-uid"
@@ -215,7 +218,8 @@ class TestBackChannelLogout(OAuthTestCase):
 
         # Scenario 6: Request timeout
         mock_session.post.side_effect = Timeout("Request timed out")
-        self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
         self.provider.save()
         with self.assertRaises(ResultFailure):
             send_backchannel_logout_request.send(

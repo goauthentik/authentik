@@ -2,6 +2,7 @@ import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import { AkControlElement } from "#elements/AkControlElement";
 import { LitPropertyRecord } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { MatchingModeEnum, RedirectURI } from "@goauthentik/api";
 
@@ -40,7 +41,10 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
         url: "",
     };
 
-    @property({ type: String })
+    @property({ type: String, useDefault: true })
+    public name = "";
+
+    @property({ type: String, attribute: "input-id" })
     public inputID?: string;
 
     @queryAll(".ak-form-control")
@@ -83,7 +87,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
             <input
                 type="text"
                 @change=${onChange}
-                value="${ifDefined(this.redirectURI.url ?? undefined)}"
+                value="${ifPresent(this.redirectURI.url)}"
                 class="pf-c-form-control ak-form-control pf-m-monospace"
                 spellcheck="false"
                 autocomplete="off"

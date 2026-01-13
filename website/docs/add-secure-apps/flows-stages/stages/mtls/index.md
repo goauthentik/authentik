@@ -8,7 +8,12 @@ toc_max_heading_level: 5
 
 The Mutual TLS stage enables authentik to use client certificates to enroll and authenticate users. These certificates can be local to the device or available via PIV Smart Cards, Yubikeys, etc.
 
-Management of client certificates is out of the scope of this document.
+:::warning Use of trusted Certificate Authority
+
+For mTLS, note that you should NOT use a globally known CA.
+
+Using private PKI certificates that are trusted by the end-device is best practise. For example, using a Verisign certificate as a "known CA" means that ANYONE who has a certificate signed by them can authenticate via mTLS, and in addition you should implement [custom validation](../../flow/context/index.mdx#auth_method-string) to prevent unauthorized access.
+:::
 
 ## Reverse-proxy configuration
 
@@ -96,7 +101,7 @@ When using authentik without a reverse proxy, select the certificate authorities
 
 ## Stage configuration
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 
 2. Navigate to **System** > **Certificates**, and either generate or add the certificate you’ll use as a certificate authority.
 

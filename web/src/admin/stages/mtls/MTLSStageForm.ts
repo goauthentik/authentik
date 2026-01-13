@@ -13,7 +13,7 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import {
     CertAttributeEnum,
     MutualTLSStage,
-    MutualTLSStageModeEnum,
+    StageModeEnum,
     StagesApi,
     UserAttributeEnum,
 } from "@goauthentik/api";
@@ -37,16 +37,15 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                 stageUuid: this.instance.pk || "",
                 mutualTLSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
-                mutualTLSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
+            mutualTLSStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
         return html`
-            <span> ${msg("Client-certificate/mTLS authentication/enrollment.")} </span>
+            <span> ${msg("Client-certificate/mTLS authentication/enrollment.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -62,7 +61,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                             .options=${[
                                 {
                                     label: msg("Certificate optional"),
-                                    value: MutualTLSStageModeEnum.Optional,
+                                    value: StageModeEnum.Optional,
                                     default: true,
                                     description: html`${msg(
                                         "If no certificate was provided, this stage will succeed and continue to the next stage.",
@@ -70,7 +69,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                                 },
                                 {
                                     label: msg("Certificate required"),
-                                    value: MutualTLSStageModeEnum.Required,
+                                    value: StageModeEnum.Required,
                                     description: html`${msg(
                                         "If no certificate was provided, this stage will stop flow execution.",
                                     )}`,

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `scim-bridge.company` is the FQDN of the 1Password SCIM Bridge _(optional)_.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -27,7 +27,7 @@ To support the integration of 1Password with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -53,7 +53,7 @@ To support the integration of 1Password with authentik, you need to create an ap
 
 ## Reconfigure authentik provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created 1Password provider.
     - Set redirect URIs matching the values taken from 1Password.
 3. Click **Update**.
@@ -78,7 +78,7 @@ To support automated user provisioning, you need to create a group, and a SCIM p
 
 #### Create a user group
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set a name for the group (e.g. `1Password Users`), and click **Create**.
 4. Click the name of the newly created group and navigate to the **Users** tab.

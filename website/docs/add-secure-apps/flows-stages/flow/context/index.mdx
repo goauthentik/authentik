@@ -23,6 +23,8 @@ This section describes the data (the context) that are used in authentik, and pr
 Keys prefixed with `goauthentik.io` are used internally by authentik and are subject to change without notice, and should not be modified in policies in most cases.
 :::
 
+{/* To update this file, search for `PLAN_CONTEXT_\w+\s=` in the workspace to find all definitions. */}
+
 ### Common keys
 
 #### `pending_user` ([User object](../../../../users-sources/user/user_ref.mdx#object-properties))
@@ -103,9 +105,15 @@ Key-value pairs of the data that is included in the form and will be submitted t
 
 ##### `captcha` (dictionary)
 
-When `error_on_invalid_score` (TODO) is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
+When _Error on invalid score_ is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
 
 It contains two keys, `response` which is the raw response from the specified captcha verification URL, and `stage`, which is a reference to the captcha stage that executed the test.
+
+#### `goauthentik.io/stages/captcha/site_key` (string):ak-version[2025.12]
+
+#### `goauthentik.io/stages/captcha/private_key` (string):ak-version[2025.12]
+
+Optionally set captcha site and private keys dynamically through a policy, for example when using E2E testing with a captcha stage bound.
 
 #### Consent stage
 
@@ -156,7 +164,7 @@ Possible options:
 - `ldap` (Authenticated via LDAP bind from an LDAP source)
 - `auth_mfa` (Authentication via MFA device without password)
 - `auth_webauthn_pwl` (Passwordless authentication via WebAuthn with Passkeys)
-- `jwt` ([M2M](../../../providers/oauth2/client_credentials.mdx) authentication via an existing JWT)
+- `jwt` ([M2M](../../../providers/oauth2/machine_to_machine.mdx) authentication via an existing JWT)
 - `mtls` (Authentication via Certificate, see [Mutual TLS Stage](../../stages/mtls/index.md))
 
 ##### `auth_method_args` (dictionary)
@@ -200,6 +208,22 @@ Optionally override the email address that the email will be sent to. If not set
 ##### `pending_user_identifier` (string)
 
 If _Show matched user_ is disabled, this key will be set to the user identifier entered by the user in the identification stage.
+
+#### Invitation stage
+
+##### `invitation` (Invitation object)
+
+The invitation used with the invitation stage. When **Continue flow without invitation** is enabled, this may be unset.
+
+If the invitation was single-use, this object may hold a reference to an invitation that no longer exists in the database.
+
+##### `invitation_in_effect` (boolean)
+
+A boolean value that is `True` when an invitation has been used.
+
+##### `token` (string)
+
+This value can be set either via [Prompt data](#prompt_data-dictionary) or via policy to interactively/programmatically choose an invitation.
 
 #### Redirect stage
 

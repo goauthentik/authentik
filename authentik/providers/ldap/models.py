@@ -93,11 +93,13 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
     def __str__(self):
         return f"LDAP Provider {self.name}"
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
-        required_models = [self, "authentik_core.view_user", "authentik_core.view_group"]
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
+        required = [self, "authentik_core.view_user", "authentik_core.view_group"]
         if self.certificate is not None:
-            required_models.append(self.certificate)
-        return required_models
+            required.append(("view_certificatekeypair", self.certificate))
+            required.append(("view_certificatekeypair_certificate", self.certificate))
+            required.append(("view_certificatekeypair_key", self.certificate))
+        return required
 
     class Meta:
         verbose_name = _("LDAP Provider")

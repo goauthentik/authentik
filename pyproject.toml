@@ -1,33 +1,34 @@
 [project]
 name = "authentik"
-version = "2025.10.0-rc1"
+version = "2026.2.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
+  "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
+  "cachetools==6.2.4",
   "channels==4.3.1",
-  "channels-redis==4.3.0",
   "cryptography==45.0.5",
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
-  "django==5.1.11",
+  "django-channels-postgres",
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
   "django-filter==25.1",
-  "django-guardian==3.0.3",
   "django-model-utils==5.0.0",
   "django-pglock==1.7.2",
   "django-pgtrigger==4.15.2",
+  "django-postgres-cache",
+  "django-postgres-extra==2.0.9",
   "django-prometheus==2.4.1",
-  "django-redis==6.0.0",
   "django-storages[s3]==1.14.6",
-  "django-tenants==3.8.0",
+  "django-tenants==3.9.0",
+  "django==5.2.10",
   "djangoql==0.18.1",
-  "djangorestframework-guardian==0.4.0",
-  "djangorestframework==3.16.0",
+  "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.7.3",
   "drf-spectacular==0.28.0",
@@ -49,8 +50,8 @@ dependencies = [
   "packaging==25.0",
   "paramiko==3.5.1",
   "psycopg[c,pool]==3.2.9",
-  "pydantic==2.11.7",
   "pydantic-scim==0.0.8",
+  "pydantic==2.11.7",
   "pyjwt==2.10.1",
   "pyrad==2.4",
   "python-kadmin-rs==0.6.1",
@@ -79,25 +80,32 @@ dev = [
   "aws-cdk-lib==2.188.0",
   "bandit==1.8.3",
   "black==25.1.0",
+  "bpython==0.25",
   "channels[daphne]==4.3.1",
   "codespell==2.4.1",
   "colorama==0.4.6",
   "constructs==10.4.2",
   "coverage[toml]==7.8.0",
   "debugpy==1.8.14",
+  "django-stubs[compatible-mypy]==5.2.5",
+  "djangorestframework-stubs[compatible-mypy]==3.16.3",
   "drf-jsonschema-serializer==3.0.0",
   "freezegun==1.5.1",
   "importlib-metadata==8.6.1",
   "k5test==0.10.4",
+  "lxml-stubs==0.5.1",
+  "mypy==1.18.2",
   "pdoc==15.0.3",
-  "pytest==8.3.5",
   "pytest-django==4.11.1",
   "pytest-github-actions-annotate-failures==0.3.0",
   "pytest-randomly==3.16.0",
   "pytest-timeout==2.4.0",
+  "pytest==8.3.5",
   "requests-mock==1.12.1",
   "ruff==0.11.9",
   "selenium==4.32.0",
+  "types-channels==4.3.0.20250822",
+  "types-ldap3==2.9.13.20250622",
 ]
 
 [tool.uv]
@@ -113,12 +121,19 @@ no-binary-package = [
 ]
 
 [tool.uv.sources]
-djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+ak-guardian = { workspace = true }
+django-channels-postgres = { workspace = true }
 django-dramatiq-postgres = { workspace = true }
+django-postgres-cache = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 
 [tool.uv.workspace]
-members = ["packages/django-dramatiq-postgres"]
+members = [
+  "packages/ak-guardian",
+  "packages/django-channels-postgres",
+  "packages/django-dramatiq-postgres",
+  "packages/django-postgres-cache",
+]
 
 [project.scripts]
 ak = "lifecycle.ak:main"
@@ -132,29 +147,33 @@ exclude_dirs = ["**/node_modules/**"]
 
 [tool.codespell]
 skip = [
-  "**/node_modules",
-  "**/package-lock.json",
-  "schema.yml",
-  "unittest.xml",
-  "./blueprints/schema.json",
-  "go.sum",
-  "locale",
-  "**/web/src/locales",
-  "**/dist",                    # Distributed build output
-  "**/storybook-static",
-  "**/web/xliff",
+  "**/.env",                    # Environment files
+  "**/.venv",                   # Python virtual environment
+  "**/node_modules",            # Node modules
+  "**/package-lock.json",       # NPM package lock
+  "schema.yml",                 # OpenAPI schema
+  "./blueprints/schema.json",   # Generated blueprint schema
+  "go.sum",                     # Go module file
+  "locale",                     # Django locale files
+  "**/web/src/locales",         # Generated TypeScript locale
+  "**/web/xliff",               # XLIFF translation files
+  "**/custom-elements.json",    # TypeScript custom element definitions
+  "**/storybook-static",        # Storybook build output
+  "**/playwright-report",       # Playwright test output
+  "unittest.xml",               # Pytest output
+  "./htmlcov",                  # Coverage HTML output
   "**/out",                     # TypeScript type-checking output
-  "./web/custom-elements.json", # TypeScript custom element definitions
+  "**/dist",                    # Distributed build output
   "./website/build",            # TODO: Remove this after moving website to docs
   "./website/**/build",         # TODO: Remove this after moving website to docs
   "./docs/build",               # Docusaurus Topic docs build output
   "./docs/**/build",            # Docusaurus workspaces output
   "*.api.mdx",                  # Generated API docs
-  "./gen-ts-api",
-  "./gen-py-api",
-  "./gen-go-api",
-  "./htmlcov",
-  "./media",
+  "./gen-ts-api",               # Generated TypeScript API
+  "./gen-py-api",               # Generated Python API
+  "./gen-go-api",               # Generated Go API
+  "./data",                     # Media files
+  "./media",                    # Legacy media files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
@@ -171,20 +190,14 @@ exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
 select = [
-  # pycodestyle
-  "E",
-  # Pyflakes
-  "F",
-  # isort
-  "I",
-  # pyupgrade
-  "UP",
-  # flake8-bugbear
-  "B",
-  # django
-  "DJ",
-  # pylint
-  "PL",
+  "E",   # pycodestyle
+  "F",   # Pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "DJ",  # django
+  "PL",  # pylint
+  "BLE", # flake8-blind-except
 ]
 ignore = [
   "DJ001", # Avoid using `null=True` on string-based fields,
@@ -194,6 +207,93 @@ ignore = [
 max-args = 7
 max-branches = 18
 max-returns = 10
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main", "pydantic.mypy"]
+exclude = ['^gen-py-api/']
+
+[[tool.mypy.overrides]]
+module = ["django_tenants.*", "dramatiq.*", "pglock.*"]
+follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cron_converter.*", "msgpack.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+  "authentik.admin.*",
+  "authentik.api.*",
+  "authentik.blueprints.*",
+  "authentik.brands.*",
+  "authentik.core.*",
+  "authentik.crypto.*",
+  "authentik.endpoints.*",
+  "authentik.enterprise.*",
+  "authentik.events.*",
+  "authentik.flows.*",
+  "authentik.lib.*",
+  "authentik.outposts.*",
+  "authentik.policies.*",
+  "authentik.policies.dummy.*",
+  "authentik.policies.event_matcher.*",
+  "authentik.policies.expiry.*",
+  "authentik.policies.expression.*",
+  "authentik.policies.geoip.*",
+  "authentik.policies.password.*",
+  "authentik.policies.reputation.*",
+  "authentik.providers.ldap.*",
+  "authentik.providers.oauth2.*",
+  "authentik.providers.proxy.*",
+  "authentik.providers.rac.*",
+  "authentik.providers.radius.*",
+  "authentik.providers.saml.*",
+  "authentik.providers.scim.*",
+  "authentik.rbac.*",
+  "authentik.recovery.*",
+  "authentik.root.*",
+  "authentik.sources.kerberos.*",
+  "authentik.sources.ldap.*",
+  "authentik.sources.oauth.*",
+  "authentik.sources.plex.*",
+  "authentik.sources.saml.*",
+  "authentik.sources.scim.*",
+  "authentik.sources.telegram.*",
+  "authentik.stages.authenticator_duo.*",
+  "authentik.stages.authenticator_email.*",
+  "authentik.stages.authenticator_sms.*",
+  "authentik.stages.authenticator_static.*",
+  "authentik.stages.authenticator_totp.*",
+  "authentik.stages.authenticator_validate.*",
+  "authentik.stages.authenticator_webauthn.*",
+  "authentik.stages.authenticator.*",
+  "authentik.stages.captcha.*",
+  "authentik.stages.consent.*",
+  "authentik.stages.deny.*",
+  "authentik.stages.dummy.*",
+  "authentik.stages.email.*",
+  "authentik.stages.identification.*",
+  "authentik.stages.invitation.*",
+  "authentik.stages.password.*",
+  "authentik.stages.prompt.*",
+  "authentik.stages.redirect.*",
+  "authentik.stages.user_delete.*",
+  "authentik.stages.user_login.*",
+  "authentik.stages.user_logout.*",
+  "authentik.stages.user_write.*",
+  "authentik.tasks.*",
+  "authentik.tasks.schedules.*",
+  "authentik.tenants.*",
+  "guardian.*",
+  "lifecycle.*",
+  "tests.e2e.*",
+  "tests.integration.*",
+  "tests.openid_conformance.*",
+]
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "authentik.root.settings"
 
 [tool.coverage.run]
 source = ["authentik"]

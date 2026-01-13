@@ -2,12 +2,17 @@
  * @file Live reload plugin for ESBuild.
  *
  * @import { ListenOptions } from "node:net";
- * @import {Server as HTTPServer} from "node:http";
- * @import {Server as HTTPSServer} from "node:https";
+ * @import { Server as HTTPServer } from "node:http";
+ * @import { Server as HTTPSServer } from "node:https";
+ * @import { Logger } from "@goauthentik/esbuild-plugin-live-reload/shared";
  */
-import { findFreePorts } from "find-free-ports";
+
 import * as http from "node:http";
 import { resolve as resolvePath } from "node:path";
+
+import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+
+import { findFreePorts } from "find-free-ports";
 
 /**
  * Serializes a custom event to a text stream.
@@ -26,7 +31,7 @@ export function serializeCustomEventToStream(event) {
 
     const eventContent = [`event: ${event.type}`, `data: ${JSON.stringify(data)}`];
 
-    return eventContent.join("\n") + "\n\n";
+    return `${eventContent.join("\n")}\n\n`;
 }
 
 const MIN_PORT = 1025;
@@ -59,7 +64,7 @@ async function findDisparatePort() {
  *
  * @property {string} pathname
  * @property {EventTarget} dispatcher
- * @property {string} [logPrefix]
+ * @property {Logger} [logger]
  *
  * @category Server API
  * @runtime node
@@ -81,9 +86,7 @@ async function findDisparatePort() {
  * @category Server API
  * @runtime node
  */
-export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
-    const log = console.log.bind(console, `[${logPrefix}]`);
-
+export function createRequestHandler({ pathname, dispatcher, logger = createLogger() }) {
     /**
      * @type {RequestHandler}
      */
@@ -93,13 +96,13 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
         res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
         if (req.url !== pathname) {
-            log(`🚫 Invalid request to ${req.url}`);
+            logger.warn(`🚫 Invalid request to ${req.url}`);
             res.writeHead(404);
             res.end();
             return;
         }
 
-        log("🔌 Client connected");
+        logger.debug("🔌 Client connected");
 
         res.writeHead(200, {
             "Content-Type": "text/event-stream",
@@ -120,8 +123,15 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
         dispatcher.addEventListener("esbuild:error", listener);
         dispatcher.addEventListener("esbuild:end", listener);
 
+        const keepAliveInterval = setInterval(() => {
+            logger.debug("🏓 Keep-alive");
+
+            res.write("event: keep-alive\n\n");
+            res.write(serializeCustomEventToStream(new CustomEvent("esbuild:keep-alive")));
+        }, 15_000);
+
         req.on("close", () => {
-            log("🔌 Client disconnected");
+            logger.debug("🔌 Client disconnected");
 
             clearInterval(keepAliveInterval);
 
@@ -129,13 +139,6 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
             dispatcher.removeEventListener("esbuild:error", listener);
             dispatcher.removeEventListener("esbuild:end", listener);
         });
-
-        const keepAliveInterval = setInterval(() => {
-            console.timeStamp("🏓 Keep-alive");
-
-            res.write("event: keep-alive\n\n");
-            res.write(serializeCustomEventToStream(new CustomEvent("esbuild:keep-alive")));
-        }, 15_000);
     };
 
     return requestHandler;
@@ -152,7 +155,7 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
  * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
  * @property {ListenOptions} [listenOptions] Options for the server's listen method.
  * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
- * @property {string} [logPrefix] A prefix to use for log messages.
+ * @property {Logger} [logger] A console-like logger.
  * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
  */
 
@@ -166,9 +169,8 @@ export function liveReloadPlugin(options = {}) {
     return {
         name: "build-watcher",
         setup: async (build) => {
-            const logPrefix = options.logPrefix || "Build Observer";
+            const logger = options.logger || createLogger();
 
-            const timerLabel = `[${logPrefix}] 🏁`;
             const relativeRoot = options.relativeRoot || process.cwd();
 
             const dispatcher = new EventTarget();
@@ -201,7 +203,7 @@ export function liveReloadPlugin(options = {}) {
             const requestHandler = createRequestHandler({
                 pathname: publicURL.pathname,
                 dispatcher,
-                logPrefix,
+                logger,
             });
 
             const server = options.server || http.createServer(requestHandler);
@@ -212,7 +214,7 @@ export function liveReloadPlugin(options = {}) {
             };
 
             server.listen(listenOptions, () => {
-                console.log(`[${logPrefix}] Listening`);
+                logger.info("Listening for build events");
             });
 
             build.onDispose(() => {
@@ -220,8 +222,6 @@ export function liveReloadPlugin(options = {}) {
             });
 
             build.onStart(() => {
-                console.time(timerLabel);
-
                 dispatcher.dispatchEvent(
                     new CustomEvent("esbuild:start", {
                         detail: new Date().toISOString(),
@@ -230,8 +230,6 @@ export function liveReloadPlugin(options = {}) {
             });
 
             build.onEnd((buildResult) => {
-                console.timeEnd(timerLabel);
-
                 if (!buildResult.errors.length) {
                     dispatcher.dispatchEvent(
                         new CustomEvent("esbuild:end", {
@@ -242,7 +240,7 @@ export function liveReloadPlugin(options = {}) {
                     return;
                 }
 
-                console.warn(`Build ended with ${buildResult.errors.length} errors`);
+                logger.warn(`Build ended with ${buildResult.errors.length} errors`);
 
                 dispatcher.dispatchEvent(
                     new CustomEvent("esbuild:error", {

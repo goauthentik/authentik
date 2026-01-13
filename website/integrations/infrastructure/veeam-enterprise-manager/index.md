@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `veeam.company` is the FQDN of the Veeam Enterprise Manager installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -31,7 +31,7 @@ Check the checkbox called "Enable SAML 2.0". Further down the site, click the "D
 
 ## authentik configuration
 
-To support the integration of Veeam Enterprise Manage with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Veeam Enterprise Manager with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -52,4 +52,4 @@ Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click t
 
 Back on Veeam Enterprise Manager, click on "Import from File", and select the XML file that you've downloaded from authentik. Make sure the "Enable SAML 2.0" checkbox is still enabled, and click save.
 
-To map Veeam Enterprise Manager permissions to an authentik user, you have to create an External Group. In Veeam Enterprise Manager, under Configuration, navigate to Roles. Click the "Add..." button and select "External Group". Type in the name of a group you're member of.
+To map Veeam Enterprise Manager permissions to an authentik user, you have to create an External Group. In Veeam Enterprise Manager, under Configuration, navigate to Roles. Click the "Add..." button and select "External Group". Type in the name of a group you're a member of.
