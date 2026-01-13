@@ -19,17 +19,6 @@ const renderElement = (item: Provider) => item.name;
 const renderValue = (item: Provider | undefined) => item?.pk;
 const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseName);
 
-async function fetch(query?: string) {
-    const args: ProvidersAllListRequest = {
-        ordering: "name",
-    };
-    if (query !== undefined) {
-        args.search = query;
-    }
-    const items = await new ProvidersApi(DEFAULT_CONFIG).providersAllList(args);
-    return items.results;
-}
-
 @customElement("ak-provider-search-input")
 export class AkProviderInput extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
@@ -79,6 +68,25 @@ export class AkProviderInput extends AKElement {
         return typeof this.value === "number" && this.value === item.pk;
     };
 
+    #fetch = async (query?: string) => {
+        const args: ProvidersAllListRequest = {
+            ordering: "name",
+        };
+        const api = new ProvidersApi(DEFAULT_CONFIG);
+        if (query !== undefined) {
+            args.search = query;
+        }
+        const items = await api.providersAllList(args);
+        const results = items.results;
+
+        // Ensure any current selected value is present in the displayed list.
+        if (!(this.value && !results.find((r) => r.pk === this.value))) {
+            return results;
+        }
+        const single = await api.providersAllRetrieve({ id: this.value });
+        return [single, ...results];
+    };
+
     render() {
         const readOnlyValue = this.readOnly && typeof this.value === "number";
 
@@ -98,7 +106,7 @@ export class AkProviderInput extends AKElement {
             <ak-search-select
                 .fieldID=${this.fieldID}
                 .selected=${this.#selected}
-                .fetchObjects=${fetch}
+                .fetchObjects=${this.#fetch}
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .groupBy=${doGroupBy}
