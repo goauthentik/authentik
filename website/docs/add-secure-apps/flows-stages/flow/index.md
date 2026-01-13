@@ -38,6 +38,12 @@ You can download our [Example flows](./examples/flows.md) and then import them i
 
 Starting with authentik 2022.8, flows are exported as YAML, but legacy JSON-based flows can still be imported.
 
+:::warning Flow imports
+Flow imports are blueprint files, which may contain objects other than flows (such as policies, users, groups, etc).
+
+You should only import files from trusted sources and review blueprints before importing them.
+:::
+
 ## Create a custom flow
 
 To create a flow, follow these steps:

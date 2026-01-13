@@ -8,6 +8,7 @@ import { ifPresent } from "#elements/utils/attributes";
 import { ListenerController } from "#elements/utils/listenerController";
 import { randomId } from "#elements/utils/randomId";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import { CaptchaHandler, CaptchaProvider, iframeTemplate } from "#flow/stages/captcha/shared";
 
@@ -20,7 +21,6 @@ import { match } from "ts-pattern";
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -351,18 +351,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     renderMain() {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
-                ${this.renderBody()}
+                ${FlowUserDetails({ challenge: this.challenge })} ${this.renderBody()}
             </form>
         </ak-flow-card>`;
     }
