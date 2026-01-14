@@ -376,7 +376,7 @@ dev = [
     { name = "daphne", specifier = "==4.2.1" },
     { name = "debugpy", specifier = "==1.8.19" },
     { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==5.2.8" },
-    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.16.3" },
+    { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.16.7" },
     { name = "drf-jsonschema-serializer", specifier = "==3.0.0" },
     { name = "freezegun", specifier = "==1.5.5" },
     { name = "importlib-metadata", specifier = "==8.7.1" },
@@ -1288,18 +1288,17 @@ wheels = [
 
 [[package]]
 name = "djangorestframework-stubs"
-version = "3.16.3"
+version = "3.16.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django-stubs" },
-    { name = "requests" },
     { name = "types-pyyaml" },
     { name = "types-requests" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c7/90/4512c9a464fec3fc6879f60c6ab1925da013bc5d6fa1a6951c750b02c89d/djangorestframework_stubs-3.16.3.tar.gz", hash = "sha256:200c620192da20a50a85b3e7d35cc7ec795aa9a58371a7f91368d4023e1b78f7", size = 34820, upload-time = "2025-09-18T18:06:01.989Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/50/889b1121dc0831aa9f6ece8409d41a5f4667da2a963172516841f343fd35/djangorestframework_stubs-3.16.7.tar.gz", hash = "sha256:e53bc346e9950ebdd1bb2bbc19d7e5c8b7acc894e381df55da69248f47ab78ff", size = 32296, upload-time = "2026-01-13T11:42:48.3Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a2/64/00ff39218f80e7e9411ff1950c13b179d96e033a08dfb4048d5b90bc54fa/djangorestframework_stubs-3.16.3-py3-none-any.whl", hash = "sha256:d6e77922c2489aa6b5716d321b592b8aab047d5fd7ae9293a52c5cf1640e62c6", size = 54618, upload-time = "2025-09-18T18:06:00.265Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/99/7c969728d66388e22fdaba94e1a9c56490954e2f12f598416e380a53b26d/djangorestframework_stubs-3.16.7-py3-none-any.whl", hash = "sha256:70f80050144875f80ce8ac823ff8628f6e3eb7336495394bb9803251721d9358", size = 56522, upload-time = "2026-01-13T11:42:46.118Z" },
 ]
 
 [package.optional-dependencies]
