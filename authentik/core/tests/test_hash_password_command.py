@@ -150,11 +150,10 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertIn("Invalid password hash format", str(ctx.exception))
 
-    def test_password_hash_takes_precedence_over_password(self):
-        """Test that password_hash takes precedence over password when both are provided"""
+    def test_password_and_password_hash_both_set_raises_error(self):
+        """Test that setting both password and password_hash raises an error"""
         plaintext_password = "plaintext-password"  # nosec
-        hash_password = "hash-password"  # nosec
-        password_hash = make_password(hash_password)
+        password_hash = make_password("hash-password")  # nosec
 
         username = generate_id()
         data = {
@@ -166,11 +165,11 @@ class TestUserSerializerPasswordHash(TestCase):
 
         serializer = UserSerializer(data=data, context={SERIALIZER_CONTEXT_BLUEPRINT: True})
         self.assertTrue(serializer.is_valid(), serializer.errors)
-        user = serializer.save()
 
-        # Verify the hash password is used, not the plaintext
-        self.assertTrue(user.check_password(hash_password))
-        self.assertFalse(user.check_password(plaintext_password))
+        with self.assertRaises(ValidationError) as ctx:
+            serializer.save()
+
+        self.assertIn("Cannot set both password and password_hash", str(ctx.exception))
 
     def test_password_change_date_updated_with_password_hash(self):
         """Test that password_change_date is updated when using password_hash"""
