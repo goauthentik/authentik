@@ -1,18 +1,16 @@
 import "#admin/applications/ApplicationCheckAccessForm";
 
-import type { OwnPropertyRecord } from "#common/types";
-
-import type { AKElement } from "#elements/Base";
 import { Form } from "#elements/forms/Form";
-import { ElementTagNamesOf, SlottedTemplateResult } from "#elements/types";
+import { ModelForm } from "#elements/forms/ModelForm";
+import { ElementTagNamesOf, LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-type CustomFormElementTagName = ElementTagNamesOf<Form>;
-type CustomFormElement = HTMLElementTagNameMap[CustomFormElementTagName];
-type FormAttributes = Partial<OwnPropertyRecord<CustomFormElement, AKElement>>;
+export type CustomFormElementTagName = ElementTagNamesOf<ModelForm>;
+export type CustomFormElement = HTMLElementTagNameMap[CustomFormElementTagName];
+export type CustomFormProperties = LitPropertyRecord<CustomFormElement>;
 
 @customElement("ak-proxy-form")
 export class ProxyForm<T = unknown> extends Form<T> {
@@ -28,7 +26,7 @@ export class ProxyForm<T = unknown> extends Form<T> {
     //#region Properties
 
     @property({ attribute: false })
-    public args: FormAttributes = {};
+    public args: CustomFormProperties = {};
 
     protected innerElement: CustomFormElement | null = null;
 

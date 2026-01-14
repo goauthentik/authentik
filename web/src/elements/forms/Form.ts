@@ -239,6 +239,12 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     @property({ type: String })
     public autocomplete?: Exclude<AutoFillBase, "">;
 
+    @property({ type: String })
+    public headline?: string;
+
+    @property({ type: String })
+    public actionLabel?: string;
+
     //#endregion
 
     public get form(): HTMLFormElement | null {

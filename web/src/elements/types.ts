@@ -12,7 +12,18 @@ import { DirectiveResult } from "lit-html/directive.js";
 
 //#region HTML Helpers
 
+export const AKElementTagPrefix = `ak-`;
 export type AKElementTagPrefix = `ak-${string}`;
+
+/**
+ * A utility type to extract registred tag names from {@linkcode HTMLElementTagNameMap}
+ * i.e. those starting with `ak-`.
+ */
+export type CustomElementTagName = Extract<keyof HTMLElementTagNameMap, AKElementTagPrefix>;
+
+export type CustomHTMLElementTagNameMap = {
+    [K in CustomElementTagName]: HTMLElementTagNameMap[K];
+};
 
 /**
  * Utility type to extract a record of tag names which correspond to a given type.
@@ -30,8 +41,8 @@ export type AKElementTagPrefix = `ak-${string}`;
  *
  * type FormElements = HTMLElementTagNamesOf<Form>;
  */
-export type ElementTagNamesOf<T, Map = HTMLElementTagNameMap> = {
-    [K in keyof Map]: Map[K] extends T ? K & AKElementTagPrefix : never;
+export type ElementTagNamesOf<T, Map = CustomHTMLElementTagNameMap> = {
+    [K in keyof Map]: Map[K] extends T ? K : never;
 }[keyof Map];
 
 //#endregion
