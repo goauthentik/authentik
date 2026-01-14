@@ -333,7 +333,7 @@ requires-dist = [
     { name = "kubernetes", specifier = "==33.1.0" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.0.2" },
-    { name = "msgraph-sdk", specifier = "==1.39.0" },
+    { name = "msgraph-sdk", specifier = "==1.52.0" },
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "packaging", specifier = "==25.0" },
     { name = "paramiko", specifier = "==4.0.0" },
@@ -2281,7 +2281,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.39.0"
+version = "1.52.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2291,9 +2291,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/a4/fe4f4b2ecb618012b9e8f9ae6dfba1b29f550cc8060d2f871016e37d4f94/msgraph_sdk-1.39.0.tar.gz", hash = "sha256:1769e4628b80635ae688c35e0f97d4f8d38ad84e67c59d0b671ebb0ce56f103a", size = 6086403, upload-time = "2025-07-22T20:40:05.605Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/12/19/1344e92aa124f82798bd52dbd863d8e821d37ab66f5be42293b460182b3c/msgraph_sdk-1.52.0.tar.gz", hash = "sha256:355e419ce3b71473efa0fc28a802c87f430b8e57da615c7d721838134b130619", size = 6270866, upload-time = "2026-01-07T17:26:30.521Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d3/b8/47200dcf7a8fbb1e62c8aa9296566e6d16dea96ff1ccaab0dea8b44e7c86/msgraph_sdk-1.39.0-py3-none-any.whl", hash = "sha256:29b7a2e19d97d9da95d26d9aaa344b47c6b75ac97e5878f0b5cea88451b924e5", size = 24989321, upload-time = "2025-07-22T20:40:02.643Z" },
+    { url = "https://files.pythonhosted.org/packages/19/16/50658a5325835198ade791a106130aabcb3e1e22750670c67777da949d66/msgraph_sdk-1.52.0-py3-none-any.whl", hash = "sha256:6984dbb0c0bd8ccc6f5108e36926ccf927c2e552bbc17072c8e6f36fd2165cb5", size = 25659951, upload-time = "2026-01-07T17:26:27.771Z" },
 ]
 
 [[package]]
