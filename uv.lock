@@ -368,7 +368,7 @@ dev = [
     { name = "aws-cdk-lib", specifier = "==2.188.0" },
     { name = "bandit", specifier = "==1.8.3" },
     { name = "black", specifier = "==25.12.0" },
-    { name = "bpython", specifier = "==0.25" },
+    { name = "bpython", specifier = "==0.26" },
     { name = "channels", extras = ["daphne"], specifier = "==4.3.1" },
     { name = "codespell", specifier = "==2.4.1" },
     { name = "colorama", specifier = "==0.4.6" },
@@ -650,7 +650,7 @@ wheels = [
 
 [[package]]
 name = "bpython"
-version = "0.25"
+version = "0.26"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "curtsies" },
@@ -660,9 +660,9 @@ dependencies = [
     { name = "pyxdg" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/dd/cc02bf66f342a4673867fdf6c1f9fce90ec1e91e651b21bc4af4890101da/bpython-0.25.tar.gz", hash = "sha256:c246fc909ef6dcc26e9d8cb4615b0e6b1613f3543d12269b19ffd0782166c65b", size = 207610, upload-time = "2025-01-17T09:35:22.382Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/29/cd80e9108a6fc6a925ffb915f8f69198a2bb2388e39167a41d743ac2a8f4/bpython-0.26.tar.gz", hash = "sha256:f79083e1e3723be9b49c9994ad1dd3a19ccb4d0d4f9a6f5b3a73bef8bc327433", size = 207564, upload-time = "2025-10-28T07:19:41.97Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ba/74/5470df025854d5e213793b62cbea032fd66919562662955789fcc5dc17d6/bpython-0.25-py3-none-any.whl", hash = "sha256:28fd86008ca5ef6100ead407c9743aa60c51293a18ba5b18fcacea7f5b7f2257", size = 176131, upload-time = "2025-01-17T09:35:19.444Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/92/26d8d98de4c1676305e03ec2be67850afaf883b507bf71b917d852585ec8/bpython-0.26-py3-none-any.whl", hash = "sha256:91bdbbe667078677dc6b236493fc03e47a04cd099630a32ca3f72d6d49b71e20", size = 175988, upload-time = "2025-10-28T07:19:40.114Z" },
 ]
 
 [[package]]
