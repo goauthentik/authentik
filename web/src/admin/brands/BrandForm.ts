@@ -61,7 +61,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    public override renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 required
                 name="domain"

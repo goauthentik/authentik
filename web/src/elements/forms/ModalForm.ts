@@ -6,27 +6,13 @@ import { EVENT_REFRESH } from "#common/constants";
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
-import {
-    AbstractLitElementConstructor,
-    LitElementConstructor,
-    SlottedTemplateResult,
-} from "#elements/types";
+import { SlottedTemplateResult } from "#elements/types";
+import { findSlottedInstance } from "#elements/utils/slots";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
-
-function findSlottedInstance<T>(
-    NodeConstructor: LitElementConstructor<T> | AbstractLitElementConstructor<T>,
-    slot: HTMLSlotElement,
-): T | null {
-    const assignedNodes = slot.assignedNodes({ flatten: true });
-
-    const node = assignedNodes.find((node) => node instanceof NodeConstructor);
-
-    return node ? (node as T) : null;
-}
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {
@@ -83,15 +69,10 @@ export class ModalForm extends ModalButton {
     // #region Private methods
 
     #confirm = async (): Promise<void> => {
-        const form = this.querySelector<Form>("[slot=form]");
+        const form = findSlottedInstance(Form, this.formSlot);
 
         if (!form) {
             throw new Error(msg("No form found"));
-        }
-
-        if (!(form instanceof Form)) {
-            console.warn("authentik/forms: form inside the form slot is not a Form", form);
-            throw new Error(msg("Element inside the form slot is not a Form"));
         }
 
         if (!form.reportValidity()) {
@@ -225,6 +206,21 @@ export class ModalForm extends ModalButton {
         });
     }
 
+    protected renderActions(): SlottedTemplateResult {
+        return html`<fieldset class="pf-c-modal-box__footer">
+            <legend class="sr-only">${msg("Form actions")}</legend>
+            ${this.renderSubmitButton()}
+            <button
+                type="button"
+                aria-description=${msg("Cancel action")}
+                @click=${this.#cancel}
+                class="pf-c-button pf-m-secondary"
+            >
+                ${this.cancelText}
+            </button>
+        </fieldset>`;
+    }
+
     protected override renderModalInner(): TemplateResult {
         return html`${this.loading
                 ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
@@ -232,18 +228,7 @@ export class ModalForm extends ModalButton {
             ${this.renderHeading()}
             <slot name="above-form"></slot>
             <div class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>${this.formSlot}</div>
-            <fieldset class="pf-c-modal-box__footer">
-                <legend class="sr-only">${msg("Form actions")}</legend>
-                ${this.renderSubmitButton()}
-                <button
-                    type="button"
-                    aria-description=${msg("Cancel action")}
-                    @click=${this.#cancel}
-                    class="pf-c-button pf-m-secondary"
-                >
-                    ${this.cancelText}
-                </button>
-            </fieldset>`;
+            ${this.renderActions()}`;
     }
 
     //#endregion
