@@ -102,7 +102,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==8.3.5",
   "requests-mock==1.12.1",
-  "ruff==0.11.9",
+  "ruff==0.14.11",
   "selenium==4.32.0",
   "types-channels==4.3.0.20250822",
   "types-ldap3==2.9.13.20250622",
@@ -147,33 +147,33 @@ exclude_dirs = ["**/node_modules/**"]
 
 [tool.codespell]
 skip = [
-  "**/.env",                    # Environment files
-  "**/.venv",                   # Python virtual environment
-  "**/node_modules",            # Node modules
-  "**/package-lock.json",       # NPM package lock
-  "schema.yml",                 # OpenAPI schema
-  "./blueprints/schema.json",   # Generated blueprint schema
-  "go.sum",                     # Go module file
-  "locale",                     # Django locale files
-  "**/web/src/locales",         # Generated TypeScript locale
-  "**/web/xliff",               # XLIFF translation files
-  "**/custom-elements.json",    # TypeScript custom element definitions
-  "**/storybook-static",        # Storybook build output
-  "**/playwright-report",       # Playwright test output
-  "unittest.xml",               # Pytest output
-  "./htmlcov",                  # Coverage HTML output
-  "**/out",                     # TypeScript type-checking output
-  "**/dist",                    # Distributed build output
-  "./website/build",            # TODO: Remove this after moving website to docs
-  "./website/**/build",         # TODO: Remove this after moving website to docs
-  "./docs/build",               # Docusaurus Topic docs build output
-  "./docs/**/build",            # Docusaurus workspaces output
-  "*.api.mdx",                  # Generated API docs
-  "./gen-ts-api",               # Generated TypeScript API
-  "./gen-py-api",               # Generated Python API
-  "./gen-go-api",               # Generated Go API
-  "./data",                     # Media files
-  "./media",                    # Legacy media files
+  "**/.env",                  # Environment files
+  "**/.venv",                 # Python virtual environment
+  "**/node_modules",          # Node modules
+  "**/package-lock.json",     # NPM package lock
+  "schema.yml",               # OpenAPI schema
+  "./blueprints/schema.json", # Generated blueprint schema
+  "go.sum",                   # Go module file
+  "locale",                   # Django locale files
+  "**/web/src/locales",       # Generated TypeScript locale
+  "**/web/xliff",             # XLIFF translation files
+  "**/custom-elements.json",  # TypeScript custom element definitions
+  "**/storybook-static",      # Storybook build output
+  "**/playwright-report",     # Playwright test output
+  "unittest.xml",             # Pytest output
+  "./htmlcov",                # Coverage HTML output
+  "**/out",                   # TypeScript type-checking output
+  "**/dist",                  # Distributed build output
+  "./website/build",          # TODO: Remove this after moving website to docs
+  "./website/**/build",       # TODO: Remove this after moving website to docs
+  "./docs/build",             # Docusaurus Topic docs build output
+  "./docs/**/build",          # Docusaurus workspaces output
+  "*.api.mdx",                # Generated API docs
+  "./gen-ts-api",             # Generated TypeScript API
+  "./gen-py-api",             # Generated Python API
+  "./gen-go-api",             # Generated Go API
+  "./data",                   # Media files
+  "./media",                  # Legacy media files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
@@ -200,7 +200,8 @@ select = [
   "BLE", # flake8-blind-except
 ]
 ignore = [
-  "DJ001", # Avoid using `null=True` on string-based fields,
+  "DJ001",   # Avoid using `null=True` on string-based fields,
+  "PLC0415", # `import` should be at the top-level of a file
 ]
 
 [tool.ruff.lint.pylint]
