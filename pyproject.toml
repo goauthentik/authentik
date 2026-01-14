@@ -49,7 +49,7 @@ dependencies = [
   "opencontainers==0.0.15",
   "packaging==25.0",
   "paramiko==4.0.0",
-  "psycopg[c,pool]==3.2.9",
+  "psycopg[c,pool]==3.3.2",
   "pydantic-scim==0.0.8",
   "pydantic==2.12.5",
   "pyjwt==2.10.1",
