@@ -180,12 +180,12 @@ ignore-words = ".github/codespell-words.txt"
 
 [tool.black]
 line-length = 100
-target-version = ['py313']
+target-version = ['py314']
 exclude = 'node_modules'
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
