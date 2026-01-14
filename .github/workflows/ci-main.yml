@@ -84,7 +84,7 @@ jobs:
           # Current version family based on
           current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
           if [[ -n $current_version_family ]]; then
-              prev_stable="version/$current_version_family"
+              prev_stable="version/${current_version_family}"
           fi
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
