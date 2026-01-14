@@ -19,7 +19,6 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
@@ -28,12 +27,10 @@ from authentik.sources.saml.processors.constants import (
     ECDSA_SHA256,
     ECDSA_SHA384,
     ECDSA_SHA512,
-    NS_SAML_ASSERTION,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
-    SAML_ATTRIBUTES_GROUP,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -217,31 +214,10 @@ class SAMLSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return SAMLSourcePropertyMapping
 
-    def get_base_user_properties(self, root: Any, name_id: Any, **kwargs):
-        attributes = {}
-        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
-        if assertion is None:
-            raise ValueError("Assertion element not found")
-        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
-        if attribute_statement is None:
-            raise ValueError("Attribute statement element not found")
-        # Get all attributes and their values into a dict
-        for attribute in attribute_statement.iterchildren():
-            key = attribute.attrib["Name"]
-            attributes.setdefault(key, [])
-            for value in attribute.iterchildren():
-                attributes[key].append(value.text)
-        if SAML_ATTRIBUTES_GROUP in attributes:
-            attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
-            del attributes[SAML_ATTRIBUTES_GROUP]
-        # Flatten all lists in the dict
-        for key, value in attributes.items():
-            if key == "groups":
-                continue
-            attributes[key] = BaseEvaluator.expr_flatten(value)
-        attributes["username"] = name_id.text
-
-        return attributes
+    def get_base_user_properties(self, name_id: Any, info: dict[str, Any], **kwargs):
+        if "username" not in info:
+            info["username"] = name_id.text
+        return info
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {
