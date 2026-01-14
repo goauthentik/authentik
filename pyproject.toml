@@ -98,7 +98,7 @@ dev = [
   "pdoc==16.0.0",
   "pytest-django==4.11.1",
   "pytest-github-actions-annotate-failures==0.3.0",
-  "pytest-randomly==3.16.0",
+  "pytest-randomly==4.0.1",
   "pytest-timeout==2.4.0",
   "pytest==9.0.2",
   "requests-mock==1.12.1",
