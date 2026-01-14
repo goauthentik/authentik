@@ -322,7 +322,7 @@ requires-dist = [
     { name = "drf-spectacular", specifier = "==0.28.0" },
     { name = "dumb-init", specifier = "==1.2.5.post1" },
     { name = "duo-client", specifier = "==5.5.0" },
-    { name = "fido2", specifier = "==2.0.0" },
+    { name = "fido2", specifier = "==2.1.0" },
     { name = "geoip2", specifier = "==5.2.0" },
     { name = "geopy", specifier = "==2.4.1" },
     { name = "google-api-python-client", specifier = "==2.177.0" },
@@ -1441,14 +1441,14 @@ wheels = [
 
 [[package]]
 name = "fido2"
-version = "2.0.0"
+version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/b9/6ec8d8ec5715efc6ae39e8694bd48d57c189906f0628558f56688d0447b2/fido2-2.0.0.tar.gz", hash = "sha256:3061cd05e73b3a0ef6afc3b803d57c826aa2d6a9732d16abd7277361f58e7964", size = 274942, upload-time = "2025-05-20T09:45:00.974Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/43/f0/4f99ff79569a8f59e629bd4c042d5f160781dae58a818bb98c1127e4a6b4/fido2-2.1.0.tar.gz", hash = "sha256:b84da93f9bf608a675feb8445cc1d0cec2b8a02d46d165a1ba2fc8a1ab3bdce1", size = 4455878, upload-time = "2026-01-14T14:04:04.424Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4c/7d/a1dba174d7ec4b6b8d6360eed0ac3a4a4e2aa45f234e903592d3184c6c3f/fido2-2.0.0-py3-none-any.whl", hash = "sha256:685f54a50a57e019c6156e2dd699802a603e3abf70bab334f26affdd4fb8d4f7", size = 224761, upload-time = "2025-05-20T09:44:59.029Z" },
+    { url = "https://files.pythonhosted.org/packages/81/af/fa786b701282592747c4c52080e319e77a77be2cf2f2c685d4ebbfd6140a/fido2-2.1.0-py3-none-any.whl", hash = "sha256:1bcc68f5664c31a184eb7c54de4dbad3bdf3ed19705e565a778ec8fd1376658a", size = 226913, upload-time = "2026-01-14T14:03:59.086Z" },
 ]
 
 [[package]]
