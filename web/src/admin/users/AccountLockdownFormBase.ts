@@ -3,10 +3,9 @@ import "#elements/Alert";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
-import { APIMessage } from "#elements/messages/Message";
 
 import { CoreApi } from "@goauthentik/api";
 
