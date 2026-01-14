@@ -20,7 +20,7 @@ dependencies = [
   "django-filter==25.1",
   "django-model-utils==5.0.0",
   "django-pglock==1.7.2",
-  "django-pgtrigger==4.15.2",
+  "django-pgtrigger==4.17.0",
   "django-postgres-cache",
   "django-postgres-extra==2.0.9",
   "django-prometheus==2.4.1",
