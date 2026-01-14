@@ -92,7 +92,7 @@ During the installation process, the database migrations will be applied automat
 After the installation is complete, access authentik at `https://<gateway-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 :::info
-You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<gateway-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete URL (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
 :::
 
 ## First steps in authentik

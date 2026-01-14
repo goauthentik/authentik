@@ -7,7 +7,7 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -58,6 +58,10 @@ export interface PageHeaderInit {
  *
  * Internally, this component listens for the `ak-page-header` event, which is
  * dispatched by the `ak-page-header` component.
+ *
+ * @event ak-page-nav-menu-toggle
+ * @event ak-page-details-update
+ *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
@@ -373,7 +377,11 @@ export class AKPageNavbar
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
-                            ${renderImage(this.brandingLogo, msg("authentik Logo"), "")}
+                            ${ThemedImage({
+                                src: this.brandingLogo,
+                                alt: msg("authentik Logo"),
+                                theme: this.activeTheme,
+                            })}
                         </div>
                     </a>
                 </aside>

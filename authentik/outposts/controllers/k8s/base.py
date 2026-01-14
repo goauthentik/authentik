@@ -3,7 +3,7 @@
 import re
 from dataclasses import asdict
 from json import dumps
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from dacite.core import from_dict
 from django.http import HttpResponseNotFound
@@ -33,7 +33,7 @@ def get_version() -> str:
     return authentik_version()
 
 
-class KubernetesObjectReconciler(Generic[T]):
+class KubernetesObjectReconciler[T]:
     """Base Kubernetes Reconciler, handles the basic logic."""
 
     controller: "KubernetesController"

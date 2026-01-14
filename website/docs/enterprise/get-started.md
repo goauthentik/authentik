@@ -2,7 +2,7 @@
 title: Get started with Enterprise
 ---
 
-Installing authentik is exactly the same process for both Enterprise version and our open source version.
+Installing authentik is exactly the same process for both the Enterprise version and our open source version.
 
 ## 1. Install Enterprise
 
@@ -32,7 +32,7 @@ A license is associated with a specific Organization in the customer portal and 
 Enterprise authentik provides dedicated support, with a Support center where you can open a request and view the progress and communications for your current requests.
 
 :::info
-Access to the Support Center and the ticketing system requires a licensed instance of authentik.
+Access to the Support center and the ticketing system requires a licensed instance of authentik.
 :::
 
 To learn about our Support center, see ["Enterprise support"](./entsupport.md).

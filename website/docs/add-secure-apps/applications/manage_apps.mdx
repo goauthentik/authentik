@@ -65,7 +65,7 @@ return {
 Each entitlement can store attributes similar to user and group attributes. These attributes can be accessed in property mappings and passed to applications via `user.app_entitlements_attributes`. For example:
 
 ```python
-attrs = request.user.app_entitlements(provider.application)
+attrs = request.user.app_entitlements_attributes(provider.application)
 return {
     "my_attr": attrs.get("my_attr")
 }
