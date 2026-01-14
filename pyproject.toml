@@ -17,7 +17,7 @@ dependencies = [
   "django-countries==7.6.1",
   "django-cte==2.0.0",
   "django-dramatiq-postgres",
-  "django-filter==25.1",
+  "django-filter==25.2",
   "django-model-utils==5.0.0",
   "django-pglock==1.8.0",
   "django-pgtrigger==4.17.0",
