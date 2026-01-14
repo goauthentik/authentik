@@ -264,11 +264,11 @@ dev = [
     { name = "bandit" },
     { name = "black" },
     { name = "bpython" },
-    { name = "channels", extra = ["daphne"] },
     { name = "codespell" },
     { name = "colorama" },
     { name = "constructs" },
     { name = "coverage" },
+    { name = "daphne" },
     { name = "debugpy" },
     { name = "django-stubs", extra = ["compatible-mypy"] },
     { name = "djangorestframework-stubs", extra = ["compatible-mypy"] },
@@ -369,11 +369,11 @@ dev = [
     { name = "bandit", specifier = "==1.9.2" },
     { name = "black", specifier = "==25.12.0" },
     { name = "bpython", specifier = "==0.26" },
-    { name = "channels", extras = ["daphne"], specifier = "==4.3.1" },
     { name = "codespell", specifier = "==2.4.1" },
     { name = "colorama", specifier = "==0.4.6" },
     { name = "constructs", specifier = "==10.4.2" },
     { name = "coverage", extras = ["toml"], specifier = "==7.13.1" },
+    { name = "daphne", specifier = "==4.2.1" },
     { name = "debugpy", specifier = "==1.8.19" },
     { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==5.2.8" },
     { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.16.3" },
@@ -746,11 +746,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/12/a0/46450fcf9e56af18a6b0440ba49db6635419bb7bc84142c35f4143b1a66c/channels-4.3.1.tar.gz", hash = "sha256:97413ffd674542db08e16a9ef09cd86ec0113e5f8125fbd33cf0854adcf27cdb", size = 26896, upload-time = "2025-08-01T13:25:19.952Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/89/1c/eae1c2a8c195760376e7f65d0bdcc3e966695d29cfbe5c54841ce5c71408/channels-4.3.1-py3-none-any.whl", hash = "sha256:b091d4b26f91d807de3e84aead7ba785314f27eaf5bac31dd51b1c956b883859", size = 31286, upload-time = "2025-08-01T13:25:18.845Z" },
-]
-
-[package.optional-dependencies]
-daphne = [
-    { name = "daphne" },
 ]
 
 [[package]]
