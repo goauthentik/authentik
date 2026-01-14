@@ -71,7 +71,7 @@ dependencies = [
   "watchdog==6.0.0",
   "webauthn==2.6.0",
   "wsproto==1.2.0",
-  "xmlsec==1.3.16",
+  "xmlsec==1.3.17",
   "zxcvbn==4.5.0",
 ]
 
