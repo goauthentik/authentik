@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.12.0-rc1 Blueprint schema",
+    "title": "authentik 2026.2.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6276,6 +6276,11 @@
                     ],
                     "format": "date-time",
                     "title": "Expires"
+                },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
                 }
             },
             "required": []
@@ -11334,6 +11339,16 @@
                     "type": "boolean",
                     "title": "Password login update internal password",
                     "description": "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend"
+                },
+                "sync_outgoing_trigger_mode": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "immediate",
+                        "deferred_end"
+                    ],
+                    "title": "Sync outgoing trigger mode",
+                    "description": "When to trigger sync for outgoing providers"
                 }
             },
             "required": []
@@ -11699,6 +11714,16 @@
                     "type": "boolean",
                     "title": "Delete not found objects",
                     "description": "Delete authentik users and groups which were previously supplied by this source, but are now missing from it."
+                },
+                "sync_outgoing_trigger_mode": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "immediate",
+                        "deferred_end"
+                    ],
+                    "title": "Sync outgoing trigger mode",
+                    "description": "When to trigger sync for outgoing providers"
                 }
             },
             "required": []
@@ -11982,7 +12007,8 @@
                         "reddit",
                         "slack",
                         "twitch",
-                        "twitter"
+                        "twitter",
+                        "wechat"
                     ],
                     "title": "Provider type"
                 },
@@ -13686,7 +13712,7 @@
                 "token_length": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 2147483647,
+                    "maximum": 100,
                     "title": "Token length"
                 }
             },
@@ -14487,6 +14513,12 @@
                     "type": "boolean",
                     "title": "Enable remember me",
                     "description": "Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password."
+                },
+                "webauthn_stage": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Webauthn stage",
+                    "description": "When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor."
                 }
             },
             "required": []

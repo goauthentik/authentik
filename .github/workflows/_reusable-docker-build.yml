@@ -90,14 +90,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2
+      - uses: int128/docker-manifest-create-action@6cdd53a8337cd50bc3ef8c7016579d8d460edd94 # v2
         id: build
         with:
           tags: ${{ matrix.tag }}
           sources: |
             ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-amd64.outputs.image-digest }}
             ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-arm64.outputs.image-digest }}
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
         id: attest
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}

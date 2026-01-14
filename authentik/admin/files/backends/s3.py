@@ -130,44 +130,57 @@ class S3Backend(ManageableBackend):
                 if rel_path:  # Skip if it's just the directory itself
                     yield rel_path
 
-    def file_url(self, name: str, request: HttpRequest | None = None) -> str:
+    def file_url(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+        use_cache: bool = True,
+    ) -> str:
         """Generate presigned URL for file access."""
         use_https = CONFIG.get_bool(
             f"storage.{self.usage.value}.{self.name}.secure_urls",
             CONFIG.get_bool(f"storage.{self.name}.secure_urls", True),
         )
 
-        params = {
-            "Bucket": self.bucket_name,
-            "Key": f"{self.base_path}/{name}",
-        }
+        expires_in = int(
+            timedelta_from_string(
+                CONFIG.get(
+                    f"storage.{self.usage.value}.{self.name}.url_expiry",
+                    CONFIG.get(f"storage.{self.name}.url_expiry", "minutes=15"),
+                )
+            ).total_seconds()
+        )
 
-        expires_in = timedelta_from_string(
-            CONFIG.get(
-                f"storage.{self.usage.value}.{self.name}.url_expiry",
-                CONFIG.get(f"storage.{self.name}.url_expiry", "minutes=15"),
+        def _file_url(name: str, request: HttpRequest | None) -> str:
+            params = {
+                "Bucket": self.bucket_name,
+                "Key": f"{self.base_path}/{name}",
+            }
+
+            url = self.client.generate_presigned_url(
+                "get_object",
+                Params=params,
+                ExpiresIn=expires_in,
+                HttpMethod="GET",
             )
-        )
 
-        url = self.client.generate_presigned_url(
-            "get_object",
-            Params=params,
-            ExpiresIn=expires_in.total_seconds(),
-            HttpMethod="GET",
-        )
+            # Support custom domain for S3-compatible storage (so not AWS)
+            # Well, can't you do custom domains on AWS as well?
+            custom_domain = CONFIG.get(
+                f"storage.{self.usage.value}.{self.name}.custom_domain",
+                CONFIG.get(f"storage.{self.name}.custom_domain", None),
+            )
+            if custom_domain:
+                parsed = urlsplit(url)
+                scheme = "https" if use_https else "http"
+                url = f"{scheme}://{custom_domain}{parsed.path}?{parsed.query}"
 
-        # Support custom domain for S3-compatible storage (so not AWS)
-        # Well, can't you do custom domains on AWS as well?
-        custom_domain = CONFIG.get(
-            f"storage.{self.usage.value}.{self.name}.custom_domain",
-            CONFIG.get(f"storage.{self.name}.custom_domain", None),
-        )
-        if custom_domain:
-            parsed = urlsplit(url)
-            scheme = "https" if use_https else "http"
-            url = f"{scheme}://{custom_domain}{parsed.path}?{parsed.query}"
+            return url
 
-        return url
+        if use_cache:
+            return self._cache_get_or_set(name, request, _file_url, expires_in)
+        else:
+            return _file_url(name, request)
 
     def save_file(self, name: str, content: bytes) -> None:
         """Save file to S3."""

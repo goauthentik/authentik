@@ -1,5 +1,8 @@
-import { EVENT_REQUEST_POST } from "#common/constants";
+import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
+import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
+
+import { ConsoleLogger, Logger } from "#logger/browser";
 
 import {
     CurrentBrand,
@@ -9,32 +12,31 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
+import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
+
 export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
 
-export interface RequestInfo {
-    time: number;
-    method: string;
-    path: string;
-    status: number;
-}
-
 export class LoggingMiddleware implements Middleware {
-    brand: CurrentBrand;
+    #logger: Logger;
+
     constructor(brand: CurrentBrand) {
-        this.brand = brand;
+        const prefix =
+            brand.matchedDomain === "authentik-default" ? "api" : `api/${brand.matchedDomain}`;
+
+        this.#logger = ConsoleLogger.prefix(prefix);
     }
 
-    post(context: ResponseContext): Promise<Response | void> {
-        let msg = `authentik/api[${this.brand.matchedDomain}]: `;
-        // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
-        msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
-        let style = "";
-        if (context.response.status >= 400) {
-            style = "color: red; font-weight: bold;";
+    post({ response, init, url }: ResponseContext): Promise<Response> {
+        const parsedURL = URL.canParse(url) ? new URL(url) : null;
+        const path = parsedURL ? parsedURL.pathname + parsedURL.search : url;
+        if (response.ok) {
+            this.#logger.debug(`${init.method} ${path}`);
+        } else {
+            this.#logger.warn(`${response.status} ${init.method} ${path}`);
         }
-        console.debug(msg, style, "");
-        return Promise.resolve(context.response);
+
+        return Promise.resolve(response);
     }
 }
 
@@ -51,34 +53,46 @@ export class CSRFMiddleware implements Middleware {
 
 export class EventMiddleware implements Middleware {
     post?(context: ResponseContext): Promise<Response | void> {
-        const request: RequestInfo = {
+        const requestInfo: APIRequestInfo = {
             time: new Date().getTime(),
             method: (context.init.method || "GET").toUpperCase(),
             path: context.url,
             status: context.response.status,
         };
-        window.dispatchEvent(
-            new CustomEvent(EVENT_REQUEST_POST, {
-                bubbles: true,
-                composed: true,
-                detail: request,
-            }),
-        );
+
+        window.dispatchEvent(new AKRequestPostEvent(requestInfo));
+
         return Promise.resolve(context.response);
     }
 }
 
-export class LocaleMiddleware implements Middleware {
-    pre?(context: RequestContext): Promise<FetchParams | void> {
-        const userLocale = new URLSearchParams(window.location.search).get("locale");
-        if (!userLocale) {
-            return Promise.resolve(context);
+export class LocaleMiddleware implements Middleware, Disposable {
+    #locale: string;
+
+    #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
+        if (event.detail.status !== "ready") {
+            return;
         }
 
+        this.#locale = formatAcceptLanguageHeader(event.detail.readyLocale);
+    };
+
+    constructor(languageTagHint: Intl.UnicodeBCP47LocaleIdentifier) {
+        this.#locale = formatAcceptLanguageHeader(languageTagHint);
+
+        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
+    [Symbol.dispose]() {
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    }
+
+    pre(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
-            [AcceptLanguage]: userLocale,
+            [AcceptLanguage]: this.#locale,
         };
+
         return Promise.resolve(context);
     }
 }

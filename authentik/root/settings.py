@@ -190,6 +190,7 @@ SPECTACULAR_SETTINGS = {
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "StageModeEnum": "authentik.endpoints.models.StageMode",
+        "LicenseSummaryStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -207,7 +208,6 @@ SPECTACULAR_SETTINGS = {
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
-    "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",

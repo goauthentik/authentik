@@ -79,7 +79,7 @@ This example will set session duration at 540 minutes. Change the value to match
     - **ACS URL**: `https://knocknoc.company/api/saml/acs`
     - **Issuer**: `https://authentik.company`
     - **Service Provider Binding**: `Post`
-    - **Audience**: `https://kocknoc.company/api/saml/metadata`
+    - **Audience**: `https://knocknoc.company/api/saml/metadata`
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 

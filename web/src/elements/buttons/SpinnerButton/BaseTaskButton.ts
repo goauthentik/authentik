@@ -1,3 +1,5 @@
+import "#elements/Spinner";
+
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
 import { PFSize } from "#common/enums";
 

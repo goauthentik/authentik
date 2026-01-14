@@ -2,19 +2,25 @@ package postgresstore
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
-	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
-	_ "gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
@@ -49,60 +55,255 @@ func (ProxySession) TableName() string {
 	return "authentik_providers_proxy_proxysession"
 }
 
-// BuildDSN constructs a PostgreSQL connection string
-func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
+// BuildConnConfig constructs a pgx.ConnConfig from PostgreSQL configuration.
+func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	// Validate required fields
 	if cfg.Host == "" {
-		return "", fmt.Errorf("PostgreSQL host is required")
+		return nil, fmt.Errorf("PostgreSQL host is required")
 	}
 	if cfg.User == "" {
-		return "", fmt.Errorf("PostgreSQL user is required")
+		return nil, fmt.Errorf("PostgreSQL user is required")
 	}
 	if cfg.Name == "" {
-		return "", fmt.Errorf("PostgreSQL database name is required")
+		return nil, fmt.Errorf("PostgreSQL database name is required")
 	}
-	if cfg.Port <= 0 {
-		return "", fmt.Errorf("PostgreSQL port must be positive")
-	}
-
-	// Build DSN string with all parameters
-	dsnParts := []string{
-		"host=" + cfg.Host,
-		fmt.Sprintf("port=%d", cfg.Port),
-		"user=" + cfg.User,
-		"dbname=" + cfg.Name,
+	if cfg.Port == "" {
+		return nil, fmt.Errorf("PostgreSQL port is required")
 	}
 
-	if cfg.Password != "" {
-		dsnParts = append(dsnParts, "password="+cfg.Password)
+	// Start with a default config
+	connConfig, err := pgx.ParseConfig("")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create default config: %w", err)
 	}
 
-	// Add SSL mode
+	// Parse comma-separated hosts and create fallbacks
+	// cfg.Host can be a comma-separated list like "host1,host2,host3"
+	hosts := strings.Split(cfg.Host, ",")
+	for i, host := range hosts {
+		hosts[i] = strings.TrimSpace(host)
+	}
+
+	// Parse and validate comma-separated ports
+	portStrs := strings.Split(cfg.Port, ",")
+	ports := make([]uint16, len(portStrs))
+	for i, portStr := range portStrs {
+		portStr = strings.TrimSpace(portStr)
+		port, err := strconv.Atoi(portStr)
+		if err != nil {
+			return nil, fmt.Errorf("invalid port value %q: %w", portStr, err)
+		}
+		if port <= 0 {
+			return nil, fmt.Errorf("PostgreSQL port %d must be positive", port)
+		}
+		if port > 65535 {
+			return nil, fmt.Errorf("PostgreSQL port %d is out of valid range", port)
+		}
+		ports[i] = uint16(port)
+	}
+
+	// Get port for primary host
+	primaryHost := hosts[0]
+	primaryPort := ports[0]
+
+	// Set connection parameters for primary host
+	connConfig.Host = primaryHost
+	connConfig.Port = primaryPort
+	connConfig.User = cfg.User
+	connConfig.Password = cfg.Password
+	connConfig.Database = cfg.Name
+
+	// Configure TLS/SSL
 	if cfg.SSLMode != "" {
-		dsnParts = append(dsnParts, "sslmode="+cfg.SSLMode)
+		switch cfg.SSLMode {
+		case "disable":
+			connConfig.TLSConfig = nil
+		case "require", "verify-ca", "verify-full":
+			tlsConfig := &tls.Config{}
+
+			// Load root CA certificate if provided
+			if cfg.SSLRootCert != "" {
+				caCert, err := os.ReadFile(cfg.SSLRootCert)
+				if err != nil {
+					return nil, fmt.Errorf("failed to read SSL root certificate: %w", err)
+				}
+				caCertPool := x509.NewCertPool()
+				if !caCertPool.AppendCertsFromPEM(caCert) {
+					return nil, fmt.Errorf("failed to parse SSL root certificate")
+				}
+				tlsConfig.RootCAs = caCertPool
+			}
+
+			// Load client certificate and key if provided
+			if cfg.SSLCert != "" && cfg.SSLKey != "" {
+				cert, err := tls.LoadX509KeyPair(cfg.SSLCert, cfg.SSLKey)
+				if err != nil {
+					return nil, fmt.Errorf("failed to load SSL client certificate: %w", err)
+				}
+				tlsConfig.Certificates = []tls.Certificate{cert}
+			}
+
+			// Set verification mode
+			switch cfg.SSLMode {
+			case "require":
+				// Don't verify the server certificate (just encrypt)
+				tlsConfig.InsecureSkipVerify = true
+			case "verify-ca":
+				// Verify the certificate is signed by a trusted CA
+				tlsConfig.InsecureSkipVerify = false
+			case "verify-full":
+				// Verify the certificate and hostname
+				tlsConfig.InsecureSkipVerify = false
+				tlsConfig.ServerName = primaryHost
+			}
+
+			connConfig.TLSConfig = tlsConfig
+		}
 	}
 
-	// Add SSL certificates if provided
-	if cfg.SSLRootCert != "" {
-		dsnParts = append(dsnParts, "sslrootcert="+cfg.SSLRootCert)
+	// Create fallback configurations for additional hosts
+	if len(hosts) > 1 {
+		connConfig.Fallbacks = make([]*pgconn.FallbackConfig, 0, len(hosts)-1)
+		for i, host := range hosts[1:] {
+			port := getPortForIndex(ports, i+1)
+			fallback := &pgconn.FallbackConfig{
+				Host: host,
+				Port: port,
+			}
+			// Copy TLS config to fallback if present
+			if connConfig.TLSConfig != nil {
+				fallbackTLS := connConfig.TLSConfig.Clone()
+				// Update ServerName for verify-full mode
+				if cfg.SSLMode == "verify-full" {
+					fallbackTLS.ServerName = host
+				}
+				fallback.TLSConfig = fallbackTLS
+			}
+			connConfig.Fallbacks = append(connConfig.Fallbacks, fallback)
+		}
 	}
-	if cfg.SSLCert != "" {
-		dsnParts = append(dsnParts, "sslcert="+cfg.SSLCert)
+
+	// Set runtime params
+	if connConfig.RuntimeParams == nil {
+		connConfig.RuntimeParams = make(map[string]string)
 	}
-	if cfg.SSLKey != "" {
-		dsnParts = append(dsnParts, "sslkey="+cfg.SSLKey)
-	}
+
 	if cfg.DefaultSchema != "" {
-		dsnParts = append(dsnParts, "search_path="+cfg.DefaultSchema)
+		connConfig.RuntimeParams["search_path"] = cfg.DefaultSchema
 	}
 
-	// Add connection options if specified
+	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
-		dsnParts = append(dsnParts, cfg.ConnOptions)
+		connOpts, err := parseConnOptions(cfg.ConnOptions)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse connection options: %w", err)
+		}
+
+		if err := applyConnOptions(connConfig, connOpts); err != nil {
+			return nil, fmt.Errorf("failed to apply connection options: %w", err)
+		}
 	}
 
-	// Join parts with spaces
-	return strings.Join(dsnParts, " "), nil
+	return connConfig, nil
+}
+
+// getPortForIndex returns the port for the given host index.
+// If there are fewer ports than needed, returns the last port (libpq behavior).
+func getPortForIndex(ports []uint16, i int) uint16 {
+	if i >= len(ports) {
+		return ports[len(ports)-1]
+	}
+	return ports[i]
+}
+
+// parseConnOptions decodes a base64-encoded JSON string into a map of connection options.
+// This matches the Python behavior in authentik/lib/config.py:get_dict_from_b64_json
+func parseConnOptions(encoded string) (map[string]string, error) {
+	// Base64 decode
+	decoded, err := base64.StdEncoding.DecodeString(encoded)
+	if err != nil {
+		return nil, fmt.Errorf("invalid base64 encoding: %w", err)
+	}
+
+	// Parse JSON
+	var opts map[string]interface{}
+	if err := json.Unmarshal(decoded, &opts); err != nil {
+		return nil, fmt.Errorf("invalid JSON: %w", err)
+	}
+
+	// Convert all values to strings
+	result := make(map[string]string)
+	for k, v := range opts {
+		switch val := v.(type) {
+		case string:
+			result[k] = val
+		case float64:
+			// JSON numbers are float64
+			if val == float64(int(val)) {
+				result[k] = strconv.Itoa(int(val))
+			} else {
+				result[k] = strconv.FormatFloat(val, 'f', -1, 64)
+			}
+		case bool:
+			result[k] = strconv.FormatBool(val)
+		default:
+			result[k] = fmt.Sprintf("%v", v)
+		}
+	}
+
+	return result, nil
+}
+
+// applyConnOptions applies parsed connection options to the pgx.ConnConfig.
+func applyConnOptions(connConfig *pgx.ConnConfig, opts map[string]string) error {
+	for key, value := range opts {
+		// connect_timeout needs special handling as it's a connection-level timeout
+		if key == "connect_timeout" {
+			timeout, err := strconv.Atoi(value)
+			if err != nil {
+				return fmt.Errorf("invalid connect_timeout value: %w", err)
+			}
+			connConfig.ConnectTimeout = time.Duration(timeout) * time.Second
+			continue
+		}
+		// target_session_attrs needs special handling to set ValidateConnect function
+		if key == "target_session_attrs" {
+			switch value {
+			case "read-write":
+				connConfig.ValidateConnect = pgconn.ValidateConnectTargetSessionAttrsReadWrite
+			case "read-only":
+				connConfig.ValidateConnect = pgconn.ValidateConnectTargetSessionAttrsReadOnly
+			case "primary":
+				connConfig.ValidateConnect = pgconn.ValidateConnectTargetSessionAttrsPrimary
+			case "standby":
+				connConfig.ValidateConnect = pgconn.ValidateConnectTargetSessionAttrsStandby
+			case "prefer-standby":
+				connConfig.ValidateConnect = pgconn.ValidateConnectTargetSessionAttrsPreferStandby
+			case "any":
+				// "any" is the default (no validation needed)
+				connConfig.ValidateConnect = nil
+			default:
+				return fmt.Errorf("unknown target_session_attrs value: %s", value)
+			}
+			// Do not add target_session_attrs to RuntimeParams
+			continue
+		}
+		// All other options go to RuntimeParams
+		connConfig.RuntimeParams[key] = value
+	}
+	return nil
+}
+
+// BuildDSN constructs a PostgreSQL connection string from a ConnConfig.
+func BuildDSN(cfg config.PostgreSQLConfig) (string, error) {
+	connConfig, err := BuildConnConfig(cfg)
+	if err != nil {
+		return "", err
+	}
+
+	// Register the config and get a connection string
+	// (This approach lets pgx handle all the escaping internally which is quite convenient for say spaces in the password)
+	return stdlib.RegisterConnConfig(connConfig), nil
 }
 
 // SetupGORMWithRefreshablePool creates a GORM DB with a refreshable connection pool.
@@ -169,8 +370,8 @@ func NewPostgresStore(log *log.Entry) (*PostgresStore, error) {
 	}
 
 	// Determine connection pool settings
-	maxIdleConns := 10
-	maxOpenConns := 100
+	maxIdleConns := 4
+	maxOpenConns := 4
 	var connMaxLifetime time.Duration
 	if cfg.ConnMaxAge > 0 {
 		connMaxLifetime = time.Duration(cfg.ConnMaxAge) * time.Second

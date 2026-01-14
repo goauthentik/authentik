@@ -23,8 +23,13 @@ export interface RadioOption<T> {
 
 @customElement("ak-radio")
 export class Radio<T> extends CustomEmitterElement(AKElement) {
+    /**
+     * Options to display in the radio group.
+     *
+     * Can be either an array of RadioOption<T> or a function returning such an array.
+     */
     @property({ attribute: false })
-    public options: RadioOption<T>[] = [];
+    public options: RadioOption<T>[] | (() => RadioOption<T>[]) = [];
 
     @property()
     public name = "";
@@ -42,11 +47,15 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
         Styles,
     ];
 
+    #optionsArray(): RadioOption<T>[] {
+        return typeof this.options === "function" ? this.options() : this.options;
+    }
+
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
     // not trigger an element update.
     willUpdate() {
         if (!this.value) {
-            const maybeDefault = this.options.filter((opt) => opt.default);
+            const maybeDefault = this.#optionsArray().filter((opt) => opt.default);
             if (maybeDefault.length > 0) {
                 this.value = maybeDefault[0].value;
             }
@@ -103,7 +112,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     render() {
         return html`<div class="pf-c-form__group-control pf-m-stack">
-            ${map(this.options, this.#renderRadio)}
+            ${map(this.#optionsArray(), this.#renderRadio)}
         </div>`;
     }
 }

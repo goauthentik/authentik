@@ -4,6 +4,7 @@ import "#flow/components/ak-flow-card";
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -14,7 +15,6 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -44,17 +44,8 @@ export class AuthenticatorSMSStage extends BaseStage<
     renderPhoneNumber(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar=${this.challenge.pendingUserAvatar}
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <div class="pf-c-form__group">
                     ${AKLabel(
                         { required: true, htmlFor: "phone-number-input" },
@@ -65,7 +56,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                         type="tel"
                         name="phoneNumber"
                         placeholder="${msg("Please enter your Phone number.")}"
-                        autofocus=""
+                        autofocus
                         autocomplete="tel"
                         class="pf-c-form-control"
                         required
@@ -90,17 +81,7 @@ export class AuthenticatorSMSStage extends BaseStage<
     renderCode(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
                 <div class="pf-c-form__group">
                     ${AKLabel({ required: true, htmlFor: "sms-code-input" }, msg("Code"))}
                     <input
@@ -110,7 +91,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                         inputmode="numeric"
                         pattern="[0-9]*"
                         placeholder="${msg("Please enter the code you received via SMS")}"
-                        autofocus=""
+                        autofocus
                         autocomplete="one-time-code"
                         class="pf-c-form-control pf-m-monospace"
                         required

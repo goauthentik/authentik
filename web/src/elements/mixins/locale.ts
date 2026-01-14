@@ -1,4 +1,4 @@
-import { TargetLocale } from "#common/ui/locale/definitions";
+import { TargetLanguageTag } from "#common/ui/locale/definitions";
 
 import { createMixin } from "#elements/types";
 
@@ -16,9 +16,7 @@ export const kAKLocale = Symbol("kAKLocale");
  * @see {@linkcode LocaleMixin}
  * @see {@linkcode WithLocale}
  */
-export const LocaleContext = createContext<LocaleContextValue>(
-    Symbol.for("authentik-locale-context"),
-);
+export const LocaleContext = createContext<LocaleContextValue>(Symbol("authentik-locale-context"));
 
 export type LocaleContext = typeof LocaleContext;
 
@@ -37,9 +35,11 @@ export interface LocaleMixin {
     readonly [kAKLocale]: Readonly<LocaleContextValue>;
 
     /**
-     * The current locale code.
+     * The current locale language tag.
+     *
+     * @format BCP 47
      */
-    locale: TargetLocale;
+    activeLanguageTag: TargetLanguageTag;
 }
 
 /**
@@ -60,11 +60,11 @@ export const WithLocale = createMixin<LocaleMixin>(
             })
             public [kAKLocale]!: LocaleContextValue;
 
-            public get locale(): TargetLocale {
-                return this[kAKLocale].getLocale() as TargetLocale;
+            public get activeLanguageTag(): TargetLanguageTag {
+                return this[kAKLocale].getLocale() as TargetLanguageTag;
             }
 
-            public set locale(value: TargetLocale) {
+            public set activeLanguageTag(value: TargetLanguageTag) {
                 this[kAKLocale].setLocale(value);
             }
         }

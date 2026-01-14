@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.2.1-trixie@sha256:7942b337b20b67cd846828242f4e033cc29a83dde0f179b373636f3cbf072ae5 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.2.1-trixie@sha256:62226956579b5058c2adc7dab340d1bb002e213cd57f9c1fee6d7510e2232bdf AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -17,11 +17,11 @@ RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.js
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
-COPY ./docker-compose.yml /work/
+COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
 RUN npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:e21f8d0566ad4a2b7de56dae9e662147af6df51ed8a46692be3931513a1a56d7
+FROM docker.io/library/nginx:1.29-trixie@sha256:e3a22a791adaf8f59de605d824f8d9cf0ac7c7c779d405bb0158144e57433246
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

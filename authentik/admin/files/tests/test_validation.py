@@ -62,10 +62,10 @@ class TestSanitizeFilePath(TestCase):
             "test@file.png",  # @
             "test#file.png",  # #
             "test$file.png",  # $
-            "test%file.png",  # %
+            "test%file.png",  # % (but %(theme)s is allowed)
             "test&file.png",  # &
             "test*file.png",  # *
-            "test(file).png",  # parentheses
+            "test(file).png",  # parentheses (but %(theme)s is allowed)
             "test[file].png",  # brackets
             "test{file}.png",  # braces
         ]
@@ -108,3 +108,30 @@ class TestSanitizeFilePath(TestCase):
 
         with self.assertRaises(ValidationError):
             validate_file_name(path)
+
+    def test_sanitize_theme_variable_valid(self):
+        """Test sanitizing filename with %(theme)s variable"""
+        # These should all be valid
+        validate_file_name("logo-%(theme)s.png")
+        validate_file_name("brand/logo-%(theme)s.svg")
+        validate_file_name("images/icon-%(theme)s.png")
+        validate_file_name("%(theme)s/logo.png")
+        validate_file_name("brand/%(theme)s/logo.png")
+
+    def test_sanitize_theme_variable_multiple(self):
+        """Test sanitizing filename with multiple %(theme)s variables"""
+        validate_file_name("%(theme)s/logo-%(theme)s.png")
+
+    def test_sanitize_theme_variable_invalid_format(self):
+        """Test that partial or malformed theme variables are rejected"""
+        invalid_paths = [
+            "test%(theme.png",  # missing )s
+            "test%theme)s.png",  # missing (
+            "test%(themes).png",  # wrong variable name
+            "test%(THEME)s.png",  # wrong case
+            "test%()s.png",  # empty variable name
+        ]
+
+        for path in invalid_paths:
+            with self.assertRaises(ValidationError):
+                validate_file_name(path)

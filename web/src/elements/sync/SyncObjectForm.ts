@@ -1,3 +1,4 @@
+import "#elements/events/LogViewer";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";

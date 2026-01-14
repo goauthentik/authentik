@@ -286,42 +286,59 @@ export const applyDocumentTheme = ((currentUITheme = resolveUITheme()): void => 
 export const AKBackgroundImageProperty = "--ak-global--background-image";
 
 /**
+ * Given a CSS background-image property value, plucks the URL from it.
+ *
+ * @param backgroundValue The CSS background-image property value.
+ * @param baseOrigin The base origin to use for relative URLs.
+ * @returns The plucked URL, if any.
+ */
+function pluckCurrentBackgroundURL(
+    backgroundValue: string,
+    baseOrigin = window.location.origin,
+): URL | null {
+    if (!backgroundValue || backgroundValue === "none") {
+        return null;
+    }
+
+    const match = backgroundValue.match(/url\(["']?([^"']*)["']?\)/);
+    const urlString = match?.[1];
+
+    if (urlString && URL.canParse(urlString, baseOrigin)) {
+        return new URL(urlString, baseOrigin);
+    }
+
+    return null;
+}
+
+/**
  * Applies the given background image URL to the document body.
  *
  * This method is very defensive to avoid unnecessary DOM repaints.
  */
-export function applyBackgroundImageProperty(value?: string | null): void {
-    const fallbackOrigin = window.location.origin;
-
-    if (!value || !URL.canParse(value, fallbackOrigin)) {
+export function applyBackgroundImageProperty(
+    value?: string | null,
+    baseOrigin = window.location.origin,
+): void {
+    if (!value || !URL.canParse(value, baseOrigin)) {
         return;
     }
 
-    const nextBackgroundURL = new URL(value, fallbackOrigin);
+    const nextURL = new URL(value, baseOrigin);
 
-    const currentBackgroundImage = getComputedStyle(document.body, "::before").backgroundImage;
-    let currentBackgroundImageURL: URL | null = null;
+    const { backgroundImage } = getComputedStyle(document.body, "::before");
 
-    if (currentBackgroundImage && currentBackgroundImage !== "none") {
-        // Extract URL from background-image property
-        const [, urlMatch] = currentBackgroundImage.match(/url\(["']?([^"']*)["']?\)/) || [];
-
-        if (URL.canParse(urlMatch)) {
-            currentBackgroundImageURL = new URL(urlMatch, fallbackOrigin);
-        }
-    }
-
-    if (currentBackgroundImageURL && currentBackgroundImageURL.href === nextBackgroundURL.href) {
+    const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
+    if (currentURL?.href === nextURL.href) {
         return;
     }
 
-    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextBackgroundURL.href}")`);
+    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
 }
 
 /**
  * Returns the root interface element of the page.
  *
- * @todo Can this be handled with a Lit Mixin?
+ * @deprecated Use context controllers to access the interface root instead.
  */
 export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
     const element = document.body.querySelector<T>("[data-test-id=interface-root]");

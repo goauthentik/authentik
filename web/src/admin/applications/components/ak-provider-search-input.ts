@@ -1,3 +1,4 @@
+import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -13,21 +14,11 @@ import { Provider, ProvidersAllListRequest, ProvidersApi } from "@goauthentik/ap
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: Provider) => item.name;
 const renderValue = (item: Provider | undefined) => item?.pk;
 const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseName);
-
-async function fetch(query?: string) {
-    const args: ProvidersAllListRequest = {
-        ordering: "name",
-    };
-    if (query !== undefined) {
-        args.search = query;
-    }
-    const items = await new ProvidersApi(DEFAULT_CONFIG).providersAllList(args);
-    return items.results;
-}
 
 @customElement("ak-provider-search-input")
 export class AkProviderInput extends AKElement {
@@ -53,6 +44,9 @@ export class AkProviderInput extends AKElement {
     @property({ type: Number })
     value?: number;
 
+    @property({ type: Boolean, attribute: "readonly" })
+    readOnly = false;
+
     @property({ type: Boolean })
     required = false;
 
@@ -75,20 +69,51 @@ export class AkProviderInput extends AKElement {
         return typeof this.value === "number" && this.value === item.pk;
     };
 
-    render() {
-        return html` <ak-form-element-horizontal name=${this.name}>
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
-            </div>
+    #fetch = async (query?: string) => {
+        const args: ProvidersAllListRequest = {
+            ordering: "name",
+        };
+        const api = new ProvidersApi(DEFAULT_CONFIG);
+        if (query !== undefined) {
+            args.search = query;
+        }
+        const items = await api.providersAllList(args);
+        const results = items.results;
 
+        // Ensure any current selected value is present in the displayed list.
+        if (!(this.value && !results.find((r) => r.pk === this.value))) {
+            return results;
+        }
+        const single = await api.providersAllRetrieve({ id: this.value });
+        return [single, ...results];
+    };
+
+    render() {
+        const readOnlyValue = this.readOnly && typeof this.value === "number";
+
+        return html` <ak-form-element-horizontal name=${this.name}>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
+            ${readOnlyValue
+                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                : nothing}
             <ak-search-select
                 .fieldID=${this.fieldID}
                 .selected=${this.#selected}
-                .fetchObjects=${fetch}
+                .fetchObjects=${this.#fetch}
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .groupBy=${doGroupBy}
-                ?blankable=${!!this.blankable}
+                ?blankable=${readOnlyValue ? false : !!this.blankable}
+                ?readonly=${this.readOnly}
+                name=${ifDefined(readOnlyValue ? undefined : this.name)}
             >
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}

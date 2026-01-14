@@ -83,6 +83,10 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def sync_actor(self) -> Actor:
         raise NotImplementedError
 
+    def sync_dispatch(self) -> None:
+        for schedule in self.schedules.all():
+            schedule.send()
+
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
         return [

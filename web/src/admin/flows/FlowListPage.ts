@@ -21,6 +21,8 @@ import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
     protected override searchEnabled = true;
@@ -35,6 +37,8 @@ export class FlowListPage extends TablePage<Flow> {
 
     @property()
     order = "slug";
+
+    static styles = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
@@ -85,7 +89,8 @@ export class FlowListPage extends TablePage<Flow> {
             html`${item.name}`,
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
-            html` <ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Flow")}</span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
@@ -121,7 +126,8 @@ export class FlowListPage extends TablePage<Flow> {
                     <pf-tooltip position="top" content=${msg("Export")}>
                         <i class="fas fa-download" aria-hidden="true"></i>
                     </pf-tooltip>
-                </a>`,
+                </a>
+            </div>`,
         ];
     }
 
@@ -136,6 +142,13 @@ export class FlowListPage extends TablePage<Flow> {
             <ak-forms-modal>
                 <span slot="submit">${msg("Import")}</span>
                 <span slot="header">${msg("Import Flow")}</span>
+                <div class="pf-c-banner pf-m-warning" slot="above-form">
+                    ${msg(
+                        "Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).",
+                    )}<br />${msg(
+                        "You should only import files from trusted sources and review blueprints before importing them.",
+                    )}
+                </div>
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>

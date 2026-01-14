@@ -1,3 +1,4 @@
+import "#admin/groups/MemberSelectModal";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
 import "#admin/users/UserForm";
@@ -85,10 +86,14 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         // This should be fixed by moving the `@container` query off `:host`.
 
         return html` <ak-form-element-horizontal name="users">
-            <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: "assign-users-button" }, msg("Users"))}
-            </div>
-
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: "assign-users-button",
+                },
+                msg("Users"),
+            )}
             <div class="pf-c-input-group">
                 <div class="form-control-sibling">
                     <ak-group-member-select-table
