@@ -308,7 +308,7 @@ requires-dist = [
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
     { name = "django-filter", specifier = "==25.1" },
     { name = "django-model-utils", specifier = "==5.0.0" },
-    { name = "django-pglock", specifier = "==1.7.2" },
+    { name = "django-pglock", specifier = "==1.8.0" },
     { name = "django-pgtrigger", specifier = "==4.17.0" },
     { name = "django-postgres-cache", editable = "packages/django-postgres-cache" },
     { name = "django-postgres-extra", specifier = "==2.0.9" },
@@ -1130,15 +1130,15 @@ wheels = [
 
 [[package]]
 name = "django-pglock"
-version = "1.7.2"
+version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-pgactivity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/1a/6c552b75d0a6b380215c919a667072e4949a3123f275506c6e6ff82f6b76/django_pglock-1.7.2.tar.gz", hash = "sha256:d1d8521b382a5819e8d14978d0e8e63ab2763cb784f5a6bfdbe5de807da4a61a", size = 17287, upload-time = "2025-05-15T22:07:23.744Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/28/cacf31c7c15beb609b50b5b0daa873da6384ce794230159289f737d80d57/django_pglock-1.8.0.tar.gz", hash = "sha256:6144d96f52ab1d0b39ee295c6baa05d8de6ed5c59ae550413fe30ab668492e25", size = 16806, upload-time = "2025-11-30T23:28:15.73Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fb/d2/21f19531945f03021460d40654bc2fc3b0c474b57b279d5f5a1c34be7f1b/django_pglock-1.7.2-py3-none-any.whl", hash = "sha256:2f9335527779445fe86507b37e26cfde485a32b91d982a8f80039d3bcd25d596", size = 17674, upload-time = "2025-05-15T22:07:22.618Z" },
+    { url = "https://files.pythonhosted.org/packages/44/75/0c145fbf2dc92cde0ad1b0d20891a41ea4843a8a6ed592ce35ec46d76e87/django_pglock-1.8.0-py3-none-any.whl", hash = "sha256:8bbfcb5d732a87e377f69d0fef5697042311c787912ad7baa3f0e00dcff06c41", size = 17718, upload-time = "2025-11-30T23:28:14.685Z" },
 ]
 
 [[package]]
