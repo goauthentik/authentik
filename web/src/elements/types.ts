@@ -143,11 +143,31 @@ export type ReactiveElementHost<T> = Partial<ReactiveControllerHostRegistry & Wr
 
 //#region Constructors
 
+/**
+ * A type representing an abstract constructor.
+ */
+export type AbstractConstructor<T = unknown> = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]
+) => T;
+
+/**
+ * A type representing a constructor.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Constructor<T = unknown> = new (...args: any[]) => T;
+
+/**
+ * A type representing an abstract {@linkcode LitElement} constructor.
+ */
 export type AbstractLitElementConstructor<T = unknown> = abstract new (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
 ) => LitElement & T;
 
+/**
+ * A type representing a {@linkcode LitElement} constructor.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
 

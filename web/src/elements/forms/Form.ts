@@ -36,6 +36,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 function isIgnored<T extends Element>(element: T) {
     if (!(element instanceof HTMLElement)) return false;
@@ -262,6 +263,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         PFInputGroup,
         PFFormControl,
         PFSwitch,
+        PFTitle,
         css`
             select[multiple] {
                 height: 15em;
@@ -370,7 +372,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      */
-    public submit(event: SubmitEvent): Promise<unknown | false> {
+    public submit = (event: SubmitEvent): Promise<unknown | false> => {
         event.preventDefault();
 
         const data = this.serialize();
@@ -435,7 +437,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 // Rethrow the error so the form doesn't close.
                 throw error;
             });
-    }
+    };
 
     //#endregion
 
@@ -451,11 +453,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         }
 
         return html`<form
+            id="form"
             class="pf-c-form pf-m-horizontal"
             autocomplete=${ifDefined(this.autocomplete)}
-            @submit=${(event: SubmitEvent) => {
-                event.preventDefault();
-            }}
+            @submit=${this.submit}
         >
             ${inline}
         </form>`;
@@ -464,11 +465,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
      * An overridable method for rendering the form content.
      */
-    public renderForm(): SlottedTemplateResult | null {
+    protected renderForm(): SlottedTemplateResult | null {
         return null;
     }
 
-    public renderNonFieldErrors(): SlottedTemplateResult {
+    /**
+     * Render errors that are not associated with a specific field.
+     */
+    protected renderNonFieldErrors(): SlottedTemplateResult {
         return guard([this.nonFieldErrors], () => {
             if (!this.nonFieldErrors) {
                 return nothing;
@@ -491,8 +495,58 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         });
     }
 
+    /**
+     * An overridable method for rendering the form heading.
+     *
+     * @remarks
+     * If this form is slotted, such as in a modal, this method will not render anything,
+     * allowing the slot parent to provide the heading in a more visually appropriate manner.
+     */
+    protected renderHeading(): SlottedTemplateResult {
+        return guard([this.assignedSlot, this.headline], () => {
+            if (this.assignedSlot) {
+                return nothing;
+            }
+
+            return html`<header>
+                <h1 class="pf-c-title pf-m-2xl">${this.headline}</h1>
+            </header>`;
+        });
+    }
+
+    /**
+     * An overridable method for rendering the form actions.
+     *
+     * @remarks
+     * If this form is slotted, such as in a modal, this method will not render anything,
+     * allowing the slot parent to provide the actions in a more visually appropriate manner.
+     */
+    protected renderActions(): SlottedTemplateResult {
+        return guard([this.assignedSlot], () => {
+            if (this.assignedSlot) {
+                return nothing;
+            }
+
+            return html`<fieldset class="pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <button
+                    type="submit"
+                    form="form"
+                    class="pf-c-button pf-m-primary"
+                    aria-description=${msg("Submit action")}
+                >
+                    ${this.actionLabel || msg("Submit")}
+                </button>
+            </fieldset>`;
+        });
+    }
+
+    /**
+     * An overridable method for rendering the form when it is visible.
+     */
     protected renderVisible(): SlottedTemplateResult {
-        return html`${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
+        return html`${this.renderHeading()}${this.renderNonFieldErrors()}
+        ${this.renderFormWrapper()}${this.renderActions()}`;
     }
 
     protected override render(): SlottedTemplateResult {

@@ -104,7 +104,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         };
     };
 
-    public override renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
