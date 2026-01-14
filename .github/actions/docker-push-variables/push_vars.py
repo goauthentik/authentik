@@ -83,15 +83,6 @@ def get_attest_image_names(image_with_tags: list[str]) -> str:
     return ",".join(set(image_tags))
 
 
-# Generate `cache-to` param
-cache_to = ""
-if should_push:
-    _cache_tag = "buildcache"
-    if image_arch:
-        _cache_tag += f"-{image_arch}"
-    cache_to = f"type=registry,ref={get_attest_image_names(image_tags)}:{_cache_tag},mode=max"
-
-
 image_build_args = []
 if os.getenv("RELEASE", "false").lower() == "true":
     image_build_args = [f"VERSION={os.getenv('REF')}"]
@@ -108,5 +99,4 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"attestImageNames={get_attest_image_names(image_tags)}", file=_output)
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
-    print(f"cacheTo={cache_to}", file=_output)
-    print(f"imageBuildArgs={"\n".join(image_build_args)}", file=_output)
+    print(f"imageBuildArgs={'\n'.join(image_build_args)}", file=_output)

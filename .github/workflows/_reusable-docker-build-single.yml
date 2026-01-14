@@ -95,7 +95,7 @@ jobs:
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
-          cache-to: ${{ steps.ev.outputs.cacheTo }}
+          cache-to: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }},mode=max
       - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
