@@ -22,9 +22,12 @@
 /add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/ 301!
 /core/applications                                          /add-secure-apps/applications/ 301!
 /applications/*                                             /add-secure-apps/applications/:splat 301!
+/add-secure-apps/providers/gws/add-gws-provider/            /add-secure-apps/providers/gws/create-gws-provider/ 301!
+/add-secure-apps/providers/gws/setup-gws/                   /add-secure-apps/providers/gws/configure-gws/ 301!
 /add-secure-apps/providers/oauth2/client_credentials        /add-secure-apps/providers/oauth2/machine_to_machine 301!
 /add-secure-apps/providers/entra/setup-entra/               /add-secure-apps/providers/entra/configure-entra/ 301!
 /add-secure-apps/providers/entra/add-entra-provider/        /add-secure-apps/providers/entra/create-entra-provider/ 301!
+/add-secure-apps/providers/ldap/generic_setup/              /add-secure-apps/providers/ldap/create-ldap-provider/ 301!
 #endregion
 
 #region Core
