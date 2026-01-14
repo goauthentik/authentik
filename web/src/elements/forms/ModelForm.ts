@@ -12,7 +12,10 @@ import { property } from "lit/decorators.js";
  * A base form that automatically tracks the server-side object (instance)
  * that we're interested in.  Handles loading and tracking of the instance.
  */
-export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
+export abstract class ModelForm<
+    T extends object = object,
+    PKT extends string | number = string | number,
+> extends Form<T> {
     /**
      * An overridable method for loading an instance.
      *
@@ -31,7 +34,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         return Promise.resolve();
     }
 
-    @property({ attribute: false })
+    @property({ attribute: "pk" })
     public set instancePk(value: PKT) {
         this.#instancePk = value;
 
@@ -55,6 +58,10 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     }
 
     #instancePk?: PKT;
+
+    public get instancePk(): PKT | undefined {
+        return this.#instancePk;
+    }
 
     // Keep track if we've loaded the model instance
     #initialLoad = false;

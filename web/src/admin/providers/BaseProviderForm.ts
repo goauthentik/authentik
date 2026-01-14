@@ -5,7 +5,7 @@ import { ModelForm } from "#elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 
-export abstract class BaseProviderForm<T> extends ModelForm<T, number> {
+export abstract class BaseProviderForm<T extends object> extends ModelForm<T, number> {
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated provider.")
