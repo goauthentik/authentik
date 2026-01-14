@@ -4,7 +4,23 @@ title: First steps
 
 After you have installed and started authentik, you are now ready to add your first application and provider, add some users, and get started with using authentik as your SSO and IdP.
 
-## How did we get here?
+```mermaid
+architecture-beta
+    group first
+
+    service install(mdi:application-cog-outline)[Install authentik] in first
+    service acl(mdi:account-key-outline)[Access authentik] in first
+    service apps(mdi:plus-box-multiple-outline)[Add an appp and provider] in first
+    service users(mdi:account-multiple-plus)[Create a new user] in first
+    service further(mdi:cog-clockwise)[Further customization] in first
+
+    install:R --> L:acl
+    acl:R --> L:apps
+    apps:R --> L:users
+    users:R --> L:further
+```
+
+## Where are we now, and what's next?
 
 The following tutorial assumes that you have already:
 
@@ -16,37 +32,57 @@ The following tutorial assumes that you have already:
 If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that your server and worker are running.
 :::
 
-Other optional configurations that you might have already completed include:
+Other optional pre-installation configurations that you might have already completed include:
 
-- [Configured your global email address](../email/#global-email-settings)
-- [Set your environment variables](../configuration/#set-your-environment-variables), and [verified them](../configuration/#verify-your-configuration-settings)
-- installed a production-ready Postgres DB
-- configured your Postgres settings (read-replica, connections, etc)
-- configure your storage settings
-- configure custom ports
+- [Configured your global email address](../email/#global-email-settings).
+- [Installed a production-ready PostgreSQL database](./install/kubernetes.md#postgresql-production-setup).
+- [Configured your PostgreSQL settings](./configuration/configuration.mdx#postgresql-settings) (read-replica, connections, etc.).
+- Configured your [media storage settings](../install-config/configuration/configuration.mdx#media-storage-settings) or optionally [AWS S3 file storage](../sys-mgmt/ops/storage-s3.md).
+- Added additional [custom configurations environment variables](../configuration/#set-your-environment-variables).
+- [Verified](../configuration/#verify-your-configuration-settings) your configuration settings.
 
 ## Install your first application and provider
 
-Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../core/glossary/terms/application.mdx) and [provider](../core/glossary/terms/provider.mdx). Authentik supports hundreds of applications; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for many common ones.
+Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../core/glossary/terms/application.mdx) and [provider](../core/glossary/terms/provider.mdx). After that, we'll walk through how to add users, groups, and roles.
 
-After that, we'll walk through how to add users, groups, and roles.
+authentik supports hundreds of applications; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for many common ones.
 
-### Configure authentik
+<details>
+    <summary>We'll use the Grafana application as a first application.</summary>
 
-For this walk-through, let's use [Grafana](https://grafana.com/) as the example application to install, with an OAuth2/OIDC provider. These steps are purposefully simplified, to get you up and going with a new application, but for the full details refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](https://integrations.goauthentik.io/monitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
-3. Provide the details for the application and provider. For guidance on each specific field, refer to the refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
-4. Click **Submit** to save the new application and provider.
+</details>
 
-### Configure Grafana
+### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-Next you need to configure your Grafana application to use authentik as its IdP. These steps are for a Grafana instance that is running in Docker; if you are running authentik in Kubernetes or as a standalone instance, refer to the [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+    **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
 
-Set the following environment variables in your `.env` file:
+:::tip About app and provider pairs
+Every application that you add to authentik has a provider; the provider is the protocol by which the application communicates and shares data between software applications on network devices.
+:::
 
-```yaml
+**B.** Provide the details for the application and provider.
+
+- **Application**: provide a descriptive name (such as Grafana), an optional group for the type of application, the policy engine mode (select ANY to simplify this exercise), and optional UI settings that are displayed about the application.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name) and the authorization flow to use for this provider. Under **Protocol settings** provide the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later when you configure Grafana to use authentik.
+    - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`. <font color="green"><b>TIP</b>: The Redirect URI is where the application will go as soon as authentik's authorixation flow is successfully completed. </font>
+    - Set the Logout URI to `https://grafana.company/logout`.
+    - Set the Logout Method to `Front-channel`. <font color="green"><b>TIP</b>: With OAuth2, front-channel logout is considered the default because most application (including Grafana) do not support back-channel logout. </font>
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/flows-stages/bindings/) to manage the display and access to applications on a user's **My applications** page.
+
+**C.** Click **Submit** to save the new application and provider.
+
+### 2. Configure Grafana to use authentik as its IdP
+
+For some applications, you log into the application and configuring settings there; with Grafana you simply edit your authentik `.env` file. Here you add basic configuration settings as well as the Client ID, the secret, and the slug values that you obtained when you configured authentik in Step 1., above.
+
+**A.** In your `.env` file, set the following environment variables (these are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)):
+
+```
 environment:
     GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
     GF_AUTH_GENERIC_OAUTH_NAME: "authentik"
@@ -65,17 +101,52 @@ environment:
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
 
-### Configuration verification
+**B.** Save your `.env` file and go to your Grafana application.
 
-To confirm that authentik is properly configured with Grafana, log out and log back in using an account that is a member of the appropriate authentik group (e.g. grafana-administrators).
+**C.** To confirm that authentik is properly configured with the new application, log out of the Grafana application and then log back in using your authetntik credentials. If you don't use the default admin account that's fine, just be sure that the account is for a member of an appropriate authentik group.
 
-## Add your first users
+## Add your first user
 
-Now that you can access the authentik Admin interface, and you have added an application and provider, let's add a couple of users and assign them appropriate groups and roles.
+Now that you can access the authentik Admin interface, and you have added an application and provider, let's add a new users and assign them appropriate groups and roles.
 
-TODO add basic steps here with lots of handholding tips....
+### 1. Log in to authentik as an administrator and open the authentik Admin interface.
+
+    **A.** Navigate to **Directory > Users**, and click **New User**.
+
+    **B.** Fill in the required fields:
+
+    - **Username**: This value must be unique across your user folders.
+    - **Path**: The path where the user will be created. By default the new user is created in the `/root/users` directory path, but you can change that later by editing the user.
+
+    For information about the **_optional_** fields below, refer to our [documentation on managing users](../users-sources/user/user_basic_operations.md#create-a-user).
+
+    - **Name**: The display name of the user.
+    - **Email**: The email address of the user.
+    - **Is active**: Define the newly created user account as active.
+    - **Attributes**: You can leave this empty for this tutorial. Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case.
+
+    **C.** Click **Create**.
+
+### 2. Verify that the new user was created
+
+- Look for the new user in the list on the **Directory > Users** page.
+
+## What's next?
+
+Now that you have added your first application, and a new user, here are some typical next steps:
+
+- Assign your new user to appropriate [groups](../users-sources/user/user_basic_operations.md#add-a-user-to-a-group) and [roles](../users-sources/user/user_basic_operations.md#add-a-user-to-a-role).
+- Configure federated or external [sources](../users-sources/sources/index.md) (an existing source of user credentials and other user data).
+- Set up MFA
+- Define [property mappings](../add-secure-apps/providers/property-mappings/index.md).
+- Create a [custom flow](../add-secure-apps/flows-stages/flow/index.md#).
+- Configure a [reverse proxy](./reverse-proxy.md).
+- Install an [Enterprise license](../enterprise/manage-enterprise.mdx#buy-a-license)
+- [Create a policy](../customize/policies/index.md) to control access or force MFA use.
 
 ## Things to know and troubleshooting tips
+
+Review the following information to learn more about the basics of setting up authentik and for troubleshooting tips.
 
 ### Modifying the docker compose file
 
@@ -92,15 +163,3 @@ We highly recommend against using the `:latest` tag with container images becaus
 ### Using bindings to allow or restrict access to applications
 
 Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [authorization](../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization) and [hiding an application](../add-secure-apps/applications/manage_apps.mdx#hide-applications).
-
-## What's next?
-
-These are all one or two sentences, then link to full docs
-
-- using federated sources, link to full docs on sources)
-- set up MFA
-- define property mappings
-- create a custom flow
-- reverse proxy
-- install an enterprise license
-- create a simple policy (?)

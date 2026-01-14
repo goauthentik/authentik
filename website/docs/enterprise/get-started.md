@@ -1,5 +1,5 @@
 ---
-title: Get started
+title: Get started with Enterprise
 ---
 
 Installing authentik is exactly the same process for both Enterprise version and our open source version.
