@@ -101,7 +101,7 @@ jobs:
       - name: make empty clients
         run: |
           mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
+          make gen-client-go
       - name: Docker Login Registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
         with:
@@ -160,6 +160,9 @@ jobs:
         run: |
           npm ci
           npm run build-proxy
+      - name: Build API client
+        run: |
+          make gen-client-go
       - name: Build outpost
         run: |
           set -x
