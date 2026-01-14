@@ -48,9 +48,9 @@ export function StrictUnsafe<T extends CustomElementTagName>(
     tagName: T,
     props?: LitPropertyRecord<HTMLElementTagNameMap[T]>,
 ): SlottedTemplateResult;
-export function StrictUnsafe(
+export function StrictUnsafe<T extends AKElement>(
     tagName: string,
-    props?: LitPropertyRecord<LitElement>,
+    props?: LitPropertyRecord<T>,
 ): SlottedTemplateResult;
 export function StrictUnsafe<T extends string>(
     tagName: string,

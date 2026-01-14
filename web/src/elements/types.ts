@@ -1,6 +1,6 @@
-import { OwnPropertyRecord, Writeable } from "#common/types";
+import type { OwnPropertyRecord, Writeable } from "#common/types";
 
-import { Context, ContextProvider, ContextType } from "@lit/context";
+import type { Context, ContextProvider, ContextType } from "@lit/context";
 import type {
     LitElement,
     nothing,
@@ -8,7 +8,7 @@ import type {
     ReactiveControllerHost,
     TemplateResult,
 } from "lit";
-import { DirectiveResult } from "lit-html/directive.js";
+import type { DirectiveResult } from "lit-html/directive.js";
 
 //#region HTML Helpers
 
