@@ -318,7 +318,7 @@ requires-dist = [
     { name = "djangoql", specifier = "==0.18.1" },
     { name = "djangorestframework", specifier = "==3.16.1" },
     { name = "docker", specifier = "==7.1.0" },
-    { name = "drf-orjson-renderer", specifier = "==1.7.3" },
+    { name = "drf-orjson-renderer", specifier = "==1.8.0" },
     { name = "drf-spectacular", specifier = "==0.28.0" },
     { name = "dumb-init", specifier = "==1.2.5.post1" },
     { name = "duo-client", specifier = "==5.5.0" },
@@ -1358,16 +1358,16 @@ wheels = [
 
 [[package]]
 name = "drf-orjson-renderer"
-version = "1.7.3"
+version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "djangorestframework" },
     { name = "orjson" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4d/3e/5cc16467d91087bf883cdbeb52a06f3a6fa59563ad09b9b84bac72d68716/drf_orjson_renderer-1.7.3.tar.gz", hash = "sha256:0c49760fc415df8096c1ef05f029802f2e5862d4e15fe96066289b8c526835f1", size = 8492, upload-time = "2024-08-22T02:44:27.694Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b4/2d/97e1d2f2db68c7893b08295e8d4125da000985d6ad8b73f148a60fa599fe/drf_orjson_renderer-1.8.0.tar.gz", hash = "sha256:0cd506cc13471526b7ea679d56b7a346f033fab2103c9fa10f6d7c6fa60b6d22", size = 9650, upload-time = "2025-12-17T18:35:22.479Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/87/53e1a0e13f1d0247fe97e53619cff72181888a5bac8fd0401e5607c101b6/drf_orjson_renderer-1.7.3-py3-none-any.whl", hash = "sha256:9c3fe521b0e8c641b334c40bb81ecadb14519a27599a495d360385abe193a4b4", size = 7138, upload-time = "2024-08-22T02:44:26.124Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/1a/8dab7b29cd33f94b927fba554ba4dfc4483f8e215e0e3ecaea88bdc045cb/drf_orjson_renderer-1.8.0-py3-none-any.whl", hash = "sha256:386ef0feda21147a490886a233b34b2ec0baf874a1de07e689aa8bc264c9baff", size = 7704, upload-time = "2025-12-17T18:35:21.085Z" },
 ]
 
 [[package]]

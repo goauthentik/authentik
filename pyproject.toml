@@ -30,7 +30,7 @@ dependencies = [
   "djangoql==0.18.1",
   "djangorestframework==3.16.1",
   "docker==7.1.0",
-  "drf-orjson-renderer==1.7.3",
+  "drf-orjson-renderer==1.8.0",
   "drf-spectacular==0.28.0",
   "dumb-init==1.2.5.post1",
   "duo-client==5.5.0",
