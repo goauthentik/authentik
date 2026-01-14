@@ -55,7 +55,7 @@ def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
     return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
 
 
-def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:
+def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # noqa: UP047
     @functools.wraps(func)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
