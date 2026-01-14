@@ -94,7 +94,7 @@ dev = [
   "importlib-metadata==8.7.1",
   "k5test==0.10.4",
   "lxml-stubs==0.5.1",
-  "mypy==1.18.2",
+  "mypy==1.19.1",
   "pdoc==16.0.0",
   "pytest-django==4.11.1",
   "pytest-github-actions-annotate-failures==0.3.0",
