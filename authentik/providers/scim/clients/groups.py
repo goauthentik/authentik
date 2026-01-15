@@ -29,6 +29,7 @@ from authentik.providers.scim.clients.schema import (
     PatchRequest,
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
+from authentik.providers.scim.clients.schema import User as SCIMUserSchema
 from authentik.providers.scim.models import (
     SCIMCompatibilityMode,
     SCIMMapping,
@@ -136,6 +137,55 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
+
+    def purge(self):
+        """Purge remote groups that don't match the provider filters"""
+        if not self.provider.purge_objects:
+            return
+        remote_group_ids = []
+        match self.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                rsp, nextCursor = self._get_aws_paged_group_ids("")
+                remote_group_ids += rsp
+                while nextCursor:
+                    rsp, nextCursor = self._get_aws_paged_group_ids(nextCursor)
+                    remote_group_ids += rsp
+            case _:
+                return  # Not implemented
+        if len(remote_group_ids) < 1:
+            return
+        local_group_ids = {}
+        for i in SCIMProviderGroup.objects.filter(provider=self.provider).values_list(
+            "scim_id", "group_id"
+        ):
+            local_group_ids[i[0]] = str(i[1])
+        for id in remote_group_ids:
+            if id not in local_group_ids.keys():
+                self._request("DELETE", f"/Groups/{id}")
+        valid_group_ids = []
+        for i in self.provider.get_object_qs(Group).values_list("group_uuid", flat=True):
+            valid_group_ids.append(str(i))
+        for id in local_group_ids.values():
+            if id not in valid_group_ids:
+                group = Group.objects.filter(pk=id).first()
+                self.delete(group)
+
+    def _get_aws_paged_group_ids(self, cursor):
+        remote_group_ids = []
+        rsp = self._request(
+            "GET",
+            "/Groups",
+            params={
+                "cursor": cursor,
+            },
+        )
+        for group in rsp["Resources"]:
+            scim_group = SCIMGroupSchema.model_validate(group)
+            remote_group_ids.append(scim_group.id)
+        if "nextCursor" in rsp:
+            return remote_group_ids, rsp["nextCursor"]
+        else:
+            return remote_group_ids, None
 
     def _update_patch(
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
@@ -276,21 +326,52 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "User count mismatch, not all users in the group are synced to SCIM yet.",
                 group=group,
             )
-        # Get current group status
-        current_group = SCIMGroupSchema.model_validate(
-            self._request("GET", f"/Groups/{scim_group.scim_id}")
-        )
+
+        current_group_members = []
+        match self.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                rsp = self._request(
+                    "GET",
+                    "/Users",
+                    params={
+                        "cursor": "",
+                        "filter": f'groups.value eq "{scim_group.scim_id}"',
+                    },
+                )
+                for u in rsp["Resources"]:
+                    current_group_members.append(SCIMUserSchema.model_validate(u).id)
+
+                while "nextCursor" in rsp:
+                    rsp = self._request(
+                        "GET",
+                        "/Users",
+                        params={
+                            "cursor": rsp["nextCursor"],
+                            "filter": f'groups.value eq "{scim_group.scim_id}"',
+                        },
+                    )
+                    for u in rsp["Resources"]:
+                        current_group_members.append(SCIMUserSchema.model_validate(u).id)
+            case _:
+                # Get current group status
+                current_group = SCIMGroupSchema.model_validate(
+                    self._request("GET", f"/Groups/{scim_group.scim_id}")
+                )
+                if current_group.members is not None:
+                    for i in current_group.members:
+                        current_group_members.append(i.value)
+
         users_to_add = []
         users_to_remove = []
         # Check users currently in group and if they shouldn't be in the group and remove them
-        for user in current_group.members or []:
-            if user.value not in users_should:
-                users_to_remove.append(user.value)
+        for user in current_group_members:
+            if user not in users_should:
+                users_to_remove.append(user)
         # Check users that should be in the group and add them
-        if current_group.members is not None:
-            for user in users_should:
-                if len([x for x in current_group.members if x.value == user]) < 1:
-                    users_to_add.append(user)
+        for user in users_should:
+            if len([x for x in current_group_members if x == user]) < 1:
+                users_to_add.append(user)
+
         # Only send request if we need to make changes
         if len(users_to_add) < 1 and len(users_to_remove) < 1:
             return

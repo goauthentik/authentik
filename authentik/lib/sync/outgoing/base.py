@@ -61,6 +61,10 @@ class BaseOutgoingSyncClient[
         """Update object in remote destination"""
         raise NotImplementedError()
 
+    def purge(self):
+        """Purge outdated object in remote destination"""
+        raise NotImplementedError()
+
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
