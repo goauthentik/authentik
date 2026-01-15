@@ -1,3 +1,4 @@
+from hashlib import sha256
 from json import loads
 
 from django.urls import reverse
@@ -7,10 +8,14 @@ from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
+    DeviceAuthenticationToken,
     DeviceToken,
     EnrollmentToken,
 )
-from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE
+from authentik.endpoints.connectors.agent.stage import (
+    PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE,
+    PLAN_CONTEXT_DEVICE_AUTH_TOKEN,
+)
 from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
@@ -34,6 +39,11 @@ class TestEndpointStage(FlowTestCase):
         self.device_token = DeviceToken.objects.create(
             device=self.connection,
             key=generate_id(),
+        )
+        self.device_auth_token = DeviceAuthenticationToken.objects.create(
+            device=self.device,
+            device_token=self.device_token,
+            connector=self.connector,
         )
 
     def test_endpoint_stage(self):
@@ -194,3 +204,31 @@ class TestEndpointStage(FlowTestCase):
                 "response": [{"string": "Invalid challenge response", "code": "invalid"}]
             },
         )
+
+    def test_endpoint_stage_ia_dth(self):
+        """Test with DTH"""
+        flow = create_test_flow()
+        stage = EndpointStage.objects.create(connector=self.connector)
+        FlowStageBinding.objects.create(stage=stage, target=flow, order=0)
+
+        # Send an "invalid" request first, to populate the flow plan
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        plan = self.get_flow_plan()
+        plan.context[PLAN_CONTEXT_DEVICE_AUTH_TOKEN] = DeviceAuthenticationToken.objects.get(
+            pk=self.device_auth_token.pk
+        )
+        self.set_flow_plan(plan)
+
+        with self.assertFlowFinishes() as plan:
+            res = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                HTTP_X_AUTHENTIK_PLATFORM_AUTH_DTH=sha256(
+                    self.device_token.key.encode()
+                ).hexdigest(),
+            )
+            self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+        plan = plan()
+        self.assertNotIn(PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE, plan.context)
+        self.assertEqual(plan.context[PLAN_CONTEXT_DEVICE], self.device)
