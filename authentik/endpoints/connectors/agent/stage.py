@@ -113,6 +113,8 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
             device_token_hash, sha256(auth_token.device_token.key.encode()).hexdigest()
         ):
             return self.executor.stage_invalid("Invalid device token")
+        self.logger.debug("Setting device based on DTH header")
+        self.executor.plan.context[PLAN_CONTEXT_DEVICE] = auth_token.device
         return self.executor.stage_ok()
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
