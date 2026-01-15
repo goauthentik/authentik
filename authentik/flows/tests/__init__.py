@@ -48,9 +48,7 @@ class FlowTestCase(APITestCase):
             self.assertEqual(raw_response[key], expected)
         return raw_response
 
-<<<<<<< HEAD
-=======
-    def get_flow_plan(self) -> FlowPlan | None:
+   def get_flow_plan(self) -> FlowPlan | None:
         return self.client.session.get(SESSION_KEY_PLAN)
 
     def set_flow_plan(self, plan: FlowPlan):
@@ -58,7 +56,6 @@ class FlowTestCase(APITestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
->>>>>>> 2c2969841 (endpoints/connectors/agent: add tests for IA endpoint stage (#19487))
     def assertStageRedirects(self, response: HttpResponse, to: str) -> dict[str, Any]:
         """Wrapper around assertStageResponse that checks for a redirect"""
         return self.assertStageResponse(response, component="xak-flow-redirect", to=to)
