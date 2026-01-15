@@ -39,14 +39,14 @@ export class AkSwitchInput extends AKElement {
      * For more complex help instructions, provide a template result.
      */
     @property({ type: Object })
-    bighelp!: TemplateResult | TemplateResult[];
+   public bighelp!: TemplateResult | TemplateResult[];
 
     @query("input.pf-c-switch__input[type=checkbox]")
     checkbox!: HTMLInputElement;
 
     #fieldID: string = IDGenerator.randomID();
 
-    renderHelp() {
+    protected renderHelp() {
         const helpText = this.help.trim();
 
         return [
