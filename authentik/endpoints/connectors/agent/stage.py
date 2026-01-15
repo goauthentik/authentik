@@ -103,7 +103,9 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
         on the DTH header"""
         if PLAN_CONTEXT_DEVICE_AUTH_TOKEN not in self.executor.plan.context:
             return None
-        auth_token: DeviceAuthenticationToken = self.executor.plan.context.get(PLAN_CONTEXT_DEVICE_AUTH_TOKEN)
+        auth_token: DeviceAuthenticationToken = self.executor.plan.context.get(
+            PLAN_CONTEXT_DEVICE_AUTH_TOKEN
+        )
         device_token_hash = self.request.headers.get("X-Authentik-Platform-Auth-DTH")
         if not device_token_hash:
             return None
