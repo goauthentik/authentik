@@ -20,25 +20,34 @@ GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
 GEN_API_GO = gen-go-api
 
-pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
-pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
-pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
+BREW_LDFLAGS :=
+BREW_CPPFLAGS :=
+BREW_PKG_CONFIG_PATH :=
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
 # to prevent SAML-related tests from failing and ensure correct pip dependency compilation
-# These functions are only evaluated when called in specific targets
-LIBXML2_EXISTS = $(shell brew list libxml2 2> /dev/null)
-KRB5_EXISTS = $(shell brew list krb5 2> /dev/null)
-
-LIBXML2_LDFLAGS = -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
-LIBXML2_CPPFLAGS = -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
-LIBXML2_PKG_CONFIG = $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
-
-KRB_PATH =
-
-ifneq ($(KRB5_EXISTS),)
-	KRB_PATH = PATH="$(shell brew --prefix krb5)/sbin:$(shell brew --prefix krb5)/bin:$$PATH"
+ifeq ($(UNAME_S),Darwin)
+# Only add for brew users who installed libxmlsec1
+	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
+	ifdef BREW_EXISTS
+		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		ifdef LIBXML2_EXISTS
+			_xml_pref := $(shell brew --prefix libxml2)
+			BREW_LDFLAGS += -L${_xml_pref}/lib $(LDFLAGS)
+			BREW_CPPFLAGS += -I${_xml_pref}/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH += ${_xml_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
+		ifdef KRB5_EXISTS
+			_krb5_pref := $(shell brew --prefix krb5)
+			BREW_LDFLAGS += -L${_krb5_pref}/lib $(LDFLAGS)
+			BREW_CPPFLAGS += -I${_krb5_pref}/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH += ${_krb5_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+	endif
 endif
+
+UV_ARGS := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)"
 
 all: lint-fix lint gen web test  ## Lint, build, and test everything
 
@@ -72,11 +81,11 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
-ifneq ($(LIBXML2_EXISTS),)
+ifeq ($(UNAME_S),Darwin)
 # Clear cache to ensure fresh compilation
 	uv cache clean
 # Force compilation from source for lxml and xmlsec with correct environment
-	LDFLAGS="$(LIBXML2_LDFLAGS)" CPPFLAGS="$(LIBXML2_CPPFLAGS)" PKG_CONFIG_PATH="$(LIBXML2_PKG_CONFIG)" uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
+	$(UV_ARGS) uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
 else
 	uv sync --frozen
 endif
@@ -109,11 +118,17 @@ core-i18n-extract:
 install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 
 dev-drop-db:
+	$(eval pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null))
+	$(eval pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null))
+	$(eval pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null))
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
 
 dev-create-db:
+	$(eval pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null))
+	$(eval pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null))
+	$(eval pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null))
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
