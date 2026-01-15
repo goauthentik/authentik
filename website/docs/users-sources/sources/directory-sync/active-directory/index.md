@@ -44,7 +44,7 @@ Optionally, if you don't want authentik to be able to view and sync objects with
 1. Right click the Organizational Unit in question and navigate to **Properties** > **Security**.
 2. Select the authentik service account that you created.
 3. Under the **Deny** column, check **Read**.
-4. Cick **Apply**.
+4. Click **Apply**.
 
 You can repeat this process for other OUs and objects within Active Directory.
 :::
