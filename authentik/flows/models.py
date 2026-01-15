@@ -20,7 +20,7 @@ from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
 
@@ -90,7 +90,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def view(self) -> type["StageView"]:
+    def view(self) -> type[StageView]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
@@ -117,7 +117,7 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
+def in_memory_stage(view: type[StageView], **kwargs) -> Stage:
     """Creates an in-memory stage instance, based on a `view` as view.
     Any key-word arguments are set as attributes on the stage object,
     accessible via `self.executor.current_stage`."""
@@ -301,7 +301,7 @@ class FriendlyNamedStage(models.Model):
         abstract = True
 
 
-class FlowToken(Token):
+class FlowToken(InternallyManagedMixin, Token):
     """Subclass of a standard Token, stores the currently active flow plan upon creation.
     Can be used to later resume a flow."""
 
@@ -310,13 +310,13 @@ class FlowToken(Token):
     revoke_on_execution = models.BooleanField(default=True)
 
     @staticmethod
-    def pickle(plan: "FlowPlan") -> str:
+    def pickle(plan: FlowPlan) -> str:
         """Pickle into string"""
         data = dumps(plan)
         return b64encode(data).decode()
 
     @property
-    def plan(self) -> "FlowPlan":
+    def plan(self) -> FlowPlan:
         """Load Flow plan from pickled version"""
         return loads(b64decode(self._plan.encode()))  # nosec
 

@@ -23,11 +23,17 @@ When a device registered with authentik reports its [device facts](#device-facts
 
 ## Device facts
 
-Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more. These facts can are supplied to authentik flows via the [authentik browser extension](browser-extension.mdx) to be used in making policy decisions. For example, you can create a policy that only allows endpoint devices that are running a recent OS version to access an application.
+Device facts are informational snippets about a device, such as its operating system, serial number, installed applications, running processes, and more. These facts are supplied to authentik flows via the [authentik browser extension](browser-extension.mdx) to be used in making policy decisions. For example, you can create a policy that only allows endpoint devices that are running a recent OS version to access an application.
+
+JL: the facts are supplied either by ak-sysd or from other connectors, and the browser extension is only used to associate the device the user is using with the device in the authentik database
 
 ### Advanced device facts :ak-enterprise
 
 This feature is still in development and will be announced soon.
+
+## Example facts
+
+For an example of the facts provided for a Linux device, see [here](./facts-linux.json).
 
 ## Endpoint devices in event logs
 

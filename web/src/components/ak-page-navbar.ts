@@ -1,15 +1,13 @@
 import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { UserDisplay } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -60,6 +58,10 @@ export interface PageHeaderInit {
  *
  * Internally, this component listens for the `ak-page-header` event, which is
  * dispatched by the `ak-page-header` component.
+ *
+ * @event ak-page-nav-menu-toggle
+ * @event ak-page-details-update
+ *
  */
 @customElement("ak-page-navbar")
 export class AKPageNavbar
@@ -318,10 +320,6 @@ export class AKPageNavbar
 
     //#region Event Handlers
 
-    #onWebSocket = () => {
-        this.firstUpdated();
-    };
-
     #onPageDetails = (ev: PageDetailsUpdate) => {
         const { header, description, icon, iconImage } = ev.header;
         this.header = header;
@@ -337,18 +335,12 @@ export class AKPageNavbar
 
     public connectedCallback(): void {
         super.connectedCallback();
-        window.addEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
         window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
     }
 
     public disconnectedCallback(): void {
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
         window.removeEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
         super.disconnectedCallback();
-    }
-
-    public async firstUpdated() {
-        this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
     willUpdate() {
@@ -385,7 +377,11 @@ export class AKPageNavbar
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
-                            ${renderImage(this.brandingLogo, msg("authentik Logo"), "")}
+                            ${ThemedImage({
+                                src: this.brandingLogo,
+                                alt: msg("authentik Logo"),
+                                theme: this.activeTheme,
+                            })}
                         </div>
                     </a>
                 </aside>

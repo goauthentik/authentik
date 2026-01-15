@@ -7,6 +7,7 @@ from django.db import connection
 from django.db.models import Model, Q
 from djangoql.compat import text_type
 from djangoql.schema import StrField
+from djangoql.serializers import DjangoQLSchemaSerializer
 
 
 class JSONSearchField(StrField):
@@ -14,10 +15,18 @@ class JSONSearchField(StrField):
 
     model: Model
 
-    def __init__(self, model=None, name=None, nullable=None, suggest_nested=True):
+    def __init__(
+        self,
+        model=None,
+        name=None,
+        nullable=None,
+        suggest_nested=False,
+        fixed_structure: OrderedDict | None = None,
+    ):
         # Set this in the constructor to not clobber the type variable
         self.type = "relation"
         self.suggest_nested = suggest_nested
+        self.fixed_structure = fixed_structure
         super().__init__(model, name, nullable)
 
     def get_lookup(self, path, operator, value):
@@ -57,11 +66,23 @@ class JSONSearchField(StrField):
             )
             return (x[0] for x in cursor.fetchall())
 
-    def get_nested_options(self) -> OrderedDict:
+    def get_fixed_structure(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:
+        new_dict = OrderedDict()
+        if not self.fixed_structure:
+            return new_dict
+        new_dict.setdefault(self.relation(), {})
+        for key, value in self.fixed_structure.items():
+            new_dict[self.relation()][key] = serializer.serialize_field(value)
+            if isinstance(value, JSONSearchField):
+                new_dict.update(value.get_nested_options(serializer))
+        return new_dict
+
+    def get_nested_options(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:
         """Get keys of all nested objects to show autocomplete"""
         if not self.suggest_nested:
+            if self.fixed_structure:
+                return self.get_fixed_structure(serializer)
             return OrderedDict()
-        base_model_name = f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
 
         def recursive_function(parts: list[str], parent_parts: list[str] | None = None):
             if not parent_parts:
@@ -87,7 +108,7 @@ class JSONSearchField(StrField):
         relation_structure = defaultdict(dict)
 
         for relations in self.json_field_keys():
-            result = recursive_function([base_model_name] + relations)
+            result = recursive_function([self.relation()] + relations)
             for relation_key, value in result.items():
                 for sub_relation_key, sub_value in value.items():
                     if not relation_structure[relation_key].get(sub_relation_key, None):

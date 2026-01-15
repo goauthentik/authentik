@@ -280,14 +280,14 @@ html[data-theme="dark"] .sectionTitle {
 }
 
 .clearButton {
-    padding: 0.4rem 0.875rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 6px;
     background-color: transparent;
     color: var(--ifm-color-emphasis-600);
     font-weight: 500;
     border: 1px solid var(--ifm-color-emphasis-300);
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     transition: all 0.15s ease;
     white-space: nowrap;
 }

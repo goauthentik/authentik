@@ -1,8 +1,6 @@
 module goauthentik.io
 
-go 1.24.3
-
-toolchain go1.24.6
+go 1.25.5
 
 require (
 	beryju.io/ldap v0.1.0
@@ -21,7 +19,7 @@ require (
 	github.com/gorilla/sessions v1.4.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/grafana/pyroscope-go v1.2.7
-	github.com/jackc/pgx/v5 v5.7.6
+	github.com/jackc/pgx/v5 v5.8.0
 	github.com/jellydator/ttlcache/v3 v3.4.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
@@ -32,7 +30,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2026020.4
+	goauthentik.io/api/v3 v3.2026020.11
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.34.0
 	golang.org/x/sync v0.19.0

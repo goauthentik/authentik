@@ -19,6 +19,7 @@ import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 export const stageToAuthenticatorName = (stage: UserSetting) =>
@@ -29,8 +30,11 @@ export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
     userSettings?: UserSetting[];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    public override label = msg("MFA Devices");
+    protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
@@ -56,14 +60,17 @@ export class MFADevicesPage extends Table<Device> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbar(): TemplateResult {
-        const settings = (this.userSettings || []).filter((stage) => {
-            if (stage.component === "ak-user-settings-password") {
-                return false;
-            }
-            return stage.configureUrl;
-        });
-        return html`<ak-dropdown class="pf-c-dropdown">
+    protected renderEnrollButton(): SlottedTemplateResult {
+        return guard([this.userSettings], () => {
+            const settings = (this.userSettings || []).filter((stage) => {
+                if (stage.component === "ak-user-settings-password") {
+                    return false;
+                }
+
+                return stage.configureUrl;
+            });
+
+            return html`<ak-dropdown class="pf-c-dropdown">
                 <button
                     class="pf-m-primary pf-c-dropdown__toggle"
                     type="button"
@@ -99,8 +106,12 @@ export class MFADevicesPage extends Table<Device> {
                         </li>`;
                     })}
                 </ul>
-            </ak-dropdown>
-            ${super.renderToolbar()}`;
+            </ak-dropdown>`;
+        });
+    }
+
+    protected override renderToolbar(): TemplateResult {
+        return html`${this.renderEnrollButton()} ${super.renderToolbar()}`;
     }
 
     async deleteWrapper(device: Device) {

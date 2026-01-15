@@ -93,7 +93,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ### Machine-to-machine authentication :ak-version[2024.12]
 
-If using [Machine-to-Machine](../../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
+If using [Machine-to-Machine](../../../../../add-secure-apps/providers/oauth2/machine_to_machine.mdx#jwt-authentication) authentication, some specific steps need to be considered.
 
 When getting the JWT token from Entra ID, set the scope to the **Application ID URI**, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
 
@@ -108,7 +108,7 @@ scope=api://<application_client_id>/.default&
 client_secret=<application_client_secret>
 ```
 
-The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../../add-secure-apps/providers/oauth2/client_credentials/#authentik-issued-jwts).
+The JWT returned from the request above can be used in authentik and exchanged for an [authentik JWT](../../../../../../add-secure-apps/providers/oauth2/machine_to_machine/#authentik-issued-jwts).
 
 ## Source property mappings
 
