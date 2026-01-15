@@ -41,11 +41,10 @@ To support the integration of Active Directory with authentik, you need to creat
 :::info Limiting service account permissions
 Optionally, if you don't want authentik to be able to view and sync objects within certain OUs, you can limit the servive account's permissions:
 
-1. Right click on the OU in question and navigate to **Properties** > **Security** > **Advanced**.
+1. Right click on the OU in question and navigate to **Properties** > **Security**.
 2. Select the authentik service account that you created.
-3. Select **Apply to this object and all descendant objects**
-4. Deny the following: **List contents**, **Read all properties**, and **Read permissions**
-5. Cick apply.
+3. Under the **Deny** column, check **Read**.
+4. Cick **Apply**.
 
 You can repeat this process for other OUs and objects within Active Directory.
 :::
