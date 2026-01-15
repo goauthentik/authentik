@@ -39,6 +39,10 @@ class FleetController(BaseController[DBC]):
                 )
             )
 
+    @staticmethod
+    def vendor_identifier() -> str:
+        return "fleetdm.com"
+
     def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
         return [EnrollmentMethods.AUTOMATIC_API]
 

@@ -37,7 +37,7 @@ class FleetConnector(Connector):
         return FleetConnectorSerializer
 
     @property
-    def controller(self) -> type["FleetController"]:
+    def controller(self) -> type[FleetController]:
         from authentik.enterprise.endpoints.connectors.fleet.controller import FleetController
 
         return FleetController
