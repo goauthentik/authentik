@@ -404,6 +404,12 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
+class UserPasswordHashSetSerializer(PassiveSerializer):
+    """Payload to set a users' password from a pre-hashed value"""
+
+    password_hash = CharField(required=True)
+
+
 class UserServiceAccountSerializer(PassiveSerializer):
     """Payload to create a service account"""
 
@@ -756,6 +762,36 @@ class UserViewSet(
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
+            return Response(status=400)
+        if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
+            LOGGER.debug("Updating session hash after password change")
+            update_session_auth_hash(self.request, user)
+        return Response(status=204)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        request=UserPasswordHashSetSerializer,
+        responses={
+            204: OpenApiResponse(description="Successfully changed password"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+    )
+    @validate(UserPasswordHashSetSerializer)
+    def set_password_hash(
+        self, request: Request, pk: int, body: UserPasswordHashSetSerializer
+    ) -> Response:
+        """Set password for user using a pre-hashed password"""
+        user: User = self.get_object()
+        try:
+            user.set_password_from_hash(body.validated_data["password_hash"], request=request)
+            user.save()
+        except (ValidationError, IntegrityError, ValueError) as exc:
+            LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         if user.pk == request.user.pk and SESSION_KEY_IMPERSONATE_USER not in self.request.session:
             LOGGER.debug("Updating session hash after password change")

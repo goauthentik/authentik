@@ -4534,6 +4534,34 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/set_password_hash/:
+    post:
+      operationId: core_users_set_password_hash_create
+      description: Set password for user using a pre-hashed password
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPasswordHashSetRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully changed password
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -56449,6 +56477,15 @@ components:
       - identifier
       - source
       - user
+    UserPasswordHashSetRequest:
+      type: object
+      description: Payload to set a users' password from a pre-hashed value
+      properties:
+        password_hash:
+          type: string
+          minLength: 1
+      required:
+      - password_hash
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly

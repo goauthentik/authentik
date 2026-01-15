@@ -5,6 +5,7 @@ import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserPasswordHashForm";
 import "#admin/users/UserResetEmailForm";
 import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
@@ -60,6 +61,17 @@ export const renderRecoveryButtons = ({
                 ${msg("Set password")}
             </button>
         </ak-forms-modal>
+        <ak-forms-modal size=${PFSize.Medium} id="update-password-hash-request">
+            <span slot="submit">${msg("Update password")}</span>
+            <span slot="header">
+                ${msg(str`Update ${user.name || user.username}'s password`)}
+            </span>
+            <ak-user-password-hash-form slot="form" .instancePk=${user.pk}>
+            </ak-user-password-hash-form>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                ${msg("Set password hash")}
+            </button>
+        </ak-forms-modal>
         ${brandHasRecoveryFlow
             ? html`
                   <ak-forms-modal id="ak-link-recovery-request">
@@ -97,7 +109,8 @@ const recoveryButtonStyles = css`
         gap: 0.375rem;
     }
     #recovery-request-buttons > *,
-    #update-password-request .pf-c-button {
+    #update-password-request .pf-c-button,
+    #update-password-hash-request .pf-c-button {
         margin: 0;
     }
 `;
