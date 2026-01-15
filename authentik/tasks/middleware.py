@@ -1,5 +1,7 @@
 import socket
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
+from threading import Thread
 from time import sleep
 from typing import Any, cast
 
@@ -17,10 +19,12 @@ from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
+from setproctitle import setthreadtitle
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
 from authentik.root.signals import post_startup, pre_startup, startup
@@ -209,14 +213,23 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
 
 
 class WorkerHealthcheckMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_healthcheck
 
-        return [worker_healthcheck]
+    thread: Thread | None
+
+    def after_worker_boot(self, broker, worker):
+        host, _, port = CONFIG.get("listen.http").rpartition(":")
+
+        try:
+            port = int(port)
+        except ValueError:
+            LOGGER.error(f"Invalid port entered: {port}")
+
+        self.thread = Thread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
+        self.thread.start()
 
     @staticmethod
     def run(addr: str, port: int):
+        setthreadtitle("authentik Worker Healthcheck server")
         try:
             httpd = HTTPServer((addr, port), _healthcheck_handler)
             httpd.serve_forever()
@@ -228,14 +241,15 @@ class WorkerHealthcheckMiddleware(Middleware):
 
 
 class WorkerStatusMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_status
+    thread: Thread | None
 
-        return [worker_status]
+    def after_worker_boot(self, broker, worker):
+        self.thread = Thread(target=WorkerStatusMiddleware.run)
+        self.thread.start()
 
     @staticmethod
     def run():
+        setthreadtitle("authentik Worker status")
         status = WorkerStatus.objects.create(
             hostname=socket.gethostname(),
             version=authentik_full_version(),
@@ -261,8 +275,18 @@ class WorkerStatusMiddleware(Middleware):
 
 
 class MetricsMiddleware(BaseMetricsMiddleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_metrics
+    thread: Thread | None
 
-        return [worker_metrics]
+    @property
+    def forks(self) -> list[Callable[[], None]]:
+        return []
+
+    def after_worker_boot(self, broker, worker):
+        addr, _, port = CONFIG.get("listen.metrics").rpartition(":")
+
+        try:
+            port = int(port)
+        except ValueError:
+            LOGGER.error(f"Invalid port entered: {port}")
+        self.thread = Thread(target=MetricsMiddleware.run, args=(addr, port))
+        self.thread.start()
