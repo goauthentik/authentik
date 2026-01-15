@@ -142,7 +142,7 @@ class Importer:
         """Default context"""
         context = {
             "goauthentik.io/rbac/models": rbac_models(),
-            "goauthentik.io/enterprise/licensed": False
+            "goauthentik.io/enterprise/licensed": False,
         }
         try:
             from authentik.enterprise.license import LicenseKey
