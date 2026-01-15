@@ -21,7 +21,7 @@ VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 LOCAL_VERSION = parse(authentik_version())
 
 
-def _set_prom_info():
+def _set_prom_info() -> None:
     """Set prometheus info for version"""
     PROM_INFO.info(
         {
@@ -33,7 +33,7 @@ def _set_prom_info():
 
 
 @actor(description=_("Update latest version info."))
-def update_latest_version():
+def update_latest_version() -> None:
     self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
