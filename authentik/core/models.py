@@ -556,7 +556,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    def set_password_from_hash(self, password_hash: str):
+    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input - it sets it directly.
@@ -565,6 +565,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         Raises ValueError if the hash format is not recognized.
         """
         identify_hasher(password_hash)  # Raises ValueError if invalid
+        if self.pk and signal:
+            from authentik.core.signals import password_changed
+
+            if not sender:
+                sender = self
+            password_changed.send(sender=sender, user=self, password="", request=request)
         self.password = password_hash
         self.password_change_date = now()
 
