@@ -227,7 +227,7 @@ class UserSerializer(ModelSerializer):
                 except ValueError as exc:
                     LOGGER.warning("Failed to identify password hash format", exc_info=exc)
                     raise ValidationError(
-                        "Invalid password hash format. Must be a valid Django password hash."
+                        _("Invalid password hash format. Must be a valid Django password hash.")
                     ) from exc
                 instance.save()
                 return
