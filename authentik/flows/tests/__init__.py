@@ -48,7 +48,7 @@ class FlowTestCase(APITestCase):
             self.assertEqual(raw_response[key], expected)
         return raw_response
 
-   def get_flow_plan(self) -> FlowPlan | None:
+    def get_flow_plan(self) -> FlowPlan | None:
         return self.client.session.get(SESSION_KEY_PLAN)
 
     def set_flow_plan(self, plan: FlowPlan):
