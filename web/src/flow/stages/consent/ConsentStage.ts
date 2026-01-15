@@ -1,6 +1,7 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -12,7 +13,6 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -113,17 +113,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     });
                 }}
             >
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
                 ${this.challenge.additionalPermissions.length > 0
                     ? this.renderAdditional()
                     : this.renderNoPrevious()}
