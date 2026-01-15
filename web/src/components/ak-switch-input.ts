@@ -39,7 +39,7 @@ export class AkSwitchInput extends AKElement {
      * For more complex help instructions, provide a template result.
      */
     @property({ type: Object })
-   public bighelp!: TemplateResult | TemplateResult[];
+    public bighelp!: TemplateResult | TemplateResult[];
 
     @query("input.pf-c-switch__input[type=checkbox]")
     checkbox!: HTMLInputElement;
