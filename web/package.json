@@ -162,7 +162,7 @@
         "pino": "^10.1.1",
         "pino-pretty": "^13.1.2",
         "playwright": "^1.57.0",
-        "prettier": "^3.6.2",
+        "prettier": "^3.8.0",
         "pseudolocale": "^2.2.0",
         "rapidoc": "^9.3.8",
         "react": "^19.2.3",

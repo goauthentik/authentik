@@ -3,7 +3,7 @@
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
-from typing import Any, Optional, Self
+from typing import Any, Self
 from uuid import uuid4
 
 import pgtrigger
@@ -225,7 +225,7 @@ class Group(SerializerModel, AttributesMixin):
         # in the LDAP Outpost we use the last 5 chars so match here
         return int(str(self.pk.int)[:5])
 
-    def is_member(self, user: "User") -> bool:
+    def is_member(self, user: User) -> bool:
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
@@ -466,7 +466,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
-    def app_entitlements(self, app: "Application | None") -> QuerySet["ApplicationEntitlement"]:
+    def app_entitlements(self, app: Application | None) -> QuerySet[ApplicationEntitlement]:
         """Get all entitlements this user has for `app`."""
         if not app:
             return []
@@ -485,7 +485,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         ).order_by("name")
         return qs
 
-    def app_entitlements_attributes(self, app: "Application | None") -> dict:
+    def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""
         final_attributes = {}
         for attrs in self.app_entitlements(app).values_list("attributes", flat=True):
@@ -654,7 +654,7 @@ class BackchannelProvider(Provider):
 
 
 class ApplicationQuerySet(QuerySet):
-    def with_provider(self) -> "QuerySet[Application]":
+    def with_provider(self) -> QuerySet[Application]:
         qs = self.select_related("provider")
         for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
             qs = qs.select_related(f"provider__{subclass}")
@@ -713,9 +713,7 @@ class Application(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
-    def get_launch_url(
-        self, user: Optional["User"] = None, user_data: dict | None = None
-    ) -> str | None:
+    def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider.
 
         Args:
@@ -948,7 +946,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         raise NotImplementedError
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         """Return property mapping type used by this object"""
         if self.managed == self.MANAGED_INBUILT:
             from authentik.core.models import PropertyMapping
@@ -1069,7 +1067,7 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet["Self"]:
+    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
         for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
@@ -1265,7 +1263,7 @@ class AuthenticatedSession(SerializerModel):
         return f"Authenticated Session {str(self.pk)[:10]}"
 
     @staticmethod
-    def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
+    def from_request(request: HttpRequest, user: User) -> AuthenticatedSession | None:
         """Create a new session from a http request"""
         if not hasattr(request, "session") or not request.session.exists(
             request.session.session_key
