@@ -55617,7 +55617,7 @@ components:
           type: array
           items:
             type: string
-          description: Get all system permissions assigned to the user
+          description: Get all authentik permissions assigned to the user
           readOnly: true
       required:
       - avatar

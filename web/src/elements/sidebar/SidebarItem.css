@@ -58,3 +58,42 @@ button.pf-c-nav__link {
     padding: 0.1rem 0.5rem;
     border-radius: var(--pf-global--BorderRadius--sm);
 }
+
+/* Pin button styles */
+.pf-c-nav__item {
+    position: relative;
+}
+
+.ak-sidebar-pin-button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--pf-global--Color--200);
+    font-size: var(--pf-global--FontSize--sm);
+}
+
+.pf-c-nav__item:hover .ak-sidebar-pin-button,
+.pf-c-nav__item:focus-within .ak-sidebar-pin-button {
+    opacity: 0.6;
+}
+
+.ak-sidebar-pin-button:hover {
+    opacity: 1 !important;
+    color: var(--pf-global--primary-color--100);
+}
+
+.ak-sidebar-pin-button.pinned {
+    opacity: 1;
+    color: var(--pf-global--primary-color--100);
+}
+
+.ak-sidebar-item--pinned .ak-sidebar-pin-button {
+    opacity: 1;
+}

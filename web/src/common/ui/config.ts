@@ -63,6 +63,9 @@ export interface UIConfig {
     defaults: {
         userPath: string;
     };
+    admin: {
+        pinnedTabs: string[];
+    };
 }
 
 export const DefaultUIConfig = {
@@ -90,6 +93,9 @@ export const DefaultUIConfig = {
     locale: "",
     defaults: {
         userPath: "users",
+    },
+    admin: {
+        pinnedTabs: [],
     },
 } as const satisfies UIConfig;
 

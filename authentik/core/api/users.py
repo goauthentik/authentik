@@ -338,11 +338,10 @@ class UserSelfSerializer(ModelSerializer):
         return user.group_attributes(self._context["request"]).get("settings", {})
 
     def get_system_permissions(self, user: User) -> list[str]:
-        """Get all system permissions assigned to the user"""
+        """Get all authentik permissions assigned to the user"""
         return list(
-            x.split(".", maxsplit=1)[1]
-            for x in user.get_all_permissions()
-            if x.startswith("authentik_rbac")
+            x for x in user.get_all_permissions()
+            if x.startswith("authentik_")
         )
 
     class Meta:

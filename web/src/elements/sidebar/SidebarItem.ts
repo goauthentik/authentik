@@ -24,6 +24,22 @@ export interface SidebarItemProperties {
     activeWhen?: string[];
     expanded?: boolean | null;
     enterprise?: boolean;
+    pinnable?: boolean;
+    pinned?: boolean;
+}
+
+/**
+ * Custom event dispatched when a sidebar item's pinned state is toggled.
+ */
+export class SidebarPinToggleEvent extends Event {
+    static readonly eventName = "ak-sidebar-pin-toggle";
+
+    constructor(
+        public readonly path: string,
+        public readonly pinned: boolean,
+    ) {
+        super(SidebarPinToggleEvent.eventName, { bubbles: true, composed: true });
+    }
 }
 
 @customElement("ak-sidebar-item")
@@ -59,6 +75,12 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
 
     @property({ type: Boolean })
     public enterprise = false;
+
+    @property({ type: Boolean })
+    public pinnable = false;
+
+    @property({ type: Boolean })
+    public pinned = false;
 
     public get childItems(): SidebarItem[] {
         const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
@@ -217,6 +239,24 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         </a>`;
     }
 
+    renderPinButton() {
+        if (!this.pinnable || !this.path) return nothing;
+
+        return html`<button
+            class="ak-sidebar-pin-button ${this.pinned ? "pinned" : ""}"
+            type="button"
+            title=${this.pinned ? msg("Unpin from top") : msg("Pin to top")}
+            aria-label=${this.pinned ? msg("Unpin from top") : msg("Pin to top")}
+            @click=${(e: Event) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.dispatchEvent(new SidebarPinToggleEvent(this.path!, !this.pinned));
+            }}
+        >
+            <i class="fas fa-thumbtack" aria-hidden="true"></i>
+        </button>`;
+    }
+
     renderWithPath() {
         if (this.enterprise && !this.hasEnterpriseLicense) {
             if (!this.can(CapabilitiesEnum.IsEnterprise)) return nothing;
@@ -232,6 +272,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             >
                 ${this.label}
             </a>
+            ${this.renderPinButton()}
         `;
     }
 
@@ -244,11 +285,14 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
         }
 
+        const classes = ["pf-c-nav__item"];
+        if (this.pinned) classes.push("ak-sidebar-item--pinned");
+
         return html`<li
             part="list-item"
             role="presentation"
             aria-label=${ifPresent(this.label)}
-            class="pf-c-nav__item"
+            class=${classes.join(" ")}
         >
             ${this.path ? this.renderWithPath() : this.renderWithLabel()}
         </li>`;

@@ -74,13 +74,13 @@ export interface SessionMixin {
 }
 
 /**
- * Whether the user can view the admin innterface.
+ * Whether the user can view the admin interface.
  */
 export function canAccessAdmin(user?: UserSelf | null) {
     return (
         user &&
         (user.isSuperuser ||
-            user.systemPermissions.includes("access_admin_interface") ||
+            user.systemPermissions.includes("authentik_rbac.access_admin_interface") ||
             user.pk === 0)
     );
 }
