@@ -80,9 +80,7 @@ class BlueprintEntry:
     """Single entry of a blueprint"""
 
     model: str | YAMLTag
-    state: BlueprintEntryDesiredState | YAMLTag = field(
-        default=BlueprintEntryDesiredState.PRESENT
-    )
+    state: BlueprintEntryDesiredState | YAMLTag = field(default=BlueprintEntryDesiredState.PRESENT)
     conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: dict[str, Any] | None = field(default_factory=dict)

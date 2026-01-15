@@ -713,9 +713,7 @@ class Application(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
-    def get_launch_url(
-        self, user: User | None = None, user_data: dict | None = None
-    ) -> str | None:
+    def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider.
 
         Args:
