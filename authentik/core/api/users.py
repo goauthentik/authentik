@@ -220,7 +220,7 @@ class UserSerializer(ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             # Fail if both password and password_hash are set
             if password and password_hash and password_hash.strip():
-                raise ValidationError("Cannot set both password and password_hash. Use only one.")
+                raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
             if password_hash and password_hash.strip():
                 try:
                     instance.set_password_from_hash(password_hash)
