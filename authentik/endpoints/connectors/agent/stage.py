@@ -1,4 +1,5 @@
 from datetime import timedelta
+from hashlib import sha256
 from hmac import compare_digest
 
 from django.http import HttpResponse
@@ -8,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, IntegerField
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.endpoints.connectors.agent.models import DeviceToken
+from authentik.endpoints.connectors.agent.models import DeviceAuthenticationToken, DeviceToken
 from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.flows.challenge import (
     Challenge,
@@ -20,6 +21,7 @@ from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import JWTAlgorithms
 
+PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  # nosec
 PLAN_CONTEXT_AGENT_ENDPOINT_CHALLENGE = "goauthentik.io/endpoints/connectors/agent/challenge"
 QS_CHALLENGE = "challenge"
 QS_CHALLENGE_RESPONSE = "response"
@@ -85,11 +87,33 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
     response_class = EndpointAgentChallengeResponse
 
     def get(self, request, *args, **kwargs):
+        # Check if we're in a device interactive auth flow, in which case we use that
+        # to prove which device is being used
+        if response := self.check_device_ia():
+            return response
         stage: EndpointStage = self.executor.current_stage
         keypair = CertificateKeyPair.objects.filter(pk=stage.connector.challenge_key_id).first()
         if not keypair:
             return self.executor.stage_ok()
         return super().get(request, *args, **kwargs)
+
+    def check_device_ia(self):
+        """Check if we're in a device interactive authentication flow, and if so,
+        there won't be a browser extension to talk to. However we can authenticate
+        on the DTH header"""
+        if PLAN_CONTEXT_DEVICE_AUTH_TOKEN not in self.executor.plan.context:
+            return None
+        auth_token: DeviceAuthenticationToken = self.executor.plan.context.get(
+            PLAN_CONTEXT_DEVICE_AUTH_TOKEN
+        )
+        device_token_hash = self.request.headers.get("X-Authentik-Platform-Auth-DTH")
+        if not device_token_hash:
+            return None
+        if not compare_digest(
+            device_token_hash, sha256(auth_token.device_token.key.encode()).hexdigest()
+        ):
+            return self.executor.stage_invalid("Invalid device token")
+        return self.executor.stage_ok()
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         stage: EndpointStage = self.executor.current_stage
