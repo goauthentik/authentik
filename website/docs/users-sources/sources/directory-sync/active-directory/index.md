@@ -38,6 +38,18 @@ To support the integration of Active Directory with authentik, you need to creat
 
     ![](./02_delegate.png)
 
+:::info Limiting service account permissions
+Optionally, if you don't want authentik to be able to view and sync objects within certain OUs, you can limit the servive account's permissions:
+
+1. Right click on the OU in question and navigate to **Properties** > **Security** > **Advanced**.
+2. Select the authentik service account that you created.
+3. Select **Apply to this object and all descendant objects**
+4. Deny the following: **List contents**, **Read all properties**, and **Read permissions**
+5. Cick apply.
+
+You can repeat this process for other OUs and objects within Active Directory.
+:::
+
 ## authentik Setup
 
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
@@ -72,6 +84,8 @@ To support the integration of authentik with Active Directory, you will need to 
     - **Group membership field**: the user object attribute or the group object attribute that determines the group membership of a user (e.g. `member`). If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
     - **User membership attribute**: ensure that this is set to `distinguishedName`.
     - **Object uniqueness field**: a user attribute that contains a unique identifier (e.g. `objectSid`).
+
+    :::info
 
 5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** > **System Tasks**:
 
