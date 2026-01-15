@@ -543,6 +543,7 @@ def _update_settings(app_path: str) -> None:
     except ImportError:
         pass
 
+
 # Attempt to load enterprise app, if available
 try:
     importlib.import_module("authentik.enterprise.apps")
