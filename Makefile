@@ -46,8 +46,8 @@ ifeq ($(UNAME_S),Darwin)
 			BREW_CPPFLAGS += -I${_krb5_pref}/include
 			BREW_PKG_CONFIG_PATH = ${_krb5_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
 		endif
+		UV := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv
 	endif
-	UV := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv
 endif
 
 all: lint-fix lint gen web test  ## Lint, build, and test everything
@@ -82,7 +82,7 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
-ifeq ($(UNAME_S),Darwin)
+ifdef ($(BREW_EXISTS))
 # Clear cache to ensure fresh compilation
 	$(UV) cache clean
 # Force compilation from source for lxml and xmlsec with correct environment

@@ -6,7 +6,6 @@ from os import getpid
 
 import structlog
 from django.db import connection
-from orjson import dumps
 
 from authentik.lib.config import CONFIG
 
@@ -67,7 +66,7 @@ def get_logger_config():
         "formatters": {
             "json": {
                 "()": structlog.stdlib.ProcessorFormatter,
-                "processor": structlog.processors.JSONRenderer(serializer=dumps, sort_keys=True),
+                "processor": structlog.processors.JSONRenderer(sort_keys=True),
                 "foreign_pre_chain": LOG_PRE_CHAIN
                 + [
                     structlog.processors.ExceptionRenderer(
