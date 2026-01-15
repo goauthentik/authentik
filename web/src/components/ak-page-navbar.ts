@@ -42,6 +42,24 @@ export class PageNavMenuToggle extends Event {
     }
 }
 
+export class svgIcon {
+    constructor(public svg: string) {}
+
+    public render(args: { [key: string]: string }) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(this.svg, "image/svg+xml");
+        const el = doc.documentElement;
+        for (const key of Object.keys(args)) {
+            el.setAttribute(key, args[key]);
+        }
+        return el;
+    }
+}
+
+export function carbonIcon(svg: string): svgIcon {
+    return new svgIcon(svg);
+}
+
 export function setPageDetails(header: PageHeaderInit) {
     window.dispatchEvent(new PageDetailsUpdate(header));
 }
@@ -49,7 +67,7 @@ export function setPageDetails(header: PageHeaderInit) {
 export interface PageHeaderInit {
     header?: string | null;
     description?: string | null;
-    icon?: string | null;
+    icon?: string | svgIcon | null;
     iconImage?: boolean;
 }
 
@@ -277,7 +295,7 @@ export class AKPageNavbar
     //#region Properties
 
     @state()
-    icon?: string | null = null;
+    icon?: string | svgIcon | null = null;
 
     @state()
     iconImage = false;
@@ -355,12 +373,18 @@ export class AKPageNavbar
 
     renderIcon() {
         if (this.icon) {
+            if (this.icon instanceof svgIcon) {
+                return html`${this.icon.render({
+                    "class": "accent-icon svg-icon",
+                    "aria-hidden": "true",
+                })}`;
+            }
             if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img
                     aria-hidden="true"
                     class="accent-icon pf-icon"
                     src="${this.icon}"
-                    alt="page icon"
+                    alt=${msg("page icon")}
                 />`;
             }
 
