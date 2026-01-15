@@ -9,6 +9,7 @@ import "#elements/wizard/Wizard";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 import { Wizard } from "#elements/wizard/Wizard";
 
 import { EndpointsApi, TypeCreate } from "@goauthentik/api";
@@ -50,6 +51,7 @@ export class EndpointConnectorWizard extends AKElement {
                 <ak-wizard-page-type-create
                     slot="initial"
                     .types=${this.connectorTypes}
+                    layout=${TypeCreateWizardPageLayouts.grid}
                     @select=${(ev: CustomEvent<TypeCreate>) => {
                         if (!this.wizard) return;
                         const idx = this.wizard.steps.indexOf("initial") + 1;

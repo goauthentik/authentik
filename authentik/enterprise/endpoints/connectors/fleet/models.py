@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -29,6 +30,10 @@ class FleetConnector(Connector):
 
     map_users = models.BooleanField(default=True)
     map_teams_access_group = models.BooleanField(default=False)
+
+    @property
+    def icon_url(self):
+        return static("authentik/connectors/fleet.svg")
 
     @property
     def serializer(self) -> type[Serializer]:
