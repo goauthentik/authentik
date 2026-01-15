@@ -105,7 +105,7 @@ class OAuthAuthorizationParams:
     github_compat: InitVar[bool] = False
 
     @staticmethod
-    def from_request(request: HttpRequest, github_compat=False) -> "OAuthAuthorizationParams":
+    def from_request(request: HttpRequest, github_compat=False) -> OAuthAuthorizationParams:
         """
         Get all the params used by the Authorization Code Flow
         (and also for the Implicit and Hybrid).

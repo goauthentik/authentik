@@ -68,7 +68,7 @@ class AgentConnector(Connector):
         return AuthenticatorEndpointStageView
 
     @property
-    def controller(self) -> type["AgentConnectorController"]:
+    def controller(self) -> type[AgentConnectorController]:
         from authentik.endpoints.connectors.agent.controller import AgentConnectorController
 
         return AgentConnectorController

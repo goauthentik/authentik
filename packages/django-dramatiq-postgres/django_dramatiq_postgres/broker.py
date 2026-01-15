@@ -94,7 +94,7 @@ class PostgresBroker(Broker):
         return cast(DatabaseWrapper, connections[self.db_alias])
 
     @property
-    def consumer_class(self) -> "type[_PostgresConsumer]":
+    def consumer_class(self) -> type[_PostgresConsumer]:
         return _PostgresConsumer
 
     @cached_property

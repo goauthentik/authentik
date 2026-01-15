@@ -50,7 +50,7 @@ class License(SerializerModel):
         return LicenseSerializer
 
     @property
-    def status(self) -> "LicenseKey":
+    def status(self) -> LicenseKey:
         """Get parsed license status"""
         from authentik.enterprise.license import LicenseKey
 
