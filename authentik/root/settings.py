@@ -84,7 +84,6 @@ TENANT_APPS = [
     "authentik.crypto",
     "authentik.endpoints",
     "authentik.endpoints.connectors.agent",
-    "authentik.enterprise",
     "authentik.events",
     "authentik.admin.files",
     "authentik.flows",
@@ -543,6 +542,14 @@ def _update_settings(app_path: str) -> None:
                 globals()[_attr] = getattr(settings_module, _attr)
     except ImportError:
         pass
+
+# Attempt to load enterprise app, if available
+try:
+    importlib.import_module("authentik.enterprise.apps")
+    CONFIG.log("info", "Enabled authentik enterprise")
+    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+except ImportError:
+    pass
 
 
 if DEBUG:
