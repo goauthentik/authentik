@@ -98,7 +98,7 @@ We will also presume that two groups have been created in authentik: `Portainer 
         }
         ```
 
-        In the expression above, we filter on the group names `Portainer Admins` and `Portainer Users`. You can use any groups that exist in authentik - just ensure that the group names entered here match those setup in authentik exactly (they are case-sensitive).
+        In the expression above, we filter on the group names `Portainer Admins` and `Portainer Users`. You can use any groups that exist in authentik - just ensure that the group names entered here exactly match those setup in authentik (they are case-sensitive).
 
 3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.
@@ -108,7 +108,7 @@ We will also presume that two groups have been created in authentik: `Portainer 
 8. Navigate to **Directory** > **Groups**.
 9. Add users to each of the groups that you have defined in your expression, as desired.
 
-:::info
+:::info Application binding
 Since we are configuring access to Portainer based on group membership, It is recommended that you configure a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
 :::
 
@@ -132,7 +132,7 @@ Since we are configuring access to Portainer based on group membership, It is re
 
 ## Configuration verification
 
-To verify the integration of authentik with Portainer, log out of Portainer, then on the login page click **Login with OAuth**.
+To verify the integration of authentik with Portainer, log out of Portainer, then on the login page click **Login with OAuth**. You should be redirected to authentik and, after successful authentication, automatically logged in to Portainer.
 
 ## Resources
 
