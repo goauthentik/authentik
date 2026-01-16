@@ -219,7 +219,7 @@ class UserSerializer(ModelSerializer):
         pre-hashed password via password_hash parameter."""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             # Fail if both password and password_hash are set
-            if password and password_hash and password_hash.strip():
+            if password is not None and password_hash is not None:
                 raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
             if password_hash is not None:
                 try:
