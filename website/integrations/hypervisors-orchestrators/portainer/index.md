@@ -11,15 +11,15 @@ support_level: community
 > -- https://www.portainer.io/
 
 :::info
-This documentation has been validated to work for authentik 2025.10.3 and Portainer 2.33.6 LTS.
+This documentation has been validated to work with authentik 2025.10.3 and Portainer 2.33.6 LTS.
 :::
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `portainer.company` is the FQDN of Portainer installation.
-- `authentik.company` is the FQDN of authentik installation.
+- `portainer.company` is the FQDN of the Portainer installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -36,7 +36,7 @@ To support the integration of Portainer with authentik, you need to create an ap
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://portainer.company/`.
     - Select any available signing key.
@@ -46,20 +46,23 @@ To support the integration of Portainer with authentik, you need to create an ap
 
 ## Portainer configuration
 
-In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
+1. Login to Portainer as a user with administrative privileges.
+2. Navigate to **Settings** > **Authentication**.
+3. Under **Authentication method**, select **OAuth**, and under **Provider** select **Custom**.
+4. Under **OAuth Configuration**, enter the following values:
+    - **Client ID**: The `Client ID` from the authentik provider
+    - **Client Secret**: The `Client secret` from the authentik provider
+    - **Authorization URL**: `https://authentik.company/application/o/authorize/`
+    - **Access Token URL**: `https://authentik.company/application/o/token/`
+    - **Resource URL**: `https://authentik.company/application/o/userinfo/`
+    - **Redirect URL**: `https://portainer.company/`
+    - **Logout URL**: `https://authentik.company/application/o/portainer/end-session/`
+    - **User Identifier**: `preferred_username` (or `email` if you would prefer to use email addresses as identifiers)
+    - **Scopes**: `email openid profile`.
+5. Click **Save settings**.
 
-- Client ID: The 'Client ID' from the authentik provider
-- Client Secret: The 'Client secret' from the authentik provider
-- Authorization URL: `https://authentik.company/application/o/authorize/`
-- Access Token URL: `https://authentik.company/application/o/token/`
-- Resource URL: `https://authentik.company/application/o/userinfo/`
-- Redirect URL: `https://portainer.company/`
-- Logout URL: `https://authentik.company/application/o/portainer/end-session/`
-- User Identifier: `preferred_username` (Or `email` if you want to use email addresses as identifiers)
-- Scopes: `email openid profile`
-
-:::info
-Portainer by default shows commas between each item in the Scopes field. Do **NOT** use commas. Use a _space_
+:::caution
+By default, Portainer shows commas between each item in the Scopes field. Do **NOT** use commas. Use a _space_.
 :::
 
 ![](./port1.png)
@@ -68,7 +71,7 @@ Portainer by default shows commas between each item in the Scopes field. Do **NO
 
 If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams and environments, and automatically grant admin access to certain users based on authentik group membership. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
 
-For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for informaAtion on managing teams and access to environments based on team membership.
+For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for information on managing teams and access to environments based on team membership.
 
 We will also presume that two groups have been created in authentik: `Portainer Admins` and `Portainer Users`. See [Manage groups](https://docs.goauthentik.io/users-sources/groups/manage_groups/). You can choose any group names - replace `Portainer Admins` and `Portainer Users` later in this guide with your chosen names.
 
@@ -123,7 +126,7 @@ Since we are configuring access to Portainer based on group membership, It is re
         - Toggle **Assign admin rights to group(s)** to **ON**.
         - Add one admin mapping, and set **client value regex** to `^admin$`.
 4. Under **Provider** > **OAuth Configuration**, append `groups` to **Scopes**. The full value for **Scopes** should then be `email openid profile groups`.
-5. Click **Save Settings**.
+5. Click **Save settings**.
 
 ![](./port2.png)
 
