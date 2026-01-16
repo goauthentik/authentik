@@ -244,7 +244,6 @@ class IdentificationStageView(ChallengeStageView):
 
     response_class = IdentificationChallengeResponse
 
-    # Flag to ignore login_hint (user clicked "Not you?" or user not found)
     _override_login_hint: bool = False
 
     def get_user(self, uid_value: str) -> User | None:
@@ -291,44 +290,41 @@ class IdentificationStageView(ChallengeStageView):
         return challenge
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Check for login_hint and skip stage if valid user found"""
+        """Check for login_hint and skip stage if found"""
         current_stage: IdentificationStage = self.executor.current_stage
         get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
         login_hint = get_qs.get("login_hint")
-
-        # Check if user clicked "Not you?" (flow was cancelled)
-        if self.request.session.pop(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
-            self._override_login_hint = True
-            return super().get(request, *args, **kwargs)
 
         # No login_hint, show challenge normally
         if not login_hint:
             return super().get(request, *args, **kwargs)
 
-        # Try to find the user
-        user = self.get_user(login_hint)
+        # Prevent skip loop if user clicks "Not you?"
+        if self.request.session.pop(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
+            self._override_login_hint = True
+            return super().get(request, *args, **kwargs)
 
-        # Determine if we can skip the identification stage
-        user_has_passkeys = (
-            user
-            and current_stage.webauthn_stage
-            and WebAuthnDevice.objects.filter(user=user).exists()
-        )
+        # Only skip if this is a "simple" identification stage with no extra features
         can_skip = (
-            user is not None
-            and not current_stage.password_stage
-            and not current_stage.sources.filter(enabled=True).exists()
-            and not user_has_passkeys
+            not current_stage.password_stage
+            and not current_stage.captcha_stage
+            and not current_stage.webauthn_stage
+            and not self.executor.current_binding.policies.exists()
         )
 
         if can_skip:
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+            user = self.get_user(login_hint)
+            if user:
+                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+            else:
+                # Set dummy user
+                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
+                    username=login_hint,
+                    email=login_hint,
+                )
             return self.executor.stage_ok()
 
-        # Don't pre-fill username if user not found
-        if not user:
-            self._override_login_hint = True
-
+        # Can't skip - just pre-fill the username field
         return super().get(request, *args, **kwargs)
 
     def get_challenge(self) -> Challenge:
