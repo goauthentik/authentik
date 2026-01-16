@@ -152,7 +152,7 @@ class IDToken:
         final = self.to_dict()
         final["azp"] = provider.client_id
         final["uid"] = generate_id()
-        final["scope"] = " ".join(token.scope)
+        final.setdefault("scope", " ".join(token.scope))
         return provider.encode(final)
 
     def to_jwt(self, provider: OAuth2Provider) -> str:

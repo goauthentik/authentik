@@ -1,6 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#flow/stages/prompt/PromptStage";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -263,50 +264,24 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${this.renderTypes()}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="required">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.required ?? false}
-                        @change=${() => {
-                            this._shouldRefresh = true;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Required")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="placeholderExpression">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.placeholderExpression ?? false}
-                        @change=${() => {
-                            this._shouldRefresh = true;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Interpret placeholder as expression")}</span
-                    >
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        `When checked, the placeholder will be evaluated in the same way a property mapping is.
-            If the evaluation fails, the placeholder itself is returned.`,
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="required"
+                ?checked=${this.instance?.required ?? false}
+                @change=${() => {
+                    this._shouldRefresh = true;
+                }}
+                label=${msg("Required")}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="placeholderExpression"
+                ?checked=${this.instance?.placeholderExpression ?? false}
+                @change=${() => {
+                    this._shouldRefresh = true;
+                }}
+                label=${msg("Interpret placeholder as expression")}
+                help=${msg(`When checked, the placeholder will be evaluated in the same way a property mapping is.
+            If the evaluation fails, the placeholder itself is returned.`)}
+            ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
                 <ak-codemirror
                     mode="python"
@@ -324,29 +299,16 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="initialValueExpression">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.initialValueExpression ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Interpret initial value as expression")}</span
-                    >
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        `When checked, the initial value will be evaluated in the same way a property mapping is.
-            If the evaluation fails, the initial value itself is returned.`,
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="initialValueExpression"
+                ?checked=${this.instance?.initialValueExpression ?? false}
+                @change=${() => {
+                    this._shouldRefresh = true;
+                }}
+                label=${msg("Interpret initial value as expression")}
+                help=${msg(`When checked, the initial value will be evaluated in the same way a property mapping is.
+            If the evaluation fails, the initial value itself is returned.`)}
+            ></ak-switch-input>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
                 </ak-codemirror>
