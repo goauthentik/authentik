@@ -95,9 +95,7 @@ We will also presume that two groups have been created in authentik: `Portainer 
         }
         ```
 
-:::info
-In the expression above, we filter on the group names `Portainer Admins` and `Portainer Users`. You can use any groups that exist in authentik - just ensure that the group names entered here match those setup in authentik exactly (they are case-sensitive).
-:::
+        In the expression above, we filter on the group names `Portainer Admins` and `Portainer Users`. You can use any groups that exist in authentik - just ensure that the group names entered here match those setup in authentik exactly (they are case-sensitive).
 
 3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.
@@ -105,7 +103,7 @@ In the expression above, we filter on the group names `Portainer Admins` and `Po
 6. Under **Advanced protocol settings**, add the property mapping created in the previous step to **selected scopes**.
 7. Click **Update** to save your changes to the provider.
 8. Navigate to **Directory** > **Groups**.
-9. Add users to each of the groups that you have defined in your expression, as desired. If you add the same user to multiple groups, authentik will act on the first group defined in your expression.
+9. Add users to each of the groups that you have defined in your expression, as desired.
 
 :::info
 Since we are configuring access to Portainer based on group membership, It is recommended that you configure a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
@@ -124,7 +122,7 @@ Since we are configuring access to Portainer based on group membership, It is re
     - **Admin mapping**:
         - Toggle **Assign admin rights to group(s)** to **ON**.
         - Add one admin mapping, and set **client value regex** to `^admin$`.
-4. Under **Provider** > ** OAuth Configuration**, append `groups` to **Scopes**. The full value for **Scopes** should then be `email openid profile groups`.
+4. Under **Provider** > **OAuth Configuration**, append `groups` to **Scopes**. The full value for **Scopes** should then be `email openid profile groups`.
 5. Click **Save Settings**.
 
 ![](./port2.png)
