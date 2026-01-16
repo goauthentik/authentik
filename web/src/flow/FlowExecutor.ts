@@ -235,10 +235,12 @@ export class FlowExecutor
         }
 
         if (changedProperties.has("flowInfo") && this.flowInfo) {
-            if (!(
-                this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
-                this.layout === FlowLayoutEnum.SidebarRightFrameBackground
-            )) {
+            if (
+                !(
+                    this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
+                    this.layout === FlowLayoutEnum.SidebarRightFrameBackground
+                )
+            ) {
                 applyBackgroundImageProperty(this.flowInfo.background);
             }
         }
