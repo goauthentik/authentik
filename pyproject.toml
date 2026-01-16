@@ -53,8 +53,13 @@ dependencies = [
   "pydantic-scim==0.0.8",
   "pyjwt==2.10.1",
   "pyrad==2.4",
+<<<<<<< HEAD
   "python-kadmin-rs==0.6.1",
   "pyyaml==6.0.2",
+=======
+  "python-kadmin-rs==0.7.0",
+  "pyyaml==6.0.3",
+>>>>>>> ee8b3e348 (sources/kerberos: update to new python-kadmin-rs (#19491))
   "requests-oauthlib==2.0.0",
   "scim2-filter-parser==0.7.0",
   "sentry-sdk==2.33.2",
