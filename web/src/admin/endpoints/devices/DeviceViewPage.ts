@@ -2,6 +2,7 @@ import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
 import "#admin/endpoints/devices/facts/DeviceProcessTable";
 import "#admin/endpoints/devices/facts/DeviceUserTable";
+import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceForm";
 import "#elements/forms/ModalForm";
@@ -257,6 +258,15 @@ export class DeviceViewPage extends AKElement {
         ></ak-endpoints-device-groups-table>`;
     }
 
+    renderSoftware() {
+        if (!this.device) {
+            return nothing;
+        }
+        return html`<ak-endpoints-device-software-table
+            .device=${this.device}
+        ></ak-endpoints-device-software-table>`;
+    }
+
     render() {
         return html`<main part="main">
             <ak-tabs part="tabs">
@@ -299,6 +309,16 @@ export class DeviceViewPage extends AKElement {
                     class="pf-c-page__main-section"
                 >
                     ${this.renderGroups()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-software"
+                    id="page-software"
+                    aria-label="${msg("Software")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderSoftware()}
                 </div>
             </ak-tabs>
         </main>`;

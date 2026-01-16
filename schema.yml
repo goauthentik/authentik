@@ -22306,7 +22306,6 @@ paths:
           enum:
           - Heimdal
           - MIT
-          - other
         description: |+
           KAdmin server type
 
@@ -40087,7 +40086,6 @@ components:
       enum:
       - MIT
       - Heimdal
-      - other
       type: string
     KerberosSource:
       type: object
@@ -56248,6 +56246,7 @@ components:
       enum:
       - goauthentik.io/@merged
       - goauthentik.io/platform
+      - fleetdm.com
       type: string
     Version:
       type: object
