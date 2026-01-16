@@ -687,3 +687,4 @@ class TestProviderSAML(SeleniumTestCase):
             [self.user.email],
             f"Claim 'upn' mismatch at {self.driver.current_url}: {snippet}",
         )
+        sleep(3)
