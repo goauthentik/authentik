@@ -65,7 +65,7 @@ CRD_PLURAL = "servicemonitors"
 class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusServiceMonitor]):
     """Kubernetes Prometheus ServiceMonitor Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)

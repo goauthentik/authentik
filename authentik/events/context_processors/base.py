@@ -1,7 +1,7 @@
 """Base event enricher"""
 
 from functools import cache
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.http import HttpRequest
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class EventContextProcessor:
     """Base event enricher"""
 
-    def capability(self) -> Optional["Capabilities"]:
+    def capability(self) -> Capabilities | None:
         """Return the capability this context processor provides"""
         return None
 
@@ -21,7 +21,7 @@ class EventContextProcessor:
         """Return true if this context processor is configured"""
         return False
 
-    def enrich_event(self, event: "Event"):
+    def enrich_event(self, event: Event):
         """Modify event"""
         raise NotImplementedError
 

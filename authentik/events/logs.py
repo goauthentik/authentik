@@ -25,7 +25,7 @@ class LogEvent:
     attributes: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
-    def from_event_dict(item: EventDict) -> "LogEvent":
+    def from_event_dict(item: EventDict) -> LogEvent:
         event = item.pop("event")
         log_level = item.pop("level").lower()
         timestamp = datetime.fromisoformat(item.pop("timestamp")).replace(tzinfo=UTC)

@@ -36,9 +36,9 @@ def get_version() -> str:
 class KubernetesObjectReconciler[T]:
     """Base Kubernetes Reconciler, handles the basic logic."""
 
-    controller: "KubernetesController"
+    controller: KubernetesController
 
-    def __init__(self, controller: "KubernetesController"):
+    def __init__(self, controller: KubernetesController):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)

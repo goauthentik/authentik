@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class SCIMTokenAuth:
 
-    def __init__(self, provider: "SCIMProvider"):
+    def __init__(self, provider: SCIMProvider):
         self.provider = provider
 
     def __call__(self, request: Request) -> Request:

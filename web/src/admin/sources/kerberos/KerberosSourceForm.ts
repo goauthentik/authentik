@@ -244,11 +244,6 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                                     value: KadminTypeEnum.Heimdal,
                                     description: html`${msg("Heimdal kadmin")}`,
                                 },
-                                {
-                                    label: msg("Other"),
-                                    value: KadminTypeEnum.Other,
-                                    description: html`${msg("Other type of kadmin")}`,
-                                },
                             ]}
                             .value=${this.instance?.kadminType}
                         >

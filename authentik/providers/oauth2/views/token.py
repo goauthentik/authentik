@@ -104,7 +104,7 @@ class TokenParams:
         provider: OAuth2Provider,
         client_id: str,
         client_secret: str,
-    ) -> "TokenParams":
+    ) -> TokenParams:
         """Parse params for request"""
         return TokenParams(
             # Init vars

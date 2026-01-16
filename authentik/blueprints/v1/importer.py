@@ -147,7 +147,7 @@ class Importer:
         }
 
     @staticmethod
-    def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
+    def from_string(yaml_input: str, context: dict | None = None) -> Importer:
         """Parse YAML string and create blueprint importer from it"""
         import_dict = load(yaml_input, BlueprintLoader)
         try:

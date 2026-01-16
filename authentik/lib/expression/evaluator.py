@@ -238,7 +238,7 @@ class BaseEvaluator:
         address: str | list[str],
         subject: str,
         body: str | None = None,
-        stage: "EmailStage | None" = None,
+        stage: EmailStage | None = None,
         template: str | None = None,
         context: dict | None = None,
     ) -> bool:

@@ -71,7 +71,7 @@ class DbConnectionMiddleware(Middleware):
 
 
 class TaskStateBeforeMiddleware(Middleware):
-    def before_process_message(self, broker: "PostgresBroker", message: Message[Any]) -> None:
+    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
         broker.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -82,7 +82,7 @@ class TaskStateBeforeMiddleware(Middleware):
 
 
 class TaskStateAfterMiddleware(Middleware):
-    def before_process_message(self, broker: "PostgresBroker", message: Message[Any]) -> None:
+    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
         broker.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -91,7 +91,7 @@ class TaskStateAfterMiddleware(Middleware):
             state=TaskState.RUNNING,
         )
 
-    def after_skip_message(self, broker: "PostgresBroker", message: Message[Any]) -> None:
+    def after_skip_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
         broker.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -102,7 +102,7 @@ class TaskStateAfterMiddleware(Middleware):
 
     def after_process_message(
         self,
-        broker: "PostgresBroker",
+        broker: PostgresBroker,
         message: Message[Any],
         *,
         result: Any | None = None,

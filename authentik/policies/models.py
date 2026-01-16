@@ -55,7 +55,7 @@ class PolicyBindingModel(models.Model):
 class BoundPolicyQuerySet(models.QuerySet):
     """QuerySet for filtering enabled bindings for a Policy type"""
 
-    def for_policy(self, policy: "Policy"):
+    def for_policy(self, policy: Policy):
         return self.filter(policy__in=policy._default_manager.all()).filter(enabled=True)
 
 

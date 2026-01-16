@@ -100,7 +100,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
             timeout=self.timeout,
         )
 
-    def send(self, device: "EmailDevice"):
+    def send(self, device: EmailDevice):
         # Lazy import here to avoid circular import
         from authentik.stages.email.tasks import send_mails
 

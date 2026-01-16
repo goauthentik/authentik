@@ -151,7 +151,7 @@ jobs:
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"

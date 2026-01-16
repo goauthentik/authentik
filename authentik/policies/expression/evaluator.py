@@ -1,7 +1,7 @@
 """authentik expression policy evaluator"""
 
 from ipaddress import ip_address
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
@@ -23,7 +23,7 @@ class PolicyEvaluator(BaseEvaluator):
 
     _messages: list[str]
 
-    policy: Optional["ExpressionPolicy"] = None
+    policy: ExpressionPolicy | None = None
 
     def __init__(self, policy_name: str | None = None):
         super().__init__(policy_name or "PolicyEvaluator")

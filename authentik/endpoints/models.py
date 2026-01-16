@@ -43,7 +43,7 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
         return f"goauthentik.io/endpoints/devices/{self.device_uuid}/facts"
 
     @property
-    def cached_facts(self) -> "DeviceFactSnapshot":
+    def cached_facts(self) -> DeviceFactSnapshot:
         if cached := cache.get(self.cache_key_facts):
             return cached
         facts = self.facts
@@ -51,7 +51,7 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
         return facts
 
     @property
-    def facts(self) -> "DeviceFactSnapshot":
+    def facts(self) -> DeviceFactSnapshot:
         data = {}
         last_updated = datetime.fromtimestamp(0, UTC)
         for snapshot_data, snapshort_created in DeviceFactSnapshot.filter_not_expired(
@@ -157,7 +157,7 @@ class Connector(ScheduledModel, SerializerModel):
         raise NotImplementedError
 
     @property
-    def controller(self) -> type["BaseController[Connector]"]:
+    def controller(self) -> type[BaseController[Connector]]:
         raise NotImplementedError
 
     @property
@@ -205,7 +205,7 @@ class EndpointStage(Stage):
     mode = models.TextField(choices=StageMode.choices, default=StageMode.OPTIONAL)
 
     @property
-    def view(self) -> type["StageView"]:
+    def view(self) -> type[StageView]:
         from authentik.endpoints.stage import EndpointStageView
 
         return EndpointStageView

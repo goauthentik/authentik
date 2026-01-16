@@ -222,7 +222,7 @@ class ResponseProcessor:
             policy_context={},
         )
 
-    def _get_name_id(self) -> "Element":
+    def _get_name_id(self) -> Element:
         """Get NameID Element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:
