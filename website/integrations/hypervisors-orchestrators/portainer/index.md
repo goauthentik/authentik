@@ -11,7 +11,7 @@ support_level: community
 > -- https://www.portainer.io/
 
 :::info
-This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.
+This documentation has been validated to work for authentik 2025.10.3 and Portainer 2.33.6 LTS.
 :::
 
 ## Preparation
@@ -64,8 +64,76 @@ Portainer by default shows commas between each item in the Scopes field. Do **NO
 
 ![](./port1.png)
 
-## Notes
+## Configuration verification
+
+To confirm that authentik is properly configured with Portainer, open a private browsing window and go to the `https://portainer.company`.
+
+Click **Login with OAuth**. You should be redirected to authentik to login, once successful you should be redirected to the Portainer dashboard.
+
+## Configure automatic team membership in Portainer BE
+
+If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams & environments and automatically grant admin access to certain users based on authentik group membership. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
+
+For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for information on managing teams and access to environments based on team membership.
+
+### Create a property mapping
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+    - **Select type**: select **Scope Mapping**.
+    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `authentik portainer OpenID Mapping: OAuth 'groups'`), and an optional description.
+        - **Scope name**: `groups`
+        - **Expression**:
+
+        ```python showLineNumbers
+        groups = []
+
+        if request.user.ak_groups.filter(name="Portainer Admins").exists():
+            groups.append("admin")
+
+        if request.user.ak_groups.filter(name="Portainer Users").exists():
+            groups.append("user")
+
+        return {
+            "groups": groups
+        }
+        ```
+
+3. Click **Finish** to save the property mapping.
+4. Navigate to **Applications** > **Providers**.
+5. Select your provider for Portainer, and click **Edit**.
+6. Under **Advanced protocol settings**, add the property mapping that you created to your **Selected Scopes**.
+7. Click **Update** to save your changes to the provider.
+8. Navigate to **Directory** > **Groups**.
+9. Add two new groups with names matching the filters in your property mapping **exactly** - in this case, `Portainer Admins` and `Portainer User`.
+10. Navigate to **Directory** > **Users**.
+11. Select your user, and add them to the `Portainer Admins` group. Repeat for any other users that require access, granting access to either group as desired.
 
 :::info
-Portainer Reference link: https://documentation.portainer.io/v2.0/auth/oauth/
+Since we are configuring access to Portainer based on group membership, It is recommended that you configure a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
 :::
+
+### Update your configuration in Portainer
+
+1. Login to Portainer as a user with administrative privileges.
+2. Navigate to **Settings** > **Authentication**.
+3. Under **Team Membership**, toggle **Automatic team membership** to **ON**, and complete configuration as follows:
+    - **Claim name**: `groups`
+    - **Statically assigned teams**: Add two team mappings with the following values:
+       - **client value regex** `^user$` **maps to team** `engineering`.
+       - **client value regex** `^admin$` **maps to team** `sysadmins`.
+    - **Default team**: `engineering`
+    - **Admin mapping**:
+       - Toggle **Assign admin rights to group(s)** to **ON**.
+       - Add one admin mapping, and set **client value regex** to `^admin$`.
+4. Under **Provider** > ** OAuth Configuration**, append `groups` to **Scopes** - the full value for **Scopes** should then be `email openid profile groups`.
+5. Click **Save Settings** to apply your changes.
+
+![](./port2.png)
+
+
+## Resources
+
+- [Portainer Documentation - Authenticate via OAuth](https://docs.portainer.io/admin/settings/authentication/oauth)
+- [Portainer Documentation - Add a new team](https://docs.portainer.io/admin/user/teams/add)
+- [Portainer Documentation - Manage access to environments](https://docs.portainer.io/admin/environments/access)
