@@ -570,7 +570,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
             if not sender:
                 sender = self
-            password_changed.send(sender=sender, user=self, password="", request=request)
+            password_changed.send(sender=sender, user=self, password="", request=request)  # nosec B106
         self.password = password_hash
         self.password_change_date = now()
 
