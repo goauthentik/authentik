@@ -42,7 +42,7 @@ dependencies = [
   "gunicorn==23.0.0",
   "jsonpatch==1.33",
   "jwcrypto==1.5.6",
-  "kubernetes==33.1.0",
+  "kubernetes==35.0.0",
   "ldap3==2.9.1",
   "lxml==6.0.2",
   "msgraph-sdk==1.52.0",
@@ -54,7 +54,7 @@ dependencies = [
   "pydantic==2.12.5",
   "pyjwt==2.10.1",
   "pyrad==2.4",
-  "python-kadmin-rs==0.6.3",
+  "python-kadmin-rs==0.7.0",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",
   "scim2-filter-parser==0.7.0",
@@ -77,7 +77,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.234.1",
+  "aws-cdk-lib==2.235.0",
   "bandit==1.9.2",
   "black==25.12.0",
   "bpython==0.26",
@@ -102,7 +102,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.0.2",
   "requests-mock==1.12.1",
-  "ruff==0.14.11",
+  "ruff==0.14.13",
   "selenium==4.39.0",
   "types-channels==4.3.0.20250822",
   "types-ldap3==2.9.13.20251121",
