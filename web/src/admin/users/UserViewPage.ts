@@ -27,8 +27,6 @@ import "#elements/user/sources/SourceSettings";
 import "./UserDevicesTable.js";
 import "#elements/ak-mdx/ak-mdx";
 
-import { getUserDisplayName } from "#elements/user/utils";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
@@ -37,6 +35,7 @@ import { AKElement } from "#elements/Base";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
+import { getUserDisplayName } from "#elements/user/utils";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
