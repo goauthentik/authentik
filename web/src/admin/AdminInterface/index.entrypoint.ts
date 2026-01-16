@@ -2,8 +2,6 @@ import "#admin/AdminInterface/AboutModal";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
-import "#elements/notifications/APIDrawer";
-import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
@@ -15,17 +13,22 @@ import {
 } from "./AdminSidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
-import { WebsocketClient } from "#common/ws";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { listen } from "#elements/decorators/listen";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-
-import { PageNavMenuToggle } from "#components/ak-page-navbar";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
+import {
+    DrawerState,
+    persistDrawerParams,
+    readDrawerParams,
+    renderNotificationDrawerPanel,
+} from "#elements/notifications/utils";
 
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
@@ -33,52 +36,28 @@ import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, eventOptions, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithCapabilitiesConfig(WithSession(AuthenticatedInterface)) {
-    //#region Properties
-
-    @property({ type: Boolean })
-    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
-
-    @property({ type: Boolean })
-    public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    @query("ak-about-modal")
-    public aboutModal?: AboutModal;
-
-    @property({ type: Boolean, reflect: true })
-    public sidebarOpen = false;
-
-    #onPageNavMenuEvent = (event: PageNavMenuToggle) => {
-        this.sidebarOpen = event.open;
-    };
-
-    #sidebarMatcher: MediaQueryList;
-    #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
-        this.sidebarOpen = event.matches;
-    };
-
-    //#endregion
-
+export class AdminInterface extends WithCapabilitiesConfig(
+    WithNotifications(WithSession(AuthenticatedInterface)),
+) {
     //#region Styles
 
-    static styles: CSSResult[] = [
+    public static readonly styles: CSSResult[] = [
         // ---
-        PFBase,
         PFPage,
         PFButton,
         PFDrawer,
@@ -88,7 +67,44 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
 
     //#endregion
 
+    //#region Properties
+
+    @query("ak-about-modal")
+    public aboutModal?: AboutModal;
+
+    @property({ type: Boolean, reflect: true, attribute: "sidebar" })
+    public sidebarOpen = false;
+
+    //#endregion
+
+    //#region Public Methods
+
+    public toggleSidebar = () => {
+        this.sidebarOpen = !this.sidebarOpen;
+    };
+
+    //#endregion
+
     //#region Lifecycle
+
+    #sidebarMatcher: MediaQueryList;
+    #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
+        this.sidebarOpen = event.matches;
+    };
+
+    @eventOptions({ passive: true })
+    protected routeChangeListener() {
+        this.sidebarOpen = this.#sidebarMatcher.matches;
+    }
+
+    @state()
+    protected drawer: DrawerState = readDrawerParams();
+
+    @listen(AKDrawerChangeEvent)
+    protected drawerListener = (event: AKDrawerChangeEvent) => {
+        this.drawer = event.drawer;
+        persistDrawerParams(event.drawer);
+    };
 
     constructor() {
         configureSentry();
@@ -97,29 +113,12 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
+        this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
-        this.addEventListener(PageNavMenuToggle.eventName, this.#onPageNavMenuEvent, {
-            passive: true,
-        });
     }
 
     public connectedCallback() {
         super.connectedCallback();
-
-        window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
-            this.notificationDrawerOpen = !this.notificationDrawerOpen;
-            updateURLParams({
-                notificationDrawerOpen: this.notificationDrawerOpen,
-            });
-        });
-
-        window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
-            this.apiDrawerOpen = !this.apiDrawerOpen;
-            updateURLParams({
-                apiDrawerOpen: this.apiDrawerOpen,
-            });
-        });
 
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
@@ -128,6 +127,7 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
+
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
         WebsocketClient.close();
@@ -143,7 +143,11 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
         }
     }
 
-    render(): TemplateResult {
+    //#endregion
+
+    //#region Rendering
+
+    protected override render(): TemplateResult {
         if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
             return html`<slot></slot>`;
         }
@@ -154,15 +158,27 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
             "pf-m-collapsed": !this.sidebarOpen,
         };
 
-        const drawerOpen = this.notificationDrawerOpen || this.apiDrawerOpen;
-
+        const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0);
         const drawerClasses = {
-            "pf-m-expanded": drawerOpen,
-            "pf-m-collapsed": !drawerOpen,
+            "pf-m-expanded": openDrawerCount !== 0,
+            "pf-m-collapsed": openDrawerCount === 0,
         };
 
         return html`<div class="pf-c-page">
             <ak-page-navbar ?open=${this.sidebarOpen}>
+                <button
+                    slot="toggle"
+                    aria-controls="global-nav"
+                    class="pf-c-button pf-m-plain"
+                    @click=${this.toggleSidebar}
+                    aria-label=${this.sidebarOpen
+                        ? msg("Collapse navigation")
+                        : msg("Expand navigation")}
+                    aria-expanded=${this.sidebarOpen ? "true" : "false"}
+                >
+                    <i aria-hidden="true" class="fas fa-bars"></i>
+                </button>
+
                 <ak-version-banner></ak-version-banner>
                 <ak-enterprise-status interface="admin"></ak-enterprise-status>
             </ak-page-navbar>
@@ -186,28 +202,28 @@ export class AdminInterface extends WithCapabilitiesConfig(WithSession(Authentic
                                     id="main-content"
                                     defaultUrl="/administration/overview"
                                     .routes=${ROUTES}
+                                    @ak-route-change=${this.routeChangeListener}
                                 >
                                 </ak-router-outlet>
                             </div>
                         </div>
-                        <ak-notification-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.notificationDrawerOpen}
-                        ></ak-notification-drawer>
-                        <ak-api-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.apiDrawerOpen}
-                        ></ak-api-drawer>
+                        ${renderNotificationDrawerPanel(this.drawer)}
                         <ak-about-modal></ak-about-modal>
                     </div>
                 </div>
+
+                <div
+                    class="pf-c-page__sidebar-backdrop"
+                    aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
+                    @click=${this.toggleSidebar}
+                    role="button"
+                    tabindex="0"
+                ></div>
             </div>
         </div>`;
     }
+
+    //#endregion
 }
 
 declare global {

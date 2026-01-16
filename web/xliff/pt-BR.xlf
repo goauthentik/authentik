@@ -61,18 +61,6 @@
   <source>Status messages</source>
   <target>Mensagens de status</target>
 </trans-unit>
-<trans-unit id="s364c4f177a2f8322">
-  <source>Open API drawer</source>
-  <target>Abrir painel da API</target>
-</trans-unit>
-<trans-unit id="sba65ae54d6585c1a">
-  <source>Unread notifications</source>
-  <target>Notificações não lidas</target>
-</trans-unit>
-<trans-unit id="s9ba989e69344ff29">
-  <source>Open Notification drawer</source>
-  <target>Abrir Notificações</target>
-</trans-unit>
 <trans-unit id="s9d8b8aa2b404c2c8">
   <source>Settings</source>
   <target>Configurações</target>
@@ -4347,9 +4335,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Click to change value</source>
   <target>Clique para alterar o valor</target>
 </trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
-</trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
 </trans-unit>
@@ -4414,19 +4399,12 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Expires on</source>
   <target>Expira em</target>
 </trans-unit>
-<trans-unit id="sb7fe62e7073eb6c9">
-  <source>Token name...</source>
-</trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
   <target>Expirando</target>
-</trans-unit>
-<trans-unit id="safcc54b2aedb1a17">
-  <source>If this is selected, the token will expire. Upon expiration, the token will be rotated.</source>
-  <target>Se selecionado, o token expirará. Após a expiração, o token será rotacionado.</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -4446,9 +4424,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
-</trans-unit>
-<trans-unit id="sc522b30adb9ff289">
-  <source>Update Enrollment token</source>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -6764,10 +6739,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>Token length</source>
   <target>Comprimento do token</target>
 </trans-unit>
-<trans-unit id="s6931695c4f563bc4">
-  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
-  <target>O comprimento dos tokens gerados individualmente. Pode ser aumentado para melhorar a segurança.</target>
-</trans-unit>
 <trans-unit id="sc5a4711395ffb043">
   <source>Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).</source>
   <target>Estágio usado para configurar um autenticador TOTP (ou seja, Authy/Google Authenticator).</target>
@@ -7031,14 +7002,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
 <trans-unit id="s9e9c8d99f4c26baf">
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Quando um usuário retornar do email com sucesso, sua conta será ativada.</target>
-</trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Usar configurações globais</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Quando ativado, as configurações globais de conexão de email serão usadas e as configurações de conexão abaixo serão ignoradas.</target>
 </trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
@@ -8295,10 +8258,6 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
   <source>Private key available?</source>
   <target>Chave privada disponível?</target>
 </trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Par de Chaves de Certificado(s)</target>
-</trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
   <target>Gerenciado pelo authentik</target>
@@ -8902,21 +8861,9 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <source>You don't have any notifications currently.</source>
   <target>Você não tem nenhuma notificação atualmente.</target>
 </trans-unit>
-<trans-unit id="sc0064c91ad2aa90b">
-  <source>Notification drawer</source>
-  <target>Painel de notificações</target>
-</trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
   <target>Notificações</target>
-</trans-unit>
-<trans-unit id="sa3438c7bb4e9cce8">
-  <source><x id="0" equiv-text="${this.unread}"/> unread</source>
-  <target><x id="0" equiv-text="${this.unread}"/> não lidas</target>
-</trans-unit>
-<trans-unit id="s8cda828dac449ea5">
-  <source>Clear all</source>
-  <target>Limpar tudo</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
@@ -8993,14 +8940,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
   <target>Informações do usuário</target>
-</trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-  <target>Avatar de <x id="0" equiv-text="${this.user}"/></target>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
-  <target>Avatar do usuário</target>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -9885,9 +9824,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
 </trans-unit>
-<trans-unit id="sa373520de40e9d44">
-  <source>Assign User to Groups</source>
-</trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
 </trans-unit>
@@ -10040,9 +9976,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
                             <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
                             <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
 </trans-unit>
-<trans-unit id="s813faec5ff1d32d1">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
-</trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
 </trans-unit>
@@ -10099,6 +10032,121 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s3a46b5964b3ecfac">
   <source>View details...</source>
+</trans-unit>
+<trans-unit id="s6cbf6cd401ea3336">
+  <source>Type a connector name...</source>
+</trans-unit>
+<trans-unit id="s04be2edfb0d2218a">
+  <source>Type a name for the token...</source>
+</trans-unit>
+<trans-unit id="s84e29a714db544e9">
+  <source>Update Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s5a7055a44dc83b1e">
+  <source>Type a unique identifier...</source>
+</trans-unit>
+<trans-unit id="sdfe787aeeebbfbf1">
+  <source>Type a token description...</source>
+</trans-unit>
+<trans-unit id="sd7c52e2ce408c542">
+  <source>Integrations synced in the last 12 hours.</source>
+</trans-unit>
+<trans-unit id="table-loading-bar-label">
+  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
+</trans-unit>
+<trans-unit id="s6ecf01b9b8304dba">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="sb6650552aaaf5da0">
+  <source>Assigned Roles</source>
+</trans-unit>
+<trans-unit id="s5cbf3cbb4cf38b05">
+  <source>All Roles</source>
+</trans-unit>
+<trans-unit id="s6a850cd00064d6e6">
+  <source>Inherited from parent group</source>
+</trans-unit>
+<trans-unit id="sd9e3b91f8d62cb04">
+  <source>Inherited from group</source>
+</trans-unit>
+<trans-unit id="s3d8c389ca77b97e1">
+  <source>Inherited</source>
+</trans-unit>
+<trans-unit id="s01730bc068a6cf07">
+  <source>Select roles to attach to the user</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-api-requests">
+  <source>Toggle API requests drawer</source>
+</trans-unit>
+<trans-unit id="s355e4737a0286070">
+  <source>API Drawer</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-notifications">
+  <source>Toggle notifications drawer</source>
+</trans-unit>
+<trans-unit id="drawer-invoker-tooltip-notifications">
+  <source>Notification Drawer</source>
+</trans-unit>
+<trans-unit id="s5fa7f18dcfc98131">
+  <source>Failed to fetch notifications.</source>
+</trans-unit>
+<trans-unit id="notification-drawer-clear-all">
+  <source>Clear all notifications</source>
+</trans-unit>
+<trans-unit id="notification-drawer-close">
+  <source>Close notification drawer</source>
+</trans-unit>
+<trans-unit id="s54e4d61fc46a14be">
+  <source>No MFA devices enrolled.</source>
+</trans-unit>
+<trans-unit id="s227aacd5a7fc6f50">
+  <source>User Tokens</source>
+</trans-unit>
+<trans-unit id="sea858aeacf6ae9b0">
+  <source>No User Tokens enrolled.</source>
+</trans-unit>
+<trans-unit id="notification-unread-count">
+  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
+  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+</trans-unit>
+<trans-unit id="s42636dae6e29892e">
+  <source>Agent version: <x id="0" equiv-text="${this.agentVersion(conn) ?? &quot;-&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s6dd24e14615f1369">
+  <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
+</trans-unit>
+<trans-unit id="sa6cd3315b7c53ab7">
+  <source>You should only import files from trusted sources and review blueprints before importing them.</source>
+</trans-unit>
+<trans-unit id="sd8309fdcb0478b0f">
+  <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
 </body>
 </file>

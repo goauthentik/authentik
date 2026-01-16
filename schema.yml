@@ -3386,6 +3386,11 @@ paths:
           type: boolean
           default: false
       - in: query
+        name: include_inherited_roles
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_parents
         schema:
           type: boolean
@@ -3475,6 +3480,11 @@ paths:
         required: true
       - in: query
         name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: include_inherited_roles
         schema:
           type: boolean
           default: false
@@ -4148,6 +4158,25 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: last_login
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: last_login__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: last_updated
         schema:
           type: string
@@ -4558,6 +4587,25 @@ paths:
         name: is_superuser
         schema:
           type: boolean
+      - in: query
+        name: last_login
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_login__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: last_login__lt
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: last_updated
         schema:
@@ -20048,6 +20096,16 @@ paths:
       description: Role viewset
       parameters:
       - in: query
+        name: ak_groups
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: inherited
+        schema:
+          type: boolean
+        description: Include inherited roles (requires users or ak_groups filter)
+      - in: query
         name: managed
         schema:
           type: array
@@ -20067,11 +20125,7 @@ paths:
       - in: query
         name: users
         schema:
-          type: array
-          items:
-            type: integer
-        explode: true
-        style: form
+          type: integer
       tags:
       - rbac
       security:
@@ -32757,12 +32811,18 @@ components:
           allOf:
           - $ref: '#/components/schemas/Config'
           readOnly: true
+        license_status:
+          allOf:
+          - $ref: '#/components/schemas/LicenseStatusEnum'
+          readOnly: true
+          nullable: true
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
       - device_id
       - jwks_auth
       - jwks_challenge
+      - license_status
       - nss_gid_offset
       - nss_uid_offset
       - refresh_interval
@@ -34035,7 +34095,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 100
           minimum: 0
       required:
       - component
@@ -34066,7 +34126,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 100
           minimum: 0
       required:
       - name
@@ -36026,11 +36086,16 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        vendor:
+          allOf:
+          - $ref: '#/components/schemas/VendorEnum'
+          readOnly: true
       required:
       - connection
       - created
       - data
       - expires
+      - vendor
     DeviceFacts:
       type: object
       properties:
@@ -38770,6 +38835,12 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        inherited_roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          readOnly: true
+          nullable: true
         children:
           type: array
           items:
@@ -38785,6 +38856,7 @@ components:
       required:
       - children
       - children_obj
+      - inherited_roles_obj
       - name
       - num_pk
       - parents_obj
@@ -40880,6 +40952,16 @@ components:
           minLength: 1
       required:
       - key
+    LicenseStatusEnum:
+      enum:
+      - unlicensed
+      - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
     LicenseSummary:
       type: object
       description: Serializer for license status
@@ -45771,7 +45853,7 @@ components:
           minimum: 0
         token_length:
           type: integer
-          maximum: 2147483647
+          maximum: 100
           minimum: 0
     PatchedAuthenticatorTOTPStageRequest:
       type: object
@@ -53763,7 +53845,7 @@ components:
       properties:
         token:
           type: string
-          maxLength: 16
+          maxLength: 100
       required:
       - token
     SubModeEnum:
@@ -55831,6 +55913,11 @@ components:
         code:
           type: string
       additionalProperties: {}
+    VendorEnum:
+      enum:
+      - goauthentik.io/@merged
+      - goauthentik.io/platform
+      type: string
     Version:
       type: object
       description: Get running and latest version.

@@ -90,7 +90,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: int128/docker-manifest-create-action@b60433fd4312d7a64a56d769b76ebe3f45cf36b4 # v2
+      - uses: int128/docker-manifest-create-action@6cdd53a8337cd50bc3ef8c7016579d8d460edd94 # v2
         id: build
         with:
           tags: ${{ matrix.tag }}

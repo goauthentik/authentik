@@ -514,7 +514,7 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
         return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> "IDToken":
+    def id_token(self) -> IDToken:
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
 
@@ -522,7 +522,7 @@ class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGr
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: "IDToken"):
+    def id_token(self, value: IDToken):
         self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
@@ -567,7 +567,7 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> "IDToken":
+    def id_token(self) -> IDToken:
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
 
@@ -575,7 +575,7 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: "IDToken"):
+    def id_token(self, value: IDToken):
         self._id_token = json.dumps(asdict(value))
 
     @property

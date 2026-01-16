@@ -29,7 +29,7 @@ MESSAGE_TABLE = Message._meta.db_table
 
 
 async def _async_proxy(
-    obj: "PostgresChannelLayerLoopProxy",
+    obj: PostgresChannelLayerLoopProxy,
     name: str,
     *args: Any,
     **kwargs: Any,
@@ -40,7 +40,7 @@ async def _async_proxy(
     return await getattr(layer, name)(*args, **kwargs)
 
 
-def _wrap_close(proxy: "PostgresChannelLayerLoopProxy", loop: asyncio.AbstractEventLoop) -> None:
+def _wrap_close(proxy: PostgresChannelLayerLoopProxy, loop: asyncio.AbstractEventLoop) -> None:
     original_impl = loop.close
 
     def _wrapper(self: asyncio.AbstractEventLoop, *args: Any, **kwargs: Any) -> None:
@@ -90,7 +90,7 @@ class PostgresChannelLayerLoopProxy:
         m = zlib.decompress(message)
         return cast(dict[str, Any], msgpack.unpackb(m, raw=False))
 
-    def _get_layer(self) -> "PostgresChannelLoopLayer":
+    def _get_layer(self) -> PostgresChannelLoopLayer:
         loop = asyncio.get_running_loop()
 
         try:

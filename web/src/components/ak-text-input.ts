@@ -40,7 +40,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     public override renderControl() {
         const code = this.inputHint === "code";
 
-        return html` <input
+        return html`<input
             type=${this.type}
             id=${ifDefined(this.fieldID)}
             @input=${this.#inputListener}
@@ -57,6 +57,8 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             placeholder=${ifPresent(this.placeholder)}
             inputmode=${this.inputMode}
             ?required=${this.required}
+            ?autofocus=${this.autofocus}
+            ${this.autofocusTarget.toRef()}
         />`;
     }
 }
