@@ -11,7 +11,7 @@ support_level: community
 > -- https://www.portainer.io/
 
 :::info
-This documentation has been validated to work with authentik 2025.10.3 and Portainer 2.33.6 LTS.
+This documentation has been tested with authentik 2025.10.3 and Portainer 2.33.6 LTS.
 :::
 
 ## Preparation
