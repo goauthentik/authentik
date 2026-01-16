@@ -6,7 +6,7 @@ from typing import Any
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
@@ -34,7 +34,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_GET
+from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_OVERRIDE_LOGIN_HINT
 from authentik.lib.avatars import DEFAULT_AVATAR
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
@@ -113,6 +113,8 @@ class IdentificationChallenge(Challenge):
     passkey_challenge = JSONDictField(required=False, allow_null=True)
 
     component = CharField(default="ak-stage-identification")
+
+    pending_user_identifier = CharField(required=False, allow_null=True)
 
 
 class IdentificationChallengeResponse(ChallengeResponse):
@@ -242,6 +244,9 @@ class IdentificationStageView(ChallengeStageView):
 
     response_class = IdentificationChallengeResponse
 
+    # Flag to ignore login_hint (user clicked "Not you?" or user not found)
+    _override_login_hint: bool = False
+
     def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
@@ -284,6 +289,47 @@ class IdentificationStageView(ChallengeStageView):
         challenge = get_webauthn_challenge_without_user(self, current_stage.webauthn_stage)
         self.logger.debug("Generated passkey challenge", challenge=challenge)
         return challenge
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Check for login_hint and skip stage if valid user found"""
+        current_stage: IdentificationStage = self.executor.current_stage
+        get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
+        login_hint = get_qs.get("login_hint")
+
+        # Check if user clicked "Not you?" (flow was cancelled)
+        if self.request.session.pop(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
+            self._override_login_hint = True
+            return super().get(request, *args, **kwargs)
+
+        # No login_hint, show challenge normally
+        if not login_hint:
+            return super().get(request, *args, **kwargs)
+
+        # Try to find the user
+        user = self.get_user(login_hint)
+
+        # Determine if we can skip the identification stage
+        user_has_passkeys = (
+            user
+            and current_stage.webauthn_stage
+            and WebAuthnDevice.objects.filter(user=user).exists()
+        )
+        can_skip = (
+            user is not None
+            and not current_stage.password_stage
+            and not current_stage.sources.filter(enabled=True).exists()
+            and not user_has_passkeys
+        )
+
+        if can_skip:
+            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+            return self.executor.stage_ok()
+
+        # Don't pre-fill username if user not found
+        if not user:
+            self._override_login_hint = True
+
+        return super().get(request, *args, **kwargs)
 
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
@@ -360,6 +406,12 @@ class IdentificationStageView(ChallengeStageView):
                 button["challenge"] = source_challenge.data
                 ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
+
+        # Pre-fill username from login_hint unless user clicked "Not you?"
+        if not self._override_login_hint:
+            if login_hint := get_qs.get("login_hint"):
+                challenge.initial_data["pending_user_identifier"] = login_hint
+
         return challenge
 
     def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:
