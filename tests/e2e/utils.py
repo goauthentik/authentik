@@ -158,6 +158,7 @@ class DockerTestCase(TestCase):
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
+    serialized_rollback = True
     host = get_local_ip()
     wait_timeout: int
     user: User
