@@ -27,9 +27,9 @@ AUTHENTIK_BOOTSTRAP_PASSWORD_HASH='pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$
 
 ```yaml
 services:
-  worker:
-    environment:
-      AUTHENTIK_BOOTSTRAP_PASSWORD_HASH: "pbkdf2_sha256$$1000000$$xKKFuYtJEE27km09BD49x2$$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
+    worker:
+        environment:
+            AUTHENTIK_BOOTSTRAP_PASSWORD_HASH: "pbkdf2_sha256$$1000000$$xKKFuYtJEE27km09BD49x2$$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
 ```
 
 See the Docker Compose documentation on [`.env` file interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) and [Compose file interpolation](https://docs.docker.com/reference/compose-file/interpolation/) for details.
@@ -69,7 +69,7 @@ When using password hashes in quoted YAML strings as shown above, no escaping of
 
 - Using Helm templating syntax (e.g., `{{ .Values.something }}`) where `$` has special meaning
 - Referencing values from environment variable substitution in your values file
-:::
+  :::
 
 Or store the password hash in a secret and reference it via `envFrom`:
 
