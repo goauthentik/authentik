@@ -18,7 +18,7 @@ runs:
       run: |
         sudo apt-get remove --purge man-db
         sudo apt-get update
-        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libkrb5-dev krb5-kdc krb5-user krb5-admin-server
+        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext krb5-multidev libkrb5-dev heimdal-multidev libclang-dev krb5-kdc krb5-user krb5-admin-server
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
