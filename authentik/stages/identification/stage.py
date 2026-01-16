@@ -244,8 +244,6 @@ class IdentificationStageView(ChallengeStageView):
 
     response_class = IdentificationChallengeResponse
 
-    _override_login_hint: bool = False
-
     def get_user(self, uid_value: str) -> User | None:
         """Find user instance. Returns None if no user was found."""
         current_stage: IdentificationStage = self.executor.current_stage
@@ -300,8 +298,7 @@ class IdentificationStageView(ChallengeStageView):
             return super().get(request, *args, **kwargs)
 
         # Prevent skip loop if user clicks "Not you?"
-        if self.request.session.pop(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
-            self._override_login_hint = True
+        if self.request.session.get(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
             return super().get(request, *args, **kwargs)
 
         # Only skip if this is a "simple" identification stage with no extra features
@@ -313,16 +310,15 @@ class IdentificationStageView(ChallengeStageView):
         )
 
         if can_skip:
-            user = self.get_user(login_hint)
-            if user:
-                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
-            else:
-                # Set dummy user
-                self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = User(
-                    username=login_hint,
-                    email=login_hint,
-                )
-            return self.executor.stage_ok()
+            # Use the normal validation flow (handles timing protection, logging, signals)
+            response = IdentificationChallengeResponse(
+                data={"uid_field": login_hint},
+                stage=self,
+            )
+            if response.is_valid():
+                return self.challenge_valid(response)
+            # Validation failed (user doesn't exist and pretend_user_exists is off)
+            # Fall through to show the challenge normally
 
         # Can't skip - just pre-fill the username field
         return super().get(request, *args, **kwargs)
@@ -404,7 +400,7 @@ class IdentificationStageView(ChallengeStageView):
         challenge.initial_data["sources"] = ui_sources
 
         # Pre-fill username from login_hint unless user clicked "Not you?"
-        if not self._override_login_hint:
+        if not self.request.session.pop(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
             if login_hint := get_qs.get("login_hint"):
                 challenge.initial_data["pending_user_identifier"] = login_hint
 
