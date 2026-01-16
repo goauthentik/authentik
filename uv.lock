@@ -2914,11 +2914,6 @@ wheels = [
 
 [[package]]
 name = "python-kadmin-rs"
-<<<<<<< HEAD
-version = "0.6.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/14/64/05942061f851c0973ce351dfa7a6358fe14e7622527ecc883ce2eccd3177/python_kadmin_rs-0.6.1.tar.gz", hash = "sha256:0fdcf5310504eeb51a8a82d89313a88ef7f7141a596a6cf609d82eed425f21f4", size = 89030, upload-time = "2025-06-18T13:24:55.839Z" }
-=======
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c6/18/2773570703e5ab13fc0390797685cb6c09b8002d96438c57a8e887cc3234/python_kadmin_rs-0.7.0.tar.gz", hash = "sha256:e8a539fda1a1006fe5f0868c0e59a36b3b90d451da9c0c2bc3a9bfc7173efbdc", size = 112469, upload-time = "2026-01-15T17:49:10.467Z" }
@@ -2938,21 +2933,6 @@ name = "pytokens"
 version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4e/8d/a762be14dae1c3bf280202ba3172020b2b0b4c537f94427435f19c413b72/pytokens-0.3.0.tar.gz", hash = "sha256:2f932b14ed08de5fcf0b391ace2642f858f1394c0857202959000b68ed7a458a", size = 17644, upload-time = "2025-11-05T13:36:35.34Z" }
->>>>>>> ee8b3e348 (sources/kerberos: update to new python-kadmin-rs (#19491))
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/e3/109e5aa8176c70946836d6ec68b9397f97222adc8d2537f4ff8570a951db/python_kadmin_rs-0.6.1-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:96156b83e6843c773f289d3de1316d42581bb473ff21c22e06c44cb927075ef2", size = 1415305, upload-time = "2025-06-18T13:24:05.359Z" },
-    { url = "https://files.pythonhosted.org/packages/9c/43/fca43da7ddf6a3d7332edacfe18e1a27dc86d26f5fd915ab1b96eb6d460b/python_kadmin_rs-0.6.1-cp313-cp313-macosx_14_0_x86_64.whl", hash = "sha256:2d157a8457c7d29753da1e7028c614f0eeef3593cd4a21d2c48730d8820e1096", size = 1498856, upload-time = "2025-06-18T13:24:07.783Z" },
-    { url = "https://files.pythonhosted.org/packages/24/a8/c85618d37d09daf36ce54c8a4f576f9d3308e7a584f8bbc6d80733add4bb/python_kadmin_rs-0.6.1-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:c6d066a932ad15236cc3c41cf07ab3a5055298431b98ea4f63070ffe93715bfd", size = 3264793, upload-time = "2025-06-18T13:24:09.373Z" },
-    { url = "https://files.pythonhosted.org/packages/90/53/d8734d7c2adec3f17ac6dd5837e2bc23dfd627d693141ee9a6f85151c1c8/python_kadmin_rs-0.6.1-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:3737c556c1295959e54d24ab5e7b6140c1136dda0505937ecbb10ddb93e07cdd", size = 3379183, upload-time = "2025-06-18T13:24:10.877Z" },
-    { url = "https://files.pythonhosted.org/packages/0c/0a/45fb5dc7eb6e3550181ac94a1ed9a75936b7059641e5ace67cf2db2033f1/python_kadmin_rs-0.6.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:aa3e0e576354b1e56633488f919faa3196281eca404651fc7944538ae5cf8f0b", size = 1574931, upload-time = "2025-06-18T13:24:12.76Z" },
-    { url = "https://files.pythonhosted.org/packages/eb/7a/e4eb9e90ba3ffed8e1e897bde5da03a335a66c470ffc916242bbd7adb6a5/python_kadmin_rs-0.6.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:2b17cd39f612c390aa054a3c97a9de6d574f7a418720605c904a6b56280e4410", size = 1615466, upload-time = "2025-06-18T13:24:15.924Z" },
-    { url = "https://files.pythonhosted.org/packages/8a/0d/01ab59a52819514134a051861ab9639efa63ac1435aae07a7b29cebd7000/python_kadmin_rs-0.6.1-cp313-cp313t-macosx_14_0_arm64.whl", hash = "sha256:c4d4b54c23dd0e5a0bd2e7c84a2656556a89d5afda7e9573f36cfd805c22b2c2", size = 1409256, upload-time = "2025-06-18T13:24:17.34Z" },
-    { url = "https://files.pythonhosted.org/packages/b9/29/d83fde4e4920b2f78325d52622b2ca7e5efcfb393a0bfa3bb2ca48288769/python_kadmin_rs-0.6.1-cp313-cp313t-macosx_14_0_x86_64.whl", hash = "sha256:c9c6ec440f3cba8be671b1db27e328b39ca7e0ed4e9b254596728702b291b086", size = 1496843, upload-time = "2025-06-18T13:24:19.041Z" },
-    { url = "https://files.pythonhosted.org/packages/85/13/e75f869aba9571b75a8c132a3be3cf035097f7fbafbc6407ed993a3c21d3/python_kadmin_rs-0.6.1-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:6431f702218c438818e288c84cf00b972453c9ca2d745e8dbd5bf2a27fa5440d", size = 3257239, upload-time = "2025-06-18T13:24:21.069Z" },
-    { url = "https://files.pythonhosted.org/packages/31/db/6c182e645e8d138340933901ad30fc8fac5191956822bbfafb00e93fd27f/python_kadmin_rs-0.6.1-cp313-cp313t-manylinux_2_28_x86_64.whl", hash = "sha256:75544db4642771af04ff4888fe89448b9004ae11eaa7274394c46862a599be13", size = 3376292, upload-time = "2025-06-18T13:24:23.024Z" },
-    { url = "https://files.pythonhosted.org/packages/b7/b0/96a27cd7c6fc3ff0c2723d6659c49198815eeab2da3885ef923ea346e571/python_kadmin_rs-0.6.1-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:f4c2876bf8e598466752fda9d79ef3719ce6b3936ba322004280601fea64d99c", size = 1567502, upload-time = "2025-06-18T13:24:24.539Z" },
-    { url = "https://files.pythonhosted.org/packages/d7/96/e396b927ce6ccaa4b385b9b54440c133406a3ac070ce6a8a0786d8ba0308/python_kadmin_rs-0.6.1-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:b271f5849548a7c248309fa30e4ee90465d6838aad11557fd208ba54da10a072", size = 1612724, upload-time = "2025-06-18T13:24:26.359Z" },
-]
 
 [[package]]
 name = "pywin32"
