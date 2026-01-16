@@ -51,8 +51,9 @@ class FleetController(BaseController[DBC]):
 
     def _paginate_hosts(self):
         try:
-            page = 1
+            page = 0
             while True:
+                self.logger.info("Fetching page of hosts...", page=page)
                 res = self._session.get(
                     self._url("/api/v1/fleet/hosts"),
                     params={
@@ -67,7 +68,9 @@ class FleetController(BaseController[DBC]):
                 res.raise_for_status()
                 hosts: list[dict[str, Any]] = res.json()["hosts"]
                 if len(hosts) < 1:
+                    self.logger.info("No more hosts, finished")
                     break
+                self.logger.info("Got hosts", count=len(hosts))
                 yield from hosts
                 page += 1
         except RequestException as exc:
