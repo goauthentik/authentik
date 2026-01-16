@@ -318,7 +318,8 @@ class IdentificationStageView(ChallengeStageView):
             if response.is_valid():
                 return self.challenge_valid(response)
             # Validation failed (user doesn't exist and pretend_user_exists is off)
-            # Fall through to show the challenge normally
+            # Don't pre-fill invalid username, fall through to show the challenge
+            self.request.session[SESSION_KEY_OVERRIDE_LOGIN_HINT] = True
 
         # Can't skip - just pre-fill the username field
         return super().get(request, *args, **kwargs)
