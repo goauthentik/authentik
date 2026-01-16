@@ -14,16 +14,25 @@ To generate a hash, run this command before your initial deployment:
 docker compose run --rm server hash_password 'your-password'
 ```
 
-:::warning Docker Compose
-When using Docker Compose with a `.env` file, escape the `$` characters in the password hash by doubling them (`$$`):
+:::warning Escaping `$` in Docker Compose
+Password hashes contain `$` characters which Docker Compose interprets as variable references.
+
+**In `.env` files**, use single quotes to prevent interpolation:
 
 ```bash
-# .env file
-# Original hash: pbkdf2_sha256$1000000$3emW1FZkrfjCKYpndtaYPQ$OZNNrcCc+cZ+paHV+kGRAOENTg5+Xny/de1/dNTgfg0=
-AUTHENTIK_BOOTSTRAP_PASSWORD_HASH="pbkdf2_sha256$$1000000$$3emW1FZkrfjCKYpndtaYPQ$$OZNNrcCc+cZ+paHV+kGRAOENTg5+Xny/de1/dNTgfg0="
+AUTHENTIK_BOOTSTRAP_PASSWORD_HASH='pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM='
 ```
 
-This prevents Docker Compose from interpreting `$` as variable references.
+**In `docker-compose.yml`** (inline environment), escape each `$` with `$$`:
+
+```yaml
+services:
+  worker:
+    environment:
+      AUTHENTIK_BOOTSTRAP_PASSWORD_HASH: "pbkdf2_sha256$$1000000$$xKKFuYtJEE27km09BD49x2$$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
+```
+
+See the Docker Compose documentation on [`.env` file interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) and [Compose file interpolation](https://docs.docker.com/reference/compose-file/interpolation/) for details.
 :::
 
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD`
@@ -50,7 +59,7 @@ In the Helm values, set the `akadmin` user password hash and token:
 
 ```yaml
 authentik:
-    bootstrap_password_hash: "pbkdf2_sha256$1000000$DaAizdSoYbkGij6fQCWNFz$mPlLYxD9/kkmVcXFKqGREe9+/t7MRoLTQhOdKK7XpSU="
+    bootstrap_password_hash: "pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
     bootstrap_token: "your-token-here"
     bootstrap_email: "admin@authentik.company"
 ```
