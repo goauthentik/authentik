@@ -64,17 +64,13 @@ Portainer by default shows commas between each item in the Scopes field. Do **NO
 
 ![](./port1.png)
 
-## Configuration verification
+## Configure automatic team membership in Portainer BE _(optional)_
 
-To confirm that authentik is properly configured with Portainer, open a private browsing window and go to the `https://portainer.company`.
+If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams and environments, and automatically grant admin access to certain users based on authentik group membership. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
 
-Click **Login with OAuth**. You should be redirected to authentik to login, once successful you should be redirected to the Portainer dashboard.
+For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for informaAtion on managing teams and access to environments based on team membership.
 
-## Configure automatic team membership in Portainer BE
-
-If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams & environments and automatically grant admin access to certain users based on authentik group membership. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
-
-For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for information on managing teams and access to environments based on team membership.
+We will also presume that two groups have been created in authentik: `Portainer Admins` and `Portainer Users`. See [Manage groups](https://docs.goauthentik.io/users-sources/groups/manage_groups/). You can choose any group names - replace `Portainer Admins` and `Portainer Users` later in this guide with your chosen names.
 
 ### Create a property mapping
 
@@ -99,15 +95,17 @@ For this section, we will presume that you already have two teams configured in 
         }
         ```
 
-3. Click **Finish** to save the property mapping.
+:::info
+In the expression above, we filter on the group names `Portainer Admins` and `Portainer Users`. You can use any groups that exist in authentik - just ensure that the group names entered here match those setup in authentik exactly (they are case-sensitive).
+:::
+
+3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.
 5. Select your provider for Portainer, and click **Edit**.
-6. Under **Advanced protocol settings**, add the property mapping that you created to your **Selected Scopes**.
+6. Under **Advanced protocol settings**, add the property mapping created in the previous step to **selected scopes**.
 7. Click **Update** to save your changes to the provider.
 8. Navigate to **Directory** > **Groups**.
-9. Add two new groups with names matching the filters in your property mapping **exactly** - in this case, `Portainer Admins` and `Portainer User`.
-10. Navigate to **Directory** > **Users**.
-11. Select your user, and add them to the `Portainer Admins` group. Repeat for any other users that require access, granting access to either group as desired.
+9. Add users to each of the groups that you have defined in your expression, as desired. If you add the same user to multiple groups, authentik will act on the first group defined in your expression.
 
 :::info
 Since we are configuring access to Portainer based on group membership, It is recommended that you configure a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
@@ -120,17 +118,20 @@ Since we are configuring access to Portainer based on group membership, It is re
 3. Under **Team Membership**, toggle **Automatic team membership** to **ON**, and complete configuration as follows:
     - **Claim name**: `groups`
     - **Statically assigned teams**: Add two team mappings with the following values:
-       - **client value regex** `^user$` **maps to team** `engineering`.
-       - **client value regex** `^admin$` **maps to team** `sysadmins`.
+        - **client value regex** `^user$` **maps to team** `engineering`.
+        - **client value regex** `^admin$` **maps to team** `sysadmins`.
     - **Default team**: `engineering`
     - **Admin mapping**:
-       - Toggle **Assign admin rights to group(s)** to **ON**.
-       - Add one admin mapping, and set **client value regex** to `^admin$`.
-4. Under **Provider** > ** OAuth Configuration**, append `groups` to **Scopes** - the full value for **Scopes** should then be `email openid profile groups`.
-5. Click **Save Settings** to apply your changes.
+        - Toggle **Assign admin rights to group(s)** to **ON**.
+        - Add one admin mapping, and set **client value regex** to `^admin$`.
+4. Under **Provider** > ** OAuth Configuration**, append `groups` to **Scopes**. The full value for **Scopes** should then be `email openid profile groups`.
+5. Click **Save Settings**.
 
 ![](./port2.png)
 
+## Configuration verification
+
+To verify the integration of authentik with Portainer, log out of Portainer, then on the login page click **Login with OAuth**.
 
 ## Resources
 
