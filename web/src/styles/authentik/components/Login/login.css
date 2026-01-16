@@ -236,7 +236,9 @@
     }
 
     .pf-c-login[data-layout="sidebar_left"],
-    .pf-c-login[data-layout="sidebar_right"] {
+    .pf-c-login[data-layout="sidebar_right"],
+    .pf-c-login[data-layout="sidebar_left_frame_background"],
+    .pf-c-login[data-layout="sidebar_right_frame_background"] {
         --ak-login--MaxWidth: 36rem;
         --ak-login--background-color-overlay: var(--pf-c-login__main--BackgroundColor);
 
@@ -257,22 +259,38 @@
         }
     }
 
-    .pf-c-login[data-layout="sidebar_left"] {
+    .pf-c-login[data-layout="sidebar_left"],
+    .pf-c-login[data-layout="sidebar_left_frame_background"] {
         grid-template-columns: [main footer] var(--ak-login__main-ColumnWidth) repeat(2, 1fr);
 
         grid-template-areas:
             "header . ."
             "main   . ."
             "footer . .";
+
+        iframe {
+            grid-row: 1/4;
+            grid-column: 2/4;
+            height: 100%;
+            width: 100%;
+        }
     }
 
-    .pf-c-login[data-layout="sidebar_right"] {
+    .pf-c-login[data-layout="sidebar_right"],
+    .pf-c-login[data-layout="sidebar_right_frame_background"] {
         grid-template-columns: repeat(2, 1fr) var(--ak-login__main-ColumnWidth) [main footer];
 
         grid-template-areas:
             ". . header"
             ". . main  "
             ". . footer";
+
+        iframe {
+            grid-row: 1 / 4;
+            grid-column: 1 / 3;
+            height: 100%;
+            width: 100%;
+        }
     }
 }
 

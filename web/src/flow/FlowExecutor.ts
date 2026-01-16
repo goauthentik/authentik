@@ -185,9 +185,10 @@ export class FlowExecutor
      * Synchronize flow info such as background image with the current state.
      */
     #synchronizeFlowInfo() {
-        if (!this.flowInfo) {
-            return;
-        }
+        if (!this.flowInfo) return;
+
+        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
+        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
 
         const background =
             this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
@@ -275,10 +276,7 @@ export class FlowExecutor
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (
-            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
-            this.flowInfo
-        ) {
+        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
 
@@ -543,6 +541,14 @@ export class FlowExecutor
         return html`<slot class="slotted-content" name="placeholder"></slot>`;
     }
 
+    protected renderFrameBackground() {
+        const src = this.#challenge?.flowInfo?.background;
+
+        if (!src) return nothing;
+
+        return html`<iframe src=${src}></iframe>`;
+    }
+
     protected override render(): TemplateResult {
         const { component } = this.challenge || {};
 
@@ -551,7 +557,7 @@ export class FlowExecutor
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
             <main
                 data-layout=${this.layout}
