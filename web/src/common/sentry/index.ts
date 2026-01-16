@@ -31,6 +31,7 @@ function beforeSend(
     if (!hint) {
         return event;
     }
+
     if (hint.originalException instanceof SentryIgnoredError) {
         return null;
     }
@@ -40,6 +41,7 @@ function beforeSend(
     ) {
         return null;
     }
+
     return event;
 }
 
@@ -53,14 +55,17 @@ export function configureSentry(): void {
 
     const logger = ConsoleLogger.prefix("sentry");
 
-    const integrations: Integration[] = [
-        browserTracingIntegration({
-            // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
-            instrumentNavigation: false,
-            instrumentPageLoad: false,
-            traceFetch: false,
-        }),
-    ];
+    const integrations: Integration[] =
+        process.env.NODE_ENV === "production"
+            ? [
+                  browserTracingIntegration({
+                      // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
+                      instrumentNavigation: false,
+                      instrumentPageLoad: false,
+                      traceFetch: false,
+                  }),
+              ]
+            : [];
 
     if (debug) {
         logger.debug("Enabled Spotlight");
@@ -68,6 +73,7 @@ export function configureSentry(): void {
     }
 
     init({
+        enabled: process.env.NODE_ENV !== "production",
         dsn: cfg.errorReporting.sentryDsn,
         ignoreErrors: [
             /network/gi,
@@ -80,7 +86,10 @@ export function configureSentry(): void {
             /MutationObserver.observe/gi,
             /NS_ERROR_FAILURE/gi,
         ],
-        release: `authentik@${import.meta.env.AK_VERSION}`,
+        release:
+            process.env.NODE_ENV === "production"
+                ? `authentik@${import.meta.env.AK_VERSION}`
+                : undefined,
         integrations,
         tracePropagationTargets: [window.location.origin],
         tracesSampleRate: debug ? 1.0 : cfg.errorReporting.tracesSampleRate,
