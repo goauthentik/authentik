@@ -28,11 +28,7 @@ export class UserPasswordHashForm extends Form<UserPasswordHashSetRequest> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal
-                label=${msg("Password hash")}
-                required
-                name="passwordHash"
-            >
+            <ak-form-element-horizontal label=${msg("Password hash")} required name="passwordHash">
                 <input
                     type="text"
                     value=""
