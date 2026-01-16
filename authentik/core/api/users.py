@@ -221,7 +221,7 @@ class UserSerializer(ModelSerializer):
             # Fail if both password and password_hash are set
             if password and password_hash and password_hash.strip():
                 raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
-            if password_hash and password_hash.strip():
+            if password_hash is not None:
                 try:
                     instance.set_password_from_hash(password_hash)
                 except ValueError as exc:
