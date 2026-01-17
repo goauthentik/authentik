@@ -117,11 +117,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             action="store_true",
             help="Disable any capturing of stdout/stderr during tests.",
         )
-        parser.add_argument(
-            "--count",
-            type=int,
-            help="Re-run selected tests n times"
-        )
+        parser.add_argument("--count", type=int, help="Re-run selected tests n times")
 
     def _validate_test_label(self, label: str) -> bool:
         """Validate test label format"""

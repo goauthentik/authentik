@@ -23,6 +23,7 @@ from docker import DockerClient, from_env
 from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
+from dramatiq import get_broker
 from requests import RequestException
 from selenium import webdriver
 from selenium.common.exceptions import (
@@ -232,7 +233,14 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def driver_container(self) -> Container:
         return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
 
+    def _join_broker(self):
+        broker = get_broker()
+        for queue in broker.queues.keys():
+            broker.join(queue)
+        broker.stop()
+
     def tearDown(self):
+        self._join_broker()
         if IS_CI:
             print("::endgroup::", file=stderr)
         super().tearDown()
