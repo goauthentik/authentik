@@ -53,9 +53,9 @@ SHADOW_ROOT_RETRIES = 5
 JSONType = dict[str, Any] | list[Any] | str | int | float | bool | None
 
 
-def get_local_ip() -> str:
+def get_local_ip(override=True) -> str:
     """Get the local machine's IP"""
-    if local_ip := getenv("LOCAL_IP"):
+    if (local_ip := getenv("LOCAL_IP")) and override:
         return local_ip
     hostname = socket.gethostname()
     ip_addr = socket.gethostbyname(hostname)

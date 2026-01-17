@@ -25,7 +25,7 @@ def pytest_report_header(*_, **__):
     return [
         f"authentik version: {authentik_full_version()}",
         f"OpenSSL version: {OPENSSL_VERSION}, FIPS: {backend._fips_enabled}",
-        f"Local IP: {get_local_ip()}",
+        f"Local IP: {get_local_ip()} (Detected as {get_local_ip(override=False)})",
     ]
 
 
