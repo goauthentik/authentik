@@ -233,7 +233,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def driver_container(self) -> Container:
         return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
 
-    def _pre_setup(self):
+    @classmethod
+    def _pre_setup(cls):
         use_test_broker()
         return super()._pre_setup()
 
