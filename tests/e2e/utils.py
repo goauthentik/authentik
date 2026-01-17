@@ -239,8 +239,11 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             broker.join(queue, timeout=1)
         broker.close()
 
-    def tearDown(self):
+    def _post_teardown(self):
         self._join_broker()
+        return super()._post_teardown()
+
+    def tearDown(self):
         if IS_CI:
             print("::endgroup::", file=stderr)
         super().tearDown()
