@@ -50,3 +50,4 @@ Immich documentation can be found here: https://immich.app/docs/administration/o
     - **Client ID**: Enter your Client ID from authentik
     - **Client Secret**: Enter your Client Secret from authentik
     - **Scope**: `openid email profile`
+    - **ID_TOKEN_SIGNED_RESPONSE_ALG**: `HS256`
