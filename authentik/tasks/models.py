@@ -2,6 +2,7 @@ from collections.abc import Iterable
 from typing import Self
 from uuid import UUID, uuid4
 
+from dramatiq.errors import Retry
 import pgtrigger
 from django.contrib.contenttypes.fields import ContentType, GenericForeignKey, GenericRelation
 from django.db import models
@@ -107,6 +108,8 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 **attributes,
             }
             message = str(message)
+            if not message and isinstance(message, Retry):
+                message = "Task has encountered an error and will be retried"
         return LogEvent(
             message,
             logger=logger,
