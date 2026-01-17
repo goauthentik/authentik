@@ -53,8 +53,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         return binding as T;
     }
 
-    @property()
-    targetPk?: string;
+    @property({ type: String })
+    public targetPk = "";
 
     @state()
     policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.policy;

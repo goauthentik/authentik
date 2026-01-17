@@ -5,14 +5,17 @@ import { EVENT_REFRESH } from "#common/constants";
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
  * A base form that automatically tracks the server-side object (instance)
  * that we're interested in.  Handles loading and tracking of the instance.
  */
-export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
+export abstract class ModelForm<
+    T extends object = object,
+    PKT extends string | number = string | number,
+> extends Form<T> {
     /**
      * An overridable method for loading an instance.
      *
@@ -31,7 +34,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         return Promise.resolve();
     }
 
-    @property({ attribute: false })
+    @property({ attribute: "pk" })
     public set instancePk(value: PKT) {
         this.#instancePk = value;
 
@@ -55,6 +58,10 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     }
 
     #instancePk?: PKT;
+
+    public get instancePk(): PKT | undefined {
+        return this.#instancePk;
+    }
 
     // Keep track if we've loaded the model instance
     #initialLoad = false;
@@ -82,19 +89,19 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    reset(): void {
+    public override reset(): void {
         this.instance = undefined;
         this.#initialLoad = false;
     }
 
-    renderVisible(): TemplateResult {
+    protected override renderVisible(): SlottedTemplateResult {
         if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return super.renderVisible();
     }
 
-    render(): SlottedTemplateResult {
+    protected override render(): SlottedTemplateResult {
         // if we're in viewport now and haven't loaded AND have a PK set, load now
         // Or if we don't check for viewport in some cases
         const viewportVisible = this.isInViewport || !this.viewportCheck;
