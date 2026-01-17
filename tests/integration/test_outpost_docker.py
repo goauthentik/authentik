@@ -89,7 +89,7 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
         except PermissionError:
             pass
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     @CONFIG.patch("outposts.container_image_base", "ghcr.io/goauthentik/dev-proxy:gh-main")
     def test_docker_controller(self):
         """test that deployment requires update"""
@@ -97,7 +97,7 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
         controller.up()
         controller.down()
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_docker_static(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)
