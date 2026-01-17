@@ -49,6 +49,7 @@ from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.http import get_http_session
 from authentik.root.test_runner import get_docker_tag
+from authentik.tasks.test import use_test_broker
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
@@ -232,15 +233,16 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def driver_container(self) -> Container:
         return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
 
-    def _join_broker(self):
-        broker = get_broker()
-        broker.flush_all()
-        for queue in broker.get_declared_queues():
-            broker.join(queue, timeout=1)
-        broker.close()
+    def _pre_setup(self):
+        use_test_broker()
+        return super()._pre_setup()
 
     def _post_teardown(self):
-        self._join_broker()
+        broker = get_broker()
+        broker.flush_all()
+        # for queue in broker.get_declared_queues():
+        #     broker.join(queue, timeout=1)
+        broker.close()
         return super()._post_teardown()
 
     def tearDown(self):
