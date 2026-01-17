@@ -236,7 +236,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def _join_broker(self):
         broker = get_broker()
         for queue in broker.get_declared_queues():
-            broker.join(queue)
+            broker.join(queue, timeout=1)
         broker.stop()
 
     def tearDown(self):
