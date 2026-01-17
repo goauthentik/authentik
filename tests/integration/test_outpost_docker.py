@@ -20,7 +20,8 @@ from authentik.outposts.models import (
 )
 from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import DockerTestCase, get_docker_tag
+from authentik.root.test_runner import get_docker_tag
+from tests.docker import DockerTestCase
 
 
 class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
