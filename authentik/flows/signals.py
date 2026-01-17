@@ -38,7 +38,7 @@ def invalidate_flow_cache(sender, instance, **_):
     if isinstance(instance, Flow):
         total = delete_cache_prefix(f"{cache_key(instance)}*")
         LOGGER.debug("Invalidating Flow cache", flow=instance, len=total)
-    if isinstance(instance, FlowStageBinding) and instance.target:
+    if isinstance(instance, FlowStageBinding) and instance.target_id:
         total = delete_cache_prefix(f"{cache_key(instance.target)}*")
         LOGGER.debug("Invalidating Flow cache from FlowStageBinding", binding=instance, len=total)
     if isinstance(instance, Stage):
