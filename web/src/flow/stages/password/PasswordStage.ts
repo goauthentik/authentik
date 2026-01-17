@@ -55,7 +55,6 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                 />
                 <ak-flow-input-password
                     label=${msg("Password")}
-                    required
                     grab-focus
                     class="pf-c-form__group"
                     .errors=${this.#errors("password")}
@@ -81,9 +80,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                   >
                       <legend class="sr-only">${msg("Additional actions")}</legend>
                       <div class="pf-c-login__main-footer-band-item">
-                          <a name="forgot-password" href="${this.challenge.recoveryUrl}"
-                              >${msg("Forgot password?")}</a
-                          >
+                          <a href="${this.challenge.recoveryUrl}">${msg("Forgot password?")}</a>
                       </div>
                   </fieldset>`
                 : null}
