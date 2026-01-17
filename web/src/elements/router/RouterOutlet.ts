@@ -70,6 +70,8 @@ export class RouterOutlet extends AKElement {
 
     //#region Properties
 
+    public override role = "presentation";
+
     @property({ attribute: false })
     current?: RouteMatch;
 
