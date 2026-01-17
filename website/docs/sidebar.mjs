@@ -76,10 +76,9 @@ const items = [
                     "install-config/install/kubernetes",
                     "install-config/install/aws",
                 ],
+                //#endregion
             },
             {
-                //#endregion
-
                 //#region Configuration
                 type: "category",
                 label: "Configuration",
@@ -89,6 +88,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/first_steps",
             "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
