@@ -20,42 +20,33 @@ GEN_API_TS = gen-ts-api
 GEN_API_PY = gen-py-api
 GEN_API_GO = gen-go-api
 
+BREW_LDFLAGS :=
+BREW_CPPFLAGS :=
+BREW_PKG_CONFIG_PATH :=
+
 UV := uv
 
-# For macOS users, configure native dependencies (xmlsec, libxml2, krb5) for pip compilation.
+# For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
+# to prevent SAML-related tests from failing and ensure correct pip dependency compilation
 ifeq ($(UNAME_S),Darwin)
-	# Check for Nix-installed xmlsec (takes precedence over Homebrew)
-	NIX_XMLSEC_PC := $(shell ls -d /nix/store/*-xmlsec-*-dev/lib/pkgconfig 2>/dev/null | head -1)
-	ifdef NIX_XMLSEC_PC
-		NIX_LIBXML2_PC := $(shell ls -d /nix/store/*-libxml2-*-dev/lib/pkgconfig 2>/dev/null | head -1)
-		NIX_LIBXSLT_PC := $(shell ls -d /nix/store/*-libxslt-*-dev/lib/pkgconfig 2>/dev/null | head -1)
-		NIX_LIBTOOL_LIB := $(shell ls -d /nix/store/*-libtool-*/lib 2>/dev/null | grep -v '\-dev' | head -1)
-		NIX_PKG_CONFIG_PATH := $(NIX_XMLSEC_PC):$(NIX_LIBXML2_PC):$(NIX_LIBXSLT_PC)
-		NIX_LDFLAGS := -L$(NIX_LIBTOOL_LIB)
-		UV := LDFLAGS="$(NIX_LDFLAGS)" PKG_CONFIG_PATH="$(NIX_PKG_CONFIG_PATH):$(PKG_CONFIG_PATH)" uv
-	else
-		# Fallback to Homebrew for users who installed libxmlsec1 via brew
-		BREW_EXISTS := $(shell command -v brew 2> /dev/null)
-		ifdef BREW_EXISTS
-			BREW_LDFLAGS :=
-			BREW_CPPFLAGS :=
-			BREW_PKG_CONFIG_PATH :=
-			LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
-			ifdef LIBXML2_EXISTS
-				_xml_pref := $(shell brew --prefix libxml2)
-				BREW_LDFLAGS += -L${_xml_pref}/lib
-				BREW_CPPFLAGS += -I${_xml_pref}/include
-				BREW_PKG_CONFIG_PATH = ${_xml_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
-			endif
-			KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
-			ifdef KRB5_EXISTS
-				_krb5_pref := $(shell brew --prefix krb5)
-				BREW_LDFLAGS += -L${_krb5_pref}/lib
-				BREW_CPPFLAGS += -I${_krb5_pref}/include
-				BREW_PKG_CONFIG_PATH = ${_krb5_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
-			endif
-			UV := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv
+# Only add for brew users who installed libxmlsec1
+	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
+	ifdef BREW_EXISTS
+		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		ifdef LIBXML2_EXISTS
+			_xml_pref := $(shell brew --prefix libxml2)
+			BREW_LDFLAGS += -L${_xml_pref}/lib
+			BREW_CPPFLAGS += -I${_xml_pref}/include
+			BREW_PKG_CONFIG_PATH = ${_xml_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
 		endif
+		KRB5_EXISTS := $(shell brew list krb5 2> /dev/null)
+		ifdef KRB5_EXISTS
+			_krb5_pref := $(shell brew --prefix krb5)
+			BREW_LDFLAGS += -L${_krb5_pref}/lib
+			BREW_CPPFLAGS += -I${_krb5_pref}/include
+			BREW_PKG_CONFIG_PATH = ${_krb5_pref}/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+		UV := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv
 	endif
 endif
 
@@ -91,7 +82,7 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
-ifeq ($(UNAME_S),Darwin)
+ifdef ($(BREW_EXISTS))
 # Clear cache to ensure fresh compilation
 	$(UV) cache clean
 # Force compilation from source for lxml and xmlsec with correct environment
