@@ -96,3 +96,20 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
+
+export class RedirectOnForbiddenMiddleware implements Middleware {
+    post(context: ResponseContext): Promise<Response | void> {
+        if (context.response.status === 403) {
+            const { pathname, search, hash } = window.location;
+            const authFlowRedirectURL = new URL(
+                `/flows/-/default/authentication/`,
+                window.location.origin,
+            );
+
+            authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
+
+            window.location.assign(authFlowRedirectURL);
+        }
+        return Promise.resolve(context.response);
+    }
+}
