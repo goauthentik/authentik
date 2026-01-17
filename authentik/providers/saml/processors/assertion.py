@@ -405,10 +405,6 @@ class AssertionProcessor:
         """Encrypt SAMLResponse EncryptedAssertion Element"""
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
-            self.provider.encryption_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-        )
-        key.load_cert_from_memory(
             self.provider.encryption_kp.certificate_data,
             xmlsec.constants.KeyDataFormatCertPem,
         )
