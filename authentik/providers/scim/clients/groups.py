@@ -86,15 +86,10 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             del scim_group.members
         return scim_group
 
-    def delete(self, obj: Group):
+    def delete(self, identifier: str):
         """Delete group"""
-        scim_group = SCIMProviderGroup.objects.filter(provider=self.provider, group=obj).first()
-        if not scim_group:
-            self.logger.debug("Group does not exist in SCIM, skipping")
-            return None
-        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
-        scim_group.delete()
-        return response
+        SCIMProviderGroup.objects.filter(provider=self.provider, scim_id=identifier).delete()
+        return self._request("DELETE", f"/Groups/{identifier}")
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
