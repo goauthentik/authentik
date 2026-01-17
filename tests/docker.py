@@ -1,5 +1,6 @@
 """authentik e2e testing utilities"""
 
+from collections.abc import Callable
 from os import environ
 from time import sleep
 from typing import Any
@@ -41,10 +42,10 @@ class DockerTestCase(TestCase):
         return self.__network
 
     @property
-    def docker_labels(self) -> dict:
+    def docker_labels(self) -> dict[str, str]:
         return {"io.goauthentik.test": self.__label_id}
 
-    def wait_for_container(self, container: Container):
+    def wait_for_container(self, container: Container) -> Container:
         """Check that container is health"""
         attempt = 0
         while True:
@@ -69,7 +70,7 @@ class DockerTestCase(TestCase):
             self.docker_client.images.pull(image)
         return image
 
-    def run_container(self, **specs: dict[str, Any]) -> Container:
+    def run_container(self, **specs: Any) -> Container:
         if "network_mode" not in specs:
             specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
@@ -77,7 +78,7 @@ class DockerTestCase(TestCase):
         if hasattr(self, "live_server_url"):
             specs.setdefault("environment", {})
             specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
-        container = self.docker_client.containers.run(**specs)
+        container: Container = self.docker_client.containers.run(**specs)
         container.reload()
         state = container.attrs.get("State", {})
         if "Health" not in state:
@@ -85,18 +86,21 @@ class DockerTestCase(TestCase):
         self.wait_for_container(container)
         return container
 
-    def output_container_logs(self, container: Container | None = None):
+    def output_container_logs(self, container: Container | None = None) -> None:
         """Output the container logs to our STDOUT"""
+        if not container:
+            return
         if IS_CI:
             image = container.image
-            tags = image.tags[0] if len(image.tags) > 0 else str(image)
-            print(f"::group::Container logs - {tags}")
+            if image:
+                tags = image.tags[0] if len(image.tags) > 0 else str(image)
+                print(f"::group::Container logs - {tags}")
         for log in container.logs().decode().split("\n"):
             print(log)
         if IS_CI:
             print("::endgroup::")
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         containers: list[Container] = self.docker_client.containers.list(
             filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
         )
@@ -113,8 +117,8 @@ class DockerTestCase(TestCase):
         self.__network.remove()
 
 
-def require_container_image(*names: str, fail_ok=False):
-    def wrapper(cls):
+def require_container_image(*names: str, fail_ok: bool = False) -> Callable[..., Any]:
+    def wrapper(cls: type) -> type:
         client = from_env()
         logger = get_logger(class_to_path(cls))
         for image in names:
@@ -124,7 +128,7 @@ def require_container_image(*names: str, fail_ok=False):
             except DockerException:
                 logger.info("Pulling container image", image=image)
                 try:
-                    client.images.pull(*image.split(":", 1))
+                    client.images.pull(image)
                 except DockerException as exc:
                     if not fail_ok:
                         raise exc
