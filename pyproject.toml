@@ -97,6 +97,7 @@ dev = [
   "mypy==1.19.1",
   "pdoc==16.0.0",
   "pytest-django==4.11.1",
+  "pytest-flakefinder==1.1.0",
   "pytest-github-actions-annotate-failures==0.3.0",
   "pytest-randomly==4.0.1",
   "pytest-timeout==2.4.0",

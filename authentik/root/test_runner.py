@@ -56,6 +56,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         if kwargs.get("no_capture", False):
             self.args.append("--capture=no")
 
+        if kwargs.get("count", None):
+            self.args.append("--flake-finder")
+            self.args.append(f"--flake-runs={kwargs['count']}")
+
         self._setup_test_environment()
 
     def _setup_test_environment(self):
@@ -112,6 +116,11 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "--no-capture",
             action="store_true",
             help="Disable any capturing of stdout/stderr during tests.",
+        )
+        parser.add_argument(
+            "--count",
+            type=int,
+            help="Re-run selected tests n times"
         )
 
     def _validate_test_label(self, label: str) -> bool:
