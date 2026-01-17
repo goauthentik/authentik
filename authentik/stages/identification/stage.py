@@ -6,7 +6,7 @@ from typing import Any
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
@@ -34,7 +34,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
 )
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_GET
+from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_OVERRIDE_LOGIN_HINT
 from authentik.lib.avatars import DEFAULT_AVATAR
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
@@ -113,6 +113,8 @@ class IdentificationChallenge(Challenge):
     passkey_challenge = JSONDictField(required=False, allow_null=True)
 
     component = CharField(default="ak-stage-identification")
+
+    pending_user_identifier = CharField(required=False, allow_null=True)
 
 
 class IdentificationChallengeResponse(ChallengeResponse):
@@ -285,6 +287,43 @@ class IdentificationStageView(ChallengeStageView):
         self.logger.debug("Generated passkey challenge", challenge=challenge)
         return challenge
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Check for login_hint and skip stage if found"""
+        current_stage: IdentificationStage = self.executor.current_stage
+        get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
+        login_hint = get_qs.get("login_hint")
+
+        # No login_hint, show challenge normally
+        if not login_hint:
+            return super().get(request, *args, **kwargs)
+
+        # Prevent skip loop if user clicks "Not you?"
+        if self.request.session.get(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
+            return super().get(request, *args, **kwargs)
+
+        # Only skip if this is a "simple" identification stage with no extra features
+        can_skip = (
+            not current_stage.password_stage
+            and not current_stage.captcha_stage
+            and not current_stage.webauthn_stage
+            and not self.executor.current_binding.policies.exists()
+        )
+
+        if can_skip:
+            # Use the normal validation flow (handles timing protection, logging, signals)
+            response = IdentificationChallengeResponse(
+                data={"uid_field": login_hint},
+                stage=self,
+            )
+            if response.is_valid():
+                return self.challenge_valid(response)
+            # Validation failed (user doesn't exist and pretend_user_exists is off)
+            # Don't pre-fill invalid username, fall through to show the challenge
+            self.request.session[SESSION_KEY_OVERRIDE_LOGIN_HINT] = True
+
+        # Can't skip - just pre-fill the username field
+        return super().get(request, *args, **kwargs)
+
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
@@ -360,6 +399,12 @@ class IdentificationStageView(ChallengeStageView):
                 button["challenge"] = source_challenge.data
                 ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
+
+        # Pre-fill username from login_hint unless user clicked "Not you?"
+        if not self.request.session.pop(SESSION_KEY_OVERRIDE_LOGIN_HINT, False):
+            if login_hint := get_qs.get("login_hint"):
+                challenge.initial_data["pending_user_identifier"] = login_hint
+
         return challenge
 
     def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:

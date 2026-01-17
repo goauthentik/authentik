@@ -66,6 +66,7 @@ SESSION_KEY_PLAN = "authentik/flows/plan"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
+SESSION_KEY_OVERRIDE_LOGIN_HINT = "authentik/flows/override_login_hint"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
 
@@ -481,6 +482,8 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
+        # Set flag to prevent auto-skip on login_hint when user clicks "Not you?"
+        request.session[SESSION_KEY_OVERRIDE_LOGIN_HINT] = True
         next_url = self.request.GET.get(NEXT_ARG_NAME)
         if next_url and not is_url_absolute(next_url):
             return redirect(next_url)
