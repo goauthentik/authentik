@@ -4,9 +4,46 @@ title: Automated install
 
 To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables on the worker container:
 
+### `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`
+
+Configure the default password for the `akadmin` user using a pre-hashed password. Only read on the first startup.
+
+To generate a hash, run this command before your initial deployment:
+
+```bash
+docker compose run --rm server hash_password 'your-password'
+```
+
+:::warning Escaping `$` in Docker Compose
+Password hashes contain `$` characters which Docker Compose interprets as variable references.
+
+**In `.env` files**, use single quotes to prevent interpolation:
+
+```bash
+AUTHENTIK_BOOTSTRAP_PASSWORD_HASH='pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM='
+```
+
+**In `docker-compose.yml`** (inline environment), escape each `$` with `$$`:
+
+```yaml
+services:
+    worker:
+        environment:
+            AUTHENTIK_BOOTSTRAP_PASSWORD_HASH: "pbkdf2_sha256$$1000000$$xKKFuYtJEE27km09BD49x2$$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
+```
+
+See the Docker Compose documentation on [`.env` file interpolation](https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/) and [Compose file interpolation](https://docs.docker.com/reference/compose-file/interpolation/) for details.
+:::
+
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD`
 
-Configure the default password for the `akadmin` user. Only read on the first startup. Can be used for any flow executor.
+:::warning
+This option stores plaintext passwords in environment variables. Use [`AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`](#authentik_bootstrap_password_hash) instead.
+:::
+
+Configure the default password for the `akadmin` user. Only read on the first startup.
+
+Setting both `AUTHENTIK_BOOTSTRAP_PASSWORD` and `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH` will result in an error.
 
 ### `AUTHENTIK_BOOTSTRAP_TOKEN`
 
@@ -18,15 +55,23 @@ Set the email address for the default `akadmin` user.
 
 ## Kubernetes
 
-In the Helm values, set the `akadmin` user password and token:
+In the Helm values, set the `akadmin` user password hash and token:
 
 ```yaml
 authentik:
-    bootstrap_token: test
-    bootstrap_password: test
+    bootstrap_password_hash: "pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM="
+    bootstrap_token: "your-token-here"
+    bootstrap_email: "admin@authentik.company"
 ```
 
-To store the password and token in a secret, use:
+:::note Helm escaping
+When using password hashes in quoted YAML strings as shown above, no escaping of `$` characters is required. The `$` character only needs escaping when:
+
+- Using Helm templating syntax (e.g., `{{ .Values.something }}`) where `$` has special meaning
+- Referencing values from environment variable substitution in your values file
+  :::
+
+Or store the password hash in a secret and reference it via `envFrom`:
 
 ```yaml
 global:
@@ -35,4 +80,4 @@ global:
               name: _some-secret_
 ```
 
-where _some-secret_ contains the environment variables as in the documentation above.
+where _some-secret_ contains the environment variables as documented above.

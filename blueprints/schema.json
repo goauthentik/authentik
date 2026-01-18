@@ -5292,6 +5292,14 @@
                     "minLength": 1,
                     "title": "Password"
                 },
+                "password_hash": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Password hash"
+                },
                 "permissions": {
                     "type": "array",
                     "items": {
