@@ -10300,10 +10300,15 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
+                "group_filters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Group filters used to define sync-scope for groups."
+                    },
+                    "title": "Group filters",
+                    "description": "Group filters used to define sync-scope for groups."
                 },
                 "sync_page_size": {
                     "type": "integer",
