@@ -45,7 +45,6 @@ function getFileExtension(fileName: string): string {
     return fileName.slice(lastDot);
 }
 
-
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String, useDefault: true })
