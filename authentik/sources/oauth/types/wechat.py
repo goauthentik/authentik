@@ -11,18 +11,6 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-class WeChatOAuthRedirect(OAuthRedirect):
-    """WeChat OAuth2 Redirect"""
-
-    def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
-        # WeChat (Weixin) for Websites official documentation requires 'snsapi_login'
-        # as the *only* scope for the QR code-based login flow.
-        # Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html (Step 1)  # noqa: E501
-        return {
-            "scope": ["snsapi_login"],
-        }
-
-
 class WeChatOAuth2Client(OAuth2Client):
     """
     WeChat OAuth2 Client
@@ -30,7 +18,7 @@ class WeChatOAuth2Client(OAuth2Client):
     Handles the non-standard parts of the WeChat OAuth2 flow.
     """
 
-    def get_access_token(self, redirect_uri: str, code: str) -> dict[str, Any]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """
         Get access token from WeChat.
 
@@ -38,7 +26,15 @@ class WeChatOAuth2Client(OAuth2Client):
         unlike the standard OAuth2 POST request. The AppID (client_id)
         and AppSecret (client_secret) are passed as URL query parameters.
         """
-        token_url = self.get_access_token_url()
+        if not self.check_application_state():
+            self.logger.warning("Application state check failed.")
+            return {"error": "State check failed."}
+
+        code = self.get_request_arg("code", None)
+        if not code:
+            return None
+
+        token_url = self.source.source_type.access_token_url
         params = {
             "appid": self.get_client_id(),
             "secret": self.get_client_secret(),
@@ -47,13 +43,12 @@ class WeChatOAuth2Client(OAuth2Client):
         }
 
         # Send the GET request using the base class's session handler
-        response = self.do_request("get", token_url, params=params)
-
         try:
+            response = self.do_request("get", token_url, params=params)
             response.raise_for_status()
         except RequestException as exc:
             self.logger.warning("Unable to fetch wechat token", exc=exc)
-            raise exc
+            return None
 
         data = response.json()
 
@@ -64,18 +59,18 @@ class WeChatOAuth2Client(OAuth2Client):
                 errcode=data.get("errcode"),
                 errmsg=data.get("errmsg"),
             )
-            raise RequestException(data.get("errmsg"))
+            return None
 
         return data
 
-    def get_profile_info(self, token: dict[str, Any]) -> dict[str, Any]:
+    def get_profile_info(self, token: dict[str, Any]) -> dict[str, Any] | None:
         """
         Get Userinfo from WeChat.
 
         This API call requires both the 'access_token' and the 'openid'
         (which was returned during the token exchange).
         """
-        profile_url = self.get_profile_url()
+        profile_url = self.source.source_type.profile_url
         params = {
             "access_token": token.get("access_token"),
             "openid": token.get("openid"),
@@ -88,7 +83,7 @@ class WeChatOAuth2Client(OAuth2Client):
             response.raise_for_status()
         except RequestException as exc:
             self.logger.warning("Unable to fetch wechat userinfo", exc=exc)
-            raise exc
+            return None
 
         data = response.json()
 
@@ -99,9 +94,29 @@ class WeChatOAuth2Client(OAuth2Client):
                 errcode=data.get("errcode"),
                 errmsg=data.get("errmsg"),
             )
-            raise RequestException(data.get("errmsg"))
+            return None
 
         return data
+
+    def get_redirect_args(self) -> dict[str, str]:
+        """Get request parameters for redirect url."""
+        args = super().get_redirect_args()
+        args["appid"] = args.pop("client_id")
+        return args
+
+
+class WeChatOAuthRedirect(OAuthRedirect):
+    """WeChat OAuth2 Redirect"""
+
+    client_class = WeChatOAuth2Client
+
+    def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
+        # WeChat (Weixin) for Websites official documentation requires 'snsapi_login'
+        # as the *only* scope for the QR code-based login flow.
+        # Ref: https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html (Step 1)  # noqa: E501
+        return {
+            "scope": ["snsapi_login"],
+        }
 
 
 class WeChatOAuth2Callback(OAuthCallback):
@@ -109,6 +124,9 @@ class WeChatOAuth2Callback(OAuthCallback):
 
     # Specify our custom Client to handle the non-standard WeChat flow
     client_class = WeChatOAuth2Client
+
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
+        return info.get("unionid", info.get("openid"))
 
 
 @registry.register()
