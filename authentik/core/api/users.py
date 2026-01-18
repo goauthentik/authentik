@@ -80,6 +80,7 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
+from authentik.enterprise.api import enterprise_action
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -87,6 +88,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.providers.oauth2.models import AccessToken, RefreshToken
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -381,6 +383,31 @@ class UserPasswordSetSerializer(PassiveSerializer):
     """Payload to set a users' password directly"""
 
     password = CharField(required=True)
+
+
+class UserAccountLockdownSerializer(PassiveSerializer):
+    """Payload to trigger account lockdown for a user"""
+
+    reason = CharField(
+        required=True,
+        min_length=1,
+        max_length=500,
+        help_text="Reason for triggering account lockdown (max 500 characters)",
+    )
+
+
+class UserBulkAccountLockdownSerializer(PassiveSerializer):
+    """Payload to trigger account lockdown for multiple users"""
+
+    users = PrimaryKeyRelatedField(
+        many=True, queryset=User.objects.all().exclude_anonymous(), help_text="Users to lock"
+    )
+    reason = CharField(
+        required=True,
+        min_length=1,
+        max_length=500,
+        help_text="Reason for triggering account lockdown (max 500 characters)",
+    )
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -848,6 +875,235 @@ class UserViewSet(
         del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
+        return Response(status=204)
+
+    def _validate_lockdown_target(self, request: Request, user: User) -> str | None:
+        """Validate if a user can be targeted for account lockdown.
+
+        Returns an error message if validation fails, None if valid.
+        """
+        from guardian.shortcuts import get_anonymous_user
+
+        # Cannot lock down yourself
+        if user.pk == request.user.pk:
+            return _("Cannot trigger account lockdown on yourself.")
+
+        # Cannot lock down anonymous user
+        try:
+            anon_user = get_anonymous_user()
+            if user.pk == anon_user.pk:
+                return _("Cannot trigger account lockdown on anonymous user.")
+        except User.DoesNotExist:
+            pass
+
+        # Cannot lock down internal service accounts
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            return _("Cannot trigger account lockdown on internal service accounts.")
+
+        return None
+
+    def _check_lockdown_enabled(self, request: Request) -> Response | None:
+        """Check if account lockdown feature is enabled.
+
+        Returns a 400 Response if disabled, None if enabled.
+        """
+        if not request.tenant.account_lockdown_enabled:
+            LOGGER.debug("Account lockdown feature is disabled")
+            return Response(
+                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
+                status=400,
+            )
+        return None
+
+    def _trigger_account_lockdown(
+        self,
+        request: Request,
+        user: User,
+        reason: str,
+        *,
+        self_service: bool = False,
+    ) -> None:
+        """Helper method to trigger account lockdown for a single user.
+
+        This method:
+        1. Deactivates the user account
+        2. Resets the password to a random value
+        3. Terminates all active sessions
+        4. Revokes all tokens (API, OAuth, app passwords)
+        5. Creates an event that can trigger notifications via NotificationRules
+
+        Args:
+            request: The HTTP request
+            user: The user to lock down
+            reason: The reason for the lockdown
+            self_service: If True, creates a self-service event and omits triggered_by
+        """
+        from secrets import token_urlsafe
+
+        with atomic():
+            user.is_active = False
+            new_password = token_urlsafe(32)
+            user.set_password(new_password)
+            user.save()
+
+            # Delete all sessions
+            Session.objects.filter(authenticatedsession__user=user).delete()
+
+            # Revoke all API and app password tokens
+            Token.objects.filter(user=user).delete()
+
+            # Revoke OAuth2 tokens
+            AccessToken.objects.filter(user=user).delete()
+            RefreshToken.objects.filter(user=user).delete()
+
+            if self_service:
+                LOGGER.info(
+                    "Self-service account lockdown triggered",
+                    user=user.username,
+                )
+                Event.new(
+                    EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
+                    reason=reason,
+                    affected_user=user.username,
+                ).from_http(request, user)
+            else:
+                LOGGER.info(
+                    "Account lockdown triggered",
+                    user=user.username,
+                    triggered_by=request.user.username,
+                )
+                Event.new(
+                    EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+                    reason=reason,
+                    affected_user=user.username,
+                    triggered_by=request.user.username,
+                ).from_http(request, user)
+
+    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
+    @extend_schema(
+        request=UserAccountLockdownSerializer,
+        responses={
+            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "400": OpenApiResponse(
+                description="Account lockdown feature is disabled or invalid target"
+            ),
+        },
+    )
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    @validate(UserAccountLockdownSerializer)
+    @enterprise_action
+    def account_lockdown(
+        self, request: Request, pk: int, body: UserAccountLockdownSerializer
+    ) -> Response:
+        """Trigger account lockdown for a user"""
+        if disabled_response := self._check_lockdown_enabled(request):
+            return disabled_response
+
+        user: User = self.get_object()
+        reason = body.validated_data["reason"]
+
+        if validation_error := self._validate_lockdown_target(request, user):
+            LOGGER.debug(
+                "Account lockdown validation failed",
+                user=user.username,
+                reason=validation_error,
+            )
+            return Response(
+                data={"non_field_errors": [validation_error]},
+                status=400,
+            )
+
+        self._trigger_account_lockdown(request, user, reason)
+
+        return Response(status=204)
+
+    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
+    @extend_schema(
+        request=UserBulkAccountLockdownSerializer,
+        responses={
+            "200": inline_serializer(
+                "AccountLockdownBulkResponse",
+                {
+                    "processed": ListField(
+                        child=CharField(), help_text="Users successfully locked"
+                    ),
+                    "skipped": ListField(child=CharField(), help_text="Users skipped with reasons"),
+                },
+            ),
+            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
+        },
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        url_path="account_lockdown_bulk",
+    )
+    @validate(UserBulkAccountLockdownSerializer)
+    @enterprise_action
+    def account_lockdown_bulk(
+        self, request: Request, body: UserBulkAccountLockdownSerializer
+    ) -> Response:
+        """Trigger account lockdown for multiple users"""
+        if disabled_response := self._check_lockdown_enabled(request):
+            return disabled_response
+
+        users = body.validated_data["users"]
+        reason = body.validated_data["reason"]
+
+        processed = []
+        skipped = []
+
+        for user in users:
+            if validation_error := self._validate_lockdown_target(request, user):
+                skipped.append({"username": user.username, "reason": str(validation_error)})
+                continue
+
+            self._trigger_account_lockdown(request, user, reason)
+            processed.append(user.username)
+
+        return Response({"processed": processed, "skipped": skipped})
+
+    @extend_schema(
+        request=UserAccountLockdownSerializer,
+        responses={
+            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
+        },
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        url_path="account_lockdown_self",
+    )
+    @validate(UserAccountLockdownSerializer)
+    @enterprise_action
+    def account_lockdown_self(
+        self, request: Request, body: UserAccountLockdownSerializer
+    ) -> Response:
+        """Trigger account lockdown for the current user (self-service).
+
+        This allows users to lock down their own account in case of a security incident.
+        """
+        if disabled_response := self._check_lockdown_enabled(request):
+            return disabled_response
+
+        user: User = request.user
+        reason = body.validated_data["reason"]
+
+        # Prevent internal service accounts from locking themselves
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            LOGGER.debug("Internal service account attempted self-lockdown", user=user.username)
+            return Response(
+                data={
+                    "non_field_errors": [_("Internal service accounts cannot use this feature.")]
+                },
+                status=400,
+            )
+
+        self._trigger_account_lockdown(request, user, reason, self_service=True)
 
         return Response(status=204)
 
