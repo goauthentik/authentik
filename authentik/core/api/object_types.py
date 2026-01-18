@@ -10,7 +10,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.enterprise.apps import EnterpriseConfig
 from authentik.lib.models import DeprecatedMixin
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -61,19 +60,25 @@ class TypesMixin:
                     continue
                 instance = subclass()
             try:
-                data.append(
-                    {
-                        "name": subclass._meta.verbose_name,
-                        "description": subclass.__doc__,
-                        "component": instance.component,
-                        "model_name": subclass._meta.model_name,
-                        "icon_url": getattr(instance, "icon_url", None),
-                        "requires_enterprise": isinstance(
-                            subclass._meta.app_config, EnterpriseConfig
-                        ),
-                        "deprecated": isinstance(instance, DeprecatedMixin),
-                    }
-                )
+                type_signature = {
+                    "name": subclass._meta.verbose_name,
+                    "description": subclass.__doc__,
+                    "component": instance.component,
+                    "model_name": subclass._meta.model_name,
+                    "icon_url": getattr(instance, "icon_url", None),
+                    "requires_enterprise": False,
+                    "deprecated": isinstance(instance, DeprecatedMixin),
+                }
+                try:
+                    from authentik.enterprise.apps import EnterpriseConfig
+
+                    type_signature["requires_enterprise"] = isinstance(
+                        subclass._meta.app_config, EnterpriseConfig
+                    )
+                except ModuleNotFoundError:
+                    pass
+
+                data.append(type_signature)
             except NotImplementedError:
                 continue
         if additional:
