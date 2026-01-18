@@ -11284,8 +11284,7 @@
                     "type": "string",
                     "enum": [
                         "MIT",
-                        "Heimdal",
-                        "other"
+                        "Heimdal"
                     ],
                     "title": "Kadmin type",
                     "description": "KAdmin server type"

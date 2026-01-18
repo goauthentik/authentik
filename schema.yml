@@ -22115,7 +22115,6 @@ paths:
           enum:
           - Heimdal
           - MIT
-          - other
         description: |+
           KAdmin server type
 
@@ -39806,7 +39805,6 @@ components:
       enum:
       - MIT
       - Heimdal
-      - other
       type: string
     KerberosSource:
       type: object

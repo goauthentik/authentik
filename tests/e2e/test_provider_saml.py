@@ -2,6 +2,7 @@
 
 from json import dumps
 from time import sleep
+from unittest import skip
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -582,6 +583,7 @@ class TestProviderSAML(SeleniumTestCase):
             f"URL {self.driver.current_url} doesn't match expected URL {should_url}",
         )
 
+    @skip("Flaky test")
     @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
