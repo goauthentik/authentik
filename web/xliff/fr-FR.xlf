@@ -4554,14 +4554,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Heimdal kadmin</source>
   <target>Heimdal kadmin</target>
 </trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-  <target>Autre</target>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
-  <target>Autre type de kadmin</target>
-</trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
   <target>Principal de synchronisation</target>
