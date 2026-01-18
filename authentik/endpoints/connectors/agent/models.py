@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -50,6 +51,10 @@ class AgentConnector(Connector):
         validators=[timedelta_string_validator], default="seconds=5"
     )
     challenge_trigger_check_in = models.BooleanField(default=False)
+
+    @property
+    def icon_url(self):
+        return static("icons/icon.svg")
 
     @property
     def serializer(self) -> type[Serializer]:

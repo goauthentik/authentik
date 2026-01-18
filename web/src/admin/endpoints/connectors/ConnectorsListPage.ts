@@ -1,5 +1,6 @@
 import "#admin/endpoints/connectors/ConnectorWizard";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
+import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ProxyForm";
 import "#elements/forms/ModalForm";
