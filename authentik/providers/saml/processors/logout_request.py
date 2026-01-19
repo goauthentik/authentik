@@ -8,6 +8,7 @@ from lxml import etree  # nosec
 from lxml.etree import Element
 
 from authentik.core.models import User
+from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
@@ -183,7 +184,7 @@ class LogoutRequestProcessor:
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
-        ctx.sign(signature_node)
+        ctx.sign(remove_xml_newlines(element, signature_node))
 
     def _build_signable_query_string(self, params: dict) -> str:
         """Build query string for signing (order matters per SAML spec)"""

@@ -8,6 +8,7 @@ from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
 
+from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.providers.saml.utils.time import get_time_string
@@ -119,7 +120,7 @@ class RequestProcessor:
             key_info = xmlsec.template.ensure_key_info(signature_node)
             xmlsec.template.add_x509_data(key_info)
 
-            ctx.sign(signature_node)
+            ctx.sign(remove_xml_newlines(auth_n_request, signature_node))
 
         return etree.tostring(auth_n_request).decode()
 

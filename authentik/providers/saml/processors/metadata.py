@@ -8,6 +8,7 @@ from django.http import HttpRequest
 from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
+from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import strip_pem_header
 from authentik.sources.saml.processors.constants import (
@@ -158,7 +159,7 @@ class MetadataProcessor:
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
-        ctx.sign(signature_node)
+        ctx.sign(remove_xml_newlines(assertion, signature_node))
 
     def add_children(self, entity_descriptor: Element):
         self.add_idp_sso(entity_descriptor)

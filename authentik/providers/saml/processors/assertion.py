@@ -15,6 +15,7 @@ from authentik.core.expression.exceptions import PropertyMappingExpressionExcept
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.utils import get_random_id
@@ -397,7 +398,7 @@ class AssertionProcessor:
         )
         ctx.key = key
         try:
-            ctx.sign(signature_node)
+            ctx.sign(remove_xml_newlines(element, signature_node))
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 
