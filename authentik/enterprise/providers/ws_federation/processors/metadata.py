@@ -8,6 +8,7 @@ from authentik.enterprise.providers.ws_federation.processors.constants import (
     NS_WSI,
 )
 from authentik.providers.saml.processors.metadata import MetadataProcessor as BaseMetadataProcessor
+from authentik.sources.saml.processors.constants import NS_SAML_METADATA
 
 
 class MetadataProcessor(BaseMetadataProcessor):
@@ -16,7 +17,9 @@ class MetadataProcessor(BaseMetadataProcessor):
         super().add_children(entity_descriptor)
 
     def add_role_descriptor_sts(self, entity_descriptor: Element):
-        role_descriptor = SubElement(entity_descriptor, "RoleDescriptor", nsmap=NS_MAP)
+        role_descriptor = SubElement(
+            entity_descriptor, f"{{{NS_SAML_METADATA}}}RoleDescriptor", nsmap=NS_MAP
+        )
         role_descriptor.attrib[f"{{{NS_WSI}}}type"] = "fed:SecurityTokenServiceType"
         role_descriptor.attrib["protocolSupportEnumeration"] = NS_WS_FED_PROTOCOL
 
