@@ -30,7 +30,7 @@ The bucket ACL is set to private. Depending on your provider you can alternative
 
 ### Bucket policy
 
-The followning actions needs to be allowed the bucket:
+The following actions need to be allowed on the bucket:
 
 ```text
 ListObjectsV2
