@@ -7042,10 +7042,11 @@
                     },
                     "title": "Property mappings"
                 },
-                "acs_url": {
+                "reply_url": {
                     "type": "string",
+                    "format": "uri",
                     "minLength": 1,
-                    "title": "ACS URL"
+                    "title": "Reply url"
                 },
                 "assertion_valid_not_before": {
                     "type": "string",

@@ -324,7 +324,7 @@ export class WSFederationProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.acsUrl}
+                                        ${this.provider.replyUrl}
                                     </div>
                                 </dd>
                             </div>

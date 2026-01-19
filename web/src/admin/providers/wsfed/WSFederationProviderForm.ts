@@ -99,12 +99,12 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
             <ak-form-group open label="${msg("Protocol settings")}">
                 <div class="pf-c-form">
                     <ak-text-input
-                        name="acsUrl"
+                        name="replyUrl"
                         label=${msg("Reply URL")}
                         placeholder=${msg("https://...")}
                         input-hint="code"
                         inputmode="url"
-                        value="${ifDefined(this.instance?.acsUrl)}"
+                        value="${ifDefined(this.instance?.replyUrl)}"
                         required
                     ></ak-text-input>
                 </div>

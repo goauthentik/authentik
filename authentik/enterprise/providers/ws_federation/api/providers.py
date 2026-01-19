@@ -2,7 +2,7 @@
 
 from django.http import HttpRequest
 from django.urls import reverse
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import SerializerMethodField, URLField
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
@@ -14,6 +14,7 @@ from authentik.providers.saml.api.providers import SAMLProviderSerializer, SAMLP
 class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerializer):
     """WSFederationProvider Serializer"""
 
+    reply_url = URLField(source="acs_url")
     url_wsfed = SerializerMethodField()
 
     def get_url_wsfed(self, instance: WSFederationProvider) -> str:
@@ -21,16 +22,12 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
-        return request.build_absolute_uri(
-            reverse(
-                "authentik_providers_ws_federation:wsfed"
-            )
-        )
+        return request.build_absolute_uri(reverse("authentik_providers_ws_federation:wsfed"))
 
     class Meta(SAMLProviderSerializer.Meta):
         model = WSFederationProvider
         fields = ProviderSerializer.Meta.fields + [
-            "acs_url",
+            "reply_url",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",

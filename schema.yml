@@ -49765,10 +49765,10 @@ components:
           items:
             type: string
             format: uuid
-        acs_url:
+        reply_url:
           type: string
-          minLength: 1
           format: uri
+          minLength: 1
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -56594,7 +56594,7 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        acs_url:
+        reply_url:
           type: string
           format: uri
         assertion_valid_not_before:
@@ -56665,7 +56665,6 @@ components:
           description: Get WS-Fed url
           readOnly: true
       required:
-      - acs_url
       - assigned_application_name
       - assigned_application_slug
       - assigned_backchannel_application_name
@@ -56676,6 +56675,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - reply_url
       - url_download_metadata
       - url_wsfed
       - verbose_name
@@ -56706,10 +56706,10 @@ components:
           items:
             type: string
             format: uuid
-        acs_url:
+        reply_url:
           type: string
-          minLength: 1
           format: uri
+          minLength: 1
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -56773,10 +56773,10 @@ components:
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:
-      - acs_url
       - authorization_flow
       - invalidation_flow
       - name
+      - reply_url
     WebAuthnDevice:
       type: object
       description: Serializer for WebAuthn authenticator devices
