@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Arcane
 
-> Modern Docker Management, Designed for Everyone. 
+> Modern Docker Management, Designed for Everyone.
 >
 > -- https://github.com/getarcaneapp/arcane
 
