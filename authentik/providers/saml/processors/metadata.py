@@ -160,15 +160,10 @@ class MetadataProcessor:
         ctx.key = key
         ctx.sign(signature_node)
 
-    def build_entity_descriptor(self) -> str:
-        """Build full EntityDescriptor"""
-        entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
-        entity_descriptor.attrib["ID"] = self.xml_id
-        entity_descriptor.attrib["entityID"] = self.provider.issuer
+    def add_children(self, entity_descriptor: Element):
+        self.add_idp_sso(entity_descriptor)
 
-        if self.provider.signing_kp:
-            self._prepare_signature(entity_descriptor)
-
+    def add_idp_sso(self, entity_descriptor: Element):
         idp_sso_descriptor = SubElement(
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )
@@ -188,6 +183,17 @@ class MetadataProcessor:
 
         for binding in self.get_sso_bindings():
             idp_sso_descriptor.append(binding)
+
+    def build_entity_descriptor(self) -> str:
+        """Build full EntityDescriptor"""
+        entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
+        entity_descriptor.attrib["ID"] = self.xml_id
+        entity_descriptor.attrib["entityID"] = self.provider.issuer
+
+        if self.provider.signing_kp:
+            self._prepare_signature(entity_descriptor)
+
+        self.add_children(entity_descriptor)
 
         if self.provider.signing_kp:
             self._sign(entity_descriptor)
