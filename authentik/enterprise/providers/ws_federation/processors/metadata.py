@@ -22,10 +22,7 @@ class MetadataProcessor(BaseMetadataProcessor):
 
         address = SubElement(endpoint_ref, f"{{{NS_ADDRESSING}}}Address", nsmap=NS_MAP)
         address.text = self.http_request.build_absolute_uri(
-            reverse(
-                "authentik_providers_ws_federation:wsfed",
-                kwargs={"application_slug": self.provider.application.slug},
-            )
+            reverse("authentik_providers_ws_federation:wsfed")
         )
 
     def add_role_descriptor_sts(self, entity_descriptor: Element):

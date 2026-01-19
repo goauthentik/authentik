@@ -55,7 +55,7 @@ class TestProviderWSFed(SeleniumTestCase):
         authorization_flow = Flow.objects.get(
             slug="default-provider-authorization-implicit-consent"
         )
-        provider: WSFederationProvider = WSFederationProvider.objects.create(
+        provider = WSFederationProvider.objects.create(
             name=generate_id(),
             acs_url="http://localhost:8080/signin-wsfed",
             authorization_flow=authorization_flow,

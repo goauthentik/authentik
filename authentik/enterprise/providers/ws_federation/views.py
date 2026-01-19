@@ -1,6 +1,7 @@
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
@@ -12,6 +13,7 @@ from authentik.enterprise.providers.ws_federation.processors.sign_in import (
     SignInProcessor,
     SignInRequest,
 )
+from authentik.enterprise.providers.ws_federation.processors.sign_out import SignOutRequest
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
     AutosubmitChallenge,
@@ -20,7 +22,7 @@ from authentik.flows.challenge import (
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
-from authentik.flows.stage import ChallengeStageView
+from authentik.flows.stage import ChallengeStageView, SessionEndStage
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.stages.consent.stage import (
@@ -29,21 +31,25 @@ from authentik.stages.consent.stage import (
 )
 
 PLAN_CONTEXT_WS_FED_REQUEST = "authentik/providers/ws_federation/request"
+LOGGER = get_logger()
 
 
 class WSFedEntryView(PolicyAccessView):
-    req: SignInRequest
+    req: SignInRequest | SignOutRequest
 
     def pre_permission_check(self):
         self.action = self.request.GET.get("wa")
         try:
             if self.action == WS_FED_ACTION_SIGN_IN:
                 self.req = SignInRequest.parse(self.request)
+            elif self.action == WS_FED_ACTION_SIGN_OUT:
+                self.req = SignOutRequest.parse(self.request)
             else:
                 raise RequestValidationError(
                     bad_request_message(self.request, "Invalid WS-Federation action")
                 )
-        except ValueError:
+        except ValueError as exc:
+            LOGGER.warning("Invalid WS-Fed request", exc=exc)
             raise RequestValidationError(
                 bad_request_message(self.request, "Invalid WS-Federation request")
             ) from None
@@ -55,7 +61,7 @@ class WSFedEntryView(PolicyAccessView):
         if self.action == WS_FED_ACTION_SIGN_IN:
             return self.ws_fed_sign_in()
         elif self.action == WS_FED_ACTION_SIGN_OUT:
-            return HttpResponse("Unsupported WS-Federation action", status=400)
+            return self.ws_fed_sign_out()
         else:
             return HttpResponse("Unsupported WS-Federation action", status=400)
 
@@ -81,6 +87,25 @@ class WSFedEntryView(PolicyAccessView):
             self.request,
             self.provider.authorization_flow,
         )
+
+    def ws_fed_sign_out(self) -> HttpResponse:
+        flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
+
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        try:
+            plan = planner.plan(
+                self.request,
+                {
+                    PLAN_CONTEXT_SSO: True,
+                    PLAN_CONTEXT_APPLICATION: self.application,
+                    PLAN_CONTEXT_WS_FED_REQUEST: self.req,
+                },
+            )
+        except FlowNonApplicableException:
+            raise Http404 from None
+        plan.append_stage(in_memory_stage(SessionEndStage))
+        return plan.to_redirect(self.request, flow)
 
 
 class WSFedFlowFinalView(ChallengeStageView):

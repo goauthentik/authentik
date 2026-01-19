@@ -52,15 +52,14 @@ class SignInRequest:
         req = SignInRequest(
             wa=action,
             wtrealm=realm,
-            wreply="",
+            wreply=request.GET.get("wreply"),
             wctx=request.GET.get("wctx", ""),
             app_slug=parsed.path[1:],
         )
 
         _, provider = req.get_app_provider()
-        if provider.acs_url != request.GET.get("wreply"):
+        if not req.wreply.startswith(provider.acs_url):
             raise ValueError("Invalid wreply")
-        req.wreply = request.GET.get("wreply")
         return req
 
     def get_app_provider(self):
