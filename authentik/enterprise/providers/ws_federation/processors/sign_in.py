@@ -1,9 +1,12 @@
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 
+from authentik.core.models import Application
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     NS_ADDRESSING,
@@ -34,14 +37,38 @@ class SignInRequest:
     wreply: str
     wctx: str | None
 
+    app_slug: str
+
     @staticmethod
-    def parse(provider: WSFederationProvider, request: HttpRequest) -> SignInRequest:
-        return SignInRequest(
-            wa=request.GET.get("wa"),
-            wtrealm=request.GET.get("wtrealm"),
-            wreply=request.GET.get("wreply"),
+    def parse(request: HttpRequest) -> SignInRequest:
+        action = request.GET.get("wa")
+        if action != WS_FED_ACTION_SIGN_IN:
+            raise ValueError("Invalid action")
+        realm = request.GET.get("wtrealm")
+        if not realm:
+            raise ValueError("Missing Realm")
+        parsed = urlparse(realm)
+
+        req = SignInRequest(
+            wa=action,
+            wtrealm=realm,
+            wreply="",
             wctx=request.GET.get("wctx", ""),
+            app_slug=parsed.path[1:],
         )
+
+        _, provider = req.get_app_provider()
+        if provider.acs_url != request.GET.get("wreply"):
+            raise ValueError("Invalid wreply")
+        req.wreply = request.GET.get("wreply")
+        return req
+
+    def get_app_provider(self):
+        application = get_object_or_404(Application, slug=self.app_slug)
+        provider: WSFederationProvider = get_object_or_404(
+            WSFederationProvider, pk=application.provider_id
+        )
+        return application, provider
 
 
 class SignInProcessor:

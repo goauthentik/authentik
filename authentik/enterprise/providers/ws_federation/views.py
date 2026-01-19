@@ -21,7 +21,8 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
-from authentik.policies.views import PolicyAccessView
+from authentik.lib.views import bad_request_message
+from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
@@ -31,16 +32,24 @@ PLAN_CONTEXT_WS_FED_REQUEST = "authentik/providers/ws_federation/request"
 
 
 class WSFedEntryView(PolicyAccessView):
-    def resolve_provider_application(self):
-        self.action = self.request.GET.get("wa")
-        self.realm = self.request.GET.get("wtrealm")
-        self.wreply = self.request.GET.get("wreply")
-        self.wctx = self.request.GET.get("wctx", "")
+    req: SignInRequest
 
-        self.application = get_object_or_404(Application, slug=self.realm)
-        self.provider: WSFederationProvider = get_object_or_404(
-            WSFederationProvider, pk=self.application.provider_id
-        )
+    def pre_permission_check(self):
+        self.action = self.request.GET.get("wa")
+        try:
+            if self.action == WS_FED_ACTION_SIGN_IN:
+                self.req = SignInRequest.parse(self.request)
+            else:
+                raise RequestValidationError(
+                    bad_request_message(self.request, "Invalid WS-Federation action")
+                )
+        except ValueError:
+            raise RequestValidationError(
+                bad_request_message(self.request, "Invalid WS-Federation request")
+            ) from None
+
+    def resolve_provider_application(self):
+        self.application, self.provider = self.req.get_app_provider()
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if self.action == WS_FED_ACTION_SIGN_IN:
@@ -54,8 +63,6 @@ class WSFedEntryView(PolicyAccessView):
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
         try:
-            req = SignInRequest.parse(self.provider, self.request)
-
             plan = planner.plan(
                 self.request,
                 {
@@ -64,7 +71,7 @@ class WSFedEntryView(PolicyAccessView):
                     PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
                     % {"application": self.application.name},
                     PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
-                    PLAN_CONTEXT_WS_FED_REQUEST: req,
+                    PLAN_CONTEXT_WS_FED_REQUEST: self.req,
                 },
             )
         except FlowNonApplicableException:
@@ -79,14 +86,17 @@ class WSFedEntryView(PolicyAccessView):
 class WSFedFlowFinalView(ChallengeStageView):
     response_class = AutoSubmitChallengeResponse
 
+    def get(self, request, *args, **kwargs):
+        if PLAN_CONTEXT_WS_FED_REQUEST not in self.executor.plan.context:
+            self.logger.warning("No WS-Fed request in context")
+            return self.executor.stage_invalid()
+        return super().get(request, *args, **kwargs)
+
     def get_challenge(self, *args, **kwargs):
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
         provider: WSFederationProvider = get_object_or_404(
             WSFederationProvider, pk=application.provider_id
         )
-        if PLAN_CONTEXT_WS_FED_REQUEST not in self.executor.plan.context:
-            self.logger.warning("No WS-Fed request in context")
-            return self.executor.stage_invalid()
         proc = SignInProcessor(
             provider, self.request, self.executor.plan.context[PLAN_CONTEXT_WS_FED_REQUEST]
         )
