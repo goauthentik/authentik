@@ -252,11 +252,20 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def wait_for_url(self, desired_url: str):
         """Wait until URL is `desired_url`."""
 
-        self.wait.until(
-            lambda driver: driver.current_url == desired_url,
-            f"URL {self.driver.current_url} doesn't match expected URL {desired_url}. "
-            f"HTML: {self.driver.page_source[:1000]}",
-        )
+        def waiter(driver: WebDriver):
+            current = driver.current_url
+            return current == desired_url
+
+        # We catch and re-throw the exception from `wait.until`, as we can supply it
+        # an error message, however that message is evaluated when we call `.until()`,
+        # not when the error is thrown, so the URL in the error message will be incorrect.
+        try:
+            self.wait.until(waiter)
+        except TimeoutException as exc:
+            raise TimeoutException(
+                f"URL {self.driver.current_url} doesn't match expected URL {desired_url}. "
+                f"HTML: {self.driver.page_source[:1000]}"
+            ) from exc
 
     def url(self, view: str, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
