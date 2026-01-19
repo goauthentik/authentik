@@ -83,7 +83,7 @@ dev = [
   "bpython==0.26",
   "codespell==2.4.1",
   "colorama==0.4.6",
-  "constructs==10.4.4",
+  "constructs==10.4.5",
   "coverage[toml]==7.13.1",
   "daphne==4.2.1",
   "debugpy==1.8.19",
