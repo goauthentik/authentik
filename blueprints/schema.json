@@ -7047,22 +7047,6 @@
                     "minLength": 1,
                     "title": "ACS URL"
                 },
-                "sls_url": {
-                    "type": "string",
-                    "title": "SLS URL",
-                    "description": "Single Logout Service URL where the logout response should be sent."
-                },
-                "audience": {
-                    "type": "string",
-                    "title": "Audience",
-                    "description": "Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added."
-                },
-                "issuer": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Issuer",
-                    "description": "Also known as EntityID"
-                },
                 "assertion_valid_not_before": {
                     "type": "string",
                     "minLength": 1,
@@ -7140,46 +7124,9 @@
                     "type": "boolean",
                     "title": "Sign assertion"
                 },
-                "sign_response": {
-                    "type": "boolean",
-                    "title": "Sign response"
-                },
                 "sign_logout_request": {
                     "type": "boolean",
                     "title": "Sign logout request"
-                },
-                "sp_binding": {
-                    "type": "string",
-                    "enum": [
-                        "redirect",
-                        "post"
-                    ],
-                    "title": "Service Provider Binding",
-                    "description": "This determines how authentik sends the response back to the Service Provider."
-                },
-                "sls_binding": {
-                    "type": "string",
-                    "enum": [
-                        "redirect",
-                        "post"
-                    ],
-                    "title": "SLS Binding",
-                    "description": "This determines how authentik sends the logout response back to the Service Provider."
-                },
-                "logout_method": {
-                    "type": "string",
-                    "enum": [
-                        "frontchannel_iframe",
-                        "frontchannel_native",
-                        "backchannel"
-                    ],
-                    "title": "Logout method",
-                    "description": "Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding)."
-                },
-                "default_relay_state": {
-                    "type": "string",
-                    "title": "Default relay state",
-                    "description": "Default relay_state value for IDP-initiated logins"
                 },
                 "default_name_id_policy": {
                     "type": "string",

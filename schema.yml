@@ -49769,19 +49769,6 @@ components:
           type: string
           minLength: 1
           format: uri
-        sls_url:
-          type: string
-          description: Single Logout Service URL where the logout response should
-            be sent.
-          format: uri
-        audience:
-          type: string
-          description: Value of the audience restriction field of the assertion. When
-            left empty, no audience restriction will be added.
-        issuer:
-          type: string
-          minLength: 1
-          description: Also known as EntityID
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -49840,32 +49827,8 @@ components:
             by the SP using the the private key.
         sign_assertion:
           type: boolean
-        sign_response:
-          type: boolean
         sign_logout_request:
           type: boolean
-        sp_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          title: Service Provider Binding
-          description: This determines how authentik sends the response back to the
-            Service Provider.
-        sls_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          description: This determines how authentik sends the logout response back
-            to the Service Provider.
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/SAMLLogoutMethods'
-          description: Method to use for logout. Front-channel iframe loads all logout
-            URLs simultaneously in hidden iframes. Front-channel native uses your
-            active browser tab to send post requests and redirect to providers. Back-channel
-            sends logout requests directly from the server without user interaction
-            (requires POST SLS binding).
-        default_relay_state:
-          type: string
-          description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
     PatchedWebAuthnDeviceRequest:
@@ -56634,18 +56597,6 @@ components:
         acs_url:
           type: string
           format: uri
-        sls_url:
-          type: string
-          description: Single Logout Service URL where the logout response should
-            be sent.
-          format: uri
-        audience:
-          type: string
-          description: Value of the audience restriction field of the assertion. When
-            left empty, no audience restriction will be added.
-        issuer:
-          type: string
-          description: Also known as EntityID
         assertion_valid_not_before:
           type: string
           description: 'Assertion valid not before current time + this value (Format:
@@ -56701,57 +56652,17 @@ components:
             by the SP using the the private key.
         sign_assertion:
           type: boolean
-        sign_response:
-          type: boolean
         sign_logout_request:
           type: boolean
-        sp_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          title: Service Provider Binding
-          description: This determines how authentik sends the response back to the
-            Service Provider.
-        sls_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          description: This determines how authentik sends the logout response back
-            to the Service Provider.
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/SAMLLogoutMethods'
-          description: Method to use for logout. Front-channel iframe loads all logout
-            URLs simultaneously in hidden iframes. Front-channel native uses your
-            active browser tab to send post requests and redirect to providers. Back-channel
-            sends logout requests directly from the server without user interaction
-            (requires POST SLS binding).
-        default_relay_state:
-          type: string
-          description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
         url_download_metadata:
           type: string
           description: Get metadata download URL
           readOnly: true
-        url_sso_post:
+        url_wsfed:
           type: string
-          description: Get SSO Post URL
-          readOnly: true
-        url_sso_redirect:
-          type: string
-          description: Get SSO Redirect URL
-          readOnly: true
-        url_sso_init:
-          type: string
-          description: Get SSO IDP-Initiated URL
-          readOnly: true
-        url_slo_post:
-          type: string
-          description: Get SLO POST URL
-          readOnly: true
-        url_slo_redirect:
-          type: string
-          description: Get SLO redirect URL
+          description: Get WS-Fed url
           readOnly: true
       required:
       - acs_url
@@ -56766,11 +56677,7 @@ components:
       - name
       - pk
       - url_download_metadata
-      - url_slo_post
-      - url_slo_redirect
-      - url_sso_init
-      - url_sso_post
-      - url_sso_redirect
+      - url_wsfed
       - verbose_name
       - verbose_name_plural
     WSFederationProviderRequest:
@@ -56803,19 +56710,6 @@ components:
           type: string
           minLength: 1
           format: uri
-        sls_url:
-          type: string
-          description: Single Logout Service URL where the logout response should
-            be sent.
-          format: uri
-        audience:
-          type: string
-          description: Value of the audience restriction field of the assertion. When
-            left empty, no audience restriction will be added.
-        issuer:
-          type: string
-          minLength: 1
-          description: Also known as EntityID
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -56874,32 +56768,8 @@ components:
             by the SP using the the private key.
         sign_assertion:
           type: boolean
-        sign_response:
-          type: boolean
         sign_logout_request:
           type: boolean
-        sp_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          title: Service Provider Binding
-          description: This determines how authentik sends the response back to the
-            Service Provider.
-        sls_binding:
-          allOf:
-          - $ref: '#/components/schemas/SAMLBindingsEnum'
-          description: This determines how authentik sends the logout response back
-            to the Service Provider.
-        logout_method:
-          allOf:
-          - $ref: '#/components/schemas/SAMLLogoutMethods'
-          description: Method to use for logout. Front-channel iframe loads all logout
-            URLs simultaneously in hidden iframes. Front-channel native uses your
-            active browser tab to send post requests and redirect to providers. Back-channel
-            sends logout requests directly from the server without user interaction
-            (requires POST SLS binding).
-        default_relay_state:
-          type: string
-          description: Default relay_state value for IDP-initiated logins
         default_name_id_policy:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:

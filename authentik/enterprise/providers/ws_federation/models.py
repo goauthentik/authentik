@@ -1,3 +1,4 @@
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -5,6 +6,7 @@ from authentik.providers.saml.models import SAMLProvider
 
 
 class WSFederationProvider(SAMLProvider):
+    """WS-Federation for applications which support WS-Fed."""
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -13,6 +15,10 @@ class WSFederationProvider(SAMLProvider):
         )
 
         return WSFederationProviderSerializer
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/wsfed.svg")
 
     @property
     def component(self) -> str:

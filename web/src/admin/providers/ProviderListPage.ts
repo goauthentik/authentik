@@ -10,6 +10,7 @@ import "#admin/providers/radius/RadiusProviderForm";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/ssf/SSFProviderFormPage";
+import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";

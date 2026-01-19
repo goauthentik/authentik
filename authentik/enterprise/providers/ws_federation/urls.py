@@ -7,7 +7,7 @@ from authentik.enterprise.providers.ws_federation.views import WSFedEntryView
 
 urlpatterns = [
     path(
-        "<slug:application_slug>/wsfed/",
+        "",
         WSFedEntryView.as_view(),
         name="wsfed",
     ),
