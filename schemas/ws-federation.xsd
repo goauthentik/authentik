@@ -37,7 +37,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   <xs:import namespace='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd'
 			 schemaLocation='oasis-200401-wss-wssecurity-utility-1.0.xsd' />
   <xs:import namespace='http://www.w3.org/2005/08/addressing'
-			 schemaLocation='ws-addr.xsd' />
+			 schemaLocation='w3-addr.xsd' />
   <xs:import namespace='http://schemas.xmlsoap.org/ws/2004/09/mex'
 			 schemaLocation='http://schemas.xmlsoap.org/ws/2004/09/mex/MetadataExchange.xsd' />
   <xs:import namespace='urn:oasis:names:tc:SAML:2.0:metadata'

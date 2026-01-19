@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import timedelta
 
 from django.http import HttpRequest
 from lxml import etree  # nosec
@@ -25,7 +24,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
-from authentik.providers.saml.utils.encoding import nice64
 from authentik.providers.saml.utils.time import get_time_string
 
 
