@@ -22,10 +22,10 @@ import {
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
+    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
-    SAMLProviderLogoutMethodEnum,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -79,16 +79,16 @@ function renderHasSlsUrl(
     const logoutMethodOptions: RadioOption<string>[] = [
         {
             label: msg("Front-channel (Iframe)"),
-            value: SAMLProviderLogoutMethodEnum.FrontchannelIframe,
+            value: SAMLLogoutMethods.FrontchannelIframe,
             default: true,
         },
         {
             label: msg("Front-channel (Native)"),
-            value: SAMLProviderLogoutMethodEnum.FrontchannelNative,
+            value: SAMLLogoutMethods.FrontchannelNative,
         },
         {
             label: msg("Back-channel (POST)"),
-            value: SAMLProviderLogoutMethodEnum.Backchannel,
+            value: SAMLLogoutMethods.Backchannel,
             disabled: !hasPostBinding,
         },
     ];
