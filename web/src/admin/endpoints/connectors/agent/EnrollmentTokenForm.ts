@@ -32,6 +32,11 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
     @property({ type: String, attribute: "connector-id" })
     public connectorID?: string;
 
+    reset(): void {
+        super.reset();
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+    }
+
     async loadInstance(pk: string): Promise<EnrollmentToken> {
         const token = await new EndpointsApi(
             DEFAULT_CONFIG,

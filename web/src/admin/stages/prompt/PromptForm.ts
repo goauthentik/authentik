@@ -52,6 +52,13 @@ export class PromptForm extends ModelForm<Prompt, string> {
     @state()
     previewResult: unknown;
 
+    reset(): void {
+        super.reset();
+        this.preview = undefined;
+        this.previewError = undefined;
+        this.previewResult = undefined;
+    }
+
     send(data: Prompt): Promise<unknown> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({

@@ -81,6 +81,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     reset(): void {
         super.reset();
         this.result = null;
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
         (this.parentElement as ModalForm).showSubmitButton = true;
     }
 

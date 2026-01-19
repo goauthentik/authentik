@@ -42,6 +42,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     @state()
     defaultOrder = 0;
 
+    reset(): void {
+        super.reset();
+        this.defaultOrder = 0;
+    }
+
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");

@@ -113,6 +113,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
 
     currentPreset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.custom;
 
+    reset(): void {
+        super.reset();
+        this.selectedProvider = "custom";
+        this.currentPreset = CAPTCHA_PROVIDERS.custom;
+    }
+
     loadInstance(pk: string): Promise<CaptchaStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({
             stageUuid: pk,

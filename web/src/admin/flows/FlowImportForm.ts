@@ -23,6 +23,11 @@ export class FlowImportForm extends Form<Flow> {
     @state()
     result?: FlowImportResult;
 
+    reset(): void {
+        super.reset();
+        this.result = undefined;
+    }
+
     getSuccessMessage(): string {
         return msg("Successfully imported flow.");
     }

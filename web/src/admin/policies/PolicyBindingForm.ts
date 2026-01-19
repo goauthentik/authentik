@@ -72,6 +72,12 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     @state()
     defaultOrder = 0;
 
+    reset(): void {
+        super.reset();
+        this.policyGroupUser = PolicyBindingCheckTarget.policy;
+        this.defaultOrder = 0;
+    }
+
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");

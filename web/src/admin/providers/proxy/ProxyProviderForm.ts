@@ -35,6 +35,12 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     @state()
     mode: ProxyMode = ProxyMode.Proxy;
 
+    reset(): void {
+        super.reset();
+        this.showHttpBasic = true;
+        this.mode = ProxyMode.Proxy;
+    }
+
     async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
         if (this.mode !== ProxyMode.ForwardDomain) {

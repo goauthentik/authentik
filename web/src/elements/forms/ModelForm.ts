@@ -83,8 +83,11 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     }
 
     reset(): void {
+        super.reset();
         this.instance = undefined;
         this.#initialLoad = false;
+        this.#initialDataLoad = false;
+        this.requestUpdate();
     }
 
     renderVisible(): TemplateResult {

@@ -39,6 +39,11 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
     @state()
     modelPermissions?: PaginatedPermissionList;
 
+    reset(): void {
+        super.reset();
+        this.modelPermissions = undefined;
+    }
+
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
         this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({

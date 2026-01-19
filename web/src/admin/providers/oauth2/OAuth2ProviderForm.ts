@@ -65,6 +65,12 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showLogoutMethod = false;
 
+    reset(): void {
+        super.reset();
+        this.showClientSecret = true;
+        this.showLogoutMethod = false;
+    }
+
     static styles = [
         ...super.styles,
         css`

@@ -61,6 +61,11 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
     #formRef = createRef<HTMLFormElement>();
 
+    reset(): void {
+        super.reset();
+        this.selectedFile = null;
+    }
+
     #fileChangeListener = (e: Event) => {
         const input = e.target as HTMLInputElement;
         if (input.files?.length) {

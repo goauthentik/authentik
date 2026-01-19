@@ -37,6 +37,11 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
     request?: PolicyTestRequest;
 
+    reset(): void {
+        super.reset();
+        this.result = undefined;
+    }
+
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }

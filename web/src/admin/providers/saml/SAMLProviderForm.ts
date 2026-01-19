@@ -28,6 +28,14 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
     protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
+    reset(): void {
+        super.reset();
+        this.hasSigningKp = false;
+        this.hasSlsUrl = false;
+        this.hasPostBinding = false;
+        this.logoutMethod = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+    }
+
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,

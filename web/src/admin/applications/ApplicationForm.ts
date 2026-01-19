@@ -52,6 +52,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @state()
     protected backchannelProviders: Provider[] = [];
 
+    reset(): void {
+        super.reset();
+        this.backchannelProviders = [];
+    }
+
     public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated application.")

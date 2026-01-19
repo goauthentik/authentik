@@ -24,6 +24,13 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
     showZxcvbn = false;
 
+    reset(): void {
+        super.reset();
+        this.showStatic = true;
+        this.showHIBP = false;
+        this.showZxcvbn = false;
+    }
+
     async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
             policyUuid: pk,

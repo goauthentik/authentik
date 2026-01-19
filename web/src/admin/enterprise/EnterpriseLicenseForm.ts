@@ -19,6 +19,11 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     @state()
     installID?: string;
 
+    reset(): void {
+        super.reset();
+        this.installID = undefined;
+    }
+
     loadInstance(pk: string): Promise<License> {
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({
             licenseUuid: pk,

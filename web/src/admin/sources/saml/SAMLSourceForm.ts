@@ -42,6 +42,11 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
     hasSigningCert = false;
 
+    reset(): void {
+        super.reset();
+        this.hasSigningCert = false;
+    }
+
     setHasSigningCert(ev: InputEvent): void {
         const target = ev.target as AkCryptoCertificateSearch;
         if (!target) return;

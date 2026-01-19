@@ -106,6 +106,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     defaultConfig?: OutpostDefaultConfig;
 
+    reset(): void {
+        super.reset();
+        this.type = OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(this.type);
+    }
+
     async loadInstance(pk: string): Promise<Outpost> {
         const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
             uuid: pk,
