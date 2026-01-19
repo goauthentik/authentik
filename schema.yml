@@ -19800,10 +19800,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: user
-        schema:
-          type: integer
       tags:
       - rbac
       security:
@@ -20096,7 +20092,7 @@ paths:
       description: Role viewset
       parameters:
       - in: query
-        name: ak_groups
+        name: groups
         schema:
           type: string
           format: uuid
@@ -20104,7 +20100,7 @@ paths:
         name: inherited
         schema:
           type: boolean
-        description: Include inherited roles (requires users or ak_groups filter)
+        description: Include inherited roles (requires users or groups filter)
       - in: query
         name: managed
         schema:
@@ -22115,7 +22111,6 @@ paths:
           enum:
           - Heimdal
           - MIT
-          - other
         description: |+
           KAdmin server type
 
@@ -39806,7 +39801,6 @@ components:
       enum:
       - MIT
       - Heimdal
-      - other
       type: string
     KerberosSource:
       type: object
@@ -48273,7 +48267,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 150
     PatchedSAMLPropertyMappingRequest:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -51356,7 +51349,6 @@ components:
           title: Uuid
         name:
           type: string
-          maxLength: 150
       required:
       - name
       - pk
@@ -51445,7 +51437,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 150
       required:
       - name
     SAMLBindingsEnum:

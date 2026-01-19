@@ -10407,7 +10407,6 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 150,
                     "minLength": 1,
                     "title": "Name"
                 },
@@ -11284,8 +11283,7 @@
                     "type": "string",
                     "enum": [
                         "MIT",
-                        "Heimdal",
-                        "other"
+                        "Heimdal"
                     ],
                     "title": "Kadmin type",
                     "description": "KAdmin server type"

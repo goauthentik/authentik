@@ -183,7 +183,7 @@ class Group(SerializerModel, AttributesMixin):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="groups", blank=True)
 
     parents = models.ManyToManyField(
         "Group",
@@ -232,7 +232,7 @@ class Group(SerializerModel, AttributesMixin):
     def all_roles(self) -> QuerySet[Role]:
         """Get all roles of this group and all of its ancestors."""
         return Role.objects.filter(
-            ak_groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
+            groups__in=Group.objects.filter(pk=self.pk).with_ancestors()
         ).distinct()
 
     def get_managed_role(self, create=False):
@@ -240,7 +240,7 @@ class Group(SerializerModel, AttributesMixin):
             name = managed_role_name(self)
             role, created = Role.objects.get_or_create(name=name, managed=name)
             if created:
-                role.ak_groups.add(self)
+                role.groups.add(self)
             return role
         else:
             return Role.objects.filter(name=managed_role_name(self)).first()
@@ -355,13 +355,17 @@ class UserManager(DjangoUserManager):
 class User(SerializerModel, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
+    # Overwriting PermissionsMixin: permissions are handled by roles.
+    # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
+    user_permissions = None
+
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    ak_groups = models.ManyToManyField("Group", related_name="users")
+    groups = models.ManyToManyField("Group", related_name="users")
     roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
 
@@ -400,11 +404,11 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def all_groups(self) -> QuerySet[Group]:
         """Recursively get all groups this user is a member of."""
-        return self.ak_groups.all().with_ancestors()
+        return self.groups.all().with_ancestors()
 
     def all_roles(self) -> QuerySet[Role]:
         """Get all roles of this user and all of its groups (recursively)."""
-        return Role.objects.filter(Q(users=self) | Q(ak_groups__in=self.all_groups())).distinct()
+        return Role.objects.filter(Q(users=self) | Q(groups__in=self.all_groups())).distinct()
 
     def get_managed_role(self, create=False):
         if create:

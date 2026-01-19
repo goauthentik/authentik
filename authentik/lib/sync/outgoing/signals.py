@@ -88,4 +88,4 @@ def register_signals(
             return
         task_sync_m2m_dispatch.send(instance.pk, action, list(pk_set), reverse)
 
-    m2m_changed.connect(model_m2m_changed, User.ak_groups.through, dispatch_uid=uid, weak=False)
+    m2m_changed.connect(model_m2m_changed, User.groups.through, dispatch_uid=uid, weak=False)
