@@ -1,5 +1,5 @@
 from django.urls import reverse
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import SubElement, _Element  # nosec
 
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     NS_ADDRESSING,
@@ -12,11 +12,11 @@ from authentik.sources.saml.processors.constants import NS_SAML_METADATA
 
 
 class MetadataProcessor(BaseMetadataProcessor):
-    def add_children(self, entity_descriptor: Element):
+    def add_children(self, entity_descriptor: _Element):
         self.add_role_descriptor_sts(entity_descriptor)
         super().add_children(entity_descriptor)
 
-    def add_endpoint(self, parent: Element, name: str):
+    def add_endpoint(self, parent: _Element, name: str):
         endpoint = SubElement(parent, f"{{{NS_WS_FED_PROTOCOL}}}{name}", nsmap=NS_MAP)
         endpoint_ref = SubElement(endpoint, f"{{{NS_ADDRESSING}}}EndpointReference", nsmap=NS_MAP)
 
@@ -25,7 +25,7 @@ class MetadataProcessor(BaseMetadataProcessor):
             reverse("authentik_providers_ws_federation:wsfed")
         )
 
-    def add_role_descriptor_sts(self, entity_descriptor: Element):
+    def add_role_descriptor_sts(self, entity_descriptor: _Element):
         role_descriptor = SubElement(
             entity_descriptor, f"{{{NS_SAML_METADATA}}}RoleDescriptor", nsmap=NS_MAP
         )

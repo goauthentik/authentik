@@ -6,7 +6,7 @@ from hashlib import sha256
 import xmlsec  # nosec
 from django.http import HttpRequest
 from django.urls import reverse
-from lxml.etree import Element, SubElement, tostring  # nosec
+from lxml.etree import Element, SubElement, _Element, tostring  # nosec
 
 from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.models import SAMLProvider
@@ -118,7 +118,7 @@ class MetadataProcessor:
             element.attrib["Location"] = url
             yield element
 
-    def _prepare_signature(self, entity_descriptor: Element):
+    def _prepare_signature(self, entity_descriptor: _Element):
         sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
         )
@@ -130,7 +130,7 @@ class MetadataProcessor:
         )
         entity_descriptor.append(signature)
 
-    def _sign(self, entity_descriptor: Element):
+    def _sign(self, entity_descriptor: _Element):
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
         )
@@ -161,10 +161,10 @@ class MetadataProcessor:
         ctx.key = key
         ctx.sign(remove_xml_newlines(assertion, signature_node))
 
-    def add_children(self, entity_descriptor: Element):
+    def add_children(self, entity_descriptor: _Element):
         self.add_idp_sso(entity_descriptor)
 
-    def add_idp_sso(self, entity_descriptor: Element):
+    def add_idp_sso(self, entity_descriptor: _Element):
         idp_sso_descriptor = SubElement(
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )

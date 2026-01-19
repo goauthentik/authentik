@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from lxml import etree  # nosec
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, _Element  # nosec
 
 from authentik.core.models import Application
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
@@ -102,7 +102,7 @@ class SignInProcessor:
 
         return root
 
-    def response_add_lifetime(self, root: Element):
+    def response_add_lifetime(self, root: _Element):
         """Add Lifetime element"""
         lifetime = SubElement(root, f"{{{NS_WS_FED_TRUST}}}Lifetime", nsmap=NS_MAP)
         created = SubElement(lifetime, f"{{{NS_WSS_UTILITY}}}Created")
@@ -112,14 +112,14 @@ class SignInProcessor:
             timedelta_from_string(self.provider.session_valid_not_on_or_after)
         )
 
-    def response_add_applies_to(self, root: Element):
+    def response_add_applies_to(self, root: _Element):
         """Add AppliesTo element"""
         applies_to = SubElement(root, f"{{{NS_POLICY}}}AppliesTo")
-        endpont_ref = SubElement(applies_to, f"{{{NS_ADDRESSING}}}EndpointReference")
-        address = SubElement(endpont_ref, f"{{{NS_ADDRESSING}}}Address")
+        endpoint_ref = SubElement(applies_to, f"{{{NS_ADDRESSING}}}EndpointReference")
+        address = SubElement(endpoint_ref, f"{{{NS_ADDRESSING}}}Address")
         address.text = self.sign_in_request.wtrealm
 
-    def response_add_requested_security_token(self, root: Element):
+    def response_add_requested_security_token(self, root: _Element):
         """Add RequestedSecurityToken and child assertion"""
         token = SubElement(root, f"{{{NS_WS_FED_TRUST}}}RequestedSecurityToken")
         req = AuthNRequest()
@@ -129,7 +129,7 @@ class SignInProcessor:
 
         return proc
 
-    def response_add_attached_reference(self, root: Element, tag: str, value: str):
+    def response_add_attached_reference(self, root: _Element, tag: str, value: str):
         ref = SubElement(root, f"{{{NS_WS_FED_TRUST}}}{tag}")
         sec_token_ref = SubElement(ref, f"{{{NS_WSS_SEC}}}SecurityTokenReference")
         sec_token_ref.attrib[f"{{{NS_WSS_D3P1}}}TokenType"] = WSS_TOKEN_TYPE_SAML2

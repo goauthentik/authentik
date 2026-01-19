@@ -8,7 +8,7 @@ import xmlsec
 from django.http import HttpRequest
 from django.utils.timezone import now
 from lxml import etree  # nosec
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -368,7 +368,7 @@ class AssertionProcessor:
         response.append(self.get_assertion())
         return response
 
-    def _sign(self, element: Element):
+    def _sign(self, element: _Element):
         """Sign an XML element based on the providers' configured signing settings"""
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
@@ -402,7 +402,7 @@ class AssertionProcessor:
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 
-    def _encrypt(self, element: Element, parent: Element):
+    def _encrypt(self, element: _Element, parent: _Element):
         """Encrypt SAMLResponse EncryptedAssertion Element"""
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
