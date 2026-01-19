@@ -17,9 +17,7 @@ class MetadataProcessor(BaseMetadataProcessor):
         super().add_children(entity_descriptor)
 
     def add_endpoint(self, parent: Element, name: str):
-        endpoint = SubElement(
-            parent, f"{{{NS_WS_FED_PROTOCOL}}}{name}", nsmap=NS_MAP
-        )
+        endpoint = SubElement(parent, f"{{{NS_WS_FED_PROTOCOL}}}{name}", nsmap=NS_MAP)
         endpoint_ref = SubElement(endpoint, f"{{{NS_ADDRESSING}}}EndpointReference", nsmap=NS_MAP)
 
         address = SubElement(endpoint_ref, f"{{{NS_ADDRESSING}}}Address", nsmap=NS_MAP)

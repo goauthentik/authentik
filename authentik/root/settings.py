@@ -191,6 +191,7 @@ SPECTACULAR_SETTINGS = {
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "StageModeEnum": "authentik.endpoints.models.StageMode",
         "LicenseSummaryStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
+        "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,

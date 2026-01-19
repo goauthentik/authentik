@@ -18,6 +18,6 @@ def remove_xml_newlines(parent: _Element, element: _Element):
 
     https://github.com/xmlsec/python-xmlsec/issues/196"""
     old_element = element
-    new_node = fromstring(tostring(element, encoding=str).replace('\n',''))
+    new_node = fromstring(tostring(element, encoding=str).replace("\n", ""))
     parent.replace(old_element, new_node)
     return new_node

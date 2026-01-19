@@ -1,11 +1,12 @@
 """WSFederationProvider API Views"""
 
+from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.metadata import MetadataProcessor
 from authentik.providers.saml.api.providers import SAMLProviderSerializer, SAMLProviderViewSet
 
 
-class WSFederationProviderSerializer(SAMLProviderSerializer):
+class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerializer):
     """WSFederationProvider Serializer"""
 
     class Meta(SAMLProviderSerializer.Meta):
