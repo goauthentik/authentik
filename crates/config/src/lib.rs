@@ -1,11 +1,6 @@
-use std::{
-    env, fs,
-    net::SocketAddr,
-    path::{Path, PathBuf},
-    sync::OnceLock,
-};
+use std::{env, fs, net::SocketAddr, path::PathBuf, sync::OnceLock};
 
-use color_eyre::eyre::Result;
+use eyre::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -20,56 +15,32 @@ pub struct Config {
 
     pub http_timeout: u32,
 
-    pub cache: CacheConfig,
-
     pub debug: bool,
-    pub debugger: bool,
 
     pub log_level: String,
 
-    pub sessions: SessionsConfig,
-
     pub error_reporting: ErrorReportingConfig,
-
-    pub email: EmailConfig,
-
-    pub throttle: ThrottleConfig,
 
     pub outposts: OutpostsConfig,
 
-    pub ldap: LDAPConfig,
-
-    pub sources: SourcesConfig,
-
-    pub reputation: ReputationConfig,
-
     pub cookie_domain: Option<String>,
-
-    pub disable_update_check: bool,
-    pub disable_startup_analytics: bool,
-
-    pub events: EventsConfig,
 
     pub compliance: ComplianceConfig,
 
     pub blueprints_dir: PathBuf,
     pub cert_discovery_dir: PathBuf,
 
-    pub tenants: TenantsConfig,
-
     pub web: WebConfig,
 
     pub worker: WorkerConfig,
 
-    pub storage: StorageConfig,
-
     // Outpost specific config
     // These are only relevant for outposts, and cannot be set via YAML
     // They are loaded via this config loader to support file:// schemas
-    pub authentik_host: String,
-    pub authentik_host_browser: String,
-    pub authentik_token: String,
-    pub authentik_insecure: bool,
+    pub authentik_host: Option<String>,
+    pub authentik_host_browser: Option<String>,
+    pub authentik_token: Option<String>,
+    pub authentik_insecure: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -81,27 +52,11 @@ pub struct PostgreSQLConfig {
     pub name: String,
 
     pub sslmode: String,
-    pub sslrootcert: String,
-    pub sslcert: String,
-    pub sslkey: String,
-
-    pub use_pool: bool,
-    pub pool_options: Value,
-
-    pub conn_options: Value,
-    pub conn_max_age: u32,
-    pub conn_health_checks: bool,
-    pub disable_server_side_cursors: bool,
+    pub sslrootcert: Option<String>,
+    pub sslcert: Option<String>,
+    pub sslkey: Option<String>,
 
     pub default_schema: String,
-
-    // TODO: read replicas
-    pub test: PostgreSQLTestConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PostgreSQLTestConfig {
-    pub name: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -119,18 +74,6 @@ pub struct ListenConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CacheConfig {
-    pub timeout: u32,
-    pub timeout_flows: u32,
-    pub timeout_policies: u32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SessionsConfig {
-    pub unauthenticated_age: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ErrorReportingConfig {
     pub enabled: bool,
     pub sentry_dsn: String,
@@ -140,38 +83,7 @@ pub struct ErrorReportingConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EmailConfig {
-    pub host: String,
-    pub port: u16,
-    pub username: String,
-    pub password: String,
-    pub use_tls: bool,
-    pub use_ssl: bool,
-    pub timeout: u32,
-    pub from: String,
-    pub template_dir: PathBuf,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ThrottleConfig {
-    pub providers: ThrottleProvidersConfig,
-    pub default: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ThrottleProvidersConfig {
-    pub oauth2: ThrottleProvidersOAuth2Config,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ThrottleProvidersOAuth2Config {
-    pub device: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OutpostsConfig {
-    pub container_image_base: String,
-    pub discover: bool,
     pub disable_embedded_outpost: bool,
 }
 
@@ -188,32 +100,6 @@ pub struct LDAPTLSConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SourcesConfig {
-    pub kerberos: SourcesKerberosConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SourcesKerberosConfig {
-    pub task_timeout_hours: u32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ReputationConfig {
-    pub expiry: u32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EventsConfig {
-    pub context_processors: EventsContextProcessorsConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EventsContextProcessorsConfig {
-    pub geoip: PathBuf,
-    pub asn: PathBuf,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ComplianceConfig {
     pub fips: ComplianceFipsConfig,
 }
@@ -221,12 +107,6 @@ pub struct ComplianceConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ComplianceFipsConfig {
     pub enabled: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TenantsConfig {
-    pub enabled: bool,
-    pub api_key: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -240,57 +120,6 @@ pub struct WebConfig {
 pub struct WorkerConfig {
     pub processes: u32,
     pub threads: u32,
-    pub consumer_listen_timeout: String,
-    pub task_max_retries: u32,
-    pub task_default_time_limit: String,
-    pub task_purge_interval: String,
-    pub task_expiration: String,
-    pub scheduler_interval: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageConfig {
-    pub backend: String,
-    pub file: StorageFileConfig,
-    pub s3: StorageS3Config,
-    pub media: StorageMediaConfig,
-    pub reports: StorageReportsConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageFileConfig {
-    pub path: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageS3Config {
-    #[serde(default)]
-    pub region: Option<String>,
-    pub use_ssl: bool,
-    #[serde(default)]
-    pub endpoint: Option<String>,
-    #[serde(default)]
-    pub access_key: Option<String>,
-    #[serde(default)]
-    pub secret_key: Option<String>,
-    pub bucket_name: String,
-    #[serde(default)]
-    pub custom_domain: Option<String>,
-    pub secure_urls: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageMediaConfig {
-    pub backend: String,
-    pub file: StorageFileConfig,
-    pub s3: StorageS3Config,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StorageReportsConfig {
-    pub backend: String,
-    pub file: StorageFileConfig,
-    pub s3: StorageS3Config,
 }
 
 impl Config {

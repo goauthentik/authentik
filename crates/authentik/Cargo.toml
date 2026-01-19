@@ -8,18 +8,27 @@ homepage.workspace = true
 repository.workspace = true
 license-file.workspace = true
 publish.workspace = true
-default-run = "authentik"
 
 [dependencies]
-clap.workspace = true
+argh.workspace = true
+eyre.workspace = true
 color-eyre.workspace = true
-shadow-rs.workspace = true
 
+authentik-config.workspace = true
 authentik-server.workspace = true
 authentik-worker.workspace = true
 
-[build-dependencies]
-shadow-rs.workspace = true
+# Because of the async runtime, we really want panics to cause an abort, otherwise
+# the binary can keep on running as a ghost
+[profile.dev]
+panic = "abort"
+[profile.dev.package.backtrace]
+opt-level = 3
+
+[profile.release]
+lto = true
+panic = "abort"
+debug = 2
 
 [lints]
 workspace = true

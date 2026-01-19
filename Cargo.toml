@@ -12,36 +12,32 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-axum = { version = "0.8.6", features = ["http2", "macros", "ws"] }
-axum-server = { version = "0.7.2", features = ["tls-rustls"] }
-config = { version = "0.15.18", default-features = false, features = [
+argh = "0.1.13"
+axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
+axum-server = { version = "0.8.0", features = ["tls-rustls"] }
+color-eyre = "0.6.5"
+config = { version = "0.15.19", default-features = false, features = [
   "yaml",
   "async",
 ] }
-clap = { version = "4.5.51", features = ["derive"] }
-color-eyre = "0.6.5"
-fork = "0.4.0"
+eyre = "0.6.12"
 glob = "0.3.3"
 nix = { version = "0.30.1", features = ["signal"] }
-pyo3 = "0.27.1"
-rustls = { version = "0.23.35", features = ["fips", "custom-provider"] }
+pyo3 = "0.27.2"
+rustls = { version = "0.23.36", features = ["fips", "custom-provider"] }
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.145"
+serde_json = "1.0.149"
 serde_yaml_ng = "0.10.0"
-shadow-rs = { version = "1.4.0", features = ["metadata"] }
-signal-hook = "0.3.18"
-tokio = { version = "1.48.0", features = ["full"] }
-tower = "0.5.2"
-tracing = "0.1.41"
+signal-hook = "0.4.1"
+tokio = { version = "1.49.0", features = ["full"] }
+tower = "0.5.3"
+tracing = "0.1.44"
 tracing-log = "0.2.0"
-tracing-subscriber = { version = "0.3.20", features = ["json"] }
+tracing-subscriber = { version = "0.3.22", features = ["json"] }
 
 authentik-config = { version = "0.0.0", path = "./crates/config" }
 authentik-server = { version = "0.0.0", path = "./crates/server" }
 authentik-worker = { version = "0.0.0", path = "./crates/worker" }
-
-[profile.dev.package.backtrace]
-opt-level = 3
 
 [workspace.lints.rust]
 semicolon_in_expressions_from_macros = "warn"

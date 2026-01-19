@@ -10,12 +10,8 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
-clap.workspace = true
-color-eyre.workspace = true
-shadow-rs.workspace = true
-
-[build-dependencies]
-shadow-rs.workspace = true
+argh.workspace = true
+eyre.workspace = true
 
 [lints]
 workspace = true

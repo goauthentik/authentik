@@ -10,20 +10,15 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
+argh.workspace = true
 axum.workspace = true
 axum-server.workspace = true
-clap.workspace = true
-color-eyre.workspace = true
-fork.workspace = true
+eyre.workspace = true
 nix.workspace = true
 pyo3.workspace = true
 signal-hook.workspace = true
-shadow-rs.workspace = true
 tokio.workspace = true
 tracing.workspace = true
-
-[build-dependencies]
-shadow-rs.workspace = true
 
 [lints]
 workspace = true

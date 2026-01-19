@@ -1,25 +1,27 @@
-use clap::{Parser, Subcommand};
-use color_eyre::eyre::Result;
+use argh::FromArgs;
+use authentik_config::{Config, get_config};
+use eyre::Result;
 
-shadow_rs::shadow!(build);
-
-#[derive(Parser)]
-#[command(version, about, long_about = None)]
-#[command(propagate_version = true)]
+#[derive(Debug, FromArgs, PartialEq)]
+/// The authentication glue you need
 struct Cli {
-    #[command(subcommand)]
+    #[argh(subcommand)]
     command: Command,
 }
 
-#[derive(Subcommand)]
+#[derive(Debug, FromArgs, PartialEq)]
+#[argh(subcommand)]
 enum Command {
     Server(authentik_server::Cli),
     Worker(authentik_worker::Cli),
 }
 
+fn install_tracing() {}
+
 fn main() -> Result<()> {
     color_eyre::install()?;
-    let cli = Cli::parse();
+    Config::setup()?;
+    let cli: Cli = argh::from_env();
 
     match cli.command {
         Command::Server(args) => authentik_server::run(args),

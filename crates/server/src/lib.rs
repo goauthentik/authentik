@@ -1,10 +1,9 @@
-use clap::Parser;
-use color_eyre::eyre::Result;
+use argh::FromArgs;
+use eyre::Result;
 
-shadow_rs::shadow!(build);
-
-#[derive(Parser)]
-#[command(version = build::CLAP_LONG_VERSION, about, long_about = None)]
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run the authentik server.
+#[argh(subcommand, name = "server")]
 pub struct Cli {}
 
 pub fn run(_cli: Cli) -> Result<()> {

@@ -1,6 +1,7 @@
 use std::{
     env,
     io::Write,
+    net::SocketAddr,
     sync::{
         Arc,
         atomic::{AtomicBool, Ordering},
@@ -8,13 +9,13 @@ use std::{
     time::Duration,
 };
 
+use argh::FromArgs;
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
 use axum_server::Handle;
-use clap::Parser;
-use color_eyre::eyre::{Report, Result, eyre};
+use eyre::{Report, Result, eyre};
 use nix::{
     sys::{
         signal::{SigSet, SigmaskHow, Signal, kill, pthread_sigmask},
@@ -32,10 +33,9 @@ use signal_hook::consts::signal::*;
 use tokio::{sync::RwLock, task::JoinSet};
 use tracing::{debug, error, info, warn};
 
-shadow_rs::shadow!(build);
-
-#[derive(Debug, Parser)]
-#[command(version = build::CLAP_LONG_VERSION, about, long_about = None)]
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run the authentik worker.
+#[argh(subcommand, name = "worker")]
 pub struct Cli {}
 
 struct WorkerProcess {
@@ -310,8 +310,8 @@ fn watch_workers(state_lock: Arc<RwLock<State>>) -> Result<()> {
 struct State {
     worker_processes: Vec<WorkerProcess>,
     shutdown: Arc<AtomicBool>,
-    healthcheck_handle: Handle,
-    metrics_handle: Handle,
+    healthcheck_handle: Handle<SocketAddr>,
+    metrics_handle: Handle<SocketAddr>,
 }
 
 impl State {
@@ -417,7 +417,7 @@ pub async fn run(_cli: Cli) -> Result<()> {
 mod healthcheck {
     use std::{net::SocketAddr, sync::Arc};
 
-    use color_eyre::eyre::Result;
+    use eyre::Result;
     use tokio::sync::RwLock;
 
     use super::State;
@@ -438,7 +438,7 @@ mod metrics {
     use std::{net::SocketAddr, sync::Arc};
 
     use axum::{body::Body, http::StatusCode, response::Response};
-    use color_eyre::eyre::Result;
+    use eyre::Result;
     use pyo3::{
         IntoPyObjectExt,
         ffi::c_str,
@@ -480,9 +480,9 @@ output = generate_latest(registry)
                     .unwrap()
                     .as_bytes()
                     .to_owned();
-                Ok::<_, color_eyre::eyre::Error>(metrics)
+                Ok::<_, eyre::Error>(metrics)
             })?;
-            Ok::<_, color_eyre::eyre::Error>(metrics)
+            Ok::<_, eyre::Error>(metrics)
         })
         .await??;
         Ok(Response::builder()
@@ -510,7 +510,7 @@ mod worker_status {
         time::Duration,
     };
 
-    use color_eyre::eyre::Result;
+    use eyre::Result;
     use tokio::sync::RwLock;
 
     use super::State;
@@ -526,10 +526,10 @@ mod worker_status {
     }
 }
 
-struct AppError(color_eyre::eyre::Error);
+struct AppError(eyre::Error);
 
 impl<E> From<E> for AppError
-where E: Into<color_eyre::eyre::Error>
+where E: Into<eyre::Error>
 {
     fn from(err: E) -> Self {
         Self(err.into())
