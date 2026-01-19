@@ -4,6 +4,7 @@ import "#flow/components/ak-flow-card";
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -11,10 +12,9 @@ import {
     AuthenticatorEmailChallengeResponseRequest,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -44,17 +44,8 @@ export class AuthenticatorEmailStage extends BaseStage<
     renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <div class="pf-c-form__group">
                     ${AKLabel(
                         { required: true, htmlFor: "email-input" },
@@ -88,20 +79,25 @@ export class AuthenticatorEmailStage extends BaseStage<
     }
 
     renderEmailOTPInput(): TemplateResult {
+        const { email } = this.challenge;
+
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <ak-form-static
-                class="pf-c-form__group"
-                userAvatar="${this.challenge.pendingUserAvatar}"
-                user=${this.challenge.pendingUser}
-            >
-                <div slot="link">
-                    <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                        >${msg("Not you?")}</a
-                    >
-                </div>
-            </ak-form-static>
-            A verification token has been sent to your configured email address
-            ${ifDefined(this.challenge.email)}
+            ${FlowUserDetails({ challenge: this.challenge })}
+
+            <p>
+                ${email
+                    ? msg(
+                          str`A verification token has been sent to your configured email address: ${email}`,
+                          {
+                              id: "stage.authenticator.email.sent-to-address",
+                              desc: "Displayed when a verification token has been sent to the user's configured email address.",
+                          },
+                      )
+                    : msg("A verification token has been sent to your email address.", {
+                          id: "stage.authenticator.email.sent",
+                          desc: "Displayed when a verification token has been sent to the user's email address.",
+                      })}
+            </p>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">
                     ${AKLabel({ required: true, htmlFor: "code-input" }, msg("Code"))}

@@ -187,8 +187,7 @@
 
     .branding-logo {
         display: block;
-        width: clamp(75%, calc(var(--ak-login--MaxWidth) / 2), 90%);
-        min-height: 4rem;
+        max-width: clamp(75%, calc(var(--ak-login--MaxWidth) / 2), 90%);
     }
 
     /* Ensure Font Awesome logos scale similarly to image logos */

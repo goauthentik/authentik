@@ -102,6 +102,7 @@ class DockerTestCase(TestCase):
             sleep(1)
             attempt += 1
             if attempt >= self.max_healthcheck_attempts:
+                self.output_container_logs(container)
                 raise self.failureException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
@@ -162,6 +163,7 @@ class DockerTestCase(TestCase):
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
+    serialized_rollback = True
     host = get_local_ip()
     wait_timeout: int
     user: User

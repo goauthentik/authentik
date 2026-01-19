@@ -5,6 +5,8 @@ authentik_version: "2024.12"
 
 This stage's main purpose is to redirect the user to a new Flow while keeping flow context. For convenience, it can also redirect the user to a static URL.
 
+The redirection target can also be overwritten dynamically in an expression policy by setting the [redirect_stage_target](../../flow/context/#redirect_stage_target-string) key in the flow context.
+
 ## Redirect stage modes
 
 ### Static mode
