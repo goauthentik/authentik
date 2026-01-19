@@ -126,7 +126,11 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
                 // Workaround for Firefox <93, since 92 and older don't support
                 // datetime-local fields
                 const date = new Date(inputElement.value);
-                return assignValue(inputElement, isNaN(date.getTime()) ? null : dateToUTC(date), json);
+                return assignValue(
+                    inputElement,
+                    isNaN(date.getTime()) ? null : dateToUTC(date),
+                    json,
+                );
             }
 
             if (inputElement.type === "checkbox") {
