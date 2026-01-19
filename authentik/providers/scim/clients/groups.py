@@ -205,7 +205,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 ),
             )
             return self.patch_compare_users(group)
-        except (SCIMRequestException, ObjectExistsSyncException):
+        except SCIMRequestException, ObjectExistsSyncException:
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
             # sync, send patch add requests for all the users the group currently has
             return self._update_patch(group, scim_group, connection)

@@ -59,8 +59,7 @@ if __name__ == "__main__":
     config_file_name = "local.env.yml"
 
     with open(config_file_name, "w", encoding="utf-8") as _config:
-        _config.write(
-            """
+        _config.write("""
 # Local authentik configuration overrides
 #
 # https://docs.goauthentik.io/docs/install-config/configuration/
@@ -71,8 +70,7 @@ if __name__ == "__main__":
 # make gen-dev-config
 # ```
 
-"""
-        )
+""")
 
         safe_dump(
             generate_local_config(),
@@ -80,8 +78,7 @@ if __name__ == "__main__":
             default_flow_style=False,
         )
 
-    print(
-        f"""
+    print(f"""
 ---
 
 Generated configuration file: {config_file_name}
@@ -91,5 +88,4 @@ For more information on how to use this configuration, see:
 https://docs.goauthentik.io/docs/install-config/configuration/
 
 ---
-"""
-    )
+""")

@@ -400,7 +400,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         if host is not None:
             try:
                 inner_html = host.get_attribute("innerHTML") or "<no host>"
-            except (DetachedShadowRootException, StaleElementReferenceException):
+            except DetachedShadowRootException, StaleElementReferenceException:
                 inner_html = "<stale host>"
 
         raise RuntimeError(
