@@ -1,5 +1,5 @@
-from base64 import b64encode
 from dataclasses import dataclass
+from datetime import timedelta
 
 from django.http import HttpRequest
 from lxml import etree  # nosec
@@ -21,6 +21,7 @@ from authentik.enterprise.providers.ws_federation.processors.constants import (
     WSS_KEY_IDENTIFIER_SAML_ID,
     WSS_TOKEN_TYPE_SAML2,
 )
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
@@ -83,7 +84,9 @@ class SignInProcessor:
         created = SubElement(lifetime, f"{{{NS_WSS_UTILITY}}}Created")
         created.text = get_time_string()
         expires = SubElement(lifetime, f"{{{NS_WSS_UTILITY}}}Expires")
-        expires.text = get_time_string()
+        expires.text = get_time_string(
+            timedelta_from_string(self.provider.session_valid_not_on_or_after)
+        )
 
     def response_add_applies_to(self, root: Element):
         """Add AppliesTo element"""
@@ -115,7 +118,7 @@ class SignInProcessor:
         root = self.create_response_token()
         assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
         AssertionProcessor(self.provider, self.request, AuthNRequest())._sign(assertion)
-        str_token = etree.tostring(root).decode("utf-8")
+        str_token = etree.tostring(root).decode("utf-8")  # nosec
         print(str_token)
         return delete_none_values(
             {
