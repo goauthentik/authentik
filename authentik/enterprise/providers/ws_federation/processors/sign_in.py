@@ -144,7 +144,6 @@ class SignInProcessor:
         assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
         AssertionProcessor(self.provider, self.request, AuthNRequest())._sign(assertion)
         str_token = etree.tostring(root).decode("utf-8")  # nosec
-        print(str_token)
         return delete_none_values(
             {
                 WS_FED_POST_KEY_ACTION: WS_FED_ACTION_SIGN_IN,

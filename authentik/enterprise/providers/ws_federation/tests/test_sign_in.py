@@ -46,12 +46,14 @@ class TestWSFedSignIn(TestCase):
                 app_slug="",
             ),
         )
-        token = proc.create_response_token()
+        token = proc.response()[WS_FED_POST_KEY_RESULT]
+
+        root = lxml_from_string(token)
 
         schema = etree.XMLSchema(
             etree.parse(source="schemas/ws-trust.xsd", parser=etree.XMLParser())  # nosec
         )
-        self.assertTrue(schema.validate(etree=token), schema.error_log)
+        self.assertTrue(schema.validate(etree=root), schema.error_log)
 
     def test_signature(self):
         request = self.factory.get("/", user=get_anonymous_user())
