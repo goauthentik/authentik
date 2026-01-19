@@ -10,6 +10,7 @@ from authentik.enterprise.providers.ws_federation.processors.constants import (
 )
 from authentik.enterprise.providers.ws_federation.processors.sign_in import (
     SignInProcessor,
+    SignInRequest,
 )
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
@@ -41,7 +42,7 @@ class WSFedEntryView(PolicyAccessView):
             WSFederationProvider, pk=self.application.provider_id
         )
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if self.action == WS_FED_ACTION_SIGN_IN:
             return self.ws_fed_sign_in()
         elif self.action == WS_FED_ACTION_SIGN_OUT:
@@ -53,7 +54,7 @@ class WSFedEntryView(PolicyAccessView):
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
         try:
-            req = SignInProcessor(self.provider).parse(self.request)
+            req = SignInRequest.parse(self.provider, self.request)
 
             plan = planner.plan(
                 self.request,
@@ -86,8 +87,10 @@ class WSFedFlowFinalView(ChallengeStageView):
         if PLAN_CONTEXT_WS_FED_REQUEST not in self.executor.plan.context:
             self.logger.warning("No WS-Fed request in context")
             return self.executor.stage_invalid()
-        proc = SignInProcessor(provider, self.request)
-        response = proc.response(self.executor.plan.context[PLAN_CONTEXT_WS_FED_REQUEST])
+        proc = SignInProcessor(
+            provider, self.request, self.executor.plan.context[PLAN_CONTEXT_WS_FED_REQUEST]
+        )
+        response = proc.response()
         return AutosubmitChallenge(
             data={
                 "component": "ak-stage-autosubmit",
