@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- 
-OASIS takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the 
-implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; 
-neither does it represent that it has made any effort to identify any such rights. Information on OASIS's procedures with respect to rights in OASIS 
-specifications can be found at the OASIS website. Copies of claims of rights made available for publication and any assurances of licenses to be made 
-available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementors or users 
+<!--
+OASIS takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the
+implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available;
+neither does it represent that it has made any effort to identify any such rights. Information on OASIS's procedures with respect to rights in OASIS
+specifications can be found at the OASIS website. Copies of claims of rights made available for publication and any assurances of licenses to be made
+available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementors or users
 of this specification, can be obtained from the OASIS Executive Director.
-OASIS invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights which may 
+OASIS invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights which may
 cover technology that may be required to implement this specification. Please address the information to the OASIS Executive Director.
 Copyright © OASIS Open 2002-2007. All Rights Reserved.
-This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist 
-in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the 
-above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself does not be modified 
-in any way, such as by removing the copyright notice or references to OASIS, except as needed for the purpose of developing OASIS specifications, 
-in which case the procedures for copyrights defined in the OASIS Intellectual Property Rights document must be followed, or as required to translate 
+This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist
+in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the
+above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself does not be modified
+in any way, such as by removing the copyright notice or references to OASIS, except as needed for the purpose of developing OASIS specifications,
+in which case the procedures for copyrights defined in the OASIS Intellectual Property Rights document must be followed, or as required to translate
 it into languages other than English.
 The limited permissions granted above are perpetual and will not be revoked by OASIS or its successors or assigns.
-This document and the information contained herein is provided on an AS IS basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF 
+This document and the information contained herein is provided on an AS IS basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
 MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   -->
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
@@ -35,15 +35,15 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   <xs:import namespace='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd'
 			 schemaLocation='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' />
   <xs:import namespace='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd'
-			 schemaLocation='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd' />
+			 schemaLocation='oasis-200401-wss-wssecurity-utility-1.0.xsd' />
   <xs:import namespace='http://www.w3.org/2005/08/addressing'
-			 schemaLocation='http://www.w3.org/2006/03/addressing/ws-addr.xsd' />
+			 schemaLocation='ws-addr.xsd' />
   <xs:import namespace='http://schemas.xmlsoap.org/ws/2004/09/mex'
 			 schemaLocation='http://schemas.xmlsoap.org/ws/2004/09/mex/MetadataExchange.xsd' />
   <xs:import namespace='urn:oasis:names:tc:SAML:2.0:metadata'
-			 schemaLocation='http://docs.oasis-open.org/security/saml/v2.0/saml-schema-metadata-2.0.xsd' />
+			 schemaLocation='saml-schema-metadata-2.0.xsd' />
   <xs:import namespace='http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702'
-			 schemaLocation='http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/ws-securitypolicy-1.2.xsd'/>
+			 schemaLocation='ws-securitypolicy-1.2.xsd'/>
   <xs:import namespace='http://docs.oasis-open.org/wsfed/authorization/200706'
        schemaLocation='ws-authorization.xsd'/>
 
@@ -179,8 +179,8 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   <xs:complexType name='IssuerNameType' >
 	<xs:attribute name='Uri' type='xs:anyURI' use='required' />
 	<xs:anyAttribute namespace='##other' processContents='lax' />
-  </xs:complexType>  
-  
+  </xs:complexType>
+
   <!-- Section 3.1.4 -->
   <xs:element name='PsuedonymServiceEndpoints' type='tns:EndpointType' />
   <xs:complexType name='EndpointType' >
@@ -188,7 +188,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
       <xs:element ref='wsa:EndpointReference' minOccurs='1' maxOccurs='unbounded'/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <!-- Section 3.1.5 -->
   <xs:element name='AttributeServiceEndpoints' type='tns:EndpointType' />
 
@@ -226,7 +226,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	</xs:sequence>
 	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
-  
+
   <!-- Section 3.1.10 -->
   <!-- Defined above -->
   <!-- <xs:element name='ClaimTypesRequested' ype='tns:ClaimTypesRequestedType' /> -->
@@ -236,7 +236,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     </xs:sequence>
     <xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
-  
+
   <!-- Section 3.1.11 -->
   <!-- Defined above -->
   <!--<xs:element name='ClaimDialectsOffered' type='tns:ClaimDialectsOfferedType' />-->
@@ -254,18 +254,18 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
     <xs:attribute name='Uri' type='xs:anyURI' />
     <xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
-  
+
   <!-- Section 3.1.12 -->
   <!-- Defined above -->
   <!-- <xs:element name='AutomaticPseudonyms' type='xs:boolean' /> -->
 
   <!-- Section 3.1.13 -->
   <xs:element name='PassiveRequestorEnpoints' type='tns:EndpointType'/>
-  
+
   <!-- Section 3.1.14 -->
   <!-- Defined above -->
   <!--<xs:element name='TargetScopes' type='tns:EndpointType'/>-->
-  
+
   <!-- Section 3.2.4 -->
   <xs:element name='FederationMetadataHandler' type='tns:FederationMetadataHandlerType' />
   <xs:complexType name='FederationMetadataHandlerType' >
@@ -288,7 +288,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	<xs:sequence>
 	  <xs:any namespace='##other' processContents='lax' minOccurs='1' maxOccurs='unbounded' />
 	</xs:sequence>
-	<xs:anyAttribute namespace='##other' processContents='lax' />	
+	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
 
   <!-- Section 4.2 -->
@@ -302,7 +302,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	  <xs:element ref='tns:RelativeTo' minOccurs='0' maxOccurs='1' />
 	  <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
 	</xs:sequence>
-	<xs:anyAttribute namespace='##other' processContents='lax' />	
+	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
 
   <xs:element name='PseudonymBasis' type='tns:PseudonymBasisType' />
@@ -328,19 +328,19 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	<xs:sequence>
 	  <!--
 		  *** Accurate content model is nondeterministic ***
-		  <xs:element ref='tns:PseudonymBasis' minOccurs='1' maxOccurs='1' /> 
+		  <xs:element ref='tns:PseudonymBasis' minOccurs='1' maxOccurs='1' />
 		  <xs:element ref='tns:RelativeTo' minOccurs='1' maxOccurs='1' />
 		  <xs:element ref='wsu:Expires' minOccurs='0' maxOccurs='1' />
 		  <xs:element ref='tns:SecurityToken' minOccurs='0' maxOccurs='unbounded' />
 		  <xs:element ref='tns:ProofToken' minOccurs='0' maxOccurs='unbounded' />
-		  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />	  
+		  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />
 	  -->
 
-	  <xs:element ref='tns:PseudonymBasis' minOccurs='1' maxOccurs='1' /> 
+	  <xs:element ref='tns:PseudonymBasis' minOccurs='1' maxOccurs='1' />
 	  <xs:element ref='tns:RelativeTo' minOccurs='1' maxOccurs='1' />
-	  <xs:any namespace='##any' processContents='lax' minOccurs='0' maxOccurs='unbounded' />	  
+	  <xs:any namespace='##any' processContents='lax' minOccurs='0' maxOccurs='unbounded' />
 	</xs:sequence>
-	<xs:anyAttribute namespace='##other' processContents='lax' />	
+	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
 
   <xs:element name='SecurityToken' type='tns:SecurityTokenType' />
@@ -363,11 +363,11 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   <xs:element name='RequestPseudonym' type='tns:RequestPseudonymType' />
   <xs:complexType name='RequestPseudonymType' >
 	<xs:sequence>
-	  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />	  
+	  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />
 	</xs:sequence>
 	<xs:attribute name='SingleUse' type='xs:boolean' use='optional' />
 	<xs:attribute name='Lookup' type='xs:boolean' use='optional' />
-	<xs:anyAttribute namespace='##other' processContents='lax' />  
+	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
 
   <!-- Section 8.1 -->
@@ -378,15 +378,15 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	  <xs:element name='ReferenceDigest' type='tns:ReferenceDigestType' minOccurs='0' maxOccurs='1' />
 	  <xs:element name='ReferenceType' type='tns:AttributeExtensibleURI' minOccurs='0' maxOccurs='1' />
 	  <xs:element name='SerialNo' type='tns:AttributeExtensibleURI' minOccurs='0' maxOccurs='1' />
-	  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />	  	  
+	  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />
 	</xs:sequence>
-	<xs:anyAttribute namespace='##other' processContents='lax' />  
+	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
 
   <xs:complexType name='ReferenceDigestType' >
 	<xs:simpleContent>
 	  <xs:extension base='xs:base64Binary' >
-		<xs:anyAttribute namespace='##other' processContents='lax' />  
+		<xs:anyAttribute namespace='##other' processContents='lax' />
 	  </xs:extension>
 	</xs:simpleContent>
   </xs:complexType>
@@ -397,7 +397,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  
+
   <!-- Section 8.2 -->
   <xs:element name='FederationID' type='tns:AttributeExtensibleURI' />
 
@@ -417,9 +417,9 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	  <xs:element name='PPID' type='tns:AttributeExtensibleString' minOccurs='0' />
 	  <xs:element name='DisplayName' type='tns:AttributeExtensibleString' minOccurs='0' />
 	  <xs:element name='EMail' type='tns:AttributeExtensibleString' minOccurs='0' />
-	  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />	  	  
+	  <xs:any namespace='##other' processContents='lax' minOccurs='0' maxOccurs='unbounded' />
 	</xs:sequence>
-	<xs:anyAttribute namespace='##other' processContents='lax' />	
+	<xs:anyAttribute namespace='##other' processContents='lax' />
   </xs:complexType>
 
   <xs:complexType name='AttributeExtensibleString' >
@@ -436,7 +436,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 	<xs:simpleContent>
 	  <xs:extension base='xs:unsignedInt' >
 		<xs:attribute name='AllowCache' type='xs:boolean' use='optional' />
-		<xs:anyAttribute namespace='##other' processContents='lax' />		
+		<xs:anyAttribute namespace='##other' processContents='lax' />
 	  </xs:extension>
 	</xs:simpleContent>
   </xs:complexType>
@@ -459,7 +459,7 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
   <xs:element name='RequireSignedTokens' type='tns:AssertionType' />
   <xs:element name='RequireBearerTokens' type='tns:AssertionType' />
   <xs:element name='RequireSharedCookies' type='tns:AssertionType' />
-  
+
 
   <!-- Section 14.3 -->
   <xs:element name='RequiresGenericClaimDialect' type='tns:AssertionType' />
@@ -468,4 +468,3 @@ MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 
 
 </xs:schema>
-
