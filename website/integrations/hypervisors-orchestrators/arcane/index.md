@@ -27,7 +27,7 @@ To support the integration of Arcane with authentik, you need to create an appli
 
 ### Create custom scope mapping
 
-Arcane either requires the email scope to return a true value for whether the email address is verified, if account merge is enabled. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Arcane to allow authentication.
+Arcane either requires the email scope to return a `true` value for whether the email address is verified, if account merge is enabled. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Arcane to allow authentication.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
