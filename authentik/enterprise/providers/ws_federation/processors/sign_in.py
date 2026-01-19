@@ -112,7 +112,7 @@ class SignInProcessor:
         key_identifier.attrib["ValueType"] = WSS_KEY_IDENTIFIER_SAML_ID
         key_identifier.text = value
 
-    def response(self) -> dict:
+    def response(self) -> dict[str, str]:
         root = self.create_response_token()
         assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
         AssertionProcessor(self.provider, self.request, AuthNRequest())._sign(assertion)
