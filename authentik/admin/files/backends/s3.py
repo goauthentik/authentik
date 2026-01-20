@@ -173,7 +173,22 @@ class S3Backend(ManageableBackend):
             if custom_domain:
                 parsed = urlsplit(url)
                 scheme = "https" if use_https else "http"
-                url = f"{scheme}://{custom_domain}{parsed.path}?{parsed.query}"
+                path = parsed.path
+
+                # When using path-style addressing, the presigned URL contains the bucket
+                # name in the path (e.g., /bucket-name/key). Since custom_domain must
+                # include the bucket name (per docs), strip it from the path to avoid
+                # duplication. See: https://github.com/goauthentik/authentik/issues/19521
+                # Check with trailing slash to ensure exact bucket name match
+                if path.startswith(f"/{self.bucket_name}/"):
+                    path = path.removeprefix(f"/{self.bucket_name}")
+
+                # Normalize to avoid double slashes
+                custom_domain = custom_domain.rstrip("/")
+                if not path.startswith("/"):
+                    path = f"/{path}"
+
+                url = f"{scheme}://{custom_domain}{path}?{parsed.query}"
 
             return url
 

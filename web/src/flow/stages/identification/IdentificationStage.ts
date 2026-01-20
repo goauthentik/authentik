@@ -307,11 +307,11 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
-    onSubmitSuccess(): void {
+    protected override onSubmitSuccess(): void {
         this.#form?.remove();
     }
 
-    onSubmitFailure(): void {
+    protected override onSubmitFailure(): void {
         const captchaInput = this.#captchaInputRef.value;
 
         if (captchaInput) {

@@ -26,7 +26,7 @@ def convert_string_to_integer_format(apps, schema_editor):
                 minutes_value = int(td.total_seconds() / 60)
                 stage.token_expiry = minutes_value
                 stage.save(using=db_alias)
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 # If the string can't be parsed or converted properly, skip
                 pass
 

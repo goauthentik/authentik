@@ -5,6 +5,7 @@ import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { RouteChangeEvent } from "#elements/router/events";
 import { Route } from "#elements/router/Route";
 import { RouteMatch } from "#elements/router/RouteMatch";
 
@@ -175,6 +176,8 @@ export class RouterOutlet extends AKElement {
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
         }
         this.current = matchedRoute;
+
+        this.dispatchEvent(new RouteChangeEvent(matchedRoute));
     };
 
     protected override firstUpdated(): void {

@@ -62,7 +62,7 @@ class AgentConfigSerializer(PassiveSerializer):
     def get_system_config(self, instance: AgentConnector) -> ConfigSerializer:
         return ConfigView.get_config(self.context["request"]).data
 
-    def get_license_status(self, instance: AgentConnector) -> "LicenseUsageStatus":
+    def get_license_status(self, instance: AgentConnector) -> LicenseUsageStatus:
         try:
             from authentik.enterprise.license import LicenseKey
 
