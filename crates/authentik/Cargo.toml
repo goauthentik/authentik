@@ -13,22 +13,14 @@ publish.workspace = true
 argh.workspace = true
 eyre.workspace = true
 color-eyre.workspace = true
+sentry.workspace = true
+tracing.workspace = true
+tracing-error.workspace = true
+tracing-subscriber.workspace = true
 
 authentik-config.workspace = true
 authentik-server.workspace = true
 authentik-worker.workspace = true
-
-# Because of the async runtime, we really want panics to cause an abort, otherwise
-# the binary can keep on running as a ghost
-[profile.dev]
-panic = "abort"
-[profile.dev.package.backtrace]
-opt-level = 3
-
-[profile.release]
-lto = true
-panic = "abort"
-debug = 2
 
 [lints]
 workspace = true

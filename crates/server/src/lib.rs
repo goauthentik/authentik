@@ -1,5 +1,6 @@
 use argh::FromArgs;
 use eyre::Result;
+use tracing::info;
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run the authentik server.
@@ -7,5 +8,6 @@ use eyre::Result;
 pub struct Cli {}
 
 pub fn run(_cli: Cli) -> Result<()> {
+    info!("from server");
     Ok(())
 }

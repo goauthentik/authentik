@@ -25,6 +25,16 @@ glob = "0.3.3"
 nix = { version = "0.30.1", features = ["signal"] }
 pyo3 = "0.27.2"
 rustls = { version = "0.23.36", features = ["fips", "custom-provider"] }
+sentry = { version = "0.46.1", default-features = true, features = [
+  "backtrace",
+  "contexts",
+  "debug-images",
+  "panic",
+  "reqwest",
+  "rustls",
+  "tower",
+  "tracing",
+] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 serde_yaml_ng = "0.10.0"
@@ -32,12 +42,24 @@ signal-hook = "0.4.1"
 tokio = { version = "1.49.0", features = ["full"] }
 tower = "0.5.3"
 tracing = "0.1.44"
-tracing-log = "0.2.0"
-tracing-subscriber = { version = "0.3.22", features = ["json"] }
+tracing-error = "0.2.1"
+tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 
 authentik-config = { version = "0.0.0", path = "./crates/config" }
 authentik-server = { version = "0.0.0", path = "./crates/server" }
 authentik-worker = { version = "0.0.0", path = "./crates/worker" }
+
+# Because of the async runtime, we really want panics to cause an abort, otherwise
+# the binary can keep on running as a ghost
+[profile.dev]
+panic = "abort"
+[profile.dev.package.backtrace]
+opt-level = 3
+
+[profile.release]
+lto = true
+panic = "abort"
+debug = 2
 
 [workspace.lints.rust]
 semicolon_in_expressions_from_macros = "warn"

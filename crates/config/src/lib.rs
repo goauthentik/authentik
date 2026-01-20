@@ -17,6 +17,7 @@ pub struct Config {
 
     pub debug: bool,
 
+    pub log: Option<String>,
     pub log_level: String,
 
     pub error_reporting: ErrorReportingConfig,
@@ -76,10 +77,10 @@ pub struct ListenConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ErrorReportingConfig {
     pub enabled: bool,
-    pub sentry_dsn: String,
+    pub sentry_dsn: Option<String>,
     pub environment: String,
     pub send_pii: bool,
-    pub sample_rate: f64,
+    pub sample_rate: f32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -141,24 +142,20 @@ impl Config {
         let mut computed_paths = Vec::new();
 
         for path in config_paths {
-            let Ok(abs_path) = path.canonicalize().or_else(|_| fs::canonicalize(&path)) else {
-                continue;
-            };
-
-            if let Ok(metadata) = fs::metadata(&abs_path) {
+            if let Ok(metadata) = fs::metadata(&path) {
                 if !metadata.is_dir() {
-                    computed_paths.push(abs_path);
-                } else {
-                    let env_paths = vec![
-                        abs_path.join(format!("{}.yml", environment)),
-                        abs_path.join(format!("{}.env.yml", environment)),
-                    ];
-                    for env_path in env_paths {
-                        if let Ok(metadata) = fs::metadata(&env_path)
-                            && !metadata.is_dir()
-                        {
-                            computed_paths.push(env_path);
-                        }
+                    computed_paths.push(path);
+                }
+            } else {
+                let env_paths = vec![
+                    path.join(format!("{}.yml", environment)),
+                    path.join(format!("{}.env.yml", environment)),
+                ];
+                for env_path in env_paths {
+                    if let Ok(metadata) = fs::metadata(&env_path)
+                        && !metadata.is_dir()
+                    {
+                        computed_paths.push(env_path);
                     }
                 }
             }
