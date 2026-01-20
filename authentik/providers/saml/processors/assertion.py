@@ -321,14 +321,6 @@ class AssertionProcessor:
                 ns=xmlsec.constants.DSigNs,
             )
             assertion.append(signature)
-        if self.provider.encryption_kp:
-            encryption = xmlsec.template.encrypted_data_create(
-                assertion,
-                xmlsec.constants.TransformAes128Cbc,
-                self._assertion_id,
-                ns=xmlsec.constants.DSigNs,
-            )
-            assertion.append(encryption)
 
         assertion.append(self.get_assertion_subject())
         assertion.append(self.get_assertion_conditions())
@@ -404,12 +396,15 @@ class AssertionProcessor:
 
     def _encrypt(self, element: _Element, parent: _Element):
         """Encrypt SAMLResponse EncryptedAssertion Element"""
+        # Create a standalone copy so namespace declarations are included in the encrypted content
+        element_xml = etree.tostring(element)
+        standalone_element = etree.fromstring(element_xml)
+
+        # Remove the original element from the tree since we're replacing it with encrypted version
+        parent.remove(element)
+
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
-            self.provider.encryption_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-        )
-        key.load_cert_from_memory(
             self.provider.encryption_kp.certificate_data,
             xmlsec.constants.KeyDataFormatCertPem,
         )
@@ -430,11 +425,10 @@ class AssertionProcessor:
         xmlsec.template.encrypted_data_ensure_cipher_value(enc_key)
 
         try:
-            enc_data = encryption_context.encrypt_xml(enc_data, element)
+            enc_data = encryption_context.encrypt_xml(enc_data, standalone_element)
         except xmlsec.Error as exc:
             raise InvalidEncryption() from exc
 
-        parent.remove(enc_data)
         container.append(enc_data)
 
     def build_response(self) -> str:

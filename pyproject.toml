@@ -34,7 +34,7 @@ dependencies = [
   "drf-spectacular==0.28.0",
   "dumb-init==1.2.5.post1",
   "duo-client==5.5.0",
-  "fido2==2.1.0",
+  "fido2==2.1.1",
   "geoip2==5.2.0",
   "geopy==2.4.1",
   "google-api-python-client==2.188.0",
@@ -77,7 +77,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.235.0",
+  "aws-cdk-lib==2.235.1",
   "bandit==1.9.3",
   "black==26.1.0",
   "bpython==0.26",
@@ -104,7 +104,7 @@ dev = [
   "pytest==9.0.2",
   "requests-mock==1.12.1",
   "ruff==0.14.13",
-  "selenium==4.39.0",
+  "selenium==4.40.0",
   "types-channels==4.3.0.20250822",
   "types-docker==7.1.0.20260109",
   "types-jwcrypto==1.5.0.20251102",
