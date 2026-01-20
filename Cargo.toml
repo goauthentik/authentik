@@ -22,6 +22,7 @@ config = { version = "0.15.19", default-features = false, features = [
 ] }
 eyre = "0.6.12"
 glob = "0.3.3"
+ipnet = { version = "2.11.0", features = ["serde"] }
 nix = { version = "0.30.1", features = ["signal"] }
 pyo3 = "0.27.2"
 rustls = { version = "0.23.36", features = ["fips", "custom-provider"] }
@@ -87,3 +88,11 @@ str_to_string = "warn"
 todo = "warn"
 unreadable_literal = "warn"
 unseparated_literal_suffix = "warn"
+
+[workspace.metadata.bacon]
+default_job = "run"
+
+[workspace.metadata.bacon.jobs.run]
+command = ["cargo", "run"]
+on_change_strategy = "kill_then_restart"
+kill = ["pkill", "-INT", "-P"]

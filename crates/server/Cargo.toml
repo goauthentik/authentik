@@ -12,6 +12,7 @@ publish.workspace = true
 [dependencies]
 argh.workspace = true
 eyre.workspace = true
+tokio.workspace = true
 tracing.workspace = true
 
 [lints]

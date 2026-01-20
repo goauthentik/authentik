@@ -1,6 +1,7 @@
 use std::{env, fs, net::SocketAddr, path::PathBuf, sync::OnceLock};
 
 use eyre::Result;
+use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -68,10 +69,7 @@ pub struct ListenConfig {
     pub ldaps: Vec<SocketAddr>,
     pub radius: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
-    pub debug: Vec<SocketAddr>,
-    pub debug_py: Vec<SocketAddr>,
-    // TODO: subnet type
-    pub trusted_proxy_cidrs: Vec<String>,
+    pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

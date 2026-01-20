@@ -2,7 +2,6 @@ use argh::FromArgs;
 use authentik_config::{Config, get_config};
 use eyre::Result;
 use std::str::FromStr;
-use tracing::info;
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -65,8 +64,6 @@ fn install_tracing() -> Result<()> {
             .init();
     }
 
-    // TODO: tracing log
-
     Ok(())
 }
 
@@ -76,14 +73,17 @@ fn main() -> Result<()> {
 
     let _sentry = if get_config().error_reporting.enabled {
         Some(sentry::init(sentry::ClientOptions {
+            // TODO: refine a bit more
             dsn: get_config()
                 .error_reporting
                 .sentry_dsn
                 .clone()
                 .map(|dsn| sentry::types::Dsn::from_str(&dsn).unwrap()),
             environment: Some(get_config().error_reporting.environment.clone().into()),
+            attach_stacktrace: true,
             send_default_pii: get_config().error_reporting.send_pii,
             sample_rate: get_config().error_reporting.sample_rate,
+            traces_sample_rate: get_config().error_reporting.sample_rate,
             ..sentry::ClientOptions::default()
         }))
     } else {
@@ -92,9 +92,6 @@ fn main() -> Result<()> {
 
     install_tracing()?;
     let cli: Cli = argh::from_env();
-    let test = "mdr";
-
-    info!(test, "ready to start",);
 
     match cli.command {
         Command::Server(args) => authentik_server::run(args),
