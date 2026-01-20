@@ -1,6 +1,5 @@
 """authentik e2e testing utilities"""
 
-from collections.abc import Callable
 from os import environ
 from time import sleep
 from typing import Any
@@ -10,10 +9,8 @@ from docker import DockerClient, from_env
 from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
-from structlog.stdlib import get_logger
 
 from authentik.lib.generators import generate_id
-from authentik.lib.utils.reflection import class_to_path
 from authentik.root.test_runner import get_docker_tag
 
 IS_CI = "CI" in environ
@@ -115,23 +112,3 @@ class DockerTestCase(TestCase):
             except DockerException:
                 pass
         self.__network.remove()
-
-
-def require_container_image(*names: str, fail_ok: bool = False) -> Callable[..., Any]:
-    def wrapper(cls: type) -> type:
-        client = from_env()
-        logger = get_logger(class_to_path(cls))
-        for image in names:
-            try:
-                client.images.get(image)
-                logger.info("Container image available", image=image)
-            except DockerException:
-                logger.info("Pulling container image", image=image)
-                try:
-                    client.images.pull(image)
-                except DockerException as exc:
-                    if not fail_ok:
-                        raise exc
-        return cls
-
-    return wrapper
