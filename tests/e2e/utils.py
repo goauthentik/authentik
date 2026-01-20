@@ -8,7 +8,6 @@ from os import environ, getenv
 from sys import stderr
 from time import sleep
 from typing import Any
-from unittest.case import TestCase
 from urllib.parse import urlencode
 
 from django.apps import apps
@@ -17,10 +16,13 @@ from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.test.testcases import TransactionTestCase
 from django.urls import reverse
-from docker import DockerClient, from_env
-from docker.errors import DockerException
 from docker.models.containers import Container
+<<<<<<< HEAD
 from docker.models.networks import Network
+=======
+from dramatiq import get_broker
+from requests import RequestException
+>>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 from selenium import webdriver
 from selenium.common.exceptions import (
     DetachedShadowRootException,
@@ -42,8 +44,14 @@ from structlog.stdlib import get_logger
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
+<<<<<<< HEAD
 from authentik.lib.generators import generate_id
 from authentik.root.test_runner import get_docker_tag
+=======
+from authentik.lib.utils.http import get_http_session
+from authentik.tasks.test import use_test_broker
+from tests.docker import DockerTestCase
+>>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
@@ -52,15 +60,16 @@ SHADOW_ROOT_RETRIES = 5
 JSONType = dict[str, Any] | list[Any] | str | int | float | bool | None
 
 
-def get_local_ip() -> str:
+def get_local_ip(override=True) -> str:
     """Get the local machine's IP"""
-    if local_ip := getenv("LOCAL_IP"):
+    if (local_ip := getenv("LOCAL_IP")) and override:
         return local_ip
     hostname = socket.gethostname()
     ip_addr = socket.gethostbyname(hostname)
     return ip_addr
 
 
+<<<<<<< HEAD
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
@@ -155,10 +164,11 @@ class DockerTestCase(TestCase):
         self.__network.remove()
 
 
+=======
+>>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
-    serialized_rollback = True
     host = get_local_ip()
     wait_timeout: int
     user: User
@@ -200,6 +210,45 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
+<<<<<<< HEAD
+=======
+    def _get_chrome_extension(self):
+        path = Path(gettempdir()) / "ak-chrome.crx"
+        try:
+            self.logger.info("Downloading chrome extension...", path=path)
+            res = get_http_session().get(
+                "https://pkg.goauthentik.io/packages/authentik_browser-ext/browser-ext/authentik_chrome.zip",
+                stream=True,
+            )
+            with open(path, "w+b") as _ext:
+                for chunk in res.iter_content(chunk_size=1024):
+                    if chunk:
+                        _ext.write(chunk)
+        except RequestException as exc:
+            if path.exists() and not IS_CI:
+                self.logger.info(
+                    "Failed to download chrome extension, using cached copy", path=path
+                )
+                return path
+            raise exc
+        return path
+
+    @cached_property
+    def driver_container(self) -> Container:
+        return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
+
+    @classmethod
+    def _pre_setup(cls):
+        use_test_broker()
+        return super()._pre_setup()
+
+    def _post_teardown(self):
+        broker = get_broker()
+        broker.flush_all()
+        broker.close()
+        return super()._post_teardown()
+
+>>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
     def tearDown(self):
         if IS_CI:
             print("::endgroup::", file=stderr)
