@@ -175,7 +175,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                                 self.args.append(path)
                             valid_label_found = True
                             break
-                    except (TypeError, IndexError):
+                    except TypeError, IndexError:
                         continue
 
             if not valid_label_found:
