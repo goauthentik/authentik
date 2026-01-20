@@ -123,7 +123,7 @@ class FlowPlan:
 
     def requires_flow_executor(
         self,
-        allowed_silent_types: list["StageView"] | None = None,
+        allowed_silent_types: list[StageView] | None = None,
     ):
         # Check if we actually need to show the Flow executor, or if we can jump straight to the end
         found_unskippable = True
@@ -145,7 +145,7 @@ class FlowPlan:
         request: HttpRequest,
         flow: Flow,
         next: str | None = None,
-        allowed_silent_types: list["StageView"] | None = None,
+        allowed_silent_types: list[StageView] | None = None,
     ) -> HttpResponse:
         """Redirect to the flow executor for this flow plan"""
         from authentik.flows.views.executor import (

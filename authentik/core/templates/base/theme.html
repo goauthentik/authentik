@@ -10,15 +10,23 @@
   {% elif ui_theme == "light" %}
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
-{% else %}
+  {% else %}
   <script data-id="theme-script">
     "use strict";
 
     (function () {
         try {
+            /* Ignore older theme names */
+            let locallyStoredTheme = window.localStorage?.getItem("theme") || null;
+            if (typeof locallyStoredTheme === "string") {
+                locallyStoredTheme = locallyStoredTheme.trim();
+            }
+            if (!(["auto", "light", "dark"].includes(locallyStoredTheme))) {
+                locallyStoredTheme = null;
+            }
+            
             const initialThemeChoice =
-                new URLSearchParams(window.location.search).get("theme") ||
-                window.localStorage?.getItem("theme");
+                new URLSearchParams(window.location.search).get("theme") || locallyStoredTheme;
 
             const themeChoice =
                 initialThemeChoice || document.documentElement.dataset.themeChoice || "auto";

@@ -1,5 +1,5 @@
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
-import { autoDetectLanguage } from "#common/ui/locale/utils";
+import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
@@ -74,11 +74,11 @@ export class LocaleMiddleware implements Middleware, Disposable {
             return;
         }
 
-        this.#locale = event.detail.readyLocale;
+        this.#locale = formatAcceptLanguageHeader(event.detail.readyLocale);
     };
 
-    constructor(localeHint?: string) {
-        this.#locale = autoDetectLanguage(localeHint);
+    constructor(languageTagHint: Intl.UnicodeBCP47LocaleIdentifier) {
+        this.#locale = formatAcceptLanguageHeader(languageTagHint);
 
         window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
     }

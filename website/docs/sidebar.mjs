@@ -155,8 +155,8 @@ const items = [
                             id: "add-secure-apps/providers/gws/index",
                         },
                         items: [
-                            "add-secure-apps/providers/gws/setup-gws",
-                            "add-secure-apps/providers/gws/add-gws-provider",
+                            "add-secure-apps/providers/gws/configure-gws",
+                            "add-secure-apps/providers/gws/create-gws-provider",
                         ],
                     },
                     {
@@ -166,7 +166,7 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/ldap/index",
                         },
-                        items: ["add-secure-apps/providers/ldap/generic_setup"],
+                        items: ["add-secure-apps/providers/ldap/create-ldap-provider"],
                     },
                     {
                         type: "category",

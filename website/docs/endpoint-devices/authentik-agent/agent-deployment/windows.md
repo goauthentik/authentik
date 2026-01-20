@@ -94,4 +94,4 @@ ak config setup --authentik-url https://authentik.company
 
 The authentik Agent primarily outputs logs to Windows Event Viewer.
 
-WCP logs to the `wcp.log` located in `C:\Program Files\Authentik Security Inc\wcp`.
+WCP logs to the `ak_cred_provider.log` located in `C:\ProgramData\Authentik Security Inc\logs`.

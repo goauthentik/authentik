@@ -157,8 +157,8 @@ export function getSessionLocale(): string | null {
 /**
  * Auto-detect the best locale to use from several sources.
  *
- * @param localeHint An optional locale code hint.
- * @param fallbackLocaleCode An optional fallback locale code.
+ * @param languageTagHint An optional locale code hint.
+ * @param fallbackLanguageTag An optional fallback locale code.
  * @returns The best-matching supported locale code.
  *
  * @remarks
@@ -172,8 +172,8 @@ export function getSessionLocale(): string | null {
  * 6. The source locale (English)
  */
 export function autoDetectLanguage(
-    localeHint?: string,
-    fallbackLocaleCode?: string,
+    languageTagHint?: Intl.UnicodeBCP47LocaleIdentifier,
+    fallbackLanguageTag?: Intl.UnicodeBCP47LocaleIdentifier,
 ): TargetLanguageTag {
     let localeParam: string | null = null;
 
@@ -188,9 +188,9 @@ export function autoDetectLanguage(
     const candidates = [
         localeParam,
         sessionLocale,
-        localeHint,
-        self.navigator?.language,
-        fallbackLocaleCode,
+        languageTagHint,
+        ...(self.navigator?.languages || []),
+        fallbackLanguageTag,
     ].filter((item): item is string => !!item);
 
     const firstSupportedLocale = findSupportedLocale(candidates);
@@ -198,8 +198,8 @@ export function autoDetectLanguage(
     if (!firstSupportedLocale) {
         console.debug(`authentik/locale: Falling back to source locale`, {
             SourceLanguageTag,
-            localeHint,
-            fallbackLocaleCode,
+            languageTagHint,
+            fallbackLanguageTag,
             candidates,
         });
 
@@ -207,4 +207,29 @@ export function autoDetectLanguage(
     }
 
     return firstSupportedLocale;
+}
+
+/**
+ * Given a locale code, format it for use in an `Accept-Language` header.
+ */
+export function formatAcceptLanguageHeader(languageTag: Intl.UnicodeBCP47LocaleIdentifier): string {
+    const [preferredLanguageTag, ...languageTags] = new Set([
+        languageTag,
+        ...(self.navigator?.languages || []),
+        SourceLanguageTag,
+        "*",
+    ]);
+
+    const fallbackCount = languageTags.length;
+
+    return [
+        preferredLanguageTag,
+        ...languageTags.map((tag, idx) => {
+            const weight = ((fallbackCount - idx) / (fallbackCount + 1)).toFixed(
+                fallbackCount > 9 ? 2 : 1,
+            );
+
+            return `${tag};q=${weight}`;
+        }),
+    ].join(", ");
 }

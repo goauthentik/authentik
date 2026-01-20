@@ -2,21 +2,33 @@
  * Extensions of PF4's sidebar color to better match our existing dark theme.
  */
 .pf-c-page {
+    /* TODO: Revisit this after native <dialog> modals are implemented. */
+    --pf-c-page__main--ZIndex: auto;
     --pf-c-page__header--ZIndex: auto;
     --pf-c-page__main--ZIndex: auto;
     --pf-c-page__main-nav--BackgroundColor: var(--pf-global--BackgroundColor--200);
     --pf-c-page__sidebar--m-dark--BackgroundColor: var(--pf-global--BackgroundColor--100);
 
     --pf-c-page__sidebar--BackgroundColor: var(--pf-c-page__sidebar--m-light--BackgroundColor);
+}
 
-    .pf-c-page__sidebar {
-        z-index: calc(var(--pf-c-page__header--ZIndex) + 1);
+.pf-c-page__drawer {
+    position: relative;
+}
+
+@media (width >= 1200px) {
+    .pf-c-page__sidebar.pf-m-expanded {
+        --pf-c-page__sidebar--BoxShadow: var(--pf-global--BoxShadow--sm-right);
     }
+}
 
-    @media screen and (min-width: 1200px) {
-        .pf-c-page__sidebar.pf-m-expanded {
-            --pf-c-page__sidebar--BoxShadow: var(--pf-global--BoxShadow--sm-right);
-        }
+@media (width < 1200px) {
+    .pf-c-page__sidebar.pf-m-expanded ~ .pf-c-page__drawer .pf-c-page__sidebar-backdrop::after {
+        background-color: var(--pf-global--BackgroundColor--dark-transparent-100);
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: calc(var(--pf-c-page__sidebar--ZIndex) - 1);
     }
 }
 
