@@ -6691,6 +6691,7 @@ paths:
             - authorize_application
             - configuration_error
             - custom_
+            - deprecation_used
             - email_sent
             - export_ready
             - flow_execution
@@ -6952,6 +6953,7 @@ paths:
             - authorize_application
             - configuration_error
             - custom_
+            - deprecation_used
             - email_sent
             - export_ready
             - flow_execution
@@ -7079,6 +7081,7 @@ paths:
             - authorize_application
             - configuration_error
             - custom_
+            - deprecation_used
             - email_sent
             - export_ready
             - flow_execution
@@ -10739,6 +10742,7 @@ paths:
           - authorize_application
           - configuration_error
           - custom_
+          - deprecation_used
           - email_sent
           - export_ready
           - flow_execution
@@ -37415,6 +37419,7 @@ components:
       - system_task_exception
       - system_exception
       - configuration_error
+      - deprecation_used
       - model_created
       - model_updated
       - model_deleted

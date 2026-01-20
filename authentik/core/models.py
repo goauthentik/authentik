@@ -1,6 +1,6 @@
 """authentik core models"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Self
@@ -511,6 +511,42 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def is_staff(self) -> bool:
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
+
+    # TODO: remove this after 2026.
+    @property
+    def ak_groups(self):
+        """This is a proxy for a renamed, deprecated field."""
+        from authentik.events.models import Event, EventAction
+
+        deprecation = "authentik.core.models.User.ak_groups"
+        replacement = "authentik.core.models.User.groups"
+        message_logger = (
+            f"{deprecation} is deprecated and will be removed in a future version of "
+            f"authentik. Please use {replacement} instead."
+        )
+        message_event = (
+            f"{message_logger} This event will not be repeated until it expires (by "
+            "default: in 30 days). See authentik logs for every will invocation of this "
+            "deprecation."
+        )
+        LOGGER.warning(
+            "deprecation used",
+            message=message_logger,
+            deprecation=deprecation,
+            replacement=replacement,
+        )
+        if not Event.filter_not_expired(
+            action=EventAction.DEPRECATION_USED, context__deprecation=deprecation
+        ).exists():
+            event = Event.new(
+                EventAction.DEPRECATION_USED,
+                deprecation=deprecation,
+                replacement=replacement,
+                message=message_event,
+            )
+            event.expires = datetime.now() + timedelta(days=30)
+            event.save()
+        return self.groups
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
