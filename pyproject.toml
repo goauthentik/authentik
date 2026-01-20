@@ -105,15 +105,11 @@ dev = [
   "ruff==0.11.9",
   "selenium==4.32.0",
   "types-channels==4.3.0.20250822",
-<<<<<<< HEAD
-  "types-ldap3==2.9.13.20250622",
-=======
   "types-docker==7.1.0.20260109",
   "types-jwcrypto==1.5.0.20251102",
   "types-ldap3==2.9.13.20251121",
   "types-requests==2.32.4.20260107",
   "types-zxcvbn==4.5.0.20250809",
->>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 ]
 
 [tool.uv]

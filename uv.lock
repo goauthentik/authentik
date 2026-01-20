@@ -397,15 +397,11 @@ dev = [
     { name = "ruff", specifier = "==0.11.9" },
     { name = "selenium", specifier = "==4.32.0" },
     { name = "types-channels", specifier = "==4.3.0.20250822" },
-<<<<<<< HEAD
-    { name = "types-ldap3", specifier = "==2.9.13.20250622" },
-=======
     { name = "types-docker", specifier = "==7.1.0.20260109" },
     { name = "types-jwcrypto", specifier = "==1.5.0.20251102" },
     { name = "types-ldap3", specifier = "==2.9.13.20251121" },
     { name = "types-requests", specifier = "==2.32.4.20260107" },
     { name = "types-zxcvbn", specifier = "==4.5.0.20250809" },
->>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 ]
 
 [[package]]

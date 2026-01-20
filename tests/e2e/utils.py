@@ -16,13 +16,7 @@ from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.test.testcases import TransactionTestCase
 from django.urls import reverse
-from docker.models.containers import Container
-<<<<<<< HEAD
-from docker.models.networks import Network
-=======
 from dramatiq import get_broker
-from requests import RequestException
->>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 from selenium import webdriver
 from selenium.common.exceptions import (
     DetachedShadowRootException,
@@ -44,14 +38,8 @@ from structlog.stdlib import get_logger
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-<<<<<<< HEAD
-from authentik.lib.generators import generate_id
-from authentik.root.test_runner import get_docker_tag
-=======
-from authentik.lib.utils.http import get_http_session
 from authentik.tasks.test import use_test_broker
 from tests.docker import DockerTestCase
->>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
@@ -69,103 +57,6 @@ def get_local_ip(override=True) -> str:
     return ip_addr
 
 
-<<<<<<< HEAD
-class DockerTestCase(TestCase):
-    """Mixin for dealing with containers"""
-
-    max_healthcheck_attempts = 45
-
-    __client: DockerClient
-    __network: Network
-
-    __label_id = generate_id()
-
-    def setUp(self) -> None:
-        self.__client = from_env()
-        self.__network = self.docker_client.networks.create(name=f"authentik-test-{generate_id()}")
-
-    @property
-    def docker_client(self) -> DockerClient:
-        return self.__client
-
-    @property
-    def docker_network(self) -> Network:
-        return self.__network
-
-    @property
-    def docker_labels(self) -> dict:
-        return {"io.goauthentik.test": self.__label_id}
-
-    def wait_for_container(self, container: Container):
-        """Check that container is health"""
-        attempt = 0
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            sleep(1)
-            attempt += 1
-            if attempt >= self.max_healthcheck_attempts:
-                raise self.failureException("Container failed to start")
-
-    def get_container_image(self, base: str) -> str:
-        """Try to pull docker image based on git branch, fallback to main if not found."""
-        image = f"{base}:gh-main"
-        try:
-            branch_image = f"{base}:{get_docker_tag()}"
-            self.docker_client.images.pull(branch_image)
-            return branch_image
-        except DockerException:
-            self.docker_client.images.pull(image)
-        return image
-
-    def run_container(self, **specs: dict[str, Any]) -> Container:
-        if "network_mode" not in specs:
-            specs["network"] = self.__network.name
-        specs["labels"] = self.docker_labels
-        specs["detach"] = True
-        if hasattr(self, "live_server_url"):
-            specs.setdefault("environment", {})
-            specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
-        container = self.docker_client.containers.run(**specs)
-        container.reload()
-        state = container.attrs.get("State", {})
-        if "Health" not in state:
-            return container
-        self.wait_for_container(container)
-        return container
-
-    def output_container_logs(self, container: Container | None = None):
-        """Output the container logs to our STDOUT"""
-        if IS_CI:
-            image = container.image
-            tags = image.tags[0] if len(image.tags) > 0 else str(image)
-            print(f"::group::Container logs - {tags}")
-        for log in container.logs().decode().split("\n"):
-            print(log)
-        if IS_CI:
-            print("::endgroup::")
-
-    def tearDown(self):
-        containers: list[Container] = self.docker_client.containers.list(
-            filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
-        )
-        for container in containers:
-            self.output_container_logs(container)
-            try:
-                container.kill()
-            except DockerException:
-                pass
-            try:
-                container.remove(force=True)
-            except DockerException:
-                pass
-        self.__network.remove()
-
-
-=======
->>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
@@ -210,33 +101,6 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
-<<<<<<< HEAD
-=======
-    def _get_chrome_extension(self):
-        path = Path(gettempdir()) / "ak-chrome.crx"
-        try:
-            self.logger.info("Downloading chrome extension...", path=path)
-            res = get_http_session().get(
-                "https://pkg.goauthentik.io/packages/authentik_browser-ext/browser-ext/authentik_chrome.zip",
-                stream=True,
-            )
-            with open(path, "w+b") as _ext:
-                for chunk in res.iter_content(chunk_size=1024):
-                    if chunk:
-                        _ext.write(chunk)
-        except RequestException as exc:
-            if path.exists() and not IS_CI:
-                self.logger.info(
-                    "Failed to download chrome extension, using cached copy", path=path
-                )
-                return path
-            raise exc
-        return path
-
-    @cached_property
-    def driver_container(self) -> Container:
-        return self.docker_client.containers.list(filters={"label": "io.goauthentik.tests"})[0]
-
     @classmethod
     def _pre_setup(cls):
         use_test_broker()
@@ -248,7 +112,6 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         broker.close()
         return super()._post_teardown()
 
->>>>>>> 083b61ca7 (tests: improve e2e/integration test reliability (#19540))
     def tearDown(self):
         if IS_CI:
             print("::endgroup::", file=stderr)
