@@ -44,7 +44,8 @@ export class AKElement extends LitElement implements AKElementProps {
             // typed on function signature.
         ] as CSSResultOrNative[];
 
-        // Remove duplicates in reverse order to preserve last-insert-wins semantics of CSS.
+        // Remove duplicates in reverse order to preserve last-insert-wins semantics of CSS. See:
+        // https://github.com/lit/lit/blob/main/packages/reactive-element/src/reactive-element.ts#L945
         const elementSet = new Set(elementStyles.reverse());
         // Reverse again because the return type is an array, and process as a CSSResult
         return Array.from(elementSet).reverse().map(createCSSResult);
