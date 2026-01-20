@@ -14,6 +14,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `keycloak.company` is the FQDN of the Keycloak installation.
+- `keycloak-slug` is the slug you will assign to the SAML source in authentik (e.g., `keycloak`).
 
 ## Export certificates
 
@@ -48,11 +49,11 @@ Before configuring either service, you need to export the signing certificates f
 2. Navigate to **Clients** and click **Create client**.
 3. Configure the client with the following settings:
     - Set **Client type** to `SAML`.
-    - Set **Client ID** to `https://authentik.company/source/saml/keycloak/metadata/`.
+    - Set **Client ID** to `https://authentik.company/source/saml/<keycloak-slug>/metadata/`.
 4. Click **Next**.
 5. Configure the following settings:
-    - Set **Valid redirect URIs** to `https://authentik.company/source/saml/keycloak/acs/`.
-    - Set **Master SAML Processing URL** to `https://authentik.company/source/saml/keycloak/acs/`.
+    - Set **Valid redirect URIs** to `https://authentik.company/source/saml/<keycloak-slug>/acs/`.
+    - Set **Master SAML Processing URL** to `https://authentik.company/source/saml/<keycloak-slug>/acs/`.
     - Set **Root URL** to `https://authentik.company`.
 6. Click **Save**.
 
@@ -66,8 +67,9 @@ Before configuring either service, you need to export the signing certificates f
 
 ### Upload the authentik certificate to Keycloak
 
-1. In the client settings, navigate to the **Keys** tab.
-2. Configure the following settings:
+1. In the Keycloak Admin console, navigate to **Clients** and click the SAML client you created earlier.
+2. Navigate to the **Keys** tab.
+3. Configure the following settings:
     - Enable **Client signature required**.
     - Click **Import** and upload the authentik certificate you exported earlier. This allows Keycloak to verify signatures on requests from authentik.
     - Enable **Encrypt assertions**.
@@ -92,7 +94,7 @@ Before configuring either service, you need to export the signing certificates f
     - Set **Slug** to `keycloak`.
     - Set **SSO URL** to `https://keycloak.company/realms/<realm-name>/protocol/saml`.
     - Set **SLO URL** to `https://keycloak.company/realms/<realm-name>/protocol/saml`.
-    - Set **Issuer** to `https://authentik.company/source/saml/keycloak/metadata/`.
+    - Set **Issuer** to `https://authentik.company/source/saml/<keycloak-slug>/metadata/`.
     - Set **Service Provider Binding** to `Post (Auto-Submit)`.
     - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Verification Certificate** to the Keycloak certificate you uploaded earlier.
