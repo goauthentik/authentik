@@ -2,7 +2,7 @@
 
 from base64 import b64decode
 from time import mktime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import xmlsec
 from defusedxml.lxml import fromstring
@@ -11,6 +11,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
 from django.utils.timezone import now
 from lxml import etree  # nosec
+from lxml.etree import _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -58,7 +59,7 @@ class ResponseProcessor:
 
     _source: SAMLSource
 
-    _root: Any
+    _root: _Element
     _root_xml: bytes
 
     _http_request: HttpRequest
@@ -120,7 +121,7 @@ class ResponseProcessor:
             decrypted_assertion,
         )
 
-    def _verify_signature(self, signature_node):
+    def _verify_signature(self, signature_node: _Element):
         """Verify a single signature node"""
         xmlsec.tree.add_ids(self._root, ["ID"])
 
