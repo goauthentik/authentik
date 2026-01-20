@@ -180,7 +180,7 @@
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.9.0",
         "turnstile-types": "^1.2.3",
-        "type-fest": "^5.4.0",
+        "type-fest": "^5.4.1",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.53.1",
         "unist-util-visit": "^5.0.0",
