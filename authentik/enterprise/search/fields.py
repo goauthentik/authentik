@@ -37,8 +37,7 @@ class JSONSearchField(StrField):
 
     def json_field_keys(self) -> Generator[tuple[str]]:
         with connection.cursor() as cursor:
-            cursor.execute(
-                f"""
+            cursor.execute(f"""
                 WITH RECURSIVE "{self.name}_keys" AS (
                     SELECT
                         ARRAY[jsonb_object_keys("{self.name}")] AS key_path_array,
@@ -62,8 +61,7 @@ class JSONSearchField(StrField):
                 )
 
                 SELECT key_path_array FROM unique_paths;
-            """  # nosec
-            )
+            """)  # nosec
             return (x[0] for x in cursor.fetchall())
 
     def get_fixed_structure(self, serializer: DjangoQLSchemaSerializer) -> OrderedDict:

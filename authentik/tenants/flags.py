@@ -24,7 +24,7 @@ class Flag[T]:
         flags = {}
         try:
             flags: dict[str, Any] = get_current_tenant(["flags"]).flags
-        except (DatabaseError, ProgrammingError, InternalError):
+        except DatabaseError, ProgrammingError, InternalError:
             pass
         value = flags.get(self.__key, None)
         if value is None:

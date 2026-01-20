@@ -329,8 +329,7 @@ class _PostgresConsumer(Consumer):
 
         with self.locks_connection.cursor() as cursor:
             cursor.execute(
-                sql.SQL(
-                    """
+                sql.SQL("""
                     UPDATE {table}
                     SET {state} = %(state)s, {mtime} = %(mtime)s
                     WHERE
@@ -341,8 +340,7 @@ class _PostgresConsumer(Consumer):
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
                         AND
                         pg_try_advisory_lock(%(lock_id)s)
-                    """
-                ).format(
+                    """).format(
                     table=sql.Identifier(self.query_set.model._meta.db_table),
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),

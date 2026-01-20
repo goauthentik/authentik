@@ -266,7 +266,7 @@ class TestLogoutRequestProcessor(TestCase):
             decoded_sig = base64.b64decode(signature)
             self.assertIsNotNone(decoded_sig)
             self.assertGreater(len(decoded_sig), 0)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self.fail("Signature is not valid base64")
 
     def test_signature_parameter_ordering(self):
@@ -471,5 +471,5 @@ class TestLogoutRequestProcessor(TestCase):
             decoded_sig = base64.b64decode(signature)
             self.assertIsNotNone(decoded_sig)
             self.assertGreater(len(decoded_sig), 0)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self.fail("Signature is not valid base64")

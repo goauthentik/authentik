@@ -58,7 +58,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
             self.check_expired()
             try:
                 return self.reader.city(ip_address)
-            except (GeoIP2Error, ValueError):
+            except GeoIP2Error, ValueError:
                 return None
 
     def city_to_dict(self, city: City | None) -> GeoIPDict | dict:

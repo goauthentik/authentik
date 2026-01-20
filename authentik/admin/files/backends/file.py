@@ -45,8 +45,13 @@ class FileBackend(ManageableBackend):
 
     @property
     def manageable(self) -> bool:
+        # Check _base_dir (the mount point, e.g. /data) rather than base_path
+        # (which includes usage/schema subdirs, e.g. /data/media/public).
+        # The subdirectories are created on first file write via mkdir(parents=True)
+        # in save_file(), so requiring them to exist beforehand would prevent
+        # file creation on fresh installs.
         return (
-            self.base_path.exists()
+            self._base_dir.exists()
             and (self._base_dir.is_mount() or (self._base_dir / self.usage.value).is_mount())
             or (settings.DEBUG or settings.TEST)
         )
