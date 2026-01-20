@@ -49,7 +49,7 @@ class KubernetesClient(ApiClient, BaseClient):
             api_instance = VersionApi(self)
             version: VersionInfo = api_instance.get_code()
             return OutpostServiceConnectionState(version=version.git_version, healthy=True)
-        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
+        except OpenApiException, HTTPError, ServiceConnectionInvalid:
             return OutpostServiceConnectionState(version="", healthy=False)
 
 

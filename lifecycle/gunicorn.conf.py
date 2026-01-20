@@ -53,27 +53,27 @@ workers = CONFIG.get_int("web.workers", default_workers)
 threads = CONFIG.get_int("web.threads", 4)
 
 
-def post_fork(server: Arbiter, worker: DjangoUvicornWorker):
+def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
     from prometheus_client import values
 
     values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
 
 
-def worker_exit(server: Arbiter, worker: DjangoUvicornWorker):
+def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Remove pid dbs when worker is shutdown"""
     from prometheus_client import multiprocess
 
     multiprocess.mark_process_dead(worker._worker_id)
 
 
-def on_starting(server: Arbiter):
+def on_starting(server: "Arbiter"):  # noqa: UP037
     """Attach a set of IDs that can be temporarily reused.
     Used on reloads when each worker exists twice."""
     server._worker_id_overload = set()
 
 
-def nworkers_changed(server: Arbiter, new_value, old_value):
+def nworkers_changed(server: "Arbiter", new_value, old_value):  # noqa: UP037
     """Gets called on startup too.
     Set the current number of workers.  Required if we raise the worker count
     temporarily using TTIN because server.cfg.workers won't be updated and if
@@ -81,7 +81,7 @@ def nworkers_changed(server: Arbiter, new_value, old_value):
     server._worker_id_current_workers = new_value
 
 
-def _next_worker_id(server: Arbiter):
+def _next_worker_id(server: "Arbiter"):  # noqa: UP037
     """If there are IDs open for reuse, take one.  Else look for a free one."""
     if server._worker_id_overload:
         return server._worker_id_overload.pop()
@@ -92,12 +92,12 @@ def _next_worker_id(server: Arbiter):
     return free.pop()
 
 
-def on_reload(server: Arbiter):
+def on_reload(server: "Arbiter"):  # noqa: UP037
     """Add a full set of ids into overload so it can be reused once."""
     server._worker_id_overload = set(range(1, server.cfg.workers + 1))
 
 
-def pre_fork(server: Arbiter, worker: DjangoUvicornWorker):
+def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Attach the next free worker_id before forking off."""
     worker._worker_id = _next_worker_id(server)
 

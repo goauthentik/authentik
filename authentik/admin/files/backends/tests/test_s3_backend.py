@@ -110,3 +110,38 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
         """Test S3Backend with REPORTS usage"""
         self.assertEqual(self.reports_s3_backend.usage, FileUsage.REPORTS)
         self.assertEqual(self.reports_s3_backend.base_path, "reports/public")
+
+    @CONFIG.patch("storage.s3.secure_urls", True)
+    @CONFIG.patch("storage.s3.addressing_style", "path")
+    def test_file_url_custom_domain_with_bucket_no_duplicate(self):
+        """Test file_url doesn't duplicate bucket name when custom_domain includes bucket.
+
+        Regression test for https://github.com/goauthentik/authentik/issues/19521
+
+        When using:
+        - Path-style addressing (bucket name goes in URL path, not subdomain)
+        - Custom domain that includes the bucket name (e.g., s3.example.com/bucket-name)
+
+        The bucket name should NOT appear twice in the final URL.
+
+        Example of the bug:
+        - custom_domain = "s3.example.com/authentik-media"
+        - boto3 presigned URL = "http://s3.example.com/authentik-media/media/public/file.png?..."
+        - Buggy result = "https://s3.example.com/authentik-media/authentik-media/media/public/file.png?..."
+        """
+        bucket_name = self.media_s3_bucket_name
+
+        # Custom domain includes the bucket name
+        custom_domain = f"localhost:8020/{bucket_name}"
+
+        with CONFIG.patch("storage.media.s3.custom_domain", custom_domain):
+            url = self.media_s3_backend.file_url("application-icons/test.svg", use_cache=False)
+
+        # The bucket name should appear exactly once in the URL path, not twice
+        bucket_occurrences = url.count(bucket_name)
+        self.assertEqual(
+            bucket_occurrences,
+            1,
+            f"Bucket name '{bucket_name}' appears {bucket_occurrences} times in URL, expected 1. "
+            f"URL: {url}",
+        )

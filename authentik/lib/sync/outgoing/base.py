@@ -22,7 +22,6 @@ if TYPE_CHECKING:
 
 
 class Direction(StrEnum):
-
     add = "add"
     remove = "remove"
 
@@ -36,7 +35,10 @@ SAFE_METHODS = [
 
 
 class BaseOutgoingSyncClient[
-    TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
+    TModel: "Model",
+    TConnection: "Model",
+    TSchema: dict,
+    TProvider: "OutgoingSyncProvider",
 ]:
     """Basic Outgoing sync client Client"""
 
@@ -82,7 +84,7 @@ class BaseOutgoingSyncClient[
                 connection.delete()
         return None, False
 
-    def delete(self, obj: TModel):
+    def delete(self, identifier: str):
         """Delete object from destination"""
         raise NotImplementedError()
 
