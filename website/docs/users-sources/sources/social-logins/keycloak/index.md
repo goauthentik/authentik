@@ -37,7 +37,7 @@ Before configuring either service, you need to export the signing certificates f
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates**.
-3. Click on the certificate you plan to use for signing (e.g., the default `authentik Self-signed Certificate`).
+3. Click the certificate you plan on using for signing (e.g., the default `authentik Self-signed Certificate`).
 4. Click **Download Certificate** to download the public certificate file.
 
 ## Keycloak configuration
