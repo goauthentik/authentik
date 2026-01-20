@@ -30,12 +30,10 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
     static styles = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,

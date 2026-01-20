@@ -13,7 +13,6 @@ import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Adds a message to the message container, displaying it to the user.
@@ -89,7 +88,6 @@ export class MessageContainer extends AKElement {
     alignment: "top" | "bottom" = "top";
 
     static styles: CSSResult[] = [
-        PFBase,
         PFAlertGroup,
         css`
             /* Fix spacing between messages */

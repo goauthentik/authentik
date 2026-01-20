@@ -18,11 +18,10 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoint-connector-wizard")
 export class EndpointConnectorWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    static styles: CSSResult[] = [PFButton];
 
     @property()
     createText = msg("Create");

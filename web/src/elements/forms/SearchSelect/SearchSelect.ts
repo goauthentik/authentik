@@ -17,8 +17,6 @@ import { msg } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
@@ -36,7 +34,7 @@ export abstract class SearchSelectBase<T>
     extends AkControlElement<string>
     implements ISearchSelectBase<T>
 {
-    static styles = [PFBase];
+    static styles = [];
 
     //#region Properties
 
