@@ -536,10 +536,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             replacement=replacement,
         )
         if not Event.filter_not_expired(
-            action=EventAction.DEPRECATION_USED, context__deprecation=deprecation
+            action=EventAction.CONFIGURATION_WARNING, context__deprecation=deprecation
         ).exists():
             event = Event.new(
-                EventAction.DEPRECATION_USED,
+                EventAction.CONFIGURATION_WARNING,
                 deprecation=deprecation,
                 replacement=replacement,
                 message=message_event,
