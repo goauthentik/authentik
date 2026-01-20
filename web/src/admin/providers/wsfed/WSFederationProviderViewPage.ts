@@ -117,13 +117,6 @@ export class WSFederationProviderViewPage extends AKElement {
         });
     }
 
-    fetchVerificationCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => {
-            this.verifier = kp;
-            this.requestUpdate("verifier");
-        });
-    }
-
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersWsfedRetrieve({ id }).then((prov) => {
             this.provider = prov;
@@ -132,12 +125,6 @@ export class WSFederationProviderViewPage extends AKElement {
                 this.signer = null;
             } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
-            }
-            // Clear existing verification certificate if the provider has none
-            if (!this.provider.verificationKp) {
-                this.verifier = null;
-            } else {
-                this.fetchVerificationCertificate(this.provider.verificationKp);
             }
         });
     }
