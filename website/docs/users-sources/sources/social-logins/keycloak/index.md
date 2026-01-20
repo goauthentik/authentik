@@ -62,15 +62,16 @@ Before configuring either service, you need to export the signing certificates f
 2. Configure the following settings:
     - Enable **Sign documents**.
     - Enable **Sign assertions**.
-    - Enable **Encrypt assertions** (optional, for encrypted SAML).
+    - Enable **Encrypt assertions**.
 
 ### Upload the authentik certificate to Keycloak
 
 1. In the client settings, navigate to the **Keys** tab.
 2. Configure the following settings:
-    - Enable **Client signature required** if you want Keycloak to verify signatures from authentik.
+    - Enable **Client signature required**.
     - Click **Import** and upload the authentik certificate you exported earlier. This allows Keycloak to verify signatures on requests from authentik.
-    - If encryption is enabled, click **Import** under the encryption key and upload the authentik certificate.
+    - Enable **Encrypt assertions**.
+    - Click **Import** under the encryption key and upload the authentik certificate.
 
 ## authentik configuration
 
@@ -93,11 +94,11 @@ Before configuring either service, you need to export the signing certificates f
     - Set **SLO URL** to `https://keycloak.company/realms/<realm-name>/protocol/saml`.
     - Set **Issuer** to `https://authentik.company/source/saml/keycloak/metadata/`.
     - Set **Service Provider Binding** to `Post (Auto-Submit)`.
-    - Set **Signing Keypair** to an authentik certificate (e.g., the default self-signed certificate).
+    - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Verification Certificate** to the Keycloak certificate you uploaded earlier.
     - Enable **Verify assertion signature**.
     - Enable **Verify response signature**.
-    - Set **Encryption Certificate** to an authentik certificate if you enabled encryption in Keycloak.
+    - Set **Encryption Certificate** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
 3. Click **Finish**.
 
 :::info Display new source on login screen
