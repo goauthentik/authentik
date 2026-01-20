@@ -77,8 +77,7 @@ lint-fix: lint-codespell  ## Lint and automatically fix errors in the python sou
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
 
-lint: ## Lint the python and golang sources
-	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES)
+lint: ci-bandit ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -340,7 +339,7 @@ ci-codespell: ci--meta-debug
 	$(UV) run codespell -s
 
 ci-bandit: ci--meta-debug
-	$(UV) run bandit -r $(PY_SOURCES)
+	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
 ci-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check
