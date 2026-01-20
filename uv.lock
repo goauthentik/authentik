@@ -308,6 +308,7 @@ dev = [
     { name = "pdoc" },
     { name = "pytest" },
     { name = "pytest-django" },
+    { name = "pytest-flakefinder" },
     { name = "pytest-github-actions-annotate-failures" },
     { name = "pytest-randomly" },
     { name = "pytest-timeout" },
@@ -315,7 +316,11 @@ dev = [
     { name = "ruff" },
     { name = "selenium" },
     { name = "types-channels" },
+    { name = "types-docker" },
+    { name = "types-jwcrypto" },
     { name = "types-ldap3" },
+    { name = "types-requests" },
+    { name = "types-zxcvbn" },
 ]
 
 [package.metadata]
@@ -393,7 +398,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "aws-cdk-lib", specifier = "==2.235.0" },
-    { name = "bandit", specifier = "==1.9.2" },
+    { name = "bandit", specifier = "==1.9.3" },
     { name = "black", specifier = "==26.1.0" },
     { name = "bpython", specifier = "==0.26" },
     { name = "codespell", specifier = "==2.4.1" },
@@ -413,6 +418,7 @@ dev = [
     { name = "pdoc", specifier = "==16.0.0" },
     { name = "pytest", specifier = "==9.0.2" },
     { name = "pytest-django", specifier = "==4.11.1" },
+    { name = "pytest-flakefinder", specifier = "==1.1.0" },
     { name = "pytest-github-actions-annotate-failures", specifier = "==0.3.0" },
     { name = "pytest-randomly", specifier = "==4.0.1" },
     { name = "pytest-timeout", specifier = "==2.4.0" },
@@ -420,7 +426,11 @@ dev = [
     { name = "ruff", specifier = "==0.14.13" },
     { name = "selenium", specifier = "==4.39.0" },
     { name = "types-channels", specifier = "==4.3.0.20250822" },
+    { name = "types-docker", specifier = "==7.1.0.20260109" },
+    { name = "types-jwcrypto", specifier = "==1.5.0.20251102" },
     { name = "types-ldap3", specifier = "==2.9.13.20251121" },
+    { name = "types-requests", specifier = "==2.32.4.20260107" },
+    { name = "types-zxcvbn", specifier = "==4.5.0.20250809" },
 ]
 
 [[package]]
@@ -545,7 +555,7 @@ wheels = [
 
 [[package]]
 name = "bandit"
-version = "1.9.2"
+version = "1.9.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -553,9 +563,9 @@ dependencies = [
     { name = "rich" },
     { name = "stevedore" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cf/72/f704a97aac430aeb704fa16435dfa24fbeaf087d46724d0965eb1f756a2c/bandit-1.9.2.tar.gz", hash = "sha256:32410415cd93bf9c8b91972159d5cf1e7f063a9146d70345641cd3877de348ce", size = 4241659, upload-time = "2025-11-23T21:36:18.722Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/76/a7f3e639b78601118aaa4a394db2c66ae2597fbd8c39644c32874ed11e0c/bandit-1.9.3.tar.gz", hash = "sha256:ade4b9b7786f89ef6fc7344a52b34558caec5da74cb90373aed01de88472f774", size = 4242154, upload-time = "2026-01-19T04:05:22.802Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/55/1a/5b0320642cca53a473e79c7d273071b5a9a8578f9e370b74da5daa2768d7/bandit-1.9.2-py3-none-any.whl", hash = "sha256:bda8d68610fc33a6e10b7a8f1d61d92c8f6c004051d5e946406be1fb1b16a868", size = 134377, upload-time = "2025-11-23T21:36:17.39Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/0b/8bdc52111c83e2dc2f97403dc87c0830b8989d9ae45732b34b686326fb2c/bandit-1.9.3-py3-none-any.whl", hash = "sha256:4745917c88d2246def79748bde5e08b9d5e9b92f877863d43fab70cd8814ce6a", size = 134451, upload-time = "2026-01-19T04:05:20.938Z" },
 ]
 
 [[package]]
@@ -3030,6 +3040,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pytest-flakefinder"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ec/53/69c56a93ea057895b5761c5318455804873a6cd9d796d7c55d41c2358125/pytest-flakefinder-1.1.0.tar.gz", hash = "sha256:e2412a1920bdb8e7908783b20b3d57e9dad590cc39a93e8596ffdd493b403e0e", size = 6795, upload-time = "2022-10-26T18:27:54.243Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/8b/06787150d0fd0cbd3a8054262b56f91631c7778c1bc91bf4637e47f909ad/pytest_flakefinder-1.1.0-py2.py3-none-any.whl", hash = "sha256:741e0e8eea427052f5b8c89c2b3c3019a50c39a59ce4df6a305a2c2d9ba2bd13", size = 4644, upload-time = "2022-10-26T18:27:52.128Z" },
+]
+
+[[package]]
 name = "pytest-github-actions-annotate-failures"
 version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3602,6 +3624,32 @@ wheels = [
 ]
 
 [[package]]
+name = "types-docker"
+version = "7.1.0.20260109"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "types-paramiko" },
+    { name = "types-requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/54/08/ffef2a8e29e9e22c724f9c1b22563c0938c3ab3fa728ff5b966465e12b93/types_docker-7.1.0.20260109.tar.gz", hash = "sha256:b36ef355ec9ba8bf29bcc4e32cc61dd9138ce4d8352c599c8fbc65f1a3e87b57", size = 32551, upload-time = "2026-01-09T03:21:49.238Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/0d/cdf37dcd0cd4c942a1634daf3ae3a99833791c7a316bff4d4ce04a30652e/types_docker-7.1.0.20260109-py3-none-any.whl", hash = "sha256:001a5a377d3fb287b7279cf4265b8ba3857e7d4203a16ab03e6e512f68f2f3d4", size = 47216, upload-time = "2026-01-09T03:21:48.059Z" },
+]
+
+[[package]]
+name = "types-jwcrypto"
+version = "1.5.0.20251102"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/08/a7/103a4b02c6fb8718994252d5840b11d770f090d4100aa460194cc009bc62/types_jwcrypto-1.5.0.20251102.tar.gz", hash = "sha256:c3b93a85d130a1c16999d2a3c435e5bd6a9b394754239190c5fe49cedcc0a98f", size = 11637, upload-time = "2025-11-02T03:07:38.388Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cf/15/e305c0ae6aaca68842c73fee5080eadd51a702a1562f05d9653d6e9b5a94/types_jwcrypto-1.5.0.20251102-py3-none-any.whl", hash = "sha256:506c93a09c6a988fc5a56bfe92f0cf80b31a0acee98bd6e807277bb0c6f8c1d0", size = 12978, upload-time = "2025-11-02T03:07:37.398Z" },
+]
+
+[[package]]
 name = "types-ldap3"
 version = "2.9.13.20251121"
 source = { registry = "https://pypi.org/simple" }
@@ -3611,6 +3659,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/bc/9b/3944a32c1666b34f96aecac0e002cdfde2dba959ceadfdc0a148c9f6743d/types_ldap3-2.9.13.20251121.tar.gz", hash = "sha256:58f1a63ab56c6e47102035682ec1acf1b127467ae2f52a916f40a6aca852e5a5", size = 33628, upload-time = "2025-11-21T03:03:43.138Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/28/05989820ae4694b15acf9fe26c73901fda117d99720954e969b5ec498399/types_ldap3-2.9.13.20251121-py3-none-any.whl", hash = "sha256:20356bf413cb178898f5b171463b44b82044b8b69f9331e09950009cfef05e48", size = 56808, upload-time = "2025-11-21T03:03:41.926Z" },
+]
+
+[[package]]
+name = "types-paramiko"
+version = "4.0.0.20250822"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b7/b8/c6ff3b10c2f7b9897650af746f0dc6c5cddf054db857bc79d621f53c7d22/types_paramiko-4.0.0.20250822.tar.gz", hash = "sha256:1b56b0cbd3eec3d2fd123c9eb2704e612b777e15a17705a804279ea6525e0c53", size = 28730, upload-time = "2025-08-22T03:03:43.262Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/79/a1/b3774ed924a66ee2c041224d89c36f0c21f4f6cf75036d6ee7698bf8a4b9/types_paramiko-4.0.0.20250822-py3-none-any.whl", hash = "sha256:55bdb14db75ca89039725ec64ae3fa26b8d57b6991cfb476212fa8f83a59753c", size = 38833, upload-time = "2025-08-22T03:03:42.072Z" },
 ]
 
 [[package]]
@@ -3641,6 +3701,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0f/f3/a0663907082280664d745929205a89d41dffb29e89a50f753af7d57d0a96/types_requests-2.32.4.20260107.tar.gz", hash = "sha256:018a11ac158f801bfa84857ddec1650750e393df8a004a8a9ae2a9bec6fcb24f", size = 23165, upload-time = "2026-01-07T03:20:54.091Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1c/12/709ea261f2bf91ef0a26a9eed20f2623227a8ed85610c1e54c5805692ecb/types_requests-2.32.4.20260107-py3-none-any.whl", hash = "sha256:b703fe72f8ce5b31ef031264fe9395cac8f46a04661a79f7ed31a80fb308730d", size = 20676, upload-time = "2026-01-07T03:20:52.929Z" },
+]
+
+[[package]]
+name = "types-zxcvbn"
+version = "4.5.0.20250809"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/27/70ca6f3f295c48f87495e283061e60d53a814853bd213f24125cf4192cad/types_zxcvbn-4.5.0.20250809.tar.gz", hash = "sha256:da19c7c416ad26ecb934110260375e687f37f1ed897522214d97ca2e9ccb2de5", size = 9389, upload-time = "2025-08-09T03:15:01.058Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6b/e0/0af4e865c28da104fa6ec45a2a336521fe34cbe606ef2ab6984b14d96e2c/types_zxcvbn-4.5.0.20250809-py3-none-any.whl", hash = "sha256:2cd151a5b35a976ae22017b5caed8f99d5e1be455cf9f9497cd86419073bc9cb", size = 10821, upload-time = "2025-08-09T03:15:00.299Z" },
 ]
 
 [[package]]
