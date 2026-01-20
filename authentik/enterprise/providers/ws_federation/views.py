@@ -122,9 +122,8 @@ class WSFedFlowFinalView(ChallengeStageView):
         provider: WSFederationProvider = get_object_or_404(
             WSFederationProvider, pk=application.provider_id
         )
-        proc = SignInProcessor(
-            provider, self.request, self.executor.plan.context[PLAN_CONTEXT_WS_FED_REQUEST]
-        )
+        sign_in_req: SignInRequest = self.executor.plan.context[PLAN_CONTEXT_WS_FED_REQUEST]
+        proc = SignInProcessor(provider, self.request, sign_in_req)
         response = proc.response()
         return AutosubmitChallenge(
             data={
@@ -133,7 +132,7 @@ class WSFedFlowFinalView(ChallengeStageView):
                     PLAN_CONTEXT_TITLE,
                     _("Redirecting to {app}...".format_map({"app": application.name})),
                 ),
-                "url": provider.acs_url,
+                "url": sign_in_req.wreply,
                 "attrs": response,
             },
         )
