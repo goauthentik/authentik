@@ -37,7 +37,6 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "digest_algorithm",
             "signature_algorithm",
             "signing_kp",
-            "verification_kp",
             "encryption_kp",
             "sign_assertion",
             "sign_logout_request",

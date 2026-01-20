@@ -7109,12 +7109,6 @@
                     "title": "Signing Keypair",
                     "description": "Keypair used to sign outgoing Responses going to the Service Provider."
                 },
-                "verification_kp": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Verification Certificate",
-                    "description": "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
-                },
                 "encryption_kp": {
                     "type": "string",
                     "format": "uuid",
