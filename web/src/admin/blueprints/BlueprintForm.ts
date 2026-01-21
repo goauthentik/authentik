@@ -121,9 +121,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                       }
                                       return name;
                                   }}
-                                  .value=${(
-                                      item: BlueprintFile | undefined,
-                                  ): string | undefined => {
+                                  .value=${(item: BlueprintFile | null) => {
                                       return item?.path;
                                   }}
                                   .selected=${(item: BlueprintFile): boolean => {

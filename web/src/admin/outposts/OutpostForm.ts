@@ -214,9 +214,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     .renderElement=${(item: ServiceConnection): string => {
                         return item.name;
                     }}
-                    .value=${(item: ServiceConnection | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: ServiceConnection | null) => item?.pk}
                     .groupBy=${(items: ServiceConnection[]) => {
                         return groupBy(items, (item) => item.verboseName);
                     }}

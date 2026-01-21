@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -25,6 +26,29 @@ import {
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[] {
+    return [
+        {
+            label: "RETRY",
+            value: InvalidResponseActionEnum.Retry,
+            default: true,
+            description: msg("Returns the error message and a similar challenge to the executor"),
+        },
+        {
+            label: "RESTART",
+            value: InvalidResponseActionEnum.Restart,
+            description: msg("Restarts the flow from the beginning"),
+        },
+        {
+            label: "RESTART_WITH_CONTEXT",
+            value: InvalidResponseActionEnum.RestartWithContext,
+            description: msg(
+                "Restarts the flow from the beginning, while keeping the flow context",
+            ),
+        },
+    ];
+}
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
@@ -116,9 +140,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     .renderElement=${(stage: Stage): string => {
                         return stage.name;
                     }}
-                    .value=${(stage: Stage | undefined): string | undefined => {
-                        return stage?.pk;
-                    }}
+                    .value=${(stage: Stage | null) => stage?.pk}
                     .selected=${(stage: Stage): boolean => {
                         return stage.pk === this.instance?.stage;
                     }}
@@ -153,28 +175,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 name="invalidResponseAction"
             >
                 <ak-radio
-                    .options=${[
-                        {
-                            label: "RETRY",
-                            value: InvalidResponseActionEnum.Retry,
-                            default: true,
-                            description: html`${msg(
-                                "Returns the error message and a similar challenge to the executor",
-                            )}`,
-                        },
-                        {
-                            label: "RESTART",
-                            value: InvalidResponseActionEnum.Restart,
-                            description: html`${msg("Restarts the flow from the beginning")}`,
-                        },
-                        {
-                            label: "RESTART_WITH_CONTEXT",
-                            value: InvalidResponseActionEnum.RestartWithContext,
-                            description: html`${msg(
-                                "Restarts the flow from the beginning, while keeping the flow context",
-                            )}`,
-                        },
-                    ]}
+                    .options=${createInvalidResponseOptions()}
                     .value=${this.instance?.invalidResponseAction}
                 >
                 </ak-radio>

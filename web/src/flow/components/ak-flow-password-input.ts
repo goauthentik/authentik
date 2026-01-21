@@ -69,6 +69,9 @@ export class InputPassword extends AKElement {
     @property({ type: String })
     label = msg("Password");
 
+    @property({ type: Boolean })
+    public required = false;
+
     /**
      * The placeholder text for the input field.
      *
@@ -308,7 +311,7 @@ export class InputPassword extends AKElement {
     }
 
     render() {
-        return html` ${AKLabel({ required: true, htmlFor: this.inputID }, this.label)}
+        return html` ${AKLabel({ required: this.required, htmlFor: this.inputID }, this.label)}
             <div class="pf-c-form__group">
                 <div class="pf-c-form__group-control">
                     <div class="pf-c-input-group">
@@ -323,7 +326,7 @@ export class InputPassword extends AKElement {
                                 "pf-m-icon": true,
                                 "pf-m-caps-lock": this.capsLock,
                             })}"
-                            required
+                            ?required=${this.required}
                             aria-invalid=${this.errors?.length ? "true" : "false"}
                             value=${this.initialValue}
                             ${ref(this.inputRef)}

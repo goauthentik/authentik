@@ -22,6 +22,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
+/**
+ * Enrollment Token Form
+ *
+ * @prop {string} instancePk - The primary key of the instance to load.
+ */
 @customElement("ak-endpoints-agent-enrollment-token-form")
 export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentToken, string>) {
     protected expirationMinimumDate = new Date();

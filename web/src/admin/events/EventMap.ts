@@ -1,6 +1,7 @@
 import "@openlayers-elements/core/ol-layer-vector";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
+import "./OpenLayer.d.ts";
 
 import { EventWithContext } from "#common/events";
 import { globalAK } from "#common/global";
