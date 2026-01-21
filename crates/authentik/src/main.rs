@@ -1,7 +1,68 @@
+use std::{
+    str::FromStr,
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
+};
+
 use argh::FromArgs;
 use authentik_config::{Config, get_config};
-use eyre::Result;
-use std::str::FromStr;
+use eyre::{Report, Result, eyre};
+use tokio::{
+    signal::unix::{Signal, SignalKind, signal},
+    sync::broadcast,
+    task::JoinSet,
+};
+use tokio_util::sync::CancellationToken;
+
+struct SignalStreams {
+    hup: Signal,
+    int: Signal,
+    quit: Signal,
+    usr1: Signal,
+    usr2: Signal,
+    term: Signal,
+}
+
+impl SignalStreams {
+    fn new() -> Result<Self> {
+        Ok(Self {
+            hup: signal(SignalKind::hangup())?,
+            int: signal(SignalKind::interrupt())?,
+            quit: signal(SignalKind::quit())?,
+            usr1: signal(SignalKind::user_defined1())?,
+            usr2: signal(SignalKind::user_defined2())?,
+            term: signal(SignalKind::terminate())?,
+        })
+    }
+}
+
+async fn watch_signals(
+    streams: SignalStreams,
+    stop: CancellationToken,
+    tx: broadcast::Sender<SignalKind>,
+) -> Result<()> {
+    let SignalStreams {
+        mut hup,
+        mut int,
+        mut quit,
+        mut usr1,
+        mut usr2,
+        mut term,
+    } = streams;
+    loop {
+        tokio::select! {
+            _ = hup.recv() => tx.send(SignalKind::interrupt())?,
+            _ = int.recv() => tx.send(SignalKind::interrupt())?,
+            _ = quit.recv() => tx.send(SignalKind::interrupt())?,
+            _ = usr1.recv() => tx.send(SignalKind::user_defined1())?,
+            _ = usr2.recv() => tx.send(SignalKind::user_defined2())?,
+            _ = term.recv() => tx.send(SignalKind::terminate())?,
+            _ = stop.cancelled() => return Ok(()),
+        };
+    }
+}
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -19,8 +80,7 @@ enum Command {
 
 fn install_tracing() -> Result<()> {
     use tracing_error::ErrorLayer;
-    use tracing_subscriber::prelude::*;
-    use tracing_subscriber::{filter::EnvFilter, fmt};
+    use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
     let default = format!("{},postgres=info", get_config().log_level);
     let filter_layer = EnvFilter::builder()
@@ -67,7 +127,8 @@ fn install_tracing() -> Result<()> {
     Ok(())
 }
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     color_eyre::install()?;
     Config::setup()?;
 
@@ -93,8 +154,59 @@ fn main() -> Result<()> {
     install_tracing()?;
     let cli: Cli = argh::from_env();
 
-    match cli.command {
-        Command::Server(args) => authentik_server::run(args),
-        Command::Worker(args) => authentik_worker::run(args),
+    if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
+        let mut dir = std::env::temp_dir();
+        dir.push("authentik_prometheus_tmp");
+        // SAFETY: there is only one thread at this point, so this is safe.
+        unsafe {
+            std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
+        }
     }
+    // if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
+    //     export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
+    // fi
+
+    let stop = CancellationToken::new();
+    let (signals_tx, _signals_rx) = broadcast::channel(10);
+
+    let mut tasks = JoinSet::new();
+    tasks.spawn(watch_signals(
+        SignalStreams::new()?,
+        stop.clone(),
+        signals_tx.clone(),
+    ));
+
+    match cli.command {
+        Command::Server(args) => {
+            authentik_server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
+        }
+        // Command::Worker(args) => authentik_worker::run(args),
+        _ => {}
+    };
+
+    if let Some(result) = tasks.join_next().await {
+        stop.cancel();
+
+        let mut errors = Vec::new();
+
+        match result {
+            Ok(Ok(_)) => {}
+            Ok(Err(err)) => errors.push(err),
+            Err(err) => errors.push(Report::new(err)),
+        }
+
+        while let Some(result) = tasks.join_next().await {
+            match result {
+                Ok(Ok(_)) => {}
+                Ok(Err(err)) => errors.push(err),
+                Err(err) => errors.push(Report::new(err)),
+            }
+        }
+
+        if !errors.is_empty() {
+            return Err(eyre!("Errors encountered: {:?}", errors));
+        }
+    }
+
+    Ok(())
 }

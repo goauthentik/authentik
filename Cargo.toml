@@ -14,7 +14,8 @@ publish = false
 [workspace.dependencies]
 argh = "0.1.13"
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
-axum-server = { version = "0.8.0", features = ["tls-rustls"] }
+axum-reverse-proxy = { version = "1.1.1", default-features = false }
+axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
 color-eyre = "0.6.5"
 config = { version = "0.15.19", default-features = false, features = [
   "yaml",
@@ -22,6 +23,8 @@ config = { version = "0.15.19", default-features = false, features = [
 ] }
 eyre = "0.6.12"
 glob = "0.3.3"
+hyper-unix-socket = "0.3.0"
+hyper-util = "0.1.19"
 ipnet = { version = "2.11.0", features = ["serde"] }
 nix = { version = "0.30.1", features = ["signal"] }
 pyo3 = "0.27.2"
@@ -41,6 +44,7 @@ serde_json = "1.0.149"
 serde_yaml_ng = "0.10.0"
 signal-hook = "0.4.1"
 tokio = { version = "1.49.0", features = ["full"] }
+tokio-util = "0.7.18"
 tower = "0.5.3"
 tracing = "0.1.44"
 tracing-error = "0.2.1"
