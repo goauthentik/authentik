@@ -4559,14 +4559,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Heimdal kadmin</source>
   <target>Heimdal kadmin</target>
 </trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-  <target>Outro</target>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
-  <target>Outro tipo de kadmin</target>
-</trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
   <target>Sincronização principal</target>
@@ -7003,14 +6995,6 @@ retorne uma lista para fornecer várias opções padrão.</target>
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Quando um usuário retornar do email com sucesso, sua conta será ativada.</target>
 </trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Usar configurações globais</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Quando ativado, as configurações globais de conexão de email serão usadas e as configurações de conexão abaixo serão ignoradas.</target>
-</trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
   <target>Tempo em que o token enviado é válido.</target>
@@ -8266,10 +8250,6 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
   <source>Private key available?</source>
   <target>Chave privada disponível?</target>
 </trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Par de Chaves de Certificado(s)</target>
-</trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
   <target>Gerenciado pelo authentik</target>
@@ -8952,14 +8932,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
   <target>Informações do usuário</target>
-</trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-  <target>Avatar de <x id="0" equiv-text="${this.user}"/></target>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
-  <target>Avatar do usuário</target>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -10068,9 +10040,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sdfe787aeeebbfbf1">
   <source>Type a token description...</source>
 </trans-unit>
-<trans-unit id="s434805f916fbf657">
-  <source>Not allowed to change this field. Please contact your administrator.</source>
-</trans-unit>
 <trans-unit id="sd7c52e2ce408c542">
   <source>Integrations synced in the last 12 hours.</source>
 </trans-unit>
@@ -10144,6 +10113,32 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sd8309fdcb0478b0f">
   <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
 </body>
 </file>

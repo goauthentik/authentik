@@ -109,9 +109,16 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
 @customElement("ak-stage-captcha-form")
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     @state()
-    selectedProvider = "custom";
+    protected selectedProvider = "custom";
 
     currentPreset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.custom;
+
+    public override reset(): void {
+        super.reset();
+
+        this.selectedProvider = "custom";
+        this.currentPreset = CAPTCHA_PROVIDERS.custom;
+    }
 
     loadInstance(pk: string): Promise<CaptchaStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({

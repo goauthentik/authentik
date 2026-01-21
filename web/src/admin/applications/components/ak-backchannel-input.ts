@@ -3,10 +3,11 @@ import "#elements/chips/Chip";
 import "#elements/chips/ChipGroup";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Provider } from "@goauthentik/api";
 
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
@@ -29,31 +30,31 @@ export class AkBackchannelProvidersInput extends AKElement {
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     @property({ type: Array })
-    providers: Provider[] = [];
-
-    @property({ type: Object })
-    tooltip?: TemplateResult;
+    public providers: Provider[] = [];
 
     @property({ attribute: false, type: Object })
-    confirm!: ({ items }: { items: Provider[] }) => Promise<void>;
+    public tooltip?: SlottedTemplateResult;
 
     @property({ attribute: false, type: Object })
-    remover!: (provider: Provider) => () => void;
+    public confirm!: (items: Provider[]) => Promise<void>;
+
+    @property({ attribute: false, type: Object })
+    public remover!: (provider: Provider) => () => void;
 
     @property({ type: String })
-    value = "";
+    public value = "";
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     render() {
         const renderOneChip = (provider: Provider) =>

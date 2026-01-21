@@ -4565,14 +4565,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source>Heimdal kadmin</source>
   <target>Heimdal kadmin</target>
 </trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-  <target>Muu</target>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
-  <target>Muun tyyppinen kadmin</target>
-</trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
   <target>Synkronoinnin tunnus</target>
@@ -7015,14 +7007,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Kun käyttäjä palaa palveluun sähköpostista, hänen tilinsä aktivoidaan.</target>
 </trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Käytä yleisiä asetuksia</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Kun tämä on käytössä, käytetään globaaleja sähköpostiyhteysasetuksia, ja alla olevat yhteysasetukset ohitetaan.</target>
-</trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
   <target>Aika, jonka lähetetty tunniste on voimassa.</target>
@@ -8285,10 +8269,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Private key available?</source>
   <target>Yksityinen avain saatavilla?</target>
 </trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Sertifikaatti-avainpari(t)</target>
-</trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
   <target>authentikin hallinnoima</target>
@@ -8972,14 +8952,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
   <target>Käyttäjän tiedot</target>
-</trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-  <target>Käyttäjän <x id="0" equiv-text="${this.user}"/> avatar</target>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
-  <target>Käyttäjän avatar</target>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -10099,9 +10071,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="sdfe787aeeebbfbf1">
   <source>Type a token description...</source>
 </trans-unit>
-<trans-unit id="s434805f916fbf657">
-  <source>Not allowed to change this field. Please contact your administrator.</source>
-</trans-unit>
 <trans-unit id="sd7c52e2ce408c542">
   <source>Integrations synced in the last 12 hours.</source>
 </trans-unit>
@@ -10175,6 +10144,32 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sd8309fdcb0478b0f">
   <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
 </body>
 </file>

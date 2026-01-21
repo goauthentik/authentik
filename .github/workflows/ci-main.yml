@@ -84,7 +84,7 @@ jobs:
           # Current version family based on
           current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
           if [[ -n $current_version_family ]]; then
-              prev_stable=$current_version_family
+              prev_stable="version/${current_version_family}"
           fi
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
@@ -203,7 +203,7 @@ jobs:
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -246,7 +246,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
