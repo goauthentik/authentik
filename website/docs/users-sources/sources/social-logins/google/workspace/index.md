@@ -116,7 +116,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
       :::warning Disable Verify Response Signature
       If you do not disable Verify Response Signature, your integration with Google Workspace will not work.
       :::
-    - Enable **Verify Response Signature**
+    - Enable **Verify Response Signature**.
     - Enable **Allow IdP-initiated Login**.
     - Set **NameID Policy** to `Email address`.
 3. Click **Finish**.
