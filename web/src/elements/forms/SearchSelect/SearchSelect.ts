@@ -39,6 +39,8 @@ export abstract class SearchSelectBase<T>
     extends AkControlElement<string>
     implements ISearchSelectBase<T>
 {
+    static styles = [];
+
     //#region Properties
 
     /**

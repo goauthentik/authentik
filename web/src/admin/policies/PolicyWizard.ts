@@ -27,11 +27,10 @@ import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    static styles: CSSResult[] = [PFButton];
 
     @property()
     createText = msg("Create");
