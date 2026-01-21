@@ -10,7 +10,13 @@ import { property } from "lit/decorators.js";
 
 /**
  * A base form that automatically tracks the server-side object (instance)
- * that we're interested in.  Handles loading and tracking of the instance.
+ * that we're interested in. Handles loading and tracking of the instance.
+ *
+ * @template T The type of the model instance.
+ * @template PKT The type of the primary key of the model instance.
+ *
+ * @prop {T} instance - The current instance being edited or viewed.
+ * @prop {PKT} instancePk - The primary key of the instance to load.
  */
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
     /**
@@ -82,9 +88,14 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    reset(): void {
+    public override reset(): void {
+        super.reset();
+
         this.instance = undefined;
         this.#initialLoad = false;
+        this.#initialDataLoad = false;
+
+        this.requestUpdate();
     }
 
     renderVisible(): TemplateResult {

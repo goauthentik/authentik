@@ -16,6 +16,10 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
+/**
+ * @prop {StageHost} host - The host managing this stage.
+ *
+ */
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
     protected override renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {

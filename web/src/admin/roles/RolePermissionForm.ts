@@ -23,10 +23,16 @@ interface RolePermissionAssign {
 @customElement("ak-role-permission-form")
 export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> {
     @state()
-    permissionsToAdd: Permission[] = [];
+    protected permissionsToAdd: Permission[] = [];
 
     @property({ type: String })
     public roleUuid: string | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.permissionsToAdd = [];
+    }
 
     loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
