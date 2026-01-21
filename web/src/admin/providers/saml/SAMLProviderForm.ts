@@ -26,10 +26,12 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     protected hasPostBinding = false;
 
     @state()
-    protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+    protected logoutMethod: SAMLProviderLogoutMethodEnum =
+        SAMLProviderLogoutMethodEnum.FrontchannelIframe;
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.hasSigningKp = false;
         this.hasSlsUrl = false;
         this.hasPostBinding = false;
@@ -98,7 +100,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
 
         const setLogoutMethod = (ev: Event) => {
             const target = ev.target as HTMLInputElement;
-            this.logoutMethod = target.value;
+            this.logoutMethod = target.value as SAMLProviderLogoutMethodEnum;
         };
 
         return renderForm({

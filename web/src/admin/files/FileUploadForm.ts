@@ -61,8 +61,9 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
 
     #formRef = createRef<HTMLFormElement>();
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.selectedFile = null;
     }
 

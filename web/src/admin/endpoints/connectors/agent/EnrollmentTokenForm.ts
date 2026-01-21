@@ -37,8 +37,9 @@ export class EnrollmentTokenForm extends WithBrandConfig(ModelForm<EnrollmentTok
     @property({ type: String, attribute: "connector-id" })
     public connectorID?: string;
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
     }
 

@@ -106,8 +106,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     defaultConfig?: OutpostDefaultConfig;
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.type = OutpostTypeEnum.Proxy;
         this.providers = providerProvider(this.type);
     }

@@ -40,6 +40,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     T,
     string
 > {
+    static styles: CSSResult[] = [...super.styles, PFContent];
+
     async loadInstance(pk: string): Promise<T> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
@@ -58,26 +60,27 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
+    protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
 
     @property({ type: Array })
-    allowedTypes: PolicyBindingCheckTarget[] = [
+    public allowedTypes: PolicyBindingCheckTarget[] = [
         PolicyBindingCheckTarget.Policy,
         PolicyBindingCheckTarget.Group,
         PolicyBindingCheckTarget.User,
     ];
 
     @property({ type: Array })
-    typeNotices: PolicyBindingNotice[] = [];
+    public typeNotices: PolicyBindingNotice[] = [];
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.policyGroupUser = PolicyBindingCheckTarget.Policy;
         this.defaultOrder = 0;
     }
@@ -88,8 +91,6 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         }
         return msg("Successfully created binding.");
     }
-
-    static styles: CSSResult[] = [...super.styles, PFContent];
 
     async load(): Promise<void> {
         // Overwrite the default for policyGroupUser with the first allowed type,

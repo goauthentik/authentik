@@ -61,13 +61,14 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.defaultOrder = 0;
     }
 

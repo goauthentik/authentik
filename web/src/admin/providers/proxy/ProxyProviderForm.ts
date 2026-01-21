@@ -30,13 +30,14 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     }
 
     @state()
-    showHttpBasic = true;
+    protected showHttpBasic = true;
 
     @state()
-    mode: ProxyMode = ProxyMode.Proxy;
+    protected mode: ProxyMode = ProxyMode.Proxy;
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.showHttpBasic = true;
         this.mode = ProxyMode.Proxy;
     }

@@ -57,7 +57,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @state()
     protected backchannelProviders: Provider[] = [];
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
         this.backchannelProviders = [];
     }

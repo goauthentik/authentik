@@ -27,8 +27,9 @@ export class TokenForm extends ModelForm<Token, string> {
     @state()
     protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
+
         this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
     }
 
