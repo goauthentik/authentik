@@ -7,7 +7,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { customElement, property } from "lit/decorators.js";
 
 type AsyncReturnArrayElement<T extends (query?: string) => Promise<never[]>> = T extends (
-    query?: string
+    query?: string,
 ) => Promise<(infer U)[]>
     ? U
     : never;
