@@ -120,7 +120,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
     - Enable **Verify Response Signature**.
     - Enable **Allow IdP-initiated Login**.
     - Set **NameID Policy** to `Email address`.
-3. Click **Finish**.
+4. Click **Finish**.
 
 :::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
