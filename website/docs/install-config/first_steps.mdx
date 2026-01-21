@@ -5,6 +5,8 @@ title: First steps
 After you have installed and started authentik, you are now ready to add your first application and provider, add some users, and get started with using authentik as your SSO and IdP.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FD4B2D', 'primaryTextColor': '#000', 'primaryBorderColor': '#FD4B2D'}}}%%
+
 architecture-beta
     group first
 
@@ -18,6 +20,7 @@ architecture-beta
     acl:R --> L:apps
     apps:R --> L:users
     users:R --> L:further
+
 ```
 
 ## Where are we now, and what's next?
@@ -29,7 +32,7 @@ The following tutorial assumes that you have already:
 2. Opened authentik in your browser and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik) or [Kubernetes](../install-config/install/kubernetes.md#access-authentik)).
 
 :::info Initial setup in browser
-If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that your server and worker are running.
+If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that Docker is running and that the authentik server and worker are started and healthy.
 :::
 
 Other optional pre-installation configurations that you might have already completed include:
@@ -62,7 +65,7 @@ For more configuration options and full details about integrating with Grafana, 
 Every application that you add to authentik has a provider; the provider is the protocol by which the application communicates and shares data between software applications on network devices.
 :::
 
-**B.** Provide the details for the application and provider.
+**B.** Provide the details for the application (Grafana) and provider (OAuth2/OIDC).
 
 - **Application**: provide a descriptive name (such as Grafana), an optional group for the type of application, the policy engine mode (select ANY to simplify this exercise), and optional UI settings that are displayed about the application.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -73,6 +76,8 @@ Every application that you add to authentik has a provider; the provider is the 
     - Set the Logout Method to `Front-channel`. <font color="green"><b>TIP</b>: With OAuth2, front-channel logout is considered the default because most application (including Grafana) do not support back-channel logout. </font>
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/flows-stages/bindings/) to manage the display and access to applications on a user's **My applications** page.
+
+    For any fields not mentioned above, you can leave the default value.
 
 **C.** Click **Submit** to save the new application and provider.
 
@@ -107,13 +112,13 @@ environment:
 
 ## Add your first user
 
-Now that you can access the authentik Admin interface, and you have added an application and provider, let's add a new users and assign them appropriate groups and roles.
+Now that you can access the authentik Admin interface, and you have added an application and provider, let's add a new user.
 
 ### 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
     **A.** Navigate to **Directory > Users**, and click **New User**.
 
-    **B.** Fill in the required fields:
+    **B.** Fill in the **_required_** fields:
 
     - **Username**: This value must be unique across your user folders.
     - **Path**: The path where the user will be created. By default the new user is created in the `/root/users` directory path, but you can change that later by editing the user.
@@ -148,17 +153,21 @@ Now that you have added your first application, and a new user, here are some ty
 
 Review the following information to learn more about the basics of setting up authentik and for troubleshooting tips.
 
-### Modifying the docker compose file
+### Production environments
 
-Especially when you are just starting out with authentik, we recommend that you use the default `docker-compose.yml` file that comes with the download, instead of trying to write the file from scratch. After you have successfully installed, configured, and accessed authentik, you can edit the file to do more advanced configs documented in the [Configuration section](../install-config/configuration/configuration.mdx).
+For production environments we recommend that you install and run authentik in [Kubernetes](../install-config/install/kubernetes.md).
+
+### Modifying the Docker Compose file
+
+Especially when you are just starting out with authentik, we recommend that you use the default `docker-compose.yml` file that comes with the download, instead of trying to write the file from scratch. After you have successfully installed, configured, and accessed authentik, you can edit the file to do more advanced configurations, as documented in the [Configuration section](../install-config/configuration/configuration.mdx).
 
 ### Reverse proxy
 
-authentik is typically set up with a reverse proxy in front of it. TODO WORDS HERE ABOUT WHY. For more details see the [Reverse proxy guide](./reverse-proxy.md).
+Typically authentik is set up with a reverse proxy in front of it. If you already have a reverse proxy that you are using to handle your incoming network traffic, you can simply use that same reverse proxy for authentik, by adding a few configuration values. There is no need to set up a separate reverse proxy. For more details see the [Reverse proxy guide](./reverse-proxy.md).
 
 ### The `latest` tag is deprecated
 
-We highly recommend against using the `:latest` tag with container images because it can lead to unintentional updates and potentially broken setups. Instead, use a specific version tag for authentik instances' container images, such as `:2025.12`.
+We highly recommend that you do NOT use the `:latest` tag with container images because it can lead to unintentional updates and potentially broken setups. Instead, use a specific version tag for authentik instances' container images, such as `:2025.12`.
 
 ### Using bindings to allow or restrict access to applications
 

@@ -13,10 +13,6 @@ You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk
 - Kubernetes
 - Helm
 
-## Workflow
-
-![](./kubernetes.drawio.png)
-
 ## Video
 
 View our video about installing authentik on Kubernetes.
