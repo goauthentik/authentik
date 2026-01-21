@@ -105,7 +105,8 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
 
 ### Create a SAML source in authentik
 
-1. Navigate to **Directory** > **Federation and Social login** and click **Create**.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
 2. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Google Workspace`.
     - Set **Slug** to `google` (must match the slug used in Google Workspace ACS URL).
