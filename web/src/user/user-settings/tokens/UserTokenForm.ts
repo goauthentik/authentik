@@ -43,7 +43,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const now = new Date();
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())

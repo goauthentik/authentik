@@ -40,7 +40,7 @@ export abstract class ModelForm<
         return Promise.resolve();
     }
 
-    @property({ attribute: "pk" })
+    @property({ attribute: "pk", converter: { fromAttribute: (value) => value as PKT } })
     public set instancePk(value: PKT) {
         this.#instancePk = value;
 
@@ -63,9 +63,9 @@ export abstract class ModelForm<
         });
     }
 
-    #instancePk?: PKT;
+    #instancePk: PKT | null = null;
 
-    public get instancePk(): PKT | undefined {
+    public get instancePk(): PKT | null {
         return this.#instancePk;
     }
 

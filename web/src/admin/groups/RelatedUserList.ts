@@ -80,7 +80,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         // TODO: The `form-control-sibling` container is a workaround to get the
         // table to allow the table to appear as an inline-block element next to the input group.
         // This should be fixed by moving the `@container` query off `:host`.

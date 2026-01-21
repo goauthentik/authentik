@@ -73,7 +73,7 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal name="flow">
                 ${AKLabel(
                     {

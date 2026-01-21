@@ -85,7 +85,7 @@ export class TokenForm extends ModelForm<Token, string> {
 
     //#region Renders
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
                 name="identifier"
                 value="${this.instance?.identifier ?? ""}"

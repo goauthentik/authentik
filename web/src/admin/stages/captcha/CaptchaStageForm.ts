@@ -370,7 +370,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const formValues = this.getFormValues();
         return html`
             <span>

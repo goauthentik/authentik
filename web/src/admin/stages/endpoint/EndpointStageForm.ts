@@ -41,7 +41,7 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Stage which associates the currently used device with the current session.")}
             </span>

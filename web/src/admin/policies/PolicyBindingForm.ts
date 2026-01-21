@@ -160,7 +160,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         </ak-toggle-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">

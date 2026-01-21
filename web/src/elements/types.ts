@@ -16,7 +16,7 @@ export const AKElementTagPrefix = `ak-`;
 export type AKElementTagPrefix = `ak-${string}`;
 
 /**
- * A utility type to extract registred tag names from {@linkcode HTMLElementTagNameMap}
+ * A utility type to extract registered tag names from {@linkcode HTMLElementTagNameMap}
  * i.e. those starting with `ak-`.
  */
 export type CustomElementTagName = Extract<keyof HTMLElementTagNameMap, AKElementTagPrefix>;
