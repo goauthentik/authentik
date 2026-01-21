@@ -495,6 +495,7 @@ export class FlowExecutor
         return html`<ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
+                class="pf-m-dark"
             ></ak-locale-select>
 
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
