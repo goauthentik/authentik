@@ -27,12 +27,12 @@ architecture-beta
 
 The following tutorial assumes that you have already:
 
-1. Installed authentik on either [Docker Compose](../install-config/install/docker-compose.mdx#install-and-start-authentik) or [Kubernetes](../install-config/install/kubernetes.md#install-authentik-helm-chart), and then started the server and worker.
+1. Installed authentik on either [Docker Compose](../install-config/install/docker-compose.mdx#install-and-start-authentik), [Kubernetes](../install-config/install/kubernetes.md#install-authentik-helm-chart), or [AWS CloudFormation](../install-config/install/aws.md) and then started the server and worker.
 
 2. Opened authentik in your browser and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik) or [Kubernetes](../install-config/install/kubernetes.md#access-authentik)).
 
 :::info Initial setup in browser
-If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that Docker is running and that the authentik server and worker are started and healthy.
+If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that the authentik server, worker, an PostgreSQL database are started and healthy.
 :::
 
 Other optional pre-installation configurations that you might have already completed include:
@@ -46,7 +46,13 @@ Other optional pre-installation configurations that you might have already compl
 
 ## Install your first application and provider
 
-Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../core/glossary/terms/application.mdx) and [provider](../core/glossary/terms/provider.mdx). After that, we'll walk through how to add users, groups, and roles.
+Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../core/glossary/terms/application.mdx) and [provider](../core/glossary/terms/provider.mdx). After that, we'll walk through how to add you r first user.
+
+:::tip Security Best Practice
+
+In a production environment, best practice is to first [create a group](../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../users-sources/user/user_basic_operations.md#create-a-user), and then add the application; you can configure the application to have a binding to the group or user. The binding controls the access to the application (whether or not it is displayed on a user's My Apps page).
+
+:::
 
 authentik supports hundreds of applications; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for many common ones.
 
@@ -85,7 +91,11 @@ Every application that you add to authentik has a provider; the provider is the 
 
 For some applications, you log into the application and configuring settings there; with Grafana you simply edit your authentik `.env` file. Here you add basic configuration settings as well as the Client ID, the secret, and the slug values that you obtained when you configured authentik in Step 1., above.
 
-**A.** In your `.env` file, set the following environment variables (these are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/)):
+**A.** In your authentik `.env` file, set the following environment variables:
+
+:::tip Docker-specific values
+Note that these values are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/)).
+:::
 
 ```
 environment:
@@ -106,7 +116,7 @@ environment:
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
 
-**B.** Save your `.env` file and go to your Grafana application.
+**B.** Save your authentik `.env` file and go to your Grafana application.
 
 **C.** To confirm that authentik is properly configured with the new application, log out of the Grafana application and then log back in using your authetntik credentials. If you don't use the default admin account that's fine, just be sure that the account is for a member of an appropriate authentik group.
 
