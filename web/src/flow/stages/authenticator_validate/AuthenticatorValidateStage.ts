@@ -47,8 +47,8 @@ const createDevicePickerPropMap = () =>
         },
         [DeviceClassesEnum.Webauthn]: {
             icon: "fa-mobile-alt",
-            label: msg("Authenticator"),
-            description: msg("Use a security key to prove your identity."),
+            label: msg("Security key"),
+            description: msg("Use a Passkey or security key to prove your identity."),
         },
         [DeviceClassesEnum.Totp]: {
             icon: "fa-clock",
@@ -61,7 +61,7 @@ const createDevicePickerPropMap = () =>
             description: msg("In case you lose access to your primary authenticators."),
         },
         [DeviceClassesEnum.Sms]: {
-            icon: "fa-mobile-alt",
+            icon: "fa-comment",
             label: msg("SMS"),
             description: msg("Tokens sent via SMS."),
         },
