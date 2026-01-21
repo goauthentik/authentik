@@ -22,6 +22,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
@@ -269,18 +270,6 @@ class BaseEvaluator:
 
         if not body and not template:
             raise ValueError("Either body or template parameter must be provided")
-
-        def normalize_addresses(addr: str | list[str] | None) -> list[tuple[str, str]] | None:
-            """Normalize address parameter to list of (name, email) tuples."""
-            if addr is None:
-                return None
-            if isinstance(addr, str):
-                return [("", addr)]
-            if isinstance(addr, list):
-                if not addr:
-                    raise ValueError("Address list cannot be empty")
-                return [("", email) for email in addr]
-            raise ValueError("Address must be a string or list of strings")
 
         to_addresses = normalize_addresses(address)
         cc_addresses = normalize_addresses(cc)
