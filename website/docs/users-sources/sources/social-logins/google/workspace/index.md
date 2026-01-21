@@ -87,7 +87,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
 
 ### Enable the application
 
-1. In the application list, click the SAML app you created.
+1. Navigate to **Apps** > **Web and mobile apps** and click the SAML app you created.
 2. Click **User access**.
 3. Turn the application **ON** for everyone or for specific organizational units.
 4. Click **Save**.
@@ -100,8 +100,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
 2. Navigate to **System** > **Certificates** and click **Import**.
 3. Give it a name like `Google Workspace Signing Certificate`.
 4. Paste the Google Workspace certificate you exported earlier into the **Certificate** field.
-5. Leave the **Private Key** field empty.
-6. Click **Create**.
+5. Click **Create**.
 
 ### Create a SAML source in authentik
 
@@ -113,10 +112,10 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
     - Set **SSO URL** to the SSO URL from Google Workspace.
     - Set **Issuer** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
     - Set **Verification Certificate** to the Google Workspace certificate you uploaded earlier.
-    - Disable **Verify Assertion Signature**.
       :::warning Disable Verify Assertion Signature
-      If you do not disable Verify Assertion Signature, your integration with Google Workspace will not work.
+      If you do not disable the following option, your integration with Google Workspace will not work.
       :::
+    - Disable **Verify Assertion Signature**.
     - Enable **Verify Response Signature**.
     - Enable **Allow IdP-initiated Login**.
     - Set **NameID Policy** to `Email address`.
