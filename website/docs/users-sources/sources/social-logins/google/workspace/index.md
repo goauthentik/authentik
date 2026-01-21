@@ -112,7 +112,7 @@ authentik is acting as both a Service Provider (SP) to Google and an Identity Pr
     - Set **SSO URL** to the SSO URL from Google Workspace.
     - Set **Issuer** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
     - Set **Verification Certificate** to the Google Workspace certificate you uploaded earlier.
-    - Disable **Verify Response Signature**
+    - Disable **Verify Response Signature**.
       :::warning Disable Verify Response Signature
       If you do not disable Verify Response Signature, your integration with Google Workspace will not work.
       :::
