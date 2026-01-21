@@ -58,6 +58,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+/// <reference types="../../types/lit.d.ts" />
+
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))

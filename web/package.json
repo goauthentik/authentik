@@ -72,6 +72,7 @@
         "#tests/*": "./tests/*.js",
         "#e2e": "./e2e/index.ts",
         "#e2e/*": "./e2e/*.ts",
+        "#types/*": "./types/*/index.d.ts",
         "#*/browser": {
             "types": "./out/*/browser.d.ts",
             "import": "./*/browser.js"

@@ -37,7 +37,7 @@ export class BoundDeviceUsersList extends BoundPoliciesList<DeviceUserBinding> {
 
     protected columns: TableColumn[] = [
         [
-            [PolicyBindingCheckTarget.user, PolicyBindingCheckTarget.group]
+            [PolicyBindingCheckTarget.User, PolicyBindingCheckTarget.Group]
                 .map((ct) => PolicyBindingCheckTargetToLabel(ct))
                 .join(" / "),
         ],

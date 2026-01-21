@@ -112,10 +112,10 @@ export class AuthenticatorValidateStage
     @state()
     _firstInitialized: boolean = false;
 
-    #selectedDeviceChallenge?: DeviceChallenge;
+    #selectedDeviceChallenge: DeviceChallenge | null = null;
 
     @state()
-    protected set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
+    protected set selectedDeviceChallenge(value: DeviceChallenge | null) {
         const previousChallenge = this.#selectedDeviceChallenge;
         this.#selectedDeviceChallenge = value;
 
@@ -142,7 +142,7 @@ export class AuthenticatorValidateStage
         });
     }
 
-    protected get selectedDeviceChallenge(): DeviceChallenge | undefined {
+    protected get selectedDeviceChallenge(): DeviceChallenge | null {
         return this.#selectedDeviceChallenge;
     }
 
@@ -154,7 +154,7 @@ export class AuthenticatorValidateStage
     }
 
     public reset(): void {
-        this.selectedDeviceChallenge = undefined;
+        this.selectedDeviceChallenge = null;
     }
 
     willUpdate(_changed: PropertyValues<this>) {

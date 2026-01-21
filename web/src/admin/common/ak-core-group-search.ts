@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
@@ -23,7 +23,7 @@ async function fetchObjects(query?: string): Promise<Group[]> {
 
 const renderElement = (group: Group): string => group.name;
 
-const renderValue = (group: Group | undefined): string | undefined => group?.pk;
+const renderValue = (group: Group | null) => group?.pk;
 
 /**
  * Core Group Search
@@ -47,7 +47,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
     group?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<Group>;
+    search!: ISearchSelect<Group>;
 
     @property({ type: String })
     public name?: string | null;
