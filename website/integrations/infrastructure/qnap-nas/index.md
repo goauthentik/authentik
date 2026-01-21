@@ -140,7 +140,7 @@ base                        ${ldap.baseDN}
 uri                         ldaps://${ldap.domain}/
 ssl                         on
 rootbinddn                  cn=${qnap.serviceAccount},ou=users,${ldap.baseDN}
-# Authentik has no memberUid therefore switch to
+# authentik has no memberUid therefore switch to
 nss_schema                  rfc2307bis
 
 # remap object classes to authentik ones
