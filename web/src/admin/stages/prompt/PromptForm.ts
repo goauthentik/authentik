@@ -4,24 +4,20 @@ import "#flow/stages/prompt/PromptStage";
 import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { parseAPIResponseError } from "#common/errors/network";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+
 import { StageHost } from "#flow/stages/base";
 
-import {
-    instanceOfValidationError,
-    Prompt,
-    PromptChallenge,
-    PromptTypeEnum,
-    StagesApi,
-} from "@goauthentik/api";
+import { Prompt, PromptChallenge, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 
@@ -44,13 +40,21 @@ class PreviewStageHost implements StageHost {
 @customElement("ak-prompt-form")
 export class PromptForm extends ModelForm<Prompt, string> {
     @state()
-    preview?: PromptChallenge;
+    protected preview: PromptChallenge | null = null;
 
     @state()
-    previewError?: string[];
+    protected previewError: ErrorProp | null = null;
 
-    @state()
-    previewResult: unknown;
+    @property({ attribute: false })
+    public previewResult: unknown;
+
+    public override reset(): void {
+        super.reset();
+
+        this.preview = null;
+        this.previewError = null;
+        this.previewResult = null;
+    }
 
     send(data: Prompt): Promise<unknown> {
         if (this.instance) {
@@ -86,14 +90,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
             })
             .then((nextPreview) => {
                 this.preview = nextPreview;
-                this.previewError = undefined;
+                this.previewError = null;
             })
             .catch(async (error: unknown) => {
-                const parsedError = await parseAPIResponseError(error);
-
-                this.previewError = instanceOfValidationError(parsedError)
-                    ? parsedError.nonFieldErrors
-                    : [pluckErrorDetail(parsedError, msg("Failed to preview prompt"))];
+                this.previewError = await parseAPIResponseError(error);
             });
     }
 
@@ -185,7 +185,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                               <div class="pf-c-card__body">${msg("Preview errors")}</div>
                               <div class="pf-c-card__body">
-                                  ${this.previewError.map((err) => html`<pre>${err}</pre>`)}
+                                  ${AKFormErrors({ errors: [this.previewError] })}
                               </div>
                           </div>
                       `

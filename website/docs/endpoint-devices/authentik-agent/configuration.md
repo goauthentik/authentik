@@ -6,25 +6,27 @@ tags: [authentik Agent, connector, configure, configuration]
 
 Before deploying the authentik Agent, configure your authentik deployment. This involves:
 
-- Importing the [Device code flow](../../add-secure-apps/providers/oauth2/device_code.md)
+- Create and apply a OAuth [Device code flow](../../add-secure-apps/providers/oauth2/device_code.md)
 - Creating an OAuth application and provider
 - Creating a [Connector](../device-compliance/connectors.md)
 
-## Import OAuth device code flow
+## Create and apply a OAuth device code flow
 
 The OAuth device code flow enables secure authentication for input-limited clients like CLI tools and is required for the authentik Agent to function.
 
 If you have already deployed the authentik OAuth device code flow, skip to the [next section](#create-an-application-and-provider-in-authentik-for-cli).
 
-1. Download the [device code flow blueprint file](https://raw.githubusercontent.com/goauthentik/platform/refs/heads/main/hack/authentik/blueprints/oauth2-device-code.yaml).
-2. Log in to authentik as an administrator and open the authentik Admin interface.
-3. Navigate to **Flows and Stages** > **Flows**.
-4. Click **Import**
-5. Select the downloaded blueprint and click **Import**.
-6. Navigate to **System** > **Brands** and click the **Edit** icon on the default brand.
-7. Set **Default code flow** to the newly created device code flow and click **Update**.
-
-Alternatively, manually create the flow by following the instructions in the [Device code flow documentation](../../add-secure-apps/providers/oauth2/device_code.md#create-and-apply-a-device-code-flow).
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
+3. Set the following required configurations:
+    - **Name**: provide a name (e.g. `default-device-code-flow`)
+    - **Title**: provide a title (e.g. `Device code flow`)
+    - **Slug**: provide a slug (e.g `default-device-code-flow`)
+    - **Designation**: `Stage Configuration`
+    - **Authentication**: `Require authentication`
+4. Click **Create**.
+5. Navigate to **System** > **Brands** and click the **Edit** icon on the default brand.
+6. Set **Default code flow** to the newly created device code flow and click **Update**.
 
 ## Create an application and provider in authentik for CLI
 
