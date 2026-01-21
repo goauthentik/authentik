@@ -56,14 +56,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 ) {
     //#region Styles
 
-    public static readonly styles: CSSResult[] = [
-        // ---
-        PFPage,
-        PFButton,
-        PFDrawer,
-        PFNav,
-        Styles,
-    ];
+    public static readonly styles: CSSResult[] = [PFPage, PFButton, PFDrawer, PFNav, Styles];
 
     //#endregion
 

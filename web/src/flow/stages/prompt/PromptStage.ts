@@ -32,6 +32,8 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+// Fixes horizontal rule <hr> warning in select dropdowns.
+
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
