@@ -1,3 +1,4 @@
+import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/forms/FormGroup";
