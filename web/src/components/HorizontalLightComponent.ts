@@ -10,7 +10,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
@@ -99,7 +99,7 @@ export abstract class HorizontalLightComponent<T>
      * @property
      */
     @property({ type: Object })
-    bighelp?: TemplateResult | TemplateResult[];
+    bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
 
     /**
      * @property

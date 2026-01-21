@@ -1,6 +1,7 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "webcomponent-qr-code";
+import "#types/qr-code";
 
 import { MessageLevel } from "#common/messages";
 

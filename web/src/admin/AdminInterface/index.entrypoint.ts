@@ -158,7 +158,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
         };
 
         return html`<div class="pf-c-page">
-            <ak-page-navbar ?open=${this.sidebarOpen}>
+            <ak-page-navbar>
                 <button
                     slot="toggle"
                     aria-controls="global-nav"

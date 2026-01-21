@@ -34,6 +34,10 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 // Fixes horizontal rule <hr> warning in select dropdowns.
 
+/**
+ * @prop {PromptChallenge} challenge - The challenge provided to this stage.
+ * @prop {StageHost} host - The host managing this stage.
+ */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,

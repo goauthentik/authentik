@@ -133,7 +133,7 @@ export class AgentConnectorSetup extends AKElement {
                         .renderDescription=${(token: EnrollmentToken) => {
                             return html`${token.name}`;
                         }}
-                        .value=${(token: EnrollmentToken | undefined): string | undefined => {
+                        .value=${(token: EnrollmentToken | null) => {
                             return token?.tokenUuid;
                         }}
                         @ak-change=${(ev: CustomEvent) => {
@@ -147,7 +147,6 @@ export class AgentConnectorSetup extends AKElement {
                         <li>
                             <ak-endpoints-agent-connector-config
                                 class="pf-m-secondary"
-                                label=${msg("Windows")}
                                 .request=${{
                                     connectorUuid: this.connector?.connectorUuid || "",
                                     mDMConfigRequest: {
@@ -168,7 +167,6 @@ export class AgentConnectorSetup extends AKElement {
                         <li>
                             <ak-endpoints-agent-connector-config
                                 class="pf-m-link"
-                                label=${msg("macOS")}
                                 .request=${{
                                     connectorUuid: this.connector?.connectorUuid || "",
                                     mDMConfigRequest: {

@@ -229,7 +229,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     public successMessage?: string;
 
     @property({ type: String })
-    public autocomplete?: AutoFill;
+    public autocomplete?: Exclude<AutoFillBase, "">;
 
     //#endregion
 

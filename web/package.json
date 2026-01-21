@@ -72,6 +72,7 @@
         "#tests/*": "./tests/*.js",
         "#e2e": "./e2e/index.ts",
         "#e2e/*": "./e2e/*.ts",
+        "#types/*": "./types/*/index.d.ts",
         "#*/browser": {
             "types": "./out/*/browser.d.ts",
             "import": "./*/browser.js"
@@ -126,7 +127,7 @@
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.5",
         "@types/node": "^25.0.9",
-        "@types/react": "^19.2.8",
+        "@types/react": "^19.2.9",
         "@types/react-dom": "^19.2.3",
         "@typescript-eslint/eslint-plugin": "^8.53.1",
         "@typescript-eslint/parser": "^8.53.1",

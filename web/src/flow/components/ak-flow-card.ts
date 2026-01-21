@@ -13,6 +13,8 @@ import { customElement, property } from "lit/decorators.js";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+type ExcludeComponent<T> = T extends { component: string } ? Omit<T, "component"> : T;
+
 /**
  * @element ak-flow-card
  * @class FlowCard
@@ -27,7 +29,7 @@ export class FlowCard extends AKElement {
     role = "presentation";
 
     @property({ type: Object })
-    challenge?: ChallengeTypes;
+    challenge?: ExcludeComponent<ChallengeTypes>;
 
     @property({ type: Boolean })
     loading = false;

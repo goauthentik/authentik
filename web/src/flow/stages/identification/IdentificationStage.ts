@@ -415,7 +415,7 @@ export class IdentificationStage extends BaseStage<
             }
         )?.passkeyChallenge;
         // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete = passkeyChallenge ? "username webauthn" : "username";
+        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
 
         return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
                 ? html`

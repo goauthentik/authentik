@@ -26,6 +26,7 @@ import Fuse from "fuse.js";
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { createRef } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -323,8 +324,21 @@ export class LibraryPage extends WithSession(AKElement) {
                     placeholder=${msg("Search for an application by name...")}
                     value=${ifPresent(this.query)}
                     list=${ifPresent(LibraryPage.DataListEnabled, "application-search-options")}
+                    aria-describedby="search-action-hint"
                 />
                 ${this.renderDataList()}
+
+                <span id="search-action-hint" class="sr-only">
+                    ${this.selectedApp
+                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                              id: "user.library.search.enter-to-open-hint",
+                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                          })
+                        : msg("Type to filter applications", {
+                              id: "user.library.search.type-to-filter-hint",
+                              desc: "Screen reader hint to inform the user they can filter the application list by typing",
+                          })}
+                </span>
             </form>
         </search>`;
     }
@@ -366,27 +380,56 @@ export class LibraryPage extends WithSession(AKElement) {
         return this.renderNoAppsFound();
     }
 
-    public override render() {
+    protected renderApplicationStatusOutput() {
         const count = this.visibleApplications.length;
         const { query } = this;
 
-        let message: string;
+        return guard([count, query], () => {
+            let message: string;
 
-        if (query) {
-            // We must present the count within the label to ensure that the screen reader
-            // considers the update significant enough to read on each change,
-            // rather than the on just the first render.
-            message =
-                count === 1
-                    ? msg(str`${count} application found for "${query}"`)
-                    : msg(str`${count} applications found for "${query}"`);
-        } else {
-            message =
-                count === 1
-                    ? msg(str`${count} application available`)
-                    : msg(str`${count} applications available`);
-        }
+            if (query) {
+                // We must present the count within the label to ensure that the screen reader
+                // considers the update significant enough to read on each change,
+                // rather than the on just the first render.
+                message =
+                    count === 1
+                        ? msg(str`${count} application found for "${query}"`, {
+                              id: "user.library.application-count-singular-with-query",
+                          })
+                        : msg(str`${count} applications found for "${query}"`, {
+                              id: "user.library.application-count-plural-with-query",
+                          });
+            } else {
+                message =
+                    count === 1
+                        ? msg(str`${count} application available`, {
+                              id: "user.library.application-count-singular",
+                          })
+                        : msg(str`${count} applications available`, {
+                              id: "user.library.application-count-plural",
+                          });
+            }
 
+            return html`<output
+                class="sr-only"
+                for="application-search-input"
+                form="application-search-form"
+                aria-live="polite"
+            >
+                <p>${message}</p>
+                <p>
+                    ${this.selectedApp
+                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                              id: "user.library.application-count.enter-to-open-hint",
+                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                          })
+                        : nothing}
+                </p>
+            </output>`;
+        });
+    }
+
+    protected override render() {
         return html`<div class="pf-c-page__main">
             <div class="pf-c-page__header pf-c-content">
                 <h1 class="pf-c-page__title">${msg("My applications")}</h1>
@@ -398,15 +441,7 @@ export class LibraryPage extends WithSession(AKElement) {
                 class="pf-c-page__main-section"
                 aria-label=${msg("Application list")}
             >
-                <output
-                    class="sr-only"
-                    for="application-search-input"
-                    form="application-search-form"
-                    aria-live="polite"
-                >
-                    <p>${message}</p>
-                </output>
-                ${this.renderState()}
+                ${this.renderApplicationStatusOutput()} ${this.renderState()}
             </main>
         </div>`;
     }

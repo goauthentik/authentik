@@ -9,12 +9,17 @@ import { groupBy } from "#common/utils";
 
 import { AkControlElement } from "#elements/AkControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
-import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import type {
+    GroupedOptions,
+    SelectGroup,
+    SelectOption,
+    SlottedTemplateResult,
+} from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
 type Group<T> = [string, T[]];
@@ -53,13 +58,13 @@ export abstract class SearchSelectBase<T>
     /**
      * Render a string description representation of items of the collection under search.
      */
-    public abstract renderDescription?: (element: T) => string | TemplateResult;
+    public abstract renderDescription?: (element: T) => SlottedTemplateResult;
 
     /**
      * A function which returns the currently selected object's primary key, used for serialization
      * into forms.
      */
-    public abstract value: (element: T | null) => string;
+    public abstract value: (element: T | null) => string | number | undefined;
 
     /**
      * A function passed to this object that determines an object in the collection under search
@@ -199,7 +204,7 @@ export abstract class SearchSelectBase<T>
             }
         }
 
-        return this.value(this.selectedObject) || "";
+        return String(this.value(this.selectedObject ?? null) ?? "");
     }
 
     public json() {
@@ -307,7 +312,7 @@ export abstract class SearchSelectBase<T>
                 // We fix this by forcing a string cast here.
                 // Remove this after migrating to Lit JSX.
 
-                const serialized = `${this.value(obj)}`;
+                const serialized = String(this.value(obj));
 
                 return serialized && serialized === value;
             }) || null;
@@ -333,7 +338,7 @@ export abstract class SearchSelectBase<T>
             items.map((item) => [
                 `${this.value(item)}`,
                 this.renderElement(item),
-                this.renderDescription ? this.renderDescription(item) : undefined,
+                this.renderDescription ? this.renderDescription(item) : null,
             ]);
 
         const makeSearchGroups = (items: Group<T>[]): SelectGroup[] =>

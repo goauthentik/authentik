@@ -2,14 +2,21 @@ import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 import { groupBy } from "#common/utils";
 
-import { TemplateResult } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
+
 import { customElement, property } from "lit/decorators.js";
+
+type AsyncReturnArrayElement<T extends (query?: string) => Promise<never[]>> = T extends (
+    query?: string
+) => Promise<(infer U)[]>
+    ? U
+    : never;
 
 export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
-    renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | null) => string;
+    renderDescription?: (element: T) => SlottedTemplateResult;
+    value: (element: T | null) => string | number;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy: (items: T[]) => [string, T[]][];
 }
@@ -45,18 +52,21 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  *
  */
 @customElement("ak-search-select")
-export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelect<T> {
+export class SearchSelect<
+    TFetch extends (query?: string) => Promise<never[]>,
+    T = AsyncReturnArrayElement<TFetch>,
+> extends SearchSelectBase<T> {
     @property({ attribute: false })
-    public fetchObjects!: (query?: string) => Promise<T[]>;
+    public fetchObjects!: TFetch;
 
     @property({ attribute: false })
     public renderElement!: (element: T) => string;
 
     @property({ attribute: false })
-    public renderDescription?: (element: T) => string | TemplateResult;
+    public renderDescription?: (element: T) => SlottedTemplateResult;
 
     @property({ attribute: false })
-    public value!: (element: T | null) => string;
+    public value!: (element: T | null) => string | number | undefined;
 
     @property({ attribute: false })
     public selected?: (element: T, elements: T[]) => boolean;
@@ -71,6 +81,6 @@ export default SearchSelect;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-search-select": SearchSelect<unknown>;
+        "ak-search-select": SearchSelect<(query?: string) => Promise<never[]>>;
     }
 }

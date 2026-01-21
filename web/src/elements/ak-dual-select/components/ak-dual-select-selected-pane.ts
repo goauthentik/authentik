@@ -32,6 +32,7 @@ const hostAttributes = [
  * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
  * attribute will be read by the parent when a control is clicked.
  *
+ * @prop {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  */
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
