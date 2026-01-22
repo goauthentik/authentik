@@ -14,26 +14,18 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-// Theme variable placeholder that can be used in file paths
-// This allows for theme-specific files like logo-%(theme)s.png
-const THEME_VARIABLE = "%(theme)s";
-
-// Same regex is used in the backend as well (after replacing %(theme)s)
+// Same regex is used in the backend as well
 const VALID_FILE_NAME_PATTERN = /^[a-zA-Z0-9._/-]+$/;
 
 // Note: browsers compile `pattern` using the new `v` RegExp flag (Unicode sets). Under `/v`,
 // both `/` and `-` must be escaped inside character classes.
-// This pattern allows %(theme)s by including %, (, and ) characters
-const VALID_FILE_NAME_PATTERN_STRING = "^[a-zA-Z0-9._\\/\\-%()+]+$";
+const VALID_FILE_NAME_PATTERN_STRING = "^[a-zA-Z0-9._\\/\\-]+$";
 
 function assertValidFileName(fileName: string): void {
-    // Allow %(theme)s placeholder for theme-specific files
-    // We temporarily replace it for validation, then check the result
-    const nameForValidation = fileName.replaceAll(THEME_VARIABLE, "theme");
-    if (!VALID_FILE_NAME_PATTERN.test(nameForValidation)) {
+    if (!VALID_FILE_NAME_PATTERN.test(fileName)) {
         throw new Error(
             msg(
-                "Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s",
+                "Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes",
             ),
         );
     }
