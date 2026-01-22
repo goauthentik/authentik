@@ -54,7 +54,7 @@ It's recommended to deploy the Agent via [MDM or automation tools](./automated.m
 :::
 
 :::info Serial number required
-The Agent requires a serial number be presented by Windows. When deploying on a virtual machine, ensure that it has a serial number set.
+The Agent requires a serial number be presented by Windows. Some hypervisors don't set serial numbers. When deploying on a virtual machine, ensure that it has a serial number set.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
