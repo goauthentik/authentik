@@ -24,7 +24,6 @@ import { css, CSSResult, html, type PropertyValues, type TemplateResult } from "
 import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import OL from "ol/ol.css";
 
 export const SELECTED_FEATURE_EVENT = "feature-selected";
@@ -76,7 +75,6 @@ export class EventMap extends AKElement {
     zoomPaddingPx = 100;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFCard,
         css`
             .pf-c-card,

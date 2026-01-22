@@ -38,7 +38,6 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
@@ -69,7 +68,7 @@ export class LibraryPage extends WithSession(AKElement) {
 
     static styles = [
         // ---
-        PFBase,
+
         PFDisplay,
         PFEmptyState,
         PFPage,
