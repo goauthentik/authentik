@@ -386,11 +386,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def encode(self, payload: dict[str, Any]) -> str:
-        """Represent the ID Token as a JSON Web Token (JWT)."""
+    def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
+        """Represent the ID Token as a JSON Web Token (JWT).
+
+        :param payload The payload to encode into the JWT
+        :param jwt_type The type of the JWT. This will be put in the JWT header using the `typ`
+            parameter. See RFC7515 Section 4.1.9. If not set fallback to the default of `JWT`.
+        """
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
+        if jwt_type is not None:
+            headers["typ"] = jwt_type
         key, alg = self.jwt_key
         encoded = encode(payload, key, algorithm=alg, headers=headers)
         if self.encryption_key:
