@@ -125,8 +125,8 @@ class WeChatType(SourceType):
 
     # URLs for the WeChat "Login for Websites" authorization flow
     authorization_url = "https://open.weixin.qq.com/connect/qrconnect"
-    # nosec: B105 This is a public URL, not a hardcoded secret
-    access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token"  # nosec
+    # This is a public URL, not a hardcoded secret
+    access_token_url = "https://api.weixin.qq.com/sns/oauth2/access_token"  # nosec B105
     profile_url = "https://api.weixin.qq.com/sns/userinfo"
 
     # Note: 'authorization_code_auth_method' is intentionally omitted.

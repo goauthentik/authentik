@@ -32,6 +32,11 @@ import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+/**
+ * Application Form
+ *
+ * @prop {string} instancePk - The primary key of the instance to load.
+ */
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     #api = new CoreApi(DEFAULT_CONFIG);
@@ -51,6 +56,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
     @state()
     protected backchannelProviders: Provider[] = [];
+
+    public override reset(): void {
+        super.reset();
+        this.backchannelProviders = [];
+    }
 
     public override getSuccessMessage(): string {
         return this.instance

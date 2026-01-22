@@ -10,6 +10,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { severityToLabel } from "#common/labels";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
 
 import {
     CoreApi,
@@ -76,18 +77,17 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                             ordering: "name",
                             includeUsers: false,
                         };
+
                         if (query !== undefined) {
                             args.search = query;
                         }
+
                         const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+
                         return groups.results;
                     }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
+                    .renderElement=${(group: Group) => group.name}
+                    .value=${(group: Group | null) => group?.pk}
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.destinationGroup;
                     }}
@@ -141,7 +141,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                             label: severityToLabel(SeverityEnum.Notice),
                             value: SeverityEnum.Notice,
                         },
-                    ]}
+                    ] satisfies RadioOption<SeverityEnum>[]}
                     .value=${this.instance?.severity}
                 >
                 </ak-radio>

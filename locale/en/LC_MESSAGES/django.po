@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-07 00:12+0000\n"
+"POT-Creation-Date: 2026-01-21 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -834,6 +834,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -892,6 +902,15 @@ msgstr ""
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra providers."
 msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
@@ -2566,6 +2585,14 @@ msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
 msgstr ""
 
 #: authentik/providers/scim/tasks.py

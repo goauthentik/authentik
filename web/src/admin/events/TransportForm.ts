@@ -162,12 +162,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         ).propertymappingsNotificationList(args);
                         return items.results;
                     }}
-                    .renderElement=${(item: NotificationWebhookMapping): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .renderElement=${(item: NotificationWebhookMapping) => item.name}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMappingBody === item.pk;
                     }}
@@ -198,9 +194,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     .renderElement=${(item: NotificationWebhookMapping): string => {
                         return item.name;
                     }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMappingHeaders === item.pk;
                     }}

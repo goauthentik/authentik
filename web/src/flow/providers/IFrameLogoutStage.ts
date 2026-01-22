@@ -18,7 +18,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 interface LogoutStatus {
     providerName: string;
@@ -67,7 +66,6 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     public static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFButton,

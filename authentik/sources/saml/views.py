@@ -36,7 +36,11 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
-from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
+from authentik.sources.saml.exceptions import (
+    InvalidSignature,
+    MissingSAMLResponse,
+    UnsupportedNameIDFormat,
+)
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
@@ -152,7 +156,7 @@ class ACSView(View):
         processor = ResponseProcessor(source, request)
         try:
             processor.parse()
-        except (MissingSAMLResponse, VerificationError) as exc:
+        except (InvalidSignature, MissingSAMLResponse, VerificationError) as exc:
             return bad_request_message(request, str(exc))
 
         try:
