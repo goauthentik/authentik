@@ -46,3 +46,15 @@ class PassthroughBackend(Backend):
     ) -> str:
         """Return the URL as-is for passthrough files."""
         return name
+
+    def themed_urls(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+    ) -> dict[str, str] | None:
+        """Passthrough backend doesn't support themed URLs.
+
+        External URLs are passed through as-is, and we can't verify
+        that themed variants exist at the external location.
+        """
+        return None
