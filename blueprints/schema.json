@@ -6276,6 +6276,11 @@
                     ],
                     "format": "date-time",
                     "title": "Expires"
+                },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
                 }
             },
             "required": []
@@ -11279,8 +11284,7 @@
                     "type": "string",
                     "enum": [
                         "MIT",
-                        "Heimdal",
-                        "other"
+                        "Heimdal"
                     ],
                     "title": "Kadmin type",
                     "description": "KAdmin server type"
@@ -13707,7 +13711,7 @@
                 "token_length": {
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 2147483647,
+                    "maximum": 100,
                     "title": "Token length"
                 }
             },

@@ -155,8 +155,8 @@ const items = [
                             id: "add-secure-apps/providers/gws/index",
                         },
                         items: [
-                            "add-secure-apps/providers/gws/setup-gws",
-                            "add-secure-apps/providers/gws/add-gws-provider",
+                            "add-secure-apps/providers/gws/configure-gws",
+                            "add-secure-apps/providers/gws/create-gws-provider",
                         ],
                     },
                     {
@@ -166,7 +166,7 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/ldap/index",
                         },
-                        items: ["add-secure-apps/providers/ldap/generic_setup"],
+                        items: ["add-secure-apps/providers/ldap/create-ldap-provider"],
                     },
                     {
                         type: "category",
@@ -176,8 +176,8 @@ const items = [
                             id: "add-secure-apps/providers/entra/index",
                         },
                         items: [
-                            "add-secure-apps/providers/entra/setup-entra",
-                            "add-secure-apps/providers/entra/add-entra-provider",
+                            "add-secure-apps/providers/entra/configure-entra",
+                            "add-secure-apps/providers/entra/create-entra-provider",
                         ],
                     },
                     {
@@ -189,7 +189,7 @@ const items = [
                         },
                         items: [
                             "add-secure-apps/providers/oauth2/create-oauth2-provider",
-                            "add-secure-apps/providers/oauth2/client_credentials",
+                            "add-secure-apps/providers/oauth2/machine_to_machine",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
                             "add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout",
@@ -599,6 +599,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
+                            "users-sources/sources/social-logins/keycloak/index",
                             {
                                 type: "category",
                                 label: "Google",
@@ -710,7 +711,7 @@ const items = [
                             id: "endpoint-devices/authentik-agent/agent-deployment/index",
                         },
                         items: [
-                            "endpoint-devices/authentik-agent/agent-deployment/mdm",
+                            "endpoint-devices/authentik-agent/agent-deployment/automated",
                             "endpoint-devices/authentik-agent/agent-deployment/linux",
                             "endpoint-devices/authentik-agent/agent-deployment/macos",
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
@@ -730,7 +731,7 @@ const items = [
                             type: "doc",
                             id: "endpoint-devices/authentik-agent/release-notes/index",
                         },
-                        items: ["endpoint-devices/authentik-agent/release-notes/temp"],
+                        items: ["endpoint-devices/authentik-agent/release-notes/v0.35"],
                     },
                 ],
             },
@@ -765,7 +766,6 @@ const items = [
                         ],
                     },
                     "endpoint-devices/device-authentication/ssh-authentication",
-                    "endpoint-devices/device-authentication/sudo-authorization",
                     {
                         //#endregion
 

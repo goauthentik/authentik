@@ -18,12 +18,12 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
 
-class MicrosoftEntraProviderUser(SerializerModel):
+class MicrosoftEntraProviderUser(InternallyManagedMixin, SerializerModel):
     """Mapping of a user and provider to a Microsoft user ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -49,7 +49,7 @@ class MicrosoftEntraProviderUser(SerializerModel):
         return f"Microsoft Entra Provider User {self.user_id} to {self.provider_id}"
 
 
-class MicrosoftEntraProviderGroup(SerializerModel):
+class MicrosoftEntraProviderGroup(InternallyManagedMixin, SerializerModel):
     """Mapping of a group and provider to a Microsoft group ID"""
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -140,6 +140,18 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
             # Get queryset of all groups with consistent ordering
             return Group.objects.all().order_by("pk")
         raise ValueError(f"Invalid type {type}")
+
+    @classmethod
+    def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:
+        if isinstance(obj, User):
+            return list(
+                obj.microsoftentraprovideruser_set.values_list("provider__pk", "microsoft_id")
+            )
+        if isinstance(obj, Group):
+            return list(
+                obj.microsoftentraprovidergroup_set.values_list("provider__pk", "microsoft_id")
+            )
+        raise ValueError(f"Invalid type {type(obj)}")
 
     def microsoft_credentials(self):
         return {

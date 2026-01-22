@@ -18,13 +18,13 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
             policyBindingUuid: pk,
         });
         if (binding?.policyObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.policy;
+            this.policyGroupUser = PolicyBindingCheckTarget.Policy;
         }
         if (binding?.groupObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.group;
+            this.policyGroupUser = PolicyBindingCheckTarget.Group;
         }
         if (binding?.userObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.user;
+            this.policyGroupUser = PolicyBindingCheckTarget.User;
         }
         this.defaultOrder = await this.getOrder();
         return binding;
@@ -35,15 +35,15 @@ export class DeviceUserBindingForm extends PolicyBindingForm<DeviceUserBinding> 
             data.target = this.targetPk;
         }
         switch (this.policyGroupUser) {
-            case PolicyBindingCheckTarget.policy:
+            case PolicyBindingCheckTarget.Policy:
                 data.user = null;
                 data.group = null;
                 break;
-            case PolicyBindingCheckTarget.group:
+            case PolicyBindingCheckTarget.Group:
                 data.policy = null;
                 data.user = null;
                 break;
-            case PolicyBindingCheckTarget.user:
+            case PolicyBindingCheckTarget.User:
                 data.policy = null;
                 data.group = null;
                 break;

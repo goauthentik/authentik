@@ -7,12 +7,14 @@ import { intersectionObserver } from "#elements/decorators/intersection-observer
 import { WithLocale } from "#elements/mixins/locale";
 import { FocusTarget } from "#elements/utils/focus";
 
+import { FlowUserDetails } from "#flow/FormStatic";
+
+import { ConsoleLogger } from "#logger/browser";
+
 import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
 import { html, LitElement, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface SubmitOptions {
     invisible: boolean;
@@ -56,6 +58,13 @@ export interface ResponseErrorsChallenge {
     };
 }
 
+/**
+ * Base class for all flow stages.
+ *
+ * @template Tin The type of the challenge this stage accepts.
+ * @prop {StageHost} host The host managing this stage.
+ * @prop {Tin} challenge The challenge provided to this stage.
+ */
 export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
@@ -64,6 +73,8 @@ export abstract class BaseStage<
         ...LitElement.shadowRootOptions,
         delegatesFocus: true,
     };
+
+    protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
 
     // TODO: Should have a property but this needs some refactoring first.
     // @property({ attribute: false })
@@ -137,18 +148,18 @@ export abstract class BaseStage<
             }
         }
 
-        return this.host?.submit(payload).then((successful) => {
+        return this.host?.submit(payload).then(async (successful) => {
             if (successful) {
-                this.onSubmitSuccess();
+                await this.onSubmitSuccess?.(payload);
             } else {
-                this.onSubmitFailure();
+                await this.onSubmitFailure?.(payload);
             }
 
             return successful;
         });
     };
 
-    renderNonFieldErrors() {
+    protected renderNonFieldErrors() {
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
@@ -173,22 +184,12 @@ export abstract class BaseStage<
         </div>`;
     }
 
-    renderUserInfo() {
+    protected renderUserInfo() {
         if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
             return nothing;
         }
         return html`
-            <ak-form-static
-                class="pf-c-form__group"
-                userAvatar="${this.challenge.pendingUserAvatar}"
-                user=${this.challenge.pendingUser}
-            >
-                <div slot="link">
-                    <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                        >${msg("Not you?")}</a
-                    >
-                </div>
-            </ak-form-static>
+            ${FlowUserDetails({ challenge: this.challenge })}
             <input
                 name="username"
                 autocomplete="username"
@@ -198,12 +199,17 @@ export abstract class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
-        // Method that can be overridden by stages
-        return;
-    }
-    onSubmitFailure(): void {
-        // Method that can be overridden by stages
-        return;
-    }
+    /**
+     * Callback method for successful form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitSuccess?(payload: Record<string, unknown>): void | Promise<void>;
+
+    /**
+     * Callback method for failed form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitFailure?(payload: Record<string, unknown>): void | Promise<void>;
 }

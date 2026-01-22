@@ -1,11 +1,15 @@
 import { APIError } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { ModelForm } from "#elements/forms/ModelForm";
-import { APIMessage } from "#elements/messages/Message";
 
 import { msg } from "@lit/localize";
 
+/**
+ * Base form for all provider forms.
+ *
+ * @prop {number} instancePk - The primary key of the instance to load.
+ */
 export abstract class BaseProviderForm<T> extends ModelForm<T, number> {
     public override getSuccessMessage(): string {
         return this.instance

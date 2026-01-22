@@ -1,4 +1,5 @@
 import "#elements/forms/FormGroup";
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -15,13 +16,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
-    showStatic = true;
+    protected showStatic = true;
 
     @state()
-    showHIBP = false;
+    protected showHIBP = false;
 
     @state()
-    showZxcvbn = false;
+    protected showZxcvbn = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showStatic = true;
+        this.showHIBP = false;
+        this.showZxcvbn = false;
+    }
 
     async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
@@ -228,26 +237,14 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="executionLogging">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Password field")}
                 required
@@ -264,73 +261,45 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal name="checkStaticRules">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.checkStaticRules ?? true}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showStatic = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Check static rules")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="checkHaveIBeenPwned">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.checkHaveIBeenPwned ?? true}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showHIBP = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Check haveibeenpwned.com")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
+            <ak-switch-input
+                name="checkStaticRules"
+                label=${msg("Check static rules")}
+                ?checked=${this.instance?.checkStaticRules ?? true}
+                @change=${(ev: Event) => {
+                    const el = ev.target as HTMLInputElement;
+                    this.showStatic = el.checked;
+                }}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="checkHaveIBeenPwned"
+                label=${msg("Check haveibeenpwned.com")}
+                ?checked=${this.instance?.checkHaveIBeenPwned ?? true}
+                @change=${(ev: Event) => {
+                    const el = ev.target as HTMLInputElement;
+                    this.showHIBP = el.checked;
+                }}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
                     ${msg("For more info see:")}
-                    <a href="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange"
+                    <a href="https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange"
                         >haveibeenpwned.com</a
                     >
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="checkZxcvbn">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.checkZxcvbn ?? true}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showZxcvbn = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Check zxcvbn")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
+                </p>`}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="checkZxcvbn"
+                label=${msg("Check zxcvbn")}
+                ?checked=${this.instance?.checkZxcvbn ?? true}
+                @change=${(ev: Event) => {
+                    const el = ev.target as HTMLInputElement;
+                    this.showZxcvbn = el.checked;
+                }}
+                .bighelp=${html`<p class="pf-c-form__helper-text">
                     ${msg("Password strength estimator created by Dropbox, see:")}
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>
-                </p>
-            </ak-form-element-horizontal>
+                </p>`}
+            >
+            </ak-switch-input>
             ${this.showStatic ? this.renderStaticRules() : nothing}
             ${this.showHIBP ? this.renderHIBP() : nothing}
             ${this.showZxcvbn ? this.renderZxcvbn() : nothing}`;

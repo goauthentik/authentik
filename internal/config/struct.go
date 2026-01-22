@@ -27,7 +27,7 @@ type Config struct {
 
 type PostgreSQLConfig struct {
 	Host     string `yaml:"host" env:"HOST, overwrite"`
-	Port     int    `yaml:"port" env:"PORT, overwrite"`
+	Port     string `yaml:"port" env:"PORT, overwrite"`
 	User     string `yaml:"user" env:"USER, overwrite"`
 	Password string `yaml:"password" env:"PASSWORD, overwrite"`
 	Name     string `yaml:"name" env:"NAME, overwrite"`

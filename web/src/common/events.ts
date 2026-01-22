@@ -1,4 +1,26 @@
-import { Event } from "@goauthentik/api";
+import { Event as EventSerializer } from "@goauthentik/api";
+
+/**
+ * Event dispatched when the UI should refresh.
+ */
+export class AKRefreshEvent extends Event {
+    public static readonly eventName = "ak-refresh";
+
+    constructor() {
+        super(AKRefreshEvent.eventName, { bubbles: true, composed: true });
+    }
+}
+
+/**
+ * Event dispatched when a change in enterprise features requires a refresh.
+ */
+export class AKEnterpriseRefreshEvent extends Event {
+    public static readonly eventName = "ak-refresh-enterprise";
+
+    constructor() {
+        super(AKEnterpriseRefreshEvent.eventName, { bubbles: true, composed: true });
+    }
+}
 
 export interface EventUser {
     pk: number;
@@ -38,7 +60,7 @@ export interface EventContext {
     device?: EventModel;
 }
 
-export interface EventWithContext extends Event {
+export interface EventWithContext extends EventSerializer {
     user: EventUser;
     context: EventContext;
 }

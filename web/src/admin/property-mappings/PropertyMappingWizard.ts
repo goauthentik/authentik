@@ -32,11 +32,10 @@ import { html, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
-    static styles = [PFBase, PFButton];
+    static styles = [PFButton];
 
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];

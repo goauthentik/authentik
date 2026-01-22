@@ -30,25 +30,21 @@ Devices can be registered by installing the [authentik Agent](./authentik-agent/
 - [Device compliance](./device-compliance/index.mdx) by reporting information about endpoint devices to authentik.
 - [Local device login](./device-authentication/local-device-login/index.mdx) with authentik credentials.
 - [Connecting via SSH to endpoint devices](./device-authentication/ssh-authentication.mdx) with authentik credentials.
-- [Sudo authorization](./device-authentication/sudo-authorization.md) with authentik credentials.
 - [Authenticating to CLI applications](./device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials.
 
 Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services such as Fleet. This allows for device information to be reported to authentik for [Device compliance](./device-compliance/index.mdx) purposes.
 
 ## Features overview
 
-| Feature                                                   | Linux          | Windows        | macOS             | Status                                                                                      |
-| --------------------------------------------------------- | -------------- | -------------- | ----------------- | ------------------------------------------------------------------------------------------- |
-| **Local device login**                                    | Open source    | :ak-enterprise | :ak-enterprise \* | Available for early preview on Windows.                                                     |
-| **SSH authentication**                                    | Open source    | N/A            | :ak-enterprise    | Available for early preview. Only supports Linux SSH targets. macOS targets in development. |
-| **Sudo authorization**                                    | Open source    | N/A            | N/A               | Available for early preview.                                                                |
-| **Device compliance**                                     | Open source    | Open source    | Open source       | Available for early preview.                                                                |
-| **Advanced device compliance**                            | :ak-enterprise | :ak-enterprise | :ak-enterprise    | In development.                                                                             |
-| **authentik Agent **                                      | Open source    | Open source    | Open source       | Available for early preview.                                                                |
-| **Fleet Connectors**                                      | :ak-enterprise | :ak-enterprise | :ak-enterprise    | Available for early preview.                                                                |
-| **Other Connectors** (Entra, Intune, Cloudflare WARP etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise    | In development.                                                                             |
-
-\*TODO: explain how PSSO works
+| Feature                                                   | Linux          | Windows        | macOS          | Status                                                        |
+| --------------------------------------------------------- | -------------- | -------------- | -------------- | ------------------------------------------------------------- |
+| **Local device login**                                    | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview on Windows.                       |
+| **SSH authentication**                                    | Open source    | Open source    | Open source    | Available for early preview. Only supports Linux SSH targets. |
+| **Device compliance**                                     | Open source    | Open source    | Open source    | Available for early preview.                                  |
+| **Advanced device compliance**                            | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
+| **authentik Agent**                                       | Open source    | Open source    | Open source    | Available for early preview.                                  |
+| **Fleet Connectors**                                      | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview.                                  |
+| **Other Connectors** (Entra, Intune, Cloudflare WARP etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
 
 ## How to provide feedback and report bugs
 

@@ -2,7 +2,7 @@
 
 from dataclasses import asdict, is_dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -137,7 +137,7 @@ class PermissionDict(TypedDict):
 class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
-    stage: Optional["StageView"]
+    stage: StageView | None
     component = CharField(default="xak-flow-response-default")
 
     def __init__(self, instance=None, data=None, **kwargs):

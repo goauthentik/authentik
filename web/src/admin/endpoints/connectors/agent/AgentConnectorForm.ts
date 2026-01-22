@@ -15,7 +15,6 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { gidStartNumberHelp, uidStartNumberHelp } from "#admin/providers/ldap/LDAPOptionsAndHelp";
 import {
     oauth2ProvidersProvider,
     oauth2ProvidersSelector,
@@ -62,9 +61,11 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     renderForm() {
         return html`<ak-text-input
                 name="name"
-                placeholder=${msg("Connector name...")}
+                placeholder=${msg("Type a connector name...")}
                 label=${msg("Connector name")}
                 value=${ifDefined(this.instance?.name)}
+                input-hint="code"
+                autofocus
                 required
             ></ak-text-input>
             <ak-text-input
@@ -183,15 +184,19 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         label=${msg("NSS User ID offset")}
                         required
                         name="nssUidOffset"
-                        value="${this.instance?.nssUidOffset ?? 1000}"
-                        help=${uidStartNumberHelp}
+                        value="${this.instance?.nssUidOffset ?? 2000}"
+                        help=${msg(
+                            "The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.",
+                        )}
                     ></ak-number-input>
                     <ak-number-input
                         label=${msg("NSS Group ID offset")}
                         required
                         name="nssGidOffset"
-                        value="${this.instance?.nssGidOffset ?? 1000}"
-                        help=${gidStartNumberHelp}
+                        value="${this.instance?.nssGidOffset ?? 4000}"
+                        help=${msg(
+                            "The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.",
+                        )}
                     ></ak-number-input>
                 </div>
             </ak-form-group>`;

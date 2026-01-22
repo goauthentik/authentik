@@ -14,14 +14,13 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-endpoint-agent")
 export class EndpointAgentStage extends BaseStage<
     EndpointAgentChallenge,
     EndpointAgentChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
     firstUpdated() {
         window.addEventListener("message", (ev) => {
@@ -80,5 +79,11 @@ export class EndpointAgentStage extends BaseStage<
                       ><span>${msg("Verifying your device...")}</span>
                   </ak-empty-state>`}
         </ak-flow-card>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-endpoint-agent": EndpointAgentStage;
     }
 }

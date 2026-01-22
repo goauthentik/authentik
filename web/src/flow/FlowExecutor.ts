@@ -1,5 +1,6 @@
 import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "#elements/LoadingOverlay";
+import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
@@ -12,27 +13,22 @@ import "#flow/stages/RedirectStage";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import {
-    EVENT_FLOW_ADVANCE,
-    EVENT_FLOW_INSPECTOR_TOGGLE,
-    EVENT_WS_MESSAGE,
-} from "#common/constants";
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
-import { formatLocaleOptions, PseudoLocale, TargetLocale } from "#common/ui/locale/definitions";
-import { setSessionLocale } from "#common/ui/locale/utils";
-import { WebsocketClient, WSMessage } from "#common/ws";
+import { AKSessionAuthenticatedEvent } from "#common/ws/events";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
+import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { WithLocale } from "#elements/mixins/locale";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
+import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
 import {
@@ -51,7 +47,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { repeat } from "lit/directives/repeat.js";
+import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -62,9 +58,11 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+/// <reference types="../../types/lit.d.ts" />
+
 @customElement("ak-flow-executor")
 export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(WithLocale(Interface)))
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
     implements StageHost
 {
     static readonly DefaultLayout: FlowLayoutEnum =
@@ -89,20 +87,26 @@ export class FlowExecutor
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    #challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    public set challenge(value: ChallengeTypes | undefined) {
+    public set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+        const previousTitle = previousValue?.flowInfo?.title;
+        const nextTitle = value?.flowInfo?.title;
+
         this.#challenge = value;
-        if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
-        } else {
+
+        if (!nextTitle) {
             document.title = this.brandingTitle;
+        } else if (nextTitle !== previousTitle) {
+            document.title = `${nextTitle} - ${this.brandingTitle}`;
         }
-        this.requestUpdate();
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    public get challenge(): ChallengeTypes | undefined {
+    public get challenge(): ChallengeTypes | null {
         return this.#challenge;
     }
 
@@ -121,7 +125,7 @@ export class FlowExecutor
     @property({ type: Boolean })
     public inspectorAvailable?: boolean;
 
-    @property({ type: String, attribute: "data-layout", useDefault: true })
+    @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     @state()
@@ -138,7 +142,7 @@ export class FlowExecutor
 
         WebsocketClient.connect();
 
-        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
+        const inspector = new URLSearchParams(window.location.search).get("inspector");
 
         if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
@@ -163,37 +167,25 @@ export class FlowExecutor
         });
     }
 
-    #websocketHandler = (e: CustomEvent<WSMessage>) => {
-        if (e.detail.message_type === "session.authenticated") {
-            if (!document.hidden) {
-                return;
-            }
-            console.debug("authentik/ws: Reloading after session authenticated event");
-            window.location.reload();
+    //#region Listeners
+
+    @listen(AKSessionAuthenticatedEvent)
+    protected sessionAuthenticatedListener = () => {
+        if (!document.hidden) {
+            return;
         }
+
+        console.debug("authentik/ws: Reloading after session authenticated event");
+        window.location.reload();
     };
-
-    public connectedCallback(): void {
-        super.connectedCallback();
-
-        window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
-        window.addEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
-    }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
-
         WebsocketClient.close();
     }
 
-    public async firstUpdated(): Promise<void> {
-        if (this.can(CapabilitiesEnum.CanDebug)) {
-            this.inspectorAvailable = true;
-        }
-
+    protected refresh = () => {
         this.loading = true;
 
         return new FlowsApi(DEFAULT_CONFIG)
@@ -201,16 +193,7 @@ export class FlowExecutor
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
             })
-            .then((challenge: ChallengeTypes) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_FLOW_ADVANCE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }
-
+            .then((challenge) => {
                 this.challenge = challenge;
 
                 if (this.challenge.flowInfo) {
@@ -229,6 +212,20 @@ export class FlowExecutor
             .finally(() => {
                 this.loading = false;
             });
+    };
+
+    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+        super.firstUpdated(changed);
+
+        if (this.can(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
+        }
+
+        this.refresh().then(() => {
+            if (this.inspectorOpen) {
+                window.dispatchEvent(new AKFlowAdvanceEvent());
+            }
+        });
     }
 
     // DOM post-processing has to happen after the render.
@@ -279,12 +276,7 @@ export class FlowExecutor
             })
             .then((challenge) => {
                 if (this.inspectorOpen) {
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_FLOW_ADVANCE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
+                    window.dispatchEvent(new AKFlowAdvanceEvent());
                 }
 
                 this.challenge = challenge;
@@ -455,7 +447,8 @@ export class FlowExecutor
 
     //#region Render Inspector
 
-    #toggleInspector = () => {
+    @listen(AKFlowInspectorChangeEvent)
+    protected toggleInspector = () => {
         this.inspectorOpen = !this.inspectorOpen;
 
         const drawer = document.getElementById("flow-drawer");
@@ -469,66 +462,23 @@ export class FlowExecutor
     };
 
     protected renderInspectorButton() {
-        if (!this.inspectorAvailable || this.inspectorOpen) {
-            return null;
-        }
+        return guard([this.inspectorAvailable, this.inspectorOpen], () => {
+            if (!this.inspectorAvailable || this.inspectorOpen) {
+                return null;
+            }
 
-        return html`<button
-            aria-label=${this.inspectorOpen
-                ? msg("Close flow inspector")
-                : msg("Open flow inspector")}
-            aria-expanded=${this.inspectorOpen ? "true" : "false"}
-            class="inspector-toggle pf-c-button pf-m-primary"
-            aria-controls="flow-inspector"
-            @click=${this.#toggleInspector}
-        >
-            <i class="fa fa-search-plus" aria-hidden="true"></i>
-        </button>`;
-    }
-
-    #localeChangeListener = (event: Event) => {
-        const select = event.target as HTMLSelectElement;
-        const locale = select.value as TargetLocale;
-
-        this.locale = locale;
-
-        setSessionLocale(locale);
-    };
-
-    protected renderLocaleSelector() {
-        const { locale } = this;
-        let localeOptions = formatLocaleOptions();
-
-        if (!this.can(CapabilitiesEnum.CanDebug)) {
-            localeOptions = localeOptions.filter(([, code]) => code !== PseudoLocale);
-        }
-
-        const options = repeat(
-            localeOptions,
-            ([_locale, code]) => code,
-            ([label, code]) =>
-                html`<option value=${code} ?selected=${code === locale}>${label}</option>`,
-        );
-
-        return html`<div class="locale-selector">
-            <label
-                for="locale-selector"
-                aria-label=${msg("Select language", {
-                    id: "language-selector-label",
-                    desc: "Label for the language selection dropdown",
-                })}
+            return html`<button
+                aria-label=${this.inspectorOpen
+                    ? msg("Close flow inspector")
+                    : msg("Open flow inspector")}
+                aria-expanded=${this.inspectorOpen ? "true" : "false"}
+                class="inspector-toggle pf-c-button pf-m-primary"
+                aria-controls="flow-inspector"
+                @click=${this.toggleInspector}
             >
-                <i class="fa fa-globe" aria-hidden="true"></i>
-            </label>
-            <select
-                id="locale-selector"
-                @change=${this.#localeChangeListener}
-                class="pf-c-form-control"
-                name="locale"
-            >
-                ${options}
-            </select>
-        </div>`;
+                <i class="fa fa-search-plus" aria-hidden="true"></i>
+            </button>`;
+        });
     }
 
     //#endregion
@@ -542,9 +492,13 @@ export class FlowExecutor
     public override render(): TemplateResult {
         const { component } = this.challenge || {};
 
-        return html`<header class="pf-c-login__header">
-                ${this.renderLocaleSelector()} ${this.renderInspectorButton()}
-            </header>
+        return html`<ak-locale-select
+                part="locale-select"
+                exportparts="label:locale-select-label,select:locale-select-select"
+                class="pf-m-dark"
+            ></ak-locale-select>
+
+            <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
             <main
                 data-layout=${this.layout}
                 class="pf-c-login__main"
@@ -552,7 +506,12 @@ export class FlowExecutor
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "branding-logo")}
+                    ${ThemedImage({
+                        src: this.brandingLogo,
+                        alt: msg("authentik Logo"),
+                        className: "branding-logo",
+                        theme: this.activeTheme,
+                    })}
                 </div>
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`

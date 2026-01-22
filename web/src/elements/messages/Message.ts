@@ -1,9 +1,9 @@
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -11,21 +11,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-/**
- * An error message returned from an API endpoint.
- *
- * @remarks
- * This interface must align with the server-side event dispatcher.
- *
- * @see {@link ../authentik/core/templates/base/skeleton.html}
- */
-export interface APIMessage {
-    level: MessageLevel;
-    message: string;
-    description?: string;
-}
 
 const LevelIconMap = {
     [MessageLevel.error]: "fas fa-exclamation-circle",
@@ -43,12 +28,12 @@ const LevelARIALiveMap = {
 
 @customElement("ak-message")
 export class Message extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
+    static styles: CSSResult[] = [PFButton, PFAlert, PFAlertGroup];
 
     //#region Properties
 
-    @property({ type: String })
-    public description?: string;
+    @property({ type: String, attribute: false })
+    public description?: string | TemplateResult;
 
     @property({ type: String })
     public level?: MessageLevel;

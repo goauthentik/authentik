@@ -42,7 +42,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
@@ -386,11 +386,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def __str__(self):
         return f"OAuth2 Provider {self.name}"
 
-    def encode(self, payload: dict[str, Any]) -> str:
-        """Represent the ID Token as a JSON Web Token (JWT)."""
+    def encode(self, payload: dict[str, Any], jwt_type: str | None = None) -> str:
+        """Represent the ID Token as a JSON Web Token (JWT).
+
+        :param payload The payload to encode into the JWT
+        :param jwt_type The type of the JWT. This will be put in the JWT header using the `typ`
+            parameter. See RFC7515 Section 4.1.9. If not set fallback to the default of `JWT`.
+        """
         headers = {}
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
+        if jwt_type is not None:
+            headers["typ"] = jwt_type
         key, alg = self.jwt_key
         encoded = encode(payload, key, algorithm=alg, headers=headers)
         if self.encryption_key:
@@ -462,7 +469,7 @@ class BaseGrantModel(models.Model):
         self._scope = " ".join(value)
 
 
-class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
+class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
@@ -497,7 +504,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         )
 
 
-class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class AccessToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
@@ -514,7 +521,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> "IDToken":
+    def id_token(self) -> IDToken:
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
 
@@ -522,7 +529,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: "IDToken"):
+    def id_token(self, value: IDToken):
         self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
@@ -545,7 +552,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
+class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
     token = models.TextField(default=generate_client_secret)
@@ -567,7 +574,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> "IDToken":
+    def id_token(self) -> IDToken:
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
 
@@ -575,7 +582,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: "IDToken"):
+    def id_token(self, value: IDToken):
         self._id_token = json.dumps(asdict(value))
 
     @property
@@ -585,7 +592,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
-class DeviceToken(ExpiringModel):
+class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(

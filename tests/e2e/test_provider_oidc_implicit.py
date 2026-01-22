@@ -150,7 +150,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         self.wait.until(ec.title_contains("authentik"))
         self.login()
 
-        body = self.parse_json_content()
+        body = self.parse_json_content(self.driver.find_element(By.ID, "loginResult"))
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
         profile = body.get("profile", {})
@@ -240,7 +240,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
 
         self.wait.until(ec.url_changes(current_url))
 
-        body = self.parse_json_content()
+        body = self.parse_json_content(self.driver.find_element(By.ID, "loginResult"))
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
 
         profile = body.get("profile", {})
