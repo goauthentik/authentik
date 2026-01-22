@@ -1,10 +1,4 @@
-use std::{
-    str::FromStr,
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
-    },
-};
+use std::str::FromStr;
 
 use argh::FromArgs;
 use authentik_config::{Config, get_config};
@@ -162,9 +156,6 @@ async fn main() -> Result<()> {
             std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
         }
     }
-    // if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
-    //     export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
-    // fi
 
     let stop = CancellationToken::new();
     let (signals_tx, _signals_rx) = broadcast::channel(10);
@@ -180,8 +171,7 @@ async fn main() -> Result<()> {
         Command::Server(args) => {
             authentik_server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
         }
-        // Command::Worker(args) => authentik_worker::run(args),
-        _ => {}
+        Command::Worker(_args) => todo!(),
     };
 
     if let Some(result) = tasks.join_next().await {

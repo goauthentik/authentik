@@ -1,15 +1,10 @@
-use std::{
-    net::SocketAddr,
-    process::Stdio,
-    sync::{Arc, atomic::AtomicBool},
-    time::Duration,
-};
+use std::{net::SocketAddr, process::Stdio, sync::Arc, time::Duration};
 
 use argh::FromArgs;
 use authentik_config::get_config;
 use axum::Router;
 use axum_reverse_proxy::ReverseProxy;
-use axum_server::Handle;
+use axum_server::{Handle, accept::DefaultAcceptor};
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
