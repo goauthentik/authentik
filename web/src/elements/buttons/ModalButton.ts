@@ -93,15 +93,21 @@ export abstract class ModalButton extends AKElement {
         event?.preventDefault();
         this.open = true;
 
-        this.dispatchEvent(new ModalShowEvent(this));
+        const evt = new ModalShowEvent(this);
+        this.dispatchEvent(evt);
 
         this.querySelectorAll<AKElement>("*").forEach((child) => {
+            child.dispatchEvent(evt);
             child.requestUpdate?.();
         });
     };
 
     #closeListener = () => {
-        this.dispatchEvent(new ModalHideEvent(this));
+        const evt = new ModalHideEvent(this);
+        this.dispatchEvent(evt);
+        this.querySelectorAll<AKElement>("*").forEach((child) => {
+            child.dispatchEvent(evt);
+        });
     };
 
     #backdropListener = (event: PointerEvent) => {
