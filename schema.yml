@@ -40125,6 +40125,8 @@ components:
           default: false
         application_pre:
           type: string
+        application_pre_launch:
+          type: string
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
         captcha_stage:
