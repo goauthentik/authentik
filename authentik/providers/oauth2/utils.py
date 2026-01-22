@@ -259,4 +259,4 @@ def create_logout_token(
     if session_key:
         payload["sid"] = hash_session_key(session_key)
     # Encode the token
-    return provider.encode(payload, "logout+jwt")
+    return provider.encode(payload, jwt_type="logout+jwt")
