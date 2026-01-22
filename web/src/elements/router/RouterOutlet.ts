@@ -93,7 +93,7 @@ export class RouterOutlet extends AKElement {
 
         window.addEventListener("hashchange", this.navigate);
 
-        if (this.#sentryClient) {
+        if (process.env.NODE_ENV !== "production" && this.#sentryClient) {
             this.#pageLoadSpan =
                 startBrowserTracingPageLoadSpan(this.#sentryClient, {
                     name: window.location.pathname,

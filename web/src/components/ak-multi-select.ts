@@ -10,7 +10,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Pair = [string, string];
 
@@ -27,7 +26,7 @@ const selectStyles = css`
  */
 @customElement("ak-multi-select")
 export class AkMultiSelect extends AkControlElement {
-    static styles = [PFBase, PFForm, PFFormControl, selectStyles];
+    static styles = [PFForm, PFFormControl, selectStyles];
 
     /**
      * The [name] attribute, which is also distributed to the layout manager and the input control.

@@ -31,7 +31,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+// Fixes horizontal rule <hr> warning in select dropdowns.
 
 /**
  * @prop {PromptChallenge} challenge - The challenge provided to this stage.
@@ -42,7 +43,6 @@ export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFAlert,
         PFForm,

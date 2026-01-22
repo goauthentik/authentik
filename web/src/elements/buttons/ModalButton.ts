@@ -20,7 +20,6 @@ import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export const MODAL_BUTTON_STYLES = css`
     :host {
@@ -52,7 +51,6 @@ export abstract class ModalButton extends AKElement {
     public locked = false;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFModalBox,
         PFForm,
