@@ -1,10 +1,15 @@
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
+import { globalAK } from "#common/global";
+import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
+
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 import {
+    CapabilitiesEnum,
     CurrentBrand,
     FetchParams,
     Middleware,
@@ -13,6 +18,7 @@ import {
 } from "@goauthentik/api";
 
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail } from "@lit/localize";
+import { html } from "lit";
 
 export const CSRFHeaderName = "X-authentik-CSRF";
 export const AcceptLanguage = "Accept-Language";
@@ -93,6 +99,54 @@ export class LocaleMiddleware implements Middleware, Disposable {
             [AcceptLanguage]: this.#locale,
         };
 
+        return Promise.resolve(context);
+    }
+}
+
+export class DevMiddleware implements Middleware {
+    MAX_REQUESTS = 10;
+
+    requests: string[] = [];
+
+    requestToSignature(req: RequestContext): string | undefined {
+        const sigParts: string[] = [];
+        if (req.init.method?.toLowerCase() === "get") {
+            sigParts.push("GET");
+            sigParts.push(req.url);
+        }
+        return sigParts.length > 0 ? sigParts.join(" ") : undefined;
+    }
+
+    pre(context: RequestContext): Promise<FetchParams | void> {
+        if (!globalAK().config.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            return Promise.resolve(context);
+        }
+        const reqSig = this.requestToSignature(context);
+        if (!reqSig) {
+            return Promise.resolve(context);
+        }
+        this.requests.push(reqSig);
+
+        const count = this.requests.reduce<{ [key: string]: number }>((acc, curr) => {
+            if (acc[curr]) {
+                acc[curr] = ++acc[curr];
+            } else {
+                acc[curr] = 1;
+            }
+            return acc;
+        }, {})[reqSig];
+        if (count > 2) {
+            showMessage({
+                level: MessageLevel.warning,
+                message: "[Dev] Consecutive requests detected",
+                description: html`${count} identical requests to
+                    <pre>${reqSig}</pre>`,
+            });
+        }
+
+        if (this.requests.length >= this.MAX_REQUESTS) {
+            this.requests.shift();
+        }
         return Promise.resolve(context);
     }
 }

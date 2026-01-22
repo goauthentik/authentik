@@ -1,5 +1,6 @@
 import {
     CSRFMiddleware,
+    DevMiddleware,
     EventMiddleware,
     LocaleMiddleware,
     LoggingMiddleware,
@@ -19,6 +20,7 @@ export const DEFAULT_CONFIG = new Configuration({
         new LoggingMiddleware(brand),
         new SentryMiddleware(),
         new LocaleMiddleware(locale),
+        new DevMiddleware(),
     ],
 });
 
