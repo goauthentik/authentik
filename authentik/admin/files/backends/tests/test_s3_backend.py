@@ -206,10 +206,10 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
 
     def test_save_file_unknown_extension_octet_stream(self):
         """Test save_file sets octet-stream for unknown extensions"""
-        self.media_s3_backend.save_file("test.xyz", b"data")
+        self.media_s3_backend.save_file("test.unknownext123", b"data")
 
         response = self.media_s3_backend.client.head_object(
             Bucket=self.media_s3_bucket_name,
-            Key="media/public/test.xyz",
+            Key="media/public/test.unknownext123",
         )
         self.assertEqual(response["ContentType"], "application/octet-stream")
