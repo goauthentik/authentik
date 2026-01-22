@@ -16,13 +16,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
-    showStatic = true;
+    protected showStatic = true;
 
     @state()
-    showHIBP = false;
+    protected showHIBP = false;
 
     @state()
-    showZxcvbn = false;
+    protected showZxcvbn = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showStatic = true;
+        this.showHIBP = false;
+        this.showZxcvbn = false;
+    }
 
     async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({

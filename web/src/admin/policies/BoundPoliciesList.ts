@@ -42,9 +42,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
-        PolicyBindingCheckTarget.policy,
-        PolicyBindingCheckTarget.group,
-        PolicyBindingCheckTarget.user,
+        PolicyBindingCheckTarget.Policy,
+        PolicyBindingCheckTarget.Group,
+        PolicyBindingCheckTarget.User,
     ];
 
     @property({ type: Array })
@@ -244,7 +244,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     renderToolbar(): TemplateResult {
-        return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
+        return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
                       showBindingPage
