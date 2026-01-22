@@ -174,9 +174,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                             }}
                             .renderElement=${(item: Application) => item.name}
                             .renderDescription=${(item: Application) => html`${item.slug}`}
-                            .value=${(item: Application | null) => {
-                                return String(item?.pk);
-                            }}
+                            .value=${(item: Application | null) => item?.pk}
                             .selected=${(item: Application): boolean => {
                                 return item.pk === this.instance?.defaultApplication;
                             }}
