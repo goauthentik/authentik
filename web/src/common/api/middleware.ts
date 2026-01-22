@@ -1,5 +1,4 @@
 import { AKRequestPostEvent, APIRequestInfo } from "#common/api/events";
-import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
 import { formatAcceptLanguageHeader } from "#common/ui/locale/utils";
 import { getCookie } from "#common/utils";
@@ -9,7 +8,6 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 import {
-    CapabilitiesEnum,
     CurrentBrand,
     FetchParams,
     Middleware,
@@ -102,52 +100,35 @@ export class LocaleMiddleware implements Middleware, Disposable {
         return Promise.resolve(context);
     }
 }
-
 export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
-    MAX_REQUESTS = 10;
-
-    requests: string[] = [];
+    #requests: string[] = [];
+    #counts = new Map<string, number>();
+    #logger = ConsoleLogger.prefix("repeated-requests-middleware");
 
     #navigationHandler = () => {
-        this.requests = [];
+        this.#requests = [];
+        this.#counts.clear();
     };
 
-    constructor() {
-        this.#navigationHandler = this.#navigationHandler.bind(this);
+    constructor(protected readonly maxRequests: number = 10) {
         window.addEventListener("hashchange", this.#navigationHandler);
     }
 
-    [Symbol.dispose]() {
+    public [Symbol.dispose]() {
         window.removeEventListener("hashchange", this.#navigationHandler);
     }
 
-    requestToSignature(req: RequestContext): string | undefined {
-        const sigParts: string[] = [];
-        if (req.init.method?.toLowerCase() === "get") {
-            sigParts.push("GET");
-            sigParts.push(req.url);
+    public async pre(context: RequestContext): Promise<FetchParams | void> {
+        if (context.init.method?.toUpperCase() !== "GET" || !context.url) {
+            return context;
         }
-        return sigParts.length > 0 ? sigParts.join(" ") : undefined;
-    }
 
-    pre(context: RequestContext): Promise<FetchParams | void> {
-        if (!globalAK().config.capabilities.includes(CapabilitiesEnum.CanDebug)) {
-            return Promise.resolve(context);
-        }
-        const reqSig = this.requestToSignature(context);
-        if (!reqSig) {
-            return Promise.resolve(context);
-        }
-        this.requests.push(reqSig);
+        const reqSig = context.url;
+        const count = (this.#counts.get(reqSig) ?? 0) + 1;
 
-        const count = this.requests.reduce<{ [key: string]: number }>((acc, curr) => {
-            if (acc[curr]) {
-                acc[curr] = ++acc[curr];
-            } else {
-                acc[curr] = 1;
-            }
-            return acc;
-        }, {})[reqSig];
+        this.#counts.set(reqSig, count);
+        this.#requests.push(reqSig);
+
         if (count > 2) {
             showMessage({
                 level: MessageLevel.warning,
@@ -155,11 +136,21 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
                 description: html`${count} identical requests to
                     <pre>${reqSig}</pre>`,
             });
+
+            this.#logger.trace("Repeated request", reqSig);
         }
 
-        if (this.requests.length >= this.MAX_REQUESTS) {
-            this.requests.shift();
+        if (this.#requests.length > this.maxRequests) {
+            const removed = this.#requests.shift()!;
+            const removedCount = this.#counts.get(removed)!;
+
+            if (removedCount === 1) {
+                this.#counts.delete(removed);
+            } else {
+                this.#counts.set(removed, removedCount - 1);
+            }
         }
-        return Promise.resolve(context);
+
+        return context;
     }
 }

@@ -8,9 +8,9 @@ import {
 import { globalAK } from "#common/global";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { Configuration, CurrentBrand } from "@goauthentik/api";
+import { CapabilitiesEnum, Configuration, CurrentBrand } from "@goauthentik/api";
 
-const { locale, api, brand } = globalAK();
+const { locale, api, brand, config } = globalAK();
 
 export const DEFAULT_CONFIG = new Configuration({
     basePath: `${api.base}api/v3`,
@@ -20,7 +20,9 @@ export const DEFAULT_CONFIG = new Configuration({
         new LoggingMiddleware(brand),
         new SentryMiddleware(),
         new LocaleMiddleware(locale),
-        new DevRepeatedRequestsMiddleware(),
+        ...(config.capabilities.includes(CapabilitiesEnum.CanDebug)
+            ? [new DevRepeatedRequestsMiddleware()]
+            : []),
     ],
 });
 
