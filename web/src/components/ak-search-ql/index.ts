@@ -19,7 +19,6 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-input.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export class QL extends DjangoQL {
     createCompletionElement() {
@@ -57,7 +56,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
 
     public static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFFormControl,
         PFSearchInput,
         Styles,

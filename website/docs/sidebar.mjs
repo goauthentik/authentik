@@ -599,6 +599,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
+                            "users-sources/sources/social-logins/keycloak/index",
                             {
                                 type: "category",
                                 label: "Google",

@@ -35,7 +35,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function isIgnored<T extends Element>(element: T) {
     if (!(element instanceof HTMLElement)) return false;
@@ -114,9 +113,10 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
             }
 
             if (inputElement.type === "datetime-local") {
+                const valueAsNumber = inputElement.valueAsNumber;
                 return assignValue(
                     inputElement,
-                    dateToUTC(new Date(inputElement.valueAsNumber)),
+                    isNaN(valueAsNumber) ? null : dateToUTC(new Date(valueAsNumber)),
                     json,
                 );
             }
@@ -124,7 +124,12 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
             if ("type" in inputElement.dataset && inputElement.dataset.type === "datetime-local") {
                 // Workaround for Firefox <93, since 92 and older don't support
                 // datetime-local fields
-                return assignValue(inputElement, dateToUTC(new Date(inputElement.value)), json);
+                const date = new Date(inputElement.value);
+                return assignValue(
+                    inputElement,
+                    isNaN(date.getTime()) ? null : dateToUTC(date),
+                    json,
+                );
             }
 
             if (inputElement.type === "checkbox") {
@@ -224,7 +229,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     public successMessage?: string;
 
     @property({ type: String })
-    public autocomplete?: AutoFill;
+    public autocomplete?: Exclude<AutoFillBase, "">;
 
     //#endregion
 
@@ -236,7 +241,6 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     nonFieldErrors?: string[];
 
     static styles: CSSResult[] = [
-        PFBase,
         PFCard,
         PFButton,
         PFForm,

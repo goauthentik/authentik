@@ -57,7 +57,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         try:
             session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
             session_key = session_payload["sid"]
-        except (KeyError, PyJWTError):
+        except KeyError, PyJWTError:
             pass
         return session_key
 

@@ -3437,10 +3437,6 @@
   <source>Successfully created binding.</source>
   <target>Liaison créée avec succès</target>
 </trans-unit>
-<trans-unit id="s81a45c4fd11e8e1a">
-  <source>Don't pass</source>
-  <target>Échouer</target>
-</trans-unit>
 <trans-unit id="s95b73e0f4e47eb9a">
   <source>Result used when policy execution fails.</source>
   <target>Résultat si l'éxecution de la politique échoue.</target>
@@ -4553,14 +4549,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s6d225d9e74dfff6f">
   <source>Heimdal kadmin</source>
   <target>Heimdal kadmin</target>
-</trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-  <target>Autre</target>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
-  <target>Autre type de kadmin</target>
 </trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
@@ -6321,10 +6309,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Continue</source>
   <target>Continuer</target>
 </trans-unit>
-<trans-unit id="sc7524ea24eeeb019">
-  <source>Failed to preview prompt</source>
-  <target>Échec de la prévisualisation de l'invite</target>
-</trans-unit>
 <trans-unit id="s8b2b2a43fcf688a3">
   <source>Successfully updated prompt.</source>
   <target>Invite mise à jour avec succès.</target>
@@ -7004,14 +6988,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s9e9c8d99f4c26baf">
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Lorsqu'un utilisateur revient du courriel avec succès, son compte sera activé.</target>
-</trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Utiliser les paramètres globaux</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Si activé, les paramètres globaux de connexion courriel seront utilisés et les paramètres de connexion ci-dessous seront ignorés.</target>
 </trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
@@ -8275,10 +8251,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Private key available?</source>
   <target>Clé privée disponible ?</target>
 </trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Paire(s) de clé/certificat</target>
-</trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
   <target>Géré par authentik</target>
@@ -8965,14 +8937,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>User information</source>
   <target>Informations utilisateur</target>
 </trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-  <target>Avatar pour <x id="0" equiv-text="${this.user}"/></target>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
-  <target>Avatar de l'utilisateur</target>
-</trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
   <target>Une erreur s'est produite ! Veuillez réessayer plus tard.</target>
@@ -9498,18 +9462,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Search returned no results.</source>
   <target>La recherche n'a pas retourné de résultat.</target>
 </trans-unit>
-<trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="sb1d445efd39638d4">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="sddbc2a3be190464b">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
-</trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
   <target>Mes applications</target>
@@ -9834,7 +9786,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>User created.</source>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
-  <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+  <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
@@ -10084,9 +10036,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sdfe787aeeebbfbf1">
   <source>Type a token description...</source>
 </trans-unit>
-<trans-unit id="s434805f916fbf657">
-  <source>Not allowed to change this field. Please contact your administrator.</source>
-</trans-unit>
 <trans-unit id="sd7c52e2ce408c542">
   <source>Integrations synced in the last 12 hours.</source>
 </trans-unit>
@@ -10160,6 +10109,60 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sd8309fdcb0478b0f">
   <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular-with-query">
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural-with-query">
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="user.library.search.type-to-filter-hint">
+  <source>Type to filter applications</source>
+  <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
+</trans-unit>
+<trans-unit id="user.library.search.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="user.library.application-count.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="library.application.card.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application card</note>
 </trans-unit>
 </body>
 </file>

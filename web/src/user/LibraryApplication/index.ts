@@ -28,8 +28,6 @@ export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
     application?: Application;
     editURL?: string | URL | null;
     background?: string | null;
-    appIndex: number;
-    groupIndex: number;
     targetRef?: RefOrCallback | null;
 }
 
@@ -69,7 +67,10 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     const primaryRef = targetRef ? ref(targetRef) : nothing;
 
     const extendedProps = {
-        "aria-label": msg(str`Open "${application.name}"`),
+        "aria-label": msg(str`Open "${application.name}"`, {
+            id: "library.application.card.aria-label",
+            desc: "Screen reader label for the application card",
+        }),
         "tabindex": "0",
         "class": "card-header-aspect-wrapper",
         "title": ifPresent(application.name),
@@ -80,9 +81,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
     return html`<div
         part="card-wrapper"
         data-application-name=${ifPresent(dataID)}
-        aria-describedby=${descriptionID}
         style=${styleMap({ background: background || null })}
-        ${spread(props)}
     >
         <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
             <ak-app-icon
@@ -95,6 +94,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 ? html`<div
                       ${primaryRef}
                       role="button"
+                      aria-describedby=${descriptionID}
                       @click=${launchModal}
                       ${spread(extendedProps)}
                   >
@@ -104,6 +104,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                       ${primaryRef}
                       href=${ifPresent(application.launchUrl)}
                       target=${ifPresent(application.openInNewTab, "_blank")}
+                      aria-describedby=${descriptionID}
                       ${spread(extendedProps)}
                       >${cardHeader}</a
                   >`}
