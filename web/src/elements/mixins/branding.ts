@@ -43,11 +43,21 @@ export interface BrandingMixin {
     readonly brandingLogo: string;
 
     /**
+     * Pre-resolved themed URLs for the logo (for S3 presigned URLs).
+     */
+    readonly brandingLogoThemedUrls: Record<string, string> | null | undefined;
+
+    /**
      * The application favicon.
      *
      * @see {@linkcode DefaultBrand.brandingFavicon}
      */
     readonly brandingFavicon: string;
+
+    /**
+     * Pre-resolved themed URLs for the favicon (for S3 presigned URLs).
+     */
+    readonly brandingFaviconThemedUrls: Record<string, string> | null | undefined;
 
     /**
      * Footer links provided by the brand configuration.
@@ -81,8 +91,16 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
                 return this.brand.brandingLogo ?? DefaultBrand.brandingLogo;
             }
 
+            public get brandingLogoThemedUrls(): Record<string, string> | null | undefined {
+                return this.brand.brandingLogoThemedUrls;
+            }
+
             public get brandingFavicon(): string {
                 return this.brand.brandingFavicon ?? DefaultBrand.brandingFavicon;
+            }
+
+            public get brandingFaviconThemedUrls(): Record<string, string> | null | undefined {
+                return this.brand.brandingFaviconThemedUrls;
             }
 
             public get brandingFooterLinks(): FooterLink[] {

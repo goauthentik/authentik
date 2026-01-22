@@ -13,6 +13,7 @@ import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
 export interface IAppIcon {
     name?: string | null;
     icon?: string | null;
+    iconThemedUrls?: Record<string, string> | null;
     size?: PFSize | null;
 }
 
@@ -27,6 +28,9 @@ export class AppIcon extends AKElement implements IAppIcon {
 
     @property({ type: String })
     public icon: string | null = null;
+
+    @property({ type: Object })
+    public iconThemedUrls: Record<string, string> | null = null;
 
     @property({ reflect: true })
     public size: PFSize = PFSize.Medium;
@@ -57,14 +61,16 @@ export class AppIcon extends AKElement implements IAppIcon {
         const insignia = this.name?.charAt(0).toUpperCase() ?? "�";
 
         // Check for image URLs (http://, https://, or file paths)
-        if (this.icon) {
+        // Use themed URL if available, otherwise fall back to icon
+        const resolvedIcon = this.iconThemedUrls?.[this.activeTheme] ?? this.icon;
+        if (resolvedIcon) {
             return this.#wrap(
                 html`<img
                     part="icon image"
                     role="img"
                     aria-label=${label}
                     class="icon"
-                    src=${this.icon}
+                    src=${resolvedIcon}
                     alt=${insignia}
                 />`,
             );

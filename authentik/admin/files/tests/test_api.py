@@ -5,7 +5,6 @@ from io import BytesIO
 from django.test import TestCase
 from django.urls import reverse
 
-from authentik.admin.files.api import get_mime_from_filename
 from authentik.admin.files.manager import FileManager
 from authentik.admin.files.tests.utils import FileTestFileBackendMixin
 from authentik.admin.files.usage import FileUsage
@@ -96,6 +95,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
                 "name": "/static/authentik/sources/ldap.png",
                 "url": "/static/authentik/sources/ldap.png",
                 "mime_type": "image/png",
+                "themed_urls": None,
             },
             response.data,
         )
@@ -131,6 +131,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
                 "name": "/static/authentik/sources/ldap.png",
                 "url": "/static/authentik/sources/ldap.png",
                 "mime_type": "image/png",
+                "themed_urls": None,
             },
             response.data,
         )
@@ -200,30 +201,64 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("field is required", str(response.data))
 
+    def test_list_files_includes_themed_urls_none(self):
+        """Test listing files includes themed_urls as None for non-themed files"""
+        manager = FileManager(FileUsage.MEDIA)
+        file_name = "test-no-theme.png"
+        manager.save_file(file_name, b"test content")
 
-class TestGetMimeFromFilename(TestCase):
-    """Test get_mime_from_filename function"""
+        response = self.client.get(
+            reverse("authentik_api:files", query={"search": file_name, "manageableOnly": "true"})
+        )
 
-    def test_image_png(self):
-        """Test PNG image MIME type"""
-        self.assertEqual(get_mime_from_filename("test.png"), "image/png")
+        self.assertEqual(response.status_code, 200)
+        file_entry = next((f for f in response.data if f["name"] == file_name), None)
+        self.assertIsNotNone(file_entry)
+        self.assertIn("themed_urls", file_entry)
+        self.assertIsNone(file_entry["themed_urls"])
 
-    def test_image_jpeg(self):
-        """Test JPEG image MIME type"""
-        self.assertEqual(get_mime_from_filename("test.jpg"), "image/jpeg")
+        manager.delete_file(file_name)
 
-    def test_image_svg(self):
-        """Test SVG image MIME type"""
-        self.assertEqual(get_mime_from_filename("test.svg"), "image/svg+xml")
+    def test_list_files_includes_themed_urls_dict(self):
+        """Test listing files includes themed_urls as dict for themed files"""
+        manager = FileManager(FileUsage.MEDIA)
+        file_name = "logo-%(theme)s.svg"
+        manager.save_file("logo-light.svg", b"<svg>light</svg>")
+        manager.save_file("logo-dark.svg", b"<svg>dark</svg>")
+        manager.save_file(file_name, b"<svg>placeholder</svg>")
 
-    def test_text_plain(self):
-        """Test text file MIME type"""
-        self.assertEqual(get_mime_from_filename("test.txt"), "text/plain")
+        response = self.client.get(
+            reverse("authentik_api:files", query={"search": "%(theme)s", "manageableOnly": "true"})
+        )
 
-    def test_unknown_extension(self):
-        """Test unknown extension returns octet-stream"""
-        self.assertEqual(get_mime_from_filename("test.unknown"), "application/octet-stream")
+        self.assertEqual(response.status_code, 200)
+        file_entry = next((f for f in response.data if f["name"] == file_name), None)
+        self.assertIsNotNone(file_entry)
+        self.assertIn("themed_urls", file_entry)
+        self.assertIsInstance(file_entry["themed_urls"], dict)
+        self.assertIn("light", file_entry["themed_urls"])
+        self.assertIn("dark", file_entry["themed_urls"])
 
-    def test_no_extension(self):
-        """Test no extension returns octet-stream"""
-        self.assertEqual(get_mime_from_filename("test"), "application/octet-stream")
+        manager.delete_file(file_name)
+        manager.delete_file("logo-light.svg")
+        manager.delete_file("logo-dark.svg")
+
+    def test_upload_file_with_theme_variable(self):
+        """Test uploading file with %(theme)s in name"""
+        manager = FileManager(FileUsage.MEDIA)
+        file_name = "brand-logo-%(theme)s.svg"
+        file_content = b"<svg></svg>"
+
+        response = self.client.post(
+            reverse("authentik_api:files"),
+            {
+                "file": BytesIO(file_content),
+                "name": file_name,
+                "usage": FileUsage.MEDIA.value,
+            },
+            format="multipart",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(manager.file_exists(file_name))
+        manager.delete_file(file_name)

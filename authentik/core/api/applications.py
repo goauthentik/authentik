@@ -53,6 +53,7 @@ class ApplicationSerializer(ModelSerializer):
     )
 
     meta_icon_url = ReadOnlyField(source="get_meta_icon")
+    meta_icon_themed_urls = ReadOnlyField(source="get_meta_icon_themed_urls")
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -102,6 +103,7 @@ class ApplicationSerializer(ModelSerializer):
             "meta_launch_url",
             "meta_icon",
             "meta_icon_url",
+            "meta_icon_themed_urls",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",

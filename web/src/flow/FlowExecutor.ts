@@ -236,8 +236,14 @@ export class FlowExecutor
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") && this.flowInfo) {
-            applyBackgroundImageProperty(this.flowInfo.background);
+        if (
+            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
+            this.flowInfo
+        ) {
+            // Use themed background URL if available, otherwise fall back to default
+            const backgroundUrl =
+                this.flowInfo.backgroundThemedUrls?.[this.activeTheme] ?? this.flowInfo.background;
+            applyBackgroundImageProperty(backgroundUrl);
         }
 
         if (
@@ -511,6 +517,7 @@ export class FlowExecutor
                         alt: msg("authentik Logo"),
                         className: "branding-logo",
                         theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
                 ${this.loading && this.challenge

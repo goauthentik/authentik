@@ -47,6 +47,7 @@ class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
     background_url = ReadOnlyField()
+    background_themed_urls = ReadOnlyField()
 
     cache_count = SerializerMethodField()
     export_url = SerializerMethodField()
@@ -70,6 +71,7 @@ class FlowSerializer(ModelSerializer):
             "designation",
             "background",
             "background_url",
+            "background_themed_urls",
             "stages",
             "policies",
             "cache_count",

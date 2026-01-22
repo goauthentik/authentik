@@ -6,7 +6,13 @@ from django.db import models
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DictField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -90,7 +96,9 @@ class CurrentBrandSerializer(PassiveSerializer):
     matched_domain = CharField(source="domain")
     branding_title = CharField()
     branding_logo = CharField(source="branding_logo_url")
+    branding_logo_themed_urls = DictField(child=CharField(), allow_null=True)
     branding_favicon = CharField(source="branding_favicon_url")
+    branding_favicon_themed_urls = DictField(child=CharField(), allow_null=True)
     branding_custom_css = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
