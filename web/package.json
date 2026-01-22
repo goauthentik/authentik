@@ -115,7 +115,7 @@
         "@open-wc/lit-helpers": "^0.7.0",
         "@openlayers-elements/core": "^0.4.0",
         "@openlayers-elements/maps": "^0.4.0",
-        "@patternfly/elements": "^4.2.0",
+        "@patternfly/elements": "^4.3.0",
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.57.0",
         "@sentry/browser": "^10.36.0",
