@@ -47,7 +47,7 @@ dependencies = [
   "lxml==6.0.2",
   "msgraph-sdk==1.52.0",
   "opencontainers==0.0.15",
-  "packaging==25.0",
+  "packaging==26.0",
   "paramiko==4.0.0",
   "psycopg[c,pool]==3.3.2",
   "pydantic-scim==0.0.8",
