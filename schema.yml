@@ -3013,6 +3013,34 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/authenticated_sessions/bulk_delete/:
+    delete:
+      operationId: core_authenticated_sessions_bulk_delete
+      description: Bulk revoke all sessions for multiple users
+      parameters:
+      - in: query
+        name: user_pks
+        schema:
+          type: array
+          items:
+            type: integer
+        description: List of user IDs to revoke all sessions for
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDeleteResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/{uuid}/:
     get:
       operationId: core_authenticated_sessions_retrieve
@@ -34697,6 +34725,17 @@ components:
       - orphaned
       - unknown
       type: string
+    BulkDeleteSession:
+      type: object
+      description: Serializer for bulk deleting authenticated sessions by user
+      properties:
+        user_ids:
+          type: array
+          items:
+            type: integer
+          description: List of user IDs to revoke all sessions for
+      required:
+      - user_pks
     Brand:
       type: object
       description: Brand Serializer
@@ -53249,6 +53288,15 @@ components:
       required:
       - healthy
       - version
+    SessionDeleteResponse:
+      type: object
+      description: Response for bulk session deletion
+      properties:
+        deleted:
+          type: integer
+          description: Number of sessions deleted
+      required:
+      - deleted
     SessionEndChallenge:
       type: object
       description: Challenge for ending a session
