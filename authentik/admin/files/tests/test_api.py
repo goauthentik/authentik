@@ -93,7 +93,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertIn(
             {
                 "name": "/static/authentik/sources/ldap.png",
-                "url": "/static/authentik/sources/ldap.png",
+                "url": "http://testserver/static/authentik/sources/ldap.png",
                 "mime_type": "image/png",
                 "themed_urls": None,
             },
@@ -129,7 +129,7 @@ class TestFileAPI(FileTestFileBackendMixin, TestCase):
         self.assertIn(
             {
                 "name": "/static/authentik/sources/ldap.png",
-                "url": "/static/authentik/sources/ldap.png",
+                "url": "http://testserver/static/authentik/sources/ldap.png",
                 "mime_type": "image/png",
                 "themed_urls": None,
             },
