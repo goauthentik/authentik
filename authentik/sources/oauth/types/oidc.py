@@ -50,7 +50,7 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
             jwk = PyJWKSet.from_dict(self.source.oidc_jwks)
             key = [key for key in jwk.keys if key.key_id == raw["kid"]][0]
             return decode(id_token, key=key, algorithms=raw["alg"])
-        except (PyJWTError, IndexError, ValueError):
+        except PyJWTError, IndexError, ValueError:
             return None
 
 
