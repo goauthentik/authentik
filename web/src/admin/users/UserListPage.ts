@@ -244,7 +244,7 @@ export class UserListPage extends WithBrandConfig(
     row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
-        const impersionationVisible =
+        const impersonationVisible =
             this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
 
         return [
@@ -266,7 +266,7 @@ export class UserListPage extends WithBrandConfig(
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${impersionationVisible
+                ${impersonationVisible
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
                               <span slot="submit">${msg("Impersonate")}</span>
