@@ -103,10 +103,23 @@ export class LocaleMiddleware implements Middleware, Disposable {
     }
 }
 
-export class DevMiddleware implements Middleware {
+export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
     MAX_REQUESTS = 10;
 
     requests: string[] = [];
+
+    #navigationHandler = () => {
+        this.requests = [];
+    };
+
+    constructor() {
+        this.#navigationHandler = this.#navigationHandler.bind(this);
+        window.addEventListener("hashchange", this.#navigationHandler);
+    }
+
+    [Symbol.dispose]() {
+        window.removeEventListener("hashchange", this.#navigationHandler);
+    }
 
     requestToSignature(req: RequestContext): string | undefined {
         const sigParts: string[] = [];
