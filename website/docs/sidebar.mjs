@@ -258,6 +258,7 @@ const items = [
                         },
                         items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
                     },
+                    "add-secure-apps/providers/ws-fed/index",
                 ],
             },
             {
