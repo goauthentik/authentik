@@ -52,9 +52,19 @@ class PassthroughBackend(Backend):
         name: str,
         request: HttpRequest | None = None,
     ) -> dict[str, str] | None:
-        """Passthrough backend doesn't support themed URLs.
+        """Support themed URLs for external URLs with %(theme)s placeholder.
 
-        External URLs are passed through as-is, and we can't verify
-        that themed variants exist at the external location.
+        If the external URL contains %(theme)s, substitute it for each theme.
+        We can't verify that themed variants exist at the external location,
+        but we trust the user to provide valid URLs.
         """
-        return None
+        from authentik.admin.files.backends.base import (
+            get_valid_themes,
+            has_theme_variable,
+            substitute_theme,
+        )
+
+        if not has_theme_variable(name):
+            return None
+
+        return {theme: substitute_theme(name, theme) for theme in get_valid_themes()}
