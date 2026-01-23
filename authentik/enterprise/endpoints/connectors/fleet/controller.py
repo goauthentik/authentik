@@ -23,7 +23,6 @@ from authentik.policies.utils import delete_none_values
 
 
 class FleetController(BaseController[DBC]):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._session = get_http_session()
@@ -125,7 +124,7 @@ class FleetController(BaseController[DBC]):
 
     @staticmethod
     def os_family(host: dict[str, Any]) -> OSFamily:
-        if host["platform_like"] == "debian":
+        if host["platform_like"] in ["debian", "rhel"]:
             return OSFamily.linux
         if host["platform_like"] == "windows":
             return OSFamily.windows
@@ -133,9 +132,19 @@ class FleetController(BaseController[DBC]):
             return OSFamily.macOS
         if host["platform"] == "android":
             return OSFamily.android
-        if host["platform"] == "ipados" or host["platform"] == "ios":
+        if host["platform"] in ["ipados", "ios"]:
             return OSFamily.iOS
         return OSFamily.other
+
+    def map_os(self, host: dict[str, Any]) -> dict[str, str]:
+        return delete_none_values(
+            {
+                "arch": self.or_none(host["cpu_type"]),
+                "family": FleetController.os_family(host),
+                "name": self.or_none(host["platform_like"]),
+                "version": self.or_none(host["os_version"]),
+            }
+        )
 
     def or_none(self, value) -> Any | None:
         if value == "":
@@ -149,14 +158,7 @@ class FleetController(BaseController[DBC]):
             if pkg["name"] in ["fleet-osquery", "fleet-desktop"]:
                 fleet_version = pkg["version"]
         data = {
-            "os": delete_none_values(
-                {
-                    "arch": self.or_none(host["cpu_type"]),
-                    "family": FleetController.os_family(host),
-                    "name": self.or_none(host["platform_like"]),
-                    "version": self.or_none(host["os_version"]),
-                }
-            ),
+            "os": self.map_os(host),
             "disks": [],
             "network": delete_none_values(
                 {"hostname": self.or_none(host["hostname"]), "interfaces": []}

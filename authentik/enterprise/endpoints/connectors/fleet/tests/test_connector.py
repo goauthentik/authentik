@@ -3,6 +3,7 @@ from json import loads
 from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
+from authentik.endpoints.facts import OSFamily
 from authentik.endpoints.models import Device
 from authentik.enterprise.endpoints.connectors.fleet.models import FleetConnector
 from authentik.events.models import NotificationWebhookMapping
@@ -10,18 +11,21 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 
 TEST_HOST_UBUNTU = loads(load_fixture("fixtures/host_ubuntu.json"))
+TEST_HOST_FEDORA = loads(load_fixture("fixtures/host_fedora.json"))
 TEST_HOST_MACOS = loads(load_fixture("fixtures/host_macos.json"))
 TEST_HOST_WINDOWS = loads(load_fixture("fixtures/host_windows.json"))
 
-TEST_HOST = {"hosts": [TEST_HOST_UBUNTU, TEST_HOST_MACOS, TEST_HOST_WINDOWS]}
+TEST_HOST = {"hosts": [TEST_HOST_UBUNTU, TEST_HOST_MACOS, TEST_HOST_WINDOWS, TEST_HOST_FEDORA]}
 
 
 class TestFleetConnector(APITestCase):
-    def test_sync(self):
-        connector = FleetConnector.objects.create(
+    def setUp(self):
+        self.connector = FleetConnector.objects.create(
             name=generate_id(), url="http://localhost", token=generate_id()
         )
-        controller = connector.controller(connector)
+
+    def test_sync(self):
+        controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
@@ -64,10 +68,9 @@ class TestFleetConnector(APITestCase):
         mapping = NotificationWebhookMapping.objects.create(
             name=generate_id(), expression="""return {"foo": "bar"}"""
         )
-        connector = FleetConnector.objects.create(
-            name=generate_id(), url="http://localhost", token=generate_id(), headers_mapping=mapping
-        )
-        controller = connector.controller(connector)
+        self.connector.headers_mapping = mapping
+        self.connector.save()
+        controller = self.connector.controller(self.connector)
         with Mocker() as mock:
             mock.get(
                 "http://localhost/api/v1/fleet/hosts?order_key=hardware_serial&page=0&per_page=50&device_mapping=true&populate_software=true&populate_users=true",
@@ -83,3 +86,24 @@ class TestFleetConnector(APITestCase):
         self.assertEqual(mock.request_history[0].headers["foo"], "bar")
         self.assertEqual(mock.request_history[1].method, "GET")
         self.assertEqual(mock.request_history[1].headers["foo"], "bar")
+
+    def test_map_host_linux(self):
+        controller = self.connector.controller(self.connector)
+        self.assertEqual(
+            controller.map_os(TEST_HOST_UBUNTU),
+            {
+                "arch": "x86_64",
+                "family": OSFamily.linux,
+                "name": "debian",
+                "version": "Ubuntu 24.04.3 LTS",
+            },
+        )
+        self.assertEqual(
+            controller.map_os(TEST_HOST_FEDORA),
+            {
+                "arch": "x86_64",
+                "family": OSFamily.linux,
+                "name": "debian",
+                "version": "Ubuntu 24.04.3 LTS",
+            },
+        )
