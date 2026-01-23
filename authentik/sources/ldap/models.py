@@ -11,7 +11,7 @@ import pglock
 from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
+from ldap3 import ALL, NONE, RANDOM, RESTARTABLE, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
@@ -28,7 +28,7 @@ from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
-LDAP_TIMEOUT = 15
+LDAP_TIMEOUT = 60
 LDAP_UNIQUENESS = "ldap_uniq"
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
@@ -262,8 +262,8 @@ class LDAPSource(IncomingSyncSource):
             connection_kwargs.setdefault("password", self.bind_password)
         conn = Connection(
             server or self.server(**server_kwargs),
-            raise_exceptions=True,
-            receive_timeout=LDAP_TIMEOUT,
+            raise_exceptions=CONFIG.get("ldap.raise_exceptions", True),
+            client_strategy=RESTARTABLE,
             **connection_kwargs,
         )
 
