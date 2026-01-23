@@ -80,6 +80,8 @@ To configure a compatibility mode, select the appropriate option in the **SCIM C
 
 By default service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
 
+Removal of users and groups that don't match filter rules can be enabled for the AWS provider (when AWS compatibility mode is configured). Other providers are not yet supported.
+
 ### Supported options
 
 SCIM defines several optional settings that allow clients to discover a service provider's supported features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
