@@ -35,6 +35,10 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
             **connector.google_credentials(),
         )
 
+    @staticmethod
+    def vendor_identifier() -> str:
+        return "chrome.google.com"
+
     def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
         return [EnrollmentMethods.AUTOMATIC_USER]
 

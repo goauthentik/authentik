@@ -14,8 +14,6 @@ class GoogleChromeConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializ
     class Meta:
         model = GoogleChromeConnector
         fields = ConnectorSerializer.Meta.fields + [
-            "configure_flow",
-            "friendly_name",
             "credentials",
         ]
 
@@ -27,7 +25,6 @@ class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):
     serializer_class = GoogleChromeConnectorSerializer
     filterset_fields = [
         "name",
-        "configure_flow",
     ]
     search_fields = ["name"]
     ordering = ["name"]
