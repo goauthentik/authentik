@@ -9,7 +9,7 @@ authentik_enterprise: true
 
 ## Prerequisites
 
-You need to have deployed the authentik Agent on the Linux device, see [Deploy the authentik Agent on Linux](../../authentik-agent/agent-deployment/linux.md) for more details.
+You need to have deployed the authentik Agent on the Linux device, see [Deploy the authentik Agent on Linux](../../authentik-agent/agent-deployment/linux.mdx) for more details.
 
 ## How it works
 
@@ -24,5 +24,5 @@ You need to have deployed the authentik Agent on the Linux device, see [Deploy t
 
 ## Known issues
 
-- On non-Debian Linux distibutions, you will need to manually configure PAM.
+- On non-Debian Linux distributions, you will need to manually configure PAM.
 - MFA is supported except for Webauthn.
