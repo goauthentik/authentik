@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import BaseSerializer
@@ -29,6 +30,10 @@ class GoogleChromeConnector(Connector):
         }
 
     @property
+    def icon_url(self):
+        return static("authentik/sources/google.svg")
+
+    @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.enterprise.stages.authenticator_endpoint_gdtc.api import (
             AuthenticatorEndpointGDTCStageSerializer,
@@ -45,7 +50,7 @@ class GoogleChromeConnector(Connector):
         return GoogleChromeStageView
 
     @property
-    def controller(self) -> type["GoogleChromeController"]:
+    def controller(self) -> type[GoogleChromeController]:
         from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
             GoogleChromeController,
         )
