@@ -9220,14 +9220,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Receive a push notification on your device.</source>
   <target>デバイスでプッシュ通知を受け取ります。</target>
 </trans-unit>
-<trans-unit id="s16bc281dce5685e8">
-  <source>Authenticator</source>
-  <target>認証器</target>
-</trans-unit>
-<trans-unit id="sdefec5401bf67eba">
-  <source>Use a security key to prove your identity.</source>
-  <target>セキュリティキーを使用してアイデンティティを証明します。</target>
-</trans-unit>
 <trans-unit id="sd6a025d66f2637d1">
   <source>Traditional authenticator</source>
   <target>従来の認証器</target>
@@ -10154,6 +10146,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="library.application.card.aria-label">
   <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
   <note from="lit-localize">Screen reader label for the application card</note>
+</trans-unit>
+<trans-unit id="sc1e9c9bab6765c74">
+  <source>Active Sessions</source>
+</trans-unit>
+<trans-unit id="s83991563e9d607ac">
+  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
+</trans-unit>
+<trans-unit id="s4b004192e4d6ab2e">
+  <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="sb458ffb37cbde768">
+  <source>Revoke Sessions</source>
+</trans-unit>
+<trans-unit id="s1bd2d0f088b75b92">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
+</trans-unit>
+<trans-unit id="s5c5e74eabcb9eba1">
+  <source>This will force the selected users to re-authenticate on all their devices.</source>
+</trans-unit>
+<trans-unit id="scd909e0bc55fc548">
+  <source>Security key</source>
+</trans-unit>
+<trans-unit id="sd0de938d9c37ad5f">
+  <source>Use a Passkey or security key to prove your identity.</source>
 </trans-unit>
 </body>
 </file>
