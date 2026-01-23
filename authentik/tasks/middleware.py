@@ -213,7 +213,6 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
 
 
 class WorkerHealthcheckMiddleware(Middleware):
-
     thread: Thread | None
 
     def after_worker_boot(self, broker, worker):
@@ -272,8 +271,10 @@ class WorkerStatusMiddleware(Middleware):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
             while True:
+                old_last_seen = status.last_seen
                 status.last_seen = now()
-                status.save(update_fields=("last_seen",))
+                if old_last_seen != status.last_seen:
+                    status.save(update_fields=("last_seen",))
                 sleep(30)
 
 
