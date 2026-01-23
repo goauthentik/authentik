@@ -107,7 +107,7 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
             if (userIds.length > 0) {
                 const response = await new CoreApi(
                     DEFAULT_CONFIG,
-                ).coreAuthenticatedSessionsBulkDelete({
+                ).coreAuthenticatedSessionsBulkDeleteDestroy({
                     userPks: userIds,
                 });
                 this.revokedCount = response.deleted || 0;
