@@ -16,6 +16,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.publish.outputs.version }}
     steps:
       - id: generate_token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
@@ -33,19 +35,33 @@ jobs:
         run: make gen-client-ts
       - name: Publish package
         working-directory: gen-ts-api/
+        id: publish
         run: |
           npm i
           npm publish --tag generated
+          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+  upgrade:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - id: generate_token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
       - name: Upgrade /web
         working-directory: web
         run: |
-          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
-          npm i @goauthentik/api@$VERSION
+          npm i @goauthentik/api@${{ needs.build.outputs.new_version }}
       - name: Upgrade /web/packages/sfe
         working-directory: web/packages/sfe
         run: |
-          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
-          npm i @goauthentik/api@$VERSION
+          npm i @goauthentik/api@${{ needs.build.outputs.new_version }}
       - uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v7
         id: cpr
         with:
