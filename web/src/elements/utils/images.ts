@@ -3,6 +3,8 @@ import { ResolvedUITheme } from "#common/theme";
 import type { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
+import type { ThemedUrls } from "@goauthentik/api";
+
 import { spread } from "@open-wc/lit-helpers";
 import { ImgHTMLAttributes } from "react";
 
@@ -20,7 +22,7 @@ export interface ThemedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
      * Pre-resolved URLs for each theme variant from backend.
      * When provided, these are used instead of src.
      */
-    themedUrls?: Record<string, string> | null;
+    themedUrls?: ThemedUrls | null;
 }
 
 export const ThemedImage: LitFC<ThemedImageProps> = ({
@@ -44,7 +46,7 @@ export const ThemedImage: LitFC<ThemedImageProps> = ({
     }
 
     // Use themed URL if available, otherwise use src directly
-    const resolvedSrc = themedUrls?.[theme] ?? src;
+    const resolvedSrc = (themedUrls as Record<string, string> | null)?.[theme] ?? src;
 
     return html`<img src=${resolvedSrc} class=${ifPresent(className)} ${spread(props)} />`;
 };

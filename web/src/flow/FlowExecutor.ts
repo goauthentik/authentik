@@ -242,7 +242,9 @@ export class FlowExecutor
         ) {
             // Use themed background URL if available, otherwise fall back to default
             const backgroundUrl =
-                this.flowInfo.backgroundThemedUrls?.[this.activeTheme] ?? this.flowInfo.background;
+                (this.flowInfo.backgroundThemedUrls as Record<string, string> | null | undefined)?.[
+                    this.activeTheme
+                ] ?? this.flowInfo.background;
             applyBackgroundImageProperty(backgroundUrl);
         }
 

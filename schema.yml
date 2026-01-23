@@ -35696,6 +35696,10 @@ components:
           type: string
         background:
           type: string
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         cancel_url:
           type: string
         layout:
