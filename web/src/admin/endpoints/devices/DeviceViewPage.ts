@@ -193,9 +193,7 @@ export class DeviceViewPage extends AKElement {
                             return [
                                 html`${conn.connectorObj.name}`,
                                 html`<div class="pf-c-description-list__text">
-                                        ${msg(
-                                            str`Agent version: ${this.agentVersion(conn) ?? "-"}`,
-                                        )}
+                                        ${this.agentVersion(conn) ?? "-"}
                                     </div>
                                     <div class="pf-c-description-list__text">
                                         ${conn.latestSnapshot?.created
@@ -227,7 +225,7 @@ export class DeviceViewPage extends AKElement {
         const vendorData = vendorContainer[conn.latestSnapshot.vendor];
         if (!vendorData) return;
         if (!("agent_version" in vendorData)) return;
-        return vendorData.agent_version;
+        return msg(str`Agent version: ${vendorData.agent_version ?? "-"}`);
     }
 
     renderProcesses() {

@@ -45,9 +45,9 @@ class TestFleetConnector(APITestCase):
             {
                 "os": {
                     "arch": "x86_64",
-                    "name": "debian",
+                    "name": "Ubuntu",
                     "family": "linux",
-                    "version": "Ubuntu 24.04.3 LTS",
+                    "version": "24.04.3 LTS",
                 },
                 "disks": [],
                 "vendor": {"fleetdm.com": {"policies": [], "agent_version": ""}},
@@ -94,8 +94,8 @@ class TestFleetConnector(APITestCase):
             {
                 "arch": "x86_64",
                 "family": OSFamily.linux,
-                "name": "debian",
-                "version": "Ubuntu 24.04.3 LTS",
+                "name": "Ubuntu",
+                "version": "24.04.3 LTS",
             },
         )
         self.assertEqual(
@@ -103,7 +103,31 @@ class TestFleetConnector(APITestCase):
             {
                 "arch": "x86_64",
                 "family": OSFamily.linux,
-                "name": "debian",
-                "version": "Ubuntu 24.04.3 LTS",
+                "name": "Fedora Linux",
+                "version": "43.0.0",
+            },
+        )
+
+    def test_map_host_windows(self):
+        controller = self.connector.controller(self.connector)
+        self.assertEqual(
+            controller.map_os(TEST_HOST_WINDOWS),
+            {
+                "arch": "x86_64",
+                "family": OSFamily.windows,
+                "name": "Windows Server 2022 Datacenter 21H2",
+                "version": "10.0.20348.4405",
+            },
+        )
+
+    def test_map_host_macos(self):
+        controller = self.connector.controller(self.connector)
+        self.assertEqual(
+            controller.map_os(TEST_HOST_MACOS),
+            {
+                "arch": "arm64e",
+                "family": OSFamily.macOS,
+                "name": "macOS",
+                "version": "26.0.1",
             },
         )

@@ -1,3 +1,4 @@
+import re
 from typing import Any
 
 from django.db import transaction
@@ -137,14 +138,21 @@ class FleetController(BaseController[DBC]):
         return OSFamily.other
 
     def map_os(self, host: dict[str, Any]) -> dict[str, str]:
-        return delete_none_values(
-            {
-                "arch": self.or_none(host["cpu_type"]),
-                "family": FleetController.os_family(host),
-                "name": self.or_none(host["platform_like"]),
-                "version": self.or_none(host["os_version"]),
-            }
-        )
+        family = FleetController.os_family(host)
+        os = {
+            "arch": self.or_none(host["cpu_type"]),
+            "family": family,
+            "name": self.or_none(host["platform_like"]),
+            "version": self.or_none(host["os_version"]),
+        }
+        if not host["os_version"]:
+            return delete_none_values(os)
+        version = re.search(r"(\d+\.(?:\d+\.?)+)", host["os_version"])
+        if not version:
+            return delete_none_values(os)
+        os["version"] = host["os_version"][version.start() :].strip()
+        os["name"] = host["os_version"][0 : version.start()].strip()
+        return delete_none_values(os)
 
     def or_none(self, value) -> Any | None:
         if value == "":
