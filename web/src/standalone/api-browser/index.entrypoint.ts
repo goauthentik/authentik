@@ -1,5 +1,5 @@
-// sort-imports-ignore
 import "rapidoc";
+import "#types/rapi-doc";
 
 import styles from "./index.entrypoint.css";
 

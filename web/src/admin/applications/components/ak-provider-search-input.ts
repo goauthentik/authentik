@@ -17,7 +17,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: Provider) => item.name;
-const renderValue = (item: Provider | undefined) => item?.pk;
+const renderValue = (item: Provider | null) => item?.pk ?? "";
 const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseName);
 
 @customElement("ak-provider-search-input")

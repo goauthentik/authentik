@@ -58,6 +58,13 @@ export interface ResponseErrorsChallenge {
     };
 }
 
+/**
+ * Base class for all flow stages.
+ *
+ * @template Tin The type of the challenge this stage accepts.
+ * @prop {StageHost} host The host managing this stage.
+ * @prop {Tin} challenge The challenge provided to this stage.
+ */
 export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,

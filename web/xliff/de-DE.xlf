@@ -3386,10 +3386,6 @@
   <source>Successfully created binding.</source>
   <target>Bindung erfolgreich erstellt.</target>
 </trans-unit>
-<trans-unit id="s81a45c4fd11e8e1a">
-  <source>Don't pass</source>
-  <target>Nicht bestanden</target>
-</trans-unit>
 <trans-unit id="s95b73e0f4e47eb9a">
   <source>Result used when policy execution fails.</source>
   <target>Ergebnis, das bei einem Fehlschlag der Policy-Ausführung verwendet wird.</target>
@@ -4485,14 +4481,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s6d225d9e74dfff6f">
   <source>Heimdal kadmin</source>
   <target>Heimdal kadmin</target>
-</trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-  <target>Andere</target>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
-  <target>Anderer Typ von kadmin</target>
 </trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
@@ -6208,10 +6196,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
   <source>Continue</source>
   <target>Weiter</target>
 </trans-unit>
-<trans-unit id="sc7524ea24eeeb019">
-  <source>Failed to preview prompt</source>
-  <target>Vorschau des Prompts fehlgeschlagen</target>
-</trans-unit>
 <trans-unit id="s8b2b2a43fcf688a3">
   <source>Successfully updated prompt.</source>
   <target>Eingabeaufforderung erfolgreich aktualisiert.</target>
@@ -6890,14 +6874,6 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
 <trans-unit id="s9e9c8d99f4c26baf">
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Wenn ein Benutzer erfolgreich von der E-Mail zurückkehrt, wird sein Konto aktiviert</target>
-</trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Verwende globale Einstellungen</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Wenn diese Option aktiviert ist, werden die globalen E-Mail Verbindungseinstellungen benutzt und die unten angegebenen Einstellungen ignoriert</target>
 </trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
@@ -8154,10 +8130,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Private key available?</source>
   <target>Privater Schlüssel vorhanden?</target>
 </trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Zertifikat Schlüsselpaar(e)</target>
-</trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
   <target>Verwaltet durch Authentik</target>
@@ -8831,12 +8803,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
 </trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
-</trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
   <target>Etwas ist schiefgelaufen. Bitte probiere es später wieder</target>
@@ -9119,14 +9085,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Receive a push notification on your device.</source>
   <target>Erhalten Sie eine Push-Benachrichtigung auf Ihrem Gerät.</target>
 </trans-unit>
-<trans-unit id="s16bc281dce5685e8">
-  <source>Authenticator</source>
-  <target>Authentifikator</target>
-</trans-unit>
-<trans-unit id="sdefec5401bf67eba">
-  <source>Use a security key to prove your identity.</source>
-  <target>Verwenden Sie einen Sicherheitsschlüssel, um Ihre Identität nachzuweisen</target>
-</trans-unit>
 <trans-unit id="sd6a025d66f2637d1">
   <source>Traditional authenticator</source>
   <target>Traditioneller Authentifikator</target>
@@ -9332,18 +9290,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
   <target>Suche ergab keine Treffer.</target>
-</trans-unit>
-<trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="sb1d445efd39638d4">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="sddbc2a3be190464b">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
 </trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
@@ -9667,7 +9613,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>User created.</source>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
-  <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+  <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
@@ -9917,9 +9863,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="sdfe787aeeebbfbf1">
   <source>Type a token description...</source>
 </trans-unit>
-<trans-unit id="s434805f916fbf657">
-  <source>Not allowed to change this field. Please contact your administrator.</source>
-</trans-unit>
 <trans-unit id="sd7c52e2ce408c542">
   <source>Integrations synced in the last 12 hours.</source>
 </trans-unit>
@@ -9993,6 +9936,84 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="sd8309fdcb0478b0f">
   <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular-with-query">
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural-with-query">
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="user.library.search.type-to-filter-hint">
+  <source>Type to filter applications</source>
+  <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
+</trans-unit>
+<trans-unit id="user.library.search.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="user.library.application-count.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="library.application.card.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application card</note>
+</trans-unit>
+<trans-unit id="sc1e9c9bab6765c74">
+  <source>Active Sessions</source>
+</trans-unit>
+<trans-unit id="s83991563e9d607ac">
+  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
+</trans-unit>
+<trans-unit id="s4b004192e4d6ab2e">
+  <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="sb458ffb37cbde768">
+  <source>Revoke Sessions</source>
+</trans-unit>
+<trans-unit id="s1bd2d0f088b75b92">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
+</trans-unit>
+<trans-unit id="s5c5e74eabcb9eba1">
+  <source>This will force the selected users to re-authenticate on all their devices.</source>
+</trans-unit>
+<trans-unit id="scd909e0bc55fc548">
+  <source>Security key</source>
+</trans-unit>
+<trans-unit id="sd0de938d9c37ad5f">
+  <source>Use a Passkey or security key to prove your identity.</source>
 </trans-unit>
 </body>
 </file>

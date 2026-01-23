@@ -49,7 +49,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
             name="reason"
             label=${msg("Reason")}

@@ -6,22 +6,22 @@ import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
@@ -89,16 +89,9 @@ export class SourceListPage extends TablePage<Source> {
             </a>`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.slug,
-                    }}
-                    type=${ifDefined(item.component)}
-                >
-                </ak-proxy-form>
+                ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                    instancePk: item.slug,
+                })}
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>

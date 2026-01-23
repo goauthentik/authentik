@@ -49,7 +49,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Roles to add")} name="roles">
             <div class="pf-c-input-group">
                 <ak-user-role-select-table
