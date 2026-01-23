@@ -31,4 +31,17 @@ class Migration(migrations.Migration):
             old_name="ak_groups",
             new_name="groups",
         ),
+        migrations.AlterModelOptions(
+            name="user",
+            options={
+                "permissions": [
+                    ("reset_user_password", "Reset Password"),
+                    ("impersonate", "Can impersonate other users"),
+                    ("preview_user", "Can preview user data sent to providers"),
+                    ("view_user_applications", "View applications the user has access to"),
+                ],
+                "verbose_name": "User",
+                "verbose_name_plural": "Users",
+            },
+        ),
     ]
