@@ -33,7 +33,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",

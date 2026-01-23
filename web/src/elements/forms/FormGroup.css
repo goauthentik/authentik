@@ -18,14 +18,15 @@ details {
     &::details-content {
         padding-inline-start: var(--pf-c-form__field-group--GridTemplateColumns--toggle);
         padding-inline-end: var(--pf-global--spacer--md);
-        padding-block-end: var(--pf-global--spacer--md);
+        padding-block-end: var(--pf-global--spacer--sm);
     }
 
     & > summary {
         list-style-position: outside;
         margin-inline-start: 2em;
         padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
-        padding: var(--pf-global--spacer--md);
+        padding-block: var(--pf-global--spacer--sm);
+        padding-inline: var(--pf-global--spacer--md);
         list-style-type: "\f105";
         cursor: pointer;
         user-select: none;
@@ -44,9 +45,12 @@ details {
         }
 
         &:hover::marker {
-            outline: 1px dashed red;
             color: var(--marker-color-hover, var(--pf-global--Color--100));
         }
+    }
+
+    &:not([open]) summary {
+        padding-block: var(--pf-global--spacer--xs);
     }
 
     &[open] summary {

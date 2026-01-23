@@ -17,7 +17,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum TypeCreateWizardPageLayouts {
     list = "list",
@@ -40,7 +39,6 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#endregion
 
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFGrid,
         PFRadio,

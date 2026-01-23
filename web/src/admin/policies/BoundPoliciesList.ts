@@ -7,15 +7,16 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
-import { PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
+import { PolicyBindingForm, PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
@@ -42,9 +43,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
-        PolicyBindingCheckTarget.policy,
-        PolicyBindingCheckTarget.group,
-        PolicyBindingCheckTarget.user,
+        PolicyBindingCheckTarget.Policy,
+        PolicyBindingCheckTarget.Group,
+        PolicyBindingCheckTarget.User,
     ];
 
     @property({ type: Array })
@@ -109,16 +110,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg(str`Update ${item.policyObj?.name}`)}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.policyObj?.pk,
-                    }}
-                    type=${ifDefined(item.policyObj?.component)}
-                >
-                </ak-proxy-form>
+                ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
+                    slot: "form",
+                    instancePk: item.pk,
+                    actionLabel: msg("Update"),
+                    headline: msg(str`Update ${item.policyObj?.name}`, {
+                        id: "form.headline.update",
+                    }),
+                })}
+
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Edit Policy")}
                 </button>
@@ -186,17 +186,16 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                 <ak-forms-modal size=${PFSize.Medium}>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Binding")}</span>
-                    <ak-proxy-form
-                        slot="form"
-                        type=${this.bindingEditForm}
-                        .args=${{
-                            instancePk: item.pk,
-                            allowedTypes: this.allowedTypes,
-                            typeNotices: this.typeNotices,
-                            targetPk: ifDefined(this.target),
-                        }}
-                    >
-                    </ak-proxy-form>
+                    ${StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        allowedTypes: this.allowedTypes,
+                        typeNotices: this.typeNotices,
+                        targetPk: this.target || "",
+
+                        actionLabel: msg("Update"),
+                        headline: msg("Update Binding"),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Binding")}
                     </button>
@@ -222,18 +221,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
-                        <span slot="submit">${msg("Create")}</span>
-                        <span slot="header">${msg("Create Binding")}</span>
-                        <ak-proxy-form
-                            slot="form"
-                            type=${this.bindingEditForm}
-                            .args=${{
-                                allowedTypes: this.allowedTypes,
-                                typeNotices: this.typeNotices,
-                                targetPk: ifDefined(this.target),
-                            }}
-                        >
-                        </ak-proxy-form>
+                        ${StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
+                            slot: "form",
+                            allowedTypes: this.allowedTypes,
+                            typeNotices: this.typeNotices,
+                            targetPk: this.target || "",
+
+                            actionLabel: msg("Create"),
+                            headline: msg("Create Binding"),
+                        })}
                         <button slot="trigger" class="pf-c-button pf-m-primary">
                             ${msg("Bind existing policy/group/user")}
                         </button>
@@ -244,7 +240,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     renderToolbar(): TemplateResult {
-        return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
+        return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
                       showBindingPage
@@ -252,18 +248,16 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                   ></ak-policy-wizard>`
                 : nothing}
             <ak-forms-modal size=${PFSize.Medium}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Binding")}</span>
-                <ak-proxy-form
-                    slot="form"
-                    type=${this.bindingEditForm}
-                    .args=${{
-                        allowedTypes: this.allowedTypes,
-                        typeNotices: this.typeNotices,
-                        targetPk: ifDefined(this.target),
-                    }}
-                >
-                </ak-proxy-form>
+                ${StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
+                    slot: "form",
+                    allowedTypes: this.allowedTypes,
+                    typeNotices: this.typeNotices,
+                    targetPk: this.target || "",
+
+                    actionLabel: msg("Create"),
+                    headline: msg("Create Binding"),
+                })}
+
                 <button slot="trigger" class="pf-c-button pf-m-primary">
                     ${msg(str`Bind existing ${this.allowedTypesLabel}`)}
                 </button>

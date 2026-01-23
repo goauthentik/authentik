@@ -124,7 +124,7 @@ export class UserForm extends ModelForm<User, number> {
         return user;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="username"
                 label=${msg("Username")}

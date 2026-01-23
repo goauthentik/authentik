@@ -49,7 +49,7 @@ jobs:
       tags: ${{ steps.ev.outputs.imageTagsJSON }}
       shouldPush: ${{ steps.ev.outputs.shouldPush }}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
@@ -69,7 +69,7 @@ jobs:
       matrix:
         tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
