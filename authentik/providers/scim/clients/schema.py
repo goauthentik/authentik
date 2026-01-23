@@ -132,7 +132,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         return self._is_fallback
 
     @staticmethod
-    def default() -> "ServiceProviderConfiguration":
+    def default() -> ServiceProviderConfiguration:
         """Get default configuration, which doesn't support any optional features as fallback"""
         return ServiceProviderConfiguration(
             patch=Patch(supported=False),

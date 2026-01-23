@@ -8,7 +8,7 @@ To switch which source is used for a specific user based on their email domain, 
 
 ## Create an expression policy
 
-[Create](../working_with_policies.md#create-a-policy) an expression policy] that does the following:
+[Create](../working_with_policies.md#create-a-policy) an expression policy that does the following:
 
     1. Maps the desired source for each user domain.
     2. Determines the user's domain based on their email address.

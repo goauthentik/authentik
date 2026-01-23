@@ -1,6 +1,7 @@
 import "#admin/groups/GroupForm";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/roles/RelatedRoleList";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -21,7 +22,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import { CoreApi, Group, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -31,7 +32,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
@@ -43,6 +43,7 @@ export class GroupViewPage extends AKElement {
             .coreGroupsRetrieve({
                 groupUuid: id,
                 includeUsers: false,
+                includeInheritedRoles: true,
             })
             .then((group) => {
                 this.group = group;
@@ -53,7 +54,6 @@ export class GroupViewPage extends AKElement {
     group?: Group;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFDisplay,
@@ -137,6 +137,34 @@ export class GroupViewPage extends AKElement {
                                                             </a>
                                                         </li>`;
                                                     })}
+                                                    ${(this.group.inheritedRolesObj ?? []).map(
+                                                        (role) => {
+                                                            return html`<li>
+                                                                <a
+                                                                    href=${`#/identity/roles/${role.pk}`}
+                                                                    >${role.name}
+                                                                </a>
+                                                                <pf-tooltip
+                                                                    position="top"
+                                                                    content=${msg(
+                                                                        "Inherited from parent group",
+                                                                    )}
+                                                                >
+                                                                    <span
+                                                                        class="pf-c-label pf-m-outline pf-m-cyan"
+                                                                        style="margin-left: 0.5rem;"
+                                                                    >
+                                                                        <span
+                                                                            class="pf-c-label__content"
+                                                                            >${msg(
+                                                                                "Inherited",
+                                                                            )}</span
+                                                                        >
+                                                                    </span>
+                                                                </pf-tooltip>
+                                                            </li>`;
+                                                        },
+                                                    )}
                                                 </ul>
                                             </div>
                                         </dd>
@@ -203,6 +231,15 @@ export class GroupViewPage extends AKElement {
                         </div>
                     </div>
                 </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-roles"
+                    id="page-roles"
+                    aria-label="${msg("Roles")}"
+                >
+                    ${this.renderTabRoles(this.group)}
+                </section>
                 <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"
@@ -214,6 +251,42 @@ export class GroupViewPage extends AKElement {
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
+    }
+
+    protected renderTabRoles(group: Group): TemplateResult {
+        return html`
+            <ak-tabs pageIdentifier="groupRoles" vertical>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-assigned-roles"
+                    id="page-assigned-roles"
+                    aria-label=${msg("Assigned Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetGroup=${group}> </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-all-roles"
+                    id="page-all-roles"
+                    aria-label=${msg("All Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetGroup=${group} showInherited>
+                            </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+            </ak-tabs>
+        `;
     }
 
     updated(changed: PropertyValues<this>) {

@@ -23,7 +23,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
 
     # We cannot override `instance` as that will confuse rest_framework
     # and make it attempt to update the instance
-    blueprint_instance: "BlueprintInstance"
+    blueprint_instance: BlueprintInstance
 
     def validate(self, attrs):
         from authentik.blueprints.models import BlueprintInstance
@@ -37,14 +37,21 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data: dict) -> MetaResult:
-        from authentik.blueprints.v1.tasks import apply_blueprint
+        from authentik.blueprints.v1.importer import Importer
 
         if not self.blueprint_instance:
             LOGGER.info("Blueprint does not exist, but not required")
             return MetaResult()
         LOGGER.debug("Applying blueprint from meta model", blueprint=self.blueprint_instance)
 
-        apply_blueprint.send(self.blueprint_instance.pk).get_result(block=True)
+        # Apply blueprint directly using Importer to avoid task context requirements
+        # and prevent deadlocks when called from within another blueprint task
+        blueprint_content = self.blueprint_instance.retrieve()
+        importer = Importer.from_string(blueprint_content, self.blueprint_instance.context)
+        valid, logs = importer.validate()
+        [log.log() for log in logs]
+        if valid:
+            importer.apply()
         return MetaResult()
 
 

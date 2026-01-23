@@ -328,14 +328,6 @@ export function applyBackgroundImageProperty(
     const { backgroundImage } = getComputedStyle(document.body, "::before");
 
     const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
-    const sameOrigin = nextURL.origin === baseOrigin;
-
-    // Same origin? Only compare pathnames to avoid unnecessary repaints
-    // due to search params or hashes.
-    if (sameOrigin && currentURL?.pathname === nextURL.pathname) {
-        return;
-    }
-
     if (currentURL?.href === nextURL.href) {
         return;
     }
@@ -346,7 +338,7 @@ export function applyBackgroundImageProperty(
 /**
  * Returns the root interface element of the page.
  *
- * @todo Can this be handled with a Lit Mixin?
+ * @deprecated Use context controllers to access the interface root instead.
  */
 export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
     const element = document.body.querySelector<T>("[data-test-id=interface-root]");

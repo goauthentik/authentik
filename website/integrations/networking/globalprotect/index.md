@@ -72,7 +72,7 @@ To support the integration of GlobalProtect with authentik, you need to create a
 5. Navigate to the 'GlobalProtect Portal Configuration' and chose the portal for SAML access.
 
 - Under 'Authentication' select the 'Authentication Profile' to the one just created. Leave all other settings as default.
-- Optionally chose to require client access via separately issued client cert as well. If not using a client cert, select 'Yes (User Credentials OR Client Certificate Required)'.
+- Optionally choose to require client access via separately issued client cert as well. If not using a client cert, select 'Yes (User Credentials OR Client Certificate Required)'.
 
 6. Make the same exact changes to the 'GlobalProtect Gateway Configuration'.
 

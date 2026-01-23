@@ -58,7 +58,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return result;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const { settings } = this;
 
         return html`

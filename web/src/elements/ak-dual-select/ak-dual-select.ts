@@ -28,7 +28,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function localeComparator(a: DualSelectPair, b: DualSelectPair) {
     const aSortBy = String(a[2] || a[0]);
@@ -62,7 +61,7 @@ const DelegatedEvents = [
  */
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
-    static styles = [PFBase, PFButton, globalVariables, mainStyles];
+    static styles = [PFButton, globalVariables, mainStyles];
 
     //#region Properties
 

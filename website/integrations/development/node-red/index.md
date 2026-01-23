@@ -46,7 +46,7 @@ To support the integration of Node-RED with authentik, you need to create an app
 
 3. Click **Submit** to save the new application and provider.
 
-## Note-RED configuration
+## Node-RED configuration
 
 ### Step 1
 

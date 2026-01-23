@@ -6,34 +6,6 @@
   <source>English</source>
   <target>İngilizce</target>
 </trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-  <target>Sahte dil</target>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech</source>
-  <target>Çekçe</target>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German</source>
-  <target>Almanca</target>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish</source>
-  <target>İspanyolca</target>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish</source>
-  <target>Fince</target>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French</source>
-  <target>Fransızca</target>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian</source>
-  <target>İtalyanca</target>
-</trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
   <target>Japonca</target>
@@ -42,32 +14,12 @@
   <source>Korean</source>
   <target>Korece</target>
 </trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch</source>
-  <target>Hollandaca</target>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish</source>
-  <target>Lehçe</target>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese</source>
-  <target>Portekizce</target>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian</source>
-  <target>Rusça</target>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish</source>
-  <target>Türkçe</target>
-</trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified</source>
+  <source>Chinese (Simplified)</source>
   <target>Çince</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional</source>
+  <source>Chinese (Traditional)</source>
   <target>Çince</target>
 </trans-unit>
 <!-- #endregion -->
@@ -84,8 +36,8 @@
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
-  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
-  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
 
@@ -104,18 +56,6 @@
 </trans-unit>
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
-</trans-unit>
-<trans-unit id="s364c4f177a2f8322">
-  <source>Open API drawer</source>
-  <target>API çekmecesini aç</target>
-</trans-unit>
-<trans-unit id="sba65ae54d6585c1a">
-  <source>Unread notifications</source>
-  <target>Okunmamış bildirimler</target>
-</trans-unit>
-<trans-unit id="s9ba989e69344ff29">
-  <source>Open Notification drawer</source>
-  <target>Bildirim çekmecesini aç</target>
 </trans-unit>
 <trans-unit id="s9d8b8aa2b404c2c8">
   <source>Settings</source>
@@ -3257,10 +3197,6 @@
   <source>Successfully created binding.</source>
   <target>Bağlama başarılı bir şekilde oluşturuldu.</target>
 </trans-unit>
-<trans-unit id="s81a45c4fd11e8e1a">
-  <source>Don't pass</source>
-  <target>Geçme</target>
-</trans-unit>
 <trans-unit id="s95b73e0f4e47eb9a">
   <source>Result used when policy execution fails.</source>
   <target>İlke yürütme başarısız olduğunda kullanılan sonuç.</target>
@@ -4091,9 +4027,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Click to change value</source>
   <target>Değeri değiştirmek için tıklayın</target>
 </trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
-</trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
 </trans-unit>
@@ -4158,19 +4091,12 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Expires on</source>
   <target>Geçerlilik süresi</target>
 </trans-unit>
-<trans-unit id="sb7fe62e7073eb6c9">
-  <source>Token name...</source>
-</trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
   <target>Süresi Doluyor</target>
-</trans-unit>
-<trans-unit id="safcc54b2aedb1a17">
-  <source>If this is selected, the token will expire. Upon expiration, the token will be rotated.</source>
-  <target>Bu seçilirse, belirteç süresi dolacaktır. Süresi dolduktan sonra, belirteç döndürülür.</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -4190,9 +4116,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
-</trans-unit>
-<trans-unit id="sc522b30adb9ff289">
-  <source>Update Enrollment token</source>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -4324,12 +4247,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 </trans-unit>
 <trans-unit id="s6d225d9e74dfff6f">
   <source>Heimdal kadmin</source>
-</trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
 </trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
@@ -5993,9 +5910,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Continue</source>
   <target>Devam Et</target>
 </trans-unit>
-<trans-unit id="sc7524ea24eeeb019">
-  <source>Failed to preview prompt</source>
-</trans-unit>
 <trans-unit id="s8b2b2a43fcf688a3">
   <source>Successfully updated prompt.</source>
   <target>İstemi başarıyla güncellendi.</target>
@@ -6401,10 +6315,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
   <source>Token length</source>
   <target>Belirteç uzunluğu</target>
 </trans-unit>
-<trans-unit id="s6931695c4f563bc4">
-  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
-  <target>Bireysel olarak oluşturulan belirteçlerin uzunluğu. Güvenliği artırmak için artırılabilir.</target>
-</trans-unit>
 <trans-unit id="sc5a4711395ffb043">
   <source>Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).</source>
   <target>Bir TOTP kimlik doğrulayıcısını (Authy/Google Authenticator) yapılandırmak için kullanılan aşama.</target>
@@ -6662,14 +6572,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
 <trans-unit id="s9e9c8d99f4c26baf">
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Bir kullanıcı e-postadan başarıyla döndüğünde, hesabı etkinleştirilir.</target>
-</trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Genel ayarları kullan</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Etkinleştirildiğinde, genel E-posta bağlantısı ayarları kullanılır ve aşağıdaki bağlantı ayarları yoksayılır.</target>
 </trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
@@ -7875,10 +7777,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Private key available?</source>
   <target>Özel anahtar mevcut mu?</target>
 </trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Sertifika Anahtarı Çiftleri</target>
-</trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
   <target>Auentik tarafından yönetiliyor</target>
@@ -8443,20 +8341,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
 </trans-unit>
-<trans-unit id="sc0064c91ad2aa90b">
-  <source>Notification drawer</source>
-</trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
   <target>Bildirimler</target>
-</trans-unit>
-<trans-unit id="sa3438c7bb4e9cce8">
-  <source><x id="0" equiv-text="${this.unread}"/> unread</source>
-  <target><x id="0" equiv-text="${this.unread}"/> okunmamış</target>
-</trans-unit>
-<trans-unit id="s8cda828dac449ea5">
-  <source>Clear all</source>
-  <target>Hepsini temizle</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
@@ -8524,12 +8411,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
-</trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -8808,14 +8689,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Receive a push notification on your device.</source>
   <target>Cihazınızda anında iletme bildirimi alın.</target>
 </trans-unit>
-<trans-unit id="s16bc281dce5685e8">
-  <source>Authenticator</source>
-  <target>Kimlik Doğrulayıcı</target>
-</trans-unit>
-<trans-unit id="sdefec5401bf67eba">
-  <source>Use a security key to prove your identity.</source>
-  <target>Kimliğinizi kanıtlamak için bir güvenlik anahtarı kullanın.</target>
-</trans-unit>
 <trans-unit id="sd6a025d66f2637d1">
   <source>Traditional authenticator</source>
   <target>Geleneksel kimlik doğrulayıcı</target>
@@ -9011,18 +8884,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
   <target>Arama hiçbir sonuç döndürmedi.</target>
-</trans-unit>
-<trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="sb1d445efd39638d4">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="sddbc2a3be190464b">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
 </trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
@@ -9345,7 +9206,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>User created.</source>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
-  <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+  <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
@@ -9370,9 +9231,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
-</trans-unit>
-<trans-unit id="sa373520de40e9d44">
-  <source>Assign User to Groups</source>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
@@ -9418,12 +9276,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
-</trans-unit>
-<trans-unit id="scdeb093efb1ac2f2">
-  <source>Data export requested successfully</source>
-</trans-unit>
-<trans-unit id="se5a360179bd5937e">
-  <source>You will receive a notification once the data is ready</source>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
@@ -9532,9 +9384,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
                             <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
                             <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
 </trans-unit>
-<trans-unit id="s813faec5ff1d32d1">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, and slashes</source>
-</trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
 </trans-unit>
@@ -9549,6 +9398,215 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sb4a957846c89fca1">
   <source>Primary disk usage</source>
+</trans-unit>
+<trans-unit id="s7b68229d885a34d3">
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+</trans-unit>
+<trans-unit id="s284f44964466ef38">
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+</trans-unit>
+<trans-unit id="s01f8cd92a0204da2">
+  <source>Data exports are not available as storage for reports is not configured.</source>
+</trans-unit>
+<trans-unit id="s7afef158aada7389">
+  <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+</trans-unit>
+<trans-unit id="sa8d2689c8fdfea22">
+  <source>Successfully requested data export</source>
+</trans-unit>
+<trans-unit id="s7e2ef0e26e7f5e6f">
+  <source>Failed to export data</source>
+</trans-unit>
+<trans-unit id="sc6991f3e377938fb">
+  <source>Start export</source>
+</trans-unit>
+<trans-unit id="sd69873a0783f8e39">
+  <source>Export data</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s3ec4da71c1a62754">
+  <source>Queued</source>
+</trans-unit>
+<trans-unit id="sd32298bb7d36024d">
+  <source>Configured file backend does not support file management.</source>
+</trans-unit>
+<trans-unit id="s4f1e04b9b4cb96ae">
+  <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+</trans-unit>
+<trans-unit id="s3a46b5964b3ecfac">
+  <source>View details...</source>
+</trans-unit>
+<trans-unit id="s6cbf6cd401ea3336">
+  <source>Type a connector name...</source>
+</trans-unit>
+<trans-unit id="s04be2edfb0d2218a">
+  <source>Type a name for the token...</source>
+</trans-unit>
+<trans-unit id="s84e29a714db544e9">
+  <source>Update Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s5a7055a44dc83b1e">
+  <source>Type a unique identifier...</source>
+</trans-unit>
+<trans-unit id="sdfe787aeeebbfbf1">
+  <source>Type a token description...</source>
+</trans-unit>
+<trans-unit id="sd7c52e2ce408c542">
+  <source>Integrations synced in the last 12 hours.</source>
+</trans-unit>
+<trans-unit id="table-loading-bar-label">
+  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
+</trans-unit>
+<trans-unit id="s6ecf01b9b8304dba">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="sb6650552aaaf5da0">
+  <source>Assigned Roles</source>
+</trans-unit>
+<trans-unit id="s5cbf3cbb4cf38b05">
+  <source>All Roles</source>
+</trans-unit>
+<trans-unit id="s6a850cd00064d6e6">
+  <source>Inherited from parent group</source>
+</trans-unit>
+<trans-unit id="sd9e3b91f8d62cb04">
+  <source>Inherited from group</source>
+</trans-unit>
+<trans-unit id="s3d8c389ca77b97e1">
+  <source>Inherited</source>
+</trans-unit>
+<trans-unit id="s01730bc068a6cf07">
+  <source>Select roles to attach to the user</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-api-requests">
+  <source>Toggle API requests drawer</source>
+</trans-unit>
+<trans-unit id="s355e4737a0286070">
+  <source>API Drawer</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-notifications">
+  <source>Toggle notifications drawer</source>
+</trans-unit>
+<trans-unit id="drawer-invoker-tooltip-notifications">
+  <source>Notification Drawer</source>
+</trans-unit>
+<trans-unit id="s5fa7f18dcfc98131">
+  <source>Failed to fetch notifications.</source>
+</trans-unit>
+<trans-unit id="notification-drawer-clear-all">
+  <source>Clear all notifications</source>
+</trans-unit>
+<trans-unit id="notification-drawer-close">
+  <source>Close notification drawer</source>
+</trans-unit>
+<trans-unit id="s54e4d61fc46a14be">
+  <source>No MFA devices enrolled.</source>
+</trans-unit>
+<trans-unit id="s227aacd5a7fc6f50">
+  <source>User Tokens</source>
+</trans-unit>
+<trans-unit id="sea858aeacf6ae9b0">
+  <source>No User Tokens enrolled.</source>
+</trans-unit>
+<trans-unit id="notification-unread-count">
+  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
+  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+</trans-unit>
+<trans-unit id="s42636dae6e29892e">
+  <source>Agent version: <x id="0" equiv-text="${this.agentVersion(conn) ?? &quot;-&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s6dd24e14615f1369">
+  <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
+</trans-unit>
+<trans-unit id="sa6cd3315b7c53ab7">
+  <source>You should only import files from trusted sources and review blueprints before importing them.</source>
+</trans-unit>
+<trans-unit id="sd8309fdcb0478b0f">
+  <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular-with-query">
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural-with-query">
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="user.library.search.type-to-filter-hint">
+  <source>Type to filter applications</source>
+  <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
+</trans-unit>
+<trans-unit id="user.library.search.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="user.library.application-count.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="library.application.card.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application card</note>
+</trans-unit>
+<trans-unit id="sc1e9c9bab6765c74">
+  <source>Active Sessions</source>
+</trans-unit>
+<trans-unit id="s83991563e9d607ac">
+  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
+</trans-unit>
+<trans-unit id="s4b004192e4d6ab2e">
+  <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="sb458ffb37cbde768">
+  <source>Revoke Sessions</source>
+</trans-unit>
+<trans-unit id="s1bd2d0f088b75b92">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
+</trans-unit>
+<trans-unit id="s5c5e74eabcb9eba1">
+  <source>This will force the selected users to re-authenticate on all their devices.</source>
+</trans-unit>
+<trans-unit id="scd909e0bc55fc548">
+  <source>Security key</source>
+</trans-unit>
+<trans-unit id="sd0de938d9c37ad5f">
+  <source>Use a Passkey or security key to prove your identity.</source>
 </trans-unit>
 </body>
 </file>

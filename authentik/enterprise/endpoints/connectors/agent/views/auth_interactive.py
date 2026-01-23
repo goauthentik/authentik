@@ -3,20 +3,19 @@ from hmac import compare_digest
 
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseBadRequest, QueryDict
 
-from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceAuthenticationToken
-from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.connectors.agent.auth import (
+from authentik.endpoints.connectors.agent.auth import (
     agent_auth_issue_token,
     check_device_policies,
 )
+from authentik.endpoints.connectors.agent.models import AgentConnector, DeviceAuthenticationToken
+from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
+from authentik.endpoints.models import Device
 from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.providers.oauth2.utils import HttpResponseRedirectScheme
-
-PLAN_CONTEXT_DEVICE_AUTH_TOKEN = "goauthentik.io/endpoints/device_auth_token"  # nosec
 
 QS_AGENT_IA_TOKEN = "ak-auth-ia-token"  # nosec
 

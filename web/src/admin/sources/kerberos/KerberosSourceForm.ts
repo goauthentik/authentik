@@ -85,7 +85,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
                 label=${msg("Name")}
@@ -244,11 +244,6 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                                     value: KadminTypeEnum.Heimdal,
                                     description: html`${msg("Heimdal kadmin")}`,
                                 },
-                                {
-                                    label: msg("Other"),
-                                    value: KadminTypeEnum.Other,
-                                    description: html`${msg("Other type of kadmin")}`,
-                                },
                             ]}
                             .value=${this.instance?.kadminType}
                         >
@@ -397,7 +392,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                 <ak-radio-input
                     label=${msg("Outgoing sync trigger mode")}
                     required
-                    name="type"
+                    name="syncOutgoingTriggerMode"
                     .value=${this.instance?.syncOutgoingTriggerMode}
                     .options=${createSyncOutgoingTriggerModeOptions}
                 >

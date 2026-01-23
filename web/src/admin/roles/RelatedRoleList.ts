@@ -14,14 +14,16 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { RbacApi, Role, User } from "@goauthentik/api";
+import { Group, RbacApi, Role, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-role-related-add")
 export class RelatedRoleAdd extends Form<{ roles: string[] }> {
+    #api = new RbacApi(DEFAULT_CONFIG);
+
     @property({ attribute: false })
     public user: User | null = null;
 
@@ -36,7 +38,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
         await Promise.all(
             data.roles.map((role) => {
                 if (!this.user) return Promise.resolve();
-                return new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                return this.#api.rbacRolesAddUserCreate({
                     uuid: role,
                     userAccountSerializerForRoleRequest: {
                         pk: this.user.pk,
@@ -47,7 +49,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Roles to add")} name="roles">
             <div class="pf-c-input-group">
                 <ak-user-role-select-table
@@ -86,6 +88,8 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
 
 @customElement("ak-role-related-list")
 export class RelatedRoleList extends Table<Role> {
+    #api = new RbacApi(DEFAULT_CONFIG);
+
     checkbox = true;
     clearOnRefresh = true;
     protected override searchEnabled = true;
@@ -96,19 +100,54 @@ export class RelatedRoleList extends Table<Role> {
     @property({ attribute: false })
     public targetUser: User | null = null;
 
+    @property({ attribute: false })
+    public targetGroup: Group | null = null;
+
+    @property({ type: Boolean })
+    public showInherited = false;
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        super.willUpdate(changedProperties);
+        if (changedProperties.has("showInherited")) {
+            // Disable checkboxes in showInherited mode (view-only)
+            this.checkbox = !this.showInherited;
+        }
+    }
+
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
-            ...(await this.defaultEndpointConfig()),
-            users: this.targetUser ? [this.targetUser.pk] : [],
+        const config = await this.defaultEndpointConfig();
+
+        if (this.targetGroup) {
+            return this.#api.rbacRolesList({
+                ...config,
+                akGroups: this.targetGroup.pk,
+                inherited: this.showInherited,
+            });
+        }
+
+        return this.#api.rbacRolesList({
+            ...config,
+            users: this.targetUser?.pk,
+            inherited: this.showInherited,
         });
     }
 
-    protected columns: TableColumn[] = [
-        [msg("Name"), "name"],
-        [msg("Actions"), null, msg("Row Actions")],
-    ];
+    protected get columns(): TableColumn[] {
+        // Hide actions column in showInherited mode (view-only)
+        if (this.showInherited) {
+            return [[msg("Name"), "name"]];
+        }
+        return [
+            [msg("Name"), "name"],
+            [msg("Actions"), null, msg("Row Actions")],
+        ];
+    }
 
-    renderToolbarSelected(): TemplateResult {
+    renderToolbarSelected(): SlottedTemplateResult {
+        // Don't render Remove button in showInherited mode (view-only)
+        if (this.showInherited) {
+            return nothing;
+        }
         const disabled = !this.selectedElements.length;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Role(s)")}
@@ -120,7 +159,7 @@ export class RelatedRoleList extends Table<Role> {
             .objects=${this.selectedElements}
             .delete=${(item: Role) => {
                 if (!this.targetUser) return;
-                return new RbacApi(DEFAULT_CONFIG).rbacRolesRemoveUserCreate({
+                return this.#api.rbacRolesRemoveUserCreate({
                     uuid: item.pk,
                     userAccountSerializerForRoleRequest: {
                         pk: this.targetUser.pk,
@@ -134,10 +173,46 @@ export class RelatedRoleList extends Table<Role> {
         </ak-forms-delete-bulk>`;
     }
 
+    protected isInherited(role: Role): boolean {
+        if (this.targetGroup) {
+            // For groups, check if role is in direct roles
+            if (!this.targetGroup.roles) return false;
+
+            return !this.targetGroup.roles.includes(role.pk);
+        }
+
+        if (this.targetUser) {
+            // For users, check if role is in direct roles
+
+            if (!this.targetUser.roles) return false;
+
+            return !this.targetUser.roles.includes(role.pk);
+        }
+
+        return false;
+    }
+
     row(item: Role): SlottedTemplateResult[] {
+        const inherited = this.showInherited && this.isInherited(item);
+        const inheritedTooltip = this.targetGroup
+            ? msg("Inherited from parent group")
+            : msg("Inherited from group");
+        const nameCell = html`<a href="#/identity/roles/${item.pk}">${item.name}</a> ${inherited
+                ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
+                      <span class="pf-c-label pf-m-outline pf-m-cyan">
+                          <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
+                      </span>
+                  </pf-tooltip>`
+                : nothing}`;
+
+        // Hide actions in showInherited mode (view-only)
+        if (this.showInherited) {
+            return [nameCell];
+        }
+
         return [
-            html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
-            html` <ak-forms-modal>
+            nameCell,
+            html`<ak-forms-modal>
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg("Update Role")}</span>
                 <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
@@ -151,6 +226,10 @@ export class RelatedRoleList extends Table<Role> {
     }
 
     renderToolbar(): TemplateResult {
+        // Hide add buttons in showInherited mode (view-only)
+        if (this.showInherited || this.targetGroup) {
+            return html`${super.renderToolbar()}`;
+        }
         return html`
             ${this.targetUser
                 ? html`<ak-forms-modal>
