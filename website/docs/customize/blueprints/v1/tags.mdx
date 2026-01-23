@@ -14,6 +14,7 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!File scalar",
         "!File sequence",
         "!Find sequence",
+        "!FindMany sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
@@ -63,10 +64,6 @@ Examples:
 {/* prettier-ignore-start */}
 
 ```yaml
-configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
-```
-
-```yaml
 configure_flow:
     !Find [
         authentik_flows.flow,
@@ -78,6 +75,24 @@ configure_flow:
 
 Looks up any model and resolves to the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
+
+#### `!FindMany`
+
+Examples:
+
+{/* prettier-ignore-start */}
+
+```yaml
+configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
+```
+
+```yaml
+providers: !FindMany [authentik_providers_proxy.proxyprovider]  # Returns `[1, 2, 3, ...]`
+```
+
+{/* prettier-ignore-end */}
+
+Identical to `!Find`, but returns _all_ matches' primary key, not just the first match.
 
 #### `!FindObject` <span class="badge badge--version">authentik 2025.8+</span>
 
