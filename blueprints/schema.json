@@ -4995,28 +4995,6 @@
                     "type": "string",
                     "title": "Meta icon"
                 },
-                "meta_icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Meta icon themed urls"
-                },
                 "meta_description": {
                     "type": "string",
                     "title": "Meta description"
@@ -7769,28 +7747,6 @@
                     "type": "string",
                     "title": "Background",
                     "description": "Background shown during execution"
-                },
-                "background_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Background themed urls"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -11430,28 +11386,6 @@
                     "type": "string",
                     "title": "Icon"
                 },
-                "icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Icon themed urls"
-                },
                 "group_matching_mode": {
                     "type": "string",
                     "enum": [
@@ -11795,28 +11729,6 @@
                 "icon": {
                     "type": "string",
                     "title": "Icon"
-                },
-                "icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Icon themed urls"
                 },
                 "server_uri": {
                     "type": "string",
@@ -12192,28 +12104,6 @@
                 "icon": {
                     "type": "string",
                     "title": "Icon"
-                },
-                "icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Icon themed urls"
                 },
                 "group_matching_mode": {
                     "type": "string",
@@ -12595,28 +12485,6 @@
                     "type": "string",
                     "title": "Icon"
                 },
-                "icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Icon themed urls"
-                },
                 "group_matching_mode": {
                     "type": "string",
                     "enum": [
@@ -12912,28 +12780,6 @@
                 "icon": {
                     "type": "string",
                     "title": "Icon"
-                },
-                "icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Icon themed urls"
                 },
                 "group_matching_mode": {
                     "type": "string",
@@ -13427,28 +13273,6 @@
                 "icon": {
                     "type": "string",
                     "title": "Icon"
-                },
-                "icon_themed_urls": {
-                    "type": "object",
-                    "properties": {
-                        "light": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Light"
-                        },
-                        "dark": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "minLength": 1,
-                            "title": "Dark"
-                        }
-                    },
-                    "title": "Icon themed urls"
                 },
                 "bot_username": {
                     "type": "string",

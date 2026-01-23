@@ -33415,6 +33415,7 @@ components:
         meta_icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         meta_description:
           type: string
@@ -33497,10 +33498,6 @@ components:
           format: uri
         meta_icon:
           type: string
-        meta_icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         meta_description:
           type: string
         meta_publisher:
@@ -33510,7 +33507,6 @@ components:
         group:
           type: string
       required:
-      - meta_icon_themed_urls
       - name
       - slug
     AuthTypeEnum:
@@ -35980,12 +35976,14 @@ components:
         branding_logo_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         branding_favicon:
           type: string
         branding_favicon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         branding_custom_css:
           type: string
@@ -38143,6 +38141,7 @@ components:
         background_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         stages:
           type: array
@@ -38384,10 +38383,6 @@ components:
         background:
           type: string
           description: Background shown during execution
-        background_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -38407,7 +38402,6 @@ components:
           description: Required level of authentication and authorization to access
             a flow.
       required:
-      - background_themed_urls
       - designation
       - name
       - slug
@@ -40240,6 +40234,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         group_matching_mode:
           allOf:
@@ -40422,10 +40417,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -40485,7 +40476,6 @@ components:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
       required:
-      - icon_themed_urls
       - name
       - realm
       - slug
@@ -40930,6 +40920,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         server_uri:
           type: string
@@ -41149,10 +41140,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         server_uri:
           type: string
           minLength: 1
@@ -41242,7 +41229,6 @@ components:
           description: When to trigger sync for outgoing providers
       required:
       - base_dn
-      - icon_themed_urls
       - name
       - server_uri
       - slug
@@ -42791,6 +42777,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         group_matching_mode:
           allOf:
@@ -42979,10 +42966,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -43037,7 +43020,6 @@ components:
       required:
       - consumer_key
       - consumer_secret
-      - icon_themed_urls
       - name
       - provider_type
       - slug
@@ -46095,10 +46077,6 @@ components:
           format: uri
         meta_icon:
           type: string
-        meta_icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         meta_description:
           type: string
         meta_publisher:
@@ -46939,10 +46917,6 @@ components:
         background:
           type: string
           description: Background shown during execution
-        background_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -47431,10 +47405,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -47644,10 +47614,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         server_uri:
           type: string
           minLength: 1
@@ -48098,10 +48064,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -48371,10 +48333,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -48968,10 +48926,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -49456,10 +49410,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         bot_username:
           type: string
           minLength: 1
@@ -49931,6 +49881,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         group_matching_mode:
           allOf:
@@ -50082,10 +50033,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -50110,7 +50057,6 @@ components:
           minLength: 1
           description: Plex token used to check friends
       required:
-      - icon_themed_urls
       - name
       - plex_token
       - slug
@@ -52491,6 +52437,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         group_matching_mode:
           allOf:
@@ -52691,10 +52638,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -52766,7 +52709,6 @@ components:
         signed_response:
           type: boolean
       required:
-      - icon_themed_urls
       - name
       - pre_authentication_flow
       - slug
@@ -54093,6 +54035,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
       required:
       - component
@@ -54773,6 +54716,7 @@ components:
         icon_themed_urls:
           allOf:
           - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
           nullable: true
         bot_username:
           type: string
@@ -54915,10 +54859,6 @@ components:
           minLength: 1
         icon:
           type: string
-        icon_themed_urls:
-          allOf:
-          - $ref: '#/components/schemas/ThemedUrlsRequest'
-          nullable: true
         bot_username:
           type: string
           minLength: 1
@@ -54938,7 +54878,6 @@ components:
       required:
       - bot_token
       - bot_username
-      - icon_themed_urls
       - name
       - pre_authentication_flow
       - slug
@@ -55020,18 +54959,6 @@ components:
         dark:
           type: string
           nullable: true
-    ThemedUrlsRequest:
-      type: object
-      description: Themed URLs - maps theme names to URLs for light and dark themes
-      properties:
-        light:
-          type: string
-          nullable: true
-          minLength: 1
-        dark:
-          type: string
-          nullable: true
-          minLength: 1
     Token:
       type: object
       description: Token Serializer
