@@ -14,7 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer, ThemedUrlsSerializer
 from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.policies.engine import PolicyEngine
@@ -28,7 +28,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
     managed = ReadOnlyField()
     component = SerializerMethodField()
     icon_url = ReadOnlyField()
-    icon_themed_urls = ReadOnlyField()
+    icon_themed_urls = ThemedUrlsSerializer(allow_null=True)
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""

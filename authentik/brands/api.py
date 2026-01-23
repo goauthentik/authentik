@@ -9,7 +9,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
     ChoiceField,
-    DictField,
     ListField,
     SerializerMethodField,
 )
@@ -22,7 +21,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.rbac.filters import SecretKeyFilter
 from authentik.tenants.api.settings import FlagJSONField
 from authentik.tenants.flags import Flag
@@ -96,9 +95,9 @@ class CurrentBrandSerializer(PassiveSerializer):
     matched_domain = CharField(source="domain")
     branding_title = CharField()
     branding_logo = CharField(source="branding_logo_url")
-    branding_logo_themed_urls = DictField(child=CharField(), allow_null=True)
+    branding_logo_themed_urls = ThemedUrlsSerializer(allow_null=True)
     branding_favicon = CharField(source="branding_favicon_url")
-    branding_favicon_themed_urls = DictField(child=CharField(), allow_null=True)
+    branding_favicon_themed_urls = ThemedUrlsSerializer(allow_null=True)
     branding_custom_css = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),

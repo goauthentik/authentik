@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, FileField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, FileField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.request import Request
@@ -17,7 +17,7 @@ from authentik.admin.files.usage import FileApiUsage
 from authentik.admin.files.validation import validate_upload_file_name
 from authentik.api.validation import validate
 from authentik.core.api.used_by import DeleteAction, UsedBySerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import get_apps
 from authentik.rbac.permissions import HasPermission
@@ -47,7 +47,7 @@ class FileView(APIView):
         name = CharField()
         mime_type = CharField()
         url = CharField()
-        themed_urls = DictField(child=CharField(), required=False, allow_null=True)
+        themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
 
     @extend_schema(
         parameters=[FileListParameters],

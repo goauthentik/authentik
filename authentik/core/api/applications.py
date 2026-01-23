@@ -24,7 +24,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -53,7 +53,7 @@ class ApplicationSerializer(ModelSerializer):
     )
 
     meta_icon_url = ReadOnlyField(source="get_meta_icon")
-    meta_icon_themed_urls = ReadOnlyField(source="get_meta_icon_themed_urls")
+    meta_icon_themed_urls = ThemedUrlsSerializer(source="get_meta_icon_themed_urls", allow_null=True)
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""

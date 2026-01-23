@@ -153,9 +153,18 @@ class TestThemedUrls(FileTestFileBackendMixin, TestCase):
         self.assertTrue(result["light"].startswith("http://example.com"))
         self.assertTrue(result["dark"].startswith("http://example.com"))
 
-    def test_themed_urls_passthrough_returns_none(self):
-        """Test themed_urls returns None for passthrough URLs"""
+    def test_themed_urls_passthrough_with_theme_variable(self):
+        """Test themed_urls returns dict for passthrough URLs with %(theme)s"""
         manager = FileManager(FileUsage.MEDIA)
-        # External URLs go through passthrough backend
+        # External URLs with %(theme)s should return themed URLs
         result = manager.themed_urls("https://example.com/logo-%(theme)s.png")
+        self.assertIsInstance(result, dict)
+        self.assertEqual(result["light"], "https://example.com/logo-light.png")
+        self.assertEqual(result["dark"], "https://example.com/logo-dark.png")
+
+    def test_themed_urls_passthrough_without_theme_variable(self):
+        """Test themed_urls returns None for passthrough URLs without %(theme)s"""
+        manager = FileManager(FileUsage.MEDIA)
+        # External URLs without %(theme)s should return None
+        result = manager.themed_urls("https://example.com/logo.png")
         self.assertIsNone(result)
