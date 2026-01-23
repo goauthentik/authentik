@@ -374,7 +374,7 @@ requires-dist = [
     { name = "kubernetes", specifier = "==35.0.0" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.0.2" },
-    { name = "msgraph-sdk", specifier = "==1.52.0" },
+    { name = "msgraph-sdk", specifier = "==1.53.0" },
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "packaging", specifier = "==26.0" },
     { name = "paramiko", specifier = "==4.0.0" },
@@ -2427,7 +2427,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.52.0"
+version = "1.53.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2437,9 +2437,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/12/19/1344e92aa124f82798bd52dbd863d8e821d37ab66f5be42293b460182b3c/msgraph_sdk-1.52.0.tar.gz", hash = "sha256:355e419ce3b71473efa0fc28a802c87f430b8e57da615c7d721838134b130619", size = 6270866, upload-time = "2026-01-07T17:26:30.521Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/5a/04d0f6338b9c102187a2e84d6fde29778572ddbb1243c9c4ef8844802e20/msgraph_sdk-1.53.0.tar.gz", hash = "sha256:bc27e9aa2ebf0de1375b309ae7ae7116bfc39c24085ec20b372e3a23b72da672", size = 6266772, upload-time = "2026-01-22T20:30:05.604Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/16/50658a5325835198ade791a106130aabcb3e1e22750670c67777da949d66/msgraph_sdk-1.52.0-py3-none-any.whl", hash = "sha256:6984dbb0c0bd8ccc6f5108e36926ccf927c2e552bbc17072c8e6f36fd2165cb5", size = 25659951, upload-time = "2026-01-07T17:26:27.771Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/a0/56f76ca7ce632ded3cf4bb840c3499676036c42f551dc2db2e2e4b2ec55c/msgraph_sdk-1.53.0-py3-none-any.whl", hash = "sha256:15fbb35ce7df6b1b54896589059a85abf0aeb499ffe3361dfb6766cdaa7224bb", size = 25661692, upload-time = "2026-01-22T20:30:02.738Z" },
 ]
 
 [[package]]
