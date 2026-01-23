@@ -22,6 +22,18 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 export const MODAL_BUTTON_STYLES = css`
+    /**
+     * Fixes padding in scrollable modal bodies, splitting the space between
+     * header and body.
+     */
+    .pf-c-modal-box__header {
+        padding-bottom: calc(var(--pf-c-modal-box__body--PaddingTop) / 2);
+    }
+
+    .pf-c-modal-box__body {
+        padding-top: calc(var(--pf-c-modal-box__body--PaddingTop) / 2);
+    }
+
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);

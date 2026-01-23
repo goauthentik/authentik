@@ -1,6 +1,6 @@
-import { OwnPropertyRecord, Writeable } from "#common/types";
+import type { OwnPropertyRecord, Writeable } from "#common/types";
 
-import { Context, ContextProvider, ContextType } from "@lit/context";
+import type { Context, ContextProvider, ContextType } from "@lit/context";
 import type {
     LitElement,
     nothing,
@@ -8,20 +8,42 @@ import type {
     ReactiveControllerHost,
     TemplateResult,
 } from "lit";
-import { DirectiveResult } from "lit-html/directive.js";
+import type { DirectiveResult } from "lit-html/directive.js";
 
 //#region HTML Helpers
+
+export const AKElementTagPrefix = `ak-`;
+export type AKElementTagPrefix = `ak-${string}`;
+
+/**
+ * A utility type to extract registered tag names from {@linkcode HTMLElementTagNameMap}
+ * i.e. those starting with `ak-`.
+ */
+export type CustomElementTagName = Extract<keyof HTMLElementTagNameMap, AKElementTagPrefix>;
+
+export type CustomHTMLElementTagNameMap = {
+    [K in CustomElementTagName]: HTMLElementTagNameMap[K];
+};
 
 /**
  * Utility type to extract a record of tag names which correspond to a given type.
  *
  * This is useful when selecting a subset of elements that share a common base class.
+ *
+ * ```ts
+ * declare global {
+ *     interface HTMLElementTagNameMap {
+ *         "ak-foo-form": FooForm;
+ *         "ak-bar-form": BarForm;
+ *         "ak-baz-form": BazForm;
+ *     }
+ * }
+ *
+ * type FormElements = HTMLElementTagNamesOf<Form>;
  */
-export type HTMLElementTagNameMapOf<T> = {
-    [K in keyof HTMLElementTagNameMap as HTMLElementTagNameMap[K] extends T
-        ? K
-        : never]: HTMLElementTagNameMap[K];
-};
+export type ElementTagNamesOf<T, Map = CustomHTMLElementTagNameMap> = {
+    [K in keyof Map]: Map[K] extends T ? K : never;
+}[keyof Map];
 
 //#endregion
 
@@ -121,11 +143,31 @@ export type ReactiveElementHost<T> = Partial<ReactiveControllerHostRegistry & Wr
 
 //#region Constructors
 
+/**
+ * A type representing an abstract constructor.
+ */
+export type AbstractConstructor<T = unknown> = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]
+) => T;
+
+/**
+ * A type representing a constructor.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Constructor<T = unknown> = new (...args: any[]) => T;
+
+/**
+ * A type representing an abstract {@linkcode LitElement} constructor.
+ */
 export type AbstractLitElementConstructor<T = unknown> = abstract new (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
 ) => LitElement & T;
 
+/**
+ * A type representing a {@linkcode LitElement} constructor.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
 
@@ -280,5 +322,7 @@ export type SlottedTemplateResult =
     | TemplateResult
     | typeof nothing
     | null
-    | DirectiveResult;
+    | DirectiveResult
+    | HTMLElement;
+
 export type Spread = { [key: string]: unknown };

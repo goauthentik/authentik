@@ -5,13 +5,14 @@ import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/telegram/TelegramSourceForm";
-import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 import type { Wizard } from "#elements/wizard/Wizard";
 
@@ -67,12 +68,9 @@ export class SourceWizard extends AKElement {
                             slot=${`type-${type.component}-${type.modelName}`}
                             label=${msg(str`Create ${type.name}`)}
                         >
-                            <ak-proxy-form
-                                .args=${{
-                                    modelName: type.modelName,
-                                }}
-                                type=${type.component}
-                            ></ak-proxy-form>
+                            ${StrictUnsafe<CustomFormElementTagName>(type.component, {
+                                modelName: type.modelName,
+                            })}
                         </ak-wizard-page-form>
                     `;
                 })}
