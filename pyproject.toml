@@ -45,7 +45,7 @@ dependencies = [
   "kubernetes==35.0.0",
   "ldap3==2.9.1",
   "lxml==6.0.2",
-  "msgraph-sdk==1.52.0",
+  "msgraph-sdk==1.53.0",
   "opencontainers==0.0.15",
   "packaging==26.0",
   "paramiko==4.0.0",
