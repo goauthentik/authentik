@@ -35,11 +35,11 @@ class GoogleChromeConnector(Connector):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.stages.authenticator_endpoint_gdtc.api import (
-            AuthenticatorEndpointGDTCStageSerializer,
+        from authentik.enterprise.endpoints.connectors.google_chrome.api import (
+            GoogleChromeConnectorSerializer,
         )
 
-        return AuthenticatorEndpointGDTCStageSerializer
+        return GoogleChromeConnectorSerializer
 
     @property
     def stage(self) -> type[StageView] | None:

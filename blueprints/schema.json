@@ -6645,20 +6645,19 @@
         "model_authentik_endpoints_connectors_google_chrome.googlechromeconnector": {
             "type": "object",
             "properties": {
+                "connector_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Connector uuid"
+                },
                 "name": {
                     "type": "string",
                     "minLength": 1,
                     "title": "Name"
                 },
-                "configure_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Configure flow",
-                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
-                },
-                "friendly_name": {
-                    "type": "string",
-                    "title": "Friendly name"
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
                 },
                 "credentials": {
                     "type": "object",
