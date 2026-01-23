@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from rest_framework import mixins
-from rest_framework.fields import ReadOnlyField, SerializerMethodField
+from rest_framework.fields import SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.object_types import TypesMixin
@@ -18,10 +18,10 @@ from authentik.core.models import Provider
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """Provider Serializer"""
 
-    assigned_application_slug = ReadOnlyField(source="application.slug")
-    assigned_application_name = ReadOnlyField(source="application.name")
-    assigned_backchannel_application_slug = ReadOnlyField(source="backchannel_application.slug")
-    assigned_backchannel_application_name = ReadOnlyField(source="backchannel_application.name")
+    assigned_application_slug = SerializerMethodField()
+    assigned_application_name = SerializerMethodField()
+    assigned_backchannel_application_slug = SerializerMethodField()
+    assigned_backchannel_application_name = SerializerMethodField()
 
     component = SerializerMethodField()
 
@@ -30,6 +30,38 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         if obj.__class__ == Provider:
             return ""
         return obj.component
+
+    def get_assigned_application_slug(self, obj: Provider) -> str:
+        """Get application slug, return empty string if no application exists"""
+        try:
+            return obj.application.slug
+        except Provider.application.RelatedObjectDoesNotExist:
+            return ""
+
+    def get_assigned_application_name(self, obj: Provider) -> str:
+        """Get application name, return empty string if no application exists"""
+        try:
+            return obj.application.name
+        except Provider.application.RelatedObjectDoesNotExist:
+            return ""
+
+    def get_assigned_backchannel_application_slug(self, obj: Provider) -> str:
+        """Get backchannel application slug.
+
+        Returns an empty string if no backchannel application exists.
+        """
+        if not obj.backchannel_application:
+            return ""
+        return obj.backchannel_application.slug or ""
+
+    def get_assigned_backchannel_application_name(self, obj: Provider) -> str:
+        """Get backchannel application name.
+
+        Returns an empty string if no backchannel application exists.
+        """
+        if not obj.backchannel_application:
+            return ""
+        return obj.backchannel_application.name or ""
 
     class Meta:
         model = Provider
