@@ -6,7 +6,7 @@ from time import sleep
 from typing import Any, cast
 
 import pglock
-from django.db import OperationalError, connections
+from django.db import OperationalError, connections, transaction
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
@@ -250,10 +250,13 @@ class WorkerStatusMiddleware(Middleware):
     @staticmethod
     def run():
         setthreadtitle("authentik Worker status")
-        status = WorkerStatus.objects.create(
-            hostname=socket.gethostname(),
-            version=authentik_full_version(),
-        )
+        with transaction.atomic():
+            hostname = socket.gethostname()
+            WorkerStatus.objects.filter(hostname=hostname).delete()
+            status, _ = WorkerStatus.objects.update_or_create(
+                hostname=hostname,
+                version=authentik_full_version(),
+            )
         while True:
             try:
                 WorkerStatusMiddleware.keep(status)
