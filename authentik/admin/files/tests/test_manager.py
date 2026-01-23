@@ -1,6 +1,7 @@
 """Test file service layer"""
 
 from unittest import skipUnless
+from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.test import TestCase
@@ -150,8 +151,12 @@ class TestThemedUrls(FileTestFileBackendMixin, TestCase):
         result = manager.themed_urls("logo-%(theme)s.svg", mock_request)
 
         self.assertIsInstance(result, dict)
-        self.assertTrue(result["light"].startswith("http://example.com"))
-        self.assertTrue(result["dark"].startswith("http://example.com"))
+        light_url = urlparse(result["light"])
+        dark_url = urlparse(result["dark"])
+        self.assertEqual(light_url.scheme, "http")
+        self.assertEqual(light_url.netloc, "example.com")
+        self.assertEqual(dark_url.scheme, "http")
+        self.assertEqual(dark_url.netloc, "example.com")
 
     def test_themed_urls_passthrough_with_theme_variable(self):
         """Test themed_urls returns dict for passthrough URLs with %(theme)s"""
