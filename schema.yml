@@ -3088,6 +3088,34 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/authenticated_sessions/bulk_delete/:
+    delete:
+      operationId: core_authenticated_sessions_bulk_delete_destroy
+      description: Bulk revoke all sessions for multiple users
+      parameters:
+      - in: query
+        name: user_pks
+        schema:
+          type: array
+          items:
+            type: integer
+        description: List of user IDs to revoke all sessions for
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkDeleteSessionResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/brands/:
     get:
       operationId: core_brands_list
@@ -34813,6 +34841,13 @@ components:
           additionalProperties: {}
       required:
       - domain
+    BulkDeleteSessionResponse:
+      type: object
+      properties:
+        deleted:
+          type: integer
+      required:
+      - deleted
     Cache:
       type: object
       description: Generic cache stats for an object
