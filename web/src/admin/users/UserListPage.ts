@@ -247,16 +247,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     row(item: User): SlottedTemplateResult[] {
-<<<<<<< HEAD
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
-=======
-        const { currentUser } = this;
-
-        const impersonationVisible =
-            this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
-
->>>>>>> 0a10b81d1 (web/admin: fix impersonation form requesting data without being opened (#19673))
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -276,11 +268,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-<<<<<<< HEAD
                 ${canImpersonate
-=======
-                ${impersonationVisible
->>>>>>> 0a10b81d1 (web/admin: fix impersonation form requesting data without being opened (#19673))
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
                               <span slot="submit">${msg("Impersonate")}</span>
