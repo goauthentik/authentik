@@ -2,7 +2,7 @@ import { DefaultBrand } from "#common/ui/config";
 
 import { createMixin } from "#elements/types";
 
-import type { CurrentBrand, FooterLink } from "@goauthentik/api";
+import type { CurrentBrand, FooterLink, ThemedUrls } from "@goauthentik/api";
 
 import { consume, Context, createContext } from "@lit/context";
 
@@ -45,7 +45,7 @@ export interface BrandingMixin {
     /**
      * Pre-resolved themed URLs for the logo (for S3 presigned URLs).
      */
-    readonly brandingLogoThemedUrls: Record<string, string> | null | undefined;
+    readonly brandingLogoThemedUrls: ThemedUrls | null | undefined;
 
     /**
      * The application favicon.
@@ -57,7 +57,7 @@ export interface BrandingMixin {
     /**
      * Pre-resolved themed URLs for the favicon (for S3 presigned URLs).
      */
-    readonly brandingFaviconThemedUrls: Record<string, string> | null | undefined;
+    readonly brandingFaviconThemedUrls: ThemedUrls | null | undefined;
 
     /**
      * Footer links provided by the brand configuration.
@@ -91,7 +91,7 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
                 return this.brand.brandingLogo ?? DefaultBrand.brandingLogo;
             }
 
-            public get brandingLogoThemedUrls(): Record<string, string> | null | undefined {
+            public get brandingLogoThemedUrls(): ThemedUrls | null | undefined {
                 return this.brand.brandingLogoThemedUrls;
             }
 
@@ -99,7 +99,7 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
                 return this.brand.brandingFavicon ?? DefaultBrand.brandingFavicon;
             }
 
-            public get brandingFaviconThemedUrls(): Record<string, string> | null | undefined {
+            public get brandingFaviconThemedUrls(): ThemedUrls | null | undefined {
                 return this.brand.brandingFaviconThemedUrls;
             }
 
