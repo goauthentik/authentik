@@ -95,9 +95,9 @@ class CurrentBrandSerializer(PassiveSerializer):
     matched_domain = CharField(source="domain")
     branding_title = CharField()
     branding_logo = CharField(source="branding_logo_url")
-    branding_logo_themed_urls = ThemedUrlsSerializer(allow_null=True)
+    branding_logo_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
     branding_favicon = CharField(source="branding_favicon_url")
-    branding_favicon_themed_urls = ThemedUrlsSerializer(allow_null=True)
+    branding_favicon_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
     branding_custom_css = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),

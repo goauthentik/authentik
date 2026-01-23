@@ -28,7 +28,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
     managed = ReadOnlyField()
     component = SerializerMethodField()
     icon_url = ReadOnlyField()
-    icon_themed_urls = ThemedUrlsSerializer(allow_null=True)
+    icon_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""

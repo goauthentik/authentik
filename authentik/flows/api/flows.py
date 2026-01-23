@@ -48,7 +48,7 @@ class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
     background_url = ReadOnlyField()
-    background_themed_urls = ThemedUrlsSerializer(allow_null=True)
+    background_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
 
     cache_count = SerializerMethodField()
     export_url = SerializerMethodField()
