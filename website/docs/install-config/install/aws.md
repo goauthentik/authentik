@@ -28,6 +28,16 @@ This stack will create the following resources:
 
 The stack will output the endpoint of the ALB that to which you can point your DNS records.
 
+## Access authentik from AWS CloudFormation
+
+To launch authentik, in your browser go to:
+
+`http://<domain_you_configured>/if/flow/initial-setup/`
+
+:::info Initial setup in browser
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+:::
+
 ### Further customization
 
 If you require further customization, we recommend you install authentik via [Docker Compose](./docker-compose.mdx) or [Kubernetes](./kubernetes.md).

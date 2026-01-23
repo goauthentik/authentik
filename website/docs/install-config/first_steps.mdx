@@ -12,7 +12,7 @@ architecture-beta
 
     service install(mdi:application-cog-outline)[Install authentik] in first
     service acl(mdi:account-key-outline)[Access authentik] in first
-    service apps(mdi:plus-box-multiple-outline)[Add an appp and provider] in first
+    service apps(mdi:plus-box-multiple-outline)[Add an app and provider] in first
     service users(mdi:account-multiple-plus)[Create a new user] in first
     service further(mdi:cog-clockwise)[Further customization] in first
 
@@ -29,16 +29,15 @@ The following tutorial assumes that you have already:
 
 1. Installed authentik on either [Docker Compose](../install-config/install/docker-compose.mdx#install-and-start-authentik), [Kubernetes](../install-config/install/kubernetes.md#install-authentik-helm-chart), or [AWS CloudFormation](../install-config/install/aws.md) and then started the server and worker.
 
-2. Opened authentik in your browser and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik) or [Kubernetes](../install-config/install/kubernetes.md#access-authentik)).
+2. Opened authentik in your browser to the `initial-setup` flw and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik), [Kubernetes](../install-config/install/kubernetes.md#access-authentik)), or [AWS CloudFormation](../install-config/install/aws.md#access-authentik-from-aws-cloudformation).
 
 :::info Initial setup in browser
-If your attempt to open authentik in the browser using the URL with the `initial-setup` flow does not work, verify that you have a trailing slash on the end of the URL. Also verify that the authentik server, worker, an PostgreSQL database are started and healthy.
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
 :::
 
 Other optional pre-installation configurations that you might have already completed include:
 
 - [Configured your global email address](../email/#global-email-settings).
-- [Installed a production-ready PostgreSQL database](./install/kubernetes.md#postgresql-production-setup).
 - [Configured your PostgreSQL settings](./configuration/configuration.mdx#postgresql-settings) (read-replica, connections, etc.).
 - Configured a [reverse proxy](./reverse-proxy.md).
 - Configured your [media storage settings](../install-config/configuration/configuration.mdx#media-storage-settings) or optionally [AWS S3 file storage](../sys-mgmt/ops/storage-s3.md).
@@ -47,18 +46,18 @@ Other optional pre-installation configurations that you might have already compl
 
 ## Install your first application and provider
 
-Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../core/glossary/terms/application.mdx) and [provider](../core/glossary/terms/provider.mdx). After that, we'll walk through how to add you r first user.
+Now that you have your authentik instance installed and configured with the required settings, you can add your first [application](../../core/glossary/?application) and [provider](../../core/glossary/?provider). After that, we'll walk through how to add your first user.
 
 :::tip Security Best Practice
 
-In a production environment, best practice is to first [create a group](../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../users-sources/user/user_basic_operations.md#create-a-user), and then add the application; you can configure the application to have a binding to the group or user. The binding controls the access to the application (whether or not it is displayed on a user's My Apps page).
+In a production environment, best practice is to first [create a group](../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../users-sources/user/user_basic_operations.md#create-a-user), and then add the application; you can configure the application to have a binding to a specific group or user. The binding controls the access to the application (whether or not it is displayed on a user's My Applications page).
 
 :::
 
-authentik supports hundreds of applications; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for many common ones.
+authentik supports any application; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for over 150 of the most common ones.
 
 <details>
-    <summary>We'll use the Grafana application as a first application.</summary>
+    <summary>We'll use Grafana as a first application.</summary>
 
 For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](https://integrations.goauthentik.io/monitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
 
@@ -68,8 +67,8 @@ For more configuration options and full details about integrating with Grafana, 
 
     **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
 
-:::tip About app and provider pairs
-Every application that you add to authentik has a provider; the provider is the protocol by which the application communicates and shares data between software applications on network devices.
+:::tip About application and provider pairs
+Every application that you add to authentik requires a provider, which serves as a secure communication bridge between the application and authentik using standardized protocols like OIDC, SAML, LDAP, or others.
 :::
 
 **B.** Provide the details for the application (Grafana) and provider (OAuth2/OIDC).
@@ -90,9 +89,9 @@ Every application that you add to authentik has a provider; the provider is the 
 
 ### 2. Configure Grafana to use authentik as its IdP
 
-For some applications, you log into the application and configuring settings there; with Grafana you simply edit your authentik `.env` file. Here you add basic configuration settings as well as the Client ID, the secret, and the slug values that you obtained when you configured authentik in Step 1., above.
+For some applications, you log into the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the Client ID, Client Secret, and the slug values that you obtained when you configured the application and provider in authentik in Step 1. above.
 
-**A.** In your authentik `.env` file, set the following environment variables:
+**A.** In the Grafana Docker Compose file, set the following environment variables:
 
 :::tip Docker-specific values
 Note that these values are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/)).
@@ -117,9 +116,9 @@ environment:
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
 
-**B.** Save your authentik `.env` file and go to your Grafana application.
+**B.** Save your Grafana Docker Compose file, and then launch the stack and access Grafana via your browser at the configured URL.
 
-**C.** To confirm that authentik is properly configured with the new application, log out of the Grafana application and then log back in using your authetntik credentials. If you don't use the default admin account that's fine, just be sure that the account is for a member of an appropriate authentik group.
+**C.** To confirm that authentik is properly configured with the new application, log out of Grafana and then log back in using the **Sign in with authentik** button. You should be redirected to authentik to provide credentials.
 
 ## Add your first user
 
@@ -132,20 +131,20 @@ Now that you can access the authentik Admin interface, and you have added an app
     **B.** Fill in the **_required_** fields:
 
     - **Username**: This value must be unique across your user folders.
-    - **Path**: The path where the user will be created. By default the new user is created in the `/root/users` directory path, but you can change that later by editing the user.
+    - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
 
     For information about the **_optional_** fields below, refer to our [documentation on managing users](../users-sources/user/user_basic_operations.md#create-a-user).
 
     - **Name**: The display name of the user.
-    - **Email**: The email address of the user.
+    - **Email**: The email address of the user. This is required for many integrations.
     - **Is active**: Define the newly created user account as active.
-    - **Attributes**: You can leave this empty for this tutorial. Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case.
+    - **Attributes**: You can leave this empty for this tutorial. This field can be used to store custom attributes for the user, in YAML or JSON format. These attributes can then be used within property mappings and policies.
 
     **C.** Click **Create**.
 
 ### 2. Verify that the new user was created
 
-- Look for the new user in the list on the **Directory > Users** page.
+- Look for the new user in the list on the **Directory** > **Users** page.
 
 ## What's next?
 
@@ -162,10 +161,6 @@ Now that you have added your first application, and a new user, here are some ty
 ## Things to know and troubleshooting tips
 
 Review the following information to learn more about the basics of setting up authentik and for troubleshooting tips.
-
-### Production environments
-
-For production environments we recommend that you install and run authentik in [Kubernetes](../install-config/install/kubernetes.md).
 
 ### Modifying the Docker Compose file
 
