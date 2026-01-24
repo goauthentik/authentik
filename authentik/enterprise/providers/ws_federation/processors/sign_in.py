@@ -88,14 +88,18 @@ class SignInProcessor:
     def create_response_token(self):
         root = Element(f"{{{NS_WS_FED_TRUST}}}RequestSecurityTokenResponse", nsmap=NS_MAP)
 
-        self.response_add_lifetime(root)
-        self.response_add_applies_to(root)
-        self.response_add_requested_security_token(root)
-        self.response_add_attached_reference(
-            root, "RequestedAttachedReference", self.saml_processor._assertion_id
+        root.append(self.response_add_lifetime())
+        root.append(self.response_add_applies_to())
+        root.append(self.response_add_requested_security_token())
+        root.append(
+            self.response_add_attached_reference(
+                "RequestedAttachedReference", self.saml_processor._assertion_id
+            )
         )
-        self.response_add_attached_reference(
-            root, "RequestedUnattachedReference", self.saml_processor._assertion_id
+        root.append(
+            self.response_add_attached_reference(
+                "RequestedUnattachedReference", self.saml_processor._assertion_id
+            )
         )
 
         token_type = SubElement(root, f"{{{NS_WS_FED_TRUST}}}TokenType")
@@ -109,36 +113,40 @@ class SignInProcessor:
 
         return root
 
-    def response_add_lifetime(self, root: _Element):
+    def response_add_lifetime(self) -> _Element:
         """Add Lifetime element"""
-        lifetime = SubElement(root, f"{{{NS_WS_FED_TRUST}}}Lifetime", nsmap=NS_MAP)
+        lifetime = Element(f"{{{NS_WS_FED_TRUST}}}Lifetime", nsmap=NS_MAP)
         created = SubElement(lifetime, f"{{{NS_WSS_UTILITY}}}Created")
         created.text = get_time_string()
         expires = SubElement(lifetime, f"{{{NS_WSS_UTILITY}}}Expires")
         expires.text = get_time_string(
             timedelta_from_string(self.provider.session_valid_not_on_or_after)
         )
+        return lifetime
 
-    def response_add_applies_to(self, root: _Element):
+    def response_add_applies_to(self) -> _Element:
         """Add AppliesTo element"""
-        applies_to = SubElement(root, f"{{{NS_POLICY}}}AppliesTo")
+        applies_to = Element(f"{{{NS_POLICY}}}AppliesTo")
         endpoint_ref = SubElement(applies_to, f"{{{NS_ADDRESSING}}}EndpointReference")
         address = SubElement(endpoint_ref, f"{{{NS_ADDRESSING}}}Address")
         address.text = self.sign_in_request.wtrealm
+        return applies_to
 
-    def response_add_requested_security_token(self, root: _Element):
+    def response_add_requested_security_token(self) -> _Element:
         """Add RequestedSecurityToken and child assertion"""
-        token = SubElement(root, f"{{{NS_WS_FED_TRUST}}}RequestedSecurityToken")
+        token = Element(f"{{{NS_WS_FED_TRUST}}}RequestedSecurityToken")
         token.append(self.saml_processor.get_assertion())
+        return token
 
-    def response_add_attached_reference(self, root: _Element, tag: str, value: str):
-        ref = SubElement(root, f"{{{NS_WS_FED_TRUST}}}{tag}")
+    def response_add_attached_reference(self, tag: str, value: str) -> _Element:
+        ref = Element(f"{{{NS_WS_FED_TRUST}}}{tag}")
         sec_token_ref = SubElement(ref, f"{{{NS_WSS_SEC}}}SecurityTokenReference")
         sec_token_ref.attrib[f"{{{NS_WSS_D3P1}}}TokenType"] = WSS_TOKEN_TYPE_SAML2
 
         key_identifier = SubElement(sec_token_ref, f"{{{NS_WSS_SEC}}}KeyIdentifier")
         key_identifier.attrib["ValueType"] = WSS_KEY_IDENTIFIER_SAML_ID
         key_identifier.text = value
+        return ref
 
     def response(self) -> dict[str, str]:
         root = self.create_response_token()
