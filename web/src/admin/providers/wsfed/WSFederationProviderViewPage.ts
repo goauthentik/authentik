@@ -52,25 +52,25 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 @customElement("ak-provider-wsfed-view")
 export class WSFederationProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID: number | null = null;
 
     @state()
-    provider?: WSFederationProvider;
+    protected provider: WSFederationProvider | null = null;
 
     @state()
-    preview?: SAMLPreviewAttribute;
+    protected preview: SAMLPreviewAttribute | null = null;
 
     @state()
-    metadata?: SAMLMetadata;
+    protected metadata: SAMLMetadata | null = null;
 
     @state()
-    signer: CertificateKeyPair | null = null;
+    protected signer: CertificateKeyPair | null = null;
 
     @state()
-    verifier: CertificateKeyPair | null = null;
+    protected verifier: CertificateKeyPair | null = null;
 
     @state()
-    previewUser?: User;
+    protected previewUser: User | null = null;
 
     static styles: CSSResult[] = [
         PFButton,
