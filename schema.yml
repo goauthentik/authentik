@@ -57010,6 +57010,9 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
+        wtrealm:
+          type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -57026,6 +57029,7 @@ components:
       - url_wsfed
       - verbose_name
       - verbose_name_plural
+      - wtrealm
     WSFederationProviderRequest:
       type: object
       description: WSFederationProvider Serializer
