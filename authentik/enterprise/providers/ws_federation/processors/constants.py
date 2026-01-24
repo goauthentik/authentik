@@ -2,6 +2,7 @@ from authentik.sources.saml.processors.constants import NS_MAP as _map
 
 WS_FED_ACTION_SIGN_IN = "wsignin1.0"
 WS_FED_ACTION_SIGN_OUT = "wsignout1.0"
+WS_FED_ACTION_SIGN_OUT_CLEANUP = "wsignoutcleanup1.0"
 
 WS_FED_POST_KEY_ACTION = "wa"
 WS_FED_POST_KEY_RESULT = "wresult"
