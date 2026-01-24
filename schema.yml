@@ -35999,11 +35999,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
@@ -49254,11 +49257,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
@@ -53739,11 +53745,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -53814,11 +53823,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
       required:
