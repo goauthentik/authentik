@@ -276,44 +276,19 @@ export class WSFederationProviderViewPage extends AKElement {
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Assigned to application")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application
-                                            .provider=${this.provider}
-                                        ></ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Reply URL",
-                                    )}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.replyUrl}
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
+                        ${renderDescriptionList(
+                            [
+                                [msg("Name"), this.provider.name],
+                                [
+                                    msg("Assigned to application"),
+                                    html`<ak-provider-related-application
+                                        .provider=${this.provider}
+                                    ></ak-provider-related-application>`,
+                                ],
+                                [msg("Reply URL"), this.provider.replyUrl],
+                            ],
+                            { threecolumn: true },
+                        )}
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
@@ -347,6 +322,19 @@ export class WSFederationProviderViewPage extends AKElement {
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.urlWsfed)}"
+                                          />
+                                      </div>
+                                      <div class="pf-c-form__group">
+                                          <label class="pf-c-form__label">
+                                              <span class="pf-c-form__label-text"
+                                                  >${msg("Realm (wtrealm)")}</span
+                                              >
+                                          </label>
+                                          <input
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${ifDefined(this.provider.wtrealm)}"
                                           />
                                       </div>
                                   </form>
