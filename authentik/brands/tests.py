@@ -22,9 +22,8 @@ class TestBrands(APITestCase):
     def setUp(self):
         super().setUp()
         self.default_flags = {}
-        for flag in Flag.available():
-            if flag.visibility == "public":
-                self.default_flags[flag.key] = flag.get()
+        for flag in Flag.available(visibility="public"):
+            self.default_flags[flag().key] = flag.get()
         Brand.objects.all().delete()
 
     def test_current_brand(self):

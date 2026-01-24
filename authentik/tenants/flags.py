@@ -40,8 +40,16 @@ class Flag[T]:
         return self.default
 
     @staticmethod
-    def available():
-        return all_subclasses(Flag)
+    def available(
+        visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] | None = None,
+    ):
+        flags = all_subclasses(Flag)
+        if visibility:
+            for flag in flags:
+                if flag.visibility == visibility:
+                    yield flag
+        else:
+            yield from flags
 
 
 def patch_flag[T](flag: Flag[T], value: T):

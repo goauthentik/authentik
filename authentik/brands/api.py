@@ -117,9 +117,8 @@ class CurrentBrandSerializer(PassiveSerializer):
     @extend_schema_field(field=FlagJSONField)
     def get_flags(self, _):
         values = {}
-        for flag in Flag.available():
-            if flag.visibility == "public":
-                values[flag.key] = flag.get()
+        for flag in Flag.available(visibility="public"):
+            values[flag().key] = flag.get()
         return values
 
 
