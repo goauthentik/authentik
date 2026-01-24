@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     WS_FED_ACTION_SIGN_IN,
@@ -25,6 +25,7 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, 
 from authentik.flows.stage import ChallengeStageView, SessionEndStage
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.providers.saml.models import SAMLSession
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
@@ -125,6 +126,29 @@ class WSFedFlowFinalView(ChallengeStageView):
         sign_in_req: SignInRequest = self.executor.plan.context[PLAN_CONTEXT_WS_FED_REQUEST]
         proc = SignInProcessor(provider, self.request, sign_in_req)
         response = proc.response()
+        saml_processor = proc.saml_processor
+
+        # Create SAMLSession to track this login
+        auth_session = AuthenticatedSession.from_request(self.request, self.request.user)
+        if auth_session:
+            # Since samlsessions should only exist uniquely for an active session and a provider
+            # any existing combination is likely an old, dead session
+            SAMLSession.objects.filter(
+                session_index=saml_processor.session_index, provider=provider
+            ).delete()
+
+            SAMLSession.objects.update_or_create(
+                session_index=saml_processor.session_index,
+                provider=provider,
+                defaults={
+                    "user": self.request.user,
+                    "session": auth_session,
+                    "name_id": saml_processor.name_id,
+                    "name_id_format": saml_processor.name_id_format,
+                    "expires": saml_processor.session_not_on_or_after_datetime,
+                    "expiring": True,
+                },
+            )
         return AutosubmitChallenge(
             data={
                 "component": "ak-stage-autosubmit",

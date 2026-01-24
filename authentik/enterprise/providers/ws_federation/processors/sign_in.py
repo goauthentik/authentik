@@ -71,24 +71,31 @@ class SignInRequest:
 
 
 class SignInProcessor:
+    provider: WSFederationProvider
+    request: HttpRequest
+    sign_in_request: SignInRequest
+    saml_processor: AssertionProcessor
+
     def __init__(
         self, provider: WSFederationProvider, request: HttpRequest, sign_in_request: SignInRequest
     ):
         self.provider = provider
         self.request = request
         self.sign_in_request = sign_in_request
+        self.saml_processor = AssertionProcessor(self.provider, self.request, AuthNRequest())
+        self.saml_processor.provider.audience = self.sign_in_request.wtrealm
 
     def create_response_token(self):
         root = Element(f"{{{NS_WS_FED_TRUST}}}RequestSecurityTokenResponse", nsmap=NS_MAP)
 
         self.response_add_lifetime(root)
         self.response_add_applies_to(root)
-        assertion_proc = self.response_add_requested_security_token(root)
+        self.response_add_requested_security_token(root)
         self.response_add_attached_reference(
-            root, "RequestedAttachedReference", assertion_proc._assertion_id
+            root, "RequestedAttachedReference", self.saml_processor._assertion_id
         )
         self.response_add_attached_reference(
-            root, "RequestedUnattachedReference", assertion_proc._assertion_id
+            root, "RequestedUnattachedReference", self.saml_processor._assertion_id
         )
 
         token_type = SubElement(root, f"{{{NS_WS_FED_TRUST}}}TokenType")
@@ -122,12 +129,7 @@ class SignInProcessor:
     def response_add_requested_security_token(self, root: _Element):
         """Add RequestedSecurityToken and child assertion"""
         token = SubElement(root, f"{{{NS_WS_FED_TRUST}}}RequestedSecurityToken")
-        req = AuthNRequest()
-        proc = AssertionProcessor(self.provider, self.request, req)
-        proc.provider.audience = self.sign_in_request.wtrealm
-        token.append(proc.get_assertion())
-
-        return proc
+        token.append(self.saml_processor.get_assertion())
 
     def response_add_attached_reference(self, root: _Element, tag: str, value: str):
         ref = SubElement(root, f"{{{NS_WS_FED_TRUST}}}{tag}")
@@ -141,7 +143,7 @@ class SignInProcessor:
     def response(self) -> dict[str, str]:
         root = self.create_response_token()
         assertion = root.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-        AssertionProcessor(self.provider, self.request, AuthNRequest())._sign(assertion)
+        self.saml_processor._sign(assertion)
         str_token = etree.tostring(root).decode("utf-8")  # nosec
         return delete_none_values(
             {
