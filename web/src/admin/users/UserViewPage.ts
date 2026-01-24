@@ -9,6 +9,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
+import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -462,6 +463,11 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                                 >
                                 </ak-object-changelog>
                             </div>
+                        </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <ak-object-attributes-card
+                                .objectAttributes=${this.user.attributes}
+                            ></ak-object-attributes-card>
                         </div>
                     </div>
                 </div>
