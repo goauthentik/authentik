@@ -19859,31 +19859,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /providers/wsfed/import_metadata/:
-    post:
-      operationId: providers_wsfed_import_metadata_create
-      description: Create provider from SAML Metadata
-      tags:
-      - providers
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SAMLProviderImportRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMLProvider'
-          description: ''
-        '400':
-          description: Bad request
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
   /rac/connection_tokens/:
     get:
       operationId: rac_connection_tokens_list

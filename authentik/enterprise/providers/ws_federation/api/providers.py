@@ -57,3 +57,4 @@ class WSFederationProviderViewSet(SAMLProviderViewSet):
     search_fields = ["name"]
 
     metadata_generator_class = MetadataProcessor
+    import_metadata = None
