@@ -56,7 +56,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
 
     //#region Render
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.username
                 ? html`<input
                       hidden

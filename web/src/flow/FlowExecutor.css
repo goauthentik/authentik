@@ -14,8 +14,9 @@
 }
 
 [part="locale-select"] {
+    --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
     --ak-c-flow-executor__locale-select--Padding: var(--pf-global--spacer--md);
-    --ak-c-flow-executor__locale-select--Color: var(--pf-global--Color--light-100);
+    --ak-c-flow-executor__locale-select--Color: var(--pf-global--Color--100);
     --ak-c-locale-select--label--Color: var(--ak-c-flow-executor__locale-select--Color);
 
     /* Compatibility mode */
@@ -41,21 +42,11 @@
         --ak-c-locale-select--TextDecorationColor: var(--ak-c-locale-select--label--Color);
         --ak-c-locale-select__after--Opacity: 1;
 
-        color: var(--ak-c-flow-executor__locale-select--Color--hover);
+        --ak-c-locale-select--Color: var(--ak-c-flow-executor__locale-select--Color--hover);
 
         @media (prefers-contrast: more) {
-            --ak-c-flow-executor__locale-select--Color--hover: var(
-                --pf-global--primary-color--dark-100
-            );
-
-            --ak-c-locale--select--OutlineColor: var(
-                --ak-c-flow-executor__locale-select--Color--hover
-            );
+            --ak-c-locale--select--OutlineColor: var(--pf-global--primary-color--dark-100);
         }
-    }
-
-    &::part(select) {
-        color: var(--ak-c-flow-executor__locale-select--Color);
     }
 
     filter: var(--ak-global--background-contrast-Filter);
@@ -79,14 +70,19 @@
         }
     }
 
-    @media (width >= 61.25rem) and (prefers-contrast: more) {
-        --ak-c-flow-executor__locale-select--BackgroundColor--hover: var(
-            --pf-global--BackgroundColor--150
-        );
-    }
-
     /* Card is fully masked to mobile background. */
     @media (width <= 35rem) {
         grid-row: header;
+    }
+}
+
+@media (min-width: 70rem) and (min-height: 17.5rem) {
+    :host([data-layout^="sidebar"]),
+    [data-layout^="sidebar"] /* Compatibility mode */ {
+        --ak-global--background-contrast-Filter: none !important;
+
+        [part="locale-select"] {
+            --ak-c-flow-executor__locale-select--Color: inherit !important;
+        }
     }
 }

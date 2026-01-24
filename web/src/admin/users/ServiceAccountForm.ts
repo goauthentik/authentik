@@ -100,7 +100,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
 
     //#region Rendering
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
                 name="name"
                 label=${msg("Username")}

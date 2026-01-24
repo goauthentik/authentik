@@ -12,12 +12,13 @@ from authentik.lib.xml import remove_xml_newlines
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
+from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
+    SAML_BINDING_POST,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 
@@ -64,7 +65,7 @@ class RequestProcessor:
         auth_n_request.attrib["Destination"] = self.source.sso_url
         auth_n_request.attrib["ID"] = self.request_id
         auth_n_request.attrib["IssueInstant"] = self.issue_instant
-        auth_n_request.attrib["ProtocolBinding"] = SAMLBindingTypes(self.source.binding_type).uri
+        auth_n_request.attrib["ProtocolBinding"] = SAML_BINDING_POST
         auth_n_request.attrib["Version"] = "2.0"
         # Create issuer object
         auth_n_request.append(self.get_issuer())

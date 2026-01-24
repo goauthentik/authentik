@@ -1,4 +1,5 @@
 import "#admin/endpoints/connectors/agent/AgentConnectorViewPage";
+import "#admin/endpoints/connectors/fleet/FleetConnectorViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
@@ -41,6 +42,10 @@ export class ConnectorViewPage extends AKElement {
                 return html`<ak-endpoints-connector-agent-view
                     connectorID=${ifDefined(this.connector.connectorUuid)}
                 ></ak-endpoints-connector-agent-view>`;
+            case "ak-endpoints-connector-fleet-form":
+                return html`<ak-endpoints-connector-fleet-view
+                    connectorID=${ifDefined(this.connector.connectorUuid)}
+                ></ak-endpoints-connector-fleet-view>`;
             default:
                 return html`<p>Invalid connector type ${this.connector?.component}</p>`;
         }

@@ -109,9 +109,9 @@ const CAPTCHA_PROVIDERS: Record<string, CaptchaProviderPreset> = {
 @customElement("ak-stage-captcha-form")
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     @state()
-    protected selectedProvider = "custom";
+    protected selectedProvider = "recaptcha_v2";
 
-    currentPreset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.custom;
+    currentPreset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.recaptcha_v2;
 
     public override reset(): void {
         super.reset();
@@ -227,13 +227,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
 
     renderProviderSelector(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Provider Type")} name="providerType">
-            <select
-                class="pf-c-form-control"
-                @change=${this.handleProviderChange}
-                .value=${this.selectedProvider}
-            >
+            <select class="pf-c-form-control" @change=${this.handleProviderChange}>
                 ${Object.entries(CAPTCHA_PROVIDERS).map(
-                    ([key, preset]) => html`<option value=${key}>${preset.label}</option>`,
+                    ([key, preset]) =>
+                        html`<option value=${key} ?selected=${key === this.selectedProvider}>
+                            ${preset.label}
+                        </option>`,
                 )}
             </select>
             <p class="pf-c-form__helper-text">
@@ -371,7 +370,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const formValues = this.getFormValues();
         return html`
             <span>
