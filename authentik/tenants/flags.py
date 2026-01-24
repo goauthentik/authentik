@@ -22,7 +22,8 @@ class Flag[T]:
     def key(self) -> str:
         return self.__key
 
-    def get(self) -> T | None:
+    @classmethod
+    def get(cls) -> T | None:
         from authentik.tenants.utils import get_current_tenant
 
         flags = {}
@@ -30,9 +31,9 @@ class Flag[T]:
             flags: dict[str, Any] = get_current_tenant(["flags"]).flags
         except DatabaseError, ProgrammingError, InternalError:
             pass
-        value = flags.get(self.__key, None)
+        value = flags.get(cls.__key, None)
         if value is None:
-            return self.get_default()
+            return cls().get_default()
         return value
 
     def get_default(self) -> T | None:

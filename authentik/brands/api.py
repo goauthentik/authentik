@@ -118,9 +118,8 @@ class CurrentBrandSerializer(PassiveSerializer):
     def get_flags(self, _):
         values = {}
         for flag in Flag.available():
-            _flag = flag()
-            if _flag.visibility == "public":
-                values[_flag.key] = _flag.get()
+            if flag.visibility == "public":
+                values[flag.key] = flag.get()
         return values
 
 
