@@ -54,7 +54,7 @@ class AgentConnector(Connector):
 
     @property
     def icon_url(self):
-        return static("icons/icon.svg")
+        return static("dist/assets/icons/icon.svg")
 
     @property
     def serializer(self) -> type[Serializer]:
