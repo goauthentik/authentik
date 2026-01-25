@@ -323,7 +323,7 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	python -V
+	$(UV) run python -V
 	node --version
 
 ci-mypy: ci--meta-debug
