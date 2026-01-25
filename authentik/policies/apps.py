@@ -7,7 +7,6 @@ For example: The 'dummy' policy is available at `authentik.policies.dummy`.
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.tenants.flags import Flag
 
 GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",
@@ -30,12 +29,6 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
         "mode",
     ],
 )
-
-
-class BufferedPolicyAccessViewFlag(Flag[bool], key="policies_buffered_access_view"):
-
-    default = False
-    visibility = "public"
 
 
 class AuthentikPoliciesConfig(ManagedAppConfig):

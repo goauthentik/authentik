@@ -267,15 +267,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
                 <div class="pf-c-form">
                     <ak-switch-input
-                        name="flags.policiesBufferedAccessView"
-                        ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
-                        label=${msg("Buffer PolicyAccessView requests")}
-                        help=${msg(
-                            "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
-                        )}
-                    >
-                    </ak-switch-input>
-                    <ak-switch-input
                         name="flags.flowsRefreshOthers"
                         ?checked=${settings?.flags.flowsRefreshOthers ?? false}
                         label=${msg("Refresh other flow tabs upon authentication")}

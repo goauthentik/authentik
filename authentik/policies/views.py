@@ -1,12 +1,10 @@
 """authentik access helper classes"""
 
 from typing import Any
-from uuid import uuid4
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
 from django.http import Http404, HttpRequest, HttpResponse, QueryDict
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.translation import gettext as _
@@ -19,16 +17,13 @@ from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
     PLAN_CONTEXT_POST,
-    FlowPlan,
     FlowPlanner,
 )
 from authentik.flows.views.executor import (
-    SESSION_KEY_PLAN,
     SESSION_KEY_POST,
     ToDefaultFlow,
 )
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBindingModel
@@ -194,39 +189,3 @@ class BufferView(TemplateView):
         kwargs["check_auth_url"] = reverse("authentik_api:user-me")
         kwargs["continue_url"] = url_with_qs(buffer["url"], **{QS_BUFFER_ID: buf_id})
         return super().get_context_data(**kwargs)
-
-
-class BufferedPolicyAccessView(PolicyAccessView):
-    """PolicyAccessView which buffers access requests in case the user is not logged in"""
-
-    def handle_no_permission(self):
-        plan: FlowPlan | None = self.request.session.get(SESSION_KEY_PLAN)
-        if plan:
-            flow = Flow.objects.filter(pk=plan.flow_pk).first()
-            if not flow or flow.designation != FlowDesignation.AUTHENTICATION:
-                LOGGER.debug("Not buffering request, no flow or flow not for authentication")
-                return super().handle_no_permission()
-        if not plan:
-            LOGGER.debug("Not buffering request, no flow plan active")
-            return super().handle_no_permission()
-        if not BufferedPolicyAccessViewFlag.get():
-            return super().handle_no_permission()
-        if self.request.GET.get(QS_SKIP_BUFFER):
-            LOGGER.debug("Not buffering request, explicit skip")
-            return super().handle_no_permission()
-        buffer_id = str(uuid4())
-        LOGGER.debug("Buffering access request", bf_id=buffer_id)
-        self.request.session[SESSION_KEY_BUFFER % buffer_id] = {
-            "body": self.request.POST,
-            "url": self.request.build_absolute_uri(self.request.get_full_path()),
-            "method": self.request.method.lower(),
-        }
-        return redirect(
-            url_with_qs(reverse("authentik_policies:buffer"), **{QS_BUFFER_ID: buffer_id})
-        )
-
-    def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        if QS_BUFFER_ID in self.request.GET:
-            self.request.session.pop(SESSION_KEY_BUFFER % self.request.GET[QS_BUFFER_ID], None)
-        return response
