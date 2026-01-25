@@ -81,7 +81,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
+	outposts, err := retry.DoWithData[*api.PaginatedOutpostList](
 		func() (*api.PaginatedOutpostList, error) {
 			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 			return outposts, err
@@ -92,8 +92,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 			log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
 		}),
 	)
+	if err != nil || outposts == nil {
+		log.WithError(err).Error("Failed to fetch outpost configuration")
+		return nil
+	}
 	if len(outposts.Results) < 1 {
-		log.Panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
+		log.Error("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
+		return nil
 	}
 	outpost := outposts.Results[0]
 
@@ -192,6 +197,10 @@ func (a *APIController) OnRefresh() error {
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
+	}
+	if outposts == nil || len(outposts.Results) < 1 {
+		a.logger.Warning("No outposts found with given token, skipping refresh")
+		return nil
 	}
 	a.Outpost = outposts.Results[0]
 
