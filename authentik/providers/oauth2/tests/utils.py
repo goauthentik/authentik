@@ -9,10 +9,11 @@ from jwt import decode
 
 from authentik.core.tests.utils import create_test_cert
 from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.tests import FlowTestCase
 from authentik.providers.oauth2.models import AccessToken, JWTAlgorithms, OAuth2Provider
 
 
-class OAuthTestCase(TestCase):
+class OAuthTestCase(FlowTestCase):
     """OAuth test helpers"""
 
     keypair: CertificateKeyPair
