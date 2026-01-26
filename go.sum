@@ -216,6 +216,7 @@ go.yaml.in/yaml/v3 v3.0.4 h1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=
 go.yaml.in/yaml/v3 v3.0.4/go.mod h1:DhzuOOF2ATzADvBadXxruRBLzYTpT36CKvDb3+aBEFg=
 goauthentik.io/api/v3 v3.2026020.15 h1:iy0HghQv55+tsoZMcIrdcjCxgTtY0Ah4zKQaIBsq3aY=
 goauthentik.io/api/v3 v3.2026020.15/go.mod h1:82lqAz4jxzl6Cg0YDbhNtvvTG2rm6605ZhdJFnbbsl8=
+goauthentik.io/api/v3 v3.2026020.17-0.20260126150212-4f1447f77ee4/go.mod h1:uYa+yGMglhJy8ymyUQ8KQiJjOb3UZTuPQ24Ot2s9BCo=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/crypto v0.13.0/go.mod h1:y6Z2r+Rw4iayiXXAIxJIDAJ1zMW4yaTpebo8fPOliYc=
