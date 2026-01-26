@@ -2,7 +2,6 @@
 
 from typing import Any
 
-from django.test import TestCase
 from jwcrypto.jwe import JWE
 from jwcrypto.jwk import JWK
 from jwt import decode
