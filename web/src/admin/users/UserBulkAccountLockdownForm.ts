@@ -2,6 +2,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { AccountLockdownFormBase, AccountLockdownRequest } from "./AccountLockdownFormBase";
 
+import { EVENT_REFRESH } from "#common/constants";
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { ModalForm } from "#elements/forms/ModalForm";
@@ -116,6 +117,14 @@ export class UserBulkAccountLockdownForm extends AccountLockdownFormBase<BulkAcc
 
         // Hide the submit button since we're showing results
         this.setSubmitButtonVisible(false);
+
+        // Dispatch refresh event to update user list
+        this.dispatchEvent(
+            new CustomEvent(EVENT_REFRESH, {
+                bubbles: true,
+                composed: true,
+            }),
+        );
 
         // If there were skipped users, throw to prevent modal from closing
         if (response.skipped && response.skipped.length > 0) {

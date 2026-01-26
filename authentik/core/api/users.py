@@ -87,6 +87,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.lib.generators import generate_key
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.providers.oauth2.models import AccessToken, RefreshToken
 from authentik.rbac.api.roles import RoleSerializer
@@ -939,11 +940,9 @@ class UserViewSet(
             reason: The reason for the lockdown
             self_service: If True, creates a self-service event and omits triggered_by
         """
-        from secrets import token_urlsafe
-
         with atomic():
             user.is_active = False
-            new_password = token_urlsafe(32)
+            new_password = generate_key()
             user.set_password(new_password)
             user.save()
 
@@ -957,28 +956,30 @@ class UserViewSet(
             AccessToken.objects.filter(user=user).delete()
             RefreshToken.objects.filter(user=user).delete()
 
-            if self_service:
-                LOGGER.info(
-                    "Self-service account lockdown triggered",
-                    user=user.username,
-                )
-                Event.new(
-                    EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
-                    reason=reason,
-                    affected_user=user.username,
-                ).from_http(request, user)
-            else:
-                LOGGER.info(
-                    "Account lockdown triggered",
-                    user=user.username,
-                    triggered_by=request.user.username,
-                )
-                Event.new(
-                    EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
-                    reason=reason,
-                    affected_user=user.username,
-                    triggered_by=request.user.username,
-                ).from_http(request, user)
+        # Create event outside atomic block - lockdown succeeded, now log it
+        # This ensures the lockdown happens even if event creation fails
+        if self_service:
+            LOGGER.info(
+                "Self-service account lockdown triggered",
+                user=user.username,
+            )
+            Event.new(
+                EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
+                reason=reason,
+                affected_user=user.username,
+            ).from_http(request, user)
+        else:
+            LOGGER.info(
+                "Account lockdown triggered",
+                user=user.username,
+                triggered_by=request.user.username,
+            )
+            Event.new(
+                EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+                reason=reason,
+                affected_user=user.username,
+                triggered_by=request.user.username,
+            ).from_http(request, user)
 
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
@@ -1028,7 +1029,16 @@ class UserViewSet(
                     "processed": ListField(
                         child=CharField(), help_text="Users successfully locked"
                     ),
-                    "skipped": ListField(child=CharField(), help_text="Users skipped with reasons"),
+                    "skipped": ListField(
+                        child=inline_serializer(
+                            "AccountLockdownSkippedUser",
+                            {
+                                "username": CharField(help_text="Username of skipped user"),
+                                "reason": CharField(help_text="Reason user was skipped"),
+                            },
+                        ),
+                        help_text="Users skipped with reasons",
+                    ),
                 },
             ),
             "400": OpenApiResponse(description="Account lockdown feature is disabled"),
