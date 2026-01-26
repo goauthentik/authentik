@@ -110,8 +110,8 @@ pub struct ComplianceFipsConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WebConfig {
-    pub workers: Option<u32>,
-    pub threads: u32,
+    pub workers: usize,
+    pub threads: usize,
     pub path: String,
 }
 

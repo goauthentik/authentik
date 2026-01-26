@@ -126,6 +126,10 @@ async fn main() -> Result<()> {
     color_eyre::install()?;
     Config::setup()?;
 
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .unwrap();
+
     let _sentry = if get_config().error_reporting.enabled {
         Some(sentry::init(sentry::ClientOptions {
             // TODO: refine a bit more

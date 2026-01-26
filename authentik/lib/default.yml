@@ -33,22 +33,16 @@ postgresql:
 
 listen:
   http:
-  - "0.0.0.0:9000"
-  # - "[::]:9000"
+  - "[::]:9000"
   https:
-  - 0.0.0.0:9443
   - "[::]:9443"
   ldap:
-  - 0.0.0.0:3389
   - "[::]:3389"
   ldaps:
-  - 0.0.0.0:6636
   - "[::]:6636"
   radius:
-  - 0.0.0.0:1812
   - "[::]:1812"
   metrics:
-  - 0.0.0.0:9300
   - "[::]:9300"
   debug: 0.0.0.0:9900
   debug_py: 0.0.0.0:9901
@@ -146,8 +140,7 @@ tenants:
 blueprints_dir: /blueprints
 
 web:
-  # No default here as it's set dynamically
-  # workers: 2
+  workers: 2
   threads: 4
   path: /
 

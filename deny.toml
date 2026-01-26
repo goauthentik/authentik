@@ -15,9 +15,34 @@ allow = [
 ignore = true
 
 [bans]
-multiple-versions = "warn"
+multiple-versions = "allow"
 wildcards = "deny"
+[bans.workspace-dependencies]
+duplicates = "deny"
+include-path-dependencies = true
+unused = "deny"
 
+# No non-FIPS compliant dependencies
+[[bans.deny]]
+name = "openssl"
+[[bans.deny]]
+name = "openssl-sys"
+# We need https://github.com/getsentry/sentry-rust/pull/958 for this
+# [[bans.deny]]
+# name = "ring"
+# [[bans.features]]
+# name = "rustls"
+# deny = ["ring"]
+[[bans.features]]
+name = "aws-lc-rs"
+allow = ["aws-lc-sys", "fips", "prebuilt-nasm"]
+exact = true
+# [[bans.features]]
+# name = "rustls-webpki"
+# also needs the exact = true once the above is resolved
+# deny = ["ring"]
+
+# We always want to initialize manually
 [[bans.features]]
 name = "pyo3"
 deny = ["auto-initialize"]

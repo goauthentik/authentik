@@ -4,13 +4,24 @@ use argh::FromArgs;
 use authentik_config::get_config;
 use axum::Router;
 use axum_reverse_proxy::ReverseProxy;
-use axum_server::{Handle, accept::DefaultAcceptor};
+use axum_server::{Handle, tls_rustls::RustlsConfig};
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
 use nix::{
     sys::signal::{Signal, kill},
     unistd::Pid,
+};
+use rcgen::{
+    Certificate, CertificateParams, DistinguishedName, DnType, ExtendedKeyUsagePurpose, KeyPair,
+    KeyUsagePurpose, SanType,
+};
+use rustls::{
+    ServerConfig,
+    crypto::aws_lc_rs::sign::any_supported_type,
+    pki_types::{CertificateDer, PrivateKeyDer},
+    server::{ClientHello, ResolvesServerCert},
+    sign::CertifiedKey,
 };
 use tokio::{
     process::{Child, Command},
@@ -132,21 +143,106 @@ async fn watch_gunicorn(
     }
 }
 
-async fn start_server(addr: SocketAddr, handle: Handle<SocketAddr>) -> Result<()> {
+fn build_app() -> Router {
     let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
     let client = Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
-        .pool_max_idle_per_host(4)
+        .pool_max_idle_per_host(get_config().web.workers * get_config().web.threads)
+        .set_host(false)
         .build(connector);
     let proxy = ReverseProxy::new_with_client("/", "http://localhost:8000", client);
-    let app: Router = proxy.into();
+    proxy.into()
+}
 
+async fn start_server_plain(
+    app: Router,
+    addr: SocketAddr,
+    handle: Handle<SocketAddr>,
+) -> Result<()> {
     axum_server::bind(addr)
         .handle(handle)
         .serve(app.into_make_service())
         .await?;
 
     Ok(())
+}
+
+async fn start_server_tls(
+    app: Router,
+    addr: SocketAddr,
+    config: RustlsConfig,
+    handle: Handle<SocketAddr>,
+) -> Result<()> {
+    axum_server::bind_rustls(addr, config)
+        .handle(handle)
+        .serve(app.into_make_service())
+        .await?;
+
+    Ok(())
+}
+
+fn generate_self_signed_cert() -> Result<(Certificate, KeyPair)> {
+    let signing_key = KeyPair::generate()?;
+
+    let mut params: CertificateParams = Default::default();
+    params.not_before = time::OffsetDateTime::now_utc();
+    params.not_after = time::OffsetDateTime::now_utc() + time::Duration::days(365);
+    params.distinguished_name = {
+        let mut dn = DistinguishedName::new();
+        dn.push(DnType::OrganizationName, "authentik");
+        dn.push(DnType::CommonName, "authentik default certificate");
+        dn
+    };
+    params.subject_alt_names = vec![SanType::DnsName("*".try_into().unwrap())];
+    params.key_usages = vec![
+        KeyUsagePurpose::DigitalSignature,
+        KeyUsagePurpose::KeyEncipherment,
+    ];
+    params.extended_key_usages = vec![ExtendedKeyUsagePurpose::ServerAuth];
+
+    let cert = params.self_signed(&signing_key)?;
+
+    Ok((cert, signing_key))
+}
+
+#[derive(Debug)]
+struct CertResolver {
+    fallback: Arc<CertifiedKey>,
+}
+
+impl CertResolver {
+    fn new() -> Result<Self> {
+        let (cert, keypair) = generate_self_signed_cert()?;
+
+        let cert_der = cert.der().to_vec();
+        let key_der = keypair.serialize_der();
+
+        let private_key =
+            PrivateKeyDer::try_from(key_der).map_err(|_| rcgen::Error::CouldNotParseKeyPair)?;
+        let signing_key =
+            any_supported_type(&private_key).map_err(|_| rcgen::Error::CouldNotParseKeyPair)?;
+
+        Ok(Self {
+            fallback: Arc::new(CertifiedKey::new(
+                vec![CertificateDer::from(cert_der)],
+                signing_key,
+            )),
+        })
+    }
+}
+
+impl ResolvesServerCert for CertResolver {
+    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
+        Some(Arc::clone(&self.fallback))
+    }
+}
+
+fn make_tls_config() -> Result<ServerConfig> {
+    let resolver = CertResolver::new()?;
+    let config = ServerConfig::builder()
+        .with_no_client_auth()
+        .with_cert_resolver(Arc::new(resolver));
+    Ok(config)
 }
 
 pub async fn run(
@@ -156,6 +252,8 @@ pub async fn run(
     signals_tx: broadcast::Sender<SignalKind>,
 ) -> Result<()> {
     let config = get_config();
+    let app = build_app();
+    let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
 
     let mut handles = Vec::with_capacity(
         config.listen.http.len() + config.listen.https.len() + config.listen.metrics.len(),
@@ -163,7 +261,18 @@ pub async fn run(
 
     config.listen.http.iter().for_each(|addr| {
         let handle = Handle::new();
-        tasks.spawn(start_server(*addr, handle.clone()));
+        tasks.spawn(start_server_plain(app.clone(), *addr, handle.clone()));
+        handles.push(handle);
+    });
+
+    config.listen.https.iter().for_each(|addr| {
+        let handle = Handle::new();
+        tasks.spawn(start_server_tls(
+            app.clone(),
+            *addr,
+            tls_config.clone(),
+            handle.clone(),
+        ));
         handles.push(handle);
     });
 

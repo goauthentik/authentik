@@ -13,6 +13,7 @@ publish.workspace = true
 argh.workspace = true
 eyre.workspace = true
 color-eyre.workspace = true
+rustls.workspace = true
 sentry.workspace = true
 tokio.workspace = true
 tokio-util.workspace = true
