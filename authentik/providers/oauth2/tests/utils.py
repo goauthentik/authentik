@@ -2,17 +2,17 @@
 
 from typing import Any
 
+from django.test import TestCase
 from jwcrypto.jwe import JWE
 from jwcrypto.jwk import JWK
 from jwt import decode
 
 from authentik.core.tests.utils import create_test_cert
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.tests import FlowTestCase
 from authentik.providers.oauth2.models import AccessToken, JWTAlgorithms, OAuth2Provider
 
 
-class OAuthTestCase(FlowTestCase):
+class OAuthTestCase(TestCase):
     """OAuth test helpers"""
 
     keypair: CertificateKeyPair
