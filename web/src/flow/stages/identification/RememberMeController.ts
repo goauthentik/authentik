@@ -1,11 +1,89 @@
-import type { IdentificationStage } from "./IdentificationStage.js";
-
 import { getCookie } from "#common/utils";
 
-import { msg } from "@lit/localize";
-import { css, html, nothing, ReactiveController, ReactiveControllerHost } from "lit";
+import type { BaseStage } from "#flow/stages/base";
 
-type RememberMeHost = ReactiveControllerHost & IdentificationStage;
+import {
+    ChallengeTypes,
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { css, html, nothing, ReactiveController } from "lit";
+import { guard } from "lit/directives/guard.js";
+
+export function isValidChallenge(challenge: ChallengeTypes): boolean {
+    return !(
+        challenge.responseErrors &&
+        challenge.responseErrors.non_field_errors &&
+        challenge.responseErrors.non_field_errors.find((cre) => cre.code === "invalid")
+    );
+}
+
+export function canAutoSubmit(
+    challenge?: IdentificationChallenge | null,
+    usernameField?: HTMLInputElement | null,
+): boolean {
+    return !!(
+        challenge &&
+        usernameField?.value &&
+        !challenge.passwordFields &&
+        !challenge.passwordlessUrl
+    );
+}
+
+export function isRememberAvailable(challenge?: IdentificationChallenge | null): boolean {
+    return !!challenge?.enableRememberMe;
+}
+
+export function readLocalSession(): string {
+    return (getCookie("authentik_csrf") ?? "").substring(0, 8);
+}
+
+type RememberMeHost = BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest>;
+
+const UsernameStorageKey = "authentik-remember-me-user";
+const SessionIDStorageKey = "authentik-remember-me-session";
+
+export function readCachedUsername(): string | null {
+    try {
+        return localStorage.getItem(UsernameStorageKey);
+    } catch (_error: unknown) {
+        return null;
+    }
+}
+
+export function persistCachedUsername(username: string | null): void {
+    try {
+        if (username) {
+            localStorage.setItem(UsernameStorageKey, username);
+        } else {
+            localStorage.removeItem(UsernameStorageKey);
+        }
+    } catch (_error: unknown) {
+        // Ignore
+    }
+}
+
+export function readCachedSessionID(): string | null {
+    try {
+        return localStorage.getItem(SessionIDStorageKey);
+    } catch (_error: unknown) {
+        return null;
+    }
+}
+
+export function persistCachedSessionID(sessionID: string | null): void {
+    try {
+        if (sessionID) {
+            localStorage.setItem(SessionIDStorageKey, sessionID);
+        } else {
+            localStorage.removeItem(SessionIDStorageKey);
+        }
+    } catch (_error: unknown) {
+        // Ignore
+    }
+}
 
 export class AkRememberMeController implements ReactiveController {
     static styles = [
@@ -18,139 +96,101 @@ export class AkRememberMeController implements ReactiveController {
         `,
     ];
 
-    username?: string;
-
-    rememberingUsername: boolean = false;
-
-    constructor(private host: RememberMeHost) {
-        this.trackRememberMe = this.trackRememberMe.bind(this);
-        this.toggleRememberMe = this.toggleRememberMe.bind(this);
-        this.host.addController(this);
+    constructor(
+        protected host: RememberMeHost,
+        public initialUsername: string = readCachedUsername() ?? "",
+    ) {
+        host.addController(this);
     }
 
     // Record a stable token that we can use between requests to track if we've
     // been here before.  If we can't, clear out the username.
-    hostConnected() {
-        try {
-            const sessionId = localStorage.getItem("authentik-remember-me-session");
-            if (!!this.localSession && sessionId === this.localSession) {
-                this.username = undefined;
-                localStorage?.removeItem("authentik-remember-me-user");
-            }
-            localStorage?.setItem("authentik-remember-me-session", this.localSession);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (_e: any) {
-            this.username = undefined;
-        }
-    }
+    public hostConnected() {
+        const localSession = readLocalSession();
+        const sessionID = readCachedSessionID();
 
-    get localSession() {
-        return (getCookie("authentik_csrf") ?? "").substring(0, 8);
+        if (localSession && localSession === sessionID) {
+            persistCachedUsername(null);
+        }
+
+        persistCachedSessionID(localSession);
     }
 
     get usernameField() {
-        return this.host.renderRoot.querySelector(
+        return this.host.renderRoot?.querySelector(
             'input[name="uidField"]',
         ) as HTMLInputElement | null;
     }
 
     get rememberMeToggle() {
-        return this.host.renderRoot.querySelector(
+        return this.host.renderRoot?.querySelector(
             "#authentik-remember-me",
         ) as HTMLInputElement | null;
     }
 
-    get isValidChallenge() {
-        return !(
-            this.host.challenge.responseErrors &&
-            this.host.challenge.responseErrors.non_field_errors &&
-            this.host.challenge.responseErrors.non_field_errors.find(
-                (cre) => cre.code === "invalid",
-            )
-        );
-    }
-
     get submitButton() {
-        return this.host.renderRoot.querySelector('button[type="submit"]') as HTMLButtonElement;
-    }
-
-    get isEnabled() {
-        return (
-            this.host.challenge !== undefined &&
-            this.host.challenge.enableRememberMe &&
-            typeof localStorage !== "undefined"
-        );
-    }
-
-    get canAutoSubmit() {
-        return (
-            !!this.host.challenge &&
-            !!this.username &&
-            !!this.usernameField?.value &&
-            !this.host.challenge.passwordFields &&
-            !this.host.challenge.passwordlessUrl
-        );
-    }
-
-    // Before the page is updated, try to extract the username from localstorage.
-    hostUpdate() {
-        if (!this.isEnabled) {
-            return;
-        }
-
-        try {
-            this.username = localStorage.getItem("authentik-remember-me-user") || undefined;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (_e: any) {
-            this.username = undefined;
-        }
+        return this.host.renderRoot?.querySelector<HTMLButtonElement>('button[type="submit"]');
     }
 
     // After the page is updated, if everything is ready to go, do the autosubmit.
-    hostUpdated() {
-        if (this.isEnabled && this.canAutoSubmit) {
+    public hostUpdated() {
+        if (
+            isRememberAvailable(this.host.challenge) &&
+            canAutoSubmit(this.host.challenge, this.usernameField)
+        ) {
             this.submitButton?.click();
         }
     }
 
-    trackRememberMe() {
-        if (!this.usernameField || this.usernameField.value === undefined) {
+    #keyUpListener = () => {
+        if (!this.usernameField || !this.usernameField.value) {
             return;
         }
-        this.username = this.usernameField.value;
-        localStorage?.setItem("authentik-remember-me-user", this.username);
-    }
+
+        persistCachedUsername(this.usernameField.value);
+    };
 
     // When active, save current details and record every keystroke to the username.
     // When inactive, clear all fields and remove keystroke recorder.
-    toggleRememberMe() {
+    #toggleListener = () => {
         if (!this.rememberMeToggle || !this.rememberMeToggle.checked) {
-            localStorage?.removeItem("authentik-remember-me-user");
-            localStorage?.removeItem("authentik-remember-me-session");
-            this.username = undefined;
-            this.usernameField?.removeEventListener("keyup", this.trackRememberMe);
+            persistCachedUsername(null);
+            persistCachedSessionID(null);
+
+            this.usernameField?.removeEventListener("keyup", this.#keyUpListener);
             return;
         }
+
         if (!this.usernameField) {
             return;
         }
-        localStorage?.setItem("authentik-remember-me-user", this.usernameField.value);
-        localStorage?.setItem("authentik-remember-me-session", this.localSession);
-        this.usernameField.addEventListener("keyup", this.trackRememberMe);
-    }
+
+        persistCachedUsername(this.usernameField.value);
+
+        persistCachedSessionID(readLocalSession());
+
+        this.usernameField.addEventListener("keyup", this.#keyUpListener);
+    };
 
     render() {
-        return this.isEnabled
-            ? html` <label class="pf-c-switch remember-me-switch">
-                  <input
-                      class="pf-c-switch__input"
-                      id="authentik-remember-me"
-                      @click=${this.toggleRememberMe}
-                      type="checkbox"
-                      ?checked=${!!this.username}
-                  />
-                  <span class="pf-c-form__label">${msg("Remember me on this device")}</span>
-              </label>`
-            : nothing;
+        const { challenge } = this.host;
+        const available = isRememberAvailable(challenge);
+
+        return guard([available, this.initialUsername], () => {
+            if (!available) {
+                return nothing;
+            }
+
+            return html`<label class="pf-c-switch remember-me-switch">
+                <input
+                    class="pf-c-switch__input"
+                    id="authentik-remember-me"
+                    @click=${this.#toggleListener}
+                    type="checkbox"
+                    ?checked=${!!this.initialUsername}
+                />
+                <span class="pf-c-form__label">${msg("Remember me on this device")}</span>
+            </label>`;
+        });
     }
 }
