@@ -11,7 +11,6 @@ import { customElement, property, query, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IListSelect {
     options: SelectOptions;
@@ -46,7 +45,6 @@ export interface IListSelect {
 @customElement("ak-list-select")
 export class ListSelect extends AKElement implements IListSelect {
     static styles = [
-        PFBase,
         PFDropdown,
         PFSelect,
         css`

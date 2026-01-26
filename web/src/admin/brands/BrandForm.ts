@@ -61,7 +61,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    public override renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 required
                 name="domain"
@@ -169,17 +169,12 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 const users = await new CoreApi(
                                     DEFAULT_CONFIG,
                                 ).coreApplicationsList(args);
+
                                 return users.results;
                             }}
-                            .renderElement=${(item: Application): string => {
-                                return item.name;
-                            }}
-                            .renderDescription=${(item: Application): TemplateResult => {
-                                return html`${item.slug}`;
-                            }}
-                            .value=${(item: Application | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
+                            .renderElement=${(item: Application) => item.name}
+                            .renderDescription=${(item: Application) => html`${item.slug}`}
+                            .value=${(item: Application | null) => item?.pk}
                             .selected=${(item: Application): boolean => {
                                 return item.pk === this.instance?.defaultApplication;
                             }}

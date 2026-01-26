@@ -1,6 +1,7 @@
 import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
+import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
@@ -163,45 +164,50 @@ export class UserListPage extends WithBrandConfig(
         const shouldShowWarning = this.selectedElements.find((el) => {
             return el.pk === currentUser?.pk || el.pk === originalUser?.pk;
         });
-        return html`<ak-forms-delete-bulk
-            objectLabel=${msg("User(s)")}
-            .objects=${this.selectedElements}
-            .metadata=${(item: User) => {
-                return [
-                    { key: msg("Username"), value: item.username },
-                    { key: msg("ID"), value: item.pk.toString() },
-                    { key: msg("UID"), value: item.uid },
-                ];
-            }}
-            .usedBy=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                    id: item.pk,
-                });
-            }}
-            .delete=${(item: User) => {
-                return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                    id: item.pk,
-                });
-            }}
-        >
-            ${shouldShowWarning
-                ? html`<div slot="notice" class="pf-c-form__alert">
-                      <div class="pf-c-alert pf-m-inline pf-m-warning">
-                          <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+        return html`<ak-user-bulk-revoke-sessions .users=${this.selectedElements}>
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-warning">
+                    ${msg("Revoke Sessions")}
+                </button>
+            </ak-user-bulk-revoke-sessions>
+            <ak-forms-delete-bulk
+                objectLabel=${msg("User(s)")}
+                .objects=${this.selectedElements}
+                .metadata=${(item: User) => {
+                    return [
+                        { key: msg("Username"), value: item.username },
+                        { key: msg("ID"), value: item.pk.toString() },
+                        { key: msg("UID"), value: item.uid },
+                    ];
+                }}
+                .usedBy=${(item: User) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+                        id: item.pk,
+                    });
+                }}
+                .delete=${(item: User) => {
+                    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
+                        id: item.pk,
+                    });
+                }}
+            >
+                ${shouldShowWarning
+                    ? html`<div slot="notice" class="pf-c-form__alert">
+                          <div class="pf-c-alert pf-m-inline pf-m-warning">
+                              <div class="pf-c-alert__icon">
+                                  <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                              </div>
+                              <h4 class="pf-c-alert__title">
+                                  ${msg(
+                                      str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                  )}
+                              </h4>
                           </div>
-                          <h4 class="pf-c-alert__title">
-                              ${msg(
-                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
-                              )}
-                          </h4>
-                      </div>
-                  </div>`
-                : nothing}
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
-            </button>
-        </ak-forms-delete-bulk>`;
+                      </div>`
+                    : nothing}
+                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                    ${msg("Delete")}
+                </button>
+            </ak-forms-delete-bulk>`;
     }
 
     renderToolbarAfter(): TemplateResult {
@@ -244,7 +250,7 @@ export class UserListPage extends WithBrandConfig(
     row(item: User): SlottedTemplateResult[] {
         const { currentUser } = this;
 
-        const impersionationVisible =
+        const impersonationVisible =
             this.can(CapabilitiesEnum.CanImpersonate) && currentUser && item.pk !== currentUser.pk;
 
         return [
@@ -266,7 +272,7 @@ export class UserListPage extends WithBrandConfig(
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${impersionationVisible
+                ${impersonationVisible
                     ? html`
                           <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
                               <span slot="submit">${msg("Impersonate")}</span>
