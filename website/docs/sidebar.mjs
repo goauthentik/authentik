@@ -88,7 +88,7 @@ const items = [
                 },
                 items: [],
             },
-            "install-config/first_steps",
+            "install-config/first-steps",
             "install-config/email",
             "install-config/upgrade",
             "install-config/beta",

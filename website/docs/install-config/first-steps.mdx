@@ -2,7 +2,7 @@
 title: First steps
 ---
 
-After you have installed and started authentik, you are now ready to add your first application and provider, add some users, and get started with using authentik as your SSO and IdP.
+After you have installed and started authentik, you are now ready to add your first application and provider, add some users, and get started with using authentik as your Identity provider.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FD4B2D', 'primaryTextColor': '#000', 'primaryBorderColor': '#FD4B2D'}}}%%
@@ -29,7 +29,7 @@ The following tutorial assumes that you have already:
 
 1. Installed authentik on either [Docker Compose](../install-config/install/docker-compose.mdx#install-and-start-authentik), [Kubernetes](../install-config/install/kubernetes.md#install-authentik-helm-chart), or [AWS CloudFormation](../install-config/install/aws.md) and then started the server and worker.
 
-2. Opened authentik in your browser to the `initial-setup` flw and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik), [Kubernetes](../install-config/install/kubernetes.md#access-authentik)), or [AWS CloudFormation](../install-config/install/aws.md#access-authentik-from-aws-cloudformation).
+2. Opened authentik in your browser to the `initial-setup` flow and added credentials for a default Admin account. ([Docker](../install-config/install/docker-compose.mdx#access-authentik), [Kubernetes](../install-config/install/kubernetes.md#access-authentik)), or [AWS CloudFormation](../install-config/install/aws.md#access-authentik-from-aws-cloudformation).
 
 :::info Initial setup in browser
 You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
@@ -56,8 +56,12 @@ In a production environment, best practice is to first [create a group](../users
 
 authentik supports any application; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for over 150 of the most common ones.
 
+**In this guide we'll be setting up Grafana as an example application.**
+
 <details>
-    <summary>We'll use Grafana as a first application.</summary>
+    <summary>Why Grafana?</summary>
+
+We'll use Grafana as an example application in this guide as it is very common and straight forward to setup.
 
 For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](https://integrations.goauthentik.io/monitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
 
@@ -68,20 +72,36 @@ For more configuration options and full details about integrating with Grafana, 
     **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
 
 :::tip About application and provider pairs
-Every application that you add to authentik requires a provider, which serves as a secure communication bridge between the application and authentik using standardized protocols like OIDC, SAML, LDAP, or others.
+Every application that you add to authentik requires a provider, which is used to configure the specific protocol between the application and authentik, for example OIDC, SAML, LDAP, or others.
 :::
 
 **B.** Provide the details for the application (Grafana) and provider (OAuth2/OIDC).
 
+# TODO: What does this group do, what does policy engine mode do
+
 - **Application**: provide a descriptive name (such as Grafana), an optional group for the type of application, the policy engine mode (select ANY to simplify this exercise), and optional UI settings that are displayed about the application.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+
+# TODO what's an authorization flow
+
 - **Configure the Provider**: provide a name (or accept the auto-provided name) and the authorization flow to use for this provider. Under **Protocol settings** provide the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later when you configure Grafana to use authentik.
-    - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`. <font color="green"><b>TIP</b>: The Redirect URI is where the application will go as soon as authentik's authorixation flow is successfully completed. </font>
+    - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik.
+    - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
+        - <font color="green">
+              <b>TIP</b>: The Redirect URI is where the application will go as soon as authentik's
+              authorixation flow is successfully completed.{" "}
+          </font>
     - Set the Logout URI to `https://grafana.company/logout`.
-    - Set the Logout Method to `Front-channel`. <font color="green"><b>TIP</b>: With OAuth2, front-channel logout is considered the default because most application (including Grafana) do not support back-channel logout. </font>
+    - Set the Logout Method to `Front-channel`.
+        - <font color="green">
+              <b>TIP</b>: With OAuth2, front-channel logout is considered the default because most
+              application (including Grafana) do not support back-channel logout.{" "}
+          </font>
     - Select any available signing key.
+        - # TODO: Why, what does this do
 - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/flows-stages/bindings/) to manage the display and access to applications on a user's **My applications** page.
+
+    # TODO: Short summary about how bindings works
 
     For any fields not mentioned above, you can leave the default value.
 
@@ -89,13 +109,15 @@ Every application that you add to authentik requires a provider, which serves as
 
 ### 2. Configure Grafana to use authentik as its IdP
 
-For some applications, you log into the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the Client ID, Client Secret, and the slug values that you obtained when you configured the application and provider in authentik in Step 1. above.
+For some applications, you log into the application and configure settings there; with Grafana you simply edit your Grafana Docker Compose file. Here you add basic configuration settings as well as the **Client ID**, **Client Secret**, and the **Slug** values that you obtained when you configured the application and provider in authentik in Step 1. above.
 
 **A.** In the Grafana Docker Compose file, set the following environment variables:
 
 :::tip Docker-specific values
 Note that these values are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/)).
 :::
+
+# TODO: Explain authentik.company placeholder
 
 ```
 environment:
@@ -130,7 +152,8 @@ Now that you can access the authentik Admin interface, and you have added an app
 
     **B.** Fill in the **_required_** fields:
 
-    - **Username**: This value must be unique across your user folders.
+    - **Username**: This value must be unique across all users.
+    # TODO: what is this used for, link
     - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
 
     For information about the **_optional_** fields below, refer to our [documentation on managing users](../users-sources/user/user_basic_operations.md#create-a-user).
@@ -152,6 +175,9 @@ Now that you have added your first application, and a new user, here are some ty
 
 - Assign your new user to appropriate [groups](../users-sources/user/user_basic_operations.md#add-a-user-to-a-group) and [roles](../users-sources/user/user_basic_operations.md#add-a-user-to-a-role).
 - Configure federated or external [sources](../users-sources/sources/index.md) (an existing source of user credentials and other user data).
+
+# TODO: Should be page but we might not have a link for that
+
 - Set up MFA
 - Define [property mappings](../add-secure-apps/providers/property-mappings/index.md).
 - Create a [custom flow](../add-secure-apps/flows-stages/flow/index.md#).
