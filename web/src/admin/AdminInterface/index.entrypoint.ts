@@ -1,57 +1,57 @@
-import "#admin/AdminInterface/AboutModal"
-import "#elements/banner/EnterpriseStatusBanner"
-import "#elements/banner/VersionBanner"
-import "#elements/messages/MessageContainer"
-import "#elements/router/RouterOutlet"
-import "#elements/sidebar/Sidebar"
-import "#elements/sidebar/SidebarItem"
+import "#admin/AdminInterface/AboutModal";
+import "#elements/banner/EnterpriseStatusBanner";
+import "#elements/banner/VersionBanner";
+import "#elements/messages/MessageContainer";
+import "#elements/router/RouterOutlet";
+import "#elements/sidebar/Sidebar";
+import "#elements/sidebar/SidebarItem";
 
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
-    createFilteredAdminSidebarEntries,
     createFilteredAdminSidebarEnterpriseEntries,
+    createFilteredAdminSidebarEntries,
     renderSidebarItems,
-} from "./AdminSidebar.js"
-import type { UIPermissions } from "./uiPermissions.js"
+} from "./AdminSidebar.js";
+import type { UIPermissions } from "./uiPermissions.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config"
-import { isAPIResultReady } from "#common/api/responses"
-import { configureSentry } from "#common/sentry/index"
-import { isGuest } from "#common/users"
-import { WebsocketClient } from "#common/ws/WebSocketClient"
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { isAPIResultReady } from "#common/api/responses";
+import { configureSentry } from "#common/sentry/index";
+import { isGuest } from "#common/users";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
-import { AuthenticatedInterface } from "#elements/AuthenticatedInterface"
-import { listen } from "#elements/decorators/listen"
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities"
-import { WithNotifications } from "#elements/mixins/notifications"
-import { canAccessAdmin, WithSession } from "#elements/mixins/session"
-import { AKDrawerChangeEvent } from "#elements/notifications/events"
+import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { listen } from "#elements/decorators/listen";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithNotifications } from "#elements/mixins/notifications";
+import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { AKDrawerChangeEvent } from "#elements/notifications/events";
 import {
     DrawerState,
     persistDrawerParams,
     readDrawerParams,
     renderNotificationDrawerPanel,
-} from "#elements/notifications/utils"
+} from "#elements/notifications/utils";
 
-import type { AboutModal } from "#admin/AdminInterface/AboutModal"
-import Styles from "#admin/AdminInterface/index.entrypoint.css"
-import { ROUTES } from "#admin/Routes"
+import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import Styles from "#admin/AdminInterface/index.entrypoint.css";
+import { ROUTES } from "#admin/Routes";
 
-import { CapabilitiesEnum } from "@goauthentik/api"
+import { CapabilitiesEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize"
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit"
-import { customElement, eventOptions, property, query, state } from "lit/decorators.js"
-import { classMap } from "lit/directives/class-map.js"
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, eventOptions, property, query, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css"
-import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css"
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css"
-import PFPage from "@patternfly/patternfly/components/Page/page.css"
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload/client")
+    await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 
 @customElement("ak-interface-admin")
@@ -67,7 +67,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
     //#region Properties
 
     @query("ak-about-modal")
-    public aboutModal?: AboutModal
+    public aboutModal?: AboutModal;
 
     @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
@@ -80,21 +80,21 @@ export class AdminInterface extends WithCapabilitiesConfig(
     //#region Public Methods
 
     public toggleSidebar = () => {
-        this.sidebarOpen = !this.sidebarOpen
+        this.sidebarOpen = !this.sidebarOpen;
     };
 
     //#endregion
 
     //#region Lifecycle
 
-    #sidebarMatcher: MediaQueryList
+    #sidebarMatcher: MediaQueryList;
     #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
-        this.sidebarOpen = event.matches
+        this.sidebarOpen = event.matches;
     };
 
     @eventOptions({ passive: true })
     protected routeChangeListener() {
-        this.sidebarOpen = this.#sidebarMatcher.matches
+        this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 
     @state()
@@ -102,67 +102,64 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     @listen(AKDrawerChangeEvent)
     protected drawerListener = (event: AKDrawerChangeEvent) => {
-        this.drawer = event.drawer
-        persistDrawerParams(event.drawer)
+        this.drawer = event.drawer;
+        persistDrawerParams(event.drawer);
     };
 
     constructor() {
-        configureSentry()
+        configureSentry();
 
-        super()
+        super();
 
-        WebsocketClient.connect()
+        WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(width >= 1200px)")
-        this.sidebarOpen = this.#sidebarMatcher.matches
+        this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
+        this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 
     public connectedCallback() {
-        super.connectedCallback()
+        super.connectedCallback();
 
         this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
             passive: true,
-        })
+        });
 
-        this.fetchUIPermissions()
+        this.fetchUIPermissions();
     }
 
     public disconnectedCallback(): void {
-        super.disconnectedCallback()
+        super.disconnectedCallback();
 
-        this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener)
+        this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
-        WebsocketClient.close()
+        WebsocketClient.close();
     }
 
     protected async fetchUIPermissions() {
         try {
-            const response = await fetch(
-                `${DEFAULT_CONFIG.basePath}/admin/ui_permissions/`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
+            const response = await fetch(`${DEFAULT_CONFIG.basePath}/admin/ui_permissions/`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
             if (response.ok) {
-                this.uiPermissions = await response.json()
+                this.uiPermissions = await response.json();
             }
         } catch (error) {
-            console.error("Failed to fetch UI permissions:", error)
-            this.uiPermissions = null
+            console.error("Failed to fetch UI permissions:", error);
+            this.uiPermissions = null;
         }
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
-        super.updated(changedProperties)
+        super.updated(changedProperties);
 
         if (changedProperties.has("session") && isAPIResultReady(this.session)) {
             if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
-                window.location.assign("/if/user/")
+                window.location.assign("/if/user/");
             }
             if (changedProperties.get("session") !== this.session) {
-                this.fetchUIPermissions()
+                this.fetchUIPermissions();
             }
         }
     }
@@ -173,28 +170,28 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     protected override render(): TemplateResult {
         if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
-            return html`<slot></slot>`
+            return html`<slot></slot>`;
         }
 
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-expanded": this.sidebarOpen,
             "pf-m-collapsed": !this.sidebarOpen,
-        }
+        };
 
-        const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0)
+        const openDrawerCount = (this.drawer.notifications ? 1 : 0) + (this.drawer.api ? 1 : 0);
         const drawerClasses = {
             "pf-m-expanded": openDrawerCount !== 0,
             "pf-m-collapsed": openDrawerCount === 0,
-        }
+        };
 
         const sidebarEntries = this.uiPermissions
             ? createFilteredAdminSidebarEntries(this.uiPermissions)
-            : createAdminSidebarEntries()
+            : createAdminSidebarEntries();
 
         const enterpriseEntries = this.uiPermissions
             ? createFilteredAdminSidebarEnterpriseEntries(this.uiPermissions)
-            : createAdminSidebarEnterpriseEntries()
+            : createAdminSidebarEnterpriseEntries();
 
         return html`<div class="pf-c-page">
             <ak-page-navbar>
@@ -204,8 +201,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
                     class="pf-c-button pf-m-plain"
                     @click=${this.toggleSidebar}
                     aria-label=${this.sidebarOpen
-                ? msg("Collapse navigation")
-                : msg("Expand navigation")}
+                        ? msg("Collapse navigation")
+                        : msg("Expand navigation")}
                     aria-expanded=${this.sidebarOpen ? "true" : "false"}
                 >
                     <i aria-hidden="true" class="fas fa-bars"></i>
@@ -218,8 +215,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
             <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
                 >${renderSidebarItems(sidebarEntries)}
                 ${this.can(CapabilitiesEnum.IsEnterprise)
-                ? renderSidebarItems(enterpriseEntries)
-                : nothing}
+                    ? renderSidebarItems(enterpriseEntries)
+                    : nothing}
             </ak-sidebar>
 
             <div class="pf-c-page__drawer">
@@ -252,7 +249,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                     tabindex="0"
                 ></div>
             </div>
-        </div>`
+        </div>`;
     }
 
     //#endregion
@@ -260,6 +257,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-interface-admin": AdminInterface
+        "ak-interface-admin": AdminInterface;
     }
 }

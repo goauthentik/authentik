@@ -18,10 +18,12 @@ class TestUIPermissionsAPI(APITestCase):
 
         # Create a role with limited permissions
         self.limited_role = Role.objects.create(name=generate_id())
-        self.limited_role.assign_perms([
-            "authentik_core.view_application",
-            "authentik_core.view_user",
-        ])
+        self.limited_role.assign_perms(
+            [
+                "authentik_core.view_application",
+                "authentik_core.view_user",
+            ]
+        )
 
         # Create a group and assign the role
         self.limited_group = Group.objects.create(name=generate_id())

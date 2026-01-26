@@ -256,6 +256,25 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /admin/ui_permissions/:
+    get:
+      operationId: admin_ui_permissions_retrieve
+      description: Get UI permissions for current user
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UIPermissions'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /admin/version/:
     get:
       operationId: admin_version_retrieve
@@ -55098,6 +55117,139 @@ components:
       - description
       - model_name
       - name
+    UIPermissions:
+      type: object
+      description: Serializer for UI permissions
+      properties:
+        can_view_admin_overview:
+          type: boolean
+          readOnly: true
+        can_view_system_tasks:
+          type: boolean
+          readOnly: true
+        can_view_applications:
+          type: boolean
+          readOnly: true
+        can_view_providers:
+          type: boolean
+          readOnly: true
+        can_view_outposts:
+          type: boolean
+          readOnly: true
+        can_view_devices:
+          type: boolean
+          readOnly: true
+        can_view_device_groups:
+          type: boolean
+          readOnly: true
+        can_view_connectors:
+          type: boolean
+          readOnly: true
+        can_view_events:
+          type: boolean
+          readOnly: true
+        can_view_notification_rules:
+          type: boolean
+          readOnly: true
+        can_view_notification_transports:
+          type: boolean
+          readOnly: true
+        can_view_data_exports:
+          type: boolean
+          readOnly: true
+        can_view_policies:
+          type: boolean
+          readOnly: true
+        can_view_property_mappings:
+          type: boolean
+          readOnly: true
+        can_view_blueprints:
+          type: boolean
+          readOnly: true
+        can_view_files:
+          type: boolean
+          readOnly: true
+        can_view_reputation:
+          type: boolean
+          readOnly: true
+        can_view_flows:
+          type: boolean
+          readOnly: true
+        can_view_stages:
+          type: boolean
+          readOnly: true
+        can_view_prompts:
+          type: boolean
+          readOnly: true
+        can_view_users:
+          type: boolean
+          readOnly: true
+        can_view_groups:
+          type: boolean
+          readOnly: true
+        can_view_roles:
+          type: boolean
+          readOnly: true
+        can_view_initial_permissions:
+          type: boolean
+          readOnly: true
+        can_view_sources:
+          type: boolean
+          readOnly: true
+        can_view_tokens:
+          type: boolean
+          readOnly: true
+        can_view_invitations:
+          type: boolean
+          readOnly: true
+        can_view_brands:
+          type: boolean
+          readOnly: true
+        can_view_certificates:
+          type: boolean
+          readOnly: true
+        can_view_outpost_integrations:
+          type: boolean
+          readOnly: true
+        can_view_settings:
+          type: boolean
+          readOnly: true
+        can_view_licenses:
+          type: boolean
+          readOnly: true
+      required:
+      - can_view_admin_overview
+      - can_view_applications
+      - can_view_blueprints
+      - can_view_brands
+      - can_view_certificates
+      - can_view_connectors
+      - can_view_data_exports
+      - can_view_device_groups
+      - can_view_devices
+      - can_view_events
+      - can_view_files
+      - can_view_flows
+      - can_view_groups
+      - can_view_initial_permissions
+      - can_view_invitations
+      - can_view_licenses
+      - can_view_notification_rules
+      - can_view_notification_transports
+      - can_view_outpost_integrations
+      - can_view_outposts
+      - can_view_policies
+      - can_view_prompts
+      - can_view_property_mappings
+      - can_view_providers
+      - can_view_reputation
+      - can_view_roles
+      - can_view_settings
+      - can_view_sources
+      - can_view_stages
+      - can_view_system_tasks
+      - can_view_tokens
+      - can_view_users
     UiThemeEnum:
       enum:
       - automatic

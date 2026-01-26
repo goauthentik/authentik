@@ -1,12 +1,12 @@
 """Admin UI Permissions API"""
 
+from rest_framework.fields import BooleanField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik.core.api.utils import PassiveSerializer
-from rest_framework.fields import BooleanField
 
 
 class UIPermissionsSerializer(PassiveSerializer):
@@ -58,6 +58,7 @@ class UIPermissionsView(APIView):
     """Return UI permissions for the current user"""
 
     permission_classes = [IsAuthenticated]
+    serializer_class = UIPermissionsSerializer
 
     def get(self, request: Request) -> Response:
         """Get UI permissions for current user"""
@@ -79,15 +80,15 @@ class UIPermissionsView(APIView):
             ),
             "can_view_data_exports": user.has_perm("authentik_enterprise_events.view_dataexport"),
             "can_view_policies": user.has_perm("authentik_policies.view_policy"),
-            "can_view_property_mappings": user.has_perm(
-                "authentik_core.view_propertymapping"
-            ),
+            "can_view_property_mappings": user.has_perm("authentik_core.view_propertymapping"),
             "can_view_blueprints": user.has_perm("authentik_blueprints.view_blueprintinstance"),
             "can_view_files": user.has_perm("authentik_core.view_application")
             or user.has_perm("authentik_blueprints.view_blueprintinstance"),
             "can_view_reputation": user.has_perm("authentik_policies.view_reputation"),
             "can_view_flows": user.has_perm("authentik_flows.view_flow"),
-            "can_view_stages": user.has_perm("authentik_stages_authenticator.view_authenticatorvalidatestage")
+            "can_view_stages": user.has_perm(
+                "authentik_stages_authenticator.view_authenticatorvalidatestage"
+            )
             or user.has_perm("authentik_stages_captcha.view_captchastage")
             or user.has_perm("authentik_stages_consent.view_consentstage")
             or user.has_perm("authentik_stages_deny.view_denystage")
@@ -105,16 +106,12 @@ class UIPermissionsView(APIView):
             "can_view_users": user.has_perm("authentik_core.view_user"),
             "can_view_groups": user.has_perm("authentik_core.view_group"),
             "can_view_roles": user.has_perm("authentik_rbac.view_role"),
-            "can_view_initial_permissions": user.has_perm(
-                "authentik_rbac.view_initialpermissions"
-            ),
+            "can_view_initial_permissions": user.has_perm("authentik_rbac.view_initialpermissions"),
             "can_view_sources": user.has_perm("authentik_core.view_source"),
             "can_view_tokens": user.has_perm("authentik_core.view_token"),
             "can_view_invitations": user.has_perm("authentik_stages_invitation.view_invitation"),
             "can_view_brands": user.has_perm("authentik_tenants.view_tenant"),
-            "can_view_certificates": user.has_perm(
-                "authentik_crypto.view_certificatekeypair"
-            ),
+            "can_view_certificates": user.has_perm("authentik_crypto.view_certificatekeypair"),
             "can_view_outpost_integrations": user.has_perm(
                 "authentik_outposts.view_outpostserviceconnection"
             ),
