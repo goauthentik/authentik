@@ -26,7 +26,17 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     protected hasPostBinding = false;
 
     @state()
-    protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+    protected logoutMethod: SAMLProviderLogoutMethodEnum =
+        SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+
+    public override reset(): void {
+        super.reset();
+
+        this.hasSigningKp = false;
+        this.hasSlsUrl = false;
+        this.hasPostBinding = false;
+        this.logoutMethod = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+    }
 
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
@@ -90,7 +100,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
 
         const setLogoutMethod = (ev: Event) => {
             const target = ev.target as HTMLInputElement;
-            this.logoutMethod = target.value;
+            this.logoutMethod = target.value as SAMLProviderLogoutMethodEnum;
         };
 
         return renderForm({

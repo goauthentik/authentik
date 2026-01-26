@@ -3,7 +3,6 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
 import "#components/ak-status-label";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "#admin/endpoints/devices/DeviceUserBindingForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -33,11 +32,11 @@ export class BoundDeviceUsersList extends BoundPoliciesList<DeviceUserBinding> {
         return item.order?.toString() ?? null;
     }
 
-    protected bindingEditForm: string = "ak-device-binding-form";
+    protected override bindingEditForm = "ak-device-binding-form";
 
     protected columns: TableColumn[] = [
         [
-            [PolicyBindingCheckTarget.user, PolicyBindingCheckTarget.group]
+            [PolicyBindingCheckTarget.User, PolicyBindingCheckTarget.Group]
                 .map((ct) => PolicyBindingCheckTargetToLabel(ct))
                 .join(" / "),
         ],

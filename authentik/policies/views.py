@@ -103,24 +103,28 @@ class PolicyAccessView(AccessMixin, View):
         they try to access and redirect to the login URL. The application is saved to show
         a hint on the Identification Stage what the user should login for."""
         flow_context = {}
+        authn_flow = None
         if self.application:
             flow_context[PLAN_CONTEXT_APPLICATION] = self.application
+            if self.provider and self.provider.authentication_flow:
+                authn_flow = self.provider.authentication_flow
         # Because this view might get hit with a POST request, we need to preserve that data
         # since later views might need it (mostly SAML)
         if self.request.method.lower() == "post":
             self.request.session[SESSION_KEY_POST] = self.request.POST
             flow_context[PLAN_CONTEXT_POST] = self.request.POST
 
-        flow = ToDefaultFlow.get_flow(self.request, FlowDesignation.AUTHENTICATION)
-        if not flow:
-            raise Http404
-        planner = FlowPlanner(flow)
+        if not authn_flow:
+            authn_flow = ToDefaultFlow.get_flow(self.request, FlowDesignation.AUTHENTICATION)
+            if not authn_flow:
+                raise Http404
+        planner = FlowPlanner(authn_flow)
         try:
-            plan = planner.plan(self.request, self.modify_flow_context(flow, flow_context))
+            plan = planner.plan(self.request, self.modify_flow_context(authn_flow, flow_context))
         except (FlowNonApplicableException, EmptyFlowException) as exc:
             LOGGER.warning("Non-applicable authentication flow", exc=exc)
             raise Http404 from None
-        return plan.to_redirect(self.request, flow, next=self.request.get_full_path())
+        return plan.to_redirect(self.request, authn_flow, next=self.request.get_full_path())
 
     def handle_no_permission_authenticated(
         self, result: PolicyResult | None = None
@@ -205,7 +209,7 @@ class BufferedPolicyAccessView(PolicyAccessView):
         if not plan:
             LOGGER.debug("Not buffering request, no flow plan active")
             return super().handle_no_permission()
-        if not BufferedPolicyAccessViewFlag().get():
+        if not BufferedPolicyAccessViewFlag.get():
             return super().handle_no_permission()
         if self.request.GET.get(QS_SKIP_BUFFER):
             LOGGER.debug("Not buffering request, explicit skip")

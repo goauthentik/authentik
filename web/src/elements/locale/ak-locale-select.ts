@@ -90,8 +90,6 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        this.addEventListener("click", this.show);
-
         window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
             once: true,
             passive: true,

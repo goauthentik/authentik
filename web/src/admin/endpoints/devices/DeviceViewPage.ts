@@ -2,6 +2,7 @@ import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
 import "#admin/endpoints/devices/facts/DeviceProcessTable";
 import "#admin/endpoints/devices/facts/DeviceUserTable";
+import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceForm";
 import "#elements/forms/ModalForm";
@@ -29,7 +30,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {
@@ -42,7 +42,7 @@ export class DeviceViewPage extends AKElement {
     @state()
     protected error?: APIError;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
         new EndpointsApi(DEFAULT_CONFIG)
@@ -193,9 +193,7 @@ export class DeviceViewPage extends AKElement {
                             return [
                                 html`${conn.connectorObj.name}`,
                                 html`<div class="pf-c-description-list__text">
-                                        ${msg(
-                                            str`Agent version: ${this.agentVersion(conn) ?? "-"}`,
-                                        )}
+                                        ${this.agentVersion(conn) ?? "-"}
                                     </div>
                                     <div class="pf-c-description-list__text">
                                         ${conn.latestSnapshot?.created
@@ -227,7 +225,7 @@ export class DeviceViewPage extends AKElement {
         const vendorData = vendorContainer[conn.latestSnapshot.vendor];
         if (!vendorData) return;
         if (!("agent_version" in vendorData)) return;
-        return vendorData.agent_version;
+        return msg(str`Agent version: ${vendorData.agent_version ?? "-"}`);
     }
 
     renderProcesses() {
@@ -255,6 +253,15 @@ export class DeviceViewPage extends AKElement {
         return html`<ak-endpoints-device-groups-table
             .device=${this.device}
         ></ak-endpoints-device-groups-table>`;
+    }
+
+    renderSoftware() {
+        if (!this.device) {
+            return nothing;
+        }
+        return html`<ak-endpoints-device-software-table
+            .device=${this.device}
+        ></ak-endpoints-device-software-table>`;
     }
 
     render() {
@@ -299,6 +306,16 @@ export class DeviceViewPage extends AKElement {
                     class="pf-c-page__main-section"
                 >
                     ${this.renderGroups()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-software"
+                    id="page-software"
+                    aria-label="${msg("Software")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderSoftware()}
                 </div>
             </ak-tabs>
         </main>`;

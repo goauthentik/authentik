@@ -4,7 +4,6 @@ import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#admin/providers/proxy/ProxyProviderForm";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/providers/saml/SAMLProviderImportForm";
-import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
@@ -12,6 +11,7 @@ import "#elements/wizard/Wizard";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 import type { Wizard } from "#elements/wizard/Wizard";
 
@@ -23,11 +23,10 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    static styles: CSSResult[] = [PFButton];
 
     @property()
     createText = msg("Create");
@@ -73,7 +72,7 @@ export class ProviderWizard extends AKElement {
                             slot=${`type-${type.component}`}
                             label=${msg(str`Create ${type.name}`)}
                         >
-                            <ak-proxy-form type=${type.component}></ak-proxy-form>
+                            ${StrictUnsafe(type.component)}
                         </ak-wizard-page-form>
                     `;
                 })}

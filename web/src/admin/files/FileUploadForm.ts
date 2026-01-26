@@ -45,12 +45,6 @@ function getFileExtension(fileName: string): string {
     return fileName.slice(lastDot);
 }
 
-function hasBasenameExtension(fileName: string): boolean {
-    const baseName = fileName.split("/").pop() ?? fileName;
-    const lastDot = baseName.lastIndexOf(".");
-    return lastDot > 0;
-}
-
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String, useDefault: true })
@@ -60,6 +54,12 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
     protected selectedFile: File | null = null;
 
     #formRef = createRef<HTMLFormElement>();
+
+    public override reset(): void {
+        super.reset();
+
+        this.selectedFile = null;
+    }
 
     #fileChangeListener = (e: Event) => {
         const input = e.target as HTMLInputElement;
@@ -83,17 +83,10 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         const api = new AdminApi(DEFAULT_CONFIG);
         const customName = typeof data.name === "string" ? data.name.trim() : "";
 
-        // If custom name provided, validate and append original extension
-        // Only validate the original filename if no custom name is provided
-        let finalName = this.selectedFile.name;
-        if (customName) {
-            assertValidFileName(customName);
-            const ext = getFileExtension(this.selectedFile.name);
-            finalName =
-                ext && !hasBasenameExtension(customName) ? `${customName}${ext}` : customName;
-        } else {
-            assertValidFileName(this.selectedFile.name);
-        }
+        // If custom name provided, append original file extension; otherwise use original filename
+        const finalName = customName
+            ? `${customName}${getFileExtension(this.selectedFile.name)}`
+            : this.selectedFile.name;
 
         assertValidFileName(finalName);
 

@@ -3,11 +3,10 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.endpoints.models import EndpointStage
-from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.flows.api.stages import StageSerializer
 
 
-class EndpointStageSerializer(EnterpriseRequiredMixin, StageSerializer):
+class EndpointStageSerializer(StageSerializer):
     """EndpointStage Serializer"""
 
     connector_obj = ConnectorSerializer(source="connector", read_only=True)

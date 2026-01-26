@@ -13,12 +13,10 @@ import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // `pointer-events: none` makes the button inaccessible during the processing phase.
 
 const buttonStyles = [
-    PFBase,
     PFButton,
     PFSpinner,
     css`
