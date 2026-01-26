@@ -121,8 +121,8 @@ class SimpleFlowExecutor {
                 new AccessDeniedStage(this, {
                     component: "ak-stage-access-denied",
                     errorMessage: "Unsupported stage: " + this.challenge?.component,
-                    pendingUser: undefined,
-                    pendingUserAvatar: undefined,
+                    pendingUser: "",
+                    pendingUserAvatar: "",
                 }).render();
                 return;
         }
@@ -503,8 +503,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
 class AccessDeniedStage extends Stage<AccessDeniedChallenge> {
     render() {
-        this.html(`
-            <form id="access-denied">
+        this.html(`<form id="access-denied">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <p>
