@@ -437,7 +437,7 @@ export class IdentificationStage extends BaseStage<
                     autocomplete=${autocomplete}
                     spellcheck="false"
                     class="pf-c-form-control"
-                    value=${this.#rememberMe?.username ?? ""}
+                    value=${this.#rememberMe.initialUsername}
                     required
                 />
                 ${this.#rememberMe.render()}
