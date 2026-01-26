@@ -31,7 +31,7 @@ To support the integration of Elastic Cloud with authentik, create SAML property
 
 ### Create property mappings
 
-Elastic Cloud expects specific SAML attribute names, so create custom mappings for them.
+You first need to create property mappings to provide the specific SAML attribute names that Elastic Cloud expects.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries:
@@ -96,20 +96,22 @@ Elastic Cloud expects specific SAML attribute names, so create custom mappings f
 
 ## Elastic Cloud configuration
 
+To support the integration of authentik with Elastic Cloud, you need to claim your email domain and configure/enforce SSO in Elastic Cloud.
+
 ### Claim your email domain
 
 1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top right, select **Organization**, and click **Security** in the bottom left.
 2. Under **Domains**, click **Add domain** and enter `example.com`.
-3. Add the DNS TXT record Elastic provides at `_elastic_domain_challenge.example.com`.
+3. Add the DNS TXT record provided by Elastic, `_elastic_domain_challenge.example.com`, to your DNS provider's configuration.
 4. Return to Elastic Cloud and click **Verify and add domain**.
 
 ### Configure SSO
 
 1. Log in to Elastic Cloud as an administrator. Click your organization menu in the top right, select **Organization**, and click **Security** in the bottom left. From there, click **Configure SSO**.
-2. Fill in the following fields:
-    - **Identity Provider Entity ID**: the IdP issuer used to verify SAML assertions. Use the authentik **Issuer** value.
-    - **Identity Provider SSO URL**: the IdP login URL used for redirects. Use the authentik **SSO URL (Post)** (HTTP-POST binding).
-    - **Public x509 certificate**: the IdP signing certificate used to verify SAML assertions. Paste the authentik certificate contents in PEM format.
+2. Configure the following settings:
+    - **Identity Provider Entity ID**: `https://authentik.company`
+    - **Identity Provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+    - **Public x509 certificate**: Paste the contents of the authentik signing certificate in PEM format.
     - **Login identifier prefix**: the slug used for the Elastic Cloud SSO URL suffix (for example, `mycorp-authentik-sso` in `cloud.elastic.co/sso/login/mycorp-authentik-sso`). Use lowercase letters, numbers, and hyphens.
 3. Click **Save configuration**.
 4. Click **Enable SAML SSO** at the top.
@@ -153,14 +155,14 @@ Elastic Cloud requires the first role mapping in a SAML SSO configuration to inc
 
 Elastic Cloud requires the **Organization owner** role to be mapped to a group present in the SAML response before the role mapping can be saved.
 
-:::caution
+:::caution IdP initiated sign in not supported
 Elastic Cloud does not support IdP-initiated SSO. Use the Elastic **SSO Login URL** to start sign-in.
 :::
 
 ## Configuration verification
 
-Sign out of Elastic Cloud, click **SSO** on the login page, enter an email address that matches your claimed domain, and click **Log in**. You should land in Elastic Cloud and have access to the organization.
+Sign out of Elastic Cloud, click **SSO** on the login page, enter an email address that matches your claimed domain, and click **Log in**. You should be redirected to authentik and once authenticated, logged in to Elastic Cloud and have access to the organization.
 
 ## Resources
 
-- [Elastic Cloud Hosted SAML SSO](https://www.elastic.co/docs/deploy-manage/users-roles/cloud-organization/configure-saml-authentication)
+- [Elastic Cloud Docs - Configure Elastic Cloud SAML single sign-on](https://www.elastic.co/docs/deploy-manage/users-roles/cloud-organization/configure-saml-authentication)
