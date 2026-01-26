@@ -38824,10 +38824,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -40664,18 +40666,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -41458,10 +41464,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -42343,18 +42351,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -43116,6 +43128,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+          nullable: true
         refresh_interval_s:
           type: integer
           readOnly: true
@@ -50584,18 +50597,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -50798,18 +50815,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51117,18 +51138,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51290,18 +51315,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51983,18 +52012,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -52765,10 +52798,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
