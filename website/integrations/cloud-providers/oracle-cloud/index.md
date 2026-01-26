@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `tenant.identity.oraclecloud.com` is the FQDN of your Oracle IDCS endpoint.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -31,10 +31,11 @@ To support the integration of Oracle Cloud with authentik, you need to create an
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - Optionally set the **Launch URL** to `https://cloud.oracle.com?tenant=friendly-tenant-name` where `friendly-tenant-name` is the name of the tenant used when logging in via the [Oracle Cloud website](https://cloud.oracle.com).
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://tenant.identity.oraclecloud.com/oauth2/v1/authorize`.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://tenant.identity.oraclecloud.com/oauth2/v1/social/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -42,10 +43,33 @@ To support the integration of Oracle Cloud with authentik, you need to create an
 
 ## Oracle Cloud configuration
 
-In Oracle Cloud, open the top-left navigation and go to _Identity & Security_ and then _Domains_. Click on the domain of your choice. Click on _Security_ in the sidebar, then on _Identity providers_.
+To integrate authentik with Oracle Cloud, you must configure authentik as a social identity provider.
 
-Create a new _Social IdP_ via the _Add IdP_ button. Set the name to authentik and fill in the client ID and secret from above.
+### Configure the identity provider
 
-Set the _Discovery service URL_ to `https://authentik.company/application/o/oracle-cloud/.well-known/openid-configuration` and save the IdP. The IdP has now been created but must be enabled before it can be used to login with.
+1. Log in to the Oracle Cloud dashboard as an administrator. Click the hamburger menu in the top-left corner, then select **Identity & Security** > **Domains**.
+2. Select your domain and click **Federation**. Under **Actions**, choose **Add Social IdP**.
+3. Set the following required information:
+    - **Type**: `OpenID Connect`
+    - **Name**: `authentik`
+    - **Client ID**: set the client ID from authentik
+    - **Client Secret**: set the client secret from authentik
+    - **Discovery service URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Enable Just-In-Time (JIT) provisioning**: toggle this on
+4. Click **Add**. Then, click the three dots in the row of the identity provider that was just created. Click **Activate IdP**, read the confirmation message, and click **Activate IdP** again.
 
-Navigate to _IdP Policies_ in the sidebar and open the default policy by clicking on it. Edit the first rule within the policy. Add authentik under _Assign identity providers_. Here you can optionally also remove username-based logins, however it is recommended to not remove the option until you've verified SSO works.
+### Add to the login page
+
+1. Log in to the Oracle Cloud dashboard as an administrator. Click the hamburger menu in the top-left corner, then select **Identity & Security** > **Domains**.
+2. Select your domain and click **Federation**. Scroll down until you see the section called **Identity provider policies**.
+3. Click your identity provider policy, or select the default policy named **Default Identity Provider Policy**.
+4. Click the three dots, select **Edit IdP rule**, and under **Assign identity providers**, add `authentik`.
+5. Save these changes.
+
+## Configuration verification
+
+To confirm that authentik is correctly configured with Oracle Cloud, log out of your current session. Then, try signing in by either selecting the application's icon in the User Library or by going directly to the Oracle Cloud login page, depending on your setup. On the login page, click **authentik**. You'll be redirected to authentik, and after a successful login, automatically signed in to Oracle Cloud.
+
+## Resources
+
+- [Oracle Cloud documentation - Add a Social Identity Provider](https://docs.oracle.com/en/cloud/paas/identity-cloud/uaids/add-social-identity-provider.html)

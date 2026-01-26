@@ -25,7 +25,7 @@ class GoogleWorkspaceGroupClient(
     """Google client for groups"""
 
     connection_type = GoogleWorkspaceProviderGroup
-    connection_attr = "googleworkspaceprovidergroup_set"
+    connection_type_query = "group"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
@@ -44,20 +44,13 @@ class GoogleWorkspaceGroupClient(
             email=f"{slugify(obj.name)}@{self.provider.default_group_email_domain}",
         )
 
-    def delete(self, obj: Group):
+    def delete(self, identifier: str):
         """Delete group"""
-        google_group = GoogleWorkspaceProviderGroup.objects.filter(
-            provider=self.provider, group=obj
-        ).first()
-        if not google_group:
-            self.logger.debug("Group does not exist in Google, skipping")
-            return None
-        with transaction.atomic():
-            if self.provider.group_delete_action == OutgoingSyncDeleteAction.DELETE:
-                self._request(
-                    self.directory_service.groups().delete(groupKey=google_group.google_id)
-                )
-            google_group.delete()
+        GoogleWorkspaceProviderGroup.objects.filter(
+            provider=self.provider, google_id=identifier
+        ).delete()
+        if self.provider.group_delete_action == OutgoingSyncDeleteAction.DELETE:
+            return self._request(self.directory_service.groups().delete(groupKey=identifier))
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
@@ -208,11 +201,11 @@ class GoogleWorkspaceGroupClient(
         )
         if not matching_authentik_group:
             return
-        GoogleWorkspaceProviderGroup.objects.get_or_create(
+        GoogleWorkspaceProviderGroup.objects.update_or_create(
             provider=self.provider,
             group=matching_authentik_group,
             google_id=google_id,
-            attributes=group,
+            defaults={"attributes": group},
         )
 
     def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):

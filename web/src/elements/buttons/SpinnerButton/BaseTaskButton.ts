@@ -1,7 +1,10 @@
+import "#elements/Spinner";
+
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { Task, TaskStatus } from "@lit/task";
@@ -10,12 +13,10 @@ import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // `pointer-events: none` makes the button inaccessible during the processing phase.
 
 const buttonStyles = [
-    PFBase,
     PFButton,
     PFSpinner,
     css`
@@ -25,15 +26,25 @@ const buttonStyles = [
         #spinner-button.working {
             pointer-events: none;
         }
+
+        .pf-c-button {
+            &.pf-m-primary.pf-m-success {
+                color: var(--pf-c-button--m-primary--Color) !important;
+            }
+
+            &.pf-m-secondary.pf-m-success {
+                color: var(--pf-c-button--m-secondary--Color) !important;
+            }
+        }
     `,
 ];
 
-const StatusMap = new Map<TaskStatus, string>([
-    [TaskStatus.INITIAL, ""],
-    [TaskStatus.PENDING, PROGRESS_CLASS],
-    [TaskStatus.COMPLETE, SUCCESS_CLASS],
-    [TaskStatus.ERROR, ERROR_CLASS],
-]);
+const StatusMap = {
+    [TaskStatus.INITIAL]: "",
+    [TaskStatus.PENDING]: PROGRESS_CLASS,
+    [TaskStatus.COMPLETE]: SUCCESS_CLASS,
+    [TaskStatus.ERROR]: ERROR_CLASS,
+} as const satisfies Record<TaskStatus, string>;
 
 const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
 
@@ -58,7 +69,10 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     actionTask: Task;
 
     @property({ type: Boolean })
-    disabled = false;
+    public disabled = false;
+
+    @property({ type: String })
+    public label: string | null = null;
 
     constructor() {
         super();
@@ -117,7 +131,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     get buttonClasses() {
         return [
             ...this.classList,
-            StatusMap.get(this.actionTask.status),
+            StatusMap[this.actionTask.status],
             this.actionTask.status === TaskStatus.INITIAL ? "" : "working",
         ]
             .join(" ")
@@ -130,9 +144,14 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             part="spinner-button"
             class="pf-c-button pf-m-progress ${this.buttonClasses}"
             @click=${this.onClick}
+            type="button"
+            aria-label=${ifPresent(this.label)}
+            aria-busy=${this.actionTask.status === TaskStatus.PENDING ? "true" : "false"}
             ?disabled=${this.disabled}
         >
-            ${this.actionTask.render({ pending: () => this.spinner })}
+            ${this.actionTask.render({
+                pending: () => this.spinner,
+            })}
             <slot></slot>
         </button>`;
     }

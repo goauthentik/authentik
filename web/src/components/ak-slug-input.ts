@@ -125,6 +125,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     public override renderControl() {
         return html`<input
+            id=${ifDefined(this.fieldID)}
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
             value=${ifDefined(this.value)}
@@ -144,6 +145,12 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         }
         if (this.#origin) {
             this.#origin.addEventListener("input", this.slugify);
+        }
+
+        // If the slug already has a value (editing an existing item), mark it as touched
+        // to prevent automatic updates when the name changes
+        if (this.value) {
+            this.#touched = true;
         }
     }
 }

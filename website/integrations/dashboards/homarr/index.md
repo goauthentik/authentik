@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `homarr.company` is the FQDN of the Homarr installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -33,8 +33,8 @@ To support the integration of Homarr with authentik, you need to create an appli
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Create two `strict` redirect URIs and set to `https://homarr.company/api/auth/callback/oidc` and ` http://localhost:50575/api/auth/callback/oidc`.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Create two `Strict` redirect URIs and set to `https://homarr.company/api/auth/callback/oidc` and ` http://localhost:50575/api/auth/callback/oidc`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -45,14 +45,15 @@ To support the integration of Homarr with authentik, you need to create an appli
 Add the following environment variables to your Homarr configuration. Make sure to fill in the Client ID, Client Secret, OIDC Issuer, and OIDC URI from your authentik instance.
 
 ```sh
-AUTH_PROVIDERS="oidc,credentials"
+AUTH_PROVIDERS=oidc,credentials
 AUTH_OIDC_CLIENT_ID=<Client ID from authentik>
 AUTH_OIDC_CLIENT_SECRET=<Client secret from authentik>
 AUTH_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
 AUTH_OIDC_URI=https://authentik.company/application/o/authorize
 AUTH_OIDC_CLIENT_NAME=authentik
-OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
-# Optional: You can add this if you only want to allow auto login via authentik
+# Optional: Enable this if you want to allow migrating Homarr accounts between OIDC providers.
+# AUTH_OIDC_ENABLE_DANGEROUS_ACCOUNT_LINKING=true
+# Optional: Enable this if you want to skip the login button and auto-login via authentik.
 # AUTH_OIDC_AUTO_LOGIN=true
 ```
 

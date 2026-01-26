@@ -11,10 +11,13 @@ class DjangoDramatiqPostgres(AppConfig):
     name = "django_dramatiq_postgres"
     verbose_name = "Django Dramatiq postgres"
 
-    def ready(self):
-        old_broker = dramatiq.get_broker()
+    def ready(self) -> None:
+        try:
+            old_broker = dramatiq.get_broker()
+        except ModuleNotFoundError:
+            old_broker = None
 
-        if len(old_broker.actors) != 0:
+        if old_broker is not None and len(old_broker.actors) != 0:
             raise ImproperlyConfigured(
                 "Actors were previously registered. "
                 "Make sure your actors are not imported too early."
@@ -38,7 +41,7 @@ class DjangoDramatiqPostgres(AppConfig):
                     *Conf().result_backend_args,
                     **Conf().result_backend_kwargs,
                 )
-            broker.add_middleware(middleware)
+            broker.add_middleware(middleware)  # type: ignore[no-untyped-call]
 
         dramatiq.set_broker(broker)
 

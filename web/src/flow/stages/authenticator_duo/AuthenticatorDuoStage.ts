@@ -1,9 +1,9 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -16,23 +16,23 @@ import {
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-duo")
 export class AuthenticatorDuoStage extends BaseStage<
     AuthenticatorDuoChallenge,
     AuthenticatorDuoChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
     updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             const i = setInterval(() => {
                 this.checkEnrollStatus().then((shouldStop) => {
@@ -66,17 +66,8 @@ export class AuthenticatorDuoStage extends BaseStage<
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <img src=${this.challenge.activationBarcode} alt=${msg("Duo activation QR code")} />
                 <p>
                     ${msg(
@@ -85,7 +76,8 @@ export class AuthenticatorDuoStage extends BaseStage<
                 </p>
                 <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
 
-                <div class="pf-c-form__group pf-m-action">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         type="button"
                         class="pf-c-button pf-m-primary pf-m-block"
@@ -95,7 +87,7 @@ export class AuthenticatorDuoStage extends BaseStage<
                     >
                         ${msg("Check status")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

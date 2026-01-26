@@ -1,8 +1,6 @@
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
-from django.utils.text import slugify
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import Actor
 from dramatiq.composition import group
 from dramatiq.errors import Retry
@@ -11,16 +9,19 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.utils import sanitize_item
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT_MS
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
     DryRunRejected,
+    NotFoundSyncException,
     StopSync,
     TransientSyncException,
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.reflection import class_to_path, path_to_class
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
 
@@ -44,12 +45,14 @@ class SyncTasks:
         **options,
     ):
         tasks = []
+        time_limit = timedelta_from_string(provider.sync_page_timeout).total_seconds() * 1000
         for page in paginator.page_range:
             page_sync = sync_objects.message_with_options(
                 args=(class_to_path(object_type), page, provider.pk),
-                time_limit=PAGE_TIMEOUT_MS,
+                time_limit=time_limit,
                 # Assign tasks to the same schedule as the current one
                 rel_obj=current_task.rel_obj,
+                uid=f"{provider.name}:{object_type._meta.model_name}:{page}",
                 **options,
             )
             tasks.append(page_sync)
@@ -60,7 +63,7 @@ class SyncTasks:
         provider_pk: int,
         sync_objects: Actor[[str, int, int, bool], None],
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
@@ -72,7 +75,6 @@ class SyncTasks:
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
         task.info("Starting full provider sync")
         self.logger.debug("Starting provider sync")
         with provider.sync_lock as lock_acquired:
@@ -117,21 +119,20 @@ class SyncTasks:
         override_dry_run=False,
         **filter,
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         _object_type: type[Model] = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
             object_type=object_type,
         )
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(f"{slugify(provider.name)}:{_object_type._meta.model_name}:{page}")
         # Override dry run mode if requested, however don't save the provider
         # so that scheduled sync tasks still run in dry_run mode
         if override_dry_run:
@@ -140,7 +141,10 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return
-        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
+        paginator = Paginator(
+            provider.get_object_qs(_object_type).filter(**filter),
+            provider.sync_page_size,
+        )
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()
@@ -164,16 +168,17 @@ class SyncTasks:
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 task.warning(
-                    f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to error: {str(exc)}",
+                    f"Failed to sync {str(obj)} due to error: {str(exc)}",
                     arguments=exc.args[1:],
                     obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
                 )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
-                    f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to "
-                    "transient error: {str(exc)}",
+                    f"Failed to sync {str(obj)} due to transient error: {str(exc)}",
                     obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)
@@ -185,17 +190,18 @@ class SyncTasks:
 
     def sync_signal_direct_dispatch(
         self,
-        task_sync_signal_direct: Actor[[str, str | int, int, str], None],
+        task_sync_signal_direct: Actor[[str, str | int, int], None],
         model: str,
         pk: str | int,
-        raw_op: str,
     ):
+        model_class: type[Model] = path_to_class(model)
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ):
             task_sync_signal_direct.send_with_options(
-                args=(model, pk, provider.pk, raw_op),
+                args=(model, pk, provider.pk),
                 rel_obj=provider,
+                uid=f"{provider.name}:{model_class._meta.model_name}:{pk}:direct",
             )
 
     def sync_signal_direct(
@@ -203,9 +209,8 @@ class SyncTasks:
         model: str,
         pk: str | int,
         provider_pk: int,
-        raw_op: str,
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -213,15 +218,13 @@ class SyncTasks:
         instance = model_class.objects.filter(pk=pk).first()
         if not instance:
             return
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
-        operation = Direction(raw_op)
         client = provider.client_for_model(instance.__class__)
         # Check if the object is allowed within the provider's restrictions
         queryset = provider.get_object_qs(instance.__class__)
@@ -234,10 +237,7 @@ class SyncTasks:
             return
 
         try:
-            if operation == Direction.add:
-                client.write(instance)
-            if operation == Direction.remove:
-                client.delete(instance)
+            client.write(instance)
         except TransientSyncException as exc:
             raise Retry() from exc
         except SkipObjectException:
@@ -246,6 +246,60 @@ class SyncTasks:
             self.logger.info("Rejected dry-run event", exc=exc)
         except StopSync as exc:
             self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+
+    def sync_signal_delete_dispatch(
+        self,
+        task_sync_signal_delete: Actor[[str, int, str], None],
+        model: str,
+        mappings: list[tuple[str, str]],
+    ):
+        model_class: type[Model] = path_to_class(model)
+        for provider_pk, identifier in mappings:
+            provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
+                pk=provider_pk
+            ).first()
+            if not provider:
+                continue
+            task_sync_signal_delete.send_with_options(
+                args=(model, identifier, provider_pk),
+                rel_obj=provider,
+                uid=f"{provider.name}:{model_class._meta.model_name}:{identifier}:delete",
+            )
+
+    def sync_signal_delete(
+        self,
+        model: str,
+        identifier: str,
+        provider_pk: int,
+    ):
+        task = CurrentTask.get_task()
+        self.logger = get_logger().bind(
+            provider_type=class_to_path(self._provider_model),
+        )
+        model_class: type[Model] = path_to_class(model)
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
+        ).first()
+        if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
+            return
+        client = provider.client_for_model(model_class)
+
+        try:
+            client.delete(identifier)
+        except NotFoundSyncException as exc:
+            self.logger.info(
+                "Object not found in remote provider",
+                model_name=model_class._meta.model_name,
+                identifier=identifier,
+                exc=exc,
+                provider_pk=provider.pk,
+            )
+        except TransientSyncException as exc:
+            raise Retry() from exc
+        except DryRunRejected as exc:
+            self.logger.info("Rejected dry-run event", exc=exc)
 
     def sync_signal_m2m_dispatch(
         self,
@@ -264,12 +318,14 @@ class SyncTasks:
                 task_sync_signal_m2m.send_with_options(
                     args=(instance_pk, provider.pk, action, list(pk_set)),
                     rel_obj=provider,
+                    uid=f"{provider.name}:group:{instance_pk}:m2m",
                 )
             else:
                 for pk in pk_set:
                     task_sync_signal_m2m.send_with_options(
                         args=(pk, provider.pk, action, [instance_pk]),
                         rel_obj=provider,
+                        uid=f"{provider.name}:group:{pk}:m2m",
                     )
 
     def sync_signal_m2m(
@@ -279,7 +335,7 @@ class SyncTasks:
         action: str,
         pk_set: list[int],
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -293,7 +349,6 @@ class SyncTasks:
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
 
         # Check if the object is allowed within the provider's restrictions
         queryset: QuerySet = provider.get_object_qs(Group)

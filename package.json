@@ -1,23 +1,42 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2025.6.4",
+    "version": "2026.2.0-rc1",
     "private": true,
     "type": "module",
     "dependencies": {
-        "@eslint/js": "^9.31.0",
-        "@typescript-eslint/eslint-plugin": "^8.38.0",
-        "@typescript-eslint/parser": "^8.38.0",
-        "eslint": "^9.31.0",
-        "prettier": "^3.6.2",
-        "prettier-plugin-packagejson": "^2.5.19",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.38.0"
+        "@eslint/js": "^9.39.1",
+        "@goauthentik/eslint-config": "./packages/eslint-config",
+        "@goauthentik/prettier-config": "./packages/prettier-config",
+        "@goauthentik/tsconfig": "./packages/tsconfig",
+        "@typescript-eslint/eslint-plugin": "^8.48.1",
+        "@typescript-eslint/parser": "^8.48.1",
+        "eslint": "^9.39.1",
+        "prettier": "^3.7.4",
+        "prettier-plugin-packagejson": "^2.5.20",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.48.1"
+    },
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
     },
     "workspaces": [],
-    "prettier": "./packages/prettier-config/index.js",
+    "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "format-imports": {
             "eslint": "$eslint"
+        }
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "onFail": "warn",
+            "version": ">=11.6.2"
         }
     }
 }

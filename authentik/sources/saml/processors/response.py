@@ -2,7 +2,7 @@
 
 from base64 import b64decode
 from time import mktime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import xmlsec
 from defusedxml.lxml import fromstring
@@ -11,6 +11,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
 from django.utils.timezone import now
 from lxml import etree  # nosec
+from lxml.etree import _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -58,7 +59,7 @@ class ResponseProcessor:
 
     _source: SAMLSource
 
-    _root: Any
+    _root: _Element
     _root_xml: bytes
 
     _http_request: HttpRequest
@@ -77,11 +78,17 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
+        # Verify response signature BEFORE decryption (signature covers encrypted content)
+        if self._source.verification_kp and self._source.signed_response:
+            self._verify_response_signature()
+
         if self._source.encryption_kp:
             self._decrypt_response()
 
-        if self._source.verification_kp:
-            self._verify_signed()
+        # Verify assertion signature AFTER decryption (signature is inside encrypted content)
+        if self._source.verification_kp and self._source.signed_assertion:
+            self._verify_assertion_signature()
+
         self._verify_request_id()
         self._verify_status()
 
@@ -114,14 +121,8 @@ class ResponseProcessor:
             decrypted_assertion,
         )
 
-    def _verify_signed(self):
-        """Verify SAML Response's Signature"""
-        signature_nodes = self._root.xpath(
-            "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
-        )
-        if len(signature_nodes) != 1:
-            raise InvalidSignature()
-        signature_node = signature_nodes[0]
+    def _verify_signature(self, signature_node: _Element):
+        """Verify a single signature node"""
         xmlsec.tree.add_ids(self._root, ["ID"])
 
         ctx = xmlsec.SignatureContext()
@@ -135,8 +136,30 @@ class ResponseProcessor:
         try:
             ctx.verify(signature_node)
         except xmlsec.Error as exc:
-            raise InvalidSignature() from exc
+            raise InvalidSignature(
+                "The signature of the SAML object is either missing or invalid."
+            ) from exc
         LOGGER.debug("Successfully verified signature")
+
+    def _verify_response_signature(self):
+        """Verify SAML Response's Signature (before decryption)"""
+        signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
+
+        if len(signature_nodes) != 1:
+            raise InvalidSignature("No Signature exists in the Response element.")
+
+        self._verify_signature(signature_nodes[0])
+
+    def _verify_assertion_signature(self):
+        """Verify SAML Assertion's Signature (after decryption)"""
+        signature_nodes = self._root.xpath(
+            "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
+        )
+
+        if len(signature_nodes) != 1:
+            raise InvalidSignature("No Signature exists in the Assertion element.")
+
+        self._verify_signature(signature_nodes[0])
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
@@ -206,7 +229,7 @@ class ResponseProcessor:
             policy_context={},
         )
 
-    def _get_name_id(self) -> "Element":
+    def _get_name_id(self) -> Element:
         """Get NameID Element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:

@@ -16,7 +16,7 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 
 ## Create the SSF provider
 
-1. Log in to authentik as an administrator and in the Admin interface navigate to **Applications -> Providers**.
+1. Log in to authentik as an administrator and in the Admin interface navigate to **Applications > Providers**.
 
 2. Click **Create**.
 
@@ -28,7 +28,7 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 
 ## Create the OIDC provider
 
-1. Log in to authentik as an administrator and in the Admin interface navigate to **Applications -> Providers**.
+1. Log in to authentik as an administrator and in the Admin interface navigate to **Applications > Providers**.
 
 2. Click **Create**.
 
@@ -38,7 +38,7 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 
 ## Create the application
 
-1. Log in to authentik as an administrator and in the Admin interface navigate to **Applications -> Applications**.
+1. Log in to authentik as an administrator and in the Admin interface navigate to **Applications > Applications**.
 
 2. Click **Create**.
 

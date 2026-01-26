@@ -8,6 +8,8 @@ from inspect import currentframe
 from typing import Any
 from uuid import uuid4
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
 from django.http import HttpRequest
@@ -18,7 +20,7 @@ from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -41,6 +43,8 @@ from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.root.ws.consumer import build_user_group
+from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
@@ -116,6 +120,8 @@ class EventAction(models.TextChoices):
 
     UPDATE_AVAILABLE = "update_available"
 
+    EXPORT_READY = "export_ready"
+
     CUSTOM_PREFIX = "custom_"
 
 
@@ -145,7 +151,7 @@ class Event(SerializerModel, ExpiringModel):
         action: str | EventAction,
         app: str | None = None,
         **kwargs,
-    ) -> "Event":
+    ) -> Event:
         """Create new Event instance from arguments. Instance is NOT saved."""
         if not isinstance(action, EventAction):
             action = EventAction.CUSTOM_PREFIX + action
@@ -163,19 +169,19 @@ class Event(SerializerModel, ExpiringModel):
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
 
-    def with_exception(self, exc: Exception) -> "Event":
+    def with_exception(self, exc: Exception) -> Event:
         """Add data from 'exc' to the event in a database-saveable format"""
         self.context.setdefault("message", str(exc))
         self.context["exception"] = exception_to_dict(exc)
         return self
 
-    def set_user(self, user: User) -> "Event":
+    def set_user(self, user: User) -> Event:
         """Set `.user` based on user, ensuring the correct attributes are copied.
         This should only be used when self.from_http is *not* used."""
         self.user = get_user(user)
         return self
 
-    def from_http(self, request: HttpRequest, user: User | None = None) -> "Event":
+    def from_http(self, request: HttpRequest, user: User | None = None) -> Event:
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
@@ -260,6 +266,14 @@ class Event(SerializerModel, ExpiringModel):
             return self.context["message"]
         return f"{self.action}: {self.context}"
 
+    @property
+    def hyperlink(self) -> str | None:
+        return self.context.get("hyperlink")
+
+    @property
+    def hyperlink_label(self) -> str | None:
+        return self.context.get("hyperlink_label")
+
     def __str__(self) -> str:
         return f"Event action={self.action} user={self.user} context={self.context}"
 
@@ -295,6 +309,15 @@ class NotificationTransport(TasksModel, SerializerModel):
 
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
+    send_once = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Only send notification once, for example when sending a webhook into a chat channel."
+        ),
+    )
+
+    email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
+    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping_body = models.ForeignKey(
@@ -319,14 +342,8 @@ class NotificationTransport(TasksModel, SerializerModel):
             "Mapping should return a dictionary of key-value pairs"
         ),
     )
-    send_once = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Only send notification once, for example when sending a webhook into a chat channel."
-        ),
-    )
 
-    def send(self, notification: "Notification") -> list[str]:
+    def send(self, notification: Notification) -> list[str]:
         """Send notification to user, called from async task"""
         if self.mode == TransportMode.LOCAL:
             return self.send_local(notification)
@@ -338,7 +355,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             return self.send_email(notification)
         raise ValueError(f"Invalid mode {self.mode} set")
 
-    def send_local(self, notification: "Notification") -> list[str]:
+    def send_local(self, notification: Notification) -> list[str]:
         """Local notification delivery"""
         if self.webhook_mapping_body:
             self.webhook_mapping_body.evaluate(
@@ -347,9 +364,18 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
         notification.save()
+        layer = get_channel_layer()
+        async_to_sync(layer.group_send)(
+            build_user_group(notification.user),
+            {
+                "type": "event.notification",
+                "id": str(notification.pk),
+                "data": notification.serializer(notification).data,
+            },
+        )
         return []
 
-    def send_webhook(self, notification: "Notification") -> list[str]:
+    def send_webhook(self, notification: Notification) -> list[str]:
         """Send notification to generic webhook"""
         default_body = {
             "body": notification.body,
@@ -393,7 +419,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             response.text,
         ]
 
-    def send_webhook_slack(self, notification: "Notification") -> list[str]:
+    def send_webhook_slack(self, notification: Notification) -> list[str]:
         """Send notification to slack or slack-compatible endpoints"""
         fields = [
             {
@@ -434,7 +460,7 @@ class NotificationTransport(TasksModel, SerializerModel):
                     "title": notification.body,
                     "color": "#fd4b2d",
                     "fields": fields,
-                    "footer": f"authentik {get_full_version()}",
+                    "footer": f"authentik {authentik_full_version()}",
                 }
             ],
         }
@@ -451,7 +477,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             response.text,
         ]
 
-    def send_email(self, notification: "Notification") -> list[str]:
+    def send_email(self, notification: Notification) -> list[str]:
         """Send notification via global email configuration"""
         from authentik.stages.email.tasks import send_mail
 
@@ -462,7 +488,6 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
             return None
-        subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
                 "user_email": notification.user.email,
@@ -476,6 +501,11 @@ class NotificationTransport(TasksModel, SerializerModel):
             context["key_value"]["event_user_username"] = notification.event.user.get(
                 "username", None
             )
+        if notification.hyperlink:
+            context["link"] = {
+                "target": notification.hyperlink,
+                "label": notification.hyperlink_label,
+            }
         if notification.event:
             context["title"] += notification.event.action
             for key, value in notification.event.context.items():
@@ -490,10 +520,10 @@ class NotificationTransport(TasksModel, SerializerModel):
                 "from": self.name,
             }
         mail = TemplateEmailMessage(
-            subject=subject_prefix + context["title"],
+            subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name="email/event_notification.html",
+            template_name=self.email_template,
             template_context=context,
         )
         send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)
@@ -529,6 +559,8 @@ class Notification(SerializerModel):
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     severity = models.TextField(choices=NotificationSeverity.choices)
     body = models.TextField()
+    hyperlink = models.TextField(blank=True, null=True, max_length=4096)
+    hyperlink_label = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
     seen = models.BooleanField(default=False)
@@ -629,45 +661,3 @@ class NotificationWebhookMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Webhook Mapping")
         verbose_name_plural = _("Webhook Mappings")
-
-
-class TaskStatus(models.TextChoices):
-    """DEPRECATED do not use"""
-
-    UNKNOWN = "unknown"
-    SUCCESSFUL = "successful"
-    WARNING = "warning"
-    ERROR = "error"
-
-
-class SystemTask(ExpiringModel):
-    """DEPRECATED do not use"""
-
-    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField()
-    uid = models.TextField(null=True)
-
-    start_timestamp = models.DateTimeField(default=now)
-    finish_timestamp = models.DateTimeField(default=now)
-    duration = models.FloatField(default=0)
-
-    status = models.TextField(choices=TaskStatus.choices)
-
-    description = models.TextField(null=True)
-    messages = models.JSONField()
-
-    task_call_module = models.TextField()
-    task_call_func = models.TextField()
-    task_call_args = models.JSONField(default=list)
-    task_call_kwargs = models.JSONField(default=dict)
-
-    def __str__(self) -> str:
-        return f"System Task {self.name}"
-
-    class Meta:
-        unique_together = (("name", "uid"),)
-        default_permissions = ()
-        permissions = ()
-        verbose_name = _("System Task")
-        verbose_name_plural = _("System Tasks")
-        indexes = ExpiringModel.Meta.indexes

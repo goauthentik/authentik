@@ -1,0 +1,50 @@
+@import "@patternfly/patternfly/components/BackgroundImage/background-image.css";
+@import "@patternfly/patternfly/components/Button/button.css";
+@import "@patternfly/patternfly/components/Form/form.css";
+@import "@patternfly/patternfly/components/Drawer/drawer.css";
+@import "@patternfly/patternfly/components/List/list.css";
+@import "@patternfly/patternfly/components/Login/login.css";
+@import "@patternfly/patternfly/components/Title/title.css";
+@import "@patternfly/patternfly/components/Avatar/avatar.css";
+@import "@patternfly/patternfly/utilities/Text/text.css";
+@import "./components/Drawer/drawer.css";
+@import "./components/Form/form.css";
+@import "./components/Login/login.css";
+@import "./components/Icon/icon.css";
+@import "#elements/locale/ak-locale-select.css";
+@import "#elements/locale/ak-locale-select.css";
+@import "#flow/FlowExecutor.css";
+
+.pf-c-login__main-body {
+    display: flex;
+    flex-flow: column;
+
+    .pf-c-form {
+        display: flex;
+        flex-flow: column;
+        flex: 1 1 auto;
+        justify-content: end;
+    }
+}
+
+.form-control-static {
+    margin-top: var(--pf-global--spacer--sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .avatar {
+        display: flex;
+        align-items: center;
+    }
+
+    img {
+        margin-right: var(--pf-global--spacer--xs);
+    }
+
+    a {
+        padding-top: var(--pf-global--spacer--xs);
+        padding-bottom: var(--pf-global--spacer--xs);
+        line-height: var(--pf-global--spacer--xl);
+    }
+}

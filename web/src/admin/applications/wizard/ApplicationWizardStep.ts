@@ -5,6 +5,7 @@ import {
 } from "./types.js";
 
 import { serializeForm } from "#elements/forms/Form";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
 
 import {
     NavigationEventInit,
@@ -18,7 +19,7 @@ import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyl
 import { ApplicationRequest, ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { property, query } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends WizardStep {
     static styles = [...WizardStep.styles, ...styles];
@@ -33,10 +34,39 @@ export class ApplicationWizardStep<T = Partial<ApplicationRequest>> extends Wiza
     public canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
-    @query("form")
-    protected form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form");
+    }
+
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public reportValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return reportValidityDeep(form);
+    }
+
+    /**
+     * @todo This defaults to true when the form is not yet available
+     * to ease the migration of existing wizards. This behavior should be removed.
+     */
+    public checkValidity(): boolean {
+        const { form } = this;
+
+        if (!form) return true;
+
+        return form.checkValidity();
+    }
 
     protected get formValues(): T {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
+        }
+
         return serializeForm<T>([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),

@@ -15,6 +15,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
     AccessToken,
+    OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -112,11 +113,16 @@ class TestBackChannelLogout(OAuthTestCase):
 
     def _decode_token(self, token, provider=None):
         """Helper to decode and validate a JWT token"""
+        decoded = self._decode_token_complete(token, provider)
+        return decoded["payload"]
+
+    def _decode_token_complete(self, token, provider=None):
+        """Helper to decode and validate a JWT token into a header, and payload dict"""
         provider = provider or self.provider
         key, alg = provider.jwt_key
         if alg != "HS256":
             key = provider.signing_key.public_key
-        return jwt.decode(
+        return jwt.decode_complete(
             token, key, algorithms=[alg], options={"verify_exp": False, "verify_aud": False}
         )
 
@@ -154,11 +160,23 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertEqual(decoded3["sub"], sub)
         self.assertIn("events", decoded3)
 
+    def test_create_logout_token_header_type(self):
+        """Test creating logout tokens and checking if the token header type is correct"""
+        session_id = "test-session-123"
+        token1 = self._create_logout_token(session_id=session_id)
+
+        decoded = self._decode_token_complete(token1)
+
+        self.assertIsNotNone(decoded["header"])
+        self.assertEqual(decoded["header"]["typ"], "logout+jwt")
+
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_send_backchannel_logout_request_scenarios(self, mock_get_session):
         """Test various scenarios for backchannel logout request task"""
         # Setup provider with backchannel logout URI
-        self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
+
+        self.provider.logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
         self.provider.save()
 
         # Setup mock session and response
@@ -193,7 +211,7 @@ class TestBackChannelLogout(OAuthTestCase):
 
         # Scenario 3: No URI configured
         mock_session.post.reset_mock()
-        self.provider.backchannel_logout_uri = ""
+        self.provider.logout_uri = ""
         self.provider.save()
         result = send_backchannel_logout_request.send(
             self.provider.pk, "http://testserver", sub="test-user-uid"
@@ -215,7 +233,8 @@ class TestBackChannelLogout(OAuthTestCase):
 
         # Scenario 6: Request timeout
         mock_session.post.side_effect = Timeout("Request timed out")
-        self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_uri = "http://testserver/backchannel_logout"
+        self.provider.logout_method = OAuth2LogoutMethod.BACKCHANNEL
         self.provider.save()
         with self.assertRaises(ResultFailure):
             send_backchannel_logout_request.send(

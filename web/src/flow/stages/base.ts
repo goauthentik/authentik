@@ -1,13 +1,20 @@
+import "#flow/FormStatic";
+
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import { WithLocale } from "#elements/mixins/locale";
+import { FocusTarget } from "#elements/utils/focus";
+
+import { FlowUserDetails } from "#flow/FormStatic";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html, LitElement, nothing, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface SubmitOptions {
     invisible: boolean;
@@ -17,6 +24,7 @@ export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
     loading: boolean;
+    reset?: () => void;
     submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
 
     readonly brand?: CurrentBrand;
@@ -50,14 +58,76 @@ export interface ResponseErrorsChallenge {
     };
 }
 
+/**
+ * Base class for all flow stages.
+ *
+ * @template Tin The type of the challenge this stage accepts.
+ * @prop {StageHost} host The host managing this stage.
+ * @prop {Tin} challenge The challenge provided to this stage.
+ */
 export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
-> extends AKElement {
-    host!: StageHost;
+> extends WithLocale(AKElement) {
+    static shadowRootOptions: ShadowRootInit = {
+        ...LitElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
+    protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
+
+    // TODO: Should have a property but this needs some refactoring first.
+    // @property({ attribute: false })
+    public host!: StageHost;
 
     @property({ attribute: false })
     public challenge!: Tin;
+
+    @intersectionObserver()
+    public visible = false;
+
+    protected autofocusTarget = new FocusTarget();
+    focus = this.autofocusTarget.focus;
+
+    #visibilityListener = () => {
+        if (document.visibilityState !== "visible") return;
+        if (!this.visible) return;
+
+        if (!this.autofocusTarget.target) return;
+
+        this.autofocusTarget.focus();
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+
+        document.addEventListener("visibilitychange", this.#visibilityListener);
+    }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.removeEventListener("focus", this.autofocusTarget.toEventListener());
+
+        document.removeEventListener("visibilitychange", this.#visibilityListener);
+    }
+
+    public updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        // We're especially mindful of how often this runs to avoid
+        // unnecessary focus and in-fighting between the user's chosen focus target.
+        if (
+            changed.has("visible") &&
+            changed.get("visible") !== this.visible &&
+            this.visible &&
+            this.autofocusTarget.target
+        ) {
+            this.autofocusTarget.focus();
+        }
+    }
 
     public submitForm = async (event?: SubmitEvent, defaults?: Tout): Promise<boolean> => {
         event?.preventDefault();
@@ -78,18 +148,18 @@ export abstract class BaseStage<
             }
         }
 
-        return this.host?.submit(payload).then((successful) => {
+        return this.host?.submit(payload).then(async (successful) => {
             if (successful) {
-                this.onSubmitSuccess();
+                await this.onSubmitSuccess?.(payload);
             } else {
-                this.onSubmitFailure();
+                await this.onSubmitFailure?.(payload);
             }
 
             return successful;
         });
     };
 
-    renderNonFieldErrors() {
+    protected renderNonFieldErrors() {
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
@@ -97,33 +167,29 @@ export abstract class BaseStage<
         }
 
         return html`<div class="pf-c-form__alert">
-            ${nonFieldErrors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+            ${nonFieldErrors.map((err, idx) => {
+                return html`<div
+                    role="alert"
+                    aria-labelledby="error-message-${idx}"
+                    class="pf-c-alert pf-m-inline pf-m-danger"
+                >
                     <div class="pf-c-alert__icon">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${pluckErrorDetail(err)}</h4>
+                    <p id="error-message-${idx}" class="pf-c-alert__title">
+                        ${pluckErrorDetail(err)}
+                    </p>
                 </div>`;
             })}
         </div>`;
     }
 
-    renderUserInfo() {
+    protected renderUserInfo() {
         if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
             return nothing;
         }
         return html`
-            <ak-form-static
-                class="pf-c-form__group"
-                userAvatar="${this.challenge.pendingUserAvatar}"
-                user=${this.challenge.pendingUser}
-            >
-                <div slot="link">
-                    <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                        >${msg("Not you?")}</a
-                    >
-                </div>
-            </ak-form-static>
+            ${FlowUserDetails({ challenge: this.challenge })}
             <input
                 name="username"
                 autocomplete="username"
@@ -133,12 +199,17 @@ export abstract class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
-        // Method that can be overridden by stages
-        return;
-    }
-    onSubmitFailure(): void {
-        // Method that can be overridden by stages
-        return;
-    }
+    /**
+     * Callback method for successful form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitSuccess?(payload: Record<string, unknown>): void | Promise<void>;
+
+    /**
+     * Callback method for failed form submission.
+     *
+     * @abstract
+     */
+    protected onSubmitFailure?(payload: Record<string, unknown>): void | Promise<void>;
 }

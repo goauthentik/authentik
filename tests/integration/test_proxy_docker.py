@@ -10,6 +10,7 @@ from docker.types.healthcheck import Healthcheck
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.config import CONFIG
 from authentik.outposts.models import (
     DockerServiceConnection,
     Outpost,
@@ -19,7 +20,8 @@ from authentik.outposts.models import (
 from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.controllers.docker import DockerController
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import DockerTestCase, get_docker_tag
+from authentik.root.test_runner import get_docker_tag
+from tests.docker import DockerTestCase
 
 
 class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
@@ -29,7 +31,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
         super().setUp()
         self.ssl_folder = mkdtemp()
         self.run_container(
-            image="library/docker:dind",
+            image="docker.io/library/docker:28.5.2-dind-alpine3.22",
             network_mode="host",
             privileged=True,
             healthcheck=Healthcheck(
@@ -87,14 +89,15 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
         except PermissionError:
             pass
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
+    @CONFIG.patch("outposts.container_image_base", "ghcr.io/goauthentik/dev-proxy:gh-main")
     def test_docker_controller(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)
         controller.up()
         controller.down()
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(120, func_only=True)
     def test_docker_static(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)

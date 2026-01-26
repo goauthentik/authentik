@@ -13,6 +13,7 @@ def post_save_scheduled_model(sender, instance, **_):
         return
     for spec in instance.schedule_specs:
         spec.rel_obj = instance
+        spec.identifier = instance.pk
         schedule = spec.update_or_create()
         if spec.send_on_save:
             schedule.send()

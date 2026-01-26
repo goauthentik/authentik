@@ -9,26 +9,30 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "next_run";
@@ -42,10 +46,6 @@ export class ScheduleList extends Table<Schedule> {
 
     @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
         const relObjIdIsnull =
@@ -69,58 +69,52 @@ export class ScheduleList extends Table<Schedule> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Schedule"), "actor_name"),
-            new TableColumn(msg("Crontab"), "crontab"),
-            new TableColumn(msg("Next run"), "next_run"),
-            new TableColumn(msg("Last status")),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: Schedule): string | null {
+        return item.description ?? item.actorName ?? null;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected columns: TableColumn[] = [
+        [msg("Schedule"), "actor_name"],
+        [msg("Crontab"), "crontab"],
+        [msg("Next run"), "next_run"],
+        [msg("Last status")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    renderToolbarAfter(): SlottedTemplateResult {
         if (this.relObjId !== undefined) {
-            return html``;
+            return nothing;
         }
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.showOnlyStandalone}
-                                @change=${this.#toggleShowOnlyStandalone}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"> </i>
-                                </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.showOnlyStandalone}
+                            @change=${this.#toggleShowOnlyStandalone}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"> </i>
                             </span>
-                            <span class="pf-c-switch__label">
-                                ${msg("Show only standalone schedules")}
-                            </span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label">
+                            ${msg("Show only standalone schedules")}
+                        </span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
-    row(item: Schedule): TemplateResult[] {
+    row(item: Schedule): SlottedTemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.crontab}`,
-            html`
-                ${item.paused
-                    ? html`${msg("Paused")}`
-                    : html`
-                          <div>${formatElapsedTime(item.nextRun)}</div>
-                          <small>${item.nextRun.toLocaleString()}</small>
-                      `}
-            `,
+            html` ${item.paused ? html`${msg("Paused")}` : Timestamp(item.nextRun)} `,
             html`<ak-task-status .status=${item.lastTaskStatus}></ak-task-status>`,
             html`<ak-action-button
                     class="pf-m-plain"
@@ -144,12 +138,12 @@ export class ScheduleList extends Table<Schedule> {
                     </pf-tooltip>
                 </ak-action-button>
                 <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Schedule")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Schedule")}</span>
                     <ak-schedule-form slot="form" .instancePk=${item.id}> </ak-schedule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>`,
@@ -158,17 +152,13 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-        return html` <td role="cell" colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <div class="pf-c-content">
-                    <ak-task-list
-                        .relObjAppLabel=${appLabel}
-                        .relObjModel=${modelName}
-                        .relObjId="${item.id}"
-                    ></ak-task-list>
-                </div>
-            </div>
-        </td>`;
+        return html`<div class="pf-c-content">
+            <ak-task-list
+                .relObjAppLabel=${appLabel}
+                .relObjModel=${modelName}
+                .relObjId="${item.id}"
+            ></ak-task-list>
+        </div>`;
     }
 }
 

@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -28,7 +28,7 @@ To support the integration of Push Security, you need to create property mapping
 
 Push Security requires separate first and last names for each user, but authentik provides the full name as a single string. To address this, create property mappings that split the full name into first and last names.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
     - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
     - **Configure the SAML Provider Property Mapping**:
@@ -75,7 +75,7 @@ Push Security requires separate first and last names for each user, but authenti
 
 ### Download the signing certificate
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Push Security provider.
 3. Click **Download** under **Download signing certificate**. The contents of this certificate will be required in the next section.
 
@@ -95,7 +95,7 @@ Push Security requires separate first and last names for each user, but authenti
 
 ## Reconfigure authentik provider
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**, then find the newly created Push Security provider and click its **Edit** icon.
 3. Under **Protocol settings**, set the following required configurations:
     - **ACS URL**: set to the **Single Sign-On URL** copied from the previous section (e.g., `https://login.pushsecurity.com/login/callback?connection=saml-aaa...`).
@@ -111,7 +111,7 @@ Push Security requires separate first and last names for each user, but authenti
 4. If successful you will be redirected to Push Security and see a **Testing complete!** message.
 5. On the **Test SSO** page, click **Enable Connection**.
 
-:::note
+:::info
 To enable users to enter their email on the Push Security login screen and be redirected to authentik, you will need to contact Push Security to enable the feature. This can be done from the Push Security admin console via **Settings** > **Organization** > **SAML Configuration**.
 :::
 

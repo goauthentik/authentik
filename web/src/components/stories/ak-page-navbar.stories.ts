@@ -1,4 +1,4 @@
-import "#components/ak-page-header";
+import "#components/ak-page-navbar";
 
 import { DefaultBrand } from "#common/ui/config";
 
@@ -40,22 +40,9 @@ declare global {
 }
 
 export const SimplePageNavbar = () => {
-    return html`
-        <story-ak-page-navbar open @sidebar-toggle=${() => {}}>
-            <ak-page-header header="Page Title" description="Page Description"> </ak-page-header>
-        </story-ak-page-navbar>
-    `;
+    return html`<story-ak-page-navbar></story-ak-page-navbar>`;
 };
 
 export const PageNavbarWithIcon = () => {
-    return html`
-        <story-ak-page-navbar open @sidebar-toggle=${() => {}}>
-            <ak-page-header
-                header="Page Title"
-                description="Page Description"
-                icon="pf-icon pf-icon-user"
-            >
-            </ak-page-header>
-        </story-ak-page-navbar>
-    `;
+    return html`<story-ak-page-navbar></story-ak-page-navbar>`;
 };

@@ -42,7 +42,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
@@ -100,8 +100,8 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         name="clientSecret"
                         label=${msg("Secret key")}
                         input-hint="code"
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                 </div>
             </ak-form-group>
@@ -128,7 +128,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         name="adminSecretKey"
                         label=${msg("Secret key")}
                         input-hint="code"
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                 </div>
             </ak-form-group>

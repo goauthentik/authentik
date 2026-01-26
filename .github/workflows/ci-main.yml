@@ -34,9 +34,10 @@ jobs:
           - codespell
           - pending-migrations
           - ruff
+          - mypy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
@@ -44,7 +45,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -60,27 +61,33 @@ jobs:
   test-migrations-from-stable:
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     needs: test-make-seed
     strategy:
       fail-fast: false
       matrix:
         psql:
-          - 15-alpine
-          - 16-alpine
-          - 17-alpine
+          - 14-alpine
+          - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 0
       - name: checkout stable
         run: |
-          # Copy current, latest config to local
-          cp authentik/lib/default.yml local.env.yml
+          set -e -o pipefail
           cp -R .github ..
           cp -R scripts ..
-          git checkout $(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
+          # Previous stable tag
+          prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
+          # Current version family based on
+          current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
+          if [[ -n $current_version_family ]]; then
+              prev_stable="version/${current_version_family}"
+          fi
+          echo "::notice::Checking out ${prev_stable} as stable version..."
+          git checkout ${prev_stable}
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: Setup authentik env (stable)
@@ -112,21 +119,24 @@ jobs:
           CI_TOTAL_RUNS: "5"
         run: |
           uv run make ci-test
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: unit-migrate
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     needs: test-make-seed
     strategy:
       fail-fast: false
       matrix:
         psql:
-          - 15-alpine
-          - 16-alpine
-          - 17-alpine
+          - 14-alpine
+          - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -138,41 +148,27 @@ jobs:
           CI_TOTAL_RUNS: "5"
         run: |
           uv run make ci-test
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
         with:
           flags: unit
-          use_oidc: true
-      - if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          flags: unit
-          file: unittest.xml
-          use_oidc: true
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.12.0
+        uses: helm/kind-action@92086f6be054225fa813e0a4b13787fc9088faab # v1.13.0
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
           uv run coverage xml
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
         with:
           flags: integration
-          use_oidc: true
-      - if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
-        with:
-          flags: integration
-          file: unittest.xml
-          use_oidc: true
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -197,15 +193,17 @@ jobs:
             glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
+          - name: endpoints
+            glob: tests/e2e/test_endpoints_*
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@v4
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -221,17 +219,58 @@ jobs:
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage xml
-      - if: ${{ always() }}
-        uses: codecov/codecov-action@v5
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
         with:
           flags: e2e
-          use_oidc: true
+  test-openid-conformance:
+    name: test-openid-conformance (${{ matrix.job.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: basic
+            glob: tests/openid_conformance/test_basic.py
+          - name: implicit
+            glob: tests/openid_conformance/test_implicit.py
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: Setup e2e env (chrome, etc)
+        run: |
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - name: Setup conformance suite
+        run: |
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+      - id: cache-web
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v4
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
+        run: |
+          npm ci
+          make -C .. gen-client-ts
+          npm run build
+          npm run build:sfe
+      - name: run conformance
+        run: |
+          uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage xml
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: conformance
       - if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          flags: e2e
-          file: unittest.xml
-          use_oidc: true
+          name: conformance-certification-${{ matrix.job.name }}
+          path: tests/openid_conformance/exports/
   ci-core-mark:
     if: always()
     needs:
@@ -243,7 +282,7 @@ jobs:
       - test-e2e
     runs-on: ubuntu-latest
     steps:
-      - uses: re-actors/alls-green@release/v1
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   build:
@@ -256,7 +295,7 @@ jobs:
       # Needed for checkout
       contents: read
     needs: ci-core-mark
-    uses: ./.github/workflows/_reusable-docker-build.yaml
+    uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
     with:
       image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
@@ -271,14 +310,14 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR

@@ -24,7 +24,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     """Sync authentik users into microsoft entra"""
 
     connection_type = MicrosoftEntraProviderUser
-    connection_attr = "microsoftentraprovideruser_set"
+    connection_type_query = "user"
     can_discover = True
 
     def __init__(self, provider: MicrosoftEntraProvider) -> None:
@@ -43,28 +43,17 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         except TypeError as exc:
             raise StopSync(exc, obj) from exc
 
-    def delete(self, obj: User):
+    def delete(self, identifier: str):
         """Delete user"""
-        microsoft_user = MicrosoftEntraProviderUser.objects.filter(
-            provider=self.provider, user=obj
-        ).first()
-        if not microsoft_user:
-            self.logger.debug("User does not exist in Microsoft, skipping")
-            return None
-        with transaction.atomic():
-            response = None
-            if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
-                response = self._request(
-                    self.client.users.by_user_id(microsoft_user.microsoft_id).delete()
-                )
-            elif self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
-                response = self._request(
-                    self.client.users.by_user_id(microsoft_user.microsoft_id).patch(
-                        MSUser(account_enabled=False)
-                    )
-                )
-            microsoft_user.delete()
-        return response
+        MicrosoftEntraProviderUser.objects.filter(
+            provider=self.provider, microsoft_id=identifier
+        ).delete()
+        if self.provider.user_delete_action == OutgoingSyncDeleteAction.DELETE:
+            return self._request(self.client.users.by_user_id(identifier).delete())
+        if self.provider.user_delete_action == OutgoingSyncDeleteAction.SUSPEND:
+            return self._request(
+                self.client.users.by_user_id(identifier).patch(MSUser(account_enabled=False))
+            )
 
     def get_select_fields(self) -> list[str]:
         """All fields that should be selected when we fetch user data."""
@@ -159,11 +148,11 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         matching_authentik_user = self.provider.get_object_qs(User).filter(email=user.mail).first()
         if not matching_authentik_user:
             return
-        MicrosoftEntraProviderUser.objects.get_or_create(
+        MicrosoftEntraProviderUser.objects.update_or_create(
             provider=self.provider,
             user=matching_authentik_user,
             microsoft_id=user.id,
-            attributes=self.entity_as_dict(user),
+            defaults={"attributes": self.entity_as_dict(user)},
         )
 
     def update_single_attribute(self, connection: MicrosoftEntraProviderUser):

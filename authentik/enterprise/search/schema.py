@@ -1,9 +1,8 @@
 from djangoql.serializers import DjangoQLSchemaSerializer
 from drf_spectacular.generators import SchemaGenerator
 
-from authentik.api.schema import create_component
 from authentik.enterprise.search.fields import JSONSearchField
-from authentik.enterprise.search.ql import AUTOCOMPLETE_COMPONENT_NAME, AUTOCOMPLETE_SCHEMA
+from authentik.enterprise.search.ql import AUTOCOMPLETE_SCHEMA
 
 
 class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
@@ -13,7 +12,7 @@ class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
             for _, field in fields.items():
                 if not isinstance(field, JSONSearchField):
                     continue
-                serialization["models"].update(field.get_nested_options())
+                serialization["models"].update(field.get_nested_options(self))
         return serialization
 
     def serialize_field(self, field):
@@ -24,6 +23,6 @@ class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
 
 
 def postprocess_schema_search_autocomplete(result, generator: SchemaGenerator, **kwargs):
-    create_component(generator, AUTOCOMPLETE_COMPONENT_NAME, AUTOCOMPLETE_SCHEMA)
+    generator.registry.register_on_missing(AUTOCOMPLETE_SCHEMA)
 
     return result

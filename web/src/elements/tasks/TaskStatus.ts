@@ -14,16 +14,13 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-task-status")
 export class TaskStatus extends AKElement {
+    public static styles: CSSResult[] = [PFButton];
+
     @property()
     status?: TaskAggregatedStatusEnum | TasksTasksListAggregatedStatusEnum | LastTaskStatusEnum;
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
 
     render(): TemplateResult {
         switch (this.status) {
@@ -34,7 +31,19 @@ export class TaskStatus extends AKElement {
             case TasksTasksListAggregatedStatusEnum.Consumed:
             case TaskAggregatedStatusEnum.Consumed:
             case LastTaskStatusEnum.Consumed:
+                return html`<ak-label color=${PFColor.Blue}>${msg("Consumed")}</ak-label>`;
+            case TasksTasksListAggregatedStatusEnum.Preprocess:
+            case TaskAggregatedStatusEnum.Preprocess:
+            case LastTaskStatusEnum.Preprocess:
+                return html`<ak-label color=${PFColor.Blue}>${msg("Pre-processing")}</ak-label>`;
+            case TasksTasksListAggregatedStatusEnum.Running:
+            case TaskAggregatedStatusEnum.Running:
+            case LastTaskStatusEnum.Running:
                 return html`<ak-label color=${PFColor.Blue}>${msg("Running")}</ak-label>`;
+            case TasksTasksListAggregatedStatusEnum.Postprocess:
+            case TaskAggregatedStatusEnum.Postprocess:
+            case LastTaskStatusEnum.Postprocess:
+                return html`<ak-label color=${PFColor.Blue}>${msg("Post-processing")}</ak-label>`;
             case TasksTasksListAggregatedStatusEnum.Done:
             case TaskAggregatedStatusEnum.Done:
             case LastTaskStatusEnum.Done:

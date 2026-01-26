@@ -15,20 +15,12 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 
 
-class EmailTemplates(models.TextChoices):
-    """Templates used for rendering the Email"""
-
-    EMAIL_OTP = (
-        "email/email_otp.html",
-        _("Email OTP"),
-    )  # nosec
-
-
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Use Email-based authentication instead of authenticator-based."""
+    """Setup Email-based authentication for the user."""
 
     use_global_settings = models.BooleanField(
         default=False,
@@ -108,7 +100,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
             timeout=self.timeout,
         )
 
-    def send(self, device: "EmailDevice"):
+    def send(self, device: EmailDevice):
         # Lazy import here to avoid circular import
         from authentik.stages.email.tasks import send_mails
 

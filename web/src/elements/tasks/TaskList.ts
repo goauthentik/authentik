@@ -5,15 +5,17 @@ import "#elements/events/LogViewer";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskStatus";
+import "#elements/tasks/TaskStatusSummary";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    GlobalTaskStatus,
     Task,
     TasksApi,
     TasksTasksListAggregatedStatusEnum,
@@ -22,7 +24,7 @@ import {
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -30,6 +32,14 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
+    public static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFDescriptionList,
+        PFSpacing,
+        PFTitle,
+    ];
+
     expandable = true;
     clearOnRefresh = true;
 
@@ -46,16 +56,16 @@ export class TaskList extends Table<Task> {
     @property({ type: Boolean })
     excludeSuccessful: boolean = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    @property({ type: Boolean, attribute: "include-overview" })
+    includeOverview: boolean = false;
+
+    protected override searchEnabled = true;
 
     @property()
     order = "-mtime";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
-    }
+    @state()
+    status?: GlobalTaskStatus;
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
@@ -68,11 +78,17 @@ export class TaskList extends Table<Task> {
             ? [
                   TasksTasksListAggregatedStatusEnum.Queued,
                   TasksTasksListAggregatedStatusEnum.Consumed,
+                  TasksTasksListAggregatedStatusEnum.Preprocess,
+                  TasksTasksListAggregatedStatusEnum.Running,
+                  TasksTasksListAggregatedStatusEnum.Postprocess,
                   TasksTasksListAggregatedStatusEnum.Rejected,
                   TasksTasksListAggregatedStatusEnum.Warning,
                   TasksTasksListAggregatedStatusEnum.Error,
               ]
             : undefined;
+        if (this.includeOverview) {
+            this.status = await new TasksApi(DEFAULT_CONFIG).tasksTasksStatusRetrieve();
+        }
         return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
@@ -95,67 +111,75 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Task"), "actor_name"),
-            new TableColumn(msg("Queue"), "queue_name"),
-            new TableColumn(msg("Last updated"), "mtime"),
-            new TableColumn(msg("Status"), "aggregated_status"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: Task): string | null {
+        return item.description ?? item.actorName ?? null;
+    }
+
+    protected columns: TableColumn[] = [
+        [msg("Task"), "actor_name"],
+        [msg("Queue"), "queue_name"],
+        [msg("Retries"), "retries"],
+        [msg("Planned execution time")],
+        [msg("Last updated"), "mtime"],
+        [msg("Status"), "aggregated_status"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    render(): TemplateResult {
+        return html`${this.includeOverview
+            ? html`<ak-task-status-summary .status=${this.status}></ak-task-status-summary>`
+            : nothing}${super.render()}`;
     }
 
     renderToolbarAfter(): TemplateResult {
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group">
-                        ${this.relObjId === undefined
-                            ? html` <label class="pf-c-switch">
-                                  <input
-                                      class="pf-c-switch__input"
-                                      type="checkbox"
-                                      ?checked=${this.showOnlyStandalone}
-                                      @change=${this.#toggleShowOnlyStandalone}
-                                  />
-                                  <span class="pf-c-switch__toggle">
-                                      <span class="pf-c-switch__toggle-icon">
-                                          <i class="fas fa-check" aria-hidden="true"> </i>
-                                      </span>
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    ${this.relObjId === undefined
+                        ? html` <label class="pf-c-switch">
+                              <input
+                                  class="pf-c-switch__input"
+                                  type="checkbox"
+                                  ?checked=${this.showOnlyStandalone}
+                                  @change=${this.#toggleShowOnlyStandalone}
+                              />
+                              <span class="pf-c-switch__toggle">
+                                  <span class="pf-c-switch__toggle-icon">
+                                      <i class="fas fa-check" aria-hidden="true"> </i>
                                   </span>
-                                  <span class="pf-c-switch__label">
-                                      ${msg("Show only standalone tasks")}
-                                  </span>
-                              </label>`
-                            : nothing}
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.excludeSuccessful}
-                                @change=${this.#toggleExcludeSuccessful}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"> </i>
-                                </span>
+                              </span>
+                              <span class="pf-c-switch__label">
+                                  ${msg("Show only standalone tasks")}
+                              </span>
+                          </label>`
+                        : nothing}
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.excludeSuccessful}
+                            @change=${this.#toggleExcludeSuccessful}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"> </i>
                             </span>
-                            <span class="pf-c-switch__label">
-                                ${msg("Exclude successful tasks")}
-                            </span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label"> ${msg("Exclude successful tasks")} </span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
-    row(item: Task): TemplateResult[] {
+    row(item: Task): SlottedTemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
-            html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
-                <small>${item.mtime?.toLocaleString()}</small>`,
+            html`${item.retries}`,
+            item.eta !== undefined ? Timestamp(item.eta) : nothing,
+            Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||
             item.state === TasksTasksListStateEnum.Done
@@ -180,23 +204,17 @@ export class TaskList extends Table<Task> {
                           <i class="fas fa-redo" aria-hidden="true"></i>
                       </pf-tooltip>
                   </ak-action-button>`
-                : html``,
+                : nothing,
         ];
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html` <td role="cell" colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <div class="pf-c-content">
-                    <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-                    <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
-                    <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
-                        ${msg("Previous executions logs")}
-                    </p>
-                    <ak-log-viewer .logs=${item?.previousMessages}></ak-log-viewer>
-                </div>
-            </div>
-        </td>`;
+        return html`<div class="pf-c-content">
+            <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
+            <ak-log-viewer .logs=${item.logs}></ak-log-viewer>
+            <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
+            <ak-log-viewer .logs=${item.previousLogs}></ak-log-viewer>
+        </div>`;
     }
 }
 

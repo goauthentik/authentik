@@ -11,9 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-kerberos-form")
 export class PropertyMappingSourceKerberosForm extends BasePropertyMappingForm<KerberosSourcePropertyMapping> {
-    docLink(): string {
-        return "/docs/sources/property-mappings/expressions?utm_source=authentik";
-    }
+    protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<KerberosSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosRetrieve({

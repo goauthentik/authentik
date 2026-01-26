@@ -1,16 +1,16 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-reputation-list")
@@ -36,14 +36,16 @@ export class UserReputationList extends Table<Reputation> {
     clearOnRefresh = true;
     order = "identifier";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "identifier"),
-            new TableColumn(msg("IP"), "ip"),
-            new TableColumn(msg("Score"), "score"),
-            new TableColumn(msg("Updated"), "updated"),
-        ];
+    protected override rowLabel(item: Reputation): string | null {
+        return item.identifier ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "identifier"],
+        [msg("IP"), "ip"],
+        [msg("Score"), "score"],
+        [msg("Updated"), "updated"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -67,16 +69,21 @@ export class UserReputationList extends Table<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country
                 ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : html``}
+                : nothing}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${formatElapsedTime(item.updated)}</div>
-                <small>${item.updated.toLocaleString()}</small>`,
+            Timestamp(item.updated),
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-reputation-list": UserReputationList;
     }
 }

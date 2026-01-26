@@ -1,24 +1,22 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { SsfApi, SSFStream } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -35,11 +33,16 @@ export class SSFProviderStreamList extends Table<SSFStream> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Audience"), "aud")];
+    protected override rowLabel(item: SSFStream): string | null {
+        return item.aud?.join(", ") ?? null;
     }
 
-    row(item: SSFStream): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Audience"), "aud"],
+    ];
+
+    row(item: SSFStream): SlottedTemplateResult[] {
         return [html`${item.aud}`];
     }
 }

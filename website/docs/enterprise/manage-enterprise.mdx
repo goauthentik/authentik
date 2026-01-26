@@ -17,7 +17,7 @@ Your organization defines the members, their roles, the licenses associated with
     Your new organization page displays.
 
 :::info
-If you need to delete an organization open a ticket in the Support center.
+If you need to delete an organization, open a ticket in the Support center.
 :::
 
 ### Add/remove members of an organization
@@ -76,23 +76,23 @@ If you access the checkout page directly from the Customer Portal, and not throu
 
 8. To retrieve your license key, click on **Details** beside the license name and copy the key to your clipboard.
 
-9. Go back to the Admin interface, navigate to **Enterprise -> Licenses** page, click on **Install**, paste the key, and then click **Install**.
+9. Go back to the Admin interface, navigate to **Enterprise > Licenses** page, click on **Install**, paste the key, and then click **Install**.
 
 #### License verification
 
-To verify that the license was successfully installed, confirm that the expriry date on the **Enterprise --> Licenses** page displays a date one year later.
+To verify that the license was successfully installed, confirm that the expiry date on the **Enterprise --> Licenses** page displays a date one year later.
 
 ### How to view your license key
 
-You can view the list of licenses that are applied to your organization on either the Admin interface, on the **Enterprise -> Licenses** page, or in the Customer Portal, under your organization's page.
+You can view the list of licenses that are applied to your organization on either the Admin interface, on the **Enterprise > Licenses** page, or in the Customer Portal, under your organization's page.
 
 ### Update your license
 
-If you purchase a new license, or receive a new one due to a change in the number of users, you will need to remove the old license and add the new one. To do so open the Admin interface, navigate to **Enterprise -> Licenses** page, click on **Install**, paste the new key, and then click **Install**.
+If you purchase a new license, or receive a new one due to a change in the number of users, you will need to remove the old license and add the new one. To do so open the Admin interface, navigate to **Enterprise > Licenses** page, click on **Install**, paste the new key, and then click **Install**.
 
 ### About the license expiry date
 
-The **Enterprise -> Licenses** page shows your current licenses' **Cumulative license expiry**. Expiry date calculation works by verifying the individual expiry date for all valid licenses and then picking the lowest expiry date. After the date of the earliest expiring license, all calculations will be updated without that license, by selecting the next earliest date.
+The **Enterprise > Licenses** page shows your current licenses' **Cumulative license expiry**. Expiry date calculation works by verifying the individual expiry date for all valid licenses and then picking the lowest expiry date. After the date of the earliest expiring license, all calculations will be updated without that license, by selecting the next earliest date.
 
 ### License violation notifications
 
@@ -118,7 +118,11 @@ License usage is calculated based on total user counts that authentik regularly 
 Accounts that are disabled, as well as service accounts, are excluded from the license user count.
 :::
 
-An **internal** user is typically a team member, such as a company employee, who has access to the full Enterprise feature set. An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer who logged onto your website to shop. External users don't get access to Enterprise features, nor to the **My applications** page in authentik. Instead, external users are authenticated and then redirected to log directly into their [default application](../sys-mgmt/brands.md#external-user-settings).
+#### Internal vs external users
+
+An **internal** user is typically a team member, such as a company employee, who is granted access to the full Enterprise feature set. This includes the ability to view and use the **My Applications** and **User Settings** pages.
+
+An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer. External users can't access the **My Applications** and **User Settings** pages. Instead, external users are typically authenticated and then redirected to log directly into their [default application](../sys-mgmt/brands.md#external-user-settings).
 
 ### Upgrade the number of users in a license
 

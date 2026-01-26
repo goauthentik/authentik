@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -26,15 +26,15 @@ This documentation lists only the settings that you need to change from their de
 
 ### Step 1 - Service account
 
-Create a new user account _(or reuse an existing one)_ for ProFTPD to use for LDAP bind under _Directory_ -> _Users_ -> _Create_ and give the account a name, such as `ldapservice`.
+Create a new user account _(or reuse an existing one)_ for ProFTPD to use for LDAP bind under **Directory > Users > Create** and give the account a name, such as `ldapservice`.
 
-:::note
+:::info
 On default provider settings, the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 :::
 
 This user must be part of a group which allows LDAP search queries. If you don't have a group for that yet, create one (e.g. `LDAPServiceUsers`) and add the user `ldapservice` to that group. You can specify that group during the provider creation below.
 
-:::note
+:::info
 _If you are unfamiliar with LDAP_: A bind account is used for authentication against the LDAP server itself - similar to an API key in modern applications.
 :::
 
@@ -115,6 +115,6 @@ Make sure to read ProFTPD's [available LDAP options](http://www.proftpd.org/docs
 
 Finally, after adding the configuration, restart ProFTPD.
 
-:::note
+:::info
 If login fails, make sure to check the logs of the LDAP plugin: `tail -f /var/log/mod_ldap.log`.
 :::

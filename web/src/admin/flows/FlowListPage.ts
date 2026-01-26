@@ -11,37 +11,34 @@ import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Flows");
-    }
-    pageDescription(): string {
-        return msg(
-            "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-process-automation";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Flows");
+    public pageDescription = msg(
+        "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
+    );
+    public pageIcon = "pf-icon pf-icon-process-automation";
 
     checkbox = true;
     clearOnRefresh = true;
 
     @property()
     order = "slug";
+
+    static styles = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
@@ -53,15 +50,13 @@ export class FlowListPage extends TablePage<Flow> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "slug"),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Stages")),
-            new TableColumn(msg("Policies")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "slug"],
+        [msg("Name"), "name"],
+        [msg("Stages")],
+        [msg("Policies")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -85,28 +80,32 @@ export class FlowListPage extends TablePage<Flow> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Flow): TemplateResult[] {
+    row(item: Flow): SlottedTemplateResult[] {
         return [
-            html`<div>
-                    <a href="#/flow/flows/${item.slug}">
-                        <code>${item.slug}</code>
-                    </a>
-                </div>
+            html`<a href="#/flow/flows/${item.slug}" class="pf-m-block">
+                    <code>${item.slug}</code>
+                </a>
                 <small>${item.title}</small>`,
             html`${item.name}`,
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
-            html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Flow")} </span>
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Flow")}</span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                        aria-label=${msg(str`Edit "${item.name}"`)}
+                    >
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <button
+                    aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
                         const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
@@ -119,25 +118,37 @@ export class FlowListPage extends TablePage<Flow> {
                         <i class="fas fa-play" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
-                <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
+                <a
+                    class="pf-c-button pf-m-plain"
+                    href=${item.exportUrl}
+                    aria-label=${msg(str`Export "${item.name}"`)}
+                >
                     <pf-tooltip position="top" content=${msg("Export")}>
-                        <i class="fas fa-download"></i>
+                        <i class="fas fa-download" aria-hidden="true"></i>
                     </pf-tooltip>
-                </a>`,
+                </a>
+            </div>`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Flow")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Flow")}</span>
                 <ak-flow-form slot="form"> </ak-flow-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Import")} </span>
-                <span slot="header"> ${msg("Import Flow")} </span>
+                <span slot="submit">${msg("Import")}</span>
+                <span slot="header">${msg("Import Flow")}</span>
+                <div class="pf-c-banner pf-m-warning" slot="above-form">
+                    ${msg(
+                        "Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).",
+                    )}<br />${msg(
+                        "You should only import files from trusted sources and review blueprints before importing them.",
+                    )}
+                </div>
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>
@@ -155,7 +166,7 @@ export class FlowListPage extends TablePage<Flow> {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Flow cache")} </span>
+                <span slot="header">${msg("Clear Flow cache")}</span>
                 <p slot="body">
                     ${msg(
                         `Are you sure you want to clear the flow cache?

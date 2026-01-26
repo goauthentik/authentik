@@ -41,7 +41,7 @@ class TestProviderRadius(SeleniumTestCase):
             shared_secret=self.shared_secret,
         )
         # we need to create an application to actually access radius
-        Application.objects.create(name="radius", slug=generate_id(), provider=radius)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
             type=OutpostType.RADIUS,
@@ -51,15 +51,6 @@ class TestProviderRadius(SeleniumTestCase):
 
         self.start_radius(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
         return outpost
 

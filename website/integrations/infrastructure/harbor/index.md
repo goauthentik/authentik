@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `harbor.company` is the FQDN of the Harbor installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -35,7 +35,7 @@ To support the integration of Harbor with authentik, you need to create an appli
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol Settings**:
         - **Redirect URI**:
-            - Strict: `https://harbor.company/c/oidc/callback/`.
+            - Strict: `https://harbor.company/c/oidc/callback`.
         - **Signing Key**: select any available signing key.
     - **Advanced Protocol Settings**:
         - **Scopes**: add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.
@@ -52,15 +52,16 @@ To support the integration of authentik with Harbor, you need to configure OIDC 
 2. Navigate to **Configuration** and select the **Authentication** tab.
 3. In the **Auth Mode** dropdown, select **OIDC** and provide the following required configurations.
     - **OIDC Provider Name**: `authentik`
-    - **OIDC Endpoint**: `https://authentik.company/application/o/harbor`
+    - **OIDC Endpoint**: `https://authentik.company/application/o/harbor/`
     - **OIDC Client ID**: client ID from authentik
     - **OIDC Client Secret**: client secret from authentik
+    - **Group Claim Name**: `groups`
     - **OIDC Scope**: `openid,profile,email,offline_access`
     - **Username Claim**: `preferred_username`
 
 4. Click **Save**.
 
-:::note
+:::info
 If you are experiencing redirect errors, ensure that you have set the `hostname` and `external_url` fields in your `harbor.yml` file and run the `setup.sh` script.
 :::
 

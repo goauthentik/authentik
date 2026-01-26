@@ -12,6 +12,8 @@ import (
 
 	"github.com/gorilla/sessions"
 	log "github.com/sirupsen/logrus"
+
+	"goauthentik.io/internal/outpost/proxyv2/sessionstore"
 )
 
 const (
@@ -29,8 +31,9 @@ var (
 
 type Store struct {
 	*sessions.FilesystemStore
-	storePath string
-	log       *log.Entry
+	storePath      string
+	log            *log.Entry
+	cleanupManager *sessionstore.CleanupManager
 }
 
 // NewStore checks if the specified store path exists, is writable and creates a new filesystem session store.
@@ -64,11 +67,18 @@ func NewStore(storePath string, keyPairs ...[]byte) (*Store, error) {
 		return nil, err
 	}
 
-	return &Store{
+	store := &Store{
 		FilesystemStore: sessions.NewFilesystemStore(storePath, keyPairs...),
 		storePath:       storePath,
 		log:             log.WithField("logger", "authentik.outpost.proxyv2.filesystemstore"),
-	}, nil
+	}
+
+	return store, nil
+}
+
+// CleanupExpired implements the CleanupStore interface for use with CleanupManager
+func (s *Store) CleanupExpired(ctx context.Context) error {
+	return s.SessionCleanup(ctx)
 }
 
 // SessionCleanup acquires a file lock to ensure only one instance runs at a time,
@@ -155,10 +165,8 @@ func (s *Store) sessionCleanup(ctx context.Context) error {
 }
 
 var (
-	cancelCleanup context.CancelFunc
-	doneCleanup   chan struct{}
-	globalStore   *Store
-	mu            sync.Mutex
+	globalStore *Store
+	mu          sync.Mutex
 )
 
 // GetPersistentStore creates a new filesystem store if it is the first time the function has been called,
@@ -168,44 +176,21 @@ func GetPersistentStore(path string) (*Store, error) {
 	mu.Lock()
 	defer mu.Unlock()
 	if globalStore == nil || globalStore.storePath != path {
-		if cancelCleanup != nil {
-			cancelCleanup()
-			if doneCleanup != nil {
-				<-doneCleanup
-			}
+		if globalStore != nil && globalStore.cleanupManager != nil {
+			globalStore.cleanupManager.Stop()
 		}
 		store, err := NewStore(path)
 		if err != nil {
 			return nil, err
 		}
 		globalStore = store
-		ctx, cancel := context.WithCancel(context.Background())
-		cancelCleanup = cancel
-		doneCleanup = make(chan struct{})
 
-		go func() {
-			defer close(doneCleanup)
-			globalStore.log.Info("Scheduling session cleanup job")
-			ticker := time.NewTicker(SessionCleanupInterval)
-			defer ticker.Stop()
-
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				case <-ticker.C:
-					err := globalStore.SessionCleanup(ctx)
-					if err == nil {
-						continue
-					}
-					if errors.Is(err, ErrSessionCleanupAlreadyRunning) {
-						globalStore.log.WithError(err).Warn("Session cleanup is locked by another job")
-						continue
-					}
-					globalStore.log.WithError(err).Warn("Session cleanup returned error")
-				}
-			}
-		}()
+		// Initialize cleanup manager
+		globalStore.cleanupManager = sessionstore.NewCleanupManager(
+			globalStore,
+			globalStore.log,
+		)
+		globalStore.cleanupManager.Start()
 	}
 	return globalStore, nil
 }
@@ -214,13 +199,8 @@ func GetPersistentStore(path string) (*Store, error) {
 func StopPersistentStore() {
 	mu.Lock()
 	defer mu.Unlock()
-	if cancelCleanup != nil {
-		cancelCleanup()
-		if doneCleanup != nil {
-			<-doneCleanup
-		}
+	if globalStore != nil && globalStore.cleanupManager != nil {
+		globalStore.cleanupManager.Stop()
 	}
-	cancelCleanup = nil
-	doneCleanup = nil
 	globalStore = nil
 }

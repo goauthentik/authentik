@@ -107,7 +107,6 @@ class ScheduleViewSet(
         "rel_obj_content_type__app_label",
         "rel_obj_content_type__model",
         "rel_obj_id",
-        "description",
     )
     filterset_class = ScheduleFilter
     ordering = (

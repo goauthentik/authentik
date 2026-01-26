@@ -1,39 +1,73 @@
-import "#components/ak-page-header";
+import "#elements/EmptyState";
 
 import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 export abstract class TablePage<T extends object> extends Table<T> {
-    static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
+    static styles: CSSResult[] = [
+        // ---
+        ...super.styles,
+        PFPage,
+        PFContent,
+        PFSidebar,
+        css`
+            :host {
+                display: flex;
+            }
 
-    //#region Abstract methods
+            .pf-c-sidebar__panel {
+                --pf-c-sidebar__panel--Position: static;
+                flex: 0 1 25%;
+            }
+            .pf-c-sidebar__content {
+                flex: 1 1 75%;
+            }
+        `,
+    ];
+
+    //#region Abstract properties
 
     /**
      * The title of the page.
      * @abstract
      */
-    abstract pageTitle(): string;
+    public abstract pageTitle: string;
 
     /**
      * The description of the page.
      * @abstract
      */
-    abstract pageDescription(): string | undefined;
+    public abstract pageDescription: string;
 
     /**
      * The icon to display in the page header.
      * @abstract
      */
-    abstract pageIcon(): string;
+    public abstract pageIcon: string;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        this.label ??= this.pageTitle;
+    }
+
+    //#endregion
+
+    //#region Abstract methods
 
     /**
      * Render content before the sidebar.
@@ -59,22 +93,9 @@ export abstract class TablePage<T extends object> extends Table<T> {
      */
     protected renderSectionAfter?(): TemplateResult;
 
-    /**
-     * Render the empty state.
-     */
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
-        return super.renderEmpty(html`
-            ${inner
-                ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()}
-                      ><span>${msg("No objects found.")}</span>
-                      <div slot="body">
-                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : nothing}
-                      </div>
-                      <div slot="primary">${this.renderObjectCreate()}</div>
-                  </ak-empty-state>`}
-        `);
-    }
+    //#endregion
+
+    //#region Protected methods
 
     protected clearSearch = () => {
         this.search = "";
@@ -87,6 +108,27 @@ export abstract class TablePage<T extends object> extends Table<T> {
 
         return this.fetch();
     };
+
+    //#endregion
+
+    //#region Render methods
+
+    /**
+     * Render the empty state.
+     */
+    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+        return super.renderEmpty(html`
+            ${inner
+                ? inner
+                : html`<ak-empty-state icon=${this.pageIcon}
+                      ><span>${this.emptyStateMessage}</span>
+                      <div slot="body">
+                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
+                      </div>
+                      <div slot="primary">${this.renderObjectCreate()}</div>
+                  </ak-empty-state>`}
+        `);
+    }
 
     protected renderEmptyClearSearch(): SlottedTemplateResult {
         if (!this.search) {
@@ -106,28 +148,27 @@ export abstract class TablePage<T extends object> extends Table<T> {
     }
 
     render() {
-        return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
-            >
-            </ak-page-header>
-            ${this.renderSectionBefore?.()}
-            <section
-                id="table-page-main"
-                aria-label=${this.pageTitle()}
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
+        return html` ${this.renderSectionBefore?.()}
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
                         ${this.renderSidebarBefore?.()}
-                        <div class="pf-c-sidebar__content">
+                        <main aria-label=${this.pageTitle} class="pf-c-sidebar__content">
                             <div class="pf-c-card">${this.renderTable()}</div>
-                        </div>
+                        </main>
                         ${this.renderSidebarAfter?.()}
                     </div>
                 </div>
-            </section>
+            </div>
             ${this.renderSectionAfter?.()}`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }

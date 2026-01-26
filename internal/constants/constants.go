@@ -1,9 +1,13 @@
 package constants
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 )
+
+//go:embed VERSION
+var version string
 
 func BUILD(def string) string {
 	build := os.Getenv("GIT_BUILD_HASH")
@@ -13,12 +17,15 @@ func BUILD(def string) string {
 	return build
 }
 
+func VERSION() string {
+	return version
+}
+
 func FullVersion() string {
-	ver := VERSION
 	if b := BUILD(""); b != "" {
-		return fmt.Sprintf("%s+%s", ver, b)
+		return fmt.Sprintf("%s+%s", version, b)
 	}
-	return ver
+	return version
 }
 
 func UserAgentOutpost() string {
@@ -32,5 +39,3 @@ func UserAgentIPC() string {
 func UserAgent() string {
 	return fmt.Sprintf("authentik@%s", FullVersion())
 }
-
-const VERSION = "2025.6.4"

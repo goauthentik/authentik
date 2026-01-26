@@ -12,13 +12,14 @@ type StatusContent = { icon: string; message: TemplateResult };
 
 @customElement("ak-admin-fips-status-system")
 export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
+    public override label = msg("FIPS Status");
 
     @state()
-    statusSummary?: string;
+    protected statusSummary?: string;
 
     async getPrimaryValue(): Promise<SystemInfo> {
-        return await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        return new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
     }
 
     setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
@@ -36,10 +37,6 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
                   icon: "fa fa-info-circle pf-m-warning",
                   message: html`${msg("FIPS compliance: unverified")}`,
               });
-    }
-
-    renderHeader(): TemplateResult {
-        return html`${msg("FIPS Status")}`;
     }
 
     renderValue(): TemplateResult {

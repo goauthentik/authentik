@@ -7,7 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.rbac.permissions import HasPermission
 from authentik.tasks.models import WorkerStatus
 
@@ -30,7 +30,7 @@ class WorkerView(APIView):
     )
     def get(self, request: Request) -> Response:
         response = []
-        our_version = parse(get_full_version())
+        our_version = parse(authentik_full_version())
         for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(minutes=2)):
             lock_id = f"goauthentik.io/worker/status/{status.pk}"
             with pglock.advisory(lock_id, timeout=0, side_effect=pglock.Return) as acquired:

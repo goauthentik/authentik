@@ -13,13 +13,15 @@ import "#admin/providers/ssf/SSFProviderFormPage";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -29,21 +31,15 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
-    override searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
-    override pageTitle(): string {
-        return msg("Providers");
-    }
+    override pageTitle = msg("Providers");
 
-    override pageDescription(): string {
-        return msg("Provide support for protocols like SAML and OAuth to assigned applications.");
-    }
+    public pageDescription = msg(
+        "Provide support for protocols like SAML and OAuth to assigned applications.",
+    );
 
-    override pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
+    public pageIcon = "pf-icon pf-icon-integration";
 
     override checkbox = true;
     override clearOnRefresh = true;
@@ -51,7 +47,7 @@ export class ProviderListPage extends TablePage<Provider> {
     @property()
     public order = "name";
 
-    public searchLabel = msg("Provider name");
+    public searchLabel = msg("Provider Search");
     public searchPlaceholder = msg("Search for providers…");
 
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
@@ -60,14 +56,12 @@ export class ProviderListPage extends TablePage<Provider> {
         );
     }
 
-    override columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Application")),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected override columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Application")],
+        [msg("Type")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -94,7 +88,7 @@ export class ProviderListPage extends TablePage<Provider> {
 
     #rowApp(item: Provider): TemplateResult {
         if (item.assignedApplicationName) {
-            return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+            return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application ")}
                 <a href="#/core/applications/${item.assignedApplicationSlug}"
                     >${item.assignedApplicationName}</a
@@ -102,43 +96,43 @@ export class ProviderListPage extends TablePage<Provider> {
         }
 
         if (item.assignedBackchannelApplicationName) {
-            return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+            return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application (backchannel) ")}
                 <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
 
-        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
-            ${msg("Warning: Provider not assigned to any application.")}`;
+        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i
+            ><span>${msg("Provider not assigned to any application.")}</span>`;
     }
 
-    override row(item: Provider): TemplateResult[] {
+    override row(item: Provider): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
+            html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
             this.#rowApp(item),
             html`${item.verboseName}`,
-            html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
+            html`<div>
+                <ak-forms-modal>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
                         instancePk: item.pk,
-                    }}
-                    type=${item.component}
-                >
-                </ak-proxy-form>
-                <button
-                    aria-label=${msg("Edit provider")}
-                    slot="trigger"
-                    class="pf-c-button pf-m-plain"
-                >
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i aria-hidden="true" class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
+                    <button
+                        aria-label=${msg(str`Edit "${item.name}" provider`)}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i aria-hidden="true" class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 

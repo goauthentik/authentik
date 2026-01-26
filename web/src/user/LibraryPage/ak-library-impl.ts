@@ -1,31 +1,45 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
 import "./ak-library-application-empty-list.js";
-import "./ak-library-application-list.js";
-import "./ak-library-application-search-empty.js";
-import "./ak-library-application-search.js";
 
-import {
-    LibraryPageSearchEmpty,
-    LibraryPageSearchReset,
-    LibraryPageSearchSelected,
-    LibraryPageSearchUpdated,
-} from "./events.js";
-import styles from "./LibraryPageImpl.styles.js";
+import Styles from "./ak-library-impl.css";
+import AKLibraryApplicationListStyles from "./ApplicationList.css";
+import { AKLibraryApplicationList } from "./ApplicationList.js";
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
-import type { PageUIConfig } from "./types.js";
 
 import { groupBy } from "#common/utils";
 
+import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
+import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
+import { FocusTarget } from "#elements/utils/focus";
+import { isInteractiveElement } from "#elements/utils/interactivity";
+import { isFirefox } from "#elements/utils/useragent";
 
 import type { Application } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import Fuse from "fuse.js";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { guard } from "lit/directives/guard.js";
+import { createRef } from "lit/directives/ref.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 /**
  * List of Applications available
@@ -38,18 +52,48 @@ import { ifDefined } from "lit/directives/if-defined.js";
  *   - Filter that list using the search bar
  *
  */
-
 @customElement("ak-library-impl")
-export class LibraryPage extends AKElement {
-    static styles = styles;
+export class LibraryPage extends WithSession(AKElement) {
+    /**
+     * Maximum number of items to show in the datalist for search suggestions.
+     */
+    static readonly MAX_DATA_LIST_ITEMS = 5;
+    /**
+     * Whether to enable the datalist for search suggestions.
+     *
+     * @remarks
+     * Disabled on Firefox due to performance issues between renders.
+     */
+    static DataListEnabled = !isFirefox();
+
+    static styles = [
+        // ---
+
+        PFDisplay,
+        PFEmptyState,
+        PFPage,
+        PFContent,
+        PFFormControl,
+        PFButton,
+        PFCard,
+        PFDivider,
+        PFDropdown,
+        PFGrid,
+        PFSpacing,
+        AKLibraryApplicationListStyles,
+        Styles,
+    ];
+
+    //#region Properties
 
     /**
      * Controls showing the "Switch to Admin" button.
-     *
-     * @attr
      */
-    @property({ attribute: "isadmin", type: Boolean })
-    isAdmin = false;
+    public get admin() {
+        return canAccessAdmin(this.currentUser);
+    }
+
+    #applications: Application[] = [];
 
     /**
      * The *complete* list of applications for this user. Not paginated.
@@ -57,139 +101,356 @@ export class LibraryPage extends AKElement {
      * @attr
      */
     @property({ attribute: false, type: Array })
-    apps!: Application[];
+    public get apps(): Application[] {
+        return this.#applications;
+    }
+
+    public set apps(value: Application[]) {
+        this.#applications = value;
+
+        this.fuse.setCollection(this.searchEnabled ? this.#applications : []);
+    }
+
+    public get searchEnabled(): boolean {
+        return this.uiConfig.enabledFeatures.search ?? true;
+    }
+
+    //#endregion
+
+    //#region State
+
+    protected autofocusTarget = new FocusTarget<HTMLInputElement>();
+    public override focus = () => this.autofocusTarget.focus({ preventScroll: true });
+
+    protected get selectedApp(): Application | null {
+        if (!this.query) return null;
+
+        return this.visibleApplications[0] || null;
+    }
+
+    @intersectionObserver()
+    public visible = false;
+
+    @state()
+    protected visibleApplications: Application[] = [];
 
     /**
-     * The aggregate uiConfig, derived from user, brand, and instance data.
-     *
-     * @attr
+     * The active element to select when the user presses Enter outside of a form.
      */
-    @property({ attribute: false })
-    uiConfig!: PageUIConfig;
+    protected targetRef = createRef<HTMLElement>();
 
-    @state()
-    selectedApp?: Application;
+    #query: string | null = null;
 
-    @state()
-    filteredApps: Application[] = [];
-
-    pageTitle(): string {
-        return msg("My Applications");
+    protected get query(): string | null {
+        return this.#query;
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.filteredApps = this.apps;
-        if (this.filteredApps === undefined) {
-            throw new Error(
-                "Application.results should never be undefined when passed to the Library Page.",
-            );
-        }
-        this.addEventListener(LibraryPageSearchUpdated.eventName, this.searchUpdated);
-        this.addEventListener(LibraryPageSearchReset.eventName, this.searchReset);
-        this.addEventListener(LibraryPageSearchEmpty.eventName, this.searchEmpty);
-        this.addEventListener(LibraryPageSearchSelected.eventName, this.launchRequest);
-    }
+    protected set query(nextQuery: string | null) {
+        this.#query = nextQuery;
 
-    disconnectedCallback() {
-        this.removeEventListener(LibraryPageSearchUpdated.eventName, this.searchUpdated);
-        this.removeEventListener(LibraryPageSearchReset.eventName, this.searchReset);
-        this.removeEventListener(LibraryPageSearchEmpty.eventName, this.searchEmpty);
-        this.removeEventListener(LibraryPageSearchSelected.eventName, this.launchRequest);
-        super.disconnectedCallback();
-    }
-
-    @bound
-    searchUpdated(event: LibraryPageSearchUpdated) {
-        event.stopPropagation();
-        const apps = event.apps;
-        if (apps.length <= 0) {
-            throw new Error(
-                "LibaryPageSearchUpdated had empty results body. This must not happen.",
-            );
-        }
-        this.filteredApps = apps;
-        this.selectedApp = apps[0];
-    }
-
-    @bound
-    launchRequest(event: LibraryPageSearchSelected) {
-        event.stopPropagation();
-        if (!this.selectedApp?.launchUrl) {
-            return;
-        }
-        if (!this.selectedApp.openInNewTab) {
-            window.location.assign(this.selectedApp?.launchUrl);
+        if (nextQuery && this.searchEnabled) {
+            this.visibleApplications = this.fuse
+                .search(nextQuery)
+                .map((result) => result.item)
+                .filter(appHasLaunchUrl);
         } else {
-            window.open(this.selectedApp.launchUrl);
+            this.visibleApplications = this.apps.filter(appHasLaunchUrl);
         }
+
+        updateURLParams({
+            q: this.#query,
+        });
     }
 
-    @bound
-    searchReset(event: LibraryPageSearchReset) {
-        event.stopPropagation();
-        this.filteredApps = this.apps;
-        this.selectedApp = undefined;
-    }
+    protected fuse = new Fuse<Application>([], {
+        keys: [
+            { name: "name", weight: 3 },
+            "slug",
+            "group",
+            { name: "metaDescription", weight: 0.5 },
+            { name: "metaPublisher", weight: 0.5 },
+        ],
+        findAllMatches: true,
+        includeScore: true,
+        shouldSort: true,
+        ignoreFieldNorm: true,
+        useExtendedSearch: true,
+        threshold: 0.3,
+    });
 
-    @bound
-    searchEmpty(event: LibraryPageSearchEmpty) {
-        event.stopPropagation();
-        this.filteredApps = [];
-        this.selectedApp = undefined;
-    }
+    public pageTitle = msg("My Applications");
 
-    renderApps() {
-        const selected = this.selectedApp?.slug;
-        const layout = this.uiConfig.layout as string;
-        const background = this.uiConfig.background;
-        const groupedApps = groupBy(
-            this.filteredApps.filter(appHasLaunchUrl),
-            (app) => app.group || "",
+    //#region Lifecycle
+
+    public override connectedCallback() {
+        super.connectedCallback();
+
+        this.query = getURLParam<string | null>("q", "");
+
+        this.addEventListener(
+            "focus",
+            this.autofocusTarget.toEventListener({
+                preventScroll: true,
+            }),
         );
 
-        return html`<ak-library-application-list
-            layout="${layout}"
-            background="${ifDefined(background)}"
-            selected="${ifDefined(selected)}"
-            .apps=${groupedApps}
-        ></ak-library-application-list>`;
+        document.addEventListener("visibilitychange", this.#visibilityListener);
+
+        window.addEventListener("keydown", this.#rootKeyDownListener);
     }
 
-    renderSearch() {
-        return html`<ak-library-application-search
-            .apps=${this.apps}
-        ></ak-library-application-search>`;
+    public override disconnectedCallback() {
+        super.disconnectedCallback();
+
+        document.removeEventListener("visibilitychange", this.#visibilityListener);
+        window.removeEventListener("keydown", this.#rootKeyDownListener);
     }
 
-    renderNoAppsFound() {
-        return html`<ak-library-application-search-empty></ak-library-application-search-empty>`;
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
+        requestAnimationFrame(() => {
+            this.focus();
+            const { target } = this.autofocusTarget;
+
+            if (!target) return;
+
+            // Place cursor at end of input.
+            target.selectionEnd = target.value.length;
+            target.selectionStart = target.value.length;
+        });
     }
 
-    renderSearchEmpty() {
-        return nothing;
+    //#endregion
+
+    //#region Event Listeners
+
+    #inputListener = (event: KeyboardEvent) => {
+        const inputElement = event.target as HTMLInputElement;
+
+        this.query = inputElement.value;
+    };
+
+    #changeListener = () => {
+        if (this.targetRef.value && this.visibleApplications.length === 1) {
+            this.targetRef.value.focus();
+            this.targetRef.value.click();
+            return;
+        }
+    };
+
+    #submitListener = (event: SubmitEvent) => {
+        event.preventDefault();
+
+        if (this.targetRef.value) {
+            this.targetRef.value.focus();
+            this.targetRef.value.click();
+
+            return;
+        }
+    };
+
+    #rootKeyDownListener = (event: KeyboardEvent) => {
+        if (event.defaultPrevented || event.key !== "Enter") {
+            return;
+        }
+
+        if (this.autofocusTarget.target?.matches(":focus")) {
+            // Let the input handle the event.
+            return;
+        }
+
+        if (this.renderRoot instanceof ShadowRoot) {
+            const focusedElement = this.renderRoot.activeElement;
+            if (isInteractiveElement(focusedElement)) {
+                focusedElement.click();
+            }
+        }
+    };
+
+    #visibilityListener = () => {
+        if (document.visibilityState !== "visible") return;
+        if (!this.visible) return;
+
+        this.focus();
+    };
+
+    //#endregion
+
+    //#region Rendering
+
+    renderApps() {
+        const { currentUser, selectedApp } = this;
+        const { layout, theme, enabledFeatures } = this.uiConfig;
+
+        const editable = currentUser?.isSuperuser && enabledFeatures.applicationEdit;
+
+        const groupedApps = groupBy(this.visibleApplications, (app) => app.group || "").sort(
+            ([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {
+                if (selectedApp) {
+                    if (groupAppsA.includes(selectedApp)) return -1;
+                    if (groupAppsB.includes(selectedApp)) return 1;
+                }
+
+                return groupLabelA.localeCompare(groupLabelB);
+            },
+        );
+
+        return AKLibraryApplicationList({
+            editable,
+            layout: layout.type,
+            background: theme.cardBackground,
+            selectedApp,
+            groupedApps,
+            targetRef: this.targetRef,
+        });
     }
 
-    renderState() {
+    protected renderSearch() {
+        return html`<search title=${msg("Applications")}>
+            <form @submit=${this.#submitListener} id="application-search-form">
+                <input
+                    ${this.autofocusTarget.toRef()}
+                    part="search-input"
+                    name="application-search"
+                    id="application-search-input"
+                    @input=${this.#inputListener}
+                    @change=${this.#changeListener}
+                    type="search"
+                    autocomplete="off"
+                    spellcheck="false"
+                    class="pf-c-form-control"
+                    autofocus
+                    placeholder=${msg("Search for an application by name...")}
+                    value=${ifPresent(this.query)}
+                    list=${ifPresent(LibraryPage.DataListEnabled, "application-search-options")}
+                    aria-describedby="search-action-hint"
+                />
+                ${this.renderDataList()}
+
+                <span id="search-action-hint" class="sr-only">
+                    ${this.selectedApp
+                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                              id: "user.library.search.enter-to-open-hint",
+                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                          })
+                        : msg("Type to filter applications", {
+                              id: "user.library.search.type-to-filter-hint",
+                              desc: "Screen reader hint to inform the user they can filter the application list by typing",
+                          })}
+                </span>
+            </form>
+        </search>`;
+    }
+
+    protected renderDataList() {
+        if (!LibraryPage.DataListEnabled) {
+            return nothing;
+        }
+
+        return html`<datalist id="application-search-options">
+            ${this.visibleApplications.slice(0, LibraryPage.MAX_DATA_LIST_ITEMS).map((app) => {
+                return html`<option value=${app.name}></option>`;
+            })}
+        </datalist>`;
+    }
+
+    protected renderNoAppsFound() {
+        return html`<div class="pf-c-empty-state pf-m-full-height" tabindex="-1">
+            <div class="pf-c-empty-state__content">
+                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+                <h3 class="pf-c-title pf-m-lg" id="no-results-title">
+                    ${msg("Search returned no results.")}
+                </h3>
+            </div>
+        </div>`;
+    }
+
+    protected renderState() {
         if (!this.apps.some(appHasLaunchUrl)) {
             return html`<ak-library-application-empty-list
-                ?isadmin=${this.isAdmin}
+                ?admin=${this.admin}
             ></ak-library-application-empty-list>`;
         }
-        return this.filteredApps.some(appHasLaunchUrl) // prettier-ignore
-            ? this.renderApps()
-            : this.renderNoAppsFound();
+
+        if (this.visibleApplications.length) {
+            return this.renderApps();
+        }
+
+        return this.renderNoAppsFound();
     }
 
-    render() {
-        return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <div class="pf-c-content header">
-                <h1 role="heading" aria-level="1" id="library-page-title">
-                    ${msg("My applications")}
-                </h1>
-                ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
+    protected renderApplicationStatusOutput() {
+        const count = this.visibleApplications.length;
+        const { query } = this;
+
+        return guard([count, query], () => {
+            let message: string;
+
+            if (query) {
+                // We must present the count within the label to ensure that the screen reader
+                // considers the update significant enough to read on each change,
+                // rather than the on just the first render.
+                message =
+                    count === 1
+                        ? msg(str`${count} application found for "${query}"`, {
+                              id: "user.library.application-count-singular-with-query",
+                          })
+                        : msg(str`${count} applications found for "${query}"`, {
+                              id: "user.library.application-count-plural-with-query",
+                          });
+            } else {
+                message =
+                    count === 1
+                        ? msg(str`${count} application available`, {
+                              id: "user.library.application-count-singular",
+                          })
+                        : msg(str`${count} applications available`, {
+                              id: "user.library.application-count-plural",
+                          });
+            }
+
+            return html`<output
+                class="sr-only"
+                for="application-search-input"
+                form="application-search-form"
+                aria-live="polite"
+            >
+                <p>${message}</p>
+                <p>
+                    ${this.selectedApp
+                        ? msg(str`Press Enter to open ${this.selectedApp.name}`, {
+                              id: "user.library.application-count.enter-to-open-hint",
+                              desc: "Screen reader hint to inform the user they can open the selected application by pressing Enter",
+                          })
+                        : nothing}
+                </p>
+            </output>`;
+        });
+    }
+
+    protected override render() {
+        return html`<div class="pf-c-page__main">
+            <div class="pf-c-page__header pf-c-content">
+                <h1 class="pf-c-page__title">${msg("My applications")}</h1>
+                ${this.searchEnabled ? this.renderSearch() : nothing}
             </div>
-            <section class="pf-c-page__main-section">${this.renderState()}</section>
-        </main>`;
+            <main
+                ${AKSkipToContent.ref}
+                id="main-content"
+                class="pf-c-page__main-section"
+                aria-label=${msg("Application list")}
+            >
+                ${this.renderApplicationStatusOutput()} ${this.renderState()}
+            </main>
+        </div>`;
+    }
+
+    //#endregion
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-impl": LibraryPage;
     }
 }

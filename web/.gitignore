@@ -2,6 +2,12 @@
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
 
+#region Locale
+
+src/locales/*.ts
+xliff/pseudo[_-]LOCALE.xlf
+xliff/en[_-]XA.xlf
+
 ### Node ###
 # Logs
 logs
@@ -25,6 +31,8 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+playwright-report
+test-results
 *.lcov
 
 # nyc test coverage

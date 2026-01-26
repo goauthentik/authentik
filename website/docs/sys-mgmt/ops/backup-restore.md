@@ -22,24 +22,6 @@ This guide outlines the critical components to back up and restore in authentik.
 - **Restoration Guidance:**
     - Use PostgreSQL's [`pg_restore`](https://www.postgresql.org/docs/current/app-pgrestore.html) or other official methods.
 
-## Redis database
-
-### Backup
-
-- **Role:** Manages temporary data:
-    - Pending tasks (e.g., queued emails, outpost syncs).
-    - Cache
-- **Impact of Loss:** Temporary performance loss (while cache gets rebuilt), and potential permanent data loss (e.g., queued emails).
-- **Backup Guidance:**
-    - Use Redis' [`SAVE`](https://redis.io/commands/save) or [`BGSAVE`](https://redis.io/commands/bgsave).
-- **Official Documentation:** [Redis Persistence](https://redis.io/docs/management/persistence/)
-
-### Restore
-
-- **Restoration Importance:** Service impact but no permanent data loss.
-- **Restoration Guidance:**
-    - Follow [Redis' Import Data Guide](https://redis.io/learn/guides/import#restore-an-rdb-file) to restore an RDB file.
-
 ## Static directories
 
 These directories are mounted as volumes in containerized installations and must be restored if they were part of the backup to maintain authentik’s expected functionality.

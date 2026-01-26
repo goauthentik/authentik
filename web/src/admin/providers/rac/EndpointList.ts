@@ -9,12 +9,13 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     Endpoint,
     RacApi,
     RACProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -29,9 +30,7 @@ export class EndpointListPage extends Table<Endpoint> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -49,13 +48,11 @@ export class EndpointListPage extends Table<Endpoint> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Host"), "host"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Host"), "host"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -85,50 +82,47 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    row(item: Endpoint): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.host}`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Endpoint")} </span>
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Endpoint")}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
                     </ak-rac-endpoint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacEndpoint}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersRacEndpoint}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
     renderExpanded(item: Endpoint): TemplateResult {
-        return html` <td></td>
-            <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>
+                ${msg(
+                    "These bindings control which users will have access to this endpoint. Users must also have access to the application.",
+                )}
+            </p>
+            <ak-bound-policies-list .target=${item.pk}></ak-bound-policies-list>
+        </div>`;
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Endpoint")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Endpoint")}</span>
                 <ak-rac-endpoint-form slot="form" .providerID=${this.provider?.pk}>
                 </ak-rac-endpoint-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>

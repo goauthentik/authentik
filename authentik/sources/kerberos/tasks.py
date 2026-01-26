@@ -2,15 +2,18 @@
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
+from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
 from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
@@ -33,7 +36,7 @@ def kerberos_connectivity_check(pk: str):
     description=_("Sync Kerberos source."),
 )
 def kerberos_sync(pk: str):
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     source: KerberosSource = KerberosSource.objects.filter(enabled=True, pk=pk).first()
     if not source:
         return
@@ -46,7 +49,15 @@ def kerberos_sync(pk: str):
                 )
                 return
             syncer = KerberosSync(source, self)
-            syncer.sync()
+            if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
+                syncer.sync()
+            else:
+                with sync_outgoing_inhibit_dispatch():
+                    syncer.sync()
+        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
+            for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
+                for provider in outgoing_sync_provider_cls.objects.all():
+                    provider.sync_dispatch()
     except StopSync as exc:
         LOGGER.warning("Error syncing kerberos", exc=exc, source=source)
         self.error(exc)

@@ -3,28 +3,37 @@ import "#elements/events/LogViewer";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { Form } from "#elements/forms/Form";
 
+import { AKLabel } from "#components/ak-label";
+
 import { Flow, FlowImportResult, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
     @state()
-    result?: FlowImportResult;
+    protected result: FlowImportResult | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.result = null;
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully imported flow.");
     }
-
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async send(): Promise<FlowImportResult> {
         const file = this.files().get("flow");
@@ -64,16 +73,42 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
-                <input type="file" value="" class="pf-c-form-control" />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        ".yaml files, which can be found on goauthentik.io and can be exported by authentik.",
-                    )}
-                </p>
+    protected override renderForm(): TemplateResult {
+        return html`<ak-form-element-horizontal name="flow">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "flow",
+                    },
+                    msg("Flow"),
+                )}
+
+                <input
+                    type="file"
+                    value=""
+                    class="pf-c-form-control"
+                    id="flow"
+                    name="flow"
+                    aria-describedby="flow-help"
+                />
+
+                <div id="flow-help">
+                    <p class="pf-c-form__helper-text">
+                        ${msg(".yaml files, which can be found in the Example Flows documentation")}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Read more about")}&nbsp;
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/add-secure-apps/flows-stages/flow/examples/flows/")}
+                            >${msg("Flow Examples")}</a
+                        >
+                    </p>
+                </div>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

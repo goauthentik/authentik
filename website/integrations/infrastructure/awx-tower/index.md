@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://docs.ansible.com/ansible/latest/reference_appendices/tower.html
 
-:::note
+:::info
 AWX is the open-source version of RHAAP. The term "AWX" will be used interchangeably throughout this document.
 :::
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `awx.company` is the FQDN of the AWX/RHAAP installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -41,7 +41,7 @@ To support the integration of AWX Tower with authentik, you need to create an ap
     - Set the **Audience** to `awx`.
     - Set the **Issuer** to `https://awx.company/sso/metadata/saml/`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

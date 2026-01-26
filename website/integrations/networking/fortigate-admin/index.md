@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `fortigate.company` is the FQDN of the FortiGate installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -118,4 +118,4 @@ end
 
 ## Resources
 
-- [Offocial Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)
+- [Official Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)

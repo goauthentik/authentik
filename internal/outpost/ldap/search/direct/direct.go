@@ -155,7 +155,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if needGroups {
 		errs.Go(func() error {
 			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
-			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()).IncludeUsers(true).IncludeChildren(true), parsedFilter, false)
+			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
 				return nil
@@ -182,7 +182,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					g[i].Users = []int32{flags.UserPk}
 					for _, u := range results.UsersObj {
 						if u.Pk == flags.UserPk {
-							g[i].UsersObj = []api.GroupMember{u}
+							g[i].UsersObj = []api.PartialUser{u}
 							break
 						}
 					}

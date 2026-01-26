@@ -13,6 +13,7 @@ from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
 from authentik.events.logs import LogEvent, capture_logs
+from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
@@ -48,7 +49,7 @@ class KubernetesClient(ApiClient, BaseClient):
             api_instance = VersionApi(self)
             version: VersionInfo = api_instance.get_code()
             return OutpostServiceConnectionState(version=version.git_version, healthy=True)
-        except (OpenApiException, HTTPError, ServiceConnectionInvalid):
+        except OpenApiException, HTTPError, ServiceConnectionInvalid:
             return OutpostServiceConnectionState(version="", healthy=False)
 
 
@@ -105,7 +106,7 @@ class KubernetesController(BaseController):
                         LogEvent(
                             log_level="info",
                             event=f"{reconcile_key.title()}: Disabled",
-                            logger=str(type(self)),
+                            logger=class_to_path(self.__class__),
                         )
                     )
                     continue
@@ -144,7 +145,7 @@ class KubernetesController(BaseController):
                         LogEvent(
                             log_level="info",
                             event=f"{reconcile_key.title()}: Disabled",
-                            logger=str(type(self)),
+                            logger=class_to_path(self.__class__),
                         )
                     )
                     continue

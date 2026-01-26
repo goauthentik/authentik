@@ -14,7 +14,8 @@ import { customElement, state } from "lit/decorators.js";
 export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
+    public override label = msg("System Status");
 
     @state()
     statusSummary?: string;
@@ -82,10 +83,6 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             icon: "fa fa-check-circle pf-m-success",
             message: html`${msg("Everything is ok.")}`,
         });
-    }
-
-    renderHeader(): SlottedTemplateResult {
-        return msg("System status");
     }
 
     renderValue(): SlottedTemplateResult {

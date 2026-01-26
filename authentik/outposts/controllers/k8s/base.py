@@ -3,7 +3,7 @@
 import re
 from dataclasses import asdict
 from json import dumps
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from dacite.core import from_dict
 from django.http import HttpResponseNotFound
@@ -17,7 +17,7 @@ from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
@@ -29,16 +29,16 @@ T = TypeVar("T", V1Pod, V1Deployment)
 
 
 def get_version() -> str:
-    """Wrapper for __version__ to make testing easier"""
-    return __version__
+    """Wrapper for authentik_version() to make testing easier"""
+    return authentik_version()
 
 
-class KubernetesObjectReconciler(Generic[T]):
+class KubernetesObjectReconciler[T]:
     """Base Kubernetes Reconciler, handles the basic logic."""
 
-    controller: "KubernetesController"
+    controller: KubernetesController
 
-    def __init__(self, controller: "KubernetesController"):
+    def __init__(self, controller: KubernetesController):
         self.controller = controller
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)

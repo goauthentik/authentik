@@ -5,40 +5,47 @@ on:
   push:
     branches: [main]
     paths:
-      - packages/docusaurus-config/**
+      - packages/tsconfig/**
       - packages/eslint-config/**
       - packages/prettier-config/**
-      - packages/tsconfig/**
+      - packages/docusaurus-config/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 
+permissions:
+  # Required for NPM OIDC trusted publisher
+  id-token: write
+  contents: read
+
 jobs:
   publish:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         package:
-          - packages/docusaurus-config
+          # The order of the `*config` packages should not be changed, as they depend on each other.
+          - packages/tsconfig
           - packages/eslint-config
           - packages/prettier-config
-          - packages/tsconfig
+          - packages/docusaurus-config
           - packages/esbuild-plugin-live-reload
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: ${{ matrix.package }}/package.json
           registry-url: "https://registry.npmjs.org"
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c
+        uses: tj-actions/changed-files@e0021407031f5be11a464abee9a0776171c79891 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json
+      - name: Install Dependencies
+        run: npm ci
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
@@ -46,5 +53,3 @@ jobs:
           npm ci
           npm run build
           npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

@@ -5,8 +5,7 @@ import { BaseStage } from "#flow/stages/base";
 
 import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -14,7 +13,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<
@@ -24,19 +22,18 @@ export class AutosubmitStage extends BaseStage<
     @query("form")
     private form?: HTMLFormElement;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
-    updated(): void {
-        if (this.challenge.url !== undefined) {
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (changed.has("challenge") && this.challenge.url !== undefined) {
+            console.debug("authentik/flow/stages/autosubmit: submitting");
             this.form?.submit();
         }
     }
 
     render(): TemplateResult {
-        let title = msg("Loading");
-        if (this.challenge.title && this.challenge.title !== "") {
-            title = this.challenge.title;
-        }
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" action="${this.challenge.url}" method="post">
                 ${Object.entries(this.challenge.attrs).map(([key, value]) => {

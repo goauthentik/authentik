@@ -1,3 +1,4 @@
+import { globalAK } from "#common/global";
 import { BrandedHTMLPolicy, sanitizeHTML } from "#common/purify";
 
 import { AKElement } from "#elements/Base";
@@ -10,7 +11,6 @@ import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const styles = css`
     .pf-c-list a {
@@ -18,33 +18,33 @@ const styles = css`
     }
     ul.pf-c-list.pf-m-inline {
         justify-content: center;
-        padding: calc(var(--pf-global--spacer--xs) / 2) 0px;
+        padding: 0;
+        column-gap: var(--pf-global--spacer--xl);
+        row-gap: var(--pf-global--spacer--md);
     }
 `;
 
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
-    static styles = [PFBase, PFList, styles];
+    static styles = [PFList, styles];
 
     @property({ type: Array, attribute: false })
-    links: FooterLink[] = [];
+    public links: FooterLink[] = globalAK().brand.uiFooterLinks || [];
 
     render() {
-        const links = [...(this.links ?? [])];
-
-        return html` <ul class="pf-c-list pf-m-inline">
-            ${map(links, (link) => {
+        return html`<ul aria-label=${msg("Site links")} class="pf-c-list pf-m-inline" part="list">
+            ${map(this.links, (link) => {
                 const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
 
                 if (link.href) {
                     return html`<li><a href="${link.href}">${children}</a></li>`;
                 }
 
-                return html`<li>
-                    <span> ${children} </span>
+                return html`<li part="list-item">
+                    <span>${children}</span>
                 </li>`;
             })}
-            <li><span>${msg("Powered by authentik")}</span></li>
+            <li part="list-item"><span>${msg("Powered by authentik")}</span></li>
         </ul>`;
     }
 }

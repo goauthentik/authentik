@@ -1,3 +1,5 @@
+import "#elements/Spinner";
+
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -107,10 +109,12 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for status display
      */
     private renderStatus(status: AdminStatus): SlottedTemplateResult {
-        return html`
-            <p><i class="${status.icon}"></i>&nbsp;${this.renderValue()}</p>
+        return html`<div class="status-container">
+            <h2 class="status-heading">
+                <i class="${status.icon}" aria-hidden="true"></i>${this.renderValue()}
+            </h2>
             ${status.message ? html`<p class="subtext">${status.message}</p>` : nothing}
-        `;
+        </div>`;
     }
 
     /**
@@ -121,7 +125,9 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      */
     private renderError(error: string): SlottedTemplateResult {
         return html`
-            <p><i aria-hidden="true" class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
+            <h2 role="alert" aria-live="assertive">
+                <i aria-hidden="true" class="fa fa-times"></i>${msg("Failed to fetch")}
+            </h2>
             <p class="subtext">${error}</p>
         `;
     }
@@ -141,16 +147,10 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @returns TemplateResult for current component state
      */
     renderInner(): SlottedTemplateResult {
-        return html`
-            <p class="center-value">
-                ${
-                    this.status
-                        ? this.renderStatus(this.status) // Status available
-                        : this.error
-                          ? this.renderError(pluckErrorDetail(this.error)) // Error state
-                          : this.renderLoading() // Loading state
-                }
-            </p>
-        `;
+        return this.status
+            ? this.renderStatus(this.status) // Status available
+            : this.error
+              ? this.renderError(pluckErrorDetail(this.error)) // Error state
+              : this.renderLoading(); // Loading state
     }
 }

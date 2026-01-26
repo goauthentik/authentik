@@ -1,9 +1,7 @@
-import { APIMessage } from "../../messages/Message.js";
-import BaseTaskButton from "../SpinnerButton/BaseTaskButton.js";
-
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
+import { BaseTaskButton } from "#elements/buttons/SpinnerButton/BaseTaskButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 

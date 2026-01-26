@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 - `landscape.company` is the FQDN of the Landscape server.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -39,7 +39,7 @@ To support the integration of Landscape with authentik, you need to create an ap
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://landscape.company/login/handle-openid`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -57,19 +57,3 @@ oidc-client-secret = <client Secret of the provider you've created>
 ```
 
 Afterwards, run `sudo lsctl restart` to restart the Landscape services.
-
-## Appendix
-
-To make an OpenID-Connect User admin, you have to insert some rows into the database.
-
-First login with your authentik user, and make sure the user is created successfully.
-
-Run `sudo -u postgres psql landscape-standalone-main` on the Landscape server to open a PostgreSQL Prompt.
-Then run `select * from person;` to get a list of all users. Take note of the ID given to your new user.
-
-Run the following commands to make this user an administrator:
-
-```sql
-INSERT INTO person_account VALUES (<user id>, 1);
-INSERT INTO person_access VALUES (<user id>, 1, 1);
-```

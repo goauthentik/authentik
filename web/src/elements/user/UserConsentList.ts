@@ -3,9 +3,9 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, UserConsent } from "@goauthentik/api";
 
@@ -29,19 +29,31 @@ export class UserConsentList extends Table<UserConsent> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Application"), "application"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Permissions"), "permissions"),
-        ];
+    protected override rowLabel(item: UserConsent): string | null {
+        return item.application?.name ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Application"), "application"],
+        [msg("Expires"), "expires"],
+        [msg("Permissions"), "permissions"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Consent(s)")}
             .objects=${this.selectedElements}
+            .metadata=${(item: UserConsent) => {
+                return [
+                    { key: msg("Application"), value: item.application.name },
+                    {
+                        key: msg("Expires"),
+                        value: Timestamp(item.expires && item.expiring ? item.expires : null),
+                    },
+                    { key: msg("Permissions"), value: item.permissions ?? "-" },
+                ];
+            }}
             .usedBy=${(item: UserConsent) => {
                 return new CoreApi(DEFAULT_CONFIG).coreUserConsentUsedByList({
                     id: item.pk,
@@ -59,13 +71,10 @@ export class UserConsentList extends Table<UserConsent> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserConsent): TemplateResult[] {
+    row(item: UserConsent): SlottedTemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires && item.expiring
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${item.permissions
                 ? html`<ak-chip-group>
                       ${item.permissions.split(" ").map((perm) => {

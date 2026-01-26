@@ -12,11 +12,10 @@ permissions:
 
 jobs:
   update-next:
-    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     environment: internal-production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: main
       - run: |

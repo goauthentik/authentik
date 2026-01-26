@@ -6,14 +6,13 @@ import { WizardPage } from "#elements/wizard/WizardPage";
 import { ResponseError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum ActionState {
     pending = "pending",
@@ -30,7 +29,7 @@ export interface ActionStateBundle {
 
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
-    static styles: CSSResult[] = [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
+    static styles: CSSResult[] = [PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
 
     @property({ attribute: false })
     states: ActionStateBundle[] = [];
@@ -39,15 +38,11 @@ export class ActionWizardPage extends WizardPage {
     currentStep?: ActionStateBundle;
 
     activeCallback = async (): Promise<void> => {
-        this.states = [];
-
-        this.host.actions.map((act, idx) => {
-            this.states.push({
-                action: act,
-                state: ActionState.pending,
-                idx: idx,
-            });
-        });
+        this.states = this.host.actions.map((act, idx) => ({
+            action: act,
+            state: ActionState.pending,
+            idx: idx,
+        }));
 
         this.host.canBack = false;
         this.host.canCancel = false;
@@ -58,7 +53,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.isValid = true;
     };
 
-    sidebarLabel = () => msg("Apply changes");
+    public label = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
@@ -105,7 +100,7 @@ export class ActionWizardPage extends WizardPage {
         return html`<div class="pf-l-bullseye">
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">
-                    <i class="fas fa- fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
+                    <i class="fas fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
                     <h1 class="pf-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
                     <div class="pf-c-empty-state__body">
                         <ol class="pf-c-progress-stepper pf-m-vertical">
@@ -144,7 +139,7 @@ export class ActionWizardPage extends WizardPage {
                                               >
                                                   ${state.action.subText}
                                               </div>`
-                                            : html``}
+                                            : nothing}
                                     </div>
                                 </li>`;
                             })}

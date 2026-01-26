@@ -16,16 +16,20 @@ go.sum                                  @goauthentik/backend
 # Infrastructure
 .github/                                @goauthentik/infrastructure
 lifecycle/aws/                          @goauthentik/infrastructure
-Dockerfile                              @goauthentik/infrastructure
-*Dockerfile                             @goauthentik/infrastructure
+lifecycle/container/                    @goauthentik/infrastructure
 .dockerignore                           @goauthentik/infrastructure
-docker-compose.yml                      @goauthentik/infrastructure
 Makefile                                @goauthentik/infrastructure
 .editorconfig                           @goauthentik/infrastructure
 CODEOWNERS                              @goauthentik/infrastructure
 # Backend packages
+packages/django-channels-postgres       @goauthentik/backend
+packages/django-postgres-cache          @goauthentik/backend
 packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
+package.json                            @goauthentik/frontend
+package-lock.json                       @goauthentik/frontend
+packages/package.json                   @goauthentik/frontend
+packages/package-lock.json              @goauthentik/frontend
 packages/docusaurus-config              @goauthentik/frontend
 packages/esbuild-plugin-live-reload     @goauthentik/frontend
 packages/eslint-config                  @goauthentik/frontend
@@ -33,17 +37,12 @@ packages/prettier-config                @goauthentik/frontend
 packages/tsconfig                       @goauthentik/frontend
 # Web
 web/                                    @goauthentik/frontend
-tests/wdio/                             @goauthentik/frontend
 # Locale
-locale/                                 @goauthentik/backend @goauthentik/frontend
+/locale/                                @goauthentik/backend @goauthentik/frontend
 web/xliff/                              @goauthentik/backend @goauthentik/frontend
-# Docs & Website
-docs/                                   @goauthentik/docs
-# TODO Remove after moving website to docs
+# Docs
 website/                                @goauthentik/docs
 CODE_OF_CONDUCT.md                      @goauthentik/docs
 # Security
 SECURITY.md                             @goauthentik/security @goauthentik/docs
-# TODO Remove after moving website to docs
 website/security/                       @goauthentik/security @goauthentik/docs
-docs/security/                          @goauthentik/security @goauthentik/docs

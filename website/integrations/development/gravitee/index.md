@@ -19,7 +19,7 @@ The following placeholders are used in this guide:
 - `gravitee.company` is the FQDN of the Gravitee installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -35,7 +35,7 @@ To support the integration of Gravitee with authentik, you need to create an app
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Add two `Strict` redirect URI and set them to `https://gravitee.company/user/login` and `https://gravitee.company/console/`. Ensure a trailing slash is present at the end of the second redirect URI.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -46,7 +46,7 @@ To support the integration of Gravitee with authentik, you need to create an app
 
 In the Gravitee Management Console, navigate to _Organizations_ (gravitee.company/console/#!/organization/settings/identities) , under **Console** > **Authentication**. Click _Add an identity provider_, select _OpenID Connect_, and fill in the following:
 
-:::note
+:::info
 Only settings that have been modified from default have been listed.
 :::
 

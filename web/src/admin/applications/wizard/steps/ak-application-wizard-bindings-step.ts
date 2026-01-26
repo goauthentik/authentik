@@ -1,3 +1,4 @@
+import "#elements/EmptyState";
 import "#admin/applications/wizard/ak-wizard-title";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -30,7 +31,7 @@ const COLUMNS = [
     [msg("Binding")],
     [msg("Enabled"), "enabled"],
     [msg("Timeout"), "timeout"],
-    [msg("Actions")],
+    [msg("Actions"), null, msg("Row Actions")],
 ];
 
 @customElement("ak-application-wizard-bindings-step")
@@ -163,5 +164,11 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-application-wizard-applications-step": ApplicationWizardBindingsStep;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-bindings-step": ApplicationWizardBindingsStep;
     }
 }

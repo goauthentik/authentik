@@ -29,32 +29,32 @@ jobs:
        github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Compress images
         id: compress
-        uses: calibreapp/image-actions@main
+        uses: calibreapp/image-actions@420075c115b26f8785e293c5bd5bef0911c506e5 # main
         with:
-          githubToken: ${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v7
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
           title: "*: Auto compress images"
           branch-suffix: timestamp
-          commit-messsage: "*: compress images"
+          commit-message: "*: compress images"
           body: ${{ steps.compress.outputs.markdown }}
           delete-branch: true
           signoff: true
           labels: dependencies
-      - uses: peter-evans/enable-pull-request-automerge@v3
+      - uses: peter-evans/enable-pull-request-automerge@a660677d5469627102a1c1e11409dd063606628d # v3
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         with:
           token: ${{ steps.generate_token.outputs.token }}

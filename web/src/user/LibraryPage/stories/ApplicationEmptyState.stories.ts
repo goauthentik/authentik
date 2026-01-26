@@ -27,7 +27,7 @@ will be provided
         },
     },
     argTypes: {
-        isAdmin: { control: "boolean" },
+        admin: { control: "boolean" },
     },
 };
 
@@ -37,19 +37,17 @@ type Story = StoryObj<LibraryPageApplicationEmptyList>;
 
 export const OrdinaryUser: Story = {
     args: {
-        isAdmin: false,
+        admin: false,
     },
-    render: ({ isAdmin }: ILibraryPageApplicationEmptyList) =>
+    render: ({ admin }: ILibraryPageApplicationEmptyList) =>
         html`<div style="padding: 4em">
-            <ak-library-application-empty-list
-                ?isadmin=${isAdmin}
-            ></ak-library-application-empty-list>
+            <ak-library-application-empty-list ?admin=${admin}></ak-library-application-empty-list>
         </div> `,
 };
 
 export const AdminUser: Story = {
     ...OrdinaryUser,
     args: {
-        isAdmin: true,
+        admin: true,
     },
 };

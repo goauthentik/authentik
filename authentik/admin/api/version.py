@@ -10,7 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.admin.tasks import VERSION_CACHE_KEY, VERSION_NULL, update_latest_version
 from authentik.core.api.utils import PassiveSerializer
 from authentik.outposts.models import Outpost
@@ -29,20 +29,20 @@ class VersionSerializer(PassiveSerializer):
 
     def get_build_hash(self, _) -> str:
         """Get build hash, if version is not latest or released"""
-        return get_build_hash()
+        return authentik_build_hash()
 
     def get_version_current(self, _) -> str:
         """Get current version"""
-        return __version__
+        return authentik_version()
 
     def get_version_latest(self, _) -> str:
         """Get latest version from cache"""
-        if get_current_tenant().schema_name == get_public_schema_name():
-            return __version__
+        if get_current_tenant().schema_name != get_public_schema_name():
+            return authentik_version()
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:  # pragma: no cover
             update_latest_version.send()
-            return __version__
+            return authentik_version()
         return version_in_cache
 
     def get_version_latest_valid(self, _) -> bool:

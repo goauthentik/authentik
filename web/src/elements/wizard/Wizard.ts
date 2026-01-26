@@ -104,19 +104,6 @@ export class Wizard extends ModalButton {
             this.steps.push(ApplyActionsSlot);
         }
 
-        for (const step of this._steps) {
-            const existingStepElement = this.getStepElementByName(step);
-
-            if (existingStepElement) continue;
-
-            const stepElement = document.createElement(step);
-
-            stepElement.slot = step;
-            stepElement.dataset.wizardmanaged = "true";
-
-            this.appendChild(stepElement);
-        }
-
         this.requestUpdate();
     }
 
@@ -273,34 +260,49 @@ export class Wizard extends ModalButton {
                 this.activeStepElement = nextPage;
             }
         };
-        return html`<div class="pf-c-wizard">
-            <div class="pf-c-wizard__header">
+        return html`<div class="pf-c-wizard" role="presentation">
+            <header class="pf-c-wizard__header">
                 ${this.canCancel
                     ? html`<button
+                          data-test-id="wizard-close"
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
-                          aria-label="${msg("Close")}"
+                          aria-label="${msg("Close wizard")}"
                           @click=${this.#reset}
                       >
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
                     : nothing}
-                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">${this.header}</h1>
-                <p class="pf-c-wizard__description">${this.description}</p>
-            </div>
-            <div class="pf-c-wizard__outer-wrap">
+                <h1
+                    id="modal-title"
+                    role="heading"
+                    aria-level="1"
+                    class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                    data-test-id="wizard-heading"
+                >
+                    ${this.header}
+                </h1>
+                <p
+                    role="heading"
+                    aria-level="2"
+                    id="modal-description"
+                    class="pf-c-wizard__description"
+                >
+                    ${this.description}
+                </p>
+            </header>
+
+            <div role="presentation" class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
-                    <nav class="pf-c-wizard__nav">
-                        <ol class="pf-c-wizard__nav-list">
+                    <nav aria-label="${msg("Wizard steps")}" class="pf-c-wizard__nav">
+                        <ol role="presentation" class="pf-c-wizard__nav-list">
                             ${this.steps.map((step, idx) => {
                                 const stepEl = this.getStepElementByName(step);
 
                                 if (!stepEl) return html`<p>Unexpected missing step: ${step}</p>`;
 
-                                const sidebarLabel = stepEl.sidebarLabel();
-
                                 return html`
-                                    <li class="pf-c-wizard__nav-item">
+                                    <li role="presentation" class="pf-c-wizard__nav-item">
                                         <button
                                             class=${classMap({
                                                 "pf-c-wizard__nav-link": true,
@@ -312,21 +314,22 @@ export class Wizard extends ModalButton {
                                                 this.activeStepElement = stepEl;
                                             }}
                                         >
-                                            ${sidebarLabel}
+                                            ${stepEl.label ?? msg("UNNAMED")}
                                         </button>
                                     </li>
                                 `;
                             })}
                         </ol>
                     </nav>
-                    <main class="pf-c-wizard__main">
-                        <div class="pf-c-wizard__main-body">
+                    <main aria-label="${msg("Wizard content")}" class="pf-c-wizard__main">
+                        <div role="presentation" class="pf-c-wizard__main-body">
                             <slot name=${this.activeStepElement?.slot || this.steps[0]}></slot>
                         </div>
                     </main>
                 </div>
-                <footer class="pf-c-wizard__footer">
+                <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
                     <button
+                        data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
                         ?disabled=${!this.isValid}
                         type="button"
@@ -339,6 +342,7 @@ export class Wizard extends ModalButton {
                         : 0) > 0 && this.canBack
                         ? html`
                               <button
+                                  data-test-id="wizard-navigation-previous"
                                   class="pf-c-button pf-m-secondary"
                                   type="button"
                                   @click=${navigatePrevious}
@@ -348,8 +352,9 @@ export class Wizard extends ModalButton {
                           `
                         : nothing}
                     ${this.canCancel
-                        ? html`<div class="pf-c-wizard__footer-cancel">
+                        ? html`<div class="pf-c-wizard__footer-abort">
                               <button
+                                  data-test-id="wizard-navigation-cancel"
                                   class="pf-c-button pf-m-link"
                                   type="button"
                                   @click=${this.#reset}
@@ -358,7 +363,7 @@ export class Wizard extends ModalButton {
                               </button>
                           </div>`
                         : nothing}
-                </footer>
+                </nav>
             </div>
         </div>`;
     }
@@ -369,5 +374,19 @@ export class Wizard extends ModalButton {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-wizard": Wizard;
+    }
+
+    interface WizardNavigationTestIDMap {
+        next: HTMLButtonElement;
+        previous: HTMLButtonElement;
+        cancel: HTMLButtonElement;
+    }
+
+    interface WizardTestIDMap {
+        navigation: WizardNavigationTestIDMap;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
     }
 }

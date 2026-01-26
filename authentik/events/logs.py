@@ -1,13 +1,13 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 from django.utils.timezone import now
 from rest_framework.fields import CharField, ChoiceField, DateTimeField, DictField
 from structlog import configure, get_config
-from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter
+from structlog.stdlib import NAME_TO_LEVEL, ProcessorFormatter, get_logger
 from structlog.testing import LogCapture
 from structlog.types import EventDict
 
@@ -25,16 +25,19 @@ class LogEvent:
     attributes: dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
-    def from_event_dict(item: EventDict) -> "LogEvent":
+    def from_event_dict(item: EventDict) -> LogEvent:
         event = item.pop("event")
         log_level = item.pop("level").lower()
-        timestamp = datetime.fromisoformat(item.pop("timestamp"))
+        timestamp = datetime.fromisoformat(item.pop("timestamp")).replace(tzinfo=UTC)
         item.pop("pid", None)
         # Sometimes log entries have both `level` and `log_level` set, but `level` is always set
         item.pop("log_level", None)
         return LogEvent(
             event, log_level, item.pop("logger"), timestamp, attributes=sanitize_dict(item)
         )
+
+    def log(self):
+        get_logger(self.logger).log(NAME_TO_LEVEL[self.log_level], self.event, **self.attributes)
 
 
 class LogEventSerializer(PassiveSerializer):

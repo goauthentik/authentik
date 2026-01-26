@@ -1,5 +1,4 @@
 import "#admin/admin-settings/AdminSettingsForm";
-import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
@@ -12,12 +11,14 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
 
 import { AdminApi, Settings } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -29,12 +30,10 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
     static styles = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -78,7 +77,6 @@ export class AdminSettingsPage extends AKElement {
         if (!this.settings) return nothing;
 
         return html`
-            <ak-page-header icon="fa fa-cog" header="${msg("System settings")}"> </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
@@ -96,6 +94,14 @@ export class AdminSettingsPage extends AKElement {
                 </div>
             </section>
         `;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "fa fa-cog",
+            header: msg("System settings"),
+        });
     }
 }
 

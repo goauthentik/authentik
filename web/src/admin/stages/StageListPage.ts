@@ -14,6 +14,7 @@ import "#admin/stages/consent/ConsentStageForm";
 import "#admin/stages/deny/DenyStageForm";
 import "#admin/stages/dummy/DummyStageForm";
 import "#admin/stages/email/EmailStageForm";
+import "#admin/stages/endpoint/EndpointStageForm";
 import "#admin/stages/identification/IdentificationStageForm";
 import "#admin/stages/invitation/InvitationStageForm";
 import "#admin/stages/mtls/MTLSStageForm";
@@ -27,37 +28,30 @@ import "#admin/stages/user_logout/UserLogoutStageForm";
 import "#admin/stages/user_write/UserWriteStageForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Stage, StagesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    pageTitle(): string {
-        return msg("Stages");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-plugged";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Stages");
+    public pageDescription = msg(
+        "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
+    );
+    public pageIcon = "pf-icon pf-icon-plugged";
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
@@ -69,13 +63,12 @@ export class StageListPage extends TablePage<Stage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Flows")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Flows")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -118,7 +111,7 @@ export class StageListPage extends TablePage<Stage> {
             : nothing;
     }
 
-    row(item: Stage): TemplateResult[] {
+    row(item: Stage): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 <small>${item.verboseName}</small>`,
@@ -131,26 +124,26 @@ export class StageListPage extends TablePage<Stage> {
                     </li>`;
                 })}
             </ul>`,
-            html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
+            html`<div>
+                <ak-forms-modal>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
                 </ak-rbac-object-permission-modal>
-                ${this.renderStageActions(item)}`,
+                ${this.renderStageActions(item)}
+            </div>`,
         ];
     }
 

@@ -1,4 +1,4 @@
-import { DigestAlgorithmEnum, SignatureAlgorithmEnum, SpBindingEnum } from "@goauthentik/api";
+import { DigestAlgorithmEnum, SAMLBindingsEnum, SignatureAlgorithmEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 
@@ -13,8 +13,8 @@ function toOptions<T>(options: Option<T>[]) {
 }
 
 export const spBindingOptions = toOptions([
-    [msg("Redirect"), SpBindingEnum.Redirect, true],
-    [msg("Post"), SpBindingEnum.Post],
+    [msg("Redirect"), SAMLBindingsEnum.Redirect, true],
+    [msg("Post"), SAMLBindingsEnum.Post],
 ]);
 
 export const digestAlgorithmOptions = toOptions([

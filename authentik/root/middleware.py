@@ -57,9 +57,25 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         try:
             session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
             session_key = session_payload["sid"]
-        except (KeyError, PyJWTError):
+        except KeyError, PyJWTError:
             pass
         return session_key
+
+    @staticmethod
+    def encode_session(session_key: str, user: User):
+        payload = {
+            "sid": session_key,
+            "iss": "authentik",
+            "sub": "anonymous",
+            "authenticated": user.is_authenticated,
+            "acr": ACR_AUTHENTIK_SESSION,
+        }
+        if user.is_authenticated:
+            payload["sub"] = user.uid
+        value = encode(payload=payload, key=SIGNING_HASH)
+        if settings.TEST:
+            value = session_key
+        return value
 
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
@@ -117,21 +133,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
                         ) from None
-                    payload = {
-                        "sid": request.session.session_key,
-                        "iss": "authentik",
-                        "sub": "anonymous",
-                        "authenticated": request.user.is_authenticated,
-                        "acr": ACR_AUTHENTIK_SESSION,
-                    }
-                    if request.user.is_authenticated:
-                        payload["sub"] = request.user.uid
-                    value = encode(payload=payload, key=SIGNING_HASH)
-                    if settings.TEST:
-                        value = request.session.session_key
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
-                        value,
+                        SessionMiddleware.encode_session(request.session.session_key, request.user),
                         max_age=max_age,
                         expires=expires,
                         domain=settings.SESSION_COOKIE_DOMAIN,
@@ -292,7 +296,7 @@ class ChannelsLoggingMiddleware:
         except DenyConnection:
             return await send({"type": "websocket.close"})
         except Exception as exc:
-            if settings.DEBUG:
+            if settings.DEBUG or settings.TEST:
                 raise exc
             LOGGER.warning("Exception in ASGI application", exc=exc)
             return await send({"type": "websocket.close"})

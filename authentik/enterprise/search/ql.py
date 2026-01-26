@@ -6,6 +6,7 @@ from djangoql.ast import Name
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema
+from drf_spectacular.plumbing import ResolvedComponent, build_object_type
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
@@ -13,11 +14,12 @@ from structlog.stdlib import get_logger
 from authentik.enterprise.search.fields import JSONSearchField
 
 LOGGER = get_logger()
-AUTOCOMPLETE_COMPONENT_NAME = "Autocomplete"
-AUTOCOMPLETE_SCHEMA = {
-    "type": "object",
-    "additionalProperties": {},
-}
+AUTOCOMPLETE_SCHEMA = ResolvedComponent(
+    name="Autocomplete",
+    object="Autocomplete",
+    type=ResolvedComponent.SCHEMA,
+    schema=build_object_type(additionalProperties={}),
+)
 
 
 class BaseSchema(DjangoQLSchema):

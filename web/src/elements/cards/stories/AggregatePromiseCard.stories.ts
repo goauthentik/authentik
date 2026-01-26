@@ -2,10 +2,11 @@ import "../AggregatePromiseCard.js";
 
 import { AggregatePromiseCard, type IAggregatePromiseCard } from "../AggregatePromiseCard.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<AggregatePromiseCard> = {
     title: "Elements/<ak-aggregate-card-promise>",
@@ -40,10 +41,9 @@ import "#elements/cards/AggregatePromiseCard";
     },
     argTypes: {
         icon: { control: "text" },
-        header: { control: "text" },
+        label: { control: "text" },
         headerLink: { control: "text" },
         subtext: { control: "text" },
-        leftJustified: { control: "boolean" },
         failureMessage: { control: "text" },
     },
 };
@@ -62,9 +62,8 @@ export const DefaultStory: StoryObj = {
         header: "Default",
         headerLink: undefined,
         subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
-        leftJustified: false,
     },
-    render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregatePromiseCard) => {
+    render: ({ icon, label, headerLink, subtext }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((resolve) => setTimeout(resolve, timeout, value));
 
@@ -77,11 +76,10 @@ export const DefaultStory: StoryObj = {
                 }
             </style>
             <ak-aggregate-card-promise
-                header=${ifDefined(header)}
-                headerLink=${ifDefined(headerLink)}
-                subtext=${ifDefined(subtext)}
-                icon=${ifDefined(icon)}
-                ?left-justified=${leftJustified}
+                label=${ifPresent(label)}
+                headerLink=${ifPresent(headerLink)}
+                subtext=${ifPresent(subtext)}
+                icon=${ifPresent(icon)}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise> `;
@@ -94,17 +92,9 @@ export const PromiseRejected: StoryObj = {
         header: "Default",
         headerLink: undefined,
         subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
-        leftJustified: false,
         failureMessage: undefined,
     },
-    render: ({
-        icon,
-        header,
-        headerLink,
-        subtext,
-        leftJustified,
-        failureMessage,
-    }: IAggregatePromiseCard) => {
+    render: ({ icon, label, headerLink, subtext, failureMessage }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 
@@ -117,12 +107,11 @@ export const PromiseRejected: StoryObj = {
                 }
             </style>
             <ak-aggregate-card-promise
-                header=${ifDefined(header)}
-                headerLink=${ifDefined(headerLink)}
-                subtext=${ifDefined(subtext)}
-                icon=${ifDefined(icon)}
-                failureMessage=${ifDefined(failureMessage)}
-                ?left-justified=${leftJustified}
+                label=${ifPresent(label)}
+                headerLink=${ifPresent(headerLink)}
+                subtext=${ifPresent(subtext)}
+                icon=${ifPresent(icon)}
+                failureMessage=${ifPresent(failureMessage)}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>

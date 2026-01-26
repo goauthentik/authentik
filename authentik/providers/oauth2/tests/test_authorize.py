@@ -1,6 +1,7 @@
 """Test authorize view"""
 
 from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs, urlparse
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -8,8 +9,9 @@ from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
@@ -25,6 +27,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD
 
 
@@ -670,3 +673,95 @@ class TestAuthorize(OAuthTestCase):
         )
         parsed = OAuthAuthorizationParams.from_request(request)
         self.assertNotIn(SCOPE_OFFLINE_ACCESS, parsed.scope)
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_ui_locales(self):
+        """Test OIDC ui_locales authorization"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        self.client.logout()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "ui_locales": "invalid fr",
+            },
+        )
+        parsed = parse_qs(urlparse(response.url).query)
+        self.assertEqual(parsed["locale"], ["fr"])
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_ui_locales_invalid(self):
+        """Test OIDC ui_locales authorization"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        self.client.logout()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "ui_locales": "invalid",
+            },
+        )
+        parsed = parse_qs(urlparse(response.url).query)
+        self.assertNotIn("locale", parsed)
+
+    def test_authentication_flow(self):
+        """Test custom authentication flow"""
+        brand = create_test_brand()
+        global_auth = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=global_auth, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        brand.flow_authentication = global_auth
+        brand.save()
+
+        flow = create_test_flow()
+        auth_flow = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=auth_flow, stage=DummyStage.objects.create(name=generate_id()), order=10
+        )
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            authentication_flow=auth_flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(auth_flow.slug, response.url)
+        self.assertNotIn(global_auth.slug, response.url)

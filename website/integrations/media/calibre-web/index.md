@@ -17,13 +17,13 @@ The following placeholders are used in this guide:
 - `calibreweb.company` is the FQDN of the Calibre-Web installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-To support the integration of Calibre-Web with authentik, you need to create an application/provider pair and a correspdonding group in authentik.
+To support the integration of Calibre-Web with authentik, you need to create an application/provider pair and a corresponding group in authentik.
 
 ### Create an application and provider in authentik
 
@@ -52,7 +52,7 @@ Create a group that will grant access to Calibre-Web.
 
 ### Add users to the group
 
-Add the user that require access to the newly created group.
+Add the users that require access to the newly created group.
 
 1. Navigate to **Directory** > **Groups** and click on the name of the group (e.g. `Calibre-Web`) that was just created.
 

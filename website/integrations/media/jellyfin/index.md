@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://jellyfin.org
 
-:::note
+:::info
 Jellyfin does not have any native external authentication support as of the writing of this page. Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
 :::
 
@@ -28,7 +28,7 @@ The following placeholders are used in this guide:
 - `dc=company,dc=com` the Base DN of the LDAP outpost.
 - `ldap_bind_user` the username of the desired LDAP Bind User
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -57,7 +57,7 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
         - If using a certificate issued by a certificate authority, Jellyfin trusts, leave this unchecked.
         - If you're using a self-signed certificate, check this box.
     - `Allow password change`: Unchecked
-        - Since authentik already has a frontend for password resets, it's not necessary to include this in Jellyfin, especially since it requires bind user to have privileges.
+        - Since authentik already has a frontend for password resets, it's not necessary to include this in Jellyfin, especially since it requires bind users to have privileges.
     - `Password Reset URL`: Empty
     - `LDAP Bind User`: Set this to a user you want to bind to in authentik. By default, the path will be `ou=users,dc=company,dc=com` so the LDAP Bind user will be `cn=ldap_bind_user,ou=users,dc=company,dc=com`.
     - `LDAP Bind User Password`: The Password of the user. If using a Service account, this is the token.
@@ -67,7 +67,7 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
 At this point, click **Save and Test LDAP Server Settings**. If the settings are correct, you will see:
 `Connect(Success); Bind(Success); Base Search (Found XY Entities)`
 
-- `LDAP User Filter`: This is used to a user filter on what users are allowed to login. **This must be set**
+- `LDAP User Filter`: This is used to apply a user filter on what users are allowed to login. **This must be set**
     - To allow all users: `(objectClass=user)`
     - To only allow users in a specific group: `(memberOf=cn=jellyfin_users,ou=groups,dc=company,dc=com)`
     - Good Docs on LDAP Filters: [atlassian.com](https://confluence.atlassian.com/kb/how-to-write-ldap-search-filters-792496933.html)
@@ -91,7 +91,7 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 - `Library Access`: Set this according to desired library access
 
 1. Click "Save"
-2. Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work.
+2. Logout, and login with an LDAP user. Username **must** be used, logging in with email will not work.
 
 ## OIDC Configuration
 
@@ -106,7 +106,7 @@ In authentik under **Providers**, create an OAuth2/OpenID Provider with these se
 
 Everything else is up to you, just make sure to grab the client ID and the client secret!
 
-:::note
+:::info
 The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same.
 :::
 
@@ -171,6 +171,6 @@ a.raised.emby-button {
 14. Click **Save** at the bottom & restart the server.
 15. When you are signed out you should now see a **Sign in with SSO** button.
 
-:::note
-If you have problems check your logs which are under the **Administration** -> **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
+:::info
+If you have problems check your logs which are under the **Administration** > **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
 :::

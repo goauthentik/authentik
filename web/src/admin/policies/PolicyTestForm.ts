@@ -6,7 +6,6 @@ import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import {
@@ -22,7 +21,7 @@ import {
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -30,13 +29,19 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
-    policy?: Policy;
+    public policy?: Policy;
 
     @state()
-    result?: PolicyTestResult;
+    protected result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    public request?: PolicyTestRequest;
+
+    public override reset(): void {
+        super.reset();
+
+        this.result = null;
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
@@ -94,7 +99,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -123,16 +128,13 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Context")} name="context">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    value=${YAML.stringify(this.request?.context ?? {})}
-                >
+                <ak-codemirror mode="yaml" value=${YAML.stringify(this.request?.context ?? {})}>
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

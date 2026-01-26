@@ -123,7 +123,7 @@ class UserLoginStageView(ChallengeStageView):
     def is_known_device(self, user: User):
         """Returns `True` if the login happened on a "known" device, by the same user."""
         client_ip = ClientIPMiddleware.get_client_ip(self.request)
-        if AuthenticatedSession.objects.filter(session__last_ip=client_ip).exists():
+        if AuthenticatedSession.objects.filter(session__last_ip=client_ip, user=user).exists():
             return True
         if COOKIE_NAME_KNOWN_DEVICE not in self.request.COOKIES:
             return False

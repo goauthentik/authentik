@@ -1,15 +1,13 @@
 import contextvars
 import os
 import socket
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer as BaseHTTPServer
 from ipaddress import IPv6Address, ip_address
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
-from django.db import (
-    close_old_connections,
-    connections,
-)
+from django.db import DatabaseError, close_old_connections, connections
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
@@ -18,15 +16,19 @@ from dramatiq.middleware.middleware import Middleware
 from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
-from django_dramatiq_postgres.models import TaskBase
+from django_dramatiq_postgres.models import TaskBase, TaskState
+
+if TYPE_CHECKING:
+    from django_dramatiq_postgres.broker import PostgresBroker
 
 
 class HTTPServer(BaseHTTPServer):
-    def server_bind(self):
+    def server_bind(self) -> None:
         self.socket.close()
 
         host, port = self.server_address[:2]
-        if host == "0.0.0.0":  # nosec
+        host = cast(str, host)
+        if host == "0.0.0.0" and socket.has_dualstack_ipv6():  # nosec
             host = "::"  # nosec
 
         # Strip IPv6 brackets
@@ -36,7 +38,9 @@ class HTTPServer(BaseHTTPServer):
         self.server_address = (host, port)
 
         self.address_family = (
-            socket.AF_INET6 if isinstance(ip_address(host), IPv6Address) else socket.AF_INET
+            socket.AF_INET6
+            if socket.has_dualstack_ipv6() and isinstance(ip_address(host), IPv6Address)
+            else socket.AF_INET
         )
 
         self.socket = socket.create_server(
@@ -50,7 +54,7 @@ class HTTPServer(BaseHTTPServer):
 
 
 class DbConnectionMiddleware(Middleware):
-    def _close_old_connections(self, *args, **kwargs):
+    def _close_old_connections(self, *args: Any, **kwargs: Any) -> None:
         if Conf().test:
             return
         close_old_connections()
@@ -58,7 +62,7 @@ class DbConnectionMiddleware(Middleware):
     before_process_message = _close_old_connections
     after_process_message = _close_old_connections
 
-    def _close_connections(self, *args, **kwargs):
+    def _close_connections(self, *args: Any, **kwargs: Any) -> None:
         connections.close_all()
 
     before_consumer_thread_shutdown = _close_connections
@@ -66,8 +70,49 @@ class DbConnectionMiddleware(Middleware):
     before_worker_shutdown = _close_connections
 
 
+class TaskStateBeforeMiddleware(Middleware):
+    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
+        broker.query_set.filter(
+            message_id=message.message_id,
+            queue_name=message.queue_name,
+            state=TaskState.CONSUMED,
+        ).update(
+            state=TaskState.PREPROCESS,
+        )
+
+
+class TaskStateAfterMiddleware(Middleware):
+    def before_process_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
+        broker.query_set.filter(
+            message_id=message.message_id,
+            queue_name=message.queue_name,
+            state=TaskState.PREPROCESS,
+        ).update(
+            state=TaskState.RUNNING,
+        )
+
+    def after_skip_message(self, broker: PostgresBroker, message: Message[Any]) -> None:
+        broker.query_set.filter(
+            message_id=message.message_id,
+            queue_name=message.queue_name,
+            state=TaskState.RUNNING,
+        ).update(
+            state=TaskState.POSTPROCESS,
+        )
+
+    def after_process_message(
+        self,
+        broker: PostgresBroker,
+        message: Message[Any],
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ) -> None:
+        self.after_skip_message(broker, message)
+
+
 class FullyQualifiedActorName(Middleware):
-    def before_declare_actor(self, broker: Broker, actor: Actor):
+    def before_declare_actor(self, broker: Broker, actor: Actor[Any, Any]) -> None:
         actor.actor_name = f"{actor.fn.__module__}.{actor.fn.__name__}"
 
 
@@ -78,7 +123,7 @@ class CurrentTaskNotFound(Exception):
 
 
 class CurrentTask(Middleware):
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = get_logger(__name__, type(self))
 
     # This is a list of tasks, so that in tests, when a task calls another task, this acts as a pile
@@ -94,7 +139,7 @@ class CurrentTask(Middleware):
             raise CurrentTaskNotFound()
         return task[-1]
 
-    def before_process_message(self, broker: Broker, message: Message):
+    def before_process_message(self, broker: Broker, message: Message[Any]) -> None:
         tasks = self._TASKS.get()
         if tasks is None:
             tasks = []
@@ -104,11 +149,11 @@ class CurrentTask(Middleware):
     def after_process_message(
         self,
         broker: Broker,
-        message: Message,
+        message: Message[Any],
         *,
         result: Any | None = None,
         exception: Exception | None = None,
-    ):
+    ) -> None:
         tasks: list[TaskBase] | None = self._TASKS.get()
         if tasks is None or len(tasks) == 0:
             return
@@ -121,19 +166,27 @@ class CurrentTask(Middleware):
             "message",
             "state",
             "mtime",
+            "retries",
+            "eta",
             "result",
             "result_expiry",
         }
         fields_to_update = [
             f.name
             for f in task._meta.get_fields()
-            if f.name not in fields_to_exclude and not f.auto_created and f.column
+            if f.name not in fields_to_exclude
+            and f.concrete
+            and not f.auto_created
+            and not f.many_to_many
         ]
         if fields_to_update:
-            task.save(update_fields=fields_to_update)
+            try:
+                task.save(update_fields=fields_to_update)
+            except DatabaseError:
+                pass
         self._TASKS.set(tasks[:-1])
 
-    def after_skip_message(self, broker: Broker, message: Message):
+    def after_skip_message(self, broker: Broker, message: Message[Any]) -> None:
         self.after_process_message(broker, message)
 
 
@@ -141,26 +194,22 @@ class MetricsMiddleware(Middleware):
     def __init__(
         self,
         prefix: str,
-        multiproc_dir: str,
         labels: list[str] | None = None,
-    ):
+    ) -> None:
         super().__init__()
         self.prefix = prefix
         self.labels: list[str] = labels if labels is not None else ["queue_name", "actor_name"]
 
-        self.delayed_messages = set()
-        self.message_start_times = {}
-
-        os.makedirs(multiproc_dir, exist_ok=True)
-        os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", multiproc_dir)
+        self.delayed_messages: set[str] = set()
+        self.message_start_times: dict[str, int] = {}
 
     @property
-    def forks(self):
+    def forks(self) -> list[Callable[[], None]]:
         from django_dramatiq_postgres.forks import worker_metrics
 
         return [worker_metrics]
 
-    def before_worker_boot(self, broker: Broker, worker):
+    def before_worker_boot(self, broker: Broker, worker: Any) -> None:
         if Conf().test:
             return
 
@@ -226,47 +275,47 @@ class MetricsMiddleware(Middleware):
             ),
         )
 
-    def after_worker_shutdown(self, broker: Broker, worker):
+    def after_worker_shutdown(self, broker: Broker, worker: Any) -> None:
         from prometheus_client import multiprocess
 
         # TODO: worker_id
-        multiprocess.mark_process_dead(os.getpid())
+        multiprocess.mark_process_dead(os.getpid())  # type: ignore[no-untyped-call]
 
-    def _make_labels(self, message: Message) -> list[str]:
+    def _make_labels(self, message: Message[Any]) -> list[str]:
         return [message.queue_name, message.actor_name]
 
-    def after_nack(self, broker: Broker, message: Message):
+    def after_nack(self, broker: Broker, message: Message[Any]) -> None:
         self.total_rejected_messages.labels(*self._make_labels(message)).inc()
 
-    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+    def after_enqueue(self, broker: Broker, message: Message[Any], delay: int) -> None:
         if "retries" in message.options:
             self.total_retried_messages.labels(*self._make_labels(message)).inc()
 
-    def before_delay_message(self, broker: Broker, message: Message):
+    def before_delay_message(self, broker: Broker, message: Message[Any]) -> None:
         self.delayed_messages.add(message.message_id)
         self.in_progress_delayed_messages.labels(*self._make_labels(message)).inc()
 
-    def before_process_message(self, broker: Broker, message: Message):
+    def before_process_message(self, broker: Broker, message: Message[Any]) -> None:
         labels = self._make_labels(message)
         if message.message_id in self.delayed_messages:
             self.delayed_messages.remove(message.message_id)
             self.in_progress_delayed_messages.labels(*labels).dec()
 
         self.in_progress_messages.labels(*labels).inc()
-        self.message_start_times[message.message_id] = current_millis()
+        self.message_start_times[message.message_id] = current_millis()  # type: ignore[no-untyped-call]
 
     def after_process_message(
         self,
         broker: Broker,
-        message: Message,
+        message: Message[Any],
         *,
         result: Any | None = None,
         exception: Exception | None = None,
-    ):
+    ) -> None:
         labels = self._make_labels(message)
 
-        message_start_time = self.message_start_times.pop(message.message_id, current_millis())
-        message_duration = current_millis() - message_start_time
+        message_start_time = self.message_start_times.pop(message.message_id, current_millis())  # type: ignore[no-untyped-call]
+        message_duration = current_millis() - message_start_time  # type: ignore[no-untyped-call]
         self.messages_durations.labels(*labels).observe(message_duration)
 
         self.in_progress_messages.labels(*labels).dec()
@@ -277,7 +326,7 @@ class MetricsMiddleware(Middleware):
     after_skip_message = after_process_message
 
     @staticmethod
-    def run(addr: str, port: int):
+    def run(addr: str, port: int) -> None:
         try:
             server = HTTPServer((addr, port), _MetricsHandler)
             server.serve_forever()
@@ -288,7 +337,7 @@ class MetricsMiddleware(Middleware):
 
 
 class _MetricsHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
+    def do_GET(self) -> None:
         from prometheus_client import (
             CONTENT_TYPE_LATEST,
             CollectorRegistry,
@@ -297,13 +346,13 @@ class _MetricsHandler(BaseHTTPRequestHandler):
         )
 
         registry = CollectorRegistry()
-        multiprocess.MultiProcessCollector(registry)
+        multiprocess.MultiProcessCollector(registry)  # type: ignore[no-untyped-call]
         output = generate_latest(registry)
         self.send_response(200)
         self.send_header("Content-Type", CONTENT_TYPE_LATEST)
         self.end_headers()
         self.wfile.write(output)
 
-    def log_message(self, format, *args):
+    def log_message(self, format: str, *args: Any) -> None:
         logger = get_logger(__name__, type(self))
         logger.debug(format, *args)

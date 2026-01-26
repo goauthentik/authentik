@@ -14,6 +14,7 @@ class SCIMRequestException(TransientSyncException):
     _message: str | None
 
     def __init__(self, response: Response | None = None, message: str | None = None) -> None:
+        super().__init__(response)
         self._response = response
         self._message = message
 
@@ -27,3 +28,8 @@ class SCIMRequestException(TransientSyncException):
         except ValidationError:
             pass
         return self._message
+
+    def __str__(self):
+        if self._response:
+            return self._response.text
+        return super().__str__()

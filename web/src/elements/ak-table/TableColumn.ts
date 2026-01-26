@@ -71,7 +71,7 @@ export class TableColumn {
             <div class="pf-c-table__button-content">
                 <span part="column-text" class="pf-c-table__text">${this.value}</span>
                 <span part="column-sort" class="pf-c-table__sort-indicator">
-                    <i class="fas ${this.sortIndicator(orderBy)}"></i>
+                    <i class="fas ${this.sortIndicator(orderBy)}" aria-hidden="true"></i>
                 </span>
             </div>
         </button>`;
@@ -85,14 +85,9 @@ export class TableColumn {
             "pf-m-selected": Boolean(this.host && isSelected),
         };
 
-        return html`<td
-            part="column-item"
-            role="columnheader"
-            scope="col"
-            class="${classMap(classes)}"
-        >
+        return html`<th part="column-item" scope="col" class="${classMap(classes)}">
             ${orderBy && this.orderBy ? this.sortButton(orderBy) : html`${this.value}`}
-        </td>`;
+        </th>`;
     }
 }
 

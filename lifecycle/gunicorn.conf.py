@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 from prometheus_client.values import MultiProcessValue
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
@@ -33,15 +33,12 @@ wait_for_db()
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
 worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
-prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
 os.makedirs(worker_tmp_dir, exist_ok=True)
-os.makedirs(prometheus_tmp_dir, exist_ok=True)
 
 bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
 preload_app = True
 
@@ -56,27 +53,27 @@ workers = CONFIG.get_int("web.workers", default_workers)
 threads = CONFIG.get_int("web.threads", 4)
 
 
-def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
+def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Tell prometheus to use worker number instead of process ID for multiprocess"""
     from prometheus_client import values
 
     values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
 
 
-def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):
+def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Remove pid dbs when worker is shutdown"""
     from prometheus_client import multiprocess
 
     multiprocess.mark_process_dead(worker._worker_id)
 
 
-def on_starting(server: "Arbiter"):
+def on_starting(server: "Arbiter"):  # noqa: UP037
     """Attach a set of IDs that can be temporarily reused.
     Used on reloads when each worker exists twice."""
     server._worker_id_overload = set()
 
 
-def nworkers_changed(server: "Arbiter", new_value, old_value):
+def nworkers_changed(server: "Arbiter", new_value, old_value):  # noqa: UP037
     """Gets called on startup too.
     Set the current number of workers.  Required if we raise the worker count
     temporarily using TTIN because server.cfg.workers won't be updated and if
@@ -84,7 +81,7 @@ def nworkers_changed(server: "Arbiter", new_value, old_value):
     server._worker_id_current_workers = new_value
 
 
-def _next_worker_id(server: "Arbiter"):
+def _next_worker_id(server: "Arbiter"):  # noqa: UP037
     """If there are IDs open for reuse, take one.  Else look for a free one."""
     if server._worker_id_overload:
         return server._worker_id_overload.pop()
@@ -95,12 +92,12 @@ def _next_worker_id(server: "Arbiter"):
     return free.pop()
 
 
-def on_reload(server: "Arbiter"):
+def on_reload(server: "Arbiter"):  # noqa: UP037
     """Add a full set of ids into overload so it can be reused once."""
     server._worker_id_overload = set(range(1, server.cfg.workers + 1))
 
 
-def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
+def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Attach the next free worker_id before forking off."""
     worker._worker_id = _next_worker_id(server)
 
@@ -127,9 +124,9 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
                 json={
                     "domain": "authentik",
                     "name": "pageview",
-                    "referrer": get_full_version(),
+                    "referrer": authentik_full_version(),
                     "url": (
-                        f"http://localhost/{env}?utm_source={get_full_version()}&utm_medium={env}"
+                        f"http://localhost/{env}?utm_source={authentik_full_version()}&utm_medium={env}"
                     ),
                 },
                 headers={
@@ -139,7 +136,7 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
                 timeout=5,
             )
 
-        except Exception:  # nosec
+        except Exception:  # nosec # noqa
             pass
 
 start_debug_server()

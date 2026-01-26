@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `https://immich.company` is the URL used to access the Immich instance.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -32,10 +32,11 @@ To support the integration of Immich with authentik, you need to create an appli
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add three `Strict` redirect URIs and set them to `app.immich:///oauth-callback`, `https://immich.company/auth/login`, and `https://immich.company/user-settings`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Launch URL** _(optional)_: set the [Launch URL](/docs/add-secure-apps/applications/#appearance) to `https://immich.company/auth/login?autoLaunch=1` to allow automatic login to Immich when clicking on the application from within authentik.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -45,7 +46,7 @@ Immich documentation can be found here: https://immich.app/docs/administration/o
 
 1. In Immich, navigate to **Administration** > **Settings** > **OAuth Authentication**
 2. Configure Immich as follows:
-    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Client ID**: Enter your Client ID from authentik
     - **Client Secret**: Enter your Client Secret from authentik
     - **Scope**: `openid email profile`

@@ -5,16 +5,18 @@ import "#admin/stages/StageWizard";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import {
     FlowsApi,
     FlowStageBinding,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -40,14 +42,16 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(msg("Name"), "stage__name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: FlowStageBinding): string {
+        return `#${item.order} ${item.stageObj?.name || ""}`;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Order"), "order"],
+        [msg("Name"), "stage__name"],
+        [msg("Type")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -77,29 +81,27 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: FlowStageBinding): TemplateResult[] {
+    row(item: FlowStageBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.stageObj?.verboseName}`)} </span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.stage,
-                        }}
-                        type=${ifDefined(item.stageObj?.component)}
-                    >
-                    </ak-proxy-form>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.stageObj?.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Stage")}
                     </button>
                 </ak-forms-modal>
                 <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Stage binding")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Stage binding")}</span>
                     <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                     </ak-stage-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -107,7 +109,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlowstagebinding}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikFlowsFlowstagebinding}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -115,23 +117,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     renderExpanded(item: FlowStageBinding): TemplateResult {
-        return html` <td></td>
-            <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>
-                            ${msg(
-                                "These bindings control if this stage will be applied to the flow.",
-                            )}
-                        </p>
-                        <ak-bound-policies-list
-                            .target=${item.policybindingmodelPtrId}
-                            .policyEngineMode=${item.policyEngineMode}
-                        >
-                        </ak-bound-policies-list>
-                    </div>
-                </div>
-            </td>`;
+        return html`<div class="pf-c-content">
+            <p>${msg("These bindings control if this stage will be applied to the flow.")}</p>
+            <ak-bound-policies-list
+                .target=${item.policybindingmodelPtrId}
+                .policyEngineMode=${item.policyEngineMode}
+            >
+            </ak-bound-policies-list>
+        </div>`;
     }
 
     renderEmpty(): TemplateResult {
@@ -146,12 +139,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-stage-wizard>
                     <ak-forms-modal>
-                        <span slot="submit"> ${msg("Create")} </span>
-                        <span slot="header"> ${msg("Create Stage binding")} </span>
+                        <span slot="submit">${msg("Create")}</span>
+                        <span slot="header">${msg("Create Stage binding")}</span>
                         <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                         </ak-stage-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                            ${msg("Bind existing stage")}
+                            ${msg("Bind existing Stage")}
                         </button>
                     </ak-forms-modal>
                 </div>
@@ -167,12 +160,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Stage binding")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Stage binding")}</span>
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${msg("Bind existing stage")}
+                    ${msg("Bind existing Stage")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}

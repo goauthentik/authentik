@@ -17,12 +17,10 @@ import { customElement } from "lit/decorators.js";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
     static styles: CSSResult[] = [
-        PFBase,
         PFNav,
         PFAvatar,
         PFButton,
@@ -51,6 +49,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             product += ` ${msg("Enterprise")}`;
         }
         return html`<button
+            part="trigger"
             role="contentinfo"
             aria-label=${msg("Open about dialog")}
             class="pf-c-button pf-m-plain"
@@ -65,6 +64,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
                 aria-label=${msg("Product name")}
                 id="sidebar-version-product"
                 class="pf-c-title"
+                part="button-content product-name"
             >
                 ${product}
             </p>
@@ -74,6 +74,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
                 aria-label=${msg("Product version")}
                 id="sidebar-version-product"
                 class="pf-c-title"
+                part="button-content product-version"
             >
                 ${msg(str`Version ${this.version?.versionCurrent || ""}`)}
             </p>

@@ -43,7 +43,7 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",
@@ -68,8 +68,8 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         ></ak-dual-select-dynamic-selected>
                         ${this.instance
                             ? html`<ak-forms-modal size=${PFSize.XLarge}>
-                                  <span slot="submit"> ${msg("Create")} </span>
-                                  <span slot="header"> ${msg("Create Prompt")} </span>
+                                  <span slot="submit">${msg("Create")}</span>
+                                  <span slot="header">${msg("Create Prompt")}</span>
                                   <ak-prompt-form slot="form"> </ak-prompt-form>
                                   <button
                                       type="button"

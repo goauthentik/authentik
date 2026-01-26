@@ -2,42 +2,60 @@ import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
 
 import { globalAK } from "#common/global";
+import { autoDetectLanguage, setSessionLocale } from "#common/ui/locale/utils";
+
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AKLabel } from "#components/ak-label";
 
 import { PromptStage } from "#flow/stages/prompt/PromptStage";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
+/**
+ * @prop {StageHost} host - The host managing this stage.
+ *
+ */
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
-        return prompt.type === PromptTypeEnum.Checkbox
-            ? html`<input
-                  type="checkbox"
-                  class="pf-c-check__input"
-                  name="${prompt.fieldKey}"
-                  ?checked=${prompt.initialValue !== ""}
-                  ?required=${prompt.required}
-                  style="vertical-align: bottom"
-              />`
-            : super.renderPromptInner(prompt);
+    protected override renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
+        if (prompt.type === PromptTypeEnum.Checkbox) {
+            return html`<input
+                type="checkbox"
+                class="pf-c-check__input"
+                name=${prompt.fieldKey}
+                ?checked=${prompt.initialValue !== ""}
+                ?required=${prompt.required}
+                style="vertical-align: bottom"
+            />`;
+        }
+
+        return super.renderPromptInner(prompt);
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected override renderField(prompt: StagePrompt): SlottedTemplateResult {
         const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
 
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
                 <ak-form-element-horizontal
-                    label=${msg(str`${prompt.label}`)}
                     ?required=${prompt.required}
                     name=${prompt.fieldKey}
-                    ?invalid=${!!errors}
                     .errorMessages=${errors}
                 >
+                    ${AKLabel(
+                        {
+                            slot: "label",
+                            className: "pf-c-form__group-label",
+                            htmlFor: `field-${prompt.fieldKey}`,
+                            required: prompt.required,
+                        },
+                        prompt.label,
+                    )}
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
             `;
@@ -45,11 +63,13 @@ export class UserSettingsPromptStage extends PromptStage {
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 
-    renderContinue(): TemplateResult {
+    protected override renderContinue(): SlottedTemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
-                    <button type="submit" class="pf-c-button pf-m-primary">${msg("Save")}</button>
+                    <button name="continue" type="submit" class="pf-c-button pf-m-primary">
+                        ${msg("Save")}
+                    </button>
                     ${this.host.brand?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
@@ -58,13 +78,13 @@ export class UserSettingsPromptStage extends PromptStage {
                           >
                               ${msg("Delete account")}
                           </a>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
         </div>`;
     }
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
@@ -77,6 +97,38 @@ export class UserSettingsPromptStage extends PromptStage {
                 </form>
             </div>
             </ak-flow-card>`;
+    }
+
+    /**
+     * Detects if the locale was changed in a prompt stage and updates the session accordingly.
+     */
+    protected override onSubmitSuccess(payload: Record<string, unknown>): void {
+        super.onSubmitSuccess?.(payload);
+
+        if (this.challenge.component !== "ak-stage-prompt") return;
+
+        const localeField = this.challenge.fields.find(
+            (field) => field.type === PromptTypeEnum.AkLocale,
+        );
+
+        if (!localeField) return;
+
+        const previousLanguageTag = localeField.initialValue;
+        const languageTag = localeField?.fieldKey ? payload[localeField.fieldKey] : null;
+
+        if (typeof languageTag !== "string") return;
+
+        // Remove the temporary session locale...
+        setSessionLocale(null);
+
+        if (languageTag !== this.activeLanguageTag) {
+            this.logger.info("A prompt stage changed the locale", {
+                languageTag,
+                previousLanguageTag,
+            });
+
+            this.activeLanguageTag = autoDetectLanguage(languageTag);
+        }
     }
 }
 

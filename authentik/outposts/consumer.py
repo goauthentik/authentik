@@ -3,7 +3,9 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
+from hashlib import sha256
 from typing import Any
+from uuid import UUID
 
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
@@ -18,8 +20,15 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
-OUTPOST_GROUP = "group_outpost_%(outpost_pk)s"
-OUTPOST_GROUP_INSTANCE = "group_outpost_%(outpost_pk)s_%(instance)s"
+
+def build_outpost_group(outpost_pk: str | UUID) -> str:
+    return sha256(f"{connection.schema_name}/group_outpost_{str(outpost_pk)}".encode()).hexdigest()
+
+
+def build_outpost_group_instance(outpost_pk: str | UUID, instance: str) -> str:
+    return sha256(
+        f"{connection.schema_name}/group_outpost_{str(outpost_pk)}_{instance}".encode()
+    ).hexdigest()
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -64,26 +73,24 @@ class OutpostConsumer(JsonWebsocketConsumer):
     def connect(self):
         uuid = self.scope["url_route"]["kwargs"]["pk"]
         user = self.scope["user"]
-        outpost = (
+        self.outpost: Outpost | None = (
             get_objects_for_user(user, "authentik_outposts.view_outpost").filter(pk=uuid).first()
         )
-        if not outpost:
+        if self.outpost is None:
             raise DenyConnection()
-        self.logger = self.logger.bind(outpost=outpost)
+        self.logger = self.logger.bind(outpost=self.outpost)
         try:
             self.accept()
         except RuntimeError as exc:
             self.logger.warning("runtime error during accept", exc=exc)
             raise DenyConnection() from None
-        self.outpost = outpost
         query = QueryDict(self.scope["query_string"].decode())
         self.instance_uid = query.get("instance_uuid", self.channel_name)
         async_to_sync(self.channel_layer.group_add)(
-            OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
+            build_outpost_group(self.outpost.pk), self.channel_name
         )
         async_to_sync(self.channel_layer.group_add)(
-            OUTPOST_GROUP_INSTANCE
-            % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
+            build_outpost_group_instance(self.outpost.pk, self.instance_uid),
             self.channel_name,
         )
         GAUGE_OUTPOSTS_CONNECTED.labels(
@@ -96,12 +103,11 @@ class OutpostConsumer(JsonWebsocketConsumer):
     def disconnect(self, code):
         if self.outpost:
             async_to_sync(self.channel_layer.group_discard)(
-                OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
+                build_outpost_group(self.outpost.pk), self.channel_name
             )
             if self.instance_uid:
                 async_to_sync(self.channel_layer.group_discard)(
-                    OUTPOST_GROUP_INSTANCE
-                    % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
+                    build_outpost_group_instance(self.outpost.pk, self.instance_uid),
                     self.channel_name,
                 )
         if self.outpost and self.instance_uid:

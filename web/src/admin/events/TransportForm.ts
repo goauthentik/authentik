@@ -1,4 +1,5 @@
 import "#components/ak-hidden-text-input";
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
@@ -14,6 +15,8 @@ import {
     NotificationWebhookMapping,
     PropertymappingsApi,
     PropertymappingsNotificationListRequest,
+    StagesApi,
+    TypeCreate,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -33,9 +36,17 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 return transport;
             });
     }
+    async load(): Promise<void> {
+        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+    }
+
+    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showWebhook = false;
+
+    @property({ type: Boolean })
+    showEmail = false;
 
     getSuccessMessage(): string {
         return this.instance
@@ -56,18 +67,28 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     onModeChange(mode: string | undefined): void {
-        if (
-            mode === NotificationTransportModeEnum.Webhook ||
-            mode === NotificationTransportModeEnum.WebhookSlack
-        ) {
-            this.showWebhook = true;
-        } else {
-            this.showWebhook = false;
+        // Reset all flags
+        this.showWebhook = false;
+        this.showEmail = false;
+
+        switch (mode) {
+            case NotificationTransportModeEnum.Webhook:
+            case NotificationTransportModeEnum.WebhookSlack:
+                this.showWebhook = true;
+                break;
+            case NotificationTransportModeEnum.Email:
+                this.showEmail = true;
+                break;
+            case NotificationTransportModeEnum.Local:
+            default:
+                // Both flags remain false
+                break;
         }
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+    protected override renderForm(): TemplateResult {
+        return html`
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -75,6 +96,15 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
+            <ak-switch-input
+                name="sendOnce"
+                label=${msg("Send once")}
+                ?checked=${this.instance?.sendOnce ?? false}
+                help=${msg(
+                    "Only send notification once, for example when sending a webhook into a chat channel.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
                     @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
@@ -109,7 +139,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 value="${this.instance?.webhookUrl || ""}"
                 input-hint="code"
                 ?hidden=${!this.showWebhook}
-                required
+                ?required=${this.showWebhook}
             >
             </ak-hidden-text-input>
             <ak-form-element-horizontal
@@ -132,12 +162,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         ).propertymappingsNotificationList(args);
                         return items.results;
                     }}
-                    .renderElement=${(item: NotificationWebhookMapping): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .renderElement=${(item: NotificationWebhookMapping) => item.name}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMappingBody === item.pk;
                     }}
@@ -168,9 +194,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     .renderElement=${(item: NotificationWebhookMapping): string => {
                         return item.name;
                     }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: NotificationWebhookMapping | null) => item?.pk}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMappingHeaders === item.pk;
                     }}
@@ -178,26 +202,39 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="sendOnce">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.sendOnce ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Send once")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Only send notification once, for example when sending a webhook into a chat channel.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
+                label=${msg("Email Subject Prefix")}
+                name="emailSubjectPrefix"
+            >
+                <input
+                    type="text"
+                    value="${this.instance?.emailSubjectPrefix || "authentik Notification: "}"
+                    class="pf-c-form-control"
+                    ?hidden=${!this.showEmail}
+                    ?required=${this.showEmail}
+                />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
+                label=${msg("Email Template")}
+                name="emailTemplate"
+            >
+                <select name="users" class="pf-c-form-control">
+                    ${this.templates?.map((template) => {
+                        const selected =
+                            this.instance?.emailTemplate === template.name ||
+                            (!this.instance?.emailTemplate &&
+                                template.name === "email/event_notification.html");
+                        return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
+                            ${template.description}
+                        </option>`;
+                    })}
+                </select>
+            </ak-form-element-horizontal>
+        `;
     }
 }
 

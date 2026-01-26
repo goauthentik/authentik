@@ -7,11 +7,12 @@ import { MessageLevel } from "#common/messages";
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -27,7 +28,13 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     objects: T[] = [];
 
     @property({ attribute: false })
-    metadata!: (item: T) => BulkDeleteMetadata;
+    metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
+        const metadata: BulkDeleteMetadata = [];
+        if ("name" in item) {
+            metadata.push({ key: msg("Name"), value: item.name as string });
+        }
+        return metadata;
+    };
 
     @property({ attribute: false })
     usedBy?: (item: T) => Promise<UsedBy[]>;
@@ -52,25 +59,29 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         });
     }
 
-    columns(): TableColumn[] {
-        return this.metadata(this.objects[0]).map((element) => {
-            return new TableColumn(element.key);
-        });
+    protected override rowLabel(item: T): string | null {
+        const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
+        return name || null;
     }
 
-    row(item: T): TemplateResult[] {
+    @state()
+    protected get columns(): TableColumn[] {
+        return this.metadata(this.objects[0]).map((element) => [element.key]);
+    }
+
+    row(item: T): SlottedTemplateResult[] {
         return this.metadata(item).map((element) => {
             return html`${element.value}`;
         });
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
-    firstUpdated(): void {
+    firstUpdated(changedProperties: PropertyValues<this>): void {
         this.expandable = this.usedBy !== undefined;
-        super.firstUpdated();
+        super.firstUpdated(changedProperties);
     }
 
     renderExpanded(item: T): TemplateResult {
@@ -80,13 +91,9 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
             }
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
-        return html`<td role="cell" colspan="2">
-            <div class="pf-c-table__expandable-row-content">
-                ${this.usedBy
-                    ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
-                    : html``}
-            </div>
-        </td>`;
+        return html`${this.usedBy
+            ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
+            : nothing}`;
     }
 
     renderUsedBy(usedBy: UsedBy[]): TemplateResult {
@@ -108,6 +115,9 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
                         break;
                     case UsedByActionEnum.SetNull:
                         consequence = msg("reference will be set to an empty value");
+                        break;
+                    case UsedByActionEnum.LeftDangling:
+                        consequence = msg("reference will be left dangling");
                         break;
                 }
                 return html`<li>${msg(str`${ub.name} (${consequence})`)}</li>`;

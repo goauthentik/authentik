@@ -1,14 +1,14 @@
 import { AKElement } from "#elements/Base";
+import Styles from "#elements/forms/FormGroup.css";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Form Group
@@ -20,57 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFForm,
-        PFButton,
-        PFFormControl,
-
-        css`
-            :host([theme="dark"]) {
-                --marker-color: var(--pf-global--Color--200);
-                --marker-color-hover: var(--ak-dark-foreground-darker);
-            }
-
-            .pf-c-form__field-group-header-description {
-                text-wrap: balance;
-            }
-
-            details {
-                &::details-content {
-                    padding-inline-start: var(
-                        --pf-c-form__field-group--GridTemplateColumns--toggle
-                    );
-                }
-
-                & > summary {
-                    list-style-position: outside;
-                    margin-inline-start: 2em;
-                    padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
-                    padding: var(--pf-global--spacer--md);
-                    list-style-type: "\\f105";
-                    cursor: pointer;
-                    user-select: none;
-
-                    &::marker {
-                        color: var(--marker-color, var(--pf-global--Color--200));
-                        transition: var(--pf-c-form__field-group-toggle-icon--Transition);
-                        font-family: "Font Awesome 5 Free";
-                        font-weight: 900;
-                    }
-
-                    &:hover::marker {
-                        outline: 1px dashed red;
-                        color: var(--marker-color-hover, var(--pf-global--Color--100));
-                    }
-                }
-
-                &[open] summary {
-                    list-style-type: "\\f107";
-                }
-            }
-        `,
-    ];
+    static styles: CSSResult[] = [PFForm, PFButton, PFFormControl, Styles];
 
     //region Properties
 
@@ -86,6 +36,51 @@ export class AKFormGroup extends AKElement {
     //#endregion
 
     //#region Lifecycle
+
+    #invalidInputObserver: MutationObserver | null = null;
+
+    /**
+     * Explore within the form group for invalid inputs, revealing the first
+     *
+     * Note that this occurs **after** client-side validation, typically when
+     * server-side updates the `errorMessages` property.
+     */
+    #explore = (mutations: MutationRecord[]) => {
+        for (const mutation of mutations) {
+            if (mutation.type !== "attributes") continue;
+
+            const element = mutation.target as HTMLElement;
+
+            if (element.getAttribute("aria-invalid") === "true" && !this.open) {
+                this.open = true;
+
+                requestAnimationFrame(() => element.focus());
+
+                break;
+            }
+        }
+    };
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+
+        this.#invalidInputObserver = new MutationObserver((mutations) => {
+            // We wait for the next frame for a smoother experience.
+            requestAnimationFrame(() => this.#explore(mutations));
+        });
+
+        this.#invalidInputObserver.observe(this, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["aria-invalid"],
+        });
+    }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#invalidInputObserver?.disconnect();
+        this.#invalidInputObserver = null;
+    }
 
     public override updated(changedProperties: PropertyValues<this>): void {
         const previousOpen = changedProperties.get("open");
@@ -162,6 +157,42 @@ export class AKFormGroup extends AKElement {
     }
 
     //#endregion
+}
+
+//#region Utilities
+
+/**
+ * Deeply report the validity of the form, expanding collapsed groups as needed
+ * to reveal invalid inputs.
+ *
+ * @param form The form element to check.
+ * @returns Whether the form is valid.
+ */
+export function reportValidityDeep(
+    form: Pick<HTMLFormElement, "checkValidity" | "reportValidity" | "querySelector">,
+): boolean {
+    // Invalid inputs within collapsed groups can't receive focus,
+    // so we need to check validity before reporting.
+    const valid = form.checkValidity();
+
+    if (!valid) {
+        // We only want to reveal the first invalid input to avoid
+        // a rollercoaster of form groups attempting to scroll into view.
+        const formGroup = form.querySelector<AKFormGroup>(
+            "ak-form-group:not([open]):has(input:invalid)",
+        );
+
+        if (formGroup) {
+            formGroup.open = true;
+            // Ensure the form group has a frame to reveal the invalid input.
+            requestAnimationFrame(() => form.reportValidity());
+
+            return false;
+        }
+    }
+
+    // Otherwise, we're ready to use the browser's native validation.
+    return form.reportValidity();
 }
 
 declare global {

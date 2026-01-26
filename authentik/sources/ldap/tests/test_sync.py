@@ -4,6 +4,8 @@ from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
 from django.test import TestCase
+from ldap3.core.exceptions import LDAPInvalidFilterError
+from ldap3.utils.conv import escape_filter_chars
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
@@ -234,7 +236,7 @@ class LDAPSyncTests(TestCase):
             membership_sync.sync_full()
             group: Group = Group.objects.filter(name="test-group").first()
             self.assertIsNotNone(group)
-            self.assertEqual(group.parent, parent_group)
+            self.assertEqual(group.parents.first(), parent_group)
 
     def test_sync_groups_openldap(self):
         """Test group sync"""
@@ -519,3 +521,89 @@ class LDAPSyncTests(TestCase):
 
         self.assertFalse(User.objects.filter(username__startswith="not-in-the-source").exists())
         self.assertFalse(Group.objects.filter(name__startswith="not-in-the-source").exists())
+
+    def test_membership_sync_special_chars_in_group_dn(self):
+        """Test membership synchronization with special characters in group DN"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.lookup_groups_from_user = True
+        self.source.group_membership_field = "memberOf"
+
+        # Mock connection with group DN containing special characters
+        mock_conn = MagicMock()
+
+        # Simulate group with special characters in DN: parentheses, backslashes, asterisks
+        special_group_dn = "cn=test(group),ou=groups,dc=example,dc=com"
+        backslash_group_dn = "cn=test\\group,ou=groups,dc=example,dc=com"
+        asterisk_group_dn = "cn=test*group,ou=groups,dc=example,dc=com"
+
+        # Mock the paged_search method that would be called with the filter
+        mock_standard = MagicMock()
+        mock_conn.extend.standard = mock_standard
+
+        # Test case 1: Group DN with parentheses
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=mock_conn):
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+
+            # Simulate group data with special characters in DN
+            page_data = [{"dn": special_group_dn}]
+
+            # This should not raise LDAPInvalidFilterError anymore
+            try:
+                membership_sync.sync(page_data)
+                # Verify that the filter was properly escaped
+                # The call should have been made with escaped characters
+                mock_standard.paged_search.assert_called()
+                call_args = mock_standard.paged_search.call_args
+                search_filter = call_args[1]["search_filter"]
+                # The parentheses should be escaped as \28 and \29
+                self.assertIn("\\28", search_filter)  # Escaped (
+                self.assertIn("\\29", search_filter)  # Escaped )
+            except LDAPInvalidFilterError:
+                self.fail("LDAPInvalidFilterError should not be raised with escaped filter")
+
+        # Test case 2: Group DN with backslashes
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=mock_conn):
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            page_data = [{"dn": backslash_group_dn}]
+
+            try:
+                membership_sync.sync(page_data)
+                call_args = mock_standard.paged_search.call_args
+                search_filter = call_args[1]["search_filter"]
+                # The backslash should be escaped as \5c
+                self.assertIn("\\5c", search_filter)  # Escaped \
+            except LDAPInvalidFilterError:
+                self.fail("LDAPInvalidFilterError should not be raised with escaped filter")
+
+        # Test case 3: Group DN with asterisks
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", return_value=mock_conn):
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
+            page_data = [{"dn": asterisk_group_dn}]
+
+            try:
+                membership_sync.sync(page_data)
+                call_args = mock_standard.paged_search.call_args
+                search_filter = call_args[1]["search_filter"]
+                # The asterisk should be escaped as \2a
+                self.assertIn("\\2a", search_filter)  # Escaped *
+            except LDAPInvalidFilterError:
+                self.fail("LDAPInvalidFilterError should not be raised with escaped filter")
+
+    def test_escape_filter_chars_function(self):
+        """Test the escape_filter_chars function directly"""
+
+        # Test various special characters that need escaping
+        test_cases = [
+            ("test(group)", "test\\28group\\29"),  # parentheses
+            ("test\\group", "test\\5cgroup"),  # backslash
+            ("test*group", "test\\2agroup"),  # asterisk
+            ("test(*)group", "test\\28\\2a\\29group"),  # multiple special chars
+            ("normalgroup", "normalgroup"),  # no special chars
+            ("", ""),  # empty string
+        ]
+
+        for input_str, expected in test_cases:
+            with self.subTest(input_str=input_str):
+                result = escape_filter_chars(input_str)
+                self.assertEqual(result, expected)

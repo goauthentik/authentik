@@ -1,32 +1,24 @@
+import type { AKReleasesPluginData } from "@goauthentik/docusaurus-theme/releases/common";
+
+import { usePluginData } from "@docusaurus/useGlobalData";
 import useIsBrowser from "@docusaurus/useIsBrowser";
 import { useMemo } from "react";
 import { coerce } from "semver";
 
-export const ProductionURL = new URL("https://docs.goauthentik.io");
-
 export const LocalhostAliases: ReadonlySet<string> = new Set(["localhost", "127.0.0.1"]);
+
+export function normalizeReleaseName(name: string): string {
+    return name.split(" ")[0] || name;
+}
 
 /**
  * Given a semver, create the URL for the version.
  */
-export function createVersionURL(semver: string): string {
+export function createVersionURL(releaseName: string): string {
+    const semver = normalizeReleaseName(releaseName);
     const subdomain = `version-${semver.replace(".", "-")}`;
 
     return `https://${subdomain}.goauthentik.io`;
-}
-
-/**
- * Predicate to determine if a hostname appears to be a prerelease origin.
- */
-export function isPrerelease(hostname: string | null): boolean {
-    if (!hostname) return false;
-
-    if (hostname === ProductionURL.hostname) return true;
-    if (hostname.endsWith(".netlify.app")) return true;
-
-    if (LocalhostAliases.has(hostname)) return true;
-
-    return false;
 }
 
 /**
@@ -66,16 +58,40 @@ export function useHostname() {
     return hostname;
 }
 
-export function usePrereleaseOrigin() {
+export function useCachedVersionPluginData(): AKReleasesPluginData | null {
+    const pluginData = usePluginData("ak-releases-plugin", undefined) as
+        | AKReleasesPluginData
+        | undefined;
+
+    return pluginData ?? null;
+}
+
+function preferredPreReleaseOrigin(browser: boolean, fallback: string): string {
+    if (browser && LocalhostAliases.has(window.location.hostname)) {
+        return window.location.origin;
+    }
+
+    return fallback;
+}
+
+export function useVersionPluginData(): AKReleasesPluginData | null {
     const browser = useIsBrowser();
+    const cachedPluginData = useCachedVersionPluginData();
 
-    const prereleaseOrigin = useMemo(() => {
-        if (browser && LocalhostAliases.has(window.location.hostname)) {
-            return window.location.origin;
-        }
+    return useMemo(() => {
+        if (!cachedPluginData) return null;
 
-        return ProductionURL.href;
-    }, [browser]);
+        const preReleaseOrigin = preferredPreReleaseOrigin(
+            browser,
+            cachedPluginData.env.preReleaseOrigin,
+        );
 
-    return prereleaseOrigin;
+        return {
+            ...cachedPluginData,
+            env: {
+                ...cachedPluginData.env,
+                preReleaseOrigin,
+            },
+        };
+    }, [browser, cachedPluginData]);
 }

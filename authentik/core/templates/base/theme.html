@@ -1,10 +1,53 @@
+{% load static %}
+{% load authentik_core %}
+
+<link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/interface-%v.css' %}" />
+
 {% if ui_theme == "dark" %}
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#18191a">
-{% elif ui_theme == "light" %}
+
+  {% elif ui_theme == "light" %}
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#ffffff">
-{% else %}
+  {% else %}
+  <script data-id="theme-script">
+    "use strict";
+
+    (function () {
+        try {
+            /* Ignore older theme names */
+            let locallyStoredTheme = window.localStorage?.getItem("theme") || null;
+            if (typeof locallyStoredTheme === "string") {
+                locallyStoredTheme = locallyStoredTheme.trim();
+            }
+            if (!(["auto", "light", "dark"].includes(locallyStoredTheme))) {
+                locallyStoredTheme = null;
+            }
+            
+            const initialThemeChoice =
+                new URLSearchParams(window.location.search).get("theme") || locallyStoredTheme;
+
+            const themeChoice =
+                initialThemeChoice || document.documentElement.dataset.themeChoice || "auto";
+
+            document.documentElement.dataset.themeChoice = themeChoice;
+
+            if (themeChoice === "auto") {
+                document.documentElement.dataset.theme = window.matchMedia(
+                    "(prefers-color-scheme: dark)",
+                ).matches
+                    ? "dark"
+                    : "light";
+            } else {
+                document.documentElement.dataset.theme = themeChoice;
+            }
+        } catch (e) {
+            console.error("Failed to apply theme", e);
+        }
+    })();
+  </script>
+
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">

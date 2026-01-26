@@ -10,7 +10,7 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -31,6 +31,22 @@ export class DeleteForm extends ModalButton {
 
     @property({ attribute: false })
     delete!: () => Promise<unknown>;
+
+    /**
+     * Get the display name for the object being deleted/updated.
+     */
+    protected getObjectDisplayName(): string | undefined {
+        return this.obj?.name as string | undefined;
+    }
+
+    /**
+     * Get the formatted object name for display in messages.
+     * Returns ` "displayName"` with quotes if display name exists, empty string otherwise.
+     */
+    protected getFormattedObjectName(): string {
+        const displayName = this.getObjectDisplayName();
+        return displayName ? ` "${displayName}"` : "";
+    }
 
     confirm(): Promise<void> {
         return this.delete()
@@ -54,7 +70,9 @@ export class DeleteForm extends ModalButton {
 
     onSuccess(): void {
         showMessage({
-            message: msg(str`Successfully deleted ${this.objectLabel} ${this.obj?.name}`),
+            message: msg(
+                str`Successfully deleted ${this.objectLabel} ${this.getObjectDisplayName()}`,
+            ),
             level: MessageLevel.success,
         });
     }
@@ -71,12 +89,7 @@ export class DeleteForm extends ModalButton {
     }
 
     renderModalInner(): TemplateResult {
-        let objName = this.obj?.name;
-        if (objName) {
-            objName = ` "${objName}"`;
-        } else {
-            objName = "";
-        }
+        const objName = this.getFormattedObjectName();
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg(str`Delete ${this.objectLabel}`)}</h1>
@@ -85,7 +98,7 @@ export class DeleteForm extends ModalButton {
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p>
-                        ${msg(str`Are you sure you want to delete ${this.objectLabel} ${objName}?`)}
+                        ${msg(str`Are you sure you want to delete ${this.objectLabel}${objName}?`)}
                     </p>
                 </form>
             </section>
@@ -93,7 +106,7 @@ export class DeleteForm extends ModalButton {
                 ? until(
                       this.usedBy().then((usedBy) => {
                           if (usedBy.length < 1) {
-                              return html``;
+                              return nothing;
                           }
                           return html`
                               <section class="pf-c-modal-box__body pf-m-light">
@@ -132,7 +145,7 @@ export class DeleteForm extends ModalButton {
                           `;
                       }),
                   )
-                : html``}
+                : nothing}
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {

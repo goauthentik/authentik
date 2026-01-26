@@ -3,8 +3,11 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -16,10 +19,11 @@ import {
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
+    TypeCreate,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -32,6 +36,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         this.showConnectionSettings = !stage.useGlobalSettings;
         return stage;
     }
+
+    async load(): Promise<void> {
+        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+    }
+
+    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showConnectionSettings = false;
@@ -48,9 +58,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    renderConnectionSettings(): SlottedTemplateResult {
         if (!this.showConnectionSettings) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-group open label="${msg("Connection settings")}">
             <div class="pf-c-form">
@@ -81,39 +91,21 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 <ak-secret-text-input
                     name="password"
                     label=${msg("SMTP Password")}
-                    ?revealed=${this.instance === undefined}
+                    ?revealed=${!this.instance}
                 ></ak-secret-text-input>
 
-                <ak-form-element-horizontal name="useTls">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.instance?.useTls ?? true}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Use TLS")}</span>
-                    </label>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal name="useSsl">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.instance?.useSsl ?? false}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Use SSL")}</span>
-                    </label>
-                </ak-form-element-horizontal>
+                <ak-switch-input
+                    name="useTls"
+                    label=${msg("Use TLS")}
+                    ?checked=${this.instance?.useTls ?? true}
+                >
+                </ak-switch-input>
+                <ak-switch-input
+                    name="useSsl"
+                    label=${msg("Use SSL")}
+                    ?checked=${this.instance?.useSsl ?? false}
+                >
+                </ak-switch-input>
                 <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                     <input
                         type="number"
@@ -141,8 +133,8 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
-        return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
+    protected override renderForm(): TemplateResult {
+        return html` <span> ${msg("Stage used to configure an email-based authenticator.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -167,30 +159,18 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="useGlobalSettings">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.useGlobalSettings ?? true}
-                        @change=${(ev: Event) => {
-                            const target = ev.target as HTMLInputElement;
-                            this.showConnectionSettings = !target.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Use global connection settings")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When enabled, global email connection settings will be used and connection settings below will be ignored.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="useGlobalSettings"
+                ?checked=${this.instance?.useGlobalSettings ?? true}
+                @change=${(ev: Event) => {
+                    const target = ev.target as HTMLInputElement;
+                    this.showConnectionSettings = !target.checked;
+                }}
+                label=${msg("Use global connection settings")}
+                help=${msg(
+                    "When enabled, global email connection settings will be used and connection settings below will be ignored.",
+                )}
+            ></ak-switch-input>
             ${this.renderConnectionSettings()}
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
@@ -260,6 +240,28 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
                             )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Template")} name="template">
+                        <select
+                            class="pf-c-form-control"
+                            ?disabled=${!this.templates || this.templates.length === 0}
+                        >
+                            ${this.templates && this.templates.length > 0
+                                ? this.templates.map((template: TypeCreate) => {
+                                      return html`<option
+                                          value="${template.name}"
+                                          ?selected=${this.instance?.template === template.name ||
+                                          (!this.instance?.template &&
+                                              template.name === "email/email_otp.html")}
+                                      >
+                                          ${template.description}
+                                      </option>`;
+                                  })
+                                : html`<option value="">${msg("Loading templates...")}</option>`}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Template used for the verification email.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

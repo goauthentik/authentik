@@ -11,11 +11,10 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    static styles: CSSResult[] = [PFButton];
 
     @property({ attribute: false })
     provider?: Provider;
@@ -37,8 +36,8 @@ export class RelatedApplicationButton extends AKElement {
             </a>`;
         }
         return html`<ak-forms-modal>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Application")} </span>
+            <span slot="submit">${msg("Create")}</span>
+            <span slot="header">${msg("Create Application")}</span>
             <ak-application-form slot="form" .provider=${this.provider?.pk}> </ak-application-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;

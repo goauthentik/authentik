@@ -3,22 +3,24 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import { ifPresent } from "#elements/utils/attributes";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import {
     CertificateKeyPair,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    KeyTypeEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
 
-const renderValue = (item: CertificateKeyPair | undefined): string | undefined => item?.pk;
+const renderValue = (item: CertificateKeyPair | null) => item?.pk;
 
 /**
  * Cryptographic Certificate Search
@@ -34,13 +36,19 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
 @customElement("ak-crypto-certificate-search")
 export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
-    certificate?: string;
+    certificate?: string | null;
 
     @query("ak-search-select")
-    search!: SearchSelect<CertificateKeyPair>;
+    search!: ISearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name?: string | null;
+
+    @property({ type: String })
+    public label: string | null = msg("Certificate");
+
+    @property({ type: String })
+    public placeholder: string | null = msg("Select a certificate...");
 
     /**
      * Set to `true` to allow certificates without private key to show up. When set to `false`,
@@ -48,7 +56,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
-    noKey = false;
+    public noKey = false;
 
     /**
      * Set this to true if, should there be only one certificate available, you want the system to
@@ -57,16 +65,21 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * @attr
      */
     @property({ type: Boolean, attribute: "singleton" })
-    singleton = false;
+    public singleton = false;
 
-    selectedKeypair?: CertificateKeyPair;
+    /**
+     * When allowedKeyTypes is set, only certificates or keypairs with matching
+     * key algorithms will be shown.
+     * @attr
+     * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
+     */
+    @property({ type: Array, attribute: "allowed-key-types" })
+    public allowedKeyTypes?: KeyTypeEnum[];
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-        this.fetchObjects = this.fetchObjects.bind(this);
-        this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
-    }
+    /**
+     * @todo Document this.
+     */
+    public selectedKeypair?: CertificateKeyPair;
 
     get value() {
         return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;
@@ -85,38 +98,42 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         }
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    handleSearchUpdate = (ev: CustomEvent) => {
         ev.stopPropagation();
         this.selectedKeypair = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
-    }
+    };
 
-    async fetchObjects(query?: string): Promise<CertificateKeyPair[]> {
+    fetchObjects = async (query?: string): Promise<CertificateKeyPair[]> => {
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
-            includeDetails: false,
         };
         if (query !== undefined) {
             args.search = query;
+        }
+        if (this.allowedKeyTypes?.length) {
+            args.keyType = this.allowedKeyTypes;
         }
         const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             args,
         );
         return certificates.results;
-    }
+    };
 
-    selected(item: CertificateKeyPair, items: CertificateKeyPair[]) {
+    selected = (item: CertificateKeyPair, items: CertificateKeyPair[]) => {
         return (
             (this.singleton && !this.certificate && items.length === 1) ||
             (!!this.certificate && this.certificate === item.pk)
         );
-    }
+    };
 
     render() {
         return html`
             <ak-search-select
-                name=${ifDefined(this.name ?? undefined)}
+                name=${ifPresent(this.name)}
+                label=${ifPresent(this.label)}
+                placeholder=${ifPresent(this.placeholder)}
                 .fetchObjects=${this.fetchObjects}
                 .renderElement=${renderElement}
                 .value=${renderValue}

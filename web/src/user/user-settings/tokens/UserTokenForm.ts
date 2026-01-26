@@ -8,7 +8,7 @@ import { ModelForm } from "#elements/forms/ModelForm";
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -43,7 +43,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const now = new Date();
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())
@@ -79,7 +79,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                           class="pf-c-form-control"
                       />
                   </ak-form-element-horizontal>`
-                : html``}`;
+                : nothing}`;
     }
 }
 

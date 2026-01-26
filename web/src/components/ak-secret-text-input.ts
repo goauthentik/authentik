@@ -1,6 +1,6 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { ifNotEmpty } from "#elements/utils/ifNotEmpty";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -10,7 +10,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-secret-text-input")
 export class AkSecretTextInput extends HorizontalLightComponent<string> {
-    @property({ type: String, reflect: true })
+    @property({ type: String })
     public value = "";
 
     @property({ type: Boolean, reflect: true })
@@ -19,9 +19,19 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: String })
     public placeholder = "";
 
+    @property({ type: Number, attribute: "maxlength" })
+    public maxLength?: number;
+
+    @property({ type: Number, attribute: "minlength" })
+    public minLength?: number;
+
     #onReveal() {
         this.revealed = true;
     }
+
+    #inputListener = (ev: InputEvent) => {
+        this.value = (ev.target as HTMLInputElement).value;
+    };
 
     #renderSecretInput() {
         return html`<div class="pf-c-form__horizontal-group" @click=${() => this.#onReveal()}>
@@ -32,16 +42,19 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
                 data-form-ignore="true"
                 value="**************"
             />
-            <input type="text" value="${ifDefined(this.value)}" ?required=${this.required} hidden />
+            <input
+                type="text"
+                value="${ifDefined(this.value)}"
+                ?required=${this.required}
+                name=${ifDefined(this.name)}
+                hidden
+            />
             <p class="pf-c-form__helper-text" aria-live="polite">${msg("Click to change value")}</p>
         </div>`;
     }
 
     protected renderVisibleInput() {
         const code = this.inputHint === "code";
-        const setValue = (ev: InputEvent) => {
-            this.value = (ev.target as HTMLInputElement).value;
-        };
         const classes = {
             "pf-c-form-control": true,
             "pf-m-monospace": code,
@@ -49,10 +62,13 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
 
         return html` <input
             type="text"
-            @input=${setValue}
+            @input=${this.#inputListener}
+            name=${ifDefined(this.name)}
             value=${ifDefined(this.value)}
             class="${classMap(classes)}"
-            placeholder=${ifNotEmpty(this.placeholder)}
+            maxlength=${ifPresent(this.maxLength)}
+            minlength=${ifPresent(this.minLength)}
+            placeholder=${ifPresent(this.placeholder)}
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
             ?required=${this.required}

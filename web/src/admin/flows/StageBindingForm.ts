@@ -1,3 +1,5 @@
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
@@ -6,6 +8,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { RadioOption } from "#elements/forms/Radio";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
@@ -20,8 +24,31 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[] {
+    return [
+        {
+            label: "RETRY",
+            value: InvalidResponseActionEnum.Retry,
+            default: true,
+            description: msg("Returns the error message and a similar challenge to the executor"),
+        },
+        {
+            label: "RESTART",
+            value: InvalidResponseActionEnum.Restart,
+            description: msg("Restarts the flow from the beginning"),
+        },
+        {
+            label: "RESTART_WITH_CONTEXT",
+            value: InvalidResponseActionEnum.RestartWithContext,
+            description: msg(
+                "Restarts the flow from the beginning, while keeping the flow context",
+            ),
+        },
+    ];
+}
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
@@ -34,10 +61,16 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
+
+    public override reset(): void {
+        super.reset();
+
+        this.defaultOrder = 0;
+    }
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {
@@ -75,9 +108,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderTarget(): TemplateResult {
+    renderTarget(): SlottedTemplateResult {
         if (this.instance?.target || this.targetPk) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
@@ -88,7 +121,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
@@ -108,9 +141,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     .renderElement=${(stage: Stage): string => {
                         return stage.name;
                     }}
-                    .value=${(stage: Stage | undefined): string | undefined => {
-                        return stage?.pk;
-                    }}
+                    .value=${(stage: Stage | null) => stage?.pk}
                     .selected=${(stage: Stage): boolean => {
                         return stage.pk === this.instance?.stage;
                     }}
@@ -125,70 +156,27 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="evaluateOnPlan">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.evaluateOnPlan ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when flow is planned")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies during the Flow planning process.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="reEvaluatePolicies">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.reEvaluatePolicies ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when stage is run")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies before the Stage is presented to the user.")}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="evaluateOnPlan"
+                label=${msg("Evaluate when flow is planned")}
+                ?checked=${this.instance?.evaluateOnPlan ?? false}
+                help=${msg("Evaluate policies during the Flow planning process.")}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="reEvaluatePolicies"
+                label=${msg("Evaluate when stage is run")}
+                ?checked=${this.instance?.reEvaluatePolicies ?? true}
+                help=${msg("Evaluate policies before the Stage is presented to the user.")}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Invalid response behavior")}
                 required
                 name="invalidResponseAction"
             >
                 <ak-radio
-                    .options=${[
-                        {
-                            label: "RETRY",
-                            value: InvalidResponseActionEnum.Retry,
-                            default: true,
-                            description: html`${msg(
-                                "Returns the error message and a similar challenge to the executor",
-                            )}`,
-                        },
-                        {
-                            label: "RESTART",
-                            value: InvalidResponseActionEnum.Restart,
-                            description: html`${msg("Restarts the flow from the beginning")}`,
-                        },
-                        {
-                            label: "RESTART_WITH_CONTEXT",
-                            value: InvalidResponseActionEnum.RestartWithContext,
-                            description: html`${msg(
-                                "Restarts the flow from the beginning, while keeping the flow context",
-                            )}`,
-                        },
-                    ]}
+                    .options=${createInvalidResponseOptions()}
                     .value=${this.instance?.invalidResponseAction}
                 >
                 </ak-radio>

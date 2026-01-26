@@ -1,11 +1,14 @@
 """Radius Provider"""
 
+from collections.abc import Iterable
+
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import PropertyMapping, Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
@@ -38,6 +41,10 @@ class RadiusProvider(OutpostModel, Provider):
         ),
     )
 
+    certificate = models.ForeignKey(
+        CertificateKeyPair, on_delete=models.CASCADE, default=None, null=True
+    )
+
     @property
     def launch_url(self) -> str | None:
         """Radius never has a launch URL"""
@@ -56,6 +63,14 @@ class RadiusProvider(OutpostModel, Provider):
         from authentik.providers.radius.api.providers import RadiusProviderSerializer
 
         return RadiusProviderSerializer
+
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
+        required = [self, "authentik_stages_mtls.pass_outpost_certificate"]
+        if self.certificate is not None:
+            required.append(("view_certificatekeypair", self.certificate))
+            required.append(("view_certificatekeypair_certificate", self.certificate))
+            required.append(("view_certificatekeypair_key", self.certificate))
+        return required
 
     def __str__(self):
         return f"Radius Provider {self.name}"

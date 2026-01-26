@@ -6,7 +6,6 @@ import "#elements/forms/Radio";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import type { RadioOption } from "#elements/forms/Radio";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
@@ -55,7 +54,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -75,7 +74,6 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             type="text"
                             value="${ifDefined(this.instance?.staticSettings.username)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -86,7 +84,6 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             type="password"
                             value="${ifDefined(this.instance?.staticSettings.password)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                 </div>
@@ -137,13 +134,9 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
             </ak-form-group>
             <ak-form-group label="${msg("Advanced settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Expression")}
-                        required
-                        name="expression"
-                    >
+                    <ak-form-element-horizontal label=${msg("Expression")} name="expression">
                         <ak-codemirror
-                            mode=${CodeMirrorMode.Python}
+                            mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>
@@ -152,9 +145,9 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href="${docLink(
-                                    "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik",
-                                )}"
+                                href=${docLink(
+                                    "/add-secure-apps/providers/property-mappings/expression",
+                                )}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

@@ -1,3 +1,4 @@
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -27,7 +28,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -73,7 +74,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const authenticators = [
             [DeviceClassesEnum.Static, msg("Static Tokens")],
             [DeviceClassesEnum.Totp, msg("TOTP Authenticators")],
@@ -206,7 +207,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                   </p>
                               </ak-form-element-horizontal>
                           `
-                        : html``}
+                        : nothing}
                 </div>
             </ak-form-group>
             <ak-form-group open label="${msg("WebAuthn-specific settings")}">

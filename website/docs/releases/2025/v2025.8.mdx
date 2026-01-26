@@ -1,0 +1,5564 @@
+---
+title: Release 2025.8
+slug: "/releases/2025.8"
+---
+
+## Highlights
+
+- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/frontchannel_and_backchannel_logout.mdx).
+
+- **Event map**: :ak-enterprise View geolocation of user events on a map.
+
+![Screenshot of the admin interface showing events plotted on a histogram chart and on a map](../../sys-mgmt/events/event-map-chart.png)
+
+- **Advanced search**: :ak-enterprise Search for [users](../../users-sources/user/user_basic_operations.md#tell-me-more) and [event logs](../../sys-mgmt/events/logging-events.md#tell-me-more) with custom query language to filter on their properties and attributes.
+
+- **Email stage rate limiting**: The email stage can now be configured to set a maximum number of emails that can be sent within a specified time period.
+
+## Breaking changes
+
+### Worker and background tasks revamped
+
+The authentik [worker](../../sys-mgmt/ops/worker.md) and [background tasks](../../sys-mgmt/background-tasks.md) have been reworked for better observability of tasks, and better configurability of scheduled tasks.
+
+This rework also allowed us to not depend on Redis for background tasks. However, we replaced the engine used to manage these tasks, and as such, don't have a seamless migration path.
+
+For instances with a high level of traffic, such as many users logging in, many sign up requests, etc., some tasks may be lost during the upgrade. Instances with low traffic can upgrade during periods of downtime.
+
+To prevent losing tasks during the upgrade, instances with a high level of traffic should follow these instructions:
+
+1. Start by upgrading the authentik server.
+2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-upgraded worker container:
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+    <Tabs
+    groupId="platform"
+    defaultValue="docker-compose"
+    values={[
+        {label: 'docker-compose', value: 'docker-compose'},
+        {label: 'Kubernetes', value: 'kubernetes'},
+    ]}>
+    <TabItem value="docker-compose">
+
+    ```sh
+    docker compose exec worker bash -c 'DJANGO_SETTINGS_MODULE=authentik.root.settings celery -A authentik.root.celery inspect active'
+    docker compose exec worker bash -c 'DJANGO_SETTINGS_MODULE=authentik.root.settings celery -A authentik.root.celery inspect scheduled'
+    docker compose exec worker bash -c 'DJANGO_SETTINGS_MODULE=authentik.root.settings celery -A authentik.root.celery inspect reserved'
+    ```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+    ```sh
+    kubectl exec -it deployment/authentik-worker -c worker -- bash -c 'DJANGO_SETTINGS_MODULE=authentik.root.settings celery -A authentik.root.celery inspect active'
+    kubectl exec -it deployment/authentik-worker -c worker -- bash -c 'DJANGO_SETTINGS_MODULE=authentik.root.settings celery -A authentik.root.celery inspect scheduled'
+    kubectl exec -it deployment/authentik-worker -c worker -- bash -c 'DJANGO_SETTINGS_MODULE=authentik.root.settings celery -A authentik.root.celery inspect reserved'
+    ```
+
+    </TabItem>
+    </Tabs>
+
+3. Wait for all these commands to report the old task queues as "empty"
+4. Finish by upgrading the worker
+
+### Docker image deprecation notice for `beryju/authentik` and `beryju/authentik-*`
+
+The `beryju/authentik` and `beryju/authentik-*` Docker images are no longer being updated. Users are now encouraged to use the following images:
+
+- **Server image:**
+    - `ghcr.io/goauthentik/server` or `authentik/server`
+
+- **Outpost images:**
+    - `ghcr.io/goauthentik/ldap` or `authentik/ldap`
+    - `ghcr.io/goauthentik/proxy` or `authentik/proxy`
+    - `ghcr.io/goauthentik/rac` or `authentik/rac`
+    - `ghcr.io/goauthentik/radius` or `authentik/radius`
+
+We recommend updating your Docker Compose files or other container configurations to use these new image paths.
+
+### Database encoding requirements
+
+The PostgreSQL database must now use the `UTF8` encoding. This is the default encoding that PostgreSQL uses. Unless you have specifically chosen a different encoding when creating the authentik database, no change is needed.
+
+### Renamed/removed settings
+
+The `AUTHENTIK_WORKER__CONCURRENCY` setting has been renamed `AUTHENTIK_WORKER__THREADS`. The old setting is still available as an alias and will be removed in a future release.
+
+The following settings have been removed and no longer have an effect:
+
+- `AUTHENTIK_BROKER__URL`
+- `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`
+- `AUTHENTIK_RESULT_BACKEND__URL`
+
+### Renamed/removed metrics
+
+The `authentik_admin_workers` metric has been renamed `authentik_tasks_workers`.
+
+The following metrics have been removed:
+
+- `authentik_system_tasks`
+- `authentik_system_tasks_time_seconds`
+- `authentik_system_tasks_status`
+
+Instead, the following metrics are now available:
+
+- `authentik_tasks_total`
+- `authentik_tasks_errors_total`
+- `authentik_tasks_retries_total`
+- `authentik_tasks_rejected_total`
+- `authentik_tasks_in_progress`
+- `authentik_tasks_delayed_in_progress`
+- `authentik_tasks_duration_milliseconds`
+
+### Prometheus metrics
+
+The tasks metrics are no longer exposed by the server, but by the worker. For Helm chart users, add the following values to enable a `ServiceMonitor` to scrape those metrics:
+
+```yaml
+worker:
+    metrics:
+        enabled: true
+        serviceMonitor:
+            enabled: true
+```
+
+### Helm chart changes
+
+Due to [Bitnami upcoming changes](https://github.com/bitnami/containers/issues/83267) to availability of their container images, the Helm chart default values have been updated to instead use [docker.io/library/postgres](https://hub.docker.com/_/postgres) and [docker.io/library/redis](https://hub.docker.com/_/redis). If you are setting custom values for either PostgreSQL or Redis, please review the [associated Helm chart changes](https://github.com/goauthentik/helm/pull/385) to update your values.
+
+Redis has also been updated from 8.0 to 8.2.
+
+From this point on, we recommend using the bundled PostgreSQL dependency for demonstration and test purposes only. See our [installation documentation](../../install-config/install/kubernetes.md) for alternatives to run PostgreSQL in a production environment.
+
+## New features and improvements
+
+- **LDAP Provider improvements**:
+    - Group objects returned by queries to the LDAP provider now includes a `memberOf` field pointing back to its parent if set. Contributed by [@danieladugyan](https://github.com/danieladugyan), thank you!
+    - LDAP connections are now terminated upon session deletion in authentik.
+
+- **Accessibility improvements**: Better screen reader support within the admin interface for navigation, forms, and wizard elements.
+- **Send event notifications to associated user**: Configure notification rules to send the event notification to the user associated to the event. Read more in our [notifications documentation](../../sys-mgmt/events/notifications.md).
+- **Policy bindings performance improvements**: Policy bindings evaluation avoids forking new processes for user and group policy bindings.
+- **SCIM Source patch support**: Add full patch support for all properties of users and groups.
+- **Secret inputs in the admin interface are now hidden by default**.
+
+## New integration guides
+
+An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
+
+- [1Password](https://integrations.goauthentik.io/security/1password/)
+- [Bitwarden](https://integrations.goauthentik.io/security/bitwarden/)
+- [Papra](https://integrations.goauthentik.io/documentation/papra/)
+- [Planka](https://integrations.goauthentik.io/chat-communication-collaboration/planka/)
+- [Seafile](https://integrations.goauthentik.io/media/seafile/)
+- [Vaultwarden](https://integrations.goauthentik.io/security/vaultwarden/)
+- [Zoho](https://integrations.goauthentik.io/platforms/zoho/)
+
+## Upgrading
+
+This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
+
+:::warning
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
+:::
+
+### Docker Compose
+
+To upgrade, download the new Docker Compose file and update the Docker stack with the new version, using these commands:
+
+```shell
+wget -O docker-compose.yml https://goauthentik.io/version/2025.8/docker-compose.yml
+docker compose up -d
+```
+
+The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
+
+### Kubernetes
+
+Upgrade the Helm Chart to the new version, using the following commands:
+
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
+```
+
+## Minor changes/fixes
+
+- \*: remove redundant user_logged_out signals (#15221)
+- \*: replace Celery with Dramatiq (#13492)
+- \*: use ManagedAppConfig everywhere (#14839)
+- admin: only run update checks in the default tenant (#14874)
+- blueprints: add File tag (#15727)
+- blueprints: add FindObject tag (#12415)
+- blueprints: add JSON tag to parse JSON from string (#15235)
+- blueprints: add section support for organisation (#15045)
+- blueprints: sort schema items (#15022)
+- brands: revert sort matched brand by match length (revert #15413) (cherry-pick #16233) (#16235)
+- brands: sort matched brand by match length (#15413)
+- core, providers/ldap: add parent/child groups to api and ldap results (#14974)
+- core: Add email template selector (cherry-pick #16170) (#16225)
+- core: Prevent application creation with reserved slugs (#15930)
+- core: add updated_at field to user (#15571)
+- core: better API validation for JSON fields (#15236)
+- core: fix flow planner checking against wrong user when creating recovery link (#15390)
+- core: include more authenticator details when possible (#15224)
+- core: limit User search_field to pure text only (#16020)
+- enterprise/audit: fix diff with update_fields (#15574)
+- enterprise/search: ability to use more precise search queries (#7698)
+- enterprise/search: fix schema once again (#15392)
+- enterprise/search: fix search fallback for non QL queries (#15325)
+- enterprise/stages/source: update outer flow with context from inner flow (#15177)
+- enterprise/web/admin: OSM for events (#9287)
+- enterprise: fix frontend considering license valid when it isn't (#15578)
+- events: add option to send notifications to event user (#15083)
+- events: disable all JSON autocomplete (#15138)
+- events: disable computation of autocomplete structure for event context (#15137)
+- events: fix ak_client_ip not set in notification rule policy context (#15464)
+- events: fix map again and fix flaky tests (#15154)
+- events: improve error formatting in events (#15187)
+- events: rework metrics endpoint (#14934)
+- events: use pending_user as user when possible (#15238)
+- lib/sync/outgoing: fix page sync task id (#15828)
+- lib/sync: drop sync task when triggered by users' last_login change (#15553)
+- outpost/proxyv2: add session cleanup for filesystem session store (#15798)
+- outpost: proxy: handle nil HTTP response in attemptBasicAuth function (#13781)
+- outposts/ldap: Handle comma-separated attributes in LDAP search requests (#15000)
+- outposts: Refactor session end signal and add LDAP support (#14539)
+- outposts: remove duplicate startup/setup code, add pyroscope, make sentry not reconfigure every time (#14724)
+- packages/django-dramatiq-postgres: broker: avoid exception on consumer final close (#15824)
+- packages/django-dramatiq-postgres: broker: fix infinite loop (#16088)
+- packages/django-dramatiq-postgres: broker: remember previously fetched notifies (#16128)
+- packages/django-dramatiq-postgres: fix typo (#15932)
+- packages/django-dramatiq-postgres: run worker in the same base process, use structlog (#16061)
+- policies/password: Fix amount_uppercase in password policy check (cherry-pick #16197) (#16228)
+- policies/reputation: fix updated for reputation not updating (#15782)
+- policies: Optimize policy checking for static bindings (#14957)
+- policies: buffered policy access view for concurrent authorization attempts when unauthenticated (#15034)
+- policies: fix typo (#15933)
+- providers/oauth2: Add `cause` to debug issues and better tests (#15057)
+- providers/oauth2: add conformance tools (#15228)
+- providers/oauth2: add support for OAuth 2.0 Authorization Server Metadata endpoint (RFC 8414) (#12383)
+- providers/oauth2: backchannel logout (#15401)
+- providers/oauth2: bug fixes from conformance testing (#15056)
+- providers/proxy: set_oauth_defaults in reconcile instead of task (#14875)
+- providers/rac: fix incorrect caching (#15779)
+- providers/rac: fix property mapping expression not executing (#15819)
+- providers/saml: configuration for default NameID Policy (#15109)
+- revert: web/flow: cleanup WebAuthn helper functions (#14460)" (#15172)
+- revert: web: Font fixes (#15581) (#15789)
+- root: Add more opencontainer labels to Dockerfiles (#15923)
+- root: add system check for database encoding (#15186)
+- root: enhance custom middleware experience (#15919)
+- root: extract custom setup code (#15150)
+- root: fix custom packages installation in docker (cherry-pick #16150) (#16151)
+- root: fix custom packages installation in docker (cherry-pick #16157) (#16158)
+- root: fix missing uv run in makefile (#16146)
+- root: fix some cases of invalid data triggering exceptions (#14799)
+- root: monitoring: force db connection reload before healthcheck (#9970)
+- root: remove /if/help (#14929)
+- root: support for custom postgresql connection options (#15577)
+- root: test label handling and error reporting in PytestTestRunner (#14000)
+- root: update Makefile with new commands for docs and integrations (#15689)
+- sources/SCIM: Full Patch support for User and Group (#15485)
+- sources/oauth: add entra ID source and move logic over (#15538)
+- sources/plex: add missing group connection type to flow manager (#15750)
+- sources/scim: add group patch support (#15212)
+- stages/authenticator_sms: allow custom message for twilio provider, pass request (#15629)
+- stages/authenticator_validate: fix WebAuthn in android during google account addition (#15351)
+- stages/authenticator_webauthn: add option to configure max attempts (#15041)
+- stages/email: implement rate limiting for account verification (#15531)
+- stages/email: only update is_active on user to not overwrite external changes (#15508)
+- stages/email: remove superfluous td from account_confirmation template (#15297)
+- stages/prompt: fix list policy for prompt validation failing with multiple policies (#15522)
+- stages/user_login: unknown device (#14459)
+- tasks/schedules: fix IntegrityError on schedule update (#15871)
+- tasks: add sentry dramatiq integration (cherry-pick #16167) (#16183)
+- tasks: fix rel_obj being removed when task is retried (#15862)
+- tests/e2e: WebAuthn E2E tests (#14461)
+- web/a11y -- ak-form-group (#15688)
+- web/a11y -- ak-form-group part 2: type clean up, Chrome warnings (#15721)
+- web/a11y -- ak-sidebar, ak-modal, cards (#15690)
+- web/a11y: Form Errors (#15940)
+- web/a11y: Form Inputs (#15878)
+- web/a11y: License notice ARIA attributes. (#15872)
+- web/a11y: Navigation Banner (#15880)
+- web/a11y: QL Search Input (cherry-pick #16198) (#16229)
+- web/a11y: Tables & Modals (#15877)
+- web/admin: Text and Textarea Fields that "hide" their contents until prompted (#15024)
+- web/admin: adopt ak-hidden-text (#15042)
+- web/admin: fix language in certificate import (#14953)
+- web/admin: fix settings saving (cherry-pick #16184) (#16187)
+- web/admin: fix variable name (#15934)
+- web/admin: hide webhook URL by default (#15136)
+- web/admin: improve admin UI for tasks slightly (#15829)
+- web/admin: make message container bottom aligned for admin interface (#14816)
+- web/admin: point create application to wizard (#15211)
+- web/admin: remove all special cases of slug handling, replace with a "smart slug" component (#14983)
+- web/admin: show selected policy engine mode on bindings pages, allow setting it on sources (#12963)
+- web/admin: use attribute naming scheme for attributes (#14644)
+- web/cleanup/empty state better slot handling (#14289)
+- web/common: fix form element alignment (#15904)
+- web/common: fix uiConfig not merged correctly (#15080)
+- web/elements/empty-state: Fix issues with EmptyState and Loading Overlay (#15152)
+- web/elements: fix QL autocomplete not working (#16054)
+- web/flow: cleanup WebAuthn helper functions (#14460)
+- web/flow: fix ak-flow-card layout for identification stage with source and enrollment (#15404)
+- web/flow: fix flow dark theme flow footer band; user settings flow (#15408)
+- web/flows: fix bottom padding when loading challenge (#15372)
+- web/flows: fix flow inspector button always showing (#15893)
+- web/flows: more padding fixes (#15467)
+- web/flows: update default flow background (#16056)
+- web/maintenance: remove `writeOnly` hacks from Form and HorizontalFormElement (#14649)
+- web/packages: NPM workspace: Mini Cleanup (#14767)
+- web/standards: fix boolean attribute abuse (#14662)
+- web/user: fix infinite loop when no user settings flow is set (#15188)
+- web/user: fix infinite loop when no user settings flow is set (cherry-pick #15188) (#15192)
+- web/user: fix user settings flow not loading (#14911)
+- web/user: fix user settings flow not loading (cherry-pick #14911) (#14930)
+- web: Add support for placeholder in ak-text-input (#15795)
+- web: Clean up WebSocket lifecycle. (#15480)
+- web: Clean up file methods. (#15479)
+- web: Consistent use of static styles (#15510)
+- web: Disable autocomplete. (#15551)
+- web: Fix ak-flow-card footer alignment. (cherry-pick #16236) (#16238)
+- web: Fix cursor using pointer in modals. (#16009)
+- web: Fix dangling div. (#15478)
+- web: Fix form captcha submission (#15482)
+- web: Fix initial browser color scheme. (#16028)
+- web: Fix intermediate wizard steps propagating refresh events to parent (#15548)
+- web: Fix issue where TypeDoc comments are arranged between imports. (#15364)
+- web: Fix issue where `aria-owns` attribute triggers Chrome crash. (#16003)
+- web: Fix issue where base render method is not preferred. (#15726)
+- web: Fix lack of error when setting recovery password (#15405)
+- web: Fix missing TypeScript dependency when running make for first time. (#15502)
+- web: Fix property name mismatch. (#15961)
+- web: Fix scroll-event induced tab crash (#15939)
+- web: Fix stale application slug, missing error state. (#15941)
+- web: Fix wide inputs, label alignment (#16042)
+- web: Font fixes (#15581)
+- web: Form error rendering (#15874)
+- web: Form submission (#15477)
+- web: Form validation regressions, consistency fixes (#15894)
+- web: Import organization (#14696)
+- web: Make Webdriver optional during install. (#15952)
+- web: Storybook v9 (#15550)
+- web: Update dependencies. Fix categories. (#15748)
+- web: Update license mixing types to anticipate load state. (#15634)
+- web: Upgrade Prettier import formatter (#15276)
+- web: minor design tweaks (#14803)
+- web: minor design tweaks (cherry-pick #14803) (#14804)
+- web: providers/rac: Fix wizard confirmation (#16013)
+- web: remove mdx and fix references to `@goauthentik/elements` (#15694)
+- web: rework storybook for flow components and to make the design consistent (#15415)
+
+## Fixed in 2025.8.1
+
+- \*: Fix dead doc link (cherry-pick #16288) (#16297)
+- core: use email backend for test_email management command (cherry-pick #16311) (#16337)
+- lifecycle: set PROMETHEUS_MULTIPROC_DIR as early as possible (cherry-pick #16298) (#16302)
+- outposts: allow ingress path type configuration (cherry-pick #16339) (#16341)
+- outposts: fix service connection update task arguments (cherry-pick #16312) (#16313)
+- packages/django-dramatiq-postgres: broker: fix various timing issues (cherry-pick #16340) (#16342)
+- packages/django-dramatiq-postgres: middleware: fix listening on hosts where ipv6 is not supported (cherry-pick #16308) (#16305)
+- providers/oauth2: fix logout token missing sid, fix wrong sub mode used (cherry-pick #16295) (#16299)
+- web: Fix form group slots (cherry-pick #16276) (#16277)
+- web: Fix hidden textarea required attribute. (cherry-pick #16168) (#16275)
+- web: Fix issue where clicking a list item scrolls container (cherry-pick #16174) (#16278)
+- web: Improvements to ReCaptcha resizing (cherry-pick #16171) (#16281)
+- web: Username truncation, field alignment. (cherry-pick #16283) (#16284)
+- web: fix "Explore integrations" link in Quick actions (cherry-pick #16274) (#16285)
+
+## Fixed in 2025.8.2
+
+- core: bump django from 5.1.11 to v5.1.12 (cherry-pick #16584) (#16591)
+- core: bump h2 from 4.2.0 to 4.3.0 (cherry-pick #16446) (#16449)
+- core: fix client-side only validation allowing admin to set blank user password (cherry-pick #16467) (#16469)
+- lib/logging: only show locals when in debug mode (cherry-pick #16772) #16774
+- lib/sync/outgoing: fix single object sync timeout (cherry-pick #16447) (#16453)
+- lib/sync: fix missing f for string (cherry-pick #16423) (#16427)
+- lifecycle: fix PROMETHEUS_MULTIPROC_DIR missing suffix (cherry-pick #16401) (#16407)
+- policies: remove object pk from authentik_policies_execution_time to reduce cardinality (cherry-pick #16500) (#16501)
+- providers/oauth2: add missing exp claim for logout token (cherry-pick #16593) (#16598)
+- providers/oauth2: avoid deadlock during session migration (cherry-pick #16361) (#16364)
+- providers/rac: fix AuthenticatedSession migration (cherry-pick #16400) (#16419)
+- providers/scim: improve error message when object fails to sync (cherry-pick #16625) (#16643)
+- sources/ldap: fix malformed filter error with special characters in group DN (cherry-pick #16243) (#16585)
+- sources/oauth/entra_id: do not assume group_id comes from entra (cherry-pick #16456) (#16777)
+- tasks/schedules: fix api search fields (cherry-pick #16405) (#16410)
+- tasks: fix status and healthcheck breaking with connection issues (cherry-pick #16504) (#16673)
+- web/flows: only disable login button when interactive captcha is configured and not loaded (cherry-pick #16586) (#16590)
+
+## Fixed in 2025.8.3
+
+- lifecycle: fix permission error when running worker as root (cherry-pick #16735) (#16784)
+- stages/email_authenticator: Fix email mfa loop (cherry-pick #16579) (#16807)
+- website/docs: fix docker tabs not rendering properly (cherry-pick #16799) (#16802)
+- website/docs: update create oauth provider page (cherry-pick #16617) (#16806)
+
+## Fixed in 2025.8.4
+
+- \*/bindings: order by pk (cherry-pick #17027) (#17053)
+- cmd/server/healthcheck: info log success instead of debug (cherry-pick #17093 to version-2025.8) (#17097)
+- core: add index on Group.is_superuser (cherry-pick #17011) (#17017)
+- lib: match exception_to_dict locals behaviour (cherry-pick #17006) (#17016)
+- lib/config: fix listen settings (cherry-pick #17005) (#17023)
+- outposts/ldap: add pwdChangeTime attribute (cherry-pick #17010 to version-2025.8) (#17101)
+- packages/django-dramatiq-postgres: broker: fix new messages not being picked up when too many messages are waiting (cherry-pick #17106 to version-2025.8) (#17108)
+- providers/ldap: add include_children parameter to cached search mode (cherry-pick #16918) (#17000)
+- providers/oauth2: fix authentication error with identical app passwords (cherry-pick #17100 to version-2025.8) (#17103)
+- providers/scim: fix string formatting for SCIM user filter (cherry-pick #16465) (#16852)
+- rbac: fix typo (cherry-pick #16476) (#17018)
+- rbac: optimize rbac assigned by users query (cherry-pick #17015 to version-2025.8) (#17092)
+- stages/identification: fix mismatched error messages (cherry-pick #17090 to version-2025.8) (#17104)
+- tasks: fix logger name (cherry-pick #17009 to version-2025.8) (#17060)
+- tasks: reduce default number of retries and max backoff (cherry-pick #17107 to version-2025.8) (#17109)
+- web: Fix layout class for row in LibraryPage (cherry-pick #16752 to version-2025.8) (#17091)
+- web/admin: fix federation sources automatically selected (cherry-pick #17069 to version-2025.8) (#17070)
+
+## Fixed in 2025.8.5
+
+- blueprints: ensure tasks retry on database errors (cherry-pick #17333 to version-2025.8) (#17334)
+- build(deps): bump django from 5.1.12 to 5.1.13 (cherry-pick #17198 to version-2025.8) (#17199)
+- core: bump Django from 5.1.13 to 5.1.14 for 2025.8 (#17968)
+- core: fix absolute and relative path file uploads (cherry-pick #17269 to version-2025.8) (#17272)
+- internal: Automated internal backport: 1487-invitation-expiry.sec.patch to authentik-2025.8 (#18261)
+- internal: Automated internal backport: 1498-oauth2-cc-user-active.sec.patch to authentik-2025.8 (#18262)
+- lib/sync/outgoing: revert reduce number of db queries made (revert #14177) (cherry-pick #17306 to version-2025.8) (#17330)
+- packages/django-dramatiq-postgres: broker: fix task expiration (cherry-pick #17178 to version-2025.8) (#17217)
+- packages/django-dramatiq-postgres: fix error when updating task with no changes (cherry-pick #16728 to version-2025.8) (#17238)
+- tasks/middlewares/messages: make sure exceptions are always logged (cherry-pick #17237 to version-2025.8) (#17248)
+- web: Fix behavior for modals configured with closeAfterSuccessfulSubmit (cherry-pick #17277 to version-2025.8) (#17299)
+- web/admin: fix incorrect placeholder for scim provider (cherry-pick #17308 to version-2025.8) (#17309)
+
+## API Changes
+
+#### What's New
+
+---
+
+##### `GET` /tasks/schedules/
+
+##### `GET` /tasks/schedules/&#123;id&#125;/
+
+##### `PUT` /tasks/schedules/&#123;id&#125;/
+
+##### `PATCH` /tasks/schedules/&#123;id&#125;/
+
+##### `POST` /tasks/schedules/&#123;id&#125;/send/
+
+##### `GET` /tasks/tasks/
+
+##### `GET` /tasks/tasks/&#123;message_id&#125;/
+
+##### `POST` /tasks/tasks/&#123;message_id&#125;/retry/
+
+##### `GET` /tasks/workers
+
+#### What's Deleted
+
+---
+
+##### `GET` /admin/metrics/
+
+##### `GET` /admin/workers/
+
+##### `GET` /core/applications/&#123;slug&#125;/metrics/
+
+##### `GET` /core/users/&#123;id&#125;/metrics/
+
+##### `GET` /events/events/per_month/
+
+##### `GET` /events/system_tasks/
+
+##### `GET` /events/system_tasks/&#123;uuid&#125;/
+
+##### `POST` /events/system_tasks/&#123;uuid&#125;/run/
+
+#### What's Changed
+
+---
+
+##### `GET` /admin/settings/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `flags`
+    * Added property `flags` (object)
+        - Property `policies_buffered_access_view` (boolean)
+
+    * Changed property `footer_links` (object)
+
+##### `PUT` /admin/settings/
+
+###### Request:
+
+Changed content type : `application/json`
+
+New required properties:
+
+- `flags`
+
+* Added property `flags` (object)
+
+* Changed property `footer_links` (object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `flags`
+    * Added property `flags` (object)
+
+    * Changed property `footer_links` (object)
+
+##### `PATCH` /admin/settings/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `flags` (object)
+
+- Changed property `footer_links` (object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `flags`
+    * Added property `flags` (object)
+
+    * Changed property `footer_links` (object)
+
+##### `GET` /authenticators/admin/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Changed items (object): > Serializer for authenticator devices
+
+    New required properties:
+    - `external_id`
+    * Added property `external_id` (string)
+        > Get external Device ID
+
+##### `GET` /authenticators/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Changed items (object): > Serializer for authenticator devices
+
+    New required properties:
+    - `external_id`
+    * Added property `external_id` (string)
+        > Get external Device ID
+
+##### `GET` /core/application_entitlements/&#123;pbm_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `PUT` /core/application_entitlements/&#123;pbm_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `PATCH` /core/application_entitlements/&#123;pbm_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /core/brands/&#123;brand_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `PUT` /core/brands/&#123;brand_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `PATCH` /core/brands/&#123;brand_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `POST` /core/users/&#123;id&#125;/recovery/
+
+##### `POST` /core/users/&#123;id&#125;/recovery_email/
+
+##### `GET` /events/events/volume/
+
+###### Parameters:
+
+Added: `actions` in `query`
+
+Added: `history_days` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Changed items (object): > Count of events of action created on day
+
+    New required properties:
+    - `action`
+    - `count`
+    - `time`
+
+    New optional properties:
+    - `x_cord`
+    - `y_cord`
+    * Added property `action` (string)
+
+        Enum values:
+        - `login`
+        - `login_failed`
+        - `logout`
+        - `user_write`
+        - `suspicious_request`
+        - `password_set`
+        - `secret_view`
+        - `secret_rotate`
+        - `invitation_used`
+        - `authorize_application`
+        - `source_linked`
+        - `impersonation_started`
+        - `impersonation_ended`
+        - `flow_execution`
+        - `policy_execution`
+        - `policy_exception`
+        - `property_mapping_exception`
+        - `system_task_execution`
+        - `system_task_exception`
+        - `system_exception`
+        - `configuration_error`
+        - `model_created`
+        - `model_updated`
+        - `model_deleted`
+        - `email_sent`
+        - `update_available`
+        - `custom_`
+
+    * Added property `time` (string)
+
+    * Added property `count` (integer)
+
+    * Deleted property `x_cord` (integer)
+
+    * Deleted property `y_cord` (integer)
+
+##### `GET` /events/rules/&#123;pbm_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `destination_group_obj`
+
+    New optional properties:
+    - `group_obj`
+    * Added property `destination_group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Added property `destination_group_obj` (object)
+        - Property `pk` (string)
+
+        - Property `num_pk` (integer)
+
+        - Property `name` (string)
+
+        - Property `is_superuser` (boolean)
+
+            > Users added to this group will be superusers.
+
+        - Property `parent` (string)
+
+        - Property `parent_name` (string)
+
+        - Property `users` (array)
+
+            Items (integer):
+
+        - Property `users_obj` (array)
+
+            Items (object): > Stripped down user serializer to show relevant users for groups
+            - Property `pk` (integer)
+
+            - Property `username` (string)
+
+                > Required. 150 characters or fewer. Letters, digits and @/./+/-/\_ only.
+
+            - Property `name` (string)
+
+                > User's display name.
+
+            - Property `is_active` (boolean)
+
+                > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+            - Property `last_login` (string)
+
+            - Property `email` (string)
+
+            - Property `attributes` (object)
+
+            - Property `uid` (string)
+
+        - Property `attributes` (object)
+
+        - Property `roles` (array)
+
+            Items (string):
+
+        - Property `roles_obj` (array)
+
+            Items (object): > Role serializer
+            - Property `pk` (string)
+
+            - Property `name` (string)
+
+        - Property `children` (array)
+
+        - Property `children_obj` (array)
+
+            Items (object): > Stripped down group serializer to show relevant children for groups
+            - Property `pk` (string)
+
+            - Property `name` (string)
+
+            - Property `is_superuser` (boolean)
+
+                > Users added to this group will be superusers.
+
+            - Property `attributes` (object)
+
+            - Property `group_uuid` (string)
+
+    * Added property `destination_event_user` (boolean)
+
+        > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+    * Deleted property `group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Deleted property `group_obj` (object)
+
+##### `PUT` /events/rules/&#123;pbm_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `destination_group` (string)
+
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+- Added property `destination_event_user` (boolean)
+
+    > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+- Deleted property `group` (string)
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `destination_group_obj`
+
+    New optional properties:
+    - `group_obj`
+    * Added property `destination_group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Added property `destination_group_obj` (object)
+
+    * Added property `destination_event_user` (boolean)
+
+        > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+    * Deleted property `group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Deleted property `group_obj` (object)
+
+##### `PATCH` /events/rules/&#123;pbm_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `destination_group` (string)
+
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+- Added property `destination_event_user` (boolean)
+
+    > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+- Deleted property `group` (string)
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `destination_group_obj`
+
+    New optional properties:
+    - `group_obj`
+    * Added property `destination_group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Added property `destination_group_obj` (object)
+
+    * Added property `destination_event_user` (boolean)
+
+        > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+    * Deleted property `group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Deleted property `group_obj` (object)
+
+##### `GET` /managed/blueprints/&#123;instance_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `context` (object -> object)
+
+    - Changed property `metadata` (object -> object)
+
+##### `PUT` /managed/blueprints/&#123;instance_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `context` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `context` (object -> object)
+
+    - Changed property `metadata` (object -> object)
+
+##### `PATCH` /managed/blueprints/&#123;instance_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `context` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `context` (object -> object)
+
+    - Changed property `metadata` (object -> object)
+
+##### `POST` /managed/blueprints/&#123;instance_uuid&#125;/apply/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `context` (object -> object)
+
+    - Changed property `metadata` (object -> object)
+
+##### `GET` /outposts/service_connections/kubernetes/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `kubeconfig` (object -> object)
+        > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+##### `PUT` /outposts/service_connections/kubernetes/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `kubeconfig` (object -> object)
+    > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `kubeconfig` (object -> object)
+        > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+##### `PATCH` /outposts/service_connections/kubernetes/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `kubeconfig` (object -> object)
+    > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `kubeconfig` (object -> object)
+        > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+##### `GET` /policies/event_matcher/&#123;policy_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.tasks`
+        - `authentik.tasks.schedules`
+        - `authentik.enterprise.search`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum value:
+        - `authentik_tasks_schedules.schedule`
+
+##### `PUT` /policies/event_matcher/&#123;policy_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `app` (string)
+
+    > Match events created by selected application. When left empty, all applications are matched.
+
+    Added enum values:
+    - `authentik.tasks`
+    - `authentik.tasks.schedules`
+    - `authentik.enterprise.search`
+
+- Changed property `model` (string)
+
+    > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.tasks`
+        - `authentik.tasks.schedules`
+        - `authentik.enterprise.search`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum value:
+        - `authentik_tasks_schedules.schedule`
+
+##### `PATCH` /policies/event_matcher/&#123;policy_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `app` (string)
+
+    > Match events created by selected application. When left empty, all applications are matched.
+
+    Added enum values:
+    - `authentik.tasks`
+    - `authentik.tasks.schedules`
+    - `authentik.enterprise.search`
+
+- Changed property `model` (string)
+
+    > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.tasks`
+        - `authentik.tasks.schedules`
+        - `authentik.enterprise.search`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum value:
+        - `authentik_tasks_schedules.schedule`
+
+##### `GET` /policies/reputation/scores/&#123;reputation_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `ip_geo_data` (object -> object)
+
+    - Changed property `ip_asn_data` (object -> object)
+
+##### `GET` /providers/google_workspace/&#123;id&#125;/sync/status/
+
+###### Return Type:
+
+Deleted response : **404 Not Found**
+
+> Task not found
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New optional properties:
+    - `tasks`
+    * Added property `last_successful_sync` (string)
+
+    * Added property `last_sync_status` (string)
+
+        Enum values:
+        - `queued`
+        - `consumed`
+        - `rejected`
+        - `done`
+        - `info`
+        - `warning`
+        - `error`
+
+    * Deleted property `tasks` (array)
+
+    * Changed property `is_running` (boolean)
+
+##### `GET` /providers/google_workspace_groups/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/google_workspace_users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/microsoft_entra/&#123;id&#125;/sync/status/
+
+###### Return Type:
+
+Deleted response : **404 Not Found**
+
+> Task not found
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New optional properties:
+    - `tasks`
+    * Added property `last_successful_sync` (string)
+
+    * Added property `last_sync_status` (string)
+
+    * Deleted property `tasks` (array)
+
+    * Changed property `is_running` (boolean)
+
+##### `GET` /providers/microsoft_entra_groups/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/microsoft_entra_users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/rac/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `settings` (object -> object)
+
+##### `PUT` /providers/rac/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `settings` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `settings` (object -> object)
+
+##### `PATCH` /providers/rac/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `settings` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `settings` (object -> object)
+
+##### `GET` /providers/scim/&#123;id&#125;/sync/status/
+
+###### Return Type:
+
+Deleted response : **404 Not Found**
+
+> Task not found
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New optional properties:
+    - `tasks`
+    * Added property `last_successful_sync` (string)
+
+    * Added property `last_sync_status` (string)
+
+    * Deleted property `tasks` (array)
+
+    * Changed property `is_running` (boolean)
+
+##### `GET` /providers/scim_groups/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/scim_users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /sources/kerberos/&#123;slug&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New optional properties:
+    - `tasks`
+    * Added property `last_successful_sync` (string)
+
+    * Added property `last_sync_status` (string)
+
+    * Deleted property `tasks` (array)
+
+    * Changed property `is_running` (boolean)
+
+##### `GET` /sources/ldap/&#123;slug&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New optional properties:
+    - `tasks`
+    * Added property `last_successful_sync` (string)
+
+    * Added property `last_sync_status` (string)
+
+    * Deleted property `tasks` (array)
+
+    * Changed property `is_running` (boolean)
+
+##### `GET` /sources/scim_groups/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `PUT` /sources/scim_groups/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+New required properties:
+
+- `external_id`
+
+New optional properties:
+
+- `id`
+
+* Added property `external_id` (string)
+
+* Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `PATCH` /sources/scim_groups/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `external_id` (string)
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `GET` /sources/scim_users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `PUT` /sources/scim_users/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+New required properties:
+
+- `external_id`
+
+New optional properties:
+
+- `id`
+
+* Added property `external_id` (string)
+
+* Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `PATCH` /sources/scim_users/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `external_id` (string)
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `GET` /authenticators/admin/duo/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/admin/email/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/admin/endpoint/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/admin/sms/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/admin/totp/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/admin/webauthn/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/duo/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/email/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/endpoint/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/sms/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/totp/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/webauthn/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /core/application_entitlements/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /core/application_entitlements/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > ApplicationEntitlement Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `GET` /core/authenticated_sessions/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /core/brands/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /core/brands/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Brand Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `GET` /core/brands/current/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `flags`
+    * Added property `flags` (object)
+        - Property `policies_buffered_access_view` (boolean)
+
+##### `GET` /core/groups/&#123;group_uuid&#125;/
+
+###### Parameters:
+
+Added: `include_children` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `children_obj`
+    * Added property `children` (array)
+
+    * Added property `children_obj` (array)
+
+##### `PUT` /core/groups/&#123;group_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `children` (array)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `children_obj`
+    * Added property `children` (array)
+
+    * Added property `children_obj` (array)
+
+##### `PATCH` /core/groups/&#123;group_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `children` (array)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `children_obj`
+    * Added property `children` (array)
+
+    * Added property `children_obj` (array)
+
+##### `GET` /core/tokens/&#123;identifier&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `PUT` /core/tokens/&#123;identifier&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `PATCH` /core/tokens/&#123;identifier&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `GET` /core/users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `last_updated`
+    * Added property `last_updated` (string)
+
+##### `PUT` /core/users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `last_updated`
+    * Added property `last_updated` (string)
+
+##### `PATCH` /core/users/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `last_updated`
+    * Added property `last_updated` (string)
+
+##### `GET` /crypto/certificatekeypairs/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /enterprise/license/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /events/events/&#123;event_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object -> object)
+
+    - Changed property `context` (object -> object)
+
+    - Changed property `brand` (object -> object)
+
+##### `PUT` /events/events/&#123;event_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `user` (object -> object)
+
+- Changed property `context` (object -> object)
+
+- Changed property `brand` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object -> object)
+
+    - Changed property `context` (object -> object)
+
+    - Changed property `brand` (object -> object)
+
+##### `PATCH` /events/events/&#123;event_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `user` (object -> object)
+
+- Changed property `context` (object -> object)
+
+- Changed property `brand` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object -> object)
+
+    - Changed property `context` (object -> object)
+
+    - Changed property `brand` (object -> object)
+
+##### `POST` /events/rules/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `destination_group` (string)
+
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+- Added property `destination_event_user` (boolean)
+
+    > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+- Deleted property `group` (string)
+    > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `destination_group_obj`
+
+    New optional properties:
+    - `group_obj`
+    * Added property `destination_group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Added property `destination_group_obj` (object)
+
+    * Added property `destination_event_user` (boolean)
+
+        > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+    * Deleted property `group` (string)
+
+        > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+    * Deleted property `group_obj` (object)
+
+##### `GET` /events/rules/
+
+###### Parameters:
+
+Added: `destination_group__name` in `query`
+
+Deleted: `group__name` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > NotificationRule Serializer
+
+        New required properties:
+        - `destination_group_obj`
+
+        New optional properties:
+        - `group_obj`
+        * Added property `destination_group` (string)
+
+            > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+        * Added property `destination_group_obj` (object)
+
+        * Added property `destination_event_user` (boolean)
+
+            > When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
+
+        * Deleted property `group` (string)
+
+            > Define which group of users this notification should be sent and shown to. If left empty, Notification won't be sent.
+
+        * Deleted property `group_obj` (object)
+
+##### `GET` /events/transports/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
+##### `PUT` /events/transports/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `email_subject_prefix` (string)
+
+- Added property `email_template` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
+##### `PATCH` /events/transports/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `email_subject_prefix` (string)
+
+- Added property `email_template` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
+##### `POST` /managed/blueprints/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `context` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `context` (object -> object)
+
+    - Changed property `metadata` (object -> object)
+
+##### `GET` /managed/blueprints/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Info about a single blueprint instance file
+        - Changed property `context` (object -> object)
+
+        - Changed property `metadata` (object -> object)
+
+##### `GET` /outposts/proxy/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /outposts/radius/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /outposts/service_connections/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /outposts/service_connections/docker/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /outposts/service_connections/kubernetes/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `kubeconfig` (object -> object)
+    > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `kubeconfig` (object -> object)
+        > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+##### `GET` /outposts/service_connections/kubernetes/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > KubernetesServiceConnection Serializer
+        - Changed property `kubeconfig` (object -> object)
+            > Paste your kubeconfig here. authentik will automatically use the currently selected context.
+
+##### `GET` /policies/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /policies/bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `group_obj` (object)
+
+        > Group Serializer
+
+        New required properties:
+        - `children_obj`
+        * Added property `children` (array)
+
+        * Added property `children_obj` (array)
+
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `PUT` /policies/bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `group_obj` (object)
+
+        > Group Serializer
+
+        New required properties:
+        - `children_obj`
+        * Added property `children` (array)
+
+        * Added property `children_obj` (array)
+
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `PATCH` /policies/bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `group_obj` (object)
+
+        > Group Serializer
+
+        New required properties:
+        - `children_obj`
+        * Added property `children` (array)
+
+        * Added property `children_obj` (array)
+
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `GET` /policies/dummy/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /policies/event_matcher/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `app` (string)
+
+    > Match events created by selected application. When left empty, all applications are matched.
+
+    Added enum values:
+    - `authentik.tasks`
+    - `authentik.tasks.schedules`
+    - `authentik.enterprise.search`
+
+- Changed property `model` (string)
+
+    > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.tasks`
+        - `authentik.tasks.schedules`
+        - `authentik.enterprise.search`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum value:
+        - `authentik_tasks_schedules.schedule`
+
+##### `GET` /policies/event_matcher/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Event Matcher Policy Serializer
+        - Changed property `app` (string)
+
+            > Match events created by selected application. When left empty, all applications are matched.
+
+            Added enum values:
+            - `authentik.tasks`
+            - `authentik.tasks.schedules`
+            - `authentik.enterprise.search`
+
+        - Changed property `model` (string)
+
+            > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            Added enum value:
+            - `authentik_tasks_schedules.schedule`
+
+##### `GET` /policies/expression/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /policies/password/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /policies/password_expiry/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /policies/reputation/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /policies/reputation/scores/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Reputation Serializer
+        - Changed property `ip_geo_data` (object -> object)
+
+        - Changed property `ip_asn_data` (object -> object)
+
+##### `GET` /policies/unique_password/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/notification/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/google_workspace/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/microsoft_entra/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/rac/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/radius/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/saml/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/scim/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/provider/scope/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/source/kerberos/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/source/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/source/oauth/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/source/plex/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/source/saml/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /propertymappings/source/scim/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /providers/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /providers/google_workspace/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `PUT` /providers/google_workspace/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `credentials` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `PATCH` /providers/google_workspace/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `credentials` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `POST` /providers/google_workspace_groups/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/google_workspace_groups/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > GoogleWorkspaceProviderGroup Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `POST` /providers/google_workspace_users/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/google_workspace_users/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > GoogleWorkspaceProviderUser Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `POST` /providers/microsoft_entra_groups/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/microsoft_entra_groups/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > MicrosoftEntraProviderGroup Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `POST` /providers/microsoft_entra_users/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/microsoft_entra_users/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > MicrosoftEntraProviderUser Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `POST` /providers/rac/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `settings` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `settings` (object -> object)
+
+##### `GET` /providers/rac/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+##### `GET` /providers/radius/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /providers/saml/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `default_name_id_policy` (string)
+
+        Enum values:
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
+        - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName`
+        - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`
+        - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+##### `PUT` /providers/saml/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `default_name_id_policy` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `default_name_id_policy` (string)
+
+##### `PATCH` /providers/saml/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `default_name_id_policy` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `default_name_id_policy` (string)
+
+##### `GET` /providers/scim/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /providers/scim_groups/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/scim_groups/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SCIMProviderGroup Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `POST` /providers/scim_users/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/scim_users/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SCIMProviderUser Serializer
+        - Changed property `attributes` (object -> object)
+
+##### `GET` /providers/ssf/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `PUT` /providers/ssf/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `PATCH` /providers/ssf/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `GET` /rac/connection_tokens/&#123;connection_token_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `endpoint_obj` (object)
+
+        > Endpoint Serializer
+        - Changed property `provider_obj` (object)
+
+            > RACProvider Serializer
+            - Changed property `settings` (object -> object)
+
+        - Changed property `settings` (object -> object)
+
+##### `PUT` /rac/connection_tokens/&#123;connection_token_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `endpoint_obj` (object)
+
+        > Endpoint Serializer
+        - Changed property `provider_obj` (object)
+
+            > RACProvider Serializer
+            - Changed property `settings` (object -> object)
+
+        - Changed property `settings` (object -> object)
+
+##### `PATCH` /rac/connection_tokens/&#123;connection_token_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `endpoint_obj` (object)
+
+        > Endpoint Serializer
+        - Changed property `provider_obj` (object)
+
+            > RACProvider Serializer
+            - Changed property `settings` (object -> object)
+
+        - Changed property `settings` (object -> object)
+
+##### `GET` /rac/endpoints/&#123;pbm_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `settings` (object -> object)
+
+##### `PUT` /rac/endpoints/&#123;pbm_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `settings` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `settings` (object -> object)
+
+##### `PATCH` /rac/endpoints/&#123;pbm_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `settings` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `settings` (object -> object)
+
+##### `GET` /rbac/permissions/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /rbac/permissions/assigned_by_roles/&#123;uuid&#125;/assign/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `model` (string)
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+##### `PATCH` /rbac/permissions/assigned_by_roles/&#123;uuid&#125;/unassign/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `model` (string)
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+##### `POST` /rbac/permissions/assigned_by_users/&#123;id&#125;/assign/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `model` (string)
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+##### `PATCH` /rbac/permissions/assigned_by_users/&#123;id&#125;/unassign/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `model` (string)
+
+    Added enum value:
+    - `authentik_tasks_schedules.schedule`
+
+##### `GET` /rbac/roles/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/oauth/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `oidc_jwks` (object -> object)
+
+    - Changed property `provider_type` (string)
+
+        Added enum value:
+        - `entraid`
+
+##### `PUT` /sources/oauth/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `oidc_jwks` (object -> object)
+
+- Changed property `provider_type` (string)
+
+    Added enum value:
+    - `entraid`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `oidc_jwks` (object -> object)
+
+    - Changed property `provider_type` (string)
+
+        Added enum value:
+        - `entraid`
+
+##### `PATCH` /sources/oauth/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `oidc_jwks` (object -> object)
+
+- Changed property `provider_type` (string)
+
+    Added enum value:
+    - `entraid`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `oidc_jwks` (object -> object)
+
+    - Changed property `provider_type` (string)
+
+        Added enum value:
+        - `entraid`
+
+##### `GET` /sources/saml/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `name_id_policy` (string)
+
+        > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+        Added enum value:
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+##### `PUT` /sources/saml/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `name_id_policy` (string)
+
+    > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+    Added enum value:
+    - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `name_id_policy` (string)
+
+        > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+        Added enum value:
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+##### `PATCH` /sources/saml/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `name_id_policy` (string)
+
+    > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+    Added enum value:
+    - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `name_id_policy` (string)
+
+        > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+        Added enum value:
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+##### `GET` /sources/scim/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `PUT` /sources/scim/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `PATCH` /sources/scim/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `POST` /sources/scim_groups/
+
+###### Request:
+
+Changed content type : `application/json`
+
+New required properties:
+
+- `external_id`
+
+New optional properties:
+
+- `id`
+
+* Added property `external_id` (string)
+
+* Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `GET` /sources/scim_groups/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SCIMSourceGroup Serializer
+
+        New required properties:
+        - `external_id`
+
+        New optional properties:
+        - `id`
+        * Added property `external_id` (string)
+
+        * Changed property `attributes` (object -> object)
+
+##### `POST` /sources/scim_users/
+
+###### Request:
+
+Changed content type : `application/json`
+
+New required properties:
+
+- `external_id`
+
+New optional properties:
+
+- `id`
+
+* Added property `external_id` (string)
+
+* Changed property `attributes` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `external_id`
+
+    New optional properties:
+    - `id`
+    * Added property `external_id` (string)
+
+    * Changed property `attributes` (object -> object)
+
+##### `GET` /sources/scim_users/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SCIMSourceUser Serializer
+
+        New required properties:
+        - `external_id`
+
+        New optional properties:
+        - `id`
+        * Added property `external_id` (string)
+
+        * Changed property `attributes` (object -> object)
+
+##### `GET` /ssf/streams/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > SSFProvider Serializer
+        - Changed property `token_obj` (object)
+
+            > Token Serializer
+            - Changed property `user_obj` (object)
+
+                > User Serializer
+
+                New required properties:
+                - `last_updated`
+                * Added property `last_updated` (string)
+
+##### `GET` /stages/authenticator/webauthn_device_types/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /tenants/domains/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /tenants/tenants/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/admin/static/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /authenticators/static/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /core/applications/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /core/groups/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `children` (array)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `children_obj`
+    * Added property `children` (array)
+
+    * Added property `children_obj` (array)
+
+##### `GET` /core/groups/
+
+###### Parameters:
+
+Added: `include_children` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Group Serializer
+
+        New required properties:
+        - `children_obj`
+        * Added property `children` (array)
+
+        * Added property `children_obj` (array)
+
+##### `POST` /core/tokens/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `GET` /core/tokens/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `GET` /core/user_consent/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `POST` /core/users/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `last_updated`
+    * Added property `last_updated` (string)
+
+##### `GET` /core/users/
+
+###### Parameters:
+
+Added: `date_joined` in `query`
+
+Added: `date_joined__gt` in `query`
+
+Added: `date_joined__lt` in `query`
+
+Added: `last_updated` in `query`
+
+Added: `last_updated__gt` in `query`
+
+Added: `last_updated__lt` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `POST` /events/events/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `user` (object -> object)
+
+- Changed property `context` (object -> object)
+
+- Changed property `brand` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object -> object)
+
+    - Changed property `context` (object -> object)
+
+    - Changed property `brand` (object -> object)
+
+##### `GET` /events/events/
+
+###### Parameters:
+
+Added: `actions` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Event Serializer
+        - Changed property `user` (object -> object)
+
+        - Changed property `context` (object -> object)
+
+        - Changed property `brand` (object -> object)
+
+##### `GET` /events/notifications/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `event` (object)
+
+        > Event Serializer
+        - Changed property `user` (object -> object)
+
+        - Changed property `context` (object -> object)
+
+        - Changed property `brand` (object -> object)
+
+##### `PUT` /events/notifications/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `event` (object)
+
+    > Event Serializer
+    - Changed property `user` (object -> object)
+
+    - Changed property `context` (object -> object)
+
+    - Changed property `brand` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `event` (object)
+
+        > Event Serializer
+        - Changed property `user` (object -> object)
+
+        - Changed property `context` (object -> object)
+
+        - Changed property `brand` (object -> object)
+
+##### `PATCH` /events/notifications/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `event` (object)
+
+    > Event Serializer
+    - Changed property `user` (object -> object)
+
+    - Changed property `context` (object -> object)
+
+    - Changed property `brand` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `event` (object)
+
+        > Event Serializer
+        - Changed property `user` (object -> object)
+
+        - Changed property `context` (object -> object)
+
+        - Changed property `brand` (object -> object)
+
+##### `POST` /events/transports/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `email_subject_prefix` (string)
+
+- Added property `email_template` (string)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
+##### `GET` /events/transports/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > NotificationTransport Serializer
+        - Added property `email_subject_prefix` (string)
+
+        - Added property `email_template` (string)
+
+##### `GET` /flows/instances/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /outposts/instances/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /outposts/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /policies/bindings/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `group_obj` (object)
+
+        > Group Serializer
+
+        New required properties:
+        - `children_obj`
+        * Added property `children` (array)
+
+        * Added property `children_obj` (array)
+
+    - Changed property `user_obj` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+##### `GET` /policies/bindings/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > PolicyBinding Serializer
+        - Changed property `group_obj` (object)
+
+            > Group Serializer
+
+            New required properties:
+            - `children_obj`
+            * Added property `children` (array)
+
+            * Added property `children_obj` (array)
+
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `GET` /policies/geoip/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /providers/google_workspace/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `credentials` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `GET` /providers/google_workspace/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > GoogleWorkspaceProvider Serializer
+        - Changed property `credentials` (object -> object)
+
+##### `GET` /providers/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /providers/microsoft_entra/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /providers/oauth2/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `backchannel_logout_uri` (string)
+
+##### `PUT` /providers/oauth2/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `backchannel_logout_uri` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `backchannel_logout_uri` (string)
+
+##### `PATCH` /providers/oauth2/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `backchannel_logout_uri` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `backchannel_logout_uri` (string)
+
+##### `POST` /providers/saml/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `default_name_id_policy` (string)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `default_name_id_policy` (string)
+
+##### `GET` /providers/saml/
+
+###### Parameters:
+
+Added: `default_name_id_policy` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SAMLProvider Serializer
+        - Added property `default_name_id_policy` (string)
+
+##### `POST` /providers/ssf/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `GET` /providers/ssf/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SSFProvider Serializer
+        - Changed property `token_obj` (object)
+
+            > Token Serializer
+            - Changed property `user_obj` (object)
+
+                > User Serializer
+
+                New required properties:
+                - `last_updated`
+                * Added property `last_updated` (string)
+
+##### `GET` /rac/connection_tokens/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > ConnectionToken Serializer
+        - Changed property `provider_obj` (object)
+
+            > RACProvider Serializer
+            - Changed property `settings` (object -> object)
+
+        - Changed property `endpoint_obj` (object)
+
+            > Endpoint Serializer
+            - Changed property `provider_obj` (object)
+
+                > RACProvider Serializer
+                - Changed property `settings` (object -> object)
+
+            - Changed property `settings` (object -> object)
+
+##### `POST` /rac/endpoints/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `settings` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `provider_obj` (object)
+
+        > RACProvider Serializer
+        - Changed property `settings` (object -> object)
+
+    - Changed property `settings` (object -> object)
+
+##### `GET` /rac/endpoints/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Endpoint Serializer
+        - Changed property `provider_obj` (object)
+
+            > RACProvider Serializer
+            - Changed property `settings` (object -> object)
+
+        - Changed property `settings` (object -> object)
+
+##### `GET` /rbac/initial_permissions/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /rbac/permissions/assigned_by_roles/
+
+###### Parameters:
+
+Changed: `model` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /rbac/permissions/assigned_by_users/
+
+###### Parameters:
+
+Changed: `model` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/group_connections/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/group_connections/kerberos/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/group_connections/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/group_connections/oauth/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/group_connections/plex/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/group_connections/saml/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/kerberos/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /sources/oauth/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `oidc_jwks` (object -> object)
+
+- Changed property `provider_type` (string)
+
+    Added enum value:
+    - `entraid`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `oidc_jwks` (object -> object)
+
+    - Changed property `provider_type` (string)
+
+        Added enum value:
+        - `entraid`
+
+##### `GET` /sources/oauth/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > OAuth Source Serializer
+        - Changed property `oidc_jwks` (object -> object)
+
+        - Changed property `provider_type` (string)
+
+            Added enum value:
+            - `entraid`
+
+##### `GET` /sources/plex/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /sources/saml/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `name_id_policy` (string)
+
+    > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+    Added enum value:
+    - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `name_id_policy` (string)
+
+        > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+        Added enum value:
+        - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+##### `GET` /sources/saml/
+
+###### Parameters:
+
+Changed: `name_id_policy` in `query`
+
+> NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SAMLSource Serializer
+        - Changed property `name_id_policy` (string)
+
+            > NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+            Added enum value:
+            - `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified`
+
+##### `POST` /sources/scim/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `token_obj` (object)
+
+        > Token Serializer
+        - Changed property `user_obj` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `GET` /sources/scim/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SCIMSource Serializer
+        - Changed property `token_obj` (object)
+
+            > Token Serializer
+            - Changed property `user_obj` (object)
+
+                > User Serializer
+
+                New required properties:
+                - `last_updated`
+                * Added property `last_updated` (string)
+
+##### `GET` /sources/user_connections/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/user_connections/kerberos/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/user_connections/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/user_connections/oauth/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/user_connections/plex/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /sources/user_connections/saml/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /ssf/streams/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > SSFStream Serializer
+        - Changed property `provider_obj` (object)
+
+            > SSFProvider Serializer
+            - Changed property `token_obj` (object)
+
+                > Token Serializer
+                - Changed property `user_obj` (object)
+
+                    > User Serializer
+
+                    New required properties:
+                    - `last_updated`
+                    * Added property `last_updated` (string)
+
+##### `GET` /stages/authenticator/endpoint_gdtc/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `PUT` /stages/authenticator/endpoint_gdtc/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `credentials` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `PATCH` /stages/authenticator/endpoint_gdtc/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `credentials` (object -> object)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `GET` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `max_attempts` (integer)
+
+##### `PUT` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `max_attempts` (integer)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `max_attempts` (integer)
+
+##### `PATCH` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `max_attempts` (integer)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `max_attempts` (integer)
+
+##### `GET` /stages/email/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `recovery_max_attempts` (integer)
+
+    - Added property `recovery_cache_timeout` (string)
+        > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+##### `PUT` /stages/email/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `recovery_max_attempts` (integer)
+
+- Added property `recovery_cache_timeout` (string)
+    > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `recovery_max_attempts` (integer)
+
+    - Added property `recovery_cache_timeout` (string)
+        > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+##### `PATCH` /stages/email/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `recovery_max_attempts` (integer)
+
+- Added property `recovery_cache_timeout` (string)
+    > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `recovery_max_attempts` (integer)
+
+    - Added property `recovery_cache_timeout` (string)
+        > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+##### `GET` /stages/invitation/invitations/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/user_login/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `remember_device` (string)
+        > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+##### `PUT` /stages/user_login/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `remember_device` (string)
+    > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `remember_device` (string)
+        > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+##### `PATCH` /stages/user_login/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `remember_device` (string)
+    > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `remember_device` (string)
+        > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+##### `GET` /core/user_consent/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > UserConsent Serializer
+        - Changed property `user` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+##### `GET` /events/notifications/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Notification Serializer
+        - Changed property `event` (object)
+
+            > Event Serializer
+            - Changed property `user` (object -> object)
+
+            - Changed property `context` (object -> object)
+
+            - Changed property `brand` (object -> object)
+
+##### `GET` /flows/bindings/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /flows/executor/&#123;flow_slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Updated `ak-stage-authenticator-validate` component:
+    - Changed property `device_challenges` (array)
+
+        Changed items (object): > Single device challenge
+        - Changed property `device_class` (string)
+
+            Added enum values:
+            - `static`
+            - `totp`
+            - `webauthn`
+            - `duo`
+            - `sms`
+            - `email`
+
+##### `POST` /flows/executor/&#123;flow_slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+Updated `ak-stage-authenticator-validate` component:
+
+- Changed property `selected_challenge` (object)
+
+    > Single device challenge
+    - Changed property `device_class` (string)
+
+        Added enum values:
+        - `static`
+        - `totp`
+        - `webauthn`
+        - `duo`
+        - `sms`
+        - `email`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Updated `ak-stage-authenticator-validate` component:
+    - Changed property `device_challenges` (array)
+
+        Changed items (object): > Single device challenge
+        - Changed property `device_class` (string)
+
+            Added enum values:
+            - `static`
+            - `totp`
+            - `webauthn`
+            - `duo`
+            - `sms`
+            - `email`
+
+##### `GET` /oauth2/access_tokens/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+    - Changed property `provider` (object)
+
+        > OAuth2Provider Serializer
+        - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /oauth2/authorization_codes/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+    - Changed property `provider` (object)
+
+        > OAuth2Provider Serializer
+        - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /oauth2/refresh_tokens/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `user` (object)
+
+        > User Serializer
+
+        New required properties:
+        - `last_updated`
+        * Added property `last_updated` (string)
+
+    - Changed property `provider` (object)
+
+        > OAuth2Provider Serializer
+        - Added property `backchannel_logout_uri` (string)
+
+##### `POST` /providers/oauth2/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `backchannel_logout_uri` (string)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /providers/oauth2/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > OAuth2Provider Serializer
+        - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /providers/proxy/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/all/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/authenticator/duo/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/authenticator/email/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /stages/authenticator/endpoint_gdtc/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `credentials` (object -> object)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `credentials` (object -> object)
+
+##### `GET` /stages/authenticator/endpoint_gdtc/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > AuthenticatorEndpointGDTCStage Serializer
+        - Changed property `credentials` (object -> object)
+
+##### `GET` /stages/authenticator/sms/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/authenticator/static/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/authenticator/totp/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/authenticator/validate/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /stages/authenticator/webauthn/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `max_attempts` (integer)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `max_attempts` (integer)
+
+##### `GET` /stages/authenticator/webauthn/
+
+###### Parameters:
+
+Added: `max_attempts` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > AuthenticatorWebAuthnStage Serializer
+        - Added property `max_attempts` (integer)
+
+##### `GET` /stages/captcha/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/consent/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/deny/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/dummy/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /stages/email/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `recovery_max_attempts` (integer)
+
+- Added property `recovery_cache_timeout` (string)
+    > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `recovery_max_attempts` (integer)
+
+    - Added property `recovery_cache_timeout` (string)
+        > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+##### `GET` /stages/email/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > EmailStage Serializer
+        - Added property `recovery_max_attempts` (integer)
+
+        - Added property `recovery_cache_timeout` (string)
+            > The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).
+
+##### `GET` /stages/identification/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/invitation/stages/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/mtls/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/password/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/prompt/stages/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/redirect/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/source/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/user_delete/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `POST` /stages/user_login/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `remember_device` (string)
+    > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `remember_device` (string)
+        > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+##### `GET` /stages/user_login/
+
+###### Parameters:
+
+Added: `remember_device` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > UserLoginStage Serializer
+        - Added property `remember_device` (string)
+            > When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
+
+##### `GET` /stages/user_logout/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `GET` /stages/user_write/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+##### `PUT` /core/transactional/applications/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `provider` (object)
+
+    Updated `authentik_providers_rac.racprovider` provider_model:
+    - Changed property `settings` (object -> object)
+
+    Updated `authentik_providers_google_workspace.googleworkspaceprovider` provider_model:
+    - Changed property `credentials` (object -> object)
+
+    Updated `authentik_providers_saml.samlprovider` provider_model:
+    - Added property `default_name_id_policy` (string)
+
+    Updated `authentik_providers_oauth2.oauth2provider` provider_model:
+    - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /oauth2/access_tokens/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Serializer for BaseGrantModel and RefreshToken
+        - Changed property `user` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+        - Changed property `provider` (object)
+
+            > OAuth2Provider Serializer
+            - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /oauth2/authorization_codes/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Serializer for BaseGrantModel and ExpiringBaseGrant
+        - Changed property `user` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+        - Changed property `provider` (object)
+
+            > OAuth2Provider Serializer
+            - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /oauth2/refresh_tokens/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > Serializer for BaseGrantModel and RefreshToken
+        - Changed property `user` (object)
+
+            > User Serializer
+
+            New required properties:
+            - `last_updated`
+            * Added property `last_updated` (string)
+
+        - Changed property `provider` (object)
+
+            > OAuth2Provider Serializer
+            - Added property `backchannel_logout_uri` (string)
+
+##### `GET` /stages/prompt/prompts/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `autocomplete`
+    * Added property `autocomplete` (object)

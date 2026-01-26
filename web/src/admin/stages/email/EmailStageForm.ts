@@ -2,15 +2,18 @@ import "#components/ak-secret-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -45,9 +48,9 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    renderConnectionSettings(): SlottedTemplateResult {
         if (!this.showConnectionSettings) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-group label="${msg("Connection settings")}">
             <div class="pf-c-form">
@@ -77,38 +80,20 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 <ak-secret-text-input
                     label=${msg("SMTP Password")}
                     name="password"
-                    ?revealed=${this.instance === undefined}
+                    ?revealed=${!this.instance}
                 ></ak-secret-text-input>
-                <ak-form-element-horizontal name="useTls">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.instance?.useTls ?? true}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Use TLS")}</span>
-                    </label>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal name="useSsl">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.instance?.useSsl ?? false}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Use SSL")}</span>
-                    </label>
-                </ak-form-element-horizontal>
+                <ak-switch-input
+                    name="useTls"
+                    label=${msg("Use TLS")}
+                    ?checked=${this.instance?.useTls ?? true}
+                >
+                </ak-switch-input>
+                <ak-switch-input
+                    name="useSsl"
+                    label=${msg("Use SSL")}
+                    ?checked=${this.instance?.useSsl ?? false}
+                >
+                </ak-switch-input>
                 <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                     <input
                         type="number"
@@ -133,7 +118,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
@@ -149,52 +134,26 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal name="activateUserOnSuccess">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.activateUserOnSuccess ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Activate pending user on success")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When a user returns from the email successfully, their account will be activated.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="useGlobalSettings">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.useGlobalSettings ?? true}
-                                @change=${(ev: Event) => {
-                                    const target = ev.target as HTMLInputElement;
-                                    this.showConnectionSettings = !target.checked;
-                                }}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Use global settings")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, global Email connection settings will be used and connection settings below will be ignored.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="activateUserOnSuccess"
+                        ?checked=${this.instance?.activateUserOnSuccess ?? true}
+                        label=${msg("Activate pending user on success")}
+                        help=${msg(
+                            "When a user returns from the email successfully, their account will be activated.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="useGlobalSettings"
+                        ?checked=${this.instance?.useGlobalSettings ?? true}
+                        @change=${(ev: Event) => {
+                            const target = ev.target as HTMLInputElement;
+                            this.showConnectionSettings = !target.checked;
+                        }}
+                        label=${msg("Use global connection settings")}
+                        help=${msg(
+                            "When enabled, global email connection settings will be used and connection settings below will be ignored.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Token expiration")}
                         required

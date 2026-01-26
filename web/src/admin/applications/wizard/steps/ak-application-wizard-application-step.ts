@@ -1,8 +1,10 @@
 import "#admin/applications/wizard/ak-wizard-title";
+import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
+import "#components/ak-textarea-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
@@ -15,13 +17,13 @@ import { type NavigableButton, type WizardButton } from "#components/ak-wizard/t
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { type ApplicationRequest } from "@goauthentik/api";
+import { AdminFileListUsageEnum, type ApplicationRequest } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 function trimMany<T extends object, K extends keyof T>(target: T, keys: K[]): Pick<T, K> {
@@ -43,8 +45,9 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     @state()
     errors = new Map<keyof ApplicationRequest, string>();
 
-    @query("form#applicationform")
-    form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form#applicationform");
+    }
 
     constructor() {
         super();
@@ -71,7 +74,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             this.errors.set("name", msg("An application name is required"));
         }
 
-        if (!values.metaLaunchUrl || !URL.canParse(values.metaLaunchUrl)) {
+        if (values.metaLaunchUrl && !URL.canParse(values.metaLaunchUrl)) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
 
@@ -114,16 +117,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     }
 
     renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
-        return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
+        return html` <ak-wizard-title>${msg("Configure the Application")}</ak-wizard-title>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
                     autocomplete="off"
-                    placeholder=${msg("Application name")}
+                    placeholder=${msg("Type an application name...")}
                     value=${ifDefined(app.name)}
-                    label=${msg("Name")}
+                    label=${msg("Application Name")}
+                    spellcheck="false"
                     required
-                    ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("The name displayed in the application library.")}
                 ></ak-text-input>
@@ -161,7 +164,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}
-                            placeholder="https://..."
+                            placeholder=${msg("https://...")}
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
                             .errorMessages=${errors.metaLaunchUrl ??
@@ -180,6 +183,28 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             )}
                         >
                         </ak-switch-input>
+                        <ak-file-search-input
+                            name="metaIcon"
+                            label=${msg("Icon")}
+                            value=${ifDefined(app.metaIcon)}
+                            .usage=${AdminFileListUsageEnum.Media}
+                            help=${msg(
+                                "Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.",
+                            )}
+                            blankable
+                        ></ak-file-search-input>
+                        <ak-text-input
+                            label=${msg("Publisher")}
+                            name="metaPublisher"
+                            value="${ifDefined(app.metaPublisher)}"
+                            .errorMessages=${errors.metaPublisher}
+                        ></ak-text-input>
+                        <ak-textarea-input
+                            label=${msg("Description")}
+                            name="metaDescription"
+                            value=${ifDefined(app.metaDescription)}
+                            .errorMessages=${errors.metaDescription}
+                        ></ak-textarea-input>
                     </div>
                 </ak-form-group>
             </form>`;

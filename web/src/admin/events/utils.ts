@@ -1,10 +1,17 @@
 import { EventUser, EventWithContext } from "#common/events";
-import { truncate } from "#common/utils";
+import { truncate } from "#common/strings";
 
 import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
+
+export function formatUUID(hex: string): string {
+    if (hex.length < 32) {
+        return hex;
+    }
+    return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20, 32)}`;
+}
 
 /**
  * Given event with a geographical context, format it into a string for display.
@@ -61,6 +68,13 @@ export function renderEventUser(
                     )}`,
                     event.user.authenticated_as,
                 )}
+            </small>`;
+    }
+    if (event.context.device) {
+        return html`${body}<small>
+                <a href="#/endpoints/devices/${formatUUID(event.context.device.pk)}">
+                    ${msg(str`Via ${event.context.device.name}`)}
+                </a>
             </small>`;
     }
 

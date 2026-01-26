@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -13,20 +14,18 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-select-table")
 export class ProviderSelectModal extends TableModal<Provider> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property({ type: Boolean })
-    backchannel = false;
+    public backchannel = false;
 
-    @property()
-    confirm!: (selectedItems: Provider[]) => Promise<unknown>;
+    @property({ attribute: false })
+    public confirm!: (selectedItems: Provider[]) => Promise<unknown>;
 
-    order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
@@ -35,11 +34,13 @@ export class ProviderSelectModal extends TableModal<Provider> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "username"), new TableColumn(msg("Type"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "username"],
+        [msg("Type")],
+    ];
 
-    row(item: Provider): TemplateResult[] {
+    row(item: Provider): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

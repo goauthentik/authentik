@@ -1,3 +1,4 @@
+import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -5,25 +6,19 @@ import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 
+import { AKLabel } from "#components/ak-label";
+
+import { IDGenerator } from "#packages/core/id";
+
 import { Provider, ProvidersAllListRequest, ProvidersApi } from "@goauthentik/api";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: Provider) => item.name;
-const renderValue = (item: Provider | undefined) => item?.pk;
+const renderValue = (item: Provider | null) => item?.pk ?? "";
 const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseName);
-
-async function fetch(query?: string) {
-    const args: ProvidersAllListRequest = {
-        ordering: "name",
-    };
-    if (query !== undefined) {
-        args.search = query;
-    }
-    const items = await new ProvidersApi(DEFAULT_CONFIG).providersAllList(args);
-    return items.results;
-}
 
 @customElement("ak-provider-search-input")
 export class AkProviderInput extends AKElement {
@@ -38,14 +33,19 @@ export class AkProviderInput extends AKElement {
         return this;
     }
 
+    //#region Properties
+
     @property({ type: String })
     name!: string;
 
     @property({ type: String })
-    label = "";
+    label: string | null = null;
 
     @property({ type: Number })
     value?: number;
+
+    @property({ type: Boolean, attribute: "readonly" })
+    readOnly = false;
 
     @property({ type: Boolean })
     required = false;
@@ -54,26 +54,66 @@ export class AkProviderInput extends AKElement {
     blankable = false;
 
     @property({ type: String })
-    help = "";
+    help: string | null = null;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string = IDGenerator.elementID().toString();
 
-    selected(item: Provider) {
-        return this.value !== undefined && this.value === item.pk;
-    }
+    //#endregion
+
+    #selected = (item: Provider) => {
+        return typeof this.value === "number" && this.value === item.pk;
+    };
+
+    #fetch = async (query?: string) => {
+        const args: ProvidersAllListRequest = {
+            ordering: "name",
+        };
+        const api = new ProvidersApi(DEFAULT_CONFIG);
+        if (query !== undefined) {
+            args.search = query;
+        }
+        const items = await api.providersAllList(args);
+        const results = items.results;
+
+        // Ensure any current selected value is present in the displayed list.
+        if (!(this.value && !results.find((r) => r.pk === this.value))) {
+            return results;
+        }
+        const single = await api.providersAllRetrieve({ id: this.value });
+        return [single, ...results];
+    };
 
     render() {
-        return html` <ak-form-element-horizontal label=${this.label} name=${this.name}>
+        const readOnlyValue = this.readOnly && typeof this.value === "number";
+
+        return html` <ak-form-element-horizontal name=${this.name}>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
+            ${readOnlyValue
+                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                : nothing}
             <ak-search-select
-                .selected=${this.selected}
-                .fetchObjects=${fetch}
+                .fieldID=${this.fieldID}
+                .selected=${this.#selected}
+                .fetchObjects=${this.#fetch}
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .groupBy=${doGroupBy}
-                ?blankable=${this.blankable}
+                ?blankable=${readOnlyValue ? false : !!this.blankable}
+                ?readonly=${this.readOnly}
+                name=${ifDefined(readOnlyValue ? undefined : this.name)}
             >
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
