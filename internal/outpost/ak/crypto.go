@@ -29,10 +29,13 @@ func NewCryptoStore(cryptoApi *api.CryptoApiService) *CryptoStore {
 }
 
 func (cs *CryptoStore) AddKeypair(uuid string) error {
-	// If they keypair was already added, don't
-	// do it again
-	if _, ok := cs.fingerprints[uuid]; ok {
-		return nil
+	// Check if the cached fingerprint matches the certificate,
+	// if not, we re-fetch it
+	if sfp, ok := cs.fingerprints[uuid]; ok {
+		fp := cs.getFingerprint(uuid)
+		if sfp == fp {
+			return nil
+		}
 	}
 	// reset fingerprint to force update
 	cs.fingerprints[uuid] = ""
