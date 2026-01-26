@@ -356,7 +356,7 @@ requires-dist = [
     { name = "django-prometheus", specifier = "==2.4.1" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
     { name = "django-tenants", specifier = "==3.9.0" },
-    { name = "djangoql", specifier = "==0.18.1" },
+    { name = "djangoql", specifier = "==0.18.2" },
     { name = "djangorestframework", specifier = "==3.16.1" },
     { name = "docker", specifier = "==7.1.0" },
     { name = "drf-orjson-renderer", specifier = "==1.8.0" },
@@ -1340,13 +1340,14 @@ wheels = [
 
 [[package]]
 name = "djangoql"
-version = "0.18.1"
+version = "0.18.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ply" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/2e/c6/dafbff1ff247340f58a2135244da6acf5ca133632c3590a3672d3c26a880/djangoql-0.18.2.tar.gz", hash = "sha256:31507fc730134300037a6ce385bb8ab7dd7c84d18a4899a67505cc724a247d83", size = 233103, upload-time = "2026-01-23T06:52:26.174Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/0a/83cdb7b9d3b854b98941363153945f6c051b3bc50cd61108a85677c98c3a/djangoql-0.18.1-py2.py3-none-any.whl", hash = "sha256:51b3085a805627ebb43cfd0aa861137cdf8f69cc3c9244699718fe04a6c8e26d", size = 218209, upload-time = "2024-01-08T14:10:47.915Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/a0/31add8120cef50c84b3286efaab8dd0271b40cf84baf49905acb773d6784/djangoql-0.18.2-py2.py3-none-any.whl", hash = "sha256:11887975d36247a9481316ab112eb829bae3d0550705ca2fedbbedd1d1ccb3cd", size = 218384, upload-time = "2026-01-23T06:52:23.932Z" },
 ]
 
 [[package]]
