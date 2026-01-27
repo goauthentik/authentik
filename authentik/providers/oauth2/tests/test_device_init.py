@@ -84,6 +84,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                 "component": "ak-provider-oauth2-device-code",
                 "flow_info": {
                     "background": "/static/dist/assets/images/flow_background.jpg",
+                    "background_themed_urls": None,
                     "cancel_url": "/flows/-/cancel/",
                     "layout": "stacked",
                     "title": self.device_flow.title,

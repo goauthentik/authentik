@@ -155,6 +155,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                                 alt: this.brandingTitle,
                                 className: "pf-c-brand",
                                 theme: this.activeTheme,
+                                themedUrls: this.brandingLogoThemedUrls,
                             })}
                         </a>
                     </div>
