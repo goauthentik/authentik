@@ -190,15 +190,10 @@ gen-clean-go:  ## Remove generated API client for Go
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
-		generate \
-		-i /local/schema.yml \
-		-g typescript-fetch \
-		-o /local/${GEN_API_TS} \
-		-c /local/scripts/api/ts-config.yaml \
-		--additional-properties=npmVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
+	mkdir -p ${PWD}/${GEN_API_PY}
+	git clone --depth 1 https://github.com/goauthentik/client-ts.git ${PWD}/${GEN_API_TS}
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_TS}
+	make -C ${PWD}/${GEN_API_TS} build version=${NPM_VERSION}
 
 	cd ${PWD}/${GEN_API_TS} && npm i
 	cd ${PWD}/${GEN_API_TS} && npm link
