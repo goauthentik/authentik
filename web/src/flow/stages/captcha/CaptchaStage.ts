@@ -427,7 +427,13 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Resizing
 
+    #mutationObserver?: MutationObserver;
+    #resizeObserver?: ResizeObserver;
+
     #loadListener = () => {
+        this.#mutationObserver?.disconnect();
+        this.#resizeObserver?.disconnect();
+
         const iframe = this.#iframeRef.value;
         const contentDocument = iframe?.contentDocument;
 
@@ -463,7 +469,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
             // We watch for any newly inserted iframes, as they may alter the height
             // of the parent iframe...
-            const mutationObserver = new MutationObserver((mutations) => {
+            this.#mutationObserver = new MutationObserver((mutations) => {
                 for (const mutation of mutations) {
                     if (mutation.type !== "childList") continue;
 
@@ -476,15 +482,14 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                         // doesn't yet know the correct height, but at least the user can
                         // try to load the challenge again with the correct height.
 
-                        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                        resizeObserver.observe(node as HTMLIFrameElement);
+                        this.#resizeObserver?.observe(node as HTMLIFrameElement);
 
                         requestAnimationFrame(synchronizeHeight);
                     }
                 }
             });
 
-            mutationObserver.observe(contentDocument.body, {
+            this.#mutationObserver.observe(contentDocument.body, {
                 childList: true,
                 subtree: true,
             });
@@ -500,10 +505,10 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             };
         }
 
-        const resizeObserver = new ResizeObserver(synchronizeHeight);
+        this.#resizeObserver = new ResizeObserver(synchronizeHeight);
 
         requestAnimationFrame(() => {
-            resizeObserver.observe(contentDocument.body);
+            this.#resizeObserver?.observe(contentDocument.body);
             this.onLoad?.();
             this.#iframeLoaded = true;
         });
@@ -585,8 +590,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 contentDocument.open();
                 contentDocument.write(template);
                 contentDocument.close();
-
-                // this.#loadListener();
             } else {
                 URL.revokeObjectURL(this.#iframeSource);
 
