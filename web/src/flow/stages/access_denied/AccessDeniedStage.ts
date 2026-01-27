@@ -50,7 +50,6 @@ export class AccessDeniedStage extends BaseStage<
                           </a>
                       </fieldset>`
                     : nothing}
-                }
             </form>
         </ak-flow-card>`;
     }
