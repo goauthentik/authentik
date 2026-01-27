@@ -457,7 +457,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     }
                                     return input.replaceAll(
                                         "<application slug>",
-                                        this.provider.assignedApplicationSlug,
+                                        this.provider.assignedApplicationSlug ??
+                                            "<application slug>",
                                     );
                                 },
                             ]}

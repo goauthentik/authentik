@@ -11,7 +11,7 @@ import (
 )
 
 type CryptoStore struct {
-	api *api.CryptoApiService
+	api *api.CryptoAPIService
 
 	log *log.Entry
 
@@ -19,7 +19,7 @@ type CryptoStore struct {
 	certificates map[string]*tls.Certificate
 }
 
-func NewCryptoStore(cryptoApi *api.CryptoApiService) *CryptoStore {
+func NewCryptoStore(cryptoApi *api.CryptoAPIService) *CryptoStore {
 	return &CryptoStore{
 		api:          cryptoApi,
 		log:          log.WithField("logger", "authentik.outpost.cryptostore"),
