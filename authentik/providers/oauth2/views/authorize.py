@@ -5,6 +5,7 @@ from datetime import timedelta
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
+from typing import Any
 from urllib.parse import parse_qs, quote, urlencode, urlparse, urlsplit, urlunparse, urlunsplit
 from uuid import uuid4
 
@@ -25,9 +26,9 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
 )
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import in_memory_stage
+from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
-from authentik.flows.stage import StageView
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
@@ -38,6 +39,7 @@ from authentik.providers.oauth2.constants import (
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
+    QS_LOGIN_HINT,
     SCOPE_GITHUB,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
@@ -378,6 +380,11 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
         client_id = self.request.GET.get("client_id")
         self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
         self.application = self.provider.application
+
+    def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
+        if QS_LOGIN_HINT in self.request.GET:
+            context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = self.request.GET.get(QS_LOGIN_HINT)
+        return super().modify_flow_context(flow, context)
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
         request.context["oauth_scopes"] = self.params.scope

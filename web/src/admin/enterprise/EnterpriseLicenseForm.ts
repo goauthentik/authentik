@@ -73,6 +73,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
             <ak-secret-textarea-input
                 name="key"
                 ?revealed=${!this.instance}
+                placeholder=${msg("Paste your license key...")}
                 label=${msg("License key")}
                 input-hint="code"
             >

@@ -59,7 +59,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     ${formatDeviceChallengeMessage(this.deviceChallenge)}
                 </div>
 
-                ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+                ${AKFormErrors({ errors: this.challenge?.responseErrors?.code })}
             </fieldset>
 
             <fieldset class="pf-c-form__group pf-m-action">
