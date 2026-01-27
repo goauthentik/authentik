@@ -15,6 +15,7 @@ from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
+from dramatiq import Worker
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
@@ -215,7 +216,7 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
 class WorkerHealthcheckMiddleware(Middleware):
     thread: Thread | None
 
-    def after_worker_boot(self, broker, worker):
+    def after_worker_boot(self, broker: Broker, worker: Worker):
         host, _, port = CONFIG.get("listen.http").rpartition(":")
 
         try:
@@ -242,7 +243,7 @@ class WorkerHealthcheckMiddleware(Middleware):
 class WorkerStatusMiddleware(Middleware):
     thread: Thread | None
 
-    def after_worker_boot(self, broker, worker):
+    def after_worker_boot(self, broker: Broker, worker: Worker):
         self.thread = Thread(target=WorkerStatusMiddleware.run)
         self.thread.start()
 
@@ -285,7 +286,7 @@ class MetricsMiddleware(BaseMetricsMiddleware):
     def forks(self) -> list[Callable[[], None]]:
         return []
 
-    def after_worker_boot(self, broker, worker):
+    def after_worker_boot(self, broker: Broker, worker: Worker):
         addr, _, port = CONFIG.get("listen.metrics").rpartition(":")
 
         try:
