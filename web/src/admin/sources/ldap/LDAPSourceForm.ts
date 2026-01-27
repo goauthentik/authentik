@@ -251,7 +251,16 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Additional settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
+                    <ak-switch-input
+                        name="syncGroupParents"
+                        label=${msg("Sync Group Parents")}
+                        ?checked=${this.instance?.syncGroupParents ?? true}
+                        help=${msg("Sync group hierarchy from LDAP directories.")}
+                    ></ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Additional Parent Group")}
+                        name="additionalParentGroup"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -273,7 +282,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                 return group ? group.pk : undefined;
                             }}
                             .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.syncParentGroup;
+                                return group.pk === this.instance?.additionalParentGroup;
                             }}
                             blankable
                         >
@@ -348,43 +357,45 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Group membership field")}
+                        label=${msg("Membership field")}
                         required
-                        name="groupMembershipField"
+                        name="membershipField"
                     >
                         <input
                             type="text"
-                            value="${this.instance?.groupMembershipField || "member"}"
+                            value="${this.instance?.membershipField || "member"}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Field which contains members of a group. The value of this field is matched against User membership attribute.",
+                                "Field which contains group members/object memberships. The value of this field is matched against Membership reference attribute. Typically `member` or `uniqueMember` when 'Lookup using user attribute' is off, or `memberOf` when it is on.To lookup nested groups in an Active Directory environment use `memberOf:1.2.840.113556.1.4.1941:` and set 'Lookup using user attribute' to on.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("User membership attribute")}
+                        label=${msg("Membership reference attribute")}
                         required
-                        name="userMembershipAttribute"
+                        name="membershipReference"
                     >
                         <input
                             type="text"
-                            value="${this.instance?.userMembershipAttribute || "distinguishedName"}"
+                            value="${this.instance?.membershipReference || "distinguishedName"}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Attribute which matches the value of Group membership field.")}
+                            ${msg(
+                                "Attribute which matches the value of Membership field. Typically `distinguishedName` or `cn`.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
-                        name="lookupGroupsFromUser"
+                        name="lookupGroupsFromMember"
                         label=${msg("Lookup using user attribute")}
-                        ?checked=${this.instance?.lookupGroupsFromUser ?? false}
+                        ?checked=${this.instance?.lookupGroupsFromMember ?? false}
                         help=${msg(
-                            "Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.",
+                            "Lookup group memberships using a member attribute. When this is on, Authentik will use the value of 'Membership field' on users and/or groups to get reference to groups they are member of. With this off (default), 'Membership field' is used on groups to get a list of members.",
                         )}
                     ></ak-switch-input>
                     <ak-form-element-horizontal

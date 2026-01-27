@@ -22586,6 +22586,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: additional_parent_group
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: additional_user_dn
         schema:
           type: string
@@ -22611,10 +22616,6 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: group_membership_field
-        schema:
-          type: string
-      - in: query
         name: group_object_filter
         schema:
           type: string
@@ -22628,9 +22629,17 @@ paths:
         explode: true
         style: form
       - in: query
-        name: lookup_groups_from_user
+        name: lookup_groups_from_member
         schema:
           type: boolean
+      - in: query
+        name: membership_field
+        schema:
+          type: string
+      - in: query
+        name: membership_reference
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryName'
       - in: query
         name: object_uniqueness_field
@@ -22671,14 +22680,13 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: sync_groups
+        name: sync_group_parents
         schema:
           type: boolean
       - in: query
-        name: sync_parent_group
+        name: sync_groups
         schema:
-          type: string
-          format: uuid
+          type: boolean
       - in: query
         name: sync_users
         schema:
@@ -22687,10 +22695,6 @@ paths:
         name: sync_users_password
         schema:
           type: boolean
-      - in: query
-        name: user_membership_attribute
-        schema:
-          type: string
       - in: query
         name: user_object_filter
         schema:
@@ -40977,12 +40981,12 @@ components:
         group_object_filter:
           type: string
           description: Consider Objects matching this filter to be Groups.
-        group_membership_field:
+        membership_field:
           type: string
-          description: Field which contains members of a group.
-        user_membership_attribute:
+          description: Field which contains a list of members/memberships.
+        membership_reference:
           type: string
-          description: Attribute which matches the value of `group_membership_field`.
+          description: Attribute which matches the value of `membership_field`.
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
@@ -40998,7 +41002,7 @@ components:
             can only be enabled on a single LDAP source.
         sync_groups:
           type: boolean
-        sync_parent_group:
+        additional_parent_group:
           type: string
           format: uuid
           nullable: true
@@ -41011,7 +41015,7 @@ components:
           nullable: true
           description: Get cached source connectivity
           readOnly: true
-        lookup_groups_from_user:
+        lookup_groups_from_member:
           type: boolean
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
@@ -41024,6 +41028,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_parents:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - component
@@ -41202,14 +41209,14 @@ components:
           type: string
           minLength: 1
           description: Consider Objects matching this filter to be Groups.
-        group_membership_field:
+        membership_field:
           type: string
           minLength: 1
-          description: Field which contains members of a group.
-        user_membership_attribute:
+          description: Field which contains a list of members/memberships.
+        membership_reference:
           type: string
           minLength: 1
-          description: Attribute which matches the value of `group_membership_field`.
+          description: Attribute which matches the value of `membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -41226,11 +41233,11 @@ components:
             can only be enabled on a single LDAP source.
         sync_groups:
           type: boolean
-        sync_parent_group:
+        additional_parent_group:
           type: string
           format: uuid
           nullable: true
-        lookup_groups_from_user:
+        lookup_groups_from_member:
           type: boolean
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
@@ -41243,6 +41250,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_parents:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - name
@@ -47683,14 +47693,14 @@ components:
           type: string
           minLength: 1
           description: Consider Objects matching this filter to be Groups.
-        group_membership_field:
+        membership_field:
           type: string
           minLength: 1
-          description: Field which contains members of a group.
-        user_membership_attribute:
+          description: Field which contains a list of members/memberships.
+        membership_reference:
           type: string
           minLength: 1
-          description: Attribute which matches the value of `group_membership_field`.
+          description: Attribute which matches the value of `membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -47707,11 +47717,11 @@ components:
             can only be enabled on a single LDAP source.
         sync_groups:
           type: boolean
-        sync_parent_group:
+        additional_parent_group:
           type: string
           format: uuid
           nullable: true
-        lookup_groups_from_user:
+        lookup_groups_from_member:
           type: boolean
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
@@ -47724,6 +47734,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_parents:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
