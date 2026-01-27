@@ -32,7 +32,7 @@ func NewServer(ac *ak.APIController) ak.Outpost {
 	ls := &LDAPServer{
 		log:             log.WithField("logger", "authentik.outpost.ldap"),
 		ac:              ac,
-		cs:              ak.NewCryptoStore(ac.Client.CryptoApi),
+		cs:              ak.NewCryptoStore(ac.Client.CryptoAPI),
 		providers:       []*ProviderInstance{},
 		connections:     map[string]net.Conn{},
 		connectionsSync: sync.Mutex{},

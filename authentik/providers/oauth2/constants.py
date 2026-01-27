@@ -10,6 +10,8 @@ GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec
 GRANT_TYPE_DEVICE_CODE = "urn:ietf:params:oauth:grant-type:device_code"
 
+QS_LOGIN_HINT = "login_hint"
+
 CLIENT_ASSERTION = "client_assertion"
 CLIENT_ASSERTION_TYPE = "client_assertion_type"
 CLIENT_ASSERTION_TYPE_JWT = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"

@@ -2,6 +2,7 @@ import "formdata-polyfill";
 import "weakmap-polyfill";
 
 import {
+    type AccessDeniedChallenge,
     type AuthenticatorValidationChallenge,
     type AutosubmitChallenge,
     type ChallengeTypes,
@@ -113,8 +114,16 @@ class SimpleFlowExecutor {
             case "ak-stage-authenticator-validate":
                 new AuthenticatorValidateStage(this, this.challenge).render();
                 return;
+            case "ak-stage-access-denied":
+                new AccessDeniedStage(this, this.challenge).render();
+                return;
             default:
-                this.container.innerText = "Unsupported stage: " + this.challenge?.component;
+                new AccessDeniedStage(this, {
+                    component: "ak-stage-access-denied",
+                    errorMessage: "Unsupported stage: " + this.challenge?.component,
+                    pendingUser: "",
+                    pendingUserAvatar: "",
+                }).render();
                 return;
         }
     }
@@ -489,6 +498,18 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 this.deviceChallenge = undefined;
                 this.render();
             });
+    }
+}
+
+class AccessDeniedStage extends Stage<AccessDeniedChallenge> {
+    render() {
+        this.html(`<form id="access-denied">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <p>
+                    ${this.challenge.errorMessage ?? "Access denied."}
+                </p>
+            </form>`);
     }
 }
 

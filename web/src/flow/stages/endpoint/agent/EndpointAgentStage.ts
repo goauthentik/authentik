@@ -35,6 +35,9 @@ export class EndpointAgentStage extends BaseStage<
                 );
             }
         });
+
+        const delay = this.challenge?.challengeIdleTimeout ?? 3000;
+
         // Fallback in case we don't get a response
         setTimeout(() => {
             this.host?.submit(
@@ -45,13 +48,13 @@ export class EndpointAgentStage extends BaseStage<
                     invisible: true,
                 },
             );
-        }, this.challenge.challengeIdleTimeout * 1000);
+        }, delay);
     }
 
     updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             if (this.challenge.responseErrors) {
                 return;
             }
@@ -64,7 +67,7 @@ export class EndpointAgentStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            ${this.challenge.responseErrors
+            ${this.challenge?.responseErrors
                 ? html`
                       <ak-empty-state icon="fa-times"
                           ><span>${msg("Failed to validate device.")}</span>

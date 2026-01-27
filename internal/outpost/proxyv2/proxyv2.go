@@ -61,7 +61,7 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 		l.Info("using filesystem session backend")
 	}
 	s := &ProxyServer{
-		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
 		apps:        make(map[string]*application.Application),
 		log:         l,
 		mux:         rootMux,

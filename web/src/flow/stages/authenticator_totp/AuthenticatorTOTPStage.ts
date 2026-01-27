@@ -6,6 +6,7 @@ import "#types/qr-code";
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
@@ -19,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -50,7 +51,11 @@ export class AuthenticatorTOTPStage extends BaseStage<
         `,
     ];
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${FlowUserDetails({ challenge: this.challenge })}

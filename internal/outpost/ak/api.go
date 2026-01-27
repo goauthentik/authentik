@@ -83,7 +83,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
 		func() (*api.PaginatedOutpostList, error) {
-			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+			outposts, _, err := apiClient.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 			return outposts, err
 		},
 		retry.Attempts(0),
@@ -99,7 +99,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
-	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	akConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch global configuration")
 		return nil
@@ -188,7 +188,7 @@ func (a *APIController) Token() string {
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+	outposts, _, err := a.Client.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err

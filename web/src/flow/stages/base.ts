@@ -81,7 +81,7 @@ export abstract class BaseStage<
     public host!: StageHost;
 
     @property({ attribute: false })
-    public challenge!: Tin;
+    public challenge: Tin | null = null;
 
     @intersectionObserver()
     public visible = false;
@@ -185,9 +185,10 @@ export abstract class BaseStage<
     }
 
     protected renderUserInfo() {
-        if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
+        if (!this.challenge?.pendingUser || !this.challenge?.pendingUserAvatar) {
             return nothing;
         }
+
         return html`
             ${FlowUserDetails({ challenge: this.challenge })}
             <input

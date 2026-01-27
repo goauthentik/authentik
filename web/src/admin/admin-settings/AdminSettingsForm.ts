@@ -286,6 +286,15 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         )}
                     >
                     </ak-switch-input>
+                    <ak-switch-input
+                        name="flags.enterpriseAuditIncludeExpandedDiff"
+                        ?checked=${settings?.flags.enterpriseAuditIncludeExpandedDiff ?? false}
+                        label=${msg("Include additional data in Audit logs")}
+                        help=${msg(
+                            "When enabled, additional data about objects added/removed is saved in the audit log. May reduce performance in certain requests.",
+                        )}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>
         `;

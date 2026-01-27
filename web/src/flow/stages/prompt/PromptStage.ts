@@ -283,7 +283,7 @@ ${prompt.initialValue}</textarea
                 ${AKFormErrors({ errors })}
             </div>`;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
+        return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
     protected renderContinue(): SlottedTemplateResult {
@@ -298,7 +298,7 @@ ${prompt.initialValue}</textarea
     protected override render(): SlottedTemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${this.challenge.fields.map((prompt) => {
+                ${Array.from(this.challenge?.fields || [], (prompt) => {
                     return this.renderField(prompt);
                 })}
                 ${this.renderNonFieldErrors()} ${this.renderContinue()}

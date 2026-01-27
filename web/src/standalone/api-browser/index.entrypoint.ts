@@ -106,6 +106,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
                         alt: msg("authentik Logo"),
                         className: "logo",
                         theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
             </rapi-doc>

@@ -3,6 +3,12 @@
 from django.conf import settings
 
 from authentik.enterprise.apps import EnterpriseConfig
+from authentik.tenants.flags import Flag
+
+
+class AuditIncludeExpandedDiff(Flag[bool], key="enterprise_audit_include_expanded_diff"):
+    default = False
+    visibility = "none"
 
 
 class AuthentikEnterpriseAuditConfig(EnterpriseConfig):

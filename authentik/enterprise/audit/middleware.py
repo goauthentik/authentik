@@ -12,6 +12,7 @@ from django.db.models.expressions import BaseExpression, Combinable
 from django.db.models.signals import post_init
 from django.http import HttpRequest
 
+from authentik.enterprise.audit.apps import AuditIncludeExpandedDiff
 from authentik.events.middleware import AuditMiddleware, should_log_model
 from authentik.events.utils import cleanse_dict, sanitize_item
 
@@ -143,5 +144,9 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             # If we're clearing we just set the "flag" to True
             if action_direction == "clear":
                 pk_set = True
+            elif AuditIncludeExpandedDiff.get():
+                related_model: type[Model] = m2m_field.related_model
+                instances = related_model.objects.filter(pk__in=pk_set)
+                pk_set = [self.serialize_simple(instance) for instance in instances]
             thread_kwargs["diff"] = {m2m_field.related_name: {action_direction: pk_set}}
         return super().m2m_changed_handler(request, sender, instance, action, thread_kwargs)

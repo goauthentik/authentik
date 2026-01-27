@@ -47,7 +47,9 @@ class OutpostSerializer(ModelSerializer):
     )
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
     service_connection_obj = ServiceConnectionSerializer(
-        source="service_connection", read_only=True
+        source="service_connection",
+        read_only=True,
+        allow_null=True,
     )
     refresh_interval_s = SerializerMethodField()
 

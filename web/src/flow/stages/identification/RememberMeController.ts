@@ -62,7 +62,7 @@ export class AkRememberMeController implements ReactiveController {
 
     get isValidChallenge() {
         return !(
-            this.host.challenge.responseErrors &&
+            this.host.challenge?.responseErrors &&
             this.host.challenge.responseErrors.non_field_errors &&
             this.host.challenge.responseErrors.non_field_errors.find(
                 (cre) => cre.code === "invalid",
@@ -75,11 +75,7 @@ export class AkRememberMeController implements ReactiveController {
     }
 
     get isEnabled() {
-        return (
-            this.host.challenge !== undefined &&
-            this.host.challenge.enableRememberMe &&
-            typeof localStorage !== "undefined"
-        );
+        return this.host.challenge?.enableRememberMe && typeof localStorage !== "undefined";
     }
 
     get canAutoSubmit() {

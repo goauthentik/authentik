@@ -86,11 +86,11 @@ export class AKAlert extends AKElement implements IAlert {
     }
 
     render() {
-        return html`<div class="${classMap(this.classmap)}">
+        return html`<div class="${classMap(this.classmap)}" part="container">
             <div class="pf-c-alert__icon">
                 <i aria-hidden="true" class="fas ${this.icon}"></i>
             </div>
-            <h4 role="presentation" class="pf-c-alert__title"><slot></slot></h4>
+            <div class="pf-c-alert__title"><slot></slot></div>
         </div>`;
     }
 }

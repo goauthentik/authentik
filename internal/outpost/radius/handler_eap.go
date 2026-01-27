@@ -97,7 +97,7 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 				if !passed {
 					return protocol.StatusError
 				}
-				access, _, err := fe.ApiClient().OutpostsApi.OutpostsRadiusAccessCheck(context.Background(), pi.providerId).AppSlug(pi.appSlug).Execute()
+				access, _, err := fe.ApiClient().OutpostsAPI.OutpostsRadiusAccessCheck(context.Background(), pi.providerId).AppSlug(pi.appSlug).Execute()
 				if err != nil {
 					ctx.Log().Warn("failed to check access: %v", err)
 					return protocol.StatusError

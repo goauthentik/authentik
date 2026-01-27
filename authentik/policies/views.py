@@ -209,7 +209,7 @@ class BufferedPolicyAccessView(PolicyAccessView):
         if not plan:
             LOGGER.debug("Not buffering request, no flow plan active")
             return super().handle_no_permission()
-        if not BufferedPolicyAccessViewFlag().get():
+        if not BufferedPolicyAccessViewFlag.get():
             return super().handle_no_permission()
         if self.request.GET.get(QS_SKIP_BUFFER):
             LOGGER.debug("Not buffering request, explicit skip")
