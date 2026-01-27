@@ -33412,6 +33412,11 @@ components:
           nullable: true
           description: Get the URL to the App Icon image
           readOnly: true
+        meta_icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         meta_description:
           type: string
         meta_publisher:
@@ -33423,6 +33428,7 @@ components:
       required:
       - backchannel_providers_obj
       - launch_url
+      - meta_icon_themed_urls
       - meta_icon_url
       - name
       - pk
@@ -35690,6 +35696,10 @@ components:
           type: string
         background:
           type: string
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         cancel_url:
           type: string
         layout:
@@ -35967,8 +35977,18 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_logo_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         branding_favicon:
           type: string
+        branding_favicon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         branding_custom_css:
           type: string
         ui_footer_links:
@@ -36013,7 +36033,9 @@ components:
       required:
       - branding_custom_css
       - branding_favicon
+      - branding_favicon_themed_urls
       - branding_logo
+      - branding_logo_themed_urls
       - branding_title
       - default_locale
       - flags
@@ -37983,6 +38005,10 @@ components:
           type: string
         url:
           type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
       required:
       - mime_type
       - name
@@ -38119,6 +38145,11 @@ components:
           type: string
           description: Get the URL to the background image
           readOnly: true
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         stages:
           type: array
           items:
@@ -38158,6 +38189,7 @@ components:
           description: Required level of authentication and authorization to access
             a flow.
       required:
+      - background_themed_urls
       - background_url
       - cache_count
       - designation
@@ -40208,6 +40240,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -40261,6 +40298,7 @@ components:
       required:
       - component
       - connectivity
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -40892,6 +40930,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         server_uri:
           type: string
           format: uri
@@ -40982,6 +41025,7 @@ components:
       - base_dn
       - component
       - connectivity
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -42749,6 +42793,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -42807,6 +42856,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -49851,6 +49901,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -49873,6 +49928,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -52421,6 +52477,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -52491,6 +52552,7 @@ components:
           type: boolean
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -54021,8 +54083,14 @@ components:
           nullable: true
           description: Get the URL to the source icon
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -54696,6 +54764,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         bot_username:
           type: string
           description: Telegram bot username
@@ -54709,6 +54782,7 @@ components:
       required:
       - bot_username
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -54926,6 +55000,16 @@ components:
       required:
       - name
       - schema_name
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type: string
+          nullable: true
+        dark:
+          type: string
+          nullable: true
     Token:
       type: object
       description: Token Serializer
