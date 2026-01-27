@@ -61,7 +61,7 @@ export class AKElement extends LitElement implements AKElementProps {
         const { brand } = globalAK();
 
         const preferredColorScheme = resolveUITheme(
-            document.documentElement.dataset.theme || globalAK().brand.uiTheme,
+            this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme,
         );
         this.activeTheme = preferredColorScheme;
 
