@@ -1,229 +1,171 @@
-use std::{env, fs, net::SocketAddr, path::PathBuf, sync::OnceLock};
+use std::{
+    env, fs,
+    path::PathBuf,
+    sync::{Arc, OnceLock},
+};
+use tokio::{
+    fs::read_to_string,
+    sync::{RwLock, RwLockReadGuard},
+    task::JoinSet,
+};
 
 use eyre::Result;
-use ipnet::IpNet;
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{Map, Value};
+
+pub mod schema;
+mod source;
+
+pub use crate::schema::Config;
+use crate::source::AsyncFile;
 
 static DEFAULT_CONFIG: &str = include_str!("../../../authentik/lib/default.yml");
-static CONFIG: OnceLock<Config> = OnceLock::new();
+static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Config {
-    pub postgresql: PostgreSQLConfig,
+fn config_paths() -> Vec<PathBuf> {
+    let mut config_paths = vec![
+        PathBuf::from("/etc/authentik/config.yml"),
+        PathBuf::from(""),
+    ];
+    if let Ok(workspace) = env::var("WORKSPACE_DIR") {
+        let _ = env::set_current_dir(workspace);
+    }
 
-    pub listen: ListenConfig,
+    if let Ok(paths) = glob::glob("/etc/authentik/config.d/*.yml") {
+        config_paths.extend(paths.filter_map(Result::ok));
+    }
 
-    pub http_timeout: u32,
+    let environment = env::var("AUTHENTIK_ENV").unwrap_or_else(|_| "local".to_owned());
 
-    pub debug: bool,
+    let mut computed_paths = Vec::new();
 
-    pub log: Option<String>,
-    pub log_level: String,
-
-    pub error_reporting: ErrorReportingConfig,
-
-    pub outposts: OutpostsConfig,
-
-    pub cookie_domain: Option<String>,
-
-    pub compliance: ComplianceConfig,
-
-    pub blueprints_dir: PathBuf,
-    pub cert_discovery_dir: PathBuf,
-
-    pub web: WebConfig,
-
-    pub worker: WorkerConfig,
-
-    // Outpost specific config
-    // These are only relevant for outposts, and cannot be set via YAML
-    // They are loaded via this config loader to support file:// schemas
-    pub authentik_host: Option<String>,
-    pub authentik_host_browser: Option<String>,
-    pub authentik_token: Option<String>,
-    pub authentik_insecure: Option<bool>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PostgreSQLConfig {
-    pub host: String,
-    pub port: u16,
-    pub user: String,
-    pub password: String,
-    pub name: String,
-
-    pub sslmode: String,
-    pub sslrootcert: Option<String>,
-    pub sslcert: Option<String>,
-    pub sslkey: Option<String>,
-
-    pub default_schema: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ListenConfig {
-    pub http: Vec<SocketAddr>,
-    pub https: Vec<SocketAddr>,
-    pub ldap: Vec<SocketAddr>,
-    pub ldaps: Vec<SocketAddr>,
-    pub radius: Vec<SocketAddr>,
-    pub metrics: Vec<SocketAddr>,
-    pub trusted_proxy_cidrs: Vec<IpNet>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ErrorReportingConfig {
-    pub enabled: bool,
-    pub sentry_dsn: Option<String>,
-    pub environment: String,
-    pub send_pii: bool,
-    pub sample_rate: f32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct OutpostsConfig {
-    pub disable_embedded_outpost: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LDAPConfig {
-    pub task_timeout_hours: u32,
-    pub page_size: u32,
-    pub tls: LDAPTLSConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LDAPTLSConfig {
-    pub ciphers: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ComplianceConfig {
-    pub fips: ComplianceFipsConfig,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ComplianceFipsConfig {
-    pub enabled: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WebConfig {
-    pub workers: usize,
-    pub threads: usize,
-    pub path: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct WorkerConfig {
-    pub processes: u32,
-    pub threads: u32,
-}
-
-impl Config {
-    fn config_paths() -> Vec<PathBuf> {
-        let mut config_paths = vec![
-            PathBuf::from("/etc/authentik/config.yml"),
-            PathBuf::from(""),
-        ];
-        if let Ok(workspace) = env::var("WORKSPACE_DIR") {
-            let _ = env::set_current_dir(workspace);
-        }
-
-        if let Ok(paths) = glob::glob("/etc/authentik/config.d/*.yml") {
-            config_paths.extend(paths.filter_map(Result::ok));
-        }
-
-        let environment = env::var("AUTHENTIK_ENV").unwrap_or_else(|_| "local".to_owned());
-
-        let mut computed_paths = Vec::new();
-
-        for path in config_paths {
-            if let Ok(metadata) = fs::metadata(&path) {
-                if !metadata.is_dir() {
-                    computed_paths.push(path);
-                }
-            } else {
-                let env_paths = vec![
-                    path.join(format!("{}.yml", environment)),
-                    path.join(format!("{}.env.yml", environment)),
-                ];
-                for env_path in env_paths {
-                    if let Ok(metadata) = fs::metadata(&env_path)
-                        && !metadata.is_dir()
-                    {
-                        computed_paths.push(env_path);
-                    }
+    for path in config_paths {
+        if let Ok(metadata) = fs::metadata(&path) {
+            if !metadata.is_dir() {
+                computed_paths.push(path);
+            }
+        } else {
+            let env_paths = vec![
+                path.join(format!("{}.yml", environment)),
+                path.join(format!("{}.env.yml", environment)),
+            ];
+            for env_path in env_paths {
+                if let Ok(metadata) = fs::metadata(&env_path)
+                    && !metadata.is_dir()
+                {
+                    computed_paths.push(env_path);
                 }
             }
         }
-
-        computed_paths
     }
 
-    fn load_raw() -> Result<Value> {
-        let mut builder = config::Config::builder();
-        builder = builder.add_source(config::File::from_str(
-            DEFAULT_CONFIG,
-            config::FileFormat::Yaml,
-        ));
-        for path in Self::config_paths() {
-            builder = builder.add_source(config::File::from(path));
+    computed_paths
+}
+
+impl Config {
+    async fn load_raw(config_paths: &[PathBuf]) -> Result<Value> {
+        let mut builder =
+            config::ConfigBuilder::<config::builder::AsyncState>::default().add_source(
+                config::File::from_str(DEFAULT_CONFIG, config::FileFormat::Yaml),
+            );
+        for path in config_paths {
+            builder = builder.add_async_source(AsyncFile {
+                name: path.clone(),
+                format: config::FileFormat::Yaml,
+            });
         }
         builder = builder.add_source(config::Environment::with_prefix("AUTHENTIK"));
-        let config = builder.build()?;
+        let config = builder.build().await?;
         let raw = config.try_deserialize::<Value>()?;
         Ok(raw)
     }
 
-    fn expand_value(value: &str) -> Result<String> {
+    // TODO: fallback values
+    async fn expand_value(value: &str) -> Result<(String, Option<PathBuf>)> {
         let trimmed = value.trim();
         let value = if let Some(path) = trimmed.strip_prefix("file://") {
-            fs::read_to_string(path).map(|s| s.trim().to_owned())?
+            (
+                read_to_string(path).await.map(|s| s.trim().to_owned())?,
+                Some(PathBuf::from(path)),
+            )
         } else if let Some(env_var) = trimmed.strip_prefix("env://") {
-            env::var(env_var)?
+            (env::var(env_var)?, None)
         } else {
-            value.to_owned()
+            (value.to_owned(), None)
         };
         Ok(value)
     }
 
-    fn expand(mut raw: Value) -> Value {
-        match &mut raw {
+    async fn expand(mut raw: Value) -> (Value, Vec<PathBuf>) {
+        let mut file_paths = Vec::new();
+        let value = match &mut raw {
             Value::String(s) => {
-                if let Ok(expanded) = Self::expand_value(s) {
-                    Value::String(expanded)
+                if let Ok(expanded) = Self::expand_value(s).await {
+                    let (v, path) = expanded;
+                    if let Some(path) = path {
+                        file_paths.push(path);
+                    }
+                    Value::String(v)
                 } else {
                     raw
                 }
             }
             Value::Array(arr) => {
-                Value::Array(arr.iter().map(|v| Self::expand(v.clone())).collect())
+                let mut res = Vec::with_capacity(arr.len());
+                for v in arr {
+                    let (expanded, paths) = Box::pin(Self::expand(v.clone())).await;
+                    file_paths.extend(paths);
+                    res.push(expanded);
+                }
+                Value::Array(res)
             }
-            Value::Object(map) => Value::Object(
-                map.iter()
-                    .map(|(k, v)| (k.clone(), Self::expand(v.clone())))
-                    .collect(),
-            ),
+            Value::Object(map) => {
+                let mut res = Map::with_capacity(map.len());
+                for (k, v) in map {
+                    let (expanded, paths) = Box::pin(Self::expand(v.clone())).await;
+                    file_paths.extend(paths);
+                    res.insert(k.clone(), expanded);
+                }
+                Value::Object(res)
+            }
             _ => raw,
-        }
+        };
+        (value, file_paths)
     }
 
-    fn load() -> Result<Self> {
-        let raw = Self::load_raw()?;
-        let expanded = Self::expand(raw);
+    async fn load(config_paths: &[PathBuf]) -> Result<(Config, Vec<PathBuf>)> {
+        let raw = Self::load_raw(config_paths).await?;
+        let (expanded, file_paths) = Self::expand(raw).await;
         let config: Config = serde_json::from_value(expanded)?;
-        Ok(config)
+        Ok((config, file_paths))
     }
+}
 
-    pub fn setup() -> Result<()> {
-        let config = Self::load()?;
-        CONFIG.get_or_init(|| config);
+pub struct ConfigManager {
+    config: Arc<RwLock<Config>>,
+    config_paths: Vec<PathBuf>,
+}
+
+impl ConfigManager {
+    pub async fn init(tasks: &mut JoinSet<Result<()>>) -> Result<()> {
+        let config_paths = config_paths();
+        let mut watch_paths = config_paths.clone();
+        let (config, other_paths) = Config::load(&config_paths).await?;
+        watch_paths.extend(other_paths);
+        let manager = Self {
+            config: Arc::new(RwLock::new(config)),
+            config_paths,
+        };
+        CONFIG_MANAGER.get_or_init(|| manager);
+        tasks.spawn(watch_config(watch_paths));
         Ok(())
     }
 }
 
-pub fn get_config() -> &'static Config {
-    CONFIG.get_or_init(|| Config::load().unwrap())
+async fn watch_config(watch_paths: Vec<PathBuf>) -> Result<()> {
+    todo!()
+}
+
+pub async fn get_config<'a>() -> RwLockReadGuard<'a, Config> {
+    let manager = CONFIG_MANAGER.get().unwrap();
+    manager.config.read().await
 }

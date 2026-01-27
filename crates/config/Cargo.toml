@@ -10,13 +10,16 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
+async-trait.workspace = true
 config.workspace = true
 eyre.workspace = true
 glob.workspace = true
 ipnet.workspace = true
+notify.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 serde_yaml_ng.workspace = true
+tokio.workspace = true
 
 [lints]
 workspace = true

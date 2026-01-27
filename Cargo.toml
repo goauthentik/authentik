@@ -13,6 +13,7 @@ publish = false
 
 [workspace.dependencies]
 argh = "0.1.13"
+async-trait = "0.1.89"
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
 axum-reverse-proxy = { version = "1.1.1", default-features = false }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
@@ -27,6 +28,7 @@ hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.19"
 ipnet = { version = "2.11.0", features = ["serde"] }
 nix = { version = "0.31.0", features = ["signal"] }
+notify = "8.2.0"
 pyo3 = "0.27.2"
 rcgen = { version = "0.14.7", default-features = false, features = [
   "aws_lc_rs",
@@ -47,6 +49,15 @@ serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 serde_yaml_ng = "0.10.0"
 signal-hook = "0.4.1"
+sqlx = { version = "0.8.6", default-features = false, features = [
+  "runtime-tokio",
+  "tls-rustls-aws-lc-rs",
+  "postgres",
+  "macros",
+  "chrono",
+  "json",
+  "uuid",
+] }
 time = "0.3.45"
 tokio = { version = "1.49.0", features = ["full"] }
 tokio-util = "0.7.18"
