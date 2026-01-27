@@ -17,7 +17,7 @@ The User object has the following properties:
 - `path`: User's path, see [Path](#path)
 - `attributes`: Dynamic attributes, see [Attributes](#attributes)
 - `group_attributes()`: Merged attributes of all groups the user is a member of and the user's own attributes. Read-only.
-- `ak_groups`: This is a queryset of all the user's direct groups.
+- `groups`: This is a queryset of all the user's direct groups.
 - `all_groups()`: This is a queryset of all the user's direct and indirect groups.
 
 :::info Clarifying direct vs indirect group membership
@@ -33,7 +33,7 @@ These are examples of how User objects can be used within Policies and Property 
 Use the following example to list all groups that a user object is a direct member of:
 
 ```python
-for group in user.ak_groups.all():
+for group in user.groups.all():
     yield group.name
 ```
 
@@ -42,7 +42,7 @@ for group in user.ak_groups.all():
 Use the following example to list groups that a user object is a direct member of, filtered based on group name:
 
 ```python
-user.ak_groups.filter(name__startswith='test')
+user.groups.filter(name__startswith='test')
 ```
 
 ### List a user's group memberships including parent groups

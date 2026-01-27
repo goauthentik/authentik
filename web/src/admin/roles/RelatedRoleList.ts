@@ -120,7 +120,7 @@ export class RelatedRoleList extends Table<Role> {
         if (this.targetGroup) {
             return this.#api.rbacRolesList({
                 ...config,
-                akGroups: this.targetGroup.pk,
+                groups: this.targetGroup.pk,
                 inherited: this.showInherited,
             });
         }

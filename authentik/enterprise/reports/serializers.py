@@ -11,7 +11,7 @@ class ExportUserSerializer(UserSerializer):
     groups = SerializerMethodField(source="get_groups")
 
     def get_groups(self, instance: User) -> str:
-        return ",".join([group.name for group in instance.ak_groups.all()])
+        return ",".join([group.name for group in instance.groups.all()])
 
     class Meta(UserSerializer.Meta):
         fields = [f for f in UserSerializer.Meta.fields if f != "groups_obj"] + ["groups"]

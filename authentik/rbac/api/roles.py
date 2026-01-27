@@ -73,7 +73,7 @@ class RoleFilterSet(FilterSet):
 
     inherited = BooleanFilter(
         method="filter_inherited",
-        label="Include inherited roles (requires users or ak_groups filter)",
+        label="Include inherited roles (requires users or groups filter)",
     )
 
     users = extend_schema_field(OpenApiTypes.INT)(
@@ -83,15 +83,15 @@ class RoleFilterSet(FilterSet):
         )
     )
 
-    ak_groups = extend_schema_field(OpenApiTypes.UUID)(
+    groups = extend_schema_field(OpenApiTypes.UUID)(
         CharFilter(
-            method="filter_ak_groups",
+            method="filter_groups",
             label="Filter by group (use with inherited=true for all roles)",
         )
     )
 
     def filter_inherited(self, queryset, name, value):
-        """This filter is handled by filter_users and filter_ak_groups"""
+        """This filter is handled by filter_users and filter_groups"""
         return queryset
 
     def filter_users(self, queryset, name, value):
@@ -105,7 +105,7 @@ class RoleFilterSet(FilterSet):
             return user.all_roles()
         return queryset.filter(users=user)
 
-    def filter_ak_groups(self, queryset, name, value):
+    def filter_groups(self, queryset, name, value):
         """Filter roles by group, optionally including inherited roles"""
         group = Group.objects.filter(pk=value).first()
         if not group:
@@ -114,7 +114,7 @@ class RoleFilterSet(FilterSet):
         include_inherited = self.data.get("inherited", "").lower() == "true"
         if include_inherited:
             return group.all_roles()
-        return queryset.filter(ak_groups=group)
+        return queryset.filter(groups=group)
 
     class Meta:
         model = Role

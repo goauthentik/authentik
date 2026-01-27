@@ -186,7 +186,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
                 )
             if self.filter_group:
-                base = base.filter(ak_groups__in=[self.filter_group])
+                base = base.filter(groups__in=[self.filter_group])
             return base.order_by("pk")
         if type == Group:
             # Get queryset of all groups with consistent ordering
