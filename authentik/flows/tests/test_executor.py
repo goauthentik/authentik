@@ -734,6 +734,7 @@ class TestFlowExecutor(FlowTestCase):
             flow,
             flow_info={
                 "background": "/static/dist/assets/images/flow_background.jpg",
+                "background_themed_urls": None,
                 "cancel_url": "/flows/-/cancel/?next=%2Ffoo",
                 "layout": "stacked",
                 "title": flow.title,

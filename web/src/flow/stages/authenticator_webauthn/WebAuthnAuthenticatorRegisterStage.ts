@@ -101,7 +101,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     }
 
     updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             // convert certain members of the PublicKeyCredentialCreateOptions into
             // byte arrays as expected by the spec.
             this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
