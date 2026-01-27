@@ -179,6 +179,7 @@ skip = [
   "./gen-go-api",             # Generated Go API
   "./data",                   # Media files
   "./media",                  # Legacy media files
+  "**vendored**"              # Vendored files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
