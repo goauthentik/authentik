@@ -117,7 +117,7 @@ export class IdentificationStage extends BaseStage<
     public updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             this.#autoRedirect();
             this.#createHelperForm();
             this.#startConditionalWebAuthn();
@@ -243,7 +243,7 @@ export class IdentificationStage extends BaseStage<
             this.#form.appendChild(username);
         }
         // Only add the password field when we don't already show a password field
-        if (!compatMode && !this.challenge.passwordFields) {
+        if (!compatMode && !this.challenge?.passwordFields) {
             const password = document.createElement("input");
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
@@ -355,7 +355,7 @@ export class IdentificationStage extends BaseStage<
             aria-label=${msg(str`Continue with ${source.name}`)}
         >
             <span class="pf-c-button__icon pf-m-start">${icon}</span>
-            ${this.challenge.showSourceLabels ? source.name : ""}
+            ${this.challenge?.showSourceLabels ? source.name : ""}
         </button>`;
     }
 
@@ -502,13 +502,13 @@ export class IdentificationStage extends BaseStage<
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge} part="flow-card">
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${this.challenge.applicationPre
+                ${this.challenge?.applicationPre
                     ? html`<p>
                           ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
                       </p>`
                     : nothing}
                 ${this.renderInput()}
-                ${this.challenge.passwordlessUrl
+                ${this.challenge?.passwordlessUrl
                     ? html`<a
                           name="passwordless"
                           href=${this.challenge.passwordlessUrl}
@@ -518,7 +518,7 @@ export class IdentificationStage extends BaseStage<
                       </a> `
                     : nothing}
             </form>
-            ${this.challenge.sources?.length
+            ${this.challenge?.sources?.length
                 ? html`<fieldset
                       slot="footer"
                       part="source-list"

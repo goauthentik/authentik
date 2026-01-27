@@ -1,5 +1,7 @@
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -9,7 +11,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -32,6 +34,10 @@ export class NativeLogoutStage extends BaseStage<
     public override firstUpdated(changedProperties: PropertyValues): void {
         super.firstUpdated(changedProperties);
 
+        if (!this.challenge) {
+            return;
+        }
+
         // If complete, auto-submit to continue flow
         if (this.challenge.isComplete) {
             const submitEvent = new SubmitEvent("submit");
@@ -49,11 +55,19 @@ export class NativeLogoutStage extends BaseStage<
             if (!this.challenge.redirectUrl) {
                 throw new TypeError(`Binding challenge does not a have a redirect URL`);
             }
-            requestAnimationFrame(() => window.location.assign(this.challenge.redirectUrl!));
+            requestAnimationFrame(() => {
+                if (!this.challenge?.redirectUrl) return;
+
+                return window.location.assign(this.challenge.redirectUrl!);
+            });
         }
     }
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         const providerName = this.challenge.providerName || msg("SAML Provider");
 
         // For complete state, just show loading (will auto-submit)
