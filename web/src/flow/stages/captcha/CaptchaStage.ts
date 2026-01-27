@@ -258,21 +258,21 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
      */
     #handlers = new Map<CaptchaProvider, CaptchaHandler>([
         [
-            "grecaptcha",
-            {
-                interactive: this.renderGReCaptchaFrame,
-                execute: this.executeGReCaptcha,
-                refreshInteractive: this.refreshGReCaptchaFrame,
-                refresh: this.refreshGReCaptcha,
-            },
-        ],
-        [
             "hcaptcha",
             {
                 interactive: this.renderHCaptchaFrame,
                 execute: this.executeHCaptcha,
                 refreshInteractive: this.refreshHCaptchaFrame,
                 refresh: this.refreshHCaptcha,
+            },
+        ],
+        [
+            "grecaptcha",
+            {
+                interactive: this.renderGReCaptchaFrame,
+                execute: this.executeGReCaptcha,
+                refreshInteractive: this.refreshGReCaptchaFrame,
+                refresh: this.refreshGReCaptcha,
             },
         ],
         [
