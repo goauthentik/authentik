@@ -367,7 +367,7 @@ requires-dist = [
     { name = "geoip2", specifier = "==5.2.0" },
     { name = "geopy", specifier = "==2.4.1" },
     { name = "google-api-python-client", specifier = "==2.188.0" },
-    { name = "gssapi", specifier = "==1.10.1" },
+    { name = "gssapi", specifier = "==1.11.1" },
     { name = "gunicorn", specifier = "==24.1.1" },
     { name = "jsonpatch", specifier = "==1.33" },
     { name = "jwcrypto", specifier = "==1.5.6" },
@@ -1732,17 +1732,21 @@ wheels = [
 
 [[package]]
 name = "gssapi"
-version = "1.10.1"
+version = "1.11.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "decorator" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/bf/95eed332e3911e2b113ceef5e6b0da807b22e45dbf897d8371e83b0a4958/gssapi-1.10.1.tar.gz", hash = "sha256:7b54335dc9a3c55d564624fb6e25fcf9cfc0b80296a5c51e9c7cf9781c7d295b", size = 94262, upload-time = "2025-10-03T03:08:49.778Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/52/c1e90623c259a42ab0587078bb04f959867b970add46ff66750ead8fc7c5/gssapi-1.11.1.tar.gz", hash = "sha256:2049ee4b1d0c363163a1344b7282a363f9f4094e51d2c36de0cf01d4735e0ae2", size = 95233, upload-time = "2026-01-26T21:01:39.463Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/60/6c6bba3a06bc9e5c7fd7a8b4337c392b3074cbbce11525c94e8b7af856e9/gssapi-1.10.1-cp314-cp314-macosx_10_13_x86_64.whl", hash = "sha256:a4d2aa439bcd08cd524a6e0c566137850e681b0fed62480aa765c097344387d7", size = 657421, upload-time = "2025-10-03T03:08:37.406Z" },
-    { url = "https://files.pythonhosted.org/packages/55/3a/414e9cfa3c4f14682e40a5d61b8181936c78abf4aff0f1a91e9adaa20b5c/gssapi-1.10.1-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:86758d03906e10cb7feeedf26b5ead6661e844c54ef09d5e7de8e5ffb1154932", size = 685642, upload-time = "2025-10-03T03:08:39.115Z" },
-    { url = "https://files.pythonhosted.org/packages/29/e4/812ef20519f020122b5207600fda2906a3d4fcc6536c8aeb764012c28470/gssapi-1.10.1-cp314-cp314-win32.whl", hash = "sha256:2ef6e30c37676fbb2f635467e560c9a5e7b3f49ee9536ecb363939efa81c82bc", size = 740154, upload-time = "2025-10-03T03:08:40.46Z" },
-    { url = "https://files.pythonhosted.org/packages/4c/fc/838a46df536111602d6582f8e8efecccaaf828b690c6305a2ef276c71e5e/gssapi-1.10.1-cp314-cp314-win_amd64.whl", hash = "sha256:8f311cec5eabe0ce417908bcf50f60afa91a5b455884794eb02eb35a41d410c7", size = 826869, upload-time = "2025-10-03T03:08:42.524Z" },
+    { url = "https://files.pythonhosted.org/packages/48/75/3cc18f2d084d19fbba38dc684588cf5f674c647e754f9cf1625bd78c39f8/gssapi-1.11.1-cp311-abi3-macosx_10_9_x86_64.whl", hash = "sha256:2298e5909a8f2d27c29352885a24e4026cfd3fa24fc38d4a0a3743fa5a3e7667", size = 611712, upload-time = "2026-01-26T21:01:19.626Z" },
+    { url = "https://files.pythonhosted.org/packages/81/f9/ac0f8c43c209d56c89655f80cd4ae43379f88370d01a7e11f264f081eef5/gssapi-1.11.1-cp311-abi3-macosx_11_0_arm64.whl", hash = "sha256:5b60b1f8d8d3e36c025bd3494105de1dfccee578e8de001f423cc094468e3022", size = 642782, upload-time = "2026-01-26T21:01:21.462Z" },
+    { url = "https://files.pythonhosted.org/packages/f8/97/f4ea9248bfdf5fcde2c5bf0bc0e573d212748724a32a5aa1002e11edb760/gssapi-1.11.1-cp311-abi3-win32.whl", hash = "sha256:9738fe0ba163c28ccf521de7520640bde4b135c1b6e87a5ac5a90435369e89c0", size = 699801, upload-time = "2026-01-26T21:01:23.226Z" },
+    { url = "https://files.pythonhosted.org/packages/54/ca/7f839880baf7c365768884161c246a3b6201738722fc7581a995190ec431/gssapi-1.11.1-cp311-abi3-win_amd64.whl", hash = "sha256:96a102ad1ec266e2d843468bf03149982969fc70344f303f81ea20197b80d7a1", size = 781646, upload-time = "2026-01-26T21:01:24.618Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/79/9148636b75ca5741ddc9c57c4b256adec422e3a89bca14306d53b48caac9/gssapi-1.11.1-cp314-cp314t-macosx_10_15_x86_64.whl", hash = "sha256:82fba401e9514ad21749b8d8954e2de1c617b0a73204c8598ee84630e23c5810", size = 714379, upload-time = "2026-01-26T21:01:25.961Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/77/f34fd81bbccf2e682073964a1b1b0a383e70d02946e472f78881d50cec6f/gssapi-1.11.1-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:cb0250f27d288d4217d7f606d3b68ecb9a10fce9391106129cada96434a685b0", size = 734103, upload-time = "2026-01-26T21:01:27.3Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/34/733a6f3372040992befd1fe62288cafea9fe25acdcf8b663ec8a7857cb69/gssapi-1.11.1-cp314-cp314t-win32.whl", hash = "sha256:b17875d236b8b030a777ee3f3ece55f3d316a91937c37abbc771afe1493703cf", size = 868586, upload-time = "2026-01-26T21:01:29.041Z" },
+    { url = "https://files.pythonhosted.org/packages/10/03/1b71feddb85f945101c3cdc07242805c5e9b48da546f8a922129ad8299e5/gssapi-1.11.1-cp314-cp314t-win_amd64.whl", hash = "sha256:da43c0e0ae84bb9f04c4e016eac6d3826c6357f827183042ba990ccedeeab052", size = 981075, upload-time = "2026-01-26T21:01:30.451Z" },
 ]
 
 [[package]]
