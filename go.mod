@@ -30,11 +30,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
 	github.com/wwt/guac v1.3.2
-<<<<<<< HEAD
-	goauthentik.io/api/v3 v3.2026020.7
-=======
 	goauthentik.io/api/v3 v3.2026020.17-0.20260126165226-52b0b9497497
->>>>>>> 85434710f (root: update client-go generation (#19762))
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.34.0
 	golang.org/x/sync v0.19.0
