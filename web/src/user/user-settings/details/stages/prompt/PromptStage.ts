@@ -60,7 +60,7 @@ export class UserSettingsPromptStage extends PromptStage {
                 </ak-form-element-horizontal>
             `;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
+        return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 
     protected override renderContinue(): SlottedTemplateResult {
@@ -90,7 +90,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     class="pf-c-form"
                     @submit=${this.submitForm}
                 >
-                    ${this.challenge.fields.map((prompt) => {
+                    ${Array.from(this.challenge?.fields || [], (prompt) => {
                         return this.renderField(prompt);
                     })}
                     ${this.renderNonFieldErrors()} ${this.renderContinue()}
@@ -105,7 +105,7 @@ export class UserSettingsPromptStage extends PromptStage {
     protected override onSubmitSuccess(payload: Record<string, unknown>): void {
         super.onSubmitSuccess?.(payload);
 
-        if (this.challenge.component !== "ak-stage-prompt") return;
+        if (this.challenge?.component !== "ak-stage-prompt") return;
 
         const localeField = this.challenge.fields.find(
             (field) => field.type === PromptTypeEnum.AkLocale,

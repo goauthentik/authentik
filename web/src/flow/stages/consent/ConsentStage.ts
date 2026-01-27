@@ -1,6 +1,8 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
@@ -55,9 +57,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         return html`
             <div class="pf-c-form__group">
                 <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
-                    ${this.challenge.headerText}
+                    ${this.challenge?.headerText ?? ""}
                 </h3>
-                ${this.challenge.permissions.length > 0
+                ${this.challenge?.permissions.length
                     ? html`
                           <p class="pf-u-mb-md">
                               ${msg("Application requires following permissions:")}
@@ -75,9 +77,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         return html`
             <div class="pf-c-form__group">
                 <h3 data-test-id="stage-heading" class="pf-c-title pf-m-xl pf-u-mb-md">
-                    ${this.challenge.headerText}
+                    ${this.challenge?.headerText ?? ""}
                 </h3>
-                ${this.challenge.permissions.length > 0
+                ${this.challenge?.permissions.length
                     ? html`
                           <p class="pf-u-mb-md">
                               ${msg("Application already has access to the following permissions:")}
@@ -89,7 +91,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     : nothing}
             </div>
             <div class="pf-c-form__group">
-                ${this.challenge.additionalPermissions.length > 0
+                ${this.challenge?.additionalPermissions.length
                     ? html`
                           <p class="pf-u-font-weight-bold pf-u-mb-md">
                               ${msg("Application requires following new permissions:")}
@@ -103,18 +105,26 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         `;
     }
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form
                 class="pf-c-form"
                 @submit=${(event: SubmitEvent) => {
+                    if (!this.challenge) {
+                        return;
+                    }
+
                     this.submitForm(event, {
                         token: this.challenge.token,
                     });
                 }}
             >
                 ${FlowUserDetails({ challenge: this.challenge })}
-                ${this.challenge.additionalPermissions.length > 0
+                ${this.challenge?.additionalPermissions.length
                     ? this.renderAdditional()
                     : this.renderNoPrevious()}
 

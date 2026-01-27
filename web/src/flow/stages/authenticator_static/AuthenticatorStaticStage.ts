@@ -1,6 +1,8 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
@@ -10,7 +12,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -50,7 +52,11 @@ export class AuthenticatorStaticStage extends BaseStage<
         `,
     ];
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${FlowUserDetails({ challenge: this.challenge })}
