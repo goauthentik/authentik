@@ -10,6 +10,7 @@ import { randomId } from "#elements/utils/randomId";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
+import Styles from "#flow/stages/captcha/CaptchaStage.css";
 import { CaptchaHandler, CaptchaProvider, iframeTemplate } from "#flow/stages/captcha/shared";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -19,7 +20,7 @@ import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/
 import { match } from "ts-pattern";
 
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -47,51 +48,13 @@ type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
-    static styles: CSSResult[] = [
+    public static readonly styles: CSSResult[] = [
+        // ---
         PFLogin,
         PFForm,
         PFFormControl,
         PFTitle,
-        css`
-            :host {
-                --captcha-background-to: var(--pf-global--BackgroundColor--light-100);
-                --captcha-background-from: var(--pf-global--BackgroundColor--light-300);
-            }
-
-            :host([theme="dark"]) {
-                --captcha-background-to: var(--ak-dark-background-light);
-                --captcha-background-from: var(--pf-global--BackgroundColor--300);
-            }
-
-            @keyframes captcha-background-animation {
-                0% {
-                    background-color: var(--captcha-background-from);
-                }
-                50% {
-                    background-color: var(--captcha-background-to);
-                }
-                100% {
-                    background-color: var(--captcha-background-from);
-                }
-            }
-
-            .ak-interactive-challenge {
-                /**
-                 * We use & here to hint to the ShadyDOM polyfill that this rule is meant
-                 * for the iframe itself, not the contents of the iframe.
-                 */
-                & {
-                    width: 100%;
-                    min-height: 65px;
-                }
-
-                &[data-ready="loading"] {
-                    background-color: var(--captcha-background-from);
-                    animation: captcha-background-animation 1s infinite
-                        var(--pf-global--TimingFunction);
-                }
-            }
-        `,
+        Styles,
     ];
 
     #logger = ConsoleLogger.prefix("flow:captcha");
