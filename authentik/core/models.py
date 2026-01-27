@@ -713,11 +713,6 @@ class Application(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.meta_icon)
 
-<<<<<<< HEAD
-    def get_launch_url(
-        self, user: Optional["User"] = None, user_data: dict | None = None
-    ) -> str | None:
-=======
     @property
     def get_meta_icon_themed_urls(self) -> dict[str, str] | None:
         """Get themed URLs for meta_icon if it contains %(theme)s"""
@@ -727,7 +722,6 @@ class Application(SerializerModel, PolicyBindingModel):
         return get_file_manager(FileUsage.MEDIA).themed_urls(self.meta_icon)
 
     def get_launch_url(self, user: User | None = None, user_data: dict | None = None) -> str | None:
->>>>>>> 33594c9cb (admin/files: add centralized theme variable support for file URLs (#19657))
         """Get launch URL if set, otherwise attempt to get launch URL based on provider.
 
         Args:
