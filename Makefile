@@ -189,6 +189,17 @@ gen-clean-go:  ## Remove generated API client for Go
 
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
+gen-client:
+	if [ "$$(git rev-parse --abbrev-ref HEAD | grep -o '^version-')" = "version-" ]; then \
+		mkdir -p ${gen_api_path}; \
+		git clone --depth 1 https://github.com/goauthentik/client-${gen_api_lang}.git -b $$(git rev-parse --abbrev-ref HEAD) ${gen_api_path} || true; \
+	fi
+	if [ ! -d ${gen_api_path} ]; then \
+		git clone --depth 1 https://github.com/goauthentik/client-${gen_api_lang}.git ${gen_api_path}; \
+	fi
+	cp ${PWD}/schema.yml ${gen_api_path}
+	make -C ${gen_api_path} build version=${NPM_VERSION}
+
 gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" gen \
 		generate \
@@ -205,16 +216,10 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	cd ${PWD}/web && npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
-	mkdir -p ${PWD}/${GEN_API_PY}
-	git clone --depth 1 https://github.com/goauthentik/client-python.git ${PWD}/${GEN_API_PY}
-	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
-	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
+	$(MAKE) gen-client gen_api_lang=python gen_api_path=${PWD}/${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ${PWD}/${GEN_API_GO}
-	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
-	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
-	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
+	$(MAKE) gen-client gen_api_lang=go gen_api_path=${PWD}/${GEN_API_GO}
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 
 gen-dev-config:  ## Generate a local development config file
