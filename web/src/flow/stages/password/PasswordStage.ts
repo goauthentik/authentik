@@ -51,7 +51,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     autocomplete="username"
                     hidden
                     readonly
-                    value="${this.challenge.pendingUser}"
+                    value="${this.challenge?.pendingUser ?? ""}"
                 />
                 <ak-flow-input-password
                     label=${msg("Password")}
@@ -59,7 +59,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     grab-focus
                     class="pf-c-form__group"
                     .errors=${this.#errors("password")}
-                    ?allow-show-password=${this.challenge.allowShowPassword}
+                    ?allow-show-password=${!!this.challenge?.allowShowPassword}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
                 <fieldset class="pf-c-form__group pf-m-action">
@@ -73,7 +73,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     </button>
                 </fieldset>
             </form>
-            ${this.challenge.recoveryUrl
+            ${this.challenge?.recoveryUrl
                 ? html`<fieldset
                       slot="footer-band"
                       part="additional-actions"
