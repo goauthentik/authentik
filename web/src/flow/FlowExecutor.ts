@@ -237,7 +237,14 @@ export class FlowExecutor
         }
 
         if (changedProperties.has("flowInfo") && this.flowInfo) {
-            applyBackgroundImageProperty(this.flowInfo.background);
+            if (
+                !(
+                    this.layout === FlowLayoutEnum.SidebarLeftFrameBackground ||
+                    this.layout === FlowLayoutEnum.SidebarRightFrameBackground
+                )
+            ) {
+                applyBackgroundImageProperty(this.flowInfo.background);
+            }
         }
 
         if (
@@ -489,6 +496,12 @@ export class FlowExecutor
         return html`<slot class="slotted-content" name="placeholder"></slot>`;
     }
 
+    protected renderFrameBackground() {
+        const src = this.#challenge?.flowInfo?.background;
+        if (!src) return nothing;
+        return html`<iframe src=${src}></iframe>`;
+    }
+
     public override render(): TemplateResult {
         const { component } = this.challenge || {};
 
@@ -497,7 +510,7 @@ export class FlowExecutor
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
             <main
                 data-layout=${this.layout}

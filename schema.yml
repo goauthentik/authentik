@@ -35704,6 +35704,8 @@ components:
       - content_right
       - sidebar_left
       - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
       type: string
     CountryCodeEnum:
       enum:
@@ -38333,6 +38335,8 @@ components:
       - content_right
       - sidebar_left
       - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
       type: string
     FlowRequest:
       type: object
