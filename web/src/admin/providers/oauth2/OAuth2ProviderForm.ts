@@ -60,10 +60,17 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
-    showClientSecret = true;
+    protected showClientSecret = true;
 
     @state()
-    showLogoutMethod = false;
+    protected showLogoutMethod = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showClientSecret = true;
+        this.showLogoutMethod = false;
+    }
 
     static styles = [
         ...super.styles,

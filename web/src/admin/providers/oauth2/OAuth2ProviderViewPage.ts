@@ -49,7 +49,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";
@@ -89,7 +88,6 @@ export class OAuth2ProviderViewPage extends AKElement {
     previewUser?: User;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -457,7 +455,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     }
                                     return input.replaceAll(
                                         "<application slug>",
-                                        this.provider.assignedApplicationSlug,
+                                        this.provider.assignedApplicationSlug ??
+                                            "<application slug>",
                                     );
                                 },
                             ]}

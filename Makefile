@@ -79,8 +79,7 @@ lint-fix: lint-codespell  ## Lint and automatically fix errors in the python sou
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
 
-lint: ## Lint the python and golang sources
-	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES)
+lint: ci-bandit ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -209,24 +208,15 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	mkdir -p ${PWD}/${GEN_API_PY}
-ifeq ($(wildcard ${PWD}/${GEN_API_PY}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-python.git ${PWD}/${GEN_API_PY}
-else
-	cd ${PWD}/${GEN_API_PY} && git pull
-endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
 	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
-gen-client-go:  ## Build and install the authentik API for Golang
+gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
-ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
-else
-	cd ${PWD}/${GEN_API_GO} && git reset --hard
-	cd ${PWD}/${GEN_API_GO} && git pull
-endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
-	make -C ${PWD}/${GEN_API_GO} build
+	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 
 gen-dev-config:  ## Generate a local development config file
@@ -326,7 +316,7 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	python -V
+	$(UV) run python -V
 	node --version
 
 ci-mypy: ci--meta-debug
@@ -342,7 +332,7 @@ ci-codespell: ci--meta-debug
 	$(UV) run codespell -s
 
 ci-bandit: ci--meta-debug
-	$(UV) run bandit -r $(PY_SOURCES)
+	$(UV) run bandit -c pyproject.toml -r $(PY_SOURCES) -iii
 
 ci-pending-migrations: ci--meta-debug
 	$(UV) run ak makemigrations --check

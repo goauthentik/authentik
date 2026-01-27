@@ -14,7 +14,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-table-search")
 export class TableSearchForm extends WithLicenseSummary(AKElement) {
@@ -37,7 +36,6 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
     public onSearch?: (value: string) => void;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFToolbar,
         PFInputGroup,

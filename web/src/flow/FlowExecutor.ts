@@ -58,6 +58,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+/// <reference types="../../types/lit.d.ts" />
+
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
@@ -234,8 +236,16 @@ export class FlowExecutor
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") && this.flowInfo) {
-            applyBackgroundImageProperty(this.flowInfo.background);
+        if (
+            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
+            this.flowInfo
+        ) {
+            // Use themed background URL if available, otherwise fall back to default
+            const backgroundUrl =
+                (this.flowInfo.backgroundThemedUrls as Record<string, string> | null | undefined)?.[
+                    this.activeTheme
+                ] ?? this.flowInfo.background;
+            applyBackgroundImageProperty(backgroundUrl);
         }
 
         if (
@@ -493,6 +503,7 @@ export class FlowExecutor
         return html`<ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
+                class="pf-m-dark"
             ></ak-locale-select>
 
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
@@ -508,6 +519,7 @@ export class FlowExecutor
                         alt: msg("authentik Logo"),
                         className: "branding-logo",
                         theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
                 ${this.loading && this.challenge
