@@ -94,15 +94,27 @@ Every application that you add to authentik requires a provider, which is used t
     - **Name**: provide a descriptive name (such as Grafana).
         - **Group**: select an optional group for the type of application. For example, you can choose to classify applications that your Sales team uses, or your Infrastructure team.
     - **Policy engine mode**: select **Any** for this tutorial; the mode determnes how strictly policies are adhered to.
-        - <font color="green"><b>TIP</b></font>: in authentik, [policies](../../customize/policies/working_with_policies.md) are used in authentik to fine-tune access to applications, flows, stages and many other authentik components. It is not required to use a policy at all, though. The _policy engine mode_ setting of **Any** means that as long as a single policy passes (or if there are no policies bound to the application), then access to the application is granted. The mode **ALL** means that every one of any policies bound to the application must pass in order for a user to have access to the application.
+        - <font color="green">
+              <b>TIP</b></font>: in authentik, [policies](../../customize/policies/working_with_policies.md) are used in authentik to
+              fine-tune access to applications, flows, stages and many other authentik components.
+              It is not required to use a policy at all, though. The _policy engine mode_ setting of
+              **Any** means that as long as a single policy passes (or if there are no policies
+              bound to the application), then access to the application is granted. The mode **ALL**
+              means that every one of any policies bound to the application must pass in order for a
+              user to have access to the application.{" "}
+
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the \*\*My Applications\*\* page: an optional icon, the publisher of the application, and a brief description.
 
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 
 - **Configure the Provider**:
     - **Name**: Provide a name (or accept the auto-provided name).
-    - **Authorization flow**: Select the default authorization flow to use for this provider.
-        - <font color="green"><b>TIP</b></font>: The authorization [flow](../../add-secure-apps/flows-stages/flow/index.md) is where the various steps, or [_stages_](../../add-secure-apps/flows-stages/stages/index.md) of authorization are defined and executed. The defined set of stages construct the workflows of authentication, authorization, etc.
+    - **Authorization flow**: Select the default `implicit` authorization flow to use for this provider.
+        - <font color="green">
+              <b>TIP</b>: The authorization [flow](../../add-secure-apps/flows-stages/flow/index.md)
+              is where the various steps, or [_stages_](../../add-secure-apps/flows-stages/stages/index.md) of authorization are defined and executed. The defined set of stages construct the workflows of
+              authentication, authorization, etc.
+          </font>
     - **Protocol settings** provide the following required configurations: - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik. - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
         - <font color="green"><b>TIP</b></font>: The Redirect URI is where the application will go as soon as authentik's authorization flow is successfully completed.
     - **Logout URI**: set to `https://grafana.company/logout`.
@@ -128,6 +140,7 @@ Note that these values are for a [Grafana instance running in Docker](https://gr
 :::
 
 # TODO: Explain authentik.company placeholder
+MOVE THIS UP MAYBE TO BE BY THE REDIRECT URI?? We want to explain that this is a palceholder that we use, but they would replace the domain that authentik is running on... just like grafana.company is the domain for grafama
 
 ```
 environment:
@@ -163,7 +176,7 @@ Now that you can access the authentik Admin interface, and you have added an app
     **B.** Fill in the **_required_** fields:
 
     - **Username**: This value must be unique across all users.
-    # TODO: what is this used for, link
+    # TODO: what is the path used for, link to ??? about this. Stae that paths are used to organize your users... for example HR vs Sales, etc. They do not imoact access,, etc., purely organizational. Note to me: the top-level user dir shows all user including those in sub-dirs
     - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
 
     For information about the **_optional_** fields below, refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
@@ -189,7 +202,7 @@ Now that you have added your first application, and a new user, here are some ty
 - Define [property mappings](../../add-secure-apps/providers/property-mappings/index.md).
 - Create a [custom flow](../../add-secure-apps/flows-stages/flow/index.md#).
 - Install an [Enterprise license](../../enterprise/manage-enterprise.mdx#buy-a-license)
-- [Create a policy](../../customize/policies/index.md) to control access or force MFA use.
+- [Create a policy](../../customize/policies/index.md) to control access, force MFA use, etc..
 
 ## Things to know and troubleshooting tips
 
