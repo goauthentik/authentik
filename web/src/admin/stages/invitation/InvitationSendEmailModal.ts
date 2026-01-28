@@ -58,32 +58,19 @@ export class InvitationSendEmailModal extends ModalButton {
         this.isSending = true;
 
         try {
-            const response = await new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsSendEmailCreate(
-                {
-                    inviteUuid: this.invitation?.pk || "",
-                    invitationSendEmailRequest: {
-                        emailAddresses: addresses,
-                        ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
-                        bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
-                    },
+            await new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsSendEmailCreate({
+                inviteUuid: this.invitation?.pk || "",
+                invitationSendEmailRequest: {
+                    emailAddresses: addresses,
+                    ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
+                    bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
                 },
-            );
+            });
 
-            if (response.failedCount > 0) {
-                showMessage({
-                    message: msg(
-                        str`Sent invitations to ${response.sentCount} address(es), failed for ${response.failedCount} address(es)`,
-                    ),
-                    level: MessageLevel.warning,
-                });
-            } else {
-                showMessage({
-                    message: msg(
-                        str`Successfully sent invitations to ${response.sentCount} address(es)`,
-                    ),
-                    level: MessageLevel.success,
-                });
-            }
+            showMessage({
+                message: msg(str`Invitation emails queued for sending to ${addresses.length} recipient(s)`),
+                level: MessageLevel.success,
+            });
 
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
@@ -97,7 +84,7 @@ export class InvitationSendEmailModal extends ModalButton {
             this.bccAddresses = "";
         } catch (error) {
             showMessage({
-                message: msg(str`Failed to send invitations: ${error}`),
+                message: msg(str`Failed to queue invitation emails: ${error}`),
                 level: MessageLevel.error,
             });
         } finally {

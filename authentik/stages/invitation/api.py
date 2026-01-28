@@ -11,7 +11,6 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
-    IntegerField,
     ListField,
     PrimaryKeyRelatedField,
     Serializer,
@@ -102,14 +101,6 @@ class InvitationSendEmailSerializer(Serializer):
     bcc_addresses = ListField(required=False)
 
 
-class InvitationSendEmailResponseSerializer(Serializer):
-    """Response serializer for sending invitation emails"""
-
-    sent_count = IntegerField(read_only=True)
-    failed_count = IntegerField(read_only=True)
-    failed_addresses = ListField(required=False, read_only=True)
-
-
 class InvitationViewSet(UsedByMixin, ModelViewSet):
     """Invitation Viewset"""
 
@@ -127,7 +118,7 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(
         request=InvitationSendEmailSerializer,
-        responses={200: InvitationSendEmailResponseSerializer},
+        responses={204: None},
     )
     @action(
         detail=True,
@@ -174,14 +165,12 @@ This invitation expires on {expiry_text}.
 Best regards
 """
 
-        # Send email using ak_send_email
+        # Queue emails for sending using ak_send_email
         evaluator = BaseEvaluator()
-        failed_addresses = []
-        successful_addresses = []
 
         for email in email_addresses:
             try:
-                success = evaluator.expr_send_email(
+                evaluator.expr_send_email(
                     address=email,
                     subject=subject,
                     body=body,
@@ -189,20 +178,10 @@ Best regards
                     cc=cc_addresses if cc_addresses else None,
                     bcc=bcc_addresses if bcc_addresses else None,
                 )
-                if success:
-                    successful_addresses.append(email)
-                else:
-                    failed_addresses.append(email)
             except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:
-                LOGGER.warning("Failed to send invitation email", email=email, exc=exc)
-                failed_addresses.append(email)
+                LOGGER.warning("Failed to queue invitation email", email=email, exc=exc)
+                return Response(
+                    {"error": f"Failed to queue email for {email}: {str(exc)}"}, status=500
+                )
 
-        response_data = {
-            "sent_count": len(successful_addresses),
-            "failed_count": len(failed_addresses),
-        }
-
-        if failed_addresses:
-            response_data["failed_addresses"] = failed_addresses
-
-        return Response(response_data)
+        return Response(status=204)

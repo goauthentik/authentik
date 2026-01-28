@@ -30315,12 +30315,8 @@ paths:
       security:
       - authentik: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvitationSendEmailResponse'
-          description: ''
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -40570,24 +40566,6 @@ components:
           items: {}
       required:
       - email_addresses
-    InvitationSendEmailResponse:
-      type: object
-      description: Response serializer for sending invitation emails
-      properties:
-        sent_count:
-          type: integer
-          readOnly: true
-        failed_count:
-          type: integer
-          readOnly: true
-        failed_addresses:
-          type: array
-          items: {}
-          readOnly: true
-      required:
-      - failed_addresses
-      - failed_count
-      - sent_count
     InvitationStage:
       type: object
       description: InvitationStage Serializer
