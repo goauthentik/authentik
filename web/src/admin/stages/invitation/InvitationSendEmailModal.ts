@@ -25,19 +25,27 @@ export class InvitationSendEmailModal extends ModalButton {
     emailAddresses: string = "";
 
     @state()
+    ccAddresses: string = "";
+
+    @state()
+    bccAddresses: string = "";
+
+    @state()
     isSending = false;
 
     static styles: CSSResult[] = [PFForm, PFFormControl];
 
-    parseEmailAddresses(): string[] {
-        return this.emailAddresses
+    parseEmailAddresses(addresses: string): string[] {
+        return addresses
             .split(/[\n,;]/)
             .map((email) => email.trim())
             .filter((email) => email.length > 0);
     }
 
     async sendEmails(): Promise<void> {
-        const addresses = this.parseEmailAddresses();
+        const addresses = this.parseEmailAddresses(this.emailAddresses);
+        const ccAddresses = this.parseEmailAddresses(this.ccAddresses);
+        const bccAddresses = this.parseEmailAddresses(this.bccAddresses);
 
         if (addresses.length === 0) {
             showMessage({
@@ -55,6 +63,8 @@ export class InvitationSendEmailModal extends ModalButton {
                     inviteUuid: this.invitation?.pk || "",
                     invitationSendEmailRequest: {
                         emailAddresses: addresses,
+                        ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
+                        bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
                     },
                 },
             );
@@ -83,6 +93,8 @@ export class InvitationSendEmailModal extends ModalButton {
             );
             this.open = false;
             this.emailAddresses = "";
+            this.ccAddresses = "";
+            this.bccAddresses = "";
         } catch (error) {
             showMessage({
                 message: msg(str`Failed to send invitations: ${error}`),
@@ -103,30 +115,68 @@ export class InvitationSendEmailModal extends ModalButton {
                 <form class="pf-c-form pf-m-horizontal">
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label" for="email-addresses">
-                            <span class="pf-c-form__label-text"
-                                >${msg("Email Addresses")}</span
-                            >
+                            <span class="pf-c-form__label-text">${msg("To")}</span>
                             <span class="pf-c-form__label-required" aria-hidden="true">*</span>
                         </label>
                         <div class="pf-c-form__horizontal-group">
                             <textarea
                                 id="email-addresses"
                                 class="pf-c-form-control"
-                                rows="6"
-                                placeholder=${msg(
-                                    "Enter email addresses (one per line, or comma/semicolon separated)",
-                                )}
+                                rows="2"
+                                placeholder=${msg("user@example.com")}
                                 .value=${this.emailAddresses}
                                 @input=${(e: Event) => {
                                     this.emailAddresses = (e.target as HTMLTextAreaElement).value;
                                 }}
                             ></textarea>
-                        </div>
-                        <p class="pf-c-form__helper-text">
+                            <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Enter one or more email addresses. Each recipient will receive an invitation link.",
+                                "One per line, or comma/semicolon separated. Each recipient will receive an invitation link.",
                             )}
                         </p>
+                        </div>
+
+                    </div>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="cc-addresses">
+                            <span class="pf-c-form__label-text">${msg("CC")}</span>
+                        </label>
+                        <div class="pf-c-form__horizontal-group">
+                            <textarea
+                                id="cc-addresses"
+                                class="pf-c-form-control"
+                                rows="2"
+                                placeholder=${msg("user@example.com")}
+                                .value=${this.ccAddresses}
+                                @input=${(e: Event) => {
+                                    this.ccAddresses = (e.target as HTMLTextAreaElement).value;
+                                }}
+                            ></textarea>
+                            <p class="pf-c-form__helper-text">
+                            ${msg("Optional. Carbon copy recipients.")}
+                        </p>
+                        </div>
+                    </div>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="bcc-addresses">
+                            <span class="pf-c-form__label-text">${msg("BCC")}</span>
+                        </label>
+                        <div class="pf-c-form__horizontal-group">
+                            <textarea
+                                id="bcc-addresses"
+                                class="pf-c-form-control"
+                                rows="2"
+                                placeholder=${msg("user@example.com")}
+                                .value=${this.bccAddresses}
+                                @input=${(e: Event) => {
+                                    this.bccAddresses = (e.target as HTMLTextAreaElement).value;
+                                }}
+                            ></textarea>
+                            <p class="pf-c-form__helper-text">
+                            ${msg("Optional. Blind carbon copy recipients.")}
+                        </p>
+                        </div>
+
                     </div>
                 </form>
             </section>
@@ -142,6 +192,8 @@ export class InvitationSendEmailModal extends ModalButton {
                     .callAction=${async () => {
                         this.open = false;
                         this.emailAddresses = "";
+                        this.ccAddresses = "";
+                        this.bccAddresses = "";
                     }}
                     class="pf-m-secondary"
                 >

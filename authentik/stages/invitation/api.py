@@ -98,6 +98,8 @@ class InvitationSendEmailSerializer(Serializer):
     """Serializer for sending invitation emails"""
 
     email_addresses = ListField(required=True)
+    cc_addresses = ListField(required=False)
+    bcc_addresses = ListField(required=False)
 
 
 class InvitationSendEmailResponseSerializer(Serializer):
@@ -136,6 +138,8 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
         """Send invitation link via email to one or more addresses"""
         invitation = self.get_object()
         email_addresses = request.data.get("email_addresses", [])
+        cc_addresses = request.data.get("cc_addresses", [])
+        bcc_addresses = request.data.get("bcc_addresses", [])
 
         if not email_addresses:
             return Response({"error": "No email addresses provided"}, status=400)
@@ -178,7 +182,12 @@ Best regards
         for email in email_addresses:
             try:
                 success = evaluator.expr_send_email(
-                    address=email, subject=subject, body=body, stage=None
+                    address=email,
+                    subject=subject,
+                    body=body,
+                    stage=None,
+                    cc=cc_addresses if cc_addresses else None,
+                    bcc=bcc_addresses if bcc_addresses else None,
                 )
                 if success:
                     successful_addresses.append(email)

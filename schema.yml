@@ -40562,6 +40562,12 @@ components:
         email_addresses:
           type: array
           items: {}
+        cc_addresses:
+          type: array
+          items: {}
+        bcc_addresses:
+          type: array
+          items: {}
       required:
       - email_addresses
     InvitationSendEmailResponse:

@@ -102,13 +102,14 @@ export class InvitationListLink extends AKElement {
                             value=${this.renderLink()}
                         />
                     </div>
-                    <span class="pf-c-description-list__text"
-                        >${msg("Copy this link to use the invitation.")}</span
-                    >
-
                 </dd>
-                <div class="pf-c-description-list__group">
-                    <dd class="pf-c-description-list__description">
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Actions")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
                         <button
                             class="pf-c-button pf-m-secondary"
                             @click=${() => {
@@ -117,13 +118,14 @@ export class InvitationListLink extends AKElement {
                         >
                             ${msg("Copy Link")}
                         </button>
+                        &nbsp;
                         <ak-invitation-send-email-modal .invitation=${this.invitation}>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
                                 ${msg("Send via Email")}
                             </button>
                         </ak-invitation-send-email-modal>
-                    </dd>
-                </div>
+                    </div>
+                </dd>
             </div>
         </dl>`;
     }
