@@ -134,7 +134,7 @@ export function resolveUITheme(
 /**
  * Effect listener invoked when the color scheme changes.
  */
-export type UIThemeListener = (currentUITheme: ResolvedUITheme) => void;
+export type UIThemeListener = (currentUITheme: ResolvedUITheme, doc?: Document) => void;
 
 /**
  * Effect destructor invoked when cleanup is required.
@@ -257,28 +257,39 @@ declare global {
  * Applies the given theme to the document, i.e. the `<html>` element.
  *
  * @param hint The color scheme hint to use.
+ * @param doc The document to apply the theme to.
  */
-export const applyDocumentTheme = ((currentUITheme = resolveUITheme()): void => {
+export const applyDocumentTheme = ((currentUITheme = resolveUITheme(), doc = document): void => {
     console.debug(`authentik/theme (document): want to switch to ${currentUITheme} theme`);
 
-    const { themeChoice } = document.documentElement.dataset;
+    const { themeChoice } = doc.documentElement.dataset;
 
     if (themeChoice && themeChoice !== "auto") {
         console.debug(
             `authentik/theme (document): skipping theme application due to explicit choice (${themeChoice})`,
         );
 
-        document.dispatchEvent(new ThemeChangeEvent(themeChoice));
+        doc.dispatchEvent(new ThemeChangeEvent(themeChoice));
 
         return;
     }
 
-    document.documentElement.dataset.theme = currentUITheme;
+    doc.documentElement.dataset.theme = currentUITheme;
 
     console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
 
-    document.dispatchEvent(new ThemeChangeEvent(currentUITheme));
+    doc.dispatchEvent(new ThemeChangeEvent(currentUITheme));
 }) satisfies UIThemeListener;
+
+/**
+ * Applies the given theme choice to the document element.
+ *
+ * @param hint The theme choice hint to apply.
+ * @param documentElement The document element to apply the theme choice to.
+ */
+export function applyThemeChoice(hint?: string, doc: Document = document): void {
+    doc.documentElement.dataset.themeChoice = hint ? resolveUITheme(hint) : "auto";
+}
 
 /**
  * A CSS variable representing the global background image.
