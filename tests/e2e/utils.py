@@ -341,41 +341,48 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
         return wrapper(self.driver)
 
-    def login(self, shadow_dom=True):
+    def login(self, shadow_dom=True, skip_stages: list[str] | None = None):
         """Perform the entire authentik login flow."""
+        skip_stages = skip_stages or []
 
-        if shadow_dom:
-            flow_executor = self.get_shadow_root("ak-flow-executor")
-            identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
-        else:
-            flow_executor = self.shady_dom()
-            identification_stage = self.shady_dom()
+        if "ak-stage-identification" not in skip_stages:
+            if shadow_dom:
+                flow_executor = self.get_shadow_root("ak-flow-executor")
+                identification_stage = self.get_shadow_root(
+                    "ak-stage-identification", flow_executor
+                )
+            else:
+                flow_executor = self.shady_dom()
+                identification_stage = self.shady_dom()
 
-        wait = WebDriverWait(identification_stage, self.wait_timeout)
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
+            wait = WebDriverWait(identification_stage, self.wait_timeout)
+            wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
 
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-            self.user.username
-        )
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
-            Keys.ENTER
-        )
+            identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
+            identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
+                self.user.username
+            )
+            identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
+                Keys.ENTER
+            )
 
-        if shadow_dom:
-            flow_executor = self.get_shadow_root("ak-flow-executor")
-            password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
-        else:
-            flow_executor = self.shady_dom()
-            password_stage = self.shady_dom()
+        if "ak-stage-password" not in skip_stages:
+            if shadow_dom:
+                flow_executor = self.get_shadow_root("ak-flow-executor")
+                password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
+            else:
+                flow_executor = self.shady_dom()
+                password_stage = self.shady_dom()
 
-        wait = WebDriverWait(password_stage, self.wait_timeout)
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=password]")))
+            wait = WebDriverWait(password_stage, self.wait_timeout)
+            wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=password]")))
 
-        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            self.user.username
-        )
-        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
+            password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+                self.user.username
+            )
+            password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
+                Keys.ENTER
+            )
         sleep(1)
 
     def assert_user(self, expected_user: User):

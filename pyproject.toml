@@ -7,7 +7,7 @@ requires-python = "==3.14.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
-  "cachetools==6.2.4",
+  "cachetools==6.2.5",
   "channels==4.3.2",
   "cryptography==46.0.3",
   "dacite==1.9.2",
@@ -27,7 +27,7 @@ dependencies = [
   "django-storages[s3]==1.14.6",
   "django-tenants==3.9.0",
   "django==5.2.10",
-  "djangoql==0.18.1",
+  "djangoql==0.19.1",
   "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.8.0",
@@ -38,8 +38,8 @@ dependencies = [
   "geoip2==5.2.0",
   "geopy==2.4.1",
   "google-api-python-client==2.188.0",
-  "gssapi==1.10.1",
-  "gunicorn==24.0.0",
+  "gssapi==1.11.1",
+  "gunicorn==24.1.1",
   "jsonpatch==1.33",
   "jwcrypto==1.5.6",
   "kubernetes==35.0.0",
@@ -77,14 +77,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.235.1",
+  "aws-cdk-lib==2.236.0",
   "bandit==1.9.3",
   "black==26.1.0",
   "bpython==0.26",
   "codespell==2.4.1",
   "colorama==0.4.6",
   "constructs==10.4.5",
-  "coverage[toml]==7.13.1",
+  "coverage[toml]==7.13.2",
   "daphne==4.2.1",
   "debugpy==1.8.19",
   "django-stubs[compatible-mypy]==5.2.9",
@@ -180,6 +180,7 @@ skip = [
   "./data",                   # Media files
   "./media",                  # Legacy media files
   "./schemas/**",             # XML Schemas
+  "**vendored**",             # Vendored files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
