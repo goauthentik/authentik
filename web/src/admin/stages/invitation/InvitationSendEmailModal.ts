@@ -9,19 +9,19 @@ import { showMessage } from "#elements/messages/MessageContainer";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
-interface InvitationSendEmailRequestWithTemplate {
-    emailAddresses: string[];
-    ccAddresses?: string[];
-    bccAddresses?: string[];
-    template?: string;
-}
-
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+
+interface InvitationSendEmailRequestWithTemplate {
+    emailAddresses: string[];
+    ccAddresses?: string[];
+    bccAddresses?: string[];
+    template?: string;
+}
 
 @customElement("ak-invitation-send-email-modal")
 export class InvitationSendEmailModal extends ModalButton {
@@ -101,7 +101,9 @@ export class InvitationSendEmailModal extends ModalButton {
             });
 
             showMessage({
-                message: msg(str`Invitation emails queued for sending to ${addresses.length} recipient(s)`),
+                message: msg(
+                    str`Invitation emails queued for sending to ${addresses.length} recipient(s)`,
+                ),
                 level: MessageLevel.success,
             });
 
@@ -150,12 +152,11 @@ export class InvitationSendEmailModal extends ModalButton {
                                 }}
                             ></textarea>
                             <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "One per line, or comma/semicolon separated. Each recipient will receive an invitation link.",
-                            )}
-                        </p>
+                                ${msg(
+                                    "One per line, or comma/semicolon separated. Each recipient will receive an invitation link.",
+                                )}
+                            </p>
                         </div>
-
                     </div>
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label" for="cc-addresses">
@@ -173,8 +174,8 @@ export class InvitationSendEmailModal extends ModalButton {
                                 }}
                             ></textarea>
                             <p class="pf-c-form__helper-text">
-                            ${msg("Optional. Carbon copy recipients.")}
-                        </p>
+                                ${msg("Optional. Carbon copy recipients.")}
+                            </p>
                         </div>
                     </div>
                     <div class="pf-c-form__group">
@@ -193,10 +194,9 @@ export class InvitationSendEmailModal extends ModalButton {
                                 }}
                             ></textarea>
                             <p class="pf-c-form__helper-text">
-                            ${msg("Optional. Blind carbon copy recipients.")}
-                        </p>
+                                ${msg("Optional. Blind carbon copy recipients.")}
+                            </p>
                         </div>
-
                     </div>
                     <div class="pf-c-form__group">
                         <label class="pf-c-form__label" for="template-select">
@@ -212,7 +212,13 @@ export class InvitationSendEmailModal extends ModalButton {
                                 }}
                             >
                                 ${this.availableTemplates.map(
-                                    template => html`<option value="${template}" ?selected=${template === this.selectedTemplate}>${template}</option>`
+                                    (template) =>
+                                        html`<option
+                                            value="${template}"
+                                            ?selected=${template === this.selectedTemplate}
+                                        >
+                                            ${template}
+                                        </option>`,
                                 )}
                             </select>
                             <p class="pf-c-form__helper-text">
