@@ -1,6 +1,8 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { BaseStage } from "#flow/stages/base";
 
 import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
@@ -28,7 +30,7 @@ export class AutosubmitStage extends BaseStage<
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
-        if (changed.has("challenge") && this.challenge.url !== undefined) {
+        if (changed.has("challenge") && this.challenge?.url) {
             console.debug("authentik/flow/stages/autosubmit: submitting");
             this.form?.submit();
         }
@@ -36,8 +38,8 @@ export class AutosubmitStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form class="pf-c-form" action="${this.challenge.url}" method="post">
-                ${Object.entries(this.challenge.attrs).map(([key, value]) => {
+            <form class="pf-c-form" action=${ifPresent(this.challenge?.url)} method="post">
+                ${Array.from(Object.entries(this.challenge?.attrs || {}), ([key, value]) => {
                     return html`<input
                         type="hidden"
                         name="${key as string}"

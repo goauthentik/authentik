@@ -123,7 +123,7 @@ export class AuthenticatorValidateStage
             return;
         }
 
-        const component = (this.challenge.component ||
+        const component = (this.challenge?.component ||
             "") as unknown as "ak-stage-authenticator-validate";
 
         value.lastUsed ??= new Date();
@@ -253,7 +253,7 @@ export class AuthenticatorValidateStage
                     type="button"
                     @click=${() => {
                         this.submit({
-                            component: this.challenge.component || "",
+                            component: this.challenge?.component || "",
                             selectedStage: stage.pk,
                         });
                     }}

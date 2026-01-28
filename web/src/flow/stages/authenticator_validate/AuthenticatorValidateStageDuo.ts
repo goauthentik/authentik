@@ -29,7 +29,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             this.authenticating = true;
             this.host
                 ?.submit(
