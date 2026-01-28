@@ -15,7 +15,12 @@ from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
+from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
+    SCIMMapping,
+    SCIMProvider,
+    SCIMProviderUser,
+)
 
 
 class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
@@ -118,3 +123,50 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         )
         connection.attributes = response
         connection.save()
+
+    def purge(self):
+        """Purge remote users that don't match the provider filters"""
+        if not self.provider.purge_objects:
+            return
+        remote_user_ids = []
+        match self.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                rsp, nextCursor = self._get_aws_paged_user_ids("")
+                remote_user_ids += rsp
+                while nextCursor:
+                    rsp, nextCursor = self._get_aws_paged_user_ids(nextCursor)
+                    remote_user_ids += rsp
+            case _:
+                return  # Not implemented
+        if len(remote_user_ids) < 1:
+            return
+        local_user_ids = {}
+        for i in SCIMProviderUser.objects.filter(provider=self.provider).values_list(
+            "scim_id", "user_id"
+        ):
+            local_user_ids[i[0]] = i[1]
+        for id in remote_user_ids:
+            if id not in local_user_ids.keys():
+                self._request("DELETE", f"/Users/{id}")
+        valid_user_ids = list(self.provider.get_object_qs(User).values_list("id", flat=True))
+        for id in local_user_ids.values():
+            if id not in valid_user_ids:
+                user = User.objects.filter(pk=id).first()
+                self.delete(user)
+
+    def _get_aws_paged_user_ids(self, cursor):
+        remote_user_ids = []
+        rsp = self._request(
+            "GET",
+            "/Users",
+            params={
+                "cursor": cursor,
+            },
+        )
+        for user in rsp["Resources"]:
+            scim_user = SCIMUserSchema.model_validate(user)
+            remote_user_ids.append(scim_user.id)
+        if "nextCursor" in rsp:
+            return remote_user_ids, rsp["nextCursor"]
+        else:
+            return remote_user_ids, None
