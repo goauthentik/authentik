@@ -37,8 +37,7 @@ td:has(ak-rbac-object-permission-modal) {
     }
 
     button[slot="trigger"]:has(i) {
-        padding-inline-start: 0 !important;
-        padding-inline-end: 0.25em !important;
+        padding-inline: 0.5em !important;
     }
 
     *::part(spinner-button) {
@@ -47,6 +46,10 @@ td:has(ak-rbac-object-permission-modal) {
 
     button.pf-m-tertiary {
         margin-inline-start: 0.25em;
+    }
+
+    pf-tooltip {
+        color: inherit;
     }
 
     & > * {
