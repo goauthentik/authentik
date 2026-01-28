@@ -58,6 +58,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Mailcow";
         case ProviderTypeEnum.Openidconnect:
             return msg("Generic OpenID Connect");
+        case ProviderTypeEnum.Adfs:
+            return msg("Generic ADFS");
         case ProviderTypeEnum.Okta:
             return "Okta";
         case ProviderTypeEnum.Patreon:

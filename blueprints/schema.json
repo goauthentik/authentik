@@ -12118,8 +12118,9 @@
                 "provider_type": {
                     "type": "string",
                     "enum": [
-                        "apple",
                         "openidconnect",
+                        "adfs",
+                        "apple",
                         "entraid",
                         "azuread",
                         "discord",
