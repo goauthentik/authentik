@@ -30292,6 +30292,39 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/invitation/invitations/{invite_uuid}/send_email/:
+    post:
+      operationId: stages_invitation_invitations_send_email_create
+      description: Send invitation link via email to one or more addresses
+      parameters:
+      - in: path
+        name: invite_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Invitation.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationSendEmailRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationSendEmailResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/invitation/invitations/{invite_uuid}/used_by/:
     get:
       operationId: stages_invitation_invitations_used_by_list
@@ -40110,6 +40143,9 @@ components:
           items:
             type: string
           nullable: true
+        pending_user_identifier:
+          type: string
+          nullable: true
         password_fields:
           type: boolean
         allow_show_password:
@@ -40143,9 +40179,6 @@ components:
         passkey_challenge:
           type: object
           additionalProperties: {}
-          nullable: true
-        pending_user_identifier:
-          type: string
           nullable: true
       required:
       - flow_designation
@@ -40522,6 +40555,33 @@ components:
           description: When set, only the configured flow can use this invitation.
       required:
       - name
+    InvitationSendEmailRequest:
+      type: object
+      description: Serializer for sending invitation emails
+      properties:
+        email_addresses:
+          type: array
+          items: {}
+      required:
+      - email_addresses
+    InvitationSendEmailResponse:
+      type: object
+      description: Response serializer for sending invitation emails
+      properties:
+        sent_count:
+          type: integer
+          readOnly: true
+        failed_count:
+          type: integer
+          readOnly: true
+        failed_addresses:
+          type: array
+          items: {}
+          readOnly: true
+      required:
+      - failed_addresses
+      - failed_count
+      - sent_count
     InvitationStage:
       type: object
       description: InvitationStage Serializer
@@ -57057,18 +57117,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
