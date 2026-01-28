@@ -1519,18 +1519,6 @@
   <source>Selected options</source>
   <target>Выбранные варианты</target>
 </trans-unit>
-<trans-unit id="sd429eba21dd59f44">
-  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
-  <target><x id="0" equiv-text="${availableCount}"/> элемент(а/ов) отмечено для добавления.</target>
-</trans-unit>
-<trans-unit id="s4abfe4e0d0665fd1">
-  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
-  <target><x id="0" equiv-text="${selectedTotal}"/> элемент(а/ов) выбран(о).</target>
-</trans-unit>
-<trans-unit id="s56b3d54118c34b2f">
-  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
-  <target><x id="0" equiv-text="${selectedCount}"/> элемент(а/ов) помечен(о) для удаления.</target>
-</trans-unit>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
 </trans-unit>
@@ -8567,7 +8555,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Приложение требует следующих новых разрешений:</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
-  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+  <source>Stage name: <x id="0" equiv-text="${this.challenge?.name}"/></source>
   <target>Название этапа: <x id="0" equiv-text="${this.challenge.name}"/></target>
 </trans-unit>
 <trans-unit id="sbd19064fc3f405c1">
@@ -8756,16 +8744,16 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Вы успешно прошли проверку подлинности своего устройства.</target>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
-  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
 </trans-unit>
 <trans-unit id="sdb749e793de55478">
-  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
+  <source>Log out of <x id="0" equiv-text="${challenge.brandName}"/></source>
 </trans-unit>
 <trans-unit id="s521681ed1d5ff814">
-  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
+  <source>Log back into <x id="0" equiv-text="${challenge.applicationName}"/></source>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
@@ -9447,9 +9435,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
   <note from="lit-localize">Label for progress bar shown when table data is loading</note>
 </trans-unit>
-<trans-unit id="s6ecf01b9b8304dba">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s</source>
-</trans-unit>
 <trans-unit id="sb6650552aaaf5da0">
   <source>Assigned Roles</source>
 </trans-unit>
@@ -9710,6 +9695,27 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>API keys can be obtained from the
                         <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
+</trans-unit>
+<trans-unit id="s87f858ca3c8e5579">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="s3934affe32f6a454">
+  <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
+</trans-unit>
+<trans-unit id="s8b68948382758d57">
+  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
+</trans-unit>
+<trans-unit id="s3a482e34c3713e41">
+  <source><x id="0" equiv-text="${selectedTotal}"/> item selected.</source>
+</trans-unit>
+<trans-unit id="s726a7342e18dc660">
+  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
+</trans-unit>
+<trans-unit id="s403a360d48a11d5f">
+  <source><x id="0" equiv-text="${selectedCount}"/> item marked to remove.</source>
+</trans-unit>
+<trans-unit id="s2e92b61847f32e72">
+  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
 </trans-unit>
 </body>
 </file>
