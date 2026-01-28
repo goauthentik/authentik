@@ -149,7 +149,7 @@
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.2",
         "fuse.js": "^7.1.0",
-        "globals": "^17.1.0",
+        "globals": "^17.2.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
         "knip": "^5.82.1",
