@@ -150,11 +150,9 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
             }}
         >
             ${Object.values(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct as PolicyBindingCheckTarget)) {
+                if (this.allowedTypes.includes(ct)) {
                     return html`<option value=${ct}>
-                        ${PolicyBindingCheckTargetToLabel(
-                            ct as PolicyBindingCheckTarget,
-                        )}
+                        ${PolicyBindingCheckTargetToLabel(ct)}
                     </option>`;
                 }
                 return nothing;
