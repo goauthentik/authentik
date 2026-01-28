@@ -90,23 +90,26 @@ Every application that you add to authentik requires a provider, which is used t
 
 **B.** Provide the details for the application (Grafana) and provider (OAuth2/OIDC).
 
-i. **Configure the Application**: - **Name**: provide a descriptive name (such as Grafana). - **Group**: select an optional group for the type of application. For example, you can choose to classify applications that your Sales team uses, or your Infrastructure team.
-
-- **Policy engine mode**: select **Any** for this tutorial; the mode determnes how strictly policies are adhered to.
-    - <font color="green">
-          <b>TIP</b>: in authentik, [policies](../../customize/policies/working_with_policies.md)
-          are used in authentik to fine-tune access to applications, flows, stages and many other
-          authentik components. It is not required to use a policy at all, though. The _policy
-          engine mode_ setting of **Any** means that as long as a single policy passes (or if there
-          are no policies bound to the application), then access to the application is granted. The
-          mode **ALL\* means that every one of any policies bound to the application must pass in
-          order for a user to have access to the application.{" "}
-      </font>
+- **Configure the Application**:
+    - **Name**: provide a descriptive name (such as Grafana).
+        - **Group**: select an optional group for the type of application. For example, you can choose to classify applications that your Sales team uses, or your Infrastructure team.
+    - **Policy engine mode**: select **Any** for this tutorial; the mode determnes how strictly policies are adhered to.
+        - <font color="green">
+              <b>TIP</b>: in authentik,
+              [policies](../../customize/policies/working_with_policies.md) are used in authentik to
+              fine-tune access to applications, flows, stages and many other authentik components.
+              It is not required to use a policy at all, though. The _policy engine mode_ setting of
+              **Any** means that as long as a single policy passes (or if there are no policies
+              bound to the application), then access to the application is granted. The mode **ALL**
+              means that every one of any policies bound to the application must pass in order for a
+              user to have access to the application.{" "}
+          </font>
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the \*\*My Applications\*\* page: an optional icon, the publisher of the application, and a brief description.
 
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 
-- **Configure the Provider**: - **Name**: Provide a name (or accept the auto-provided name).
+- **Configure the Provider**:
+    - **Name**: Provide a name (or accept the auto-provided name).
     - **Authorization flow**: Select the default authorization flow to use for this provider.
         - <font color="green">
               <b>TIP</b>: The authorization [flow](../../add-secure-apps/flows-stages/flow/index.md)
@@ -121,17 +124,19 @@ i. **Configure the Application**: - **Name**: provide a descriptive name (such a
               authorixation flow is successfully completed.{" "}
           </font>
 
-    - Set the Logout URI to `https://grafana.company/logout`. - Set the Logout Method to `Front-channel`.
-    - <font color="green">
-          <b>TIP</b>: With OAuth2, front-channel logout is considered the default because most
-          application (including Grafana) do not support back-channel logout.{" "}
-      </font>
+    - **Logout URI**: set to `https://grafana.company/logout`.
+    - **Logout Method**: set to `Front-channel`.
+        - <font color="green">
+              <b>TIP</b>: With OAuth2, front-channel logout is considered the default because most
+              application (including Grafana) do not support back-channel logout.{" "}
+          </font>
 
-    - Select any available signing key.
-    - <font color="green">
-          <b>TIP</b>: authentik generates a key that you can use, called the `authentik Self-signed
-          Certificate`, if you do not have a specific signing key for an application.{" "}
-      </font>
+    - **Signing key**: select any available signing key.
+        - <font color="green">
+              <b>TIP</b>: authentik generates a key that you can use, called the `authentik
+              Self-signed Certificate`, if you do not have a specific signing key for an
+              application.{" "}
+          </font>
 
 - **Configure Bindings** _(optional)_: you can create a [binding](../../../add-secure-apps/flows-stages/bindings/) to manage the display and access to applications on a user's **My applications** page.
     - <font color="green">
@@ -210,9 +215,6 @@ Now that you have added your first application, and a new user, here are some ty
 
 - Assign your new user to appropriate [groups](../../users-sources/user/user_basic_operations.md#add-a-user-to-a-group) and [roles](../../users-sources/user/user_basic_operations.md#add-a-user-to-a-role).
 - Configure federated or external [sources](../../users-sources/sources/index.md) (an existing source of user credentials and other user data).
-
-# TODO: Should be page but we might not have a link for that
-
 - Set up MFA
 - Define [property mappings](../../add-secure-apps/providers/property-mappings/index.md).
 - Create a [custom flow](../../add-secure-apps/flows-stages/flow/index.md#).
