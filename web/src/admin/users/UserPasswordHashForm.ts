@@ -37,7 +37,7 @@ export class UserPasswordHashForm extends Form<UserPasswordHashSetRequest> {
                     placeholder=${msg("pbkdf2_sha256$...")}
                 />
                 <p class="pf-c-form__helper-text">
-                    ${msg("Enter a pre-hashed password in Django format (e.g. pbkdf2_sha256$...).")}
+                    ${msg("Enter a pre-hashed password (e.g. pbkdf2_sha256$iterations$salt$hash).")}
                 </p>
             </ak-form-element-horizontal>
         `;
