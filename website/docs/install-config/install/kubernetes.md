@@ -93,6 +93,6 @@ You will get a `Not Found` error if initial setup URL doesn't include the traili
 
 ## First steps in authentik
 
-import BlurbFirstSteps from "../\_blurb_first_steps.mdx";
+import BlurbFirstSteps from "../first-steps/\_blurb_first_steps.mdx";
 
 <BlurbFirstSteps />
