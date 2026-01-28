@@ -35,6 +35,11 @@ rcgen = { version = "0.14.7", default-features = false, features = [
   "fips",
 ] }
 rustls = { version = "0.23.36", features = ["fips"] }
+sea-orm = { version = "1.1.19", features = [
+  "sqlx-postgres",
+  "runtime-tokio-rustls",
+  "postgres-array",
+] }
 sentry = { version = "0.46.1", default-features = false, features = [
   "backtrace",
   "contexts",
