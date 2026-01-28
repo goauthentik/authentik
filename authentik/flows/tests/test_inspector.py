@@ -62,6 +62,7 @@ class TestFlowInspector(APITestCase):
                 "primary_action": "Log in",
                 "sources": [],
                 "show_source_labels": False,
+                "pending_user_identifier": None,
                 "user_fields": ["username"],
             },
         )

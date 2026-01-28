@@ -27,7 +27,7 @@ dependencies = [
   "django-storages[s3]==1.14.6",
   "django-tenants==3.9.0",
   "django==5.2.10",
-  "djangoql==0.18.2",
+  "djangoql==0.19.1",
   "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.8.0",
@@ -180,6 +180,7 @@ skip = [
   "./data",                   # Media files
   "./media",                  # Legacy media files
   "./target",                 # Rust compilation artifacts
+  "**vendored**",             # Vendored files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
