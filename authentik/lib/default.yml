@@ -46,7 +46,7 @@ listen:
   - "[::]:1812"
   metrics:
   - "[::]:9300"
-  debug: 0.0.0.0:9900
+  debug: "[::]:6669"
   debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8

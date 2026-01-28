@@ -93,7 +93,11 @@ async fn install_tracing() -> Result<()> {
     };
 
     if get_config().await.debug {
+        let console_layer = console_subscriber::ConsoleLayer::builder()
+            .server_addr(get_config().await.listen.debug)
+            .spawn();
         tracing_subscriber::registry()
+            .with(console_layer)
             .with(filter_layer)
             .with(
                 fmt::layer()

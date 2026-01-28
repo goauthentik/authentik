@@ -22,6 +22,7 @@ config = { version = "0.15.19", default-features = false, features = [
   "yaml",
   "async",
 ] }
+console-subscriber = "0.5.0"
 eyre = "0.6.12"
 glob = "0.3.3"
 hyper-unix-socket = "0.3.0"

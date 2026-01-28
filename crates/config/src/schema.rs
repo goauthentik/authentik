@@ -67,6 +67,7 @@ pub struct ListenConfig {
     pub ldaps: Vec<SocketAddr>,
     pub radius: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
+    pub debug: SocketAddr,
     pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 
