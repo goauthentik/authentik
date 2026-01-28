@@ -997,10 +997,6 @@
   <source>No form found</source>
   <target>Aucun formulaire trouvé</target>
 </trans-unit>
-<trans-unit id="s059358bf402de018">
-  <source>Element inside the form slot is not a Form</source>
-  <target>L'élément à l'intérieur de l'emplacement du formulaire n'est pas un formulaire</target>
-</trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
   <target>Actions du formulaire</target>
@@ -2986,7 +2982,7 @@
   <target>Le fournisseur n'est assigné à aucune application.</target>
 </trans-unit>
 <trans-unit id="sc9175cb129fdc306">
-  <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
+  <source>Update <x id="0" equiv-text="${this.objectLabel}"/></source>
   <target>Mettre à jour
         <x id="0" equiv-text="${item.verboseName}"/></target>
 </trans-unit>
@@ -3436,10 +3432,6 @@
 <trans-unit id="s1bf56ee106e9e711">
   <source>Successfully created binding.</source>
   <target>Liaison créée avec succès</target>
-</trans-unit>
-<trans-unit id="s81a45c4fd11e8e1a">
-  <source>Don't pass</source>
-  <target>Échouer</target>
 </trans-unit>
 <trans-unit id="s95b73e0f4e47eb9a">
   <source>Result used when policy execution fails.</source>
@@ -4326,10 +4318,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfdd447bcde2c13ba">
   <source>Processes</source>
 </trans-unit>
-<trans-unit id="s09810653c832e935">
-  <source>Click to change value</source>
-  <target>Cliquer pour changer la valeur</target>
-</trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
 </trans-unit>
@@ -4375,9 +4363,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
-</trans-unit>
-<trans-unit id="s58d0ed0cc064ec4f">
-  <source>Update Connector</source>
 </trans-unit>
 <trans-unit id="s06b8c7e7fb99c1d8">
   <source>Connector(s)</source>
@@ -6312,10 +6297,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s81ecf2d4386b8e84">
   <source>Continue</source>
   <target>Continuer</target>
-</trans-unit>
-<trans-unit id="sc7524ea24eeeb019">
-  <source>Failed to preview prompt</source>
-  <target>Échec de la prévisualisation de l'invite</target>
 </trans-unit>
 <trans-unit id="s8b2b2a43fcf688a3">
   <source>Successfully updated prompt.</source>
@@ -9239,14 +9220,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Receive a push notification on your device.</source>
   <target>Recevoir une notification push sur votre appareil.</target>
 </trans-unit>
-<trans-unit id="s16bc281dce5685e8">
-  <source>Authenticator</source>
-  <target>Authentificateur</target>
-</trans-unit>
-<trans-unit id="sdefec5401bf67eba">
-  <source>Use a security key to prove your identity.</source>
-  <target>Utilisez une clé de sécurité pour prouver votre identité.</target>
-</trans-unit>
 <trans-unit id="sd6a025d66f2637d1">
   <source>Traditional authenticator</source>
   <target>Authentificateur traditionnel</target>
@@ -9470,18 +9443,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Search returned no results.</source>
   <target>La recherche n'a pas retourné de résultat.</target>
 </trans-unit>
-<trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
-</trans-unit>
-<trans-unit id="sb1d445efd39638d4">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="sddbc2a3be190464b">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
-</trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
   <target>Mes applications</target>
@@ -9676,33 +9637,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s89a2859207d766fe">
   <source>JWTs signed by the selected providers can be used to authenticate to devices.</source>
 </trans-unit>
-<trans-unit id="s18b4f9093a0008b3">
-  <source>the reCAPTCHA admin console</source>
-</trans-unit>
-<trans-unit id="s200b0a3b5133280d">
-  <source>Google Cloud reCAPTCHA Enterprise</source>
-</trans-unit>
-<trans-unit id="sa31bb688b2e7b492">
-  <source>the hCaptcha dashboard</source>
-</trans-unit>
-<trans-unit id="s678ebab4940155c3">
-  <source>the Cloudflare dashboard</source>
-</trans-unit>
-<trans-unit id="h67148561b42485e7">
-  <source>Site key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
-</trans-unit>
-<trans-unit id="sc57fbc2c02769dc5">
-  <source>Site key from your CAPTCHA provider.</source>
-</trans-unit>
-<trans-unit id="h98bbd5c4c133577c">
-  <source>Secret key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
-</trans-unit>
-<trans-unit id="s2ca00d57e90d053e">
-  <source>Secret key from your CAPTCHA provider.</source>
-</trans-unit>
-<trans-unit id="s77c1f57b676529ff">
-  <source>Select a CAPTCHA provider. URLs and settings will be automatically configured, but can be customized below.</source>
-</trans-unit>
 <trans-unit id="s988e1dfd2b962e4f">
   <source>Score Configuration</source>
 </trans-unit>
@@ -9806,7 +9740,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>User created.</source>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
-  <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+  <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
@@ -10119,7 +10053,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
 </trans-unit>
 <trans-unit id="s42636dae6e29892e">
-  <source>Agent version: <x id="0" equiv-text="${this.agentVersion(conn) ?? &quot;-&quot;}"/></source>
+  <source>Agent version: <x id="0" equiv-text="${vendorData.agent_version ?? &quot;-&quot;}"/></source>
 </trans-unit>
 <trans-unit id="s6dd24e14615f1369">
   <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
@@ -10155,6 +10089,177 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="stage.authenticator.email.sent">
   <source>A verification token has been sent to your email address.</source>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular-with-query">
+  <source><x id="0" equiv-text="${count}"/> application found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural-with-query">
+  <source><x id="0" equiv-text="${count}"/> applications found for "<x id="1" equiv-text="${query}"/>"</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="user.library.search.type-to-filter-hint">
+  <source>Type to filter applications</source>
+  <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
+</trans-unit>
+<trans-unit id="user.library.search.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="user.library.application-count.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="library.application.card.aria-label">
+  <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <note from="lit-localize">Screen reader label for the application card</note>
+</trans-unit>
+<trans-unit id="sc1e9c9bab6765c74">
+  <source>Active Sessions</source>
+</trans-unit>
+<trans-unit id="s83991563e9d607ac">
+  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
+</trans-unit>
+<trans-unit id="s4b004192e4d6ab2e">
+  <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="sb458ffb37cbde768">
+  <source>Revoke Sessions</source>
+</trans-unit>
+<trans-unit id="s1bd2d0f088b75b92">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
+</trans-unit>
+<trans-unit id="s5c5e74eabcb9eba1">
+  <source>This will force the selected users to re-authenticate on all their devices.</source>
+</trans-unit>
+<trans-unit id="scd909e0bc55fc548">
+  <source>Security key</source>
+</trans-unit>
+<trans-unit id="sd0de938d9c37ad5f">
+  <source>Use a Passkey or security key to prove your identity.</source>
+</trans-unit>
+<trans-unit id="s856c15d3387d1ac7">
+  <source>Include additional data in Audit logs</source>
+</trans-unit>
+<trans-unit id="sf432a1157155369f">
+  <source>When enabled, additional data about objects added/removed is saved in the audit log. May reduce performance in certain requests.</source>
+</trans-unit>
+<trans-unit id="s6173e24ed3ba956e">
+  <source>Successfully updated Fleet connector.</source>
+</trans-unit>
+<trans-unit id="sc9b84fdc2119ed1f">
+  <source>Successfully created Fleet connector.</source>
+</trans-unit>
+<trans-unit id="s6a087e34edeadc1f">
+  <source>Connector name...</source>
+</trans-unit>
+<trans-unit id="sc8a067f02f4cf520">
+  <source>Fleet settings</source>
+</trans-unit>
+<trans-unit id="sd5434d21a084c48f">
+  <source>Fleet Server URL</source>
+</trans-unit>
+<trans-unit id="s10320a36724d7e1a">
+  <source>Fleet API Token</source>
+</trans-unit>
+<trans-unit id="s4f0d6329461ac269">
+  <source>Map users</source>
+</trans-unit>
+<trans-unit id="s0770384b6d1e7075">
+  <source>When enabled, users detected by Fleet will be mapped in authentik, granting them access to the device.</source>
+</trans-unit>
+<trans-unit id="s140417fe6bad13ab">
+  <source>Map teams to device access group</source>
+</trans-unit>
+<trans-unit id="sa8383f7f7ff1a62e">
+  <source>When enabled, Fleet teams will be mapped to Device access groups. Missing device access groups are automatically created. Devices assigned to a different group are not re-assigned</source>
+</trans-unit>
+<trans-unit id="sfec0c302ab140e30">
+  <source>Software</source>
+</trans-unit>
+<trans-unit id="sf4cea728c240ee6b">
+  <source>Paste your license key...</source>
+</trans-unit>
+<trans-unit id="form.headline.update">
+  <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s5f404525692ee652">
+  <source>You can select from popular providers with preset configurations or choose a custom setup to specify your own endpoints and keys.</source>
+</trans-unit>
+<trans-unit id="sb275cc802634f93d">
+  <source>Paste your CAPTCHA public key...</source>
+</trans-unit>
+<trans-unit id="s69a0bed6319d085a">
+  <source>Secret Key</source>
+</trans-unit>
+<trans-unit id="s4cbbb47ef050cd0e">
+  <source>Paste your CAPTCHA secret key...</source>
+</trans-unit>
+<trans-unit id="s896c7fc0f9277a74">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="s1baea28d44c34fef">
+  <source>Type a stage name...</source>
+</trans-unit>
+<trans-unit id="sdd8bef43fcac336d">
+  <source>The unique name used internally to identify the stage.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-v2">
+  <source>Google reCAPTCHA v2</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha.admin-console">
+  <source>reCAPTCHA admin console</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-v3">
+  <source>Google reCAPTCHA v3</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha.api-key-source">
+  <source>reCAPTCHA admin console</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-enterprise">
+  <source>Google reCAPTCHA Enterprise</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-enterprise.api-key-source">
+  <source>Google Cloud Console</source>
+</trans-unit>
+<trans-unit id="captcha.providers.hcaptcha">
+  <source>hCaptcha</source>
+</trans-unit>
+<trans-unit id="captcha.providers.hcaptcha.api-key-source">
+  <source>hCaptcha dashboard</source>
+</trans-unit>
+<trans-unit id="captcha.providers.turnstile">
+  <source>Cloudflare Turnstile</source>
+</trans-unit>
+<trans-unit id="captcha.providers.turnstile.api-key-source">
+  <source>Cloudflare dashboard</source>
+</trans-unit>
+<trans-unit id="captcha.providers.custom">
+  <source>Custom</source>
+</trans-unit>
+<trans-unit id="s3fdf499bd9e14a92">
+  <source>Type an email address...</source>
+</trans-unit>
+<trans-unit id="captcha.public-key.description">
+  <source>The public key is used by authentik to render the CAPTCHA widget.</source>
+  <note from="lit-localize">Description for CAPTCHA public key field.</note>
+</trans-unit>
+<trans-unit id="captcha.secret-key.description">
+  <source>The secret key allows communication between authentik and the CAPTCHA provider to validate user responses.</source>
+  <note from="lit-localize">Description for CAPTCHA secret key field.</note>
+</trans-unit>
+<trans-unit id="ak-secret-text-input.actions.modify">
+  <source>Modify</source>
+  <note from="lit-localize">Help text for secret input field to indicate that clicking will allow changing the value.</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link">
+  <source>API keys can be obtained from the
+                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+  <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
 </body>
 </file>

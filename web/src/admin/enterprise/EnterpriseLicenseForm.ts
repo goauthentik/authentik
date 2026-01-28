@@ -59,7 +59,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Install ID")}>
                 <input
                     class="pf-c-form-control pf-m-monospace"
@@ -73,6 +73,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
             <ak-secret-textarea-input
                 name="key"
                 ?revealed=${!this.instance}
+                placeholder=${msg("Paste your license key...")}
                 label=${msg("License key")}
                 input-hint="code"
             >

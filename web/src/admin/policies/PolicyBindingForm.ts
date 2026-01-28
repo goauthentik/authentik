@@ -59,8 +59,8 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         return binding as T;
     }
 
-    @property()
-    public targetPk?: string;
+    @property({ type: String })
+    public targetPk = "";
 
     @state()
     protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
@@ -160,7 +160,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         </ak-toggle-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">

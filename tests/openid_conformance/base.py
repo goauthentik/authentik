@@ -43,6 +43,7 @@ class TestOpenIDConformance(SeleniumTestCase):
                     "authentik_providers_oauth2:provider-info",
                     application_slug="oidc-conformance-1",
                 ),
+                "login_hint": self.user.username,
             },
             "client": {
                 "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
@@ -138,7 +139,10 @@ class TestOpenIDConformance(SeleniumTestCase):
         should_expect_completion = False
         if "if/flow/default-authentication-flow" in self.driver.current_url:
             self.logger.debug("Logging in")
-            self.login()
+            skipped = []
+            if "login_hint" in self.driver.current_url:
+                skipped.append("ak-stage-identification")
+            self.login(skip_stages=skipped)
             should_expect_completion = True
         if "prompt=consent" in url or "offline_access" in url:
             self.logger.debug("Authorizing")

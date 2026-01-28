@@ -3088,6 +3088,34 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/authenticated_sessions/bulk_delete/:
+    delete:
+      operationId: core_authenticated_sessions_bulk_delete_destroy
+      description: Bulk revoke all sessions for multiple users
+      parameters:
+      - in: query
+        name: user_pks
+        schema:
+          type: array
+          items:
+            type: integer
+        description: List of user IDs to revoke all sessions for
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkDeleteSessionResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/brands/:
     get:
       operationId: core_brands_list
@@ -6414,6 +6442,196 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeviceSummary'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/:
+    get:
+      operationId: endpoints_fleet_connectors_list
+      description: FleetConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFleetConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_fleet_connectors_create
+      description: FleetConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_fleet_connectors_retrieve
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_fleet_connectors_update
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FleetConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_fleet_connectors_partial_update
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFleetConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_fleet_connectors_destroy
+      description: FleetConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/fleet/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_fleet_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Fleet Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -19869,6 +20087,7 @@ paths:
           - authentik_endpoints_connectors_agent.agentconnector
           - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
+          - authentik_endpoints_connectors_fleet.fleetconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -33093,6 +33312,7 @@ components:
       - authentik.blueprints
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
+      - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
@@ -33192,6 +33412,11 @@ components:
           nullable: true
           description: Get the URL to the App Icon image
           readOnly: true
+        meta_icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         meta_description:
           type: string
         meta_publisher:
@@ -33203,6 +33428,7 @@ components:
       required:
       - backchannel_providers_obj
       - launch_url
+      - meta_icon_themed_urls
       - meta_icon_url
       - name
       - pk
@@ -34839,6 +35065,13 @@ components:
           additionalProperties: {}
       required:
       - domain
+    BulkDeleteSessionResponse:
+      type: object
+      properties:
+        deleted:
+          type: integer
+      required:
+      - deleted
     Cache:
       type: object
       description: Generic cache stats for an object
@@ -35463,6 +35696,10 @@ components:
           type: string
         background:
           type: string
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         cancel_url:
           type: string
         layout:
@@ -35740,8 +35977,18 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_logo_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         branding_favicon:
           type: string
+        branding_favicon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         branding_custom_css:
           type: string
         ui_footer_links:
@@ -35772,18 +36019,23 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
       required:
       - branding_custom_css
       - branding_favicon
+      - branding_favicon_themed_urls
       - branding_logo
+      - branding_logo_themed_urls
       - branding_title
       - default_locale
       - flags
@@ -35984,6 +36236,9 @@ components:
           readOnly: true
         name:
           type: string
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - name
       - pbm_uuid
@@ -35993,6 +36248,9 @@ components:
         name:
           type: string
           minLength: 1
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - name
     DeviceChallenge:
@@ -37747,6 +38005,10 @@ components:
           type: string
         url:
           type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
       required:
       - mime_type
       - name
@@ -37766,6 +38028,89 @@ components:
           default: media
       required:
       - file
+    FleetConnector:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          maxLength: 200
+        headers_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
+        map_users:
+          type: boolean
+        map_teams_access_group:
+          type: boolean
+      required:
+      - component
+      - meta_model_name
+      - name
+      - url
+      - verbose_name
+      - verbose_name_plural
+    FleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+        headers_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
+        map_users:
+          type: boolean
+        map_teams_access_group:
+          type: boolean
+      required:
+      - name
+      - token
+      - url
     Flow:
       type: object
       description: Flow Serializer
@@ -37800,6 +38145,11 @@ components:
           type: string
           description: Get the URL to the background image
           readOnly: true
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         stages:
           type: array
           items:
@@ -37839,6 +38189,7 @@ components:
           description: Required level of authentication and authorization to access
             a flow.
       required:
+      - background_themed_urls
       - background_url
       - cache_count
       - designation
@@ -38505,10 +38856,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -39362,6 +39715,9 @@ components:
           type: object
           additionalProperties: {}
           nullable: true
+        pending_user_identifier:
+          type: string
+          nullable: true
       required:
       - flow_designation
       - password_fields
@@ -39887,6 +40243,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -39940,6 +40301,7 @@ components:
       required:
       - component
       - connectivity
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -40342,18 +40704,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -40567,6 +40933,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         server_uri:
           type: string
           format: uri
@@ -40657,6 +41028,7 @@ components:
       - base_dn
       - component
       - connectivity
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -41136,10 +41508,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -41511,6 +41885,7 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
+      - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -42020,18 +42395,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -42417,6 +42796,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -42475,6 +42859,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -42708,13 +43093,22 @@ components:
       - userinfo_endpoint
     OperatingSystem:
       type: object
+      description: |-
+        For example:
+        {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+        {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}
       properties:
         family:
           $ref: '#/components/schemas/DeviceFactsOSFamily'
         name:
           type: string
+          description: Operating System name, such as 'Server 2022' or 'Ubuntu'
         version:
           type: string
+          description: Operating System version, must always be the version number
+            but may contain build name
         arch:
           type: string
       required:
@@ -42722,15 +43116,24 @@ components:
       - family
     OperatingSystemRequest:
       type: object
+      description: |-
+        For example:
+        {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+        {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+        {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}
       properties:
         family:
           $ref: '#/components/schemas/DeviceFactsOSFamily'
         name:
           type: string
           minLength: 1
+          description: Operating System name, such as 'Server 2022' or 'Ubuntu'
         version:
           type: string
           minLength: 1
+          description: Operating System version, must always be the version number
+            but may contain build name
         arch:
           type: string
           minLength: 1
@@ -42775,6 +43178,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+          nullable: true
         refresh_interval_s:
           type: integer
           readOnly: true
@@ -43500,6 +43904,21 @@ components:
       required:
       - pagination
       - results
+    PaginatedFleetConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FleetConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedFlowList:
       type: object
       properties:
@@ -46119,6 +46538,9 @@ components:
         name:
           type: string
           minLength: 1
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedDeviceUserBindingRequest:
       type: object
       description: PolicyBinding Serializer
@@ -46463,6 +46885,37 @@ components:
         expression:
           type: string
           minLength: 1
+    PatchedFleetConnectorRequest:
+      type: object
+      description: FleetConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+        headers_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
+        map_users:
+          type: boolean
+        map_teams_access_group:
+          type: boolean
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
@@ -48870,11 +49323,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
@@ -49448,6 +49904,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -49470,6 +49931,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -50191,18 +50653,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -50405,18 +50871,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -50724,18 +51194,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -50897,18 +51371,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51590,18 +52068,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51998,6 +52480,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -52068,6 +52555,7 @@ components:
           type: boolean
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -52372,10 +52860,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -53355,11 +53845,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -53430,11 +53923,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -53590,8 +54086,14 @@ components:
           nullable: true
           description: Get the URL to the source icon
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -54265,6 +54767,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         bot_username:
           type: string
           description: Telegram bot username
@@ -54278,6 +54785,7 @@ components:
       required:
       - bot_username
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -54495,6 +55003,16 @@ components:
       required:
       - name
       - schema_name
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type: string
+          nullable: true
+        dark:
+          type: string
+          nullable: true
     Token:
       type: object
       description: Token Serializer
@@ -55915,6 +56433,7 @@ components:
       enum:
       - goauthentik.io/@merged
       - goauthentik.io/platform
+      - fleetdm.com
       type: string
     Version:
       type: object

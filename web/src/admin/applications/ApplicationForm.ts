@@ -9,7 +9,6 @@ import "#elements/Alert";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -105,7 +104,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         };
     };
 
-    public override renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );

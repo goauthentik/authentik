@@ -22,6 +22,7 @@ from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User, UserTypes
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
@@ -320,6 +321,10 @@ class LoggingMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        headers = CONFIG.get("log.http_headers", [])
+        if isinstance(headers, str):
+            headers = headers.split(",")
+        self.headers_to_log = headers
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         start = perf_counter()
@@ -334,6 +339,11 @@ class LoggingMiddleware:
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
+        for header in self.headers_to_log:
+            header_value = request.headers.get(header)
+            if not header_value:
+                continue
+            kwargs[header.lower().replace("-", "_")] = header_value
         LOGGER.info(
             request.get_full_path(),
             remote=ClientIPMiddleware.get_client_ip(request),
@@ -341,6 +351,5 @@ class LoggingMiddleware:
             scheme=request.scheme,
             status=status_code,
             runtime=runtime,
-            user_agent=request.META.get("HTTP_USER_AGENT", ""),
             **kwargs,
         )

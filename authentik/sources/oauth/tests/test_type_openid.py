@@ -1,9 +1,12 @@
 """OpenID Type tests"""
 
 from django.test import RequestFactory, TestCase
+from jwt import encode
 from requests_mock import Mocker
 
+from authentik.core.tests.utils import create_test_cert
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback, OpenIDConnectType
 
@@ -56,3 +59,36 @@ class TestTypeOpenID(TestCase):
         )
         self.assertEqual(mock.last_request.query, "")
         self.assertEqual(mock.last_request.headers["Authorization"], f"foo {token}")
+
+    @Mocker()
+    def test_userinfo_jwt(self, mock: Mocker):
+        """Test userinfo API call"""
+        jwks_cert = create_test_cert()
+        self.source.profile_url = ""
+        self.source.oidc_jwks = {"keys": [JWKSView.get_jwk_for_key(jwks_cert, "sig")]}
+        self.source.save()
+        token = generate_id()
+        profile = (
+            OpenIDConnectOAuth2Callback(request=self.factory.get("/"))
+            .get_client(self.source)
+            .get_profile_info(
+                {
+                    "token_type": "foo",
+                    "access_token": token,
+                    "id_token": encode(
+                        {
+                            "foo": "bar",
+                        },
+                        key=jwks_cert.private_key,
+                        algorithm="RS256",
+                        headers={"kid": self.source.oidc_jwks["keys"][0]["kid"]},
+                    ),
+                }
+            )
+        )
+        self.assertEqual(
+            profile,
+            {
+                "foo": "bar",
+            },
+        )
