@@ -149,11 +149,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 this.policyGroupUser = ev.detail.value;
             }}
         >
-            ${Object.keys(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct.toLowerCase() as PolicyBindingCheckTarget)) {
-                    return html`<option value=${ct.toLowerCase()}>
+            ${Object.values(PolicyBindingCheckTarget).map((ct) => {
+                if (this.allowedTypes.includes(ct as PolicyBindingCheckTarget)) {
+                    return html`<option value=${ct}>
                         ${PolicyBindingCheckTargetToLabel(
-                            ct.toLowerCase() as PolicyBindingCheckTarget,
+                            ct as PolicyBindingCheckTarget,
                         )}
                     </option>`;
                 }
