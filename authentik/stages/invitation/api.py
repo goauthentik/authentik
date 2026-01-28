@@ -11,6 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
+    CharField,
     ListField,
     PrimaryKeyRelatedField,
     Serializer,
@@ -99,6 +100,7 @@ class InvitationSendEmailSerializer(Serializer):
     email_addresses = ListField(required=True)
     cc_addresses = ListField(required=False)
     bcc_addresses = ListField(required=False)
+    template = CharField(required=False, default="invitation")
 
 
 class InvitationViewSet(UsedByMixin, ModelViewSet):
@@ -131,6 +133,7 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
         email_addresses = request.data.get("email_addresses", [])
         cc_addresses = request.data.get("cc_addresses", [])
         bcc_addresses = request.data.get("bcc_addresses", [])
+        template = request.data.get("template", "email/invitation.html")
 
         if not email_addresses:
             return Response({"error": "No email addresses provided"}, status=400)
@@ -147,23 +150,15 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
 
         invitation_link = f"{protocol}://{host}/if/flow/{flow_slug}/?itoken={invitation.pk}"
 
+        # Prepare template context
+        context = {
+            "url": invitation_link,
+            "expires": invitation.expires,
+            "host": host,
+        }
+
         # Prepare email content
         subject = f"You have been invited to {host}"
-        expiry_text = (
-            invitation.expires.strftime("%Y-%m-%d %H:%M:%S UTC") if invitation.expires else "never"
-        )
-        body = f"""
-Hello,
-
-You have been invited to access {host}.
-
-Please click the link below to accept your invitation:
-{invitation_link}
-
-This invitation expires on {expiry_text}.
-
-Best regards
-"""
 
         # Queue emails for sending using ak_send_email
         evaluator = BaseEvaluator()
@@ -173,7 +168,8 @@ Best regards
                 evaluator.expr_send_email(
                     address=email,
                     subject=subject,
-                    body=body,
+                    template=template,
+                    context=context,
                     stage=None,
                     cc=cc_addresses if cc_addresses else None,
                     bcc=bcc_addresses if bcc_addresses else None,

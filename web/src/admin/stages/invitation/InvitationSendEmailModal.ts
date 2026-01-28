@@ -9,6 +9,13 @@ import { showMessage } from "#elements/messages/MessageContainer";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
+interface InvitationSendEmailRequestWithTemplate {
+    emailAddresses: string[];
+    ccAddresses?: string[];
+    bccAddresses?: string[];
+    template?: string;
+}
+
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -32,6 +39,31 @@ export class InvitationSendEmailModal extends ModalButton {
 
     @state()
     isSending = false;
+
+    @state()
+    selectedTemplate: string = "email/invitation.html";
+
+    @state()
+    availableTemplates: string[] = ["email/invitation.html"];
+
+    async fetchAvailableTemplates(): Promise<void> {
+        try {
+            const templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+            this.availableTemplates = templates.map((template: any) => template.name || template);
+            if (!this.availableTemplates.includes("email/invitation.html")) {
+                this.availableTemplates.unshift("email/invitation.html");
+            }
+        } catch (error) {
+            console.error("Failed to fetch email templates:", error);
+            // Fallback to default template
+            this.availableTemplates = ["email/invitation.html"];
+        }
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.fetchAvailableTemplates();
+    }
 
     static styles: CSSResult[] = [PFForm, PFFormControl];
 
@@ -64,7 +96,8 @@ export class InvitationSendEmailModal extends ModalButton {
                     emailAddresses: addresses,
                     ccAddresses: ccAddresses.length > 0 ? ccAddresses : undefined,
                     bccAddresses: bccAddresses.length > 0 ? bccAddresses : undefined,
-                },
+                    template: this.selectedTemplate,
+                } as InvitationSendEmailRequestWithTemplate,
             });
 
             showMessage({
@@ -164,6 +197,28 @@ export class InvitationSendEmailModal extends ModalButton {
                         </p>
                         </div>
 
+                    </div>
+                    <div class="pf-c-form__group">
+                        <label class="pf-c-form__label" for="template-select">
+                            <span class="pf-c-form__label-text">${msg("Email Template")}</span>
+                        </label>
+                        <div class="pf-c-form__horizontal-group">
+                            <select
+                                id="template-select"
+                                class="pf-c-form-control"
+                                .value=${this.selectedTemplate}
+                                @change=${(e: Event) => {
+                                    this.selectedTemplate = (e.target as HTMLSelectElement).value;
+                                }}
+                            >
+                                ${this.availableTemplates.map(
+                                    template => html`<option value="${template}" ?selected=${template === this.selectedTemplate}>${template}</option>`
+                                )}
+                            </select>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Select the email template to use for sending invitations.")}
+                            </p>
+                        </div>
                     </div>
                 </form>
             </section>

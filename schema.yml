@@ -40564,6 +40564,9 @@ components:
         bcc_addresses:
           type: array
           items: {}
+        template:
+          type: string
+          description: Email template name to use for sending invitations
       required:
       - email_addresses
     InvitationStage:
