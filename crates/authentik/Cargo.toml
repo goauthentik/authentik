@@ -1,0 +1,31 @@
+[package]
+name = "authentik"
+version = "0.0.0"
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[dependencies]
+argh.workspace = true
+eyre.workspace = true
+color-eyre.workspace = true
+console-subscriber.workspace = true
+rustls.workspace = true
+sentry.workspace = true
+tokio.workspace = true
+tokio-util.workspace = true
+tracing.workspace = true
+tracing-error.workspace = true
+tracing-subscriber.workspace = true
+
+authentik-config.workspace = true
+authentik-db.workspace = true
+authentik-server.workspace = true
+authentik-worker.workspace = true
+
+[lints]
+workspace = true

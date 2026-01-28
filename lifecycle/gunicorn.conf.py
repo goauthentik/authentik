@@ -1,6 +1,7 @@
 """Gunicorn config"""
 
 import os
+import signal
 from hashlib import sha512
 from pathlib import Path
 from tempfile import gettempdir
@@ -47,10 +48,12 @@ max_requests_jitter = 50
 
 logconfig_dict = get_logger_config()
 
-default_workers = 2
-
-workers = CONFIG.get_int("web.workers", default_workers)
+workers = CONFIG.get_int("web.workers", 2)
 threads = CONFIG.get_int("web.threads", 4)
+
+
+def when_ready(server: "Arbiter"):  # noqa: UP037
+    os.kill(os.getppid(), signal.SIGUSR1)
 
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037

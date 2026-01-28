@@ -6,7 +6,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.generate_semver)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik crates packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
@@ -24,6 +24,7 @@ BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
 BREW_PKG_CONFIG_PATH :=
 
+CARGO := cargo
 UV := uv
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
@@ -73,6 +74,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
+	$(CARGO) +nightly fmt
 
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
