@@ -119,11 +119,10 @@ async fn watch_gunicorn(
             _ = tokio::time::sleep(Duration::from_secs(15)) => {
                 let mut state = state_lock.write().await;
                 let try_wait = state.gunicorn.try_wait();
-                drop(state);
                 match try_wait {
                     // Gunicorn has exited. stop as soon as possible
                     Ok(Some(code)) => {
-                        signals_tx.send(SignalKind::interrupt())?;
+                        state.fast_shutdown().await?;
                         return Err(eyre!("gunicorn has exited unexpectedly with status {code}"));
                     }
                     // Gunicorn is still running, or we failed to check the status
