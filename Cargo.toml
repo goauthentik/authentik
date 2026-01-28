@@ -72,6 +72,7 @@ tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 
 authentik-config = { version = "0.0.0", path = "./crates/config" }
+authentik-db = { version = "0.0.0", path = "./crates/db" }
 authentik-server = { version = "0.0.0", path = "./crates/server" }
 authentik-worker = { version = "0.0.0", path = "./crates/worker" }
 

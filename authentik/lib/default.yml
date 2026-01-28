@@ -22,6 +22,8 @@ postgresql:
   password: "env://POSTGRES_PASSWORD"
   name: authentik
   sslmode: disable
+  conn_max_age: 60
+  conn_health_checks: false
   use_pool: False
   test:
     name: test_authentik

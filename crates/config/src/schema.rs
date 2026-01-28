@@ -53,6 +53,9 @@ pub struct PostgreSQLConfig {
     pub sslcert: Option<String>,
     pub sslkey: Option<String>,
 
+    pub conn_max_age: Option<u64>,
+    pub conn_health_checks: bool,
+
     pub default_schema: String,
 }
 

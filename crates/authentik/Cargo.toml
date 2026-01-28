@@ -22,6 +22,7 @@ tracing-error.workspace = true
 tracing-subscriber.workspace = true
 
 authentik-config.workspace = true
+authentik-db.workspace = true
 authentik-server.workspace = true
 authentik-worker.workspace = true
 

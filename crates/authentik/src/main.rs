@@ -188,6 +188,8 @@ async fn main() -> Result<()> {
         signals_tx.clone(),
     ));
 
+    authentik_db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
+
     match cli.command {
         Command::Server(args) => {
             authentik_server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
