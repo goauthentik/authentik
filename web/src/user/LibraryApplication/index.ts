@@ -89,6 +89,7 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 size=${PFSize.Large}
                 name=${application.name}
                 icon=${ifPresent(application.metaIconUrl)}
+                .iconThemedUrls=${application.metaIconThemedUrls}
             ></ak-app-icon>
             ${rac
                 ? html`<div

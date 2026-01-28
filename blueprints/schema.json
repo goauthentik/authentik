@@ -1024,6 +1024,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_providers_ws_federation.wsfederationprovider"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_reports.dataexport"
                         },
                         "id": {
@@ -5771,6 +5811,10 @@
                             "authentik_providers_ssf.view_ssfprovider",
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
+                            "authentik_providers_ws_federation.add_wsfederationprovider",
+                            "authentik_providers_ws_federation.change_wsfederationprovider",
+                            "authentik_providers_ws_federation.delete_wsfederationprovider",
+                            "authentik_providers_ws_federation.view_wsfederationprovider",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
@@ -7180,6 +7224,162 @@
                 }
             }
         },
+        "model_authentik_providers_ws_federation.wsfederationprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow",
+                    "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
+                },
+                "authorization_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authorization flow",
+                    "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "reply_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "minLength": 1,
+                    "title": "Reply url"
+                },
+                "assertion_valid_not_before": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Assertion valid not before",
+                    "description": "Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3)."
+                },
+                "assertion_valid_not_on_or_after": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Assertion valid not on or after",
+                    "description": "Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "session_valid_not_on_or_after": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Session valid not on or after",
+                    "description": "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "name_id_mapping": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "NameID Property Mapping",
+                    "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
+                },
+                "authn_context_class_ref_mapping": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "AuthnContextClassRef Property Mapping",
+                    "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
+                },
+                "digest_algorithm": {
+                    "type": "string",
+                    "enum": [
+                        "http://www.w3.org/2000/09/xmldsig#sha1",
+                        "http://www.w3.org/2001/04/xmlenc#sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#sha384",
+                        "http://www.w3.org/2001/04/xmlenc#sha512"
+                    ],
+                    "title": "Digest algorithm"
+                },
+                "signature_algorithm": {
+                    "type": "string",
+                    "enum": [
+                        "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+                        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384",
+                        "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+                        "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
+                        "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
+                    ],
+                    "title": "Signature algorithm"
+                },
+                "signing_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing Keypair",
+                    "description": "Keypair used to sign outgoing Responses going to the Service Provider."
+                },
+                "encryption_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Keypair",
+                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "sign_assertion": {
+                    "type": "boolean",
+                    "title": "Sign assertion"
+                },
+                "sign_logout_request": {
+                    "type": "boolean",
+                    "title": "Sign logout request"
+                },
+                "default_name_id_policy": {
+                    "type": "string",
+                    "enum": [
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                    ],
+                    "title": "Default name id policy"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_ws_federation.wsfederationprovider_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_wsfederationprovider",
+                            "change_wsfederationprovider",
+                            "delete_wsfederationprovider",
+                            "view_wsfederationprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_reports.dataexport": {
             "type": "object",
             "properties": {
@@ -8385,6 +8585,7 @@
                         "authentik.enterprise.providers.radius",
                         "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
+                        "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
@@ -8514,6 +8715,7 @@
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
+                        "authentik_providers_ws_federation.wsfederationprovider",
                         "authentik_reports.dataexport",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
@@ -11030,6 +11232,10 @@
                             "authentik_providers_ssf.view_ssfprovider",
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
+                            "authentik_providers_ws_federation.add_wsfederationprovider",
+                            "authentik_providers_ws_federation.change_wsfederationprovider",
+                            "authentik_providers_ws_federation.delete_wsfederationprovider",
+                            "authentik_providers_ws_federation.view_wsfederationprovider",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",

@@ -19627,6 +19627,433 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /providers/wsfed/:
+    get:
+      operationId: providers_wsfed_list
+      description: WSFederationProvider Viewset
+      parameters:
+      - in: query
+        name: acs_url
+        schema:
+          type: string
+      - in: query
+        name: assertion_valid_not_before
+        schema:
+          type: string
+      - in: query
+        name: assertion_valid_not_on_or_after
+        schema:
+          type: string
+      - in: query
+        name: audience
+        schema:
+          type: string
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: authn_context_class_ref_mapping
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: backchannel_application
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: default_name_id_policy
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - in: query
+        name: default_relay_state
+        schema:
+          type: string
+      - in: query
+        name: digest_algorithm
+        schema:
+          type: string
+          enum:
+          - http://www.w3.org/2000/09/xmldsig#sha1
+          - http://www.w3.org/2001/04/xmldsig-more#sha384
+          - http://www.w3.org/2001/04/xmlenc#sha256
+          - http://www.w3.org/2001/04/xmlenc#sha512
+      - in: query
+        name: encryption_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: invalidation_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: is_backchannel
+        schema:
+          type: boolean
+      - in: query
+        name: issuer
+        schema:
+          type: string
+      - in: query
+        name: logout_method
+        schema:
+          type: string
+          enum:
+          - backchannel
+          - frontchannel_iframe
+          - frontchannel_native
+        description: |+
+          Method to use for logout. Front-channel iframe loads all logout URLs simultaneously in hidden iframes. Front-channel native uses your active browser tab to send post requests and redirect to providers. Back-channel sends logout requests directly from the server without user interaction (requires POST SLS binding).
+
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: name_id_mapping
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: session_valid_not_on_or_after
+        schema:
+          type: string
+      - in: query
+        name: sign_assertion
+        schema:
+          type: boolean
+      - in: query
+        name: sign_logout_request
+        schema:
+          type: boolean
+      - in: query
+        name: sign_response
+        schema:
+          type: boolean
+      - in: query
+        name: signature_algorithm
+        schema:
+          type: string
+          enum:
+          - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+          - http://www.w3.org/2000/09/xmldsig#rsa-sha1
+          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1
+          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256
+          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
+          - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
+          - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+      - in: query
+        name: signing_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: sls_binding
+        schema:
+          type: string
+          enum:
+          - post
+          - redirect
+        description: |+
+          This determines how authentik sends the logout response back to the Service Provider.
+
+      - in: query
+        name: sls_url
+        schema:
+          type: string
+      - in: query
+        name: sp_binding
+        schema:
+          type: string
+          title: Service Provider Binding
+          enum:
+          - post
+          - redirect
+        description: |+
+          This determines how authentik sends the response back to the Service Provider.
+
+      - in: query
+        name: verification_kp
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWSFederationProviderList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: providers_wsfed_create
+      description: WSFederationProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WSFederationProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WSFederationProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/wsfed/{id}/:
+    get:
+      operationId: providers_wsfed_retrieve
+      description: WSFederationProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WSFederationProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: providers_wsfed_update
+      description: WSFederationProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WSFederationProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WSFederationProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: providers_wsfed_partial_update
+      description: WSFederationProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWSFederationProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WSFederationProvider'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: providers_wsfed_destroy
+      description: WSFederationProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/wsfed/{id}/metadata/:
+    get:
+      operationId: providers_wsfed_metadata_retrieve
+      description: Return metadata as XML string
+      parameters:
+      - in: query
+        name: download
+        schema:
+          type: boolean
+      - in: query
+        name: force_binding
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+          - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+        description: Optionally force the metadata to only include one binding.
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLMetadata'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SAMLMetadata'
+          description: ''
+        '404':
+          description: Provider has no application assigned
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/wsfed/{id}/preview_user/:
+    get:
+      operationId: providers_wsfed_preview_user_retrieve
+      description: Preview user data for provider
+      parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyMappingPreview'
+          description: ''
+        '400':
+          description: Bad request
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/wsfed/{id}/used_by/:
+    get:
+      operationId: providers_wsfed_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this WS-Federation Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /rac/connection_tokens/:
     get:
       operationId: rac_connection_tokens_list
@@ -20322,6 +20749,7 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_providers_ssf.ssfprovider
+          - authentik_providers_ws_federation.wsfederationprovider
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
           - authentik_reports.dataexport
@@ -33516,6 +33944,7 @@ components:
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
+      - authentik.enterprise.providers.ws_federation
       - authentik.enterprise.reports
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
@@ -33609,6 +34038,11 @@ components:
           nullable: true
           description: Get the URL to the App Icon image
           readOnly: true
+        meta_icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         meta_description:
           type: string
         meta_publisher:
@@ -33620,6 +34054,7 @@ components:
       required:
       - backchannel_providers_obj
       - launch_url
+      - meta_icon_themed_urls
       - meta_icon_url
       - name
       - pk
@@ -35887,6 +36322,10 @@ components:
           type: string
         background:
           type: string
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         cancel_url:
           type: string
         layout:
@@ -36164,8 +36603,18 @@ components:
           type: string
         branding_logo:
           type: string
+        branding_logo_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         branding_favicon:
           type: string
+        branding_favicon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         branding_custom_css:
           type: string
         ui_footer_links:
@@ -36196,18 +36645,23 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
           readOnly: true
       required:
       - branding_custom_css
       - branding_favicon
+      - branding_favicon_themed_urls
       - branding_logo
+      - branding_logo_themed_urls
       - branding_title
       - default_locale
       - flags
@@ -38177,6 +38631,10 @@ components:
           type: string
         url:
           type: string
+        themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
       required:
       - mime_type
       - name
@@ -38313,6 +38771,11 @@ components:
           type: string
           description: Get the URL to the background image
           readOnly: true
+        background_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         stages:
           type: array
           items:
@@ -38352,6 +38815,7 @@ components:
           description: Required level of authentication and authorization to access
             a flow.
       required:
+      - background_themed_urls
       - background_url
       - cache_count
       - designation
@@ -39073,10 +39537,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -39930,6 +40396,9 @@ components:
           type: object
           additionalProperties: {}
           nullable: true
+        pending_user_identifier:
+          type: string
+          nullable: true
       required:
       - flow_designation
       - password_fields
@@ -40455,6 +40924,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -40508,6 +40982,7 @@ components:
       required:
       - component
       - connectivity
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -40910,18 +41385,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -41135,6 +41614,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         server_uri:
           type: string
           format: uri
@@ -41225,6 +41709,7 @@ components:
       - base_dn
       - component
       - connectivity
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -41704,10 +42189,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -42087,6 +42574,7 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
+      - authentik_providers_ws_federation.wsfederationprovider
       - authentik_reports.dataexport
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
@@ -42590,18 +43078,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -42987,6 +43479,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -43045,6 +43542,7 @@ components:
       - callback_url
       - component
       - consumer_key
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -43363,6 +43861,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+          nullable: true
         refresh_interval_s:
           type: integer
           readOnly: true
@@ -45732,6 +46231,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserWriteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedWSFederationProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WSFederationProvider'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49082,7 +49596,7 @@ components:
             to the Service Provider.
         logout_method:
           allOf:
-          - $ref: '#/components/schemas/SAMLProviderLogoutMethodEnum'
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
           description: Method to use for logout. Front-channel iframe loads all logout
             URLs simultaneously in hidden iframes. Front-channel native uses your
             active browser tab to send post requests and redirect to providers. Back-channel
@@ -49537,11 +50051,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
     PatchedSourceStageRequest:
@@ -49936,6 +50453,91 @@ components:
           $ref: '#/components/schemas/UserTypeEnum'
         user_path_template:
           type: string
+    PatchedWSFederationProviderRequest:
+      type: object
+      description: WSFederationProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reply_url:
+          type: string
+          format: uri
+          minLength: 1
+        assertion_valid_not_before:
+          type: string
+          minLength: 1
+          description: 'Assertion valid not before current time + this value (Format:
+            hours=-1;minutes=-2;seconds=-3).'
+        assertion_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Assertion not valid on or after current time + this value
+            (Format: hours=1;minutes=2;seconds=3).'
+        session_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Session not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        name_id_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: NameID Property Mapping
+          description: Configure how the NameID value will be created. When left empty,
+            the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        signing_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Service
+            Provider.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_logout_request:
+          type: boolean
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
     PatchedWebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -50115,6 +50717,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -50137,6 +50744,7 @@ components:
           description: Plex token used to check friends
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -50858,18 +51466,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -50912,6 +51524,7 @@ components:
       - authentik_providers_saml.samlprovider
       - authentik_providers_scim.scimprovider
       - authentik_providers_ssf.ssfprovider
+      - authentik_providers_ws_federation.wsfederationprovider
       type: string
     ProviderTypeEnum:
       enum:
@@ -51072,18 +51685,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51391,18 +52008,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -51564,18 +52185,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -52118,6 +52743,12 @@ components:
       - redirect
       - post
       type: string
+    SAMLLogoutMethods:
+      enum:
+      - frontchannel_iframe
+      - frontchannel_native
+      - backchannel
+      type: string
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
@@ -52257,18 +52888,22 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -52368,7 +53003,7 @@ components:
             to the Service Provider.
         logout_method:
           allOf:
-          - $ref: '#/components/schemas/SAMLProviderLogoutMethodEnum'
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
           description: Method to use for logout. Front-channel iframe loads all logout
             URLs simultaneously in hidden iframes. Front-channel native uses your
             active browser tab to send post requests and redirect to providers. Back-channel
@@ -52444,12 +53079,6 @@ components:
       - file
       - invalidation_flow
       - name
-    SAMLProviderLogoutMethodEnum:
-      enum:
-      - frontchannel_iframe
-      - frontchannel_native
-      - backchannel
-      type: string
     SAMLProviderRequest:
       type: object
       description: SAMLProvider Serializer
@@ -52568,7 +53197,7 @@ components:
             to the Service Provider.
         logout_method:
           allOf:
-          - $ref: '#/components/schemas/SAMLProviderLogoutMethodEnum'
+          - $ref: '#/components/schemas/SAMLLogoutMethods'
           description: Method to use for logout. Front-channel iframe loads all logout
             URLs simultaneously in hidden iframes. Front-channel native uses your
             active browser tab to send post requests and redirect to providers. Back-channel
@@ -52665,6 +53294,11 @@ components:
         icon_url:
           type: string
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         group_matching_mode:
           allOf:
           - $ref: '#/components/schemas/GroupMatchingModeEnum'
@@ -52735,6 +53369,7 @@ components:
           type: boolean
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -53039,10 +53674,12 @@ components:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
+          nullable: true
         assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
+          nullable: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -54022,11 +54659,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -54097,11 +54737,14 @@ components:
         flags:
           type: object
           properties:
+            enterprise_audit_include_expanded_diff:
+              type: boolean
             policies_buffered_access_view:
               type: boolean
             flows_refresh_others:
               type: boolean
           required:
+          - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
       required:
@@ -54257,8 +54900,14 @@ components:
           nullable: true
           description: Get the URL to the source icon
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
       required:
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -54932,6 +55581,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
         bot_username:
           type: string
           description: Telegram bot username
@@ -54945,6 +55599,7 @@ components:
       required:
       - bot_username
       - component
+      - icon_themed_urls
       - icon_url
       - managed
       - meta_model_name
@@ -55162,6 +55817,16 @@ components:
       required:
       - name
       - schema_name
+    ThemedUrls:
+      type: object
+      description: Themed URLs - maps theme names to URLs for light and dark themes
+      properties:
+        light:
+          type: string
+          nullable: true
+        dark:
+          type: string
+          nullable: true
     Token:
       type: object
       description: Token Serializer
@@ -56639,6 +57304,240 @@ components:
       - id
       - timestamp
       - version
+    WSFederationProvider:
+      type: object
+      description: WSFederationProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        reply_url:
+          type: string
+          format: uri
+        assertion_valid_not_before:
+          type: string
+          description: 'Assertion valid not before current time + this value (Format:
+            hours=-1;minutes=-2;seconds=-3).'
+        assertion_valid_not_on_or_after:
+          type: string
+          description: 'Assertion not valid on or after current time + this value
+            (Format: hours=1;minutes=2;seconds=3).'
+        session_valid_not_on_or_after:
+          type: string
+          description: 'Session not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        name_id_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: NameID Property Mapping
+          description: Configure how the NameID value will be created. When left empty,
+            the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        signing_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Service
+            Provider.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_logout_request:
+          type: boolean
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+        url_download_metadata:
+          type: string
+          description: Get metadata download URL
+          readOnly: true
+        url_wsfed:
+          type: string
+          description: Get WS-Fed url
+          readOnly: true
+        wtrealm:
+          type: string
+          readOnly: true
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authorization_flow
+      - component
+      - invalidation_flow
+      - meta_model_name
+      - name
+      - pk
+      - reply_url
+      - url_download_metadata
+      - url_wsfed
+      - verbose_name
+      - verbose_name_plural
+      - wtrealm
+    WSFederationProviderRequest:
+      type: object
+      description: WSFederationProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reply_url:
+          type: string
+          format: uri
+          minLength: 1
+        assertion_valid_not_before:
+          type: string
+          minLength: 1
+          description: 'Assertion valid not before current time + this value (Format:
+            hours=-1;minutes=-2;seconds=-3).'
+        assertion_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Assertion not valid on or after current time + this value
+            (Format: hours=1;minutes=2;seconds=3).'
+        session_valid_not_on_or_after:
+          type: string
+          minLength: 1
+          description: 'Session not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        name_id_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: NameID Property Mapping
+          description: Configure how the NameID value will be created. When left empty,
+            the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
+        digest_algorithm:
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
+        signature_algorithm:
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+        signing_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Signing Keypair
+          description: Keypair used to sign outgoing Responses going to the Service
+            Provider.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_logout_request:
+          type: boolean
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
+      required:
+      - authorization_flow
+      - invalidation_flow
+      - name
+      - reply_url
     WebAuthnDevice:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -56720,6 +57619,7 @@ components:
       - $ref: '#/components/schemas/SAMLProviderRequest'
       - $ref: '#/components/schemas/SCIMProviderRequest'
       - $ref: '#/components/schemas/SSFProviderRequest'
+      - $ref: '#/components/schemas/WSFederationProviderRequest'
       discriminator:
         propertyName: provider_model
         mapping:
@@ -56733,6 +57633,7 @@ components:
           authentik_providers_saml.samlprovider: '#/components/schemas/SAMLProviderRequest'
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'
           authentik_providers_ssf.ssfprovider: '#/components/schemas/SSFProviderRequest'
+          authentik_providers_ws_federation.wsfederationprovider: '#/components/schemas/WSFederationProviderRequest'
   securitySchemes:
     authentik:
       type: http
