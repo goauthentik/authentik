@@ -1,16 +1,15 @@
-use std::{
-    env, fs,
-    path::PathBuf,
-    sync::{Arc, OnceLock},
-};
-use tokio::{
-    fs::read_to_string,
-    sync::{RwLock, RwLockReadGuard},
-    task::JoinSet,
-};
+use std::{env, fs, path::PathBuf, sync::OnceLock};
 
 use eyre::Result;
+use notify::{RecommendedWatcher, Watcher};
 use serde_json::{Map, Value};
+use tokio::{
+    fs::read_to_string,
+    sync::{RwLock, RwLockReadGuard, broadcast, mpsc},
+    task::JoinSet,
+};
+use tokio_util::sync::CancellationToken;
+use tracing::trace;
 
 pub mod schema;
 mod source;
@@ -141,28 +140,72 @@ impl Config {
 }
 
 pub struct ConfigManager {
-    config: Arc<RwLock<Config>>,
+    config: RwLock<Config>,
     config_paths: Vec<PathBuf>,
 }
 
 impl ConfigManager {
-    pub async fn init(tasks: &mut JoinSet<Result<()>>) -> Result<()> {
+    pub async fn init(
+        tasks: &mut JoinSet<Result<()>>,
+        stop: CancellationToken,
+        config_changed_tx: broadcast::Sender<()>,
+    ) -> Result<()> {
         let config_paths = config_paths();
         let mut watch_paths = config_paths.clone();
         let (config, other_paths) = Config::load(&config_paths).await?;
         watch_paths.extend(other_paths);
         let manager = Self {
-            config: Arc::new(RwLock::new(config)),
+            config: RwLock::new(config),
             config_paths,
         };
         CONFIG_MANAGER.get_or_init(|| manager);
-        tasks.spawn(watch_config(watch_paths));
+        tasks.spawn(watch_config(stop, watch_paths, config_changed_tx));
         Ok(())
     }
 }
 
-async fn watch_config(watch_paths: Vec<PathBuf>) -> Result<()> {
-    todo!()
+async fn watch_config(
+    stop: CancellationToken,
+    watch_paths: Vec<PathBuf>,
+    config_changed_tx: broadcast::Sender<()>,
+) -> Result<()> {
+    let (tx, mut rx) = mpsc::channel(100);
+    let mut watcher = RecommendedWatcher::new(
+        move |res: notify::Result<notify::Event>| {
+            if let Ok(event) = res
+                && let notify::EventKind::Modify(_) = &event.kind
+            {
+                let _ = tx.blocking_send(());
+            }
+        },
+        notify::Config::default(),
+    )?;
+    for path in watch_paths {
+        watcher.watch(path.as_ref(), notify::RecursiveMode::NonRecursive)?;
+    }
+
+    loop {
+        tokio::select! {
+            res = rx.recv() => {
+                if res.is_none() {
+                    break;
+                }
+                let manager = CONFIG_MANAGER.get().unwrap();
+                if let Ok((new_config, _)) = Config::load(&manager.config_paths).await {
+                    trace!("Configuration file changed, reloading");
+                    let mut config = manager.config.write().await;
+                    *config = new_config;
+                    drop(config);
+                    if config_changed_tx.send(()).is_err() {
+                        break;
+                    }
+                };
+            },
+            _ = stop.cancelled() => break,
+        }
+    }
+
+    Ok(())
 }
 
 pub async fn get_config<'a>() -> RwLockReadGuard<'a, Config> {

@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use argh::FromArgs;
-use authentik_config::{Config, get_config};
+use authentik_config::{ConfigManager, get_config};
 use eyre::{Report, Result, eyre};
 use tokio::{
     signal::unix::{Signal, SignalKind, signal},
@@ -72,21 +72,27 @@ enum Command {
     Worker(authentik_worker::Cli),
 }
 
-fn install_tracing() -> Result<()> {
+async fn install_tracing() -> Result<()> {
     use tracing_error::ErrorLayer;
     use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
-    let default = format!("{},postgres=info", get_config().log_level);
+    let default = format!("{},postgres=info", get_config().await.log_level);
     let filter_layer = EnvFilter::builder()
-        .with_default_directive(get_config().log_level.parse().expect("Invalid log_level"))
+        .with_default_directive(
+            get_config()
+                .await
+                .log_level
+                .parse()
+                .expect("Invalid log_level"),
+        )
         .parse(default)?;
-    let filter_layer = if let Some(directive) = &get_config().log {
+    let filter_layer = if let Some(directive) = &get_config().await.log.rust_log {
         filter_layer.add_directive(directive.parse()?)
     } else {
         filter_layer
     };
 
-    if get_config().debug {
+    if get_config().await.debug {
         tracing_subscriber::registry()
             .with(filter_layer)
             .with(
@@ -123,33 +129,46 @@ fn install_tracing() -> Result<()> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    let mut tasks = JoinSet::new();
+    let stop = CancellationToken::new();
+
+    let (config_changed_tx, config_changed_rx) = broadcast::channel(100);
+
     color_eyre::install()?;
-    Config::setup()?;
+    ConfigManager::init(&mut tasks, stop.clone(), config_changed_tx.clone()).await?;
 
     rustls::crypto::aws_lc_rs::default_provider()
         .install_default()
         .unwrap();
 
-    let _sentry = if get_config().error_reporting.enabled {
+    let _sentry = if get_config().await.error_reporting.enabled {
         Some(sentry::init(sentry::ClientOptions {
             // TODO: refine a bit more
             dsn: get_config()
+                .await
                 .error_reporting
                 .sentry_dsn
                 .clone()
                 .map(|dsn| sentry::types::Dsn::from_str(&dsn).unwrap()),
-            environment: Some(get_config().error_reporting.environment.clone().into()),
+            environment: Some(
+                get_config()
+                    .await
+                    .error_reporting
+                    .environment
+                    .clone()
+                    .into(),
+            ),
             attach_stacktrace: true,
-            send_default_pii: get_config().error_reporting.send_pii,
-            sample_rate: get_config().error_reporting.sample_rate,
-            traces_sample_rate: get_config().error_reporting.sample_rate,
+            send_default_pii: get_config().await.error_reporting.send_pii,
+            sample_rate: get_config().await.error_reporting.sample_rate,
+            traces_sample_rate: get_config().await.error_reporting.sample_rate,
             ..sentry::ClientOptions::default()
         }))
     } else {
         None
     };
 
-    install_tracing()?;
+    install_tracing().await?;
     let cli: Cli = argh::from_env();
 
     if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
@@ -161,10 +180,8 @@ async fn main() -> Result<()> {
         }
     }
 
-    let stop = CancellationToken::new();
     let (signals_tx, _signals_rx) = broadcast::channel(10);
 
-    let mut tasks = JoinSet::new();
     tasks.spawn(watch_signals(
         SignalStreams::new()?,
         stop.clone(),

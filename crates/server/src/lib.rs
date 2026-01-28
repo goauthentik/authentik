@@ -143,11 +143,11 @@ async fn watch_gunicorn(
     }
 }
 
-fn build_app() -> Router {
+async fn build_app() -> Router {
     let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
     let client = Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
-        .pool_max_idle_per_host(get_config().web.workers * get_config().web.threads)
+        .pool_max_idle_per_host(get_config().await.web.workers * get_config().await.web.threads)
         .set_host(false)
         .build(connector);
     let proxy = ReverseProxy::new_with_client("/", "http://localhost:8000", client);
@@ -251,8 +251,8 @@ pub async fn run(
     stop: CancellationToken,
     signals_tx: broadcast::Sender<SignalKind>,
 ) -> Result<()> {
-    let config = get_config();
-    let app = build_app();
+    let config = get_config().await;
+    let app = build_app().await;
     let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
 
     let mut handles = Vec::with_capacity(

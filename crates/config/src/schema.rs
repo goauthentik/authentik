@@ -13,8 +13,8 @@ pub struct Config {
 
     pub debug: bool,
 
-    pub log: Option<String>,
     pub log_level: String,
+    pub log: LogConfig,
 
     pub error_reporting: ErrorReportingConfig,
 
@@ -65,6 +65,12 @@ pub struct ListenConfig {
     pub radius: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
     pub trusted_proxy_cidrs: Vec<IpNet>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LogConfig {
+    pub http_headers: Vec<String>,
+    pub rust_log: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
