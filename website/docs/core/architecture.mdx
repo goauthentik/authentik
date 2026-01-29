@@ -2,6 +2,37 @@
 title: Architecture
 ---
 
+import "./styles.css"
+
+
+```mermaid
+---
+config:
+    theme: 'base'
+    themeVariables:
+        primaryColor: '#FD4B2D'
+        primaryTextColor: '#ff0000'
+        primaryBorderColor: '#00ff00'
+        archEdgeColor: '#ff0000'
+        archEdgeArrowColor: '#0000ff'
+        archEdgeWidth: '#ff00ff'
+        archGroupBorderColor: '#00ff00'
+---
+architecture-beta
+    group first
+
+    service install(mdi:application-cog-outline)[Install authentik] in first
+    service acl(mdi:account-key-outline)[Access authentik] in first
+    service apps(mdi:plus-box-multiple-outline)[Add an appp and provider] in first
+    service users(mdi:account-multiple-plus)[Create a new user] in first
+    service further(mdi:cog-clockwise)[Further customization] in first
+
+    install:R --> L:acl
+    acl:R --> L:apps
+    apps:R --> L:users
+    users:R --> L:further
+```
+
 authentik consists of a handful of components, most of which are required for a functioning setup.
 
 ```mermaid

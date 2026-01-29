@@ -1,0 +1,5 @@
+.architecture-service {
+    svg {
+        color: var(--service-icon-color, currentColor);
+    }
+}
