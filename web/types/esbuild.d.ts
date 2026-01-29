@@ -27,6 +27,11 @@ declare global {
         readonly AK_DOCS_PRE_RELEASE_URL: string;
 
         /**
+         * The bundler used to build the application.
+         */
+        readonly AK_BUNDLER: "authentik" | "storybook";
+
+        /**
          * The current release notes URL.
          *
          * @format url

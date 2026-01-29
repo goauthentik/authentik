@@ -26,8 +26,9 @@ export class LoggingMiddleware implements Middleware {
 
     constructor(brand: CurrentBrand) {
         const prefix =
-            brand.matchedDomain === "authentik-default" ? "api" : `api/${brand.matchedDomain}`;
-
+            brand.matchedDomain && brand.matchedDomain !== "authentik-default"
+                ? `api/${brand.matchedDomain}`
+                : "api";
         this.#logger = ConsoleLogger.prefix(prefix);
     }
 
