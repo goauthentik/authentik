@@ -83,11 +83,9 @@ export class Broadcast extends BroadcastChannel {
     }
 
     akExitTab() {
-        setTimeout(() => {
-            this.postMessage({
-                type: BroadcastMessageType.exit,
-                sender: TabID.shared.current,
-            });
-        }, 200);
+        this.postMessage({
+            type: BroadcastMessageType.exit,
+            sender: TabID.shared.current,
+        });
     }
 }

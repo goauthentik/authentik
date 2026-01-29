@@ -201,9 +201,7 @@ export class FlowExecutor
                 this.#challenge?.component === "ak-stage-identification" &&
                 this.#challenge.applicationPreLaunch
             ) {
-                window.addEventListener("beforeunload", () => {
-                    multiTabOrchestrateLeave();
-                });
+                multiTabOrchestrateLeave();
                 window.location.assign(this.#challenge.applicationPreLaunch);
                 return;
             }
