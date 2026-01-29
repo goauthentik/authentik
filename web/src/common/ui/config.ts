@@ -19,6 +19,7 @@ export const DefaultBrand = {
         policiesBufferedAccessView: false,
         flowsRefreshOthers: false,
         enterpriseAuditIncludeExpandedDiff: false,
+        flowsContinuousLogin: false,
     },
 } as const satisfies CurrentBrand;
 

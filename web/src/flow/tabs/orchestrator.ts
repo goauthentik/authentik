@@ -9,7 +9,7 @@ const lockKey = "authentik-tab-locked";
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 export function multiTabOrchestrateLeave() {
-    if (!globalAK().brand.flags.flowsRefreshOthers) {
+    if (!globalAK().brand.flags.flowsContinuousLogin) {
         return;
     }
     Broadcast.shared.akExitTab();
@@ -17,7 +17,7 @@ export function multiTabOrchestrateLeave() {
 }
 
 export async function multiTabOrchestrateResume() {
-    if (!globalAK().brand.flags.flowsRefreshOthers) {
+    if (!globalAK().brand.flags.flowsContinuousLogin) {
         return;
     }
     const lockTabId = localStorage.getItem(lockKey);
