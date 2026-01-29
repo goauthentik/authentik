@@ -18,5 +18,5 @@ class VersionHistory(models.Model):
         verbose_name_plural = _("Version history")
         default_permissions = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.version}.{self.build} ({self.timestamp})"
