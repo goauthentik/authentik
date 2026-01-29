@@ -12,13 +12,17 @@ import "#components/ak-number-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
 
+import {
+    groupsProvider,
+    groupsSelector,
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "./SCIMProviderFormHelpers.js";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
     CompatibilityModeEnum,
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
     OAuthSource,
     SCIMAuthenticationModeEnum,
     SCIMProvider,
@@ -28,13 +32,6 @@ import {
 } from "@goauthentik/api";
 
 import YAML from "yaml";
-
-import {
-    groupsProvider,
-    groupsSelector,
-    propertyMappingsProvider,
-    propertyMappingsSelector,
-} from "./SCIMProviderFormHelpers.js";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
