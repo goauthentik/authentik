@@ -112,6 +112,15 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 )}
             >
             </ak-switch-input>
+            <ak-switch-input
+                name="destinationSecurityEmail"
+                label=${msg("Send email to security address")}
+                ?checked=${this.instance?.destinationSecurityEmail ?? false}
+                help=${msg(
+                    "When enabled, an email notification will be sent to the security email address configured in System Settings. This is independent of the transports selected below.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Transports")} required name="transports">
                 <ak-dual-select-dynamic-selected
                     .provider=${eventTransportsProvider}

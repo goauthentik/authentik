@@ -7,6 +7,7 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
+import "#admin/users/UserAccountLockdownForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
@@ -33,6 +34,7 @@ import { userTypeToLabel } from "#common/labels";
 
 import { AKElement } from "#elements/Base";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
 
@@ -64,7 +66,9 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
-export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement)) {
+export class UserViewPage extends WithLicenseSummary(
+    WithCapabilitiesConfig(WithSession(AKElement)),
+) {
     @property({ type: Number })
     set userId(id: number) {
         new CoreApi(DEFAULT_CONFIG)
@@ -143,6 +147,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
     renderActionButtons(user: User) {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
+        const canTriggerLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
@@ -176,6 +181,22 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     </pf-tooltip>
                 </button>
             </ak-user-active-form>
+            ${canTriggerLockdown
+                ? html`
+                      <ak-forms-modal size=${PFSize.Medium} id="account-lockdown-request">
+                          <span slot="submit">${msg("Trigger Lockdown")}</span>
+                          <span slot="header">${msg("Account Lockdown")}</span>
+                          <ak-user-account-lockdown-form
+                              slot="form"
+                              .instancePk=${user.pk}
+                              .username=${user.username}
+                          ></ak-user-account-lockdown-form>
+                          <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
+                              ${msg("Account Lockdown")}
+                          </button>
+                      </ak-forms-modal>
+                  `
+                : nothing}
             ${canImpersonate
                 ? html`
                       <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">

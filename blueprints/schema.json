@@ -7519,6 +7519,8 @@
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
+                        "account_lockdown_triggered",
+                        "account_lockdown_self_triggered",
                         "flow_execution",
                         "policy_execution",
                         "policy_exception",
@@ -7636,6 +7638,8 @@
                                 "source_linked",
                                 "impersonation_started",
                                 "impersonation_ended",
+                                "account_lockdown_triggered",
+                                "account_lockdown_self_triggered",
                                 "flow_execution",
                                 "policy_execution",
                                 "policy_exception",
@@ -7760,6 +7764,11 @@
                     "type": "boolean",
                     "title": "Destination event user",
                     "description": "When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both."
+                },
+                "destination_security_email": {
+                    "type": "boolean",
+                    "title": "Destination security email",
+                    "description": "When enabled, notification will be sent to the security email address configured in System Settings."
                 }
             },
             "required": []
@@ -8382,6 +8391,8 @@
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
+                        "account_lockdown_triggered",
+                        "account_lockdown_self_triggered",
                         "flow_execution",
                         "policy_execution",
                         "policy_exception",

@@ -18,7 +18,6 @@ from authentik.tenants.models import Tenant
 
 
 class FlagJSONField(JSONDictField):
-
     def run_validators(self, value: dict):
         super().run_validators(value)
         for flag in Flag.available():
@@ -71,6 +70,8 @@ class SettingsSerializer(ModelSerializer):
             "default_token_length",
             "pagination_default_page_size",
             "pagination_max_page_size",
+            "security_email",
+            "account_lockdown_enabled",
             "flags",
         ]
 
