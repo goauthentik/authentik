@@ -10630,6 +10630,10 @@
                     "format": "uuid",
                     "title": "Filter group"
                 },
+                "purge_objects": {
+                    "type": "boolean",
+                    "title": "Purge objects"
+                },
                 "sync_page_size": {
                     "type": "integer",
                     "minimum": 1,

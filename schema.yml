@@ -18720,6 +18720,10 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: purge_objects
+        schema:
+          type: boolean
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: url
@@ -49537,6 +49541,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        purge_objects:
+          type: boolean
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -53443,6 +53449,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        purge_objects:
+          type: boolean
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -53565,6 +53573,8 @@ components:
           type: string
           format: uuid
           nullable: true
+        purge_objects:
+          type: boolean
         sync_page_size:
           type: integer
           maximum: 2147483647

@@ -62,6 +62,7 @@ class SyncTasks:
         self,
         provider_pk: int,
         sync_objects: Actor[[str, int, int, bool], None],
+        purge_objects: Actor[[str, int, bool], None],
     ):
         task = CurrentTask.get_task()
         self.logger = get_logger().bind(
@@ -101,6 +102,8 @@ class SyncTasks:
                         object_type=Group,
                     )
                 )
+                purge_objects.send(class_to_path(User), provider.pk)
+                purge_objects.send(class_to_path(Group), provider.pk)
                 users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
                 group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
             except TransientSyncException as exc:
@@ -187,6 +190,40 @@ class SyncTasks:
                     obj=sanitize_item(obj),
                 )
                 break
+
+    def purge_objects(
+        self,
+        object_type: str,
+        provider_pk: int,
+        override_dry_run=False,
+    ):
+        task = CurrentTask.get_task()
+        _object_type: type[Model] = path_to_class(object_type)
+        self.logger = get_logger().bind(
+            provider_type=class_to_path(self._provider_model),
+            provider_pk=provider_pk,
+            object_type=object_type,
+        )
+        provider: OutgoingSyncProvider | None = self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
+        ).first()
+        if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
+            return
+        # Override dry run mode if requested, however don't save the provider
+        # so that scheduled sync tasks still run in dry_run mode
+        if override_dry_run:
+            provider.dry_run = False
+        client = provider.client_for_model(_object_type)
+        try:
+            client.purge()
+        except NotImplementedError:
+            return
+        except TransientSyncException as exc:
+            raise Retry() from exc
+        except DryRunRejected as exc:
+            self.logger.info("Rejected dry-run event", exc=exc)
 
     def sync_signal_direct_dispatch(
         self,

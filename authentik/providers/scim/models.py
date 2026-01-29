@@ -87,6 +87,8 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     exclude_users_service_account = models.BooleanField(default=False)
 
+    purge_objects = models.BooleanField(default=False)
+
     filter_group = models.ForeignKey(
         "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
     )
