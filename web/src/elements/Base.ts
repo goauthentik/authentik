@@ -34,17 +34,21 @@ export class AKElement extends LitElement implements AKElementProps {
 
     public static styles?: Array<CSSResult | CSSModule>;
 
-    protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
-        if (!styles) return [$PFBase, $AKBase];
-
-        if (!Array.isArray(styles)) return [createCSSResult(styles), $PFBase, $AKBase];
-
-        return [
+    protected static override finalizeStyles(styles: CSSResultGroup = []): CSSResultOrNative[] {
+        const elementStyles = [
             $PFBase,
-            // ---
-            ...(styles.flat() as CSSResultOrNative[]).map(createCSSResult),
+            // Route around TSC`s known-to-fail typechecking of `.flat(Infinity)`. Removes types.
+            ...([styles] as Array<unknown>).flat(Infinity),
             $AKBase,
-        ];
+            // Restore types. Safe: we control AKBase and PFBase in this file, and `styles` are
+            // typed on function signature.
+        ] as CSSResultOrNative[];
+
+        // Remove duplicates in reverse order to preserve last-insert-wins semantics of CSS. See:
+        // https://github.com/lit/lit/blob/main/packages/reactive-element/src/reactive-element.ts#L945
+        const elementSet = new Set(elementStyles.reverse());
+        // Reverse again because the return type is an array, and process as a CSSResult
+        return Array.from(elementSet).reverse().map(createCSSResult);
     }
 
     //#endregion
@@ -57,7 +61,7 @@ export class AKElement extends LitElement implements AKElementProps {
         const { brand } = globalAK();
 
         const preferredColorScheme = resolveUITheme(
-            document.documentElement.dataset.theme || globalAK().brand.uiTheme,
+            this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme,
         );
         this.activeTheme = preferredColorScheme;
 

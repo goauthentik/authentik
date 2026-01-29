@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.2.1-trixie@sha256:03729a7baaa21a6286df8a4aebfcb74e8ae631f3f91bfca934ef2b0e5aeef9e3 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:25.5.0-trixie@sha256:0a374c05a6a9d02200aaf1731cc199a8dfa14761fac4ca3cd73f40aaf86876f9 AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -22,6 +22,6 @@ COPY ./SECURITY.md /work/
 
 RUN npm run build
 
-FROM docker.io/library/nginx:1.29-trixie@sha256:06eb0c817047c1d0f247f700431a4cddfb26a7622903dcb6fbe264de2c588f23
+FROM docker.io/library/nginx:1.29-trixie@sha256:c881927c4077710ac4b1da63b83aa163937fb47457950c267d92f7e4dedf4aec
 
 COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html

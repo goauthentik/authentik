@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 
 import { AKElement } from "#elements/Base";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
@@ -11,7 +12,6 @@ import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * This is a bit of a hack to get the viewport checking from ModelForm,
@@ -19,21 +19,22 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * #TODO: Rework this in the future
  */
 @customElement("ak-rbac-object-permission-modal-form")
-export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
+export class ObjectPermissionsPageForm extends ModelForm<never, string> {
     @property()
     public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
-    loadInstance(): Promise<unknown> {
-        return Promise.resolve();
-    }
-    send(): Promise<unknown> {
-        return Promise.resolve();
+    protected loadInstance(): Promise<never> {
+        return Promise.resolve() as never;
     }
 
-    renderForm(): TemplateResult {
+    protected send(): Promise<never> {
+        return Promise.resolve() as never;
+    }
+
+    protected renderForm(): SlottedTemplateResult {
         return html`<ak-rbac-object-permission-page
             embedded
             .model=${this.model}
@@ -47,7 +48,6 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
 @customElement("ak-rbac-object-permission-modal")
 export class ObjectPermissionModal extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         css`
             button {

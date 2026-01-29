@@ -22,6 +22,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
@@ -233,14 +234,16 @@ class BaseEvaluator:
         kwargs["aud"] = provider.client_id
         return provider.encode(kwargs)
 
-    def expr_send_email(
+    def expr_send_email(  # noqa: PLR0913
         self,
         address: str | list[str],
         subject: str,
         body: str | None = None,
-        stage: "EmailStage | None" = None,
+        stage: EmailStage | None = None,
         template: str | None = None,
         context: dict | None = None,
+        cc: str | list[str] | None = None,
+        bcc: str | list[str] | None = None,
     ) -> bool:
         """Send an email using authentik's email system
 
@@ -253,6 +256,8 @@ class BaseEvaluator:
             stage: EmailStage instance to use for settings. If None, uses global settings.
             template: Template name to render. Mutually exclusive with body.
             context: Additional context variables for template rendering.
+            cc: Email address(es) to CC. Same format as address.
+            bcc: Email address(es) to BCC. Same format as address.
 
         Returns:
             bool: True if email was queued successfully, False otherwise
@@ -266,17 +271,9 @@ class BaseEvaluator:
         if not body and not template:
             raise ValueError("Either body or template parameter must be provided")
 
-        # Normalize address parameter to list of (name, email) tuples
-        if isinstance(address, str):
-            # Single email address
-            to_addresses = [("", address)]
-        elif isinstance(address, list):
-            if not address:
-                raise ValueError("Address list cannot be empty")
-            # List of email strings
-            to_addresses = [("", email) for email in address]
-        else:
-            raise ValueError("Address must be a string or list of strings")
+        to_addresses = normalize_addresses(address)
+        cc_addresses = normalize_addresses(cc)
+        bcc_addresses = normalize_addresses(bcc)
 
         try:
             if template is not None:
@@ -290,6 +287,8 @@ class BaseEvaluator:
                 message = TemplateEmailMessage(
                     subject=subject,
                     to=to_addresses,
+                    cc=cc_addresses,
+                    bcc=bcc_addresses,
                     template_name=template,
                     template_context=template_context,
                 )
@@ -298,6 +297,8 @@ class BaseEvaluator:
                 message = TemplateEmailMessage(
                     subject=subject,
                     to=to_addresses,
+                    cc=cc_addresses,
+                    bcc=bcc_addresses,
                     body=body,
                 )
 

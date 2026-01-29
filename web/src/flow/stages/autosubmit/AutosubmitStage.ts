@@ -1,6 +1,8 @@
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { BaseStage } from "#flow/stages/base";
 
 import { AutosubmitChallenge, AutoSubmitChallengeResponseRequest } from "@goauthentik/api";
@@ -13,7 +15,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-autosubmit")
 export class AutosubmitStage extends BaseStage<
@@ -23,12 +24,12 @@ export class AutosubmitStage extends BaseStage<
     @query("form")
     private form?: HTMLFormElement;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
-        if (changed.has("challenge") && this.challenge.url !== undefined) {
+        if (changed.has("challenge") && this.challenge?.url) {
             console.debug("authentik/flow/stages/autosubmit: submitting");
             this.form?.submit();
         }
@@ -36,8 +37,8 @@ export class AutosubmitStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form class="pf-c-form" action="${this.challenge.url}" method="post">
-                ${Object.entries(this.challenge.attrs).map(([key, value]) => {
+            <form class="pf-c-form" action=${ifPresent(this.challenge?.url)} method="post">
+                ${Array.from(Object.entries(this.challenge?.attrs || {}), ([key, value]) => {
                     return html`<input
                         type="hidden"
                         name="${key as string}"

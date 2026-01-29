@@ -46,13 +46,13 @@ HIST_FLOWS_STAGE_TIME = Histogram(
 class StageView(View):
     """Abstract Stage"""
 
-    executor: "FlowExecutorView"
+    executor: FlowExecutorView
 
     request: HttpRequest = None
 
     logger: BoundLogger
 
-    def __init__(self, executor: "FlowExecutorView", **kwargs):
+    def __init__(self, executor: FlowExecutorView, **kwargs):
         self.executor = executor
         current_stage = getattr(self.executor, "current_stage", None)
         self.logger = get_logger().bind(
@@ -197,6 +197,9 @@ class ChallengeStageView(StageView):
                     data={
                         "title": self.format_title(),
                         "background": self.executor.flow.background_url(self.request),
+                        "background_themed_urls": self.executor.flow.background_themed_urls(
+                            self.request
+                        ),
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
                     }
@@ -257,7 +260,7 @@ class AccessDeniedStage(ChallengeStageView):
 
     error_message: str | None
 
-    def __init__(self, executor: "FlowExecutorView", error_message: str | None = None, **kwargs):
+    def __init__(self, executor: FlowExecutorView, error_message: str | None = None, **kwargs):
         super().__init__(executor, **kwargs)
         self.error_message = error_message
 

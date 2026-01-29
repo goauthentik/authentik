@@ -93,7 +93,7 @@ class LicenseKey:
     license_flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
-    def validate(jwt: str, check_expiry=True) -> "LicenseKey":
+    def validate(jwt: str, check_expiry=True) -> LicenseKey:
         """Validate the license from a given JWT"""
         try:
             headers = get_unverified_header(jwt)
@@ -107,7 +107,7 @@ class LicenseKey:
             intermediate = load_der_x509_certificate(b64decode(x5c[1]))
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
-        except (InvalidSignature, TypeError, ValueError, Error):
+        except InvalidSignature, TypeError, ValueError, Error:
             raise ValidationError("Unable to verify license") from None
         try:
             body = from_dict(
@@ -128,7 +128,7 @@ class LicenseKey:
         return body
 
     @staticmethod
-    def get_total() -> "LicenseKey":
+    def get_total() -> LicenseKey:
         """Get a summarized version of all (not expired) licenses"""
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in License.objects.all():

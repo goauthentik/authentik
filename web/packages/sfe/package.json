@@ -14,19 +14,18 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@goauthentik/api": "^2025.10.0-rc1-1760106928",
+        "@goauthentik/api": "^2026.2.0-rc1-1769650973",
         "@goauthentik/core": "^1.0.0",
         "@rollup/plugin-commonjs": "^29.0.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
         "@rollup/plugin-swc": "^0.4.0",
-        "@swc/cli": "^0.7.9",
-        "@swc/core": "^1.15.8",
+        "@swc/cli": "^0.7.10",
+        "@swc/core": "^1.15.11",
         "base64-js": "^1.5.1",
-        "bootstrap": "^5.3.8",
         "formdata-polyfill": "^2025.11.0",
         "globby": "16.1.0",
         "jquery": "^3.7.1",
-        "rollup": "^4.55.1",
+        "rollup": "^4.57.0",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {

@@ -21,14 +21,7 @@ export class AccessDeniedStage extends BaseStage<
     AccessDeniedChallenge,
     FlowChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
-        // ---
-        PFLogin,
-        PFForm,
-        PFTitle,
-        PFFormControl,
-        PFButton,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFTitle, PFFormControl, PFButton];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -36,15 +29,15 @@ export class AccessDeniedStage extends BaseStage<
                 ${FlowUserDetails({ challenge: this.challenge })}
                 <ak-empty-state icon="fa-times"
                     ><span>${msg("Request has been denied.")}</span>
-                    ${this.challenge.errorMessage
+                    ${this.challenge?.errorMessage
                         ? html`
                               <div slot="body">
-                                  <p>${this.challenge.errorMessage}</p>
+                                  <p>${this.challenge?.errorMessage}</p>
                               </div>
                           `
                         : nothing}
                 </ak-empty-state>
-                ${this.challenge.flowInfo?.cancelUrl
+                ${this.challenge?.flowInfo?.cancelUrl
                     ? html`<fieldset class="pf-c-form__group pf-m-action">
                           <legend class="sr-only">${msg("Form actions")}</legend>
                           <a
@@ -57,7 +50,6 @@ export class AccessDeniedStage extends BaseStage<
                           </a>
                       </fieldset>`
                     : nothing}
-                }
             </form>
         </ak-flow-card>`;
     }

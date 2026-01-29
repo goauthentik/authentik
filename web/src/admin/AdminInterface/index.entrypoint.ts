@@ -30,16 +30,15 @@ import {
     renderNotificationDrawerPanel,
 } from "#elements/notifications/utils";
 
-import { PageNavMenuToggle } from "#components/ak-page-navbar";
-
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
 import Styles from "#admin/AdminInterface/index.entrypoint.css";
 import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, eventOptions, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -57,14 +56,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 ) {
     //#region Styles
 
-    public static readonly styles: CSSResult[] = [
-        // ---
-        PFPage,
-        PFButton,
-        PFDrawer,
-        PFNav,
-        Styles,
-    ];
+    public static readonly styles: CSSResult[] = [PFPage, PFButton, PFDrawer, PFNav, Styles];
 
     //#endregion
 
@@ -73,19 +65,30 @@ export class AdminInterface extends WithCapabilitiesConfig(
     @query("ak-about-modal")
     public aboutModal?: AboutModal;
 
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean, reflect: true, attribute: "sidebar" })
     public sidebarOpen = false;
 
-    #onPageNavMenuEvent = (event: PageNavMenuToggle) => {
-        this.sidebarOpen = event.open;
+    //#endregion
+
+    //#region Public Methods
+
+    public toggleSidebar = () => {
+        this.sidebarOpen = !this.sidebarOpen;
     };
+
+    //#endregion
+
+    //#region Lifecycle
 
     #sidebarMatcher: MediaQueryList;
     #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
         this.sidebarOpen = event.matches;
     };
 
-    //#endregion
+    @eventOptions({ passive: true })
+    protected routeChangeListener() {
+        this.sidebarOpen = this.#sidebarMatcher.matches;
+    }
 
     @state()
     protected drawer: DrawerState = readDrawerParams();
@@ -96,8 +99,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
         persistDrawerParams(event.drawer);
     };
 
-    //#region Lifecycle
-
     constructor() {
         configureSentry();
 
@@ -105,12 +106,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
+        this.#sidebarMatcher = window.matchMedia("(width >= 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
-
-        this.addEventListener(PageNavMenuToggle.eventName, this.#onPageNavMenuEvent, {
-            passive: true,
-        });
     }
 
     public connectedCallback() {
@@ -139,7 +136,11 @@ export class AdminInterface extends WithCapabilitiesConfig(
         }
     }
 
-    render(): TemplateResult {
+    //#endregion
+
+    //#region Rendering
+
+    protected override render(): TemplateResult {
         if (!isAPIResultReady(this.session) || !canAccessAdmin(this.session.user)) {
             return html`<slot></slot>`;
         }
@@ -157,7 +158,20 @@ export class AdminInterface extends WithCapabilitiesConfig(
         };
 
         return html`<div class="pf-c-page">
-            <ak-page-navbar ?open=${this.sidebarOpen}>
+            <ak-page-navbar>
+                <button
+                    slot="toggle"
+                    aria-controls="global-nav"
+                    class="pf-c-button pf-m-plain"
+                    @click=${this.toggleSidebar}
+                    aria-label=${this.sidebarOpen
+                        ? msg("Collapse navigation")
+                        : msg("Expand navigation")}
+                    aria-expanded=${this.sidebarOpen ? "true" : "false"}
+                >
+                    <i aria-hidden="true" class="fas fa-bars"></i>
+                </button>
+
                 <ak-version-banner></ak-version-banner>
                 <ak-enterprise-status interface="admin"></ak-enterprise-status>
             </ak-page-navbar>
@@ -181,6 +195,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                                     id="main-content"
                                     defaultUrl="/administration/overview"
                                     .routes=${ROUTES}
+                                    @ak-route-change=${this.routeChangeListener}
                                 >
                                 </ak-router-outlet>
                             </div>
@@ -189,9 +204,19 @@ export class AdminInterface extends WithCapabilitiesConfig(
                         <ak-about-modal></ak-about-modal>
                     </div>
                 </div>
+
+                <div
+                    class="pf-c-page__sidebar-backdrop"
+                    aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
+                    @click=${this.toggleSidebar}
+                    role="button"
+                    tabindex="0"
+                ></div>
             </div>
         </div>`;
     }
+
+    //#endregion
 }
 
 declare global {

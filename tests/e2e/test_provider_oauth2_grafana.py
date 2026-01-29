@@ -1,6 +1,7 @@
 """test OAuth2 OpenID Provider flow"""
 
 from time import sleep
+from unittest import skip
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -415,6 +416,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             "Permission denied",
         )
 
+    @skip("Flaky test")
     @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",

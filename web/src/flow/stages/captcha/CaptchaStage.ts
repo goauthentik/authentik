@@ -27,7 +27,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type TokenListener = (token: string) => void;
 
@@ -49,7 +48,6 @@ type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFFormControl,
@@ -184,7 +182,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             id="ak-container"
             class="g-recaptcha"
             data-theme="${this.activeTheme}"
-            data-sitekey="${this.challenge.siteKey}"
+            data-sitekey=${ifPresent(this.challenge?.siteKey)}
             data-callback="callback"
         ></div>`;
     };
@@ -193,7 +191,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return grecaptcha.ready(() => {
             return grecaptcha.execute(
                 grecaptcha.render(this.captchaDocumentContainer, {
-                    sitekey: this.challenge.siteKey,
+                    sitekey: this.challenge?.siteKey ?? "",
                     callback: this.onTokenChange,
                     size: "invisible",
                     hl: this.activeLanguageTag,
@@ -219,7 +217,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return html`<div
             id="ak-container"
             class="h-captcha"
-            data-sitekey="${this.challenge.siteKey}"
+            data-sitekey=${ifPresent(this.challenge?.siteKey)}
             data-theme="${this.activeTheme}"
             data-callback="callback"
         ></div>`;
@@ -228,7 +226,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     async executeHCaptcha() {
         await hcaptcha.execute(
             hcaptcha.render(this.captchaDocumentContainer, {
-                sitekey: this.challenge.siteKey,
+                sitekey: this.challenge?.siteKey ?? "",
                 callback: this.onTokenChange,
                 size: "invisible",
                 hl: this.activeLanguageTag,
@@ -265,7 +263,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return html`<div
             id="ak-container"
             class="cf-turnstile"
-            data-sitekey="${this.challenge.siteKey}"
+            data-sitekey=${ifPresent(this.challenge?.siteKey)}
             data-theme="${this.activeTheme}"
             data-callback="callback"
             data-size="flexible"
@@ -275,7 +273,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     async executeTurnstile() {
         window.turnstile.render(this.captchaDocumentContainer, {
-            sitekey: this.challenge.siteKey,
+            sitekey: this.challenge?.siteKey ?? "",
             callback: this.onTokenChange,
         });
     }
@@ -428,7 +426,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         // Then, load the new script...
         const scriptElement = document.createElement("script");
 
-        scriptElement.src = this.challenge.jsUrl;
+        scriptElement.src = this.challenge?.jsUrl ?? "";
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
@@ -437,7 +435,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
         this.#scriptElement = document.head.appendChild(scriptElement);
 
-        if (!this.challenge.interactive) {
+        if (!this.challenge?.interactive) {
             document.body.appendChild(this.captchaDocumentContainer);
         }
     }
@@ -588,7 +586,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     async #run(captchaProvider: CaptchaProvider) {
         const handler = this.#handlers.get(captchaProvider)!;
 
-        if (this.challenge.interactive) {
+        if (this.challenge?.interactive) {
             const iframe = this.#iframeRef.value;
 
             if (!iframe) {
