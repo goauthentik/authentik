@@ -1,5 +1,7 @@
 import type { ResolvedUITheme } from "#common/theme";
 
+import { ErrorProp } from "#components/ak-field-errors";
+
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { CaptchaChallenge } from "@goauthentik/api";
@@ -59,9 +61,24 @@ export abstract class CaptchaController implements ReactiveController {
 
     public readonly host: CaptchaHandlerHost;
 
+    /**
+     * A callable that returns the interactive captcha element.
+     */
     public abstract interactive: () => TemplateResult;
-    public abstract execute: () => Promise<void>;
+
+    /**
+     * A callable that refreshes the interactive captcha element.
+     */
     public abstract refreshInteractive: () => Promise<void>;
+    /**
+     * A callable that executes a non-interactive captcha challenge.
+     */
+
+    public abstract execute: () => Promise<void>;
+
+    /**
+     * A callable that refreshes a non-interactive captcha challenge.
+     */
     public abstract refresh: () => Promise<void>;
 
     public prepareURL(): URL | null {
@@ -88,6 +105,7 @@ export interface CaptchaHandlerHost extends ReactiveControllerHost {
     iframeRef: Ref<HTMLIFrameElement>;
     activeLanguageTag: string;
     activeTheme: ResolvedUITheme;
-    challenge?: CaptchaChallenge | null;
+    challenge: CaptchaChallenge | null;
+    error: ErrorProp | null;
     onTokenChange(token: string): void;
 }
