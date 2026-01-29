@@ -10625,11 +10625,6 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
-                },
                 "sync_page_size": {
                     "type": "integer",
                     "minimum": 1,
@@ -10642,6 +10637,16 @@
                     "minLength": 1,
                     "title": "Sync page timeout",
                     "description": "Timeout for synchronization of a single page"
+                },
+                "group_filters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Group filters used to define sync-scope for groups."
+                    },
+                    "title": "Group filters",
+                    "description": "Group filters used to define sync-scope for groups."
                 },
                 "dry_run": {
                     "type": "boolean",

@@ -18712,10 +18712,14 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
+        name: group_filters
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -49533,10 +49537,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -49546,6 +49546,12 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -53439,10 +53445,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -53451,6 +53453,12 @@ components:
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -53561,10 +53569,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -53574,6 +53578,12 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
