@@ -1,3 +1,5 @@
+import { globalAK } from "#common/global";
+
 import { Broadcast } from "#flow/tabs/broadcast";
 import { TabID } from "#flow/tabs/TabID";
 
@@ -7,11 +9,17 @@ const lockKey = "authentik-tab-locked";
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 export function multiTabOrchestrateLeave() {
+    if (!globalAK().brand.flags.flowsRefreshOthers) {
+        return;
+    }
     Broadcast.shared.akExitTab();
     TabID.shared.clear();
 }
 
 export async function multiTabOrchestrateResume() {
+    if (!globalAK().brand.flags.flowsRefreshOthers) {
+        return;
+    }
     const lockTabId = localStorage.getItem(lockKey);
     const tabs = await Broadcast.shared.akTabDiscover();
     logger.debug("Got list of tabs", tabs);
