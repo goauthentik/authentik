@@ -124,11 +124,11 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
             return MicrosoftEntraGroupClient(self)
         raise ValueError(f"Invalid model {model}")
 
-    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = User.objects.all().exclude_anonymous()
+            base = User.objects.all().exclude_anonymous().filter(**kwargs)
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -138,7 +138,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
             return base.order_by("pk")
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            return Group.objects.all().order_by("pk")
+            return Group.objects.all().filter(**kwargs).order_by("pk")
         raise ValueError(f"Invalid type {type}")
 
     @classmethod

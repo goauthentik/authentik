@@ -12,6 +12,8 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowStageBinding
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
@@ -765,3 +767,30 @@ class TestAuthorize(OAuthTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn(auth_flow.slug, response.url)
         self.assertNotIn(global_auth.slug, response.url)
+
+    @apply_blueprint("default/flow-default-authentication-flow.yaml")
+    def test_login_hint(self):
+        """Login hint"""
+        flow = create_test_flow()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
+            access_code_validity="seconds=100",
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:authorize"),
+            data={
+                "response_type": "code",
+                "client_id": "test",
+                "state": state,
+                "redirect_uri": "foo://localhost",
+                "login_hint": "foo",
+            },
+        )
+        self.assertEqual(response.status_code, 302)
+        plan = self.client.session.get(SESSION_KEY_PLAN)
+        self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER], "foo")

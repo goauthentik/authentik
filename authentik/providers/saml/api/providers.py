@@ -244,6 +244,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
     search_fields = ["name"]
 
+    metadata_generator_class = MetadataProcessor
+
     @extend_schema(
         responses={
             200: SAMLMetadataSerializer(many=False),
@@ -288,7 +290,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError:
             raise Http404 from None
         try:
-            proc = MetadataProcessor(provider, request)
+            proc = self.metadata_generator_class(provider, request)
             proc.force_binding = request.query_params.get("force_binding", None)
             metadata = proc.build_entity_descriptor()
             if "download" in request.query_params:
