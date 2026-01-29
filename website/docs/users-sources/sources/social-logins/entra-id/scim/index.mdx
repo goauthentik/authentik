@@ -38,6 +38,12 @@ To integrate authentik with Entra ID via SCIM you will need to create a SCIM sou
 If authentik has the required browser permissions, the token will be copied into your clipboard after clicking **Click to copy token** button. However, some browsers don't allow this, in those cases a notification will appear in the bottom right corner with the token and you will need to manually copy it.
 :::
 
+:::warning Entra ID SCIM requirements
+Microsoft require that the authentik SCIM endpoint be accessible via TLS1.2. If enforcing TLS1.3, you may run into issues. For more inforamtion, refer to the [Microsoft SCIM endpoint documenation](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups#security-requirements).
+
+You can use the [Microsoft SCIM Validator](https://scimvalidator.microsoft.com/) to test you authentik SCIM endpoint.
+:::
+
 ## Entra ID configuration
 
 ### Create a custom enterprise application
