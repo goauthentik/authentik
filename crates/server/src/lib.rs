@@ -2,6 +2,7 @@ use std::{net::SocketAddr, process::Stdio, sync::Arc, time::Duration};
 
 use argh::FromArgs;
 use authentik_config::get_config;
+use authentik_db::get_db;
 use axum::Router;
 use axum_reverse_proxy::ReverseProxy;
 use axum_server::{Handle, tls_rustls::RustlsConfig};

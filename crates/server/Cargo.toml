@@ -27,6 +27,7 @@ tokio-util.workspace = true
 tracing.workspace = true
 
 authentik-config.workspace = true
+authentik-db.workspace = true
 
 [lints]
 workspace = true

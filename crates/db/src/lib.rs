@@ -3,7 +3,6 @@ use std::{str::FromStr, time::Duration};
 
 use authentik_config::get_config;
 use eyre::Result;
-use sea_orm::DatabaseConnection;
 use sqlx::{
     PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
@@ -86,10 +85,6 @@ pub async fn init(
     Ok(())
 }
 
-pub fn get_db() -> DatabaseConnection {
-    DatabaseConnection::from(get_raw_db().clone())
-}
-
-pub fn get_raw_db() -> &'static PgPool {
+pub fn get_db() -> &'static PgPool {
     DB.get().unwrap()
 }
