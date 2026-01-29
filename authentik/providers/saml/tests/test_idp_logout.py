@@ -5,6 +5,10 @@ from unittest.mock import Mock
 
 from django.test import RequestFactory, TestCase
 
+from authentik.common.saml.constants import (
+    RSA_SHA256,
+    SAML_NAME_ID_FORMAT_EMAIL,
+)
 from authentik.core.tests.utils import create_test_flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
@@ -21,10 +25,6 @@ from authentik.providers.saml.native_logout import (
 from authentik.providers.saml.views.flows import (
     PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS,
     PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS,
-)
-from authentik.sources.saml.processors.constants import (
-    RSA_SHA256,
-    SAML_NAME_ID_FORMAT_EMAIL,
 )
 
 
@@ -295,7 +295,7 @@ class TestIframeLogoutStageView(TestCase):
             },
         ]
         # OIDC sessions (pre-processed)
-        from authentik.providers.oauth2.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
+        from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
 
         plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
             {
