@@ -48,8 +48,40 @@ export class AuthenticatorTOTPStage extends BaseStage<
                 flex-direction: column;
                 place-items: center;
             }
+            .qr-buttons {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 1rem;
+            }
         `,
     ];
+
+    private copyToClipboard(value: string, successMessage: string): void {
+        if (!navigator.clipboard) {
+            showMessage({
+                level: MessageLevel.info,
+                message: value,
+            });
+            return;
+        }
+        navigator.clipboard.writeText(value).then(() => {
+            showMessage(
+                {
+                    level: MessageLevel.success,
+                    message: successMessage,
+                },
+                true,
+            );
+        });
+    }
+
+    private getSecret(): string | null {
+        if (!this.challenge?.configUrl) return null;
+        const url = new URL(this.challenge.configUrl);
+        return url.searchParams.get("secret");
+    }
 
     protected render(): SlottedTemplateResult {
         if (!this.challenge) {
@@ -70,38 +102,45 @@ export class AuthenticatorTOTPStage extends BaseStage<
                             format="svg"
                             data="${this.challenge.configUrl}"
                         ></qr-code>
-                        <button
-                            type="button"
-                            class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
-                            aria-label=${msg("Copy time-based one-time password configuration")}
-                            @click=${(e: Event) => {
-                                e.preventDefault();
-                                if (!this.challenge?.configUrl) return;
-                                if (!navigator.clipboard) {
-                                    showMessage({
-                                        level: MessageLevel.info,
-                                        message: this.challenge?.configUrl,
-                                    });
-                                    return;
-                                }
-                                navigator.clipboard
-                                    .writeText(this.challenge?.configUrl)
-                                    .then(() => {
-                                        showMessage(
-                                            {
-                                                level: MessageLevel.success,
-                                                message: msg("Successfully copied TOTP Config."),
-                                            },
-                                            true,
-                                        );
-                                    });
-                            }}
-                        >
-                            <span class="pf-c-button__progress"
-                                ><i class="fas fa-copy" aria-hidden="true"></i
-                            ></span>
-                            ${msg("Copy TOTP Config")}
-                        </button>
+                        <div class="qr-buttons">
+                            <button
+                                type="button"
+                                class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                                aria-label=${msg("Copy time-based one-time password configuration")}
+                                @click=${(e: Event) => {
+                                    e.preventDefault();
+                                    if (!this.challenge?.configUrl) return;
+                                    this.copyToClipboard(
+                                        this.challenge.configUrl,
+                                        msg("Successfully copied TOTP Config."),
+                                    );
+                                }}
+                            >
+                                <span class="pf-c-button__progress"
+                                    ><i class="fas fa-copy" aria-hidden="true"></i
+                                ></span>
+                                ${msg("Copy TOTP Config")}
+                            </button>
+                            <button
+                                type="button"
+                                class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                                aria-label=${msg("Copy time-based one-time password secret")}
+                                @click=${(e: Event) => {
+                                    e.preventDefault();
+                                    const secret = this.getSecret();
+                                    if (!secret) return;
+                                    this.copyToClipboard(
+                                        secret,
+                                        msg("Successfully copied TOTP Secret."),
+                                    );
+                                }}
+                            >
+                                <span class="pf-c-button__progress"
+                                    ><i class="fas fa-key" aria-hidden="true"></i
+                                ></span>
+                                ${msg("Copy Secret")}
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <p>
