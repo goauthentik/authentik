@@ -53,7 +53,7 @@ dependencies = [
   "pydantic-scim==0.0.8",
   "pydantic==2.12.5",
   "pyjwt==2.10.1",
-  "pyrad==2.4",
+  "pyrad==2.5.2",
   "python-kadmin-rs==0.7.0",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",

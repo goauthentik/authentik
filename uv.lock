@@ -382,7 +382,7 @@ requires-dist = [
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.10.1" },
-    { name = "pyrad", specifier = "==2.4" },
+    { name = "pyrad", specifier = "==2.5.2" },
     { name = "python-kadmin-rs", specifier = "==0.7.0" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
@@ -3002,15 +3002,15 @@ wheels = [
 
 [[package]]
 name = "pyrad"
-version = "2.4"
+version = "2.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "netaddr" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fc/04/0fe33dca20685b3ced8359f487638bdf03f2776652f7f6812a639cce1b70/pyrad-2.4.tar.gz", hash = "sha256:057de4b7e89d8da57ba782c1bde45c63ebee720ae2c0b0a69beaff15c47e30d9", size = 27952, upload-time = "2020-11-23T23:12:08.818Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/62/ffa819f420e1d5130df73b262443052a5a686d67521b899b142ba333b96f/pyrad-2.5.2.tar.gz", hash = "sha256:368e8d3cb7b9e2ca9e4357b343787238bf135edd3f3598cf26ccd65d32506ff9", size = 488451, upload-time = "2026-01-29T00:21:47.219Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/23/483cc51b2ea1ac47dc30093a786190e4a2dfaef892263430c6f99296fabf/pyrad-2.4-py3-none-any.whl", hash = "sha256:233de3aefa383875c5bddfdecfd4819d1b1fbac41aa43f6bebe4f81e63dca363", size = 32547, upload-time = "2020-11-23T23:12:07.826Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/ed/8ac16344400e3b72b5e29f5ded4aac4adc1d10bf6396d8a6f47b6395c0d1/pyrad-2.5.2-py3-none-any.whl", hash = "sha256:f055e9c7e500aa3423c2e9ea03c04ba676694acaf8b81d4fd51f0a6fbbc2b1cb", size = 495263, upload-time = "2026-01-29T00:21:44.995Z" },
 ]
 
 [[package]]
