@@ -29,6 +29,12 @@ class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others
     visibility = "public"
 
 
+class ContinuousLogin(Flag[bool], key="flows_continuous_login"):
+
+    default = False
+    visibility = "public"
+
+
 class AuthentikFlowsConfig(ManagedAppConfig):
     """authentik flows app config"""
 
