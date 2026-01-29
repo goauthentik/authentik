@@ -6908,6 +6908,7 @@ paths:
             enum:
             - authorize_application
             - configuration_error
+            - configuration_warning
             - custom_
             - email_sent
             - export_ready
@@ -7169,6 +7170,7 @@ paths:
             enum:
             - authorize_application
             - configuration_error
+            - configuration_warning
             - custom_
             - email_sent
             - export_ready
@@ -7296,6 +7298,7 @@ paths:
             enum:
             - authorize_application
             - configuration_error
+            - configuration_warning
             - custom_
             - email_sent
             - export_ready
@@ -10956,6 +10959,7 @@ paths:
           enum:
           - authorize_application
           - configuration_error
+          - configuration_warning
           - custom_
           - email_sent
           - export_ready
@@ -20449,10 +20453,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: user
-        schema:
-          type: integer
       tags:
       - rbac
       security:
@@ -20747,7 +20747,7 @@ paths:
       description: Role viewset
       parameters:
       - in: query
-        name: ak_groups
+        name: groups
         schema:
           type: string
           format: uuid
@@ -20755,7 +20755,7 @@ paths:
         name: inherited
         schema:
           type: boolean
-        description: Include inherited roles (requires users or ak_groups filter)
+        description: Include inherited roles (requires users or groups filter)
       - in: query
         name: managed
         schema:
@@ -38110,6 +38110,7 @@ components:
       - system_task_exception
       - system_exception
       - configuration_error
+      - configuration_warning
       - model_created
       - model_updated
       - model_deleted
@@ -49173,7 +49174,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 150
     PatchedSAMLPropertyMappingRequest:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -52369,7 +52369,6 @@ components:
           title: Uuid
         name:
           type: string
-          maxLength: 150
       required:
       - name
       - pk
@@ -52458,7 +52457,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 150
       required:
       - name
     SAMLBindingsEnum:
