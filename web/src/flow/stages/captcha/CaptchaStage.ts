@@ -4,14 +4,21 @@ import "#flow/components/ak-flow-card";
 import { pluckErrorDetail } from "#common/errors/network";
 
 import { akEmptyState } from "#elements/EmptyState";
-import { ifPresent } from "#elements/utils/attributes";
 import { ListenerController } from "#elements/utils/listenerController";
 import { randomId } from "#elements/utils/randomId";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/captcha/CaptchaStage.css";
-import { CaptchaHandler, CaptchaProvider, iframeTemplate } from "#flow/stages/captcha/shared";
+import {
+    CaptchaController,
+    CaptchaControllerConstructor,
+    CaptchaHandlerHost,
+} from "#flow/stages/captcha/controllers/CaptchaController";
+import { GReCaptchaController } from "#flow/stages/captcha/controllers/grecaptcha";
+import { HCaptchaController } from "#flow/stages/captcha/controllers/hcaptcha";
+import { TurnstileController } from "#flow/stages/captcha/controllers/turnstile";
+import { iframeTemplate } from "#flow/stages/captcha/shared";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -22,7 +29,7 @@ import { match } from "ts-pattern";
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { createRef, ref, type Ref } from "lit/directives/ref.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -47,7 +54,10 @@ interface LoadMessage {
 type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
 
 @customElement("ak-stage-captcha")
-export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
+export class CaptchaStage
+    extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest>
+    implements CaptchaHandlerHost
+{
     public static readonly styles: CSSResult[] = [
         // ---
         PFLogin,
@@ -56,6 +66,18 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         PFTitle,
         Styles,
     ];
+
+    /**
+     * Set of Captcha provider controllers.
+     *
+     * Note that this `Set` is in the preferred order of discovery.
+     */
+    public static readonly controllers = new Set<CaptchaControllerConstructor>([
+        // ---
+        HCaptchaController,
+        GReCaptchaController,
+        TurnstileController,
+    ]);
 
     #logger = ConsoleLogger.prefix("flow:captcha");
 
@@ -80,18 +102,31 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     //#region State
 
     @state()
-    protected activeHandler: CaptchaProvider | null = null;
-
-    @state()
     protected error: string | null = null;
 
     @state()
     protected iframeHeight = 65;
 
+    /**
+     * The currently active Captcha controller, if any.
+     */
+    @state()
+    protected activeController: CaptchaController | null = null;
+
+    /**
+     * The script element loading the captcha provider's JS API.
+     */
     #scriptElement?: HTMLScriptElement;
 
+    /**
+     * The desired source URL of the iframe. Note that this may differ from the actual
+     * `src` attribute of the iframe element for certain captcha providers.
+     */
     #iframeSource = "about:blank";
-    #iframeRef = createRef<HTMLIFrameElement>();
+    /**
+     * A Lit {@linkcode Ref} to the iframe element.
+     */
+    public iframeRef: Ref<HTMLIFrameElement> = createRef();
 
     #iframeLoaded = false;
 
@@ -102,7 +137,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Getters/Setters
 
-    protected get captchaDocumentContainer(): HTMLDivElement {
+    public get captchaDocumentContainer(): HTMLDivElement {
         if (this.#captchaDocumentContainer) {
             return this.#captchaDocumentContainer;
         }
@@ -128,6 +163,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             return;
         }
 
+        this.#logger.debug("Received message:", data);
+
         return match(data)
             .with({ message: "captcha" }, ({ token }) => this.onTokenChange(token))
             .with({ message: "load" }, this.#loadListener)
@@ -138,157 +175,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    //#region g-recaptcha
-
-    protected renderGReCaptchaFrame = () => {
-        return html`<div
-            id="ak-container"
-            class="g-recaptcha"
-            data-theme="${this.activeTheme}"
-            data-sitekey=${ifPresent(this.challenge?.siteKey)}
-            data-callback="callback"
-        ></div>`;
-    };
-
-    async executeGReCaptcha() {
-        return grecaptcha.ready(() => {
-            return grecaptcha.execute(
-                grecaptcha.render(this.captchaDocumentContainer, {
-                    sitekey: this.challenge?.siteKey ?? "",
-                    callback: this.onTokenChange,
-                    size: "invisible",
-                    hl: this.activeLanguageTag,
-                }),
-            );
-        });
-    }
-
-    async refreshGReCaptchaFrame() {
-        this.#iframeRef.value?.contentWindow?.grecaptcha.reset();
-    }
-
-    async refreshGReCaptcha() {
-        window.grecaptcha.reset();
-        window.grecaptcha.execute();
-    }
-
-    //#endregion
-
-    //#region h-captcha
-
-    protected renderHCaptchaFrame = () => {
-        return html`<div
-            id="ak-container"
-            class="h-captcha"
-            data-sitekey=${ifPresent(this.challenge?.siteKey)}
-            data-theme="${this.activeTheme}"
-            data-callback="callback"
-        ></div>`;
-    };
-
-    async executeHCaptcha() {
-        await hcaptcha.execute(
-            hcaptcha.render(this.captchaDocumentContainer, {
-                sitekey: this.challenge?.siteKey ?? "",
-                callback: this.onTokenChange,
-                size: "invisible",
-                hl: this.activeLanguageTag,
-            }),
-        );
-    }
-
-    async refreshHCaptchaFrame() {
-        this.#iframeRef.value?.contentWindow?.hcaptcha?.reset();
-    }
-
-    async refreshHCaptcha() {
-        window.hcaptcha.reset();
-        window.hcaptcha.execute();
-    }
-
-    //#endregion
-
-    //#region Turnstile
-
-    /**
-     * Renders the Turnstile captcha frame.
-     *
-     * @remarks
-     *
-     * Turnstile will log a warning if the `data-language` attribute
-     * is not in lower-case format.
-     *
-     * @see {@link https://developers.cloudflare.com/turnstile/reference/supported-languages/ Turnstile Supported Languages}
-     */
-    protected renderTurnstileFrame = () => {
-        const languageTag = this.activeLanguageTag.toLowerCase();
-
-        return html`<div
-            id="ak-container"
-            class="cf-turnstile"
-            data-sitekey=${ifPresent(this.challenge?.siteKey)}
-            data-theme="${this.activeTheme}"
-            data-callback="callback"
-            data-size="flexible"
-            data-language=${ifPresent(languageTag)}
-        ></div>`;
-    };
-
-    async executeTurnstile() {
-        window.turnstile.render(this.captchaDocumentContainer, {
-            sitekey: this.challenge?.siteKey ?? "",
-            callback: this.onTokenChange,
-        });
-    }
-
-    async refreshTurnstileFrame() {
-        this.#iframeRef.value?.contentWindow?.turnstile.reset();
-    }
-
-    async refreshTurnstile() {
-        window.turnstile.reset();
-    }
-
-    //#endregion
-
-    /**
-     * Mapping of captcha provider names to their respective JS API global.
-     *
-     * Note that this is a `Map` to ensure the preferred order of discovering provider globals.
-     */
-    #handlers = new Map<CaptchaProvider, CaptchaHandler>([
-        [
-            "hcaptcha",
-            {
-                interactive: this.renderHCaptchaFrame,
-                execute: this.executeHCaptcha,
-                refreshInteractive: this.refreshHCaptchaFrame,
-                refresh: this.refreshHCaptcha,
-            },
-        ],
-        [
-            "grecaptcha",
-            {
-                interactive: this.renderGReCaptchaFrame,
-                execute: this.executeGReCaptcha,
-                refreshInteractive: this.refreshGReCaptchaFrame,
-                refresh: this.refreshGReCaptcha,
-            },
-        ],
-        [
-            "turnstile",
-            {
-                interactive: this.renderTurnstileFrame,
-                refreshInteractive: this.refreshTurnstileFrame,
-                execute: this.executeTurnstile,
-                refresh: this.refreshTurnstile,
-            },
-        ],
-    ]);
-
     //#region Render
 
-    renderBody() {
+    protected renderBody() {
         if (this.error) {
             return akEmptyState({ icon: "fa-times" }, { heading: this.error });
         }
@@ -297,7 +186,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             return html`
                 <iframe
                     aria-label=${msg("CAPTCHA challenge")}
-                    ${ref(this.#iframeRef)}
+                    ${ref(this.iframeRef)}
                     style="height: ${this.iframeHeight}px;"
                     data-ready="${this.#iframeLoaded ? "ready" : "loading"}"
                     class="ak-interactive-challenge"
@@ -309,7 +198,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return akEmptyState({ loading: true }, { heading: msg("Verifying...") });
     }
 
-    renderMain() {
+    protected renderMain() {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 ${FlowUserDetails({ challenge: this.challenge })} ${this.renderBody()}
@@ -317,7 +206,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         </ak-flow-card>`;
     }
 
-    render() {
+    protected render() {
         if (!this.challenge) {
             return this.embedded ? nothing : akEmptyState({ loading: true });
         }
@@ -329,7 +218,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return this.challenge.interactive ? this.renderBody() : nothing;
     }
 
-    //#endregion;
+    //#endregion
 
     //#region Lifecycle
 
@@ -352,16 +241,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         super.disconnectedCallback();
     }
 
-    //#endregion
-
     public override firstUpdated(changedProperties: PropertyValues<this>) {
         super.firstUpdated(changedProperties);
 
-        if (!(changedProperties.has("challenge") && typeof this.challenge !== "undefined")) {
-            return;
+        if (changedProperties.has("challenge")) {
+            this.#refreshControllers();
         }
-
-        this.#refreshVendor();
     }
 
     public updated(changedProperties: PropertyValues<this>) {
@@ -371,40 +256,67 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             return;
         }
 
-        if (!this.activeHandler) {
+        if (!this.activeController) {
             return;
         }
 
         this.#logger.debug("refresh triggered");
 
-        this.#run(this.activeHandler);
+        this.#run(this.activeController);
     }
 
-    #refreshVendor() {
-        // First, remove any existing script & listeners...
-        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+    /**
+     * Refresh the captcha controllers based on the current challenge.
+     */
+    async #refreshControllers(): Promise<void> {
+        if (!this.challenge) {
+            this.#logger.debug("No challenge, skipping controller refresh.");
+            return;
+        }
 
-        this.#scriptElement?.remove();
+        if (!this.challenge.interactive) {
+            document.body.appendChild(this.captchaDocumentContainer);
+        }
+
+        const challengeURL = new URL(this.challenge?.jsUrl ?? "");
+
+        const existingScriptElement =
+            this.#scriptElement ||
+            this.ownerDocument.querySelector<HTMLScriptElement>(
+                `script[src="${challengeURL.href}"]`,
+            );
+
+        // Has the script already been loaded?
+        if (existingScriptElement && existingScriptElement.src === challengeURL.href) {
+            // Do we need to create a new controller instance?
+            if (!this.activeController) {
+                return this.#scriptLoadListener();
+            }
+
+            return this.#run(this.activeController);
+        }
+
+        // Unlikely, but possible if the captcha provider changed...
+        if (this.activeController) {
+            window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+            this.removeController(this.activeController);
+            this.activeController = null;
+        }
 
         // Then, load the new script...
         const scriptElement = document.createElement("script");
 
-        scriptElement.src = this.challenge?.jsUrl ?? "";
+        scriptElement.src = challengeURL.toString();
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
 
         this.#scriptElement?.remove();
-
         this.#scriptElement = document.head.appendChild(scriptElement);
-
-        if (!this.challenge?.interactive) {
-            document.body.appendChild(this.captchaDocumentContainer);
-        }
     }
 
     #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
-        if (!this.activeHandler) {
+        if (!this.activeController) {
             return;
         }
 
@@ -420,7 +332,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         const { readyLocale } = event.detail;
         this.#logger.debug(`Locale changed to \`${readyLocale}\``);
 
-        this.#run(this.activeHandler);
+        this.#run(this.activeController);
     };
 
     //#endregion
@@ -430,23 +342,27 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     #mutationObserver?: MutationObserver;
     #resizeObserver?: ResizeObserver;
 
+    /**
+     * An event listener that is called through the iframe's `postMessage` API
+     * when the iframe has loaded its content.
+     */
     #loadListener = () => {
         this.#mutationObserver?.disconnect();
         this.#resizeObserver?.disconnect();
 
-        const iframe = this.#iframeRef.value;
+        const iframe = this.iframeRef.value;
         const contentDocument = iframe?.contentDocument;
 
         if (!iframe || !contentDocument) return;
 
         let synchronizeHeight: () => void;
 
-        if (this.activeHandler === CaptchaProvider.reCAPTCHA) {
+        if (this.activeController instanceof GReCaptchaController) {
             // reCAPTCHA's use of nested iframes prevents their internal resize observer from
             // reporting the correct height back to our iframe, so we have to do it ourselves.
 
             synchronizeHeight = () => {
-                if (!this.#iframeRef) return;
+                if (!this.iframeRef) return;
 
                 const target = contentDocument.getElementById("ak-container");
 
@@ -495,7 +411,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             });
         } else {
             synchronizeHeight = () => {
-                if (!this.#iframeRef) return;
+                if (!this.iframeRef) return;
 
                 const target = contentDocument.getElementById("ak-container");
 
@@ -518,92 +434,119 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Loading
 
+    /**
+     * An event listener that is called when the captcha provider's script has loaded,
+     * attempting to initialize each available controller in order.
+     */
     #scriptLoadListener = async (): Promise<void> => {
-        this.#logger.debug("script loaded");
+        this.#logger.debug("Script loaded");
 
         this.error = null;
         this.#iframeLoaded = false;
 
-        for (const name of this.#handlers.keys()) {
-            if (!Object.hasOwn(window, name)) {
-                continue;
-            }
+        const [Controller, ...rest] = CaptchaController.discover(CaptchaStage.controllers);
 
-            try {
-                await this.#run(name);
-                this.#logger.debug(`[${name}]: handler succeeded`);
-
-                this.activeHandler = name;
-            } catch (error) {
-                this.#logger.debug(`[${name}]: handler failed`);
-                this.#logger.debug(error);
-
-                this.error = pluckErrorDetail(error, "Unspecified error");
-            }
-
-            // We begin listening for locale changes once a handler has been successfully run
-            // to avoid interrupting the initial load.
-            window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
-                signal: this.#listenController.signal,
-            });
-
+        if (!Controller) {
+            this.error = msg("Could not find a suitable CAPTCHA provider.");
             return;
         }
+
+        // hCaptcha aliases gReCaptcha for compatibility reasons, no need to panic if that's the case.
+        if (
+            rest.length &&
+            Controller === HCaptchaController &&
+            rest.some((C) => C !== GReCaptchaController)
+        ) {
+            this.#logger.debug(
+                `Other CAPTCHA providers were also available: ${rest
+                    .map((C) => C?.globalName ?? "unknown")
+                    .join(", ")}`,
+            );
+        }
+
+        const { globalName } = Controller;
+        const controller = new Controller(this);
+
+        try {
+            await this.#run(controller);
+            this.#logger.debug(`[${globalName}]: handler succeeded`);
+
+            this.activeController = controller;
+        } catch (error) {
+            this.#logger.debug(`[${globalName}]: handler failed`);
+            this.#logger.debug(error);
+
+            this.error = pluckErrorDetail(error, "Unspecified error");
+            this.removeController(controller);
+        }
+
+        // We begin listening for locale changes once a handler has been successfully run
+        // to avoid interrupting the initial load.
+        window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
+            signal: this.#listenController.signal,
+        });
     };
 
-    async #run(captchaProvider: CaptchaProvider) {
-        const handler = this.#handlers.get(captchaProvider)!;
+    async #run(controller: CaptchaController): Promise<void> {
+        if (!this.challenge) {
+            throw new Error("No challenge available");
+        }
 
-        if (this.challenge?.interactive) {
-            const iframe = this.#iframeRef.value;
+        if (!this.challenge.interactive) {
+            await controller.execute();
+        }
 
-            if (!iframe) {
-                this.#logger.debug(`No iframe found, skipping.`);
-                return;
-            }
+        const iframe = this.iframeRef.value;
 
-            const { contentDocument } = iframe;
+        if (!iframe) {
+            this.#logger.debug(`No iframe found, skipping.`);
+            return;
+        }
 
-            if (!contentDocument) {
-                this.#logger.debug("No iframe content window found, skipping.");
+        const { contentDocument } = iframe;
 
-                return;
-            }
-
-            this.#logger.debug(`Rendering interactive.`);
-
-            const captchaElement = handler.interactive();
-            const template = iframeTemplate(captchaElement, {
-                challengeURL: this.challenge.jsUrl,
-                theme: this.activeTheme,
-            });
-
-            if (
-                captchaProvider === CaptchaProvider.reCAPTCHA ||
-                captchaProvider === CaptchaProvider.hCaptcha
-            ) {
-                // reCAPTCHA's & hCaptcha's domain verification can't seem to penetrate the true origin
-                // of the page when loaded from a blob URL, likely due to their double-nested
-                // iframe structure.
-                // We fallback to the deprecated `document.write` to get around this.
-                this.#iframeSource = "about:blank";
-                contentDocument.open();
-                contentDocument.write(template);
-                contentDocument.close();
-            } else {
-                URL.revokeObjectURL(this.#iframeSource);
-
-                const url = URL.createObjectURL(new Blob([template], { type: "text/html" }));
-
-                this.#iframeSource = url;
-
-                iframe.src = url;
-            }
+        if (!contentDocument) {
+            this.#logger.debug("No iframe content window found, skipping.");
 
             return;
         }
 
-        await handler.execute.apply(this);
+        this.#logger.debug(`Rendering interactive.`);
+
+        const challengeURL = controller.prepareURL();
+
+        if (!challengeURL) {
+            throw new Error("Could not prepare challenge URL");
+        }
+
+        const captchaElement = controller.interactive();
+        const template = iframeTemplate(captchaElement, {
+            challengeURL: challengeURL.toString(),
+            theme: this.activeTheme,
+        });
+
+        if (
+            controller instanceof GReCaptchaController ||
+            controller instanceof HCaptchaController
+        ) {
+            // reCAPTCHA's & hCaptcha's domain verification can't seem to penetrate the true origin
+            // of the page when loaded from a blob URL, likely due to their double-nested
+            // iframe structure.
+            // We fallback to the deprecated `document.write` to get around this.
+            this.#iframeSource = "about:blank";
+            contentDocument.open();
+            contentDocument.write(template);
+            contentDocument.close();
+
+            return;
+        }
+
+        URL.revokeObjectURL(this.#iframeSource);
+
+        const url = URL.createObjectURL(new Blob([template], { type: "text/html" }));
+
+        this.#iframeSource = url;
+        iframe.src = url;
     }
 }
 
