@@ -180,11 +180,11 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         cache.delete(cache_key)
         super().save(*args, **kwargs)
 
-    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = User.objects.all().exclude_anonymous()
+            base = User.objects.all().exclude_anonymous().filter(**kwargs)
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -205,7 +205,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         if type == Group:
             # Get queryset of all groups with consistent ordering
             # according to the provider's settings
-            base = Group.objects.prefetch_related("scimprovidergroup_set").all()
+            base = Group.objects.prefetch_related("scimprovidergroup_set").all().filter(**kwargs)
 
             # Filter groups by group_filters if set
             if self.group_filters.exists():
