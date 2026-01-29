@@ -309,6 +309,9 @@ class OAuth2Provider(WebfingerProvider, Provider):
         blank=True,
     )
     jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
+    allowed_provider_tokens = models.ManyToManyField(
+        "OAuth2Provider", blank=True, default=None, related_name="allowed_provider_tokens_reverse"
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
