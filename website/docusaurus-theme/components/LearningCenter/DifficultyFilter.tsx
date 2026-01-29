@@ -22,7 +22,7 @@ export const DifficultyFilter: React.FC<DifficultyFilterProps> = ({
 
     return (
         <div className={styles.difficultyFilter}>
-            <span className={styles.navLabel}>Difficulty:</span>
+            <span className={styles.navLabel}>Experience Level:</span>
             <button
                 className={clsx(
                     styles.difficultyButton,

@@ -131,7 +131,7 @@ html[data-theme="dark"] .sectionTitle {
 }
 
 .navLabel {
-    font-weight: 500;
+    font-weight: 700;
     margin-right: 0.5rem;
     color: var(--ifm-color-emphasis-700);
 }

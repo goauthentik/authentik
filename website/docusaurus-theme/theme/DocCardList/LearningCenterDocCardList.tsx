@@ -230,22 +230,45 @@ export default function LearningCenterDocCardList({
             .filter((resource): resource is NonNullable<typeof resource> => resource !== null);
     }, [resourcePool, resourceCache]);
 
-    // Render function for resources - simple grid view
+    // Render function for resources - grouped by category
     const renderResources = useCallback(
         (filteredResources: LearningCenterResource[], searchFilter: string) => {
+            // Group resources by category
+            const resourcesByCategory = filteredResources.reduce(
+                (acc, resource) => {
+                    const category = resource.category || "General";
+                    if (!acc[category]) {
+                        acc[category] = [];
+                    }
+                    acc[category].push(resource);
+                    return acc;
+                },
+                {} as Record<string, LearningCenterResource[]>,
+            );
+
+            // Sort categories alphabetically
+            const sortedCategories = Object.keys(resourcesByCategory).sort();
+
             return (
-                <div className={styles.resourceGrid}>
-                    {filteredResources.map((resource) => {
-                        const sidebarItem = sidebarItemMap.get(resource.id);
-                        return sidebarItem ? (
-                            <ResourceCard
-                                key={resource.id}
-                                item={sidebarItem}
-                                resourceCache={resourceCache}
-                                searchFilter={searchFilter}
-                            />
-                        ) : null;
-                    })}
+                <div className={styles.resourceList}>
+                    {sortedCategories.map((category) => (
+                        <div key={category} className={styles.section}>
+                            <h2 className={styles.sectionTitle}>{category}</h2>
+                            <div className={styles.resourceGrid}>
+                                {resourcesByCategory[category].map((resource) => {
+                                    const sidebarItem = sidebarItemMap.get(resource.id);
+                                    return sidebarItem ? (
+                                        <ResourceCard
+                                            key={resource.id}
+                                            item={sidebarItem}
+                                            resourceCache={resourceCache}
+                                            searchFilter={searchFilter}
+                                        />
+                                    ) : null;
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             );
         },
