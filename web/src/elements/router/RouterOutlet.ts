@@ -8,6 +8,7 @@ import { AKElement } from "#elements/Base";
 import { RouteChangeEvent } from "#elements/router/events";
 import { Route } from "#elements/router/Route";
 import { RouteMatch } from "#elements/router/RouteMatch";
+import { ifPreviousValue, onlyBinding } from "#elements/utils/properties";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -72,14 +73,23 @@ export class RouterOutlet extends AKElement {
 
     public override role = "presentation";
 
-    @property({ attribute: false })
-    current?: RouteMatch;
+    @property({
+        attribute: false,
+        useDefault: true,
+        hasChanged: ifPreviousValue,
+    })
+    public current: RouteMatch | null = null;
 
-    @property()
-    defaultUrl?: string;
+    @property({
+        type: String,
+        attribute: "default-url",
+        useDefault: true,
+        hasChanged: ifPreviousValue,
+    })
+    public defaultURL: string | null = null;
 
-    @property({ attribute: false })
-    routes: Route[] = [];
+    @property(onlyBinding)
+    public routes: Route[] = [];
 
     //#endregion
 
@@ -108,6 +118,8 @@ export class RouterOutlet extends AKElement {
 
     public override connectedCallback(): void {
         super.connectedCallback();
+
+        this.navigate();
 
         this.#mutationObserver.observe(this.renderRoot, {
             childList: true,
@@ -144,7 +156,7 @@ export class RouterOutlet extends AKElement {
             if (oldPath === activeUrl) return;
         }
         if (activeUrl === "") {
-            activeUrl = this.defaultUrl || "/";
+            activeUrl = this.defaultURL || "/";
             window.location.hash = `#${activeUrl}`;
 
             this.#logger.info(`Defaulted URL to ${window.location.hash}`);
@@ -181,10 +193,6 @@ export class RouterOutlet extends AKElement {
 
         this.dispatchEvent(new RouteChangeEvent(matchedRoute));
     };
-
-    protected override firstUpdated(): void {
-        this.navigate();
-    }
 
     protected override updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
