@@ -1,10 +1,12 @@
 import socket
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
+from threading import Thread
 from time import sleep
 from typing import Any, cast
 
 import pglock
-from django.db import OperationalError, connections
+from django.db import OperationalError, connections, transaction
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
@@ -13,14 +15,17 @@ from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
+from dramatiq import Worker
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
+from setproctitle import setthreadtitle
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
 from authentik.root.signals import post_startup, pre_startup, startup
@@ -209,14 +214,22 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
 
 
 class WorkerHealthcheckMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_healthcheck
+    thread: Thread | None
 
-        return [worker_healthcheck]
+    def after_worker_boot(self, broker: Broker, worker: Worker):
+        host, _, port = CONFIG.get("listen.http").rpartition(":")
+
+        try:
+            port = int(port)
+        except ValueError:
+            LOGGER.error(f"Invalid port entered: {port}")
+
+        self.thread = Thread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
+        self.thread.start()
 
     @staticmethod
     def run(addr: str, port: int):
+        setthreadtitle("authentik Worker Healthcheck server")
         try:
             httpd = HTTPServer((addr, port), _healthcheck_handler)
             httpd.serve_forever()
@@ -228,18 +241,22 @@ class WorkerHealthcheckMiddleware(Middleware):
 
 
 class WorkerStatusMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_status
+    thread: Thread | None
 
-        return [worker_status]
+    def after_worker_boot(self, broker: Broker, worker: Worker):
+        self.thread = Thread(target=WorkerStatusMiddleware.run)
+        self.thread.start()
 
     @staticmethod
     def run():
-        status = WorkerStatus.objects.create(
-            hostname=socket.gethostname(),
-            version=authentik_full_version(),
-        )
+        setthreadtitle("authentik Worker status")
+        with transaction.atomic():
+            hostname = socket.gethostname()
+            WorkerStatus.objects.filter(hostname=hostname).delete()
+            status, _ = WorkerStatus.objects.update_or_create(
+                hostname=hostname,
+                version=authentik_full_version(),
+            )
         while True:
             try:
                 WorkerStatusMiddleware.keep(status)
@@ -255,14 +272,26 @@ class WorkerStatusMiddleware(Middleware):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
             while True:
+                old_last_seen = status.last_seen
                 status.last_seen = now()
-                status.save(update_fields=("last_seen",))
+                if old_last_seen != status.last_seen:
+                    status.save(update_fields=("last_seen",))
                 sleep(30)
 
 
 class MetricsMiddleware(BaseMetricsMiddleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_metrics
+    thread: Thread | None
 
-        return [worker_metrics]
+    @property
+    def forks(self) -> list[Callable[[], None]]:
+        return []
+
+    def after_worker_boot(self, broker: Broker, worker: Worker):
+        addr, _, port = CONFIG.get("listen.metrics").rpartition(":")
+
+        try:
+            port = int(port)
+        except ValueError:
+            LOGGER.error(f"Invalid port entered: {port}")
+        self.thread = Thread(target=MetricsMiddleware.run, args=(addr, port))
+        self.thread.start()
