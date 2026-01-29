@@ -1,3 +1,5 @@
+import "./InvitationSendEmailModal";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
@@ -99,6 +101,29 @@ export class InvitationListLink extends AKElement {
                             type="text"
                             value=${this.renderLink()}
                         />
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Actions")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <button
+                            class="pf-c-button pf-m-secondary"
+                            @click=${() => {
+                                navigator.clipboard.writeText(this.renderLink());
+                            }}
+                        >
+                            ${msg("Copy Link")}
+                        </button>
+                        &nbsp;
+                        <ak-invitation-send-email-modal .invitation=${this.invitation}>
+                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                                ${msg("Send via Email")}
+                            </button>
+                        </ak-invitation-send-email-modal>
                     </div>
                 </dd>
             </div>
