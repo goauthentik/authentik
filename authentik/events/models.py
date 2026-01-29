@@ -290,6 +290,10 @@ class Event(SerializerModel, ExpiringModel):
                 models.F("context__authorized_application"),
                 name="authentik_e_ctx_app__idx",
             ),
+            models.Index(
+                models.F("user__pk"),
+                name="authentik_e_user_pk__idx",
+            ),
         ]
 
 
