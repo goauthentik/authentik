@@ -34,6 +34,10 @@ export class GReCaptchaController extends CaptchaController {
         ></div>`;
     };
 
+    public refreshInteractive = async () => {
+        this.host.iframeRef.value?.contentWindow?.grecaptcha.reset();
+    };
+
     public execute = async () => {
         return grecaptcha.ready(() => {
             return grecaptcha.execute(
@@ -45,10 +49,6 @@ export class GReCaptchaController extends CaptchaController {
                 }),
             );
         });
-    };
-
-    public refreshInteractive = async () => {
-        this.host.iframeRef.value?.contentWindow?.grecaptcha.reset();
     };
 
     public refresh = async () => {

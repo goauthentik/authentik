@@ -24,6 +24,13 @@ export class TurnstileController extends CaptchaController {
     };
 
     /**
+     * See {@link https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/ Turnstile Client-Side Error Codes}
+     */
+    #delegateError = (errorCode: string) => {
+        this.host.error = `Turnstile error: ${errorCode}`;
+    };
+
+    /**
      * Renders the Turnstile captcha frame.
      *
      * @remarks
@@ -47,15 +54,17 @@ export class TurnstileController extends CaptchaController {
         ></div>`;
     };
 
-    public execute = async () => {
-        window.turnstile.render(this.host.captchaDocumentContainer, {
-            sitekey: this.host.challenge?.siteKey ?? "",
-            callback: this.host.onTokenChange,
-        });
-    };
-
     public refreshInteractive = async () => {
         return this.host.iframeRef.value?.contentWindow?.turnstile.reset();
+    };
+
+    public execute = async () => {
+        window.turnstile.render(this.host.captchaDocumentContainer, {
+            "sitekey": this.host.challenge?.siteKey ?? "",
+            "callback": this.host.onTokenChange,
+            "error-callback": this.#delegateError,
+            "theme": this.host.activeTheme,
+        });
     };
 
     public refresh = async () => {
