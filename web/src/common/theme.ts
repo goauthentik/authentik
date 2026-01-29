@@ -118,7 +118,9 @@ export function resolveUITheme(
 ): ResolvedUITheme {
     const colorScheme = formatColorScheme(hint);
 
-    if (colorScheme !== "auto") return colorScheme;
+    if (colorScheme !== "auto") {
+        return colorScheme;
+    }
 
     // Given that we don't know the user's preference,
     // we can determine the theme based on whether the default theme is
@@ -286,9 +288,23 @@ export const applyDocumentTheme = ((currentUITheme = resolveUITheme(), doc = doc
  *
  * @param hint The theme choice hint to apply.
  * @param documentElement The document element to apply the theme choice to.
+ *
+ * @remarks
+ * There are a few scenarios that this function covers:
+ *
+ * - No hint, `"auto"` (via a media query), or `"automatic"` (via a user attribute)
+ * - `"dark"` or `"light"` (explicit user choice)
+ *
+ * This may appear redundantly defensive when following this logic through the codebase.
+ * However, there are some cases that only appear in development, such as...
+ *
+ * - The developer tools overriding the system color scheme
+ * - The attribute is manually changed to an invalid value
  */
-export function applyThemeChoice(hint?: string, doc: Document = document): void {
-    doc.documentElement.dataset.themeChoice = hint ? resolveUITheme(hint) : "auto";
+export function applyThemeChoice(hint?: CSSColorSchemeValue, doc: Document = document): void {
+    const themeChoice = !hint || hint === "auto" ? "auto" : resolveUITheme(hint);
+
+    doc.documentElement.dataset.themeChoice = themeChoice;
 }
 
 /**
