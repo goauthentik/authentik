@@ -30,6 +30,8 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
+import { deleteUser, userUsedBy } from "#elements/user/utils";
+
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -179,16 +181,8 @@ export class UserListPage extends WithBrandConfig(
                         { key: msg("UID"), value: item.uid },
                     ];
                 }}
-                .usedBy=${(item: User) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
-                        id: item.pk,
-                    });
-                }}
-                .delete=${(item: User) => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
-                        id: item.pk,
-                    });
-                }}
+                .usedBy=${(item: User) => userUsedBy(item)}
+                .delete=${(item: User) => deleteUser(item)}
             >
                 ${shouldShowWarning
                     ? html`<div slot="notice" class="pf-c-form__alert">
