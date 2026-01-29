@@ -4,12 +4,36 @@ import { AKElement } from "#elements/Base";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
+import { isMatching, match, P } from "ts-pattern";
+
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
+/**
+ * Formats a value for display based on its type.
+ */
+function formatValue(value: unknown): TemplateResult | string {
+    const jsonify = (v: Record<string | number | symbol, unknown> | unknown[]) =>
+        html`<code>
+            <pre style="margin: 0; white-space: pre-wrap;">${JSON.stringify(v, null, 2)}</pre>
+        </code>`;
+
+    const Stringable = P.union(P.string, P.number);
+    const isStringable = (s: unknown) => isMatching(Stringable, s);
+    const isStringableArray = (a: unknown[]) => a.every(isStringable);
+
+    return match(value)
+        .with(P.nullish, () => "-")
+        .with(P.boolean, (v) => html`<ak-status-label ?good=${v}></ak-status-label>`)
+        .with(Stringable, (v) => String(v))
+        .with(P.array(), (v) => (isStringableArray(v) ? v.join(", ") : jsonify(v)))
+        .with(P.record(P.string, P.any), (v) => jsonify(v))
+        .otherwise((v) => String(v));
+}
 
 /**
  * A reusable card component to display custom attributes for objects like User, Group, or Device.
@@ -45,46 +69,6 @@ export class ObjectAttributesCard extends AKElement {
         });
     }
 
-    /**
-     * Formats a value for display based on its type.
-     */
-    private formatValue(value: unknown): TemplateResult | string {
-        if (value === null || value === undefined) {
-            return "-";
-        }
-
-        if (typeof value === "boolean") {
-            return html`<ak-status-label ?good=${value}></ak-status-label>`;
-        }
-
-        if (typeof value === "string" || typeof value === "number") {
-            return String(value);
-        }
-
-        if (Array.isArray(value)) {
-            // Simple arrays of primitives: render as comma-separated list
-            if (value.every((item) => typeof item === "string" || typeof item === "number")) {
-                return value.join(", ");
-            }
-            // Complex arrays: render as JSON
-            return html`<code>
-                <pre style="margin: 0; white-space: pre-wrap;">
-${JSON.stringify(value, null, 2)}</pre
-                >
-            </code>`;
-        }
-
-        if (typeof value === "object") {
-            return html`<code>
-                <pre style="margin: 0; white-space: pre-wrap;">
-${JSON.stringify(value, null, 2)}</pre
-                >
-            </code>`;
-        }
-
-        return String(value);
-    }
-
     render() {
         const attrs = this.customAttributes;
 
@@ -95,7 +79,7 @@ ${JSON.stringify(value, null, 2)}</pre
                     ? renderDescriptionList(
                           attrs.map(([key, value]) => [
                               key,
-                              this.formatValue(value),
+                              formatValue(value),
                           ]) as DescriptionPair[],
                           { horizontal: true },
                       )
