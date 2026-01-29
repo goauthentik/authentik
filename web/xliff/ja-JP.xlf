@@ -10258,6 +10258,36 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s2e92b61847f32e72">
   <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
 </trans-unit>
+<trans-unit id="s7468188f0c6d8a22">
+  <source>Flow used when authorizing this this.instance?.</source>
+</trans-unit>
+<trans-unit id="sa5d4a82c5daae3de">
+  <source>Reply URL</source>
+</trans-unit>
+<trans-unit id="s7953f5ca7564d098">
+  <source>Flow used when logging out of this this.instance?.</source>
+</trans-unit>
+<trans-unit id="s2c5e9b1b859bdba6">
+  <source>Certificate used to sign outgoing Responses going to the Service this.instance?.</source>
+</trans-unit>
+<trans-unit id="s513e09d45feee5dd">
+  <source>Update WS-Federation Provider</source>
+</trans-unit>
+<trans-unit id="s02d3bec9a0ff82bd">
+  <source>WS-Federation Configuration</source>
+</trans-unit>
+<trans-unit id="s7eeab4c954cfed12">
+  <source>WS-Federation URL</source>
+</trans-unit>
+<trans-unit id="sb001338b056bf9d5">
+  <source>Realm (wtrealm)</source>
+</trans-unit>
+<trans-unit id="s7ac77ffc2d88bc94">
+  <source>WS-Federation Metadata</source>
+</trans-unit>
+<trans-unit id="s36b4b8f51a90009a">
+  <source>Example WS-Federation attributes</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
