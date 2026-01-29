@@ -8,6 +8,7 @@ import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserPasswordHashForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
@@ -35,6 +36,7 @@ import { AKElement } from "#elements/Base";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
+import { getUserDisplayName } from "#elements/user/utils";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
@@ -204,7 +206,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
                 <span slot="submit">${msg("Update password")}</span>
                 <span slot="header">
-                    ${msg(str`Update ${user.name || user.username}'s password`)}
+                    ${msg(str`Update ${getUserDisplayName(user)}'s password`)}
                 </span>
 
                 <ak-user-password-form
@@ -217,6 +219,22 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                 <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
                     <pf-tooltip position="top" content=${msg("Enter a new password for this user")}>
                         ${msg("Set password")}
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>
+            <ak-forms-modal size=${PFSize.Medium} id="update-password-hash-request">
+                <span slot="submit">${msg("Update password")}</span>
+                <span slot="header">
+                    ${msg(str`Update ${getUserDisplayName(user)}'s password`)}
+                </span>
+                <ak-user-password-hash-form slot="form" .instancePk=${user.pk}>
+                </ak-user-password-hash-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
+                    <pf-tooltip
+                        position="top"
+                        content=${msg("Set a pre-hashed password for this user")}
+                    >
+                        ${msg("Set password hash")}
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>
