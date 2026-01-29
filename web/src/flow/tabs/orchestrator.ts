@@ -12,16 +12,17 @@ export function multiTabOrchestrateLeave() {
 }
 
 export async function multiTabOrchestrateResume() {
-    if (localStorage.getItem(lockKey)) {
+    const lockTabId = localStorage.getItem(lockKey);
+    const tabs = await Broadcast.shared.akTabDiscover();
+    logger.debug("Got list of tabs", tabs);
+
+    if (lockTabId && tabs.has(lockTabId)) {
         logger.debug("Tabs locked, leaving.");
         multiTabOrchestrateLeave();
         return;
     }
     logger.debug("Locking tabs");
-    localStorage.setItem(lockKey, new Date().getTime().toString());
-
-    const tabs = await Broadcast.shared.akTabDiscover();
-    logger.debug("Got list of tabs", tabs);
+    localStorage.setItem(lockKey, TabID.shared.current);
 
     for (const tab of tabs) {
         logger.debug("Telling tab to continue", tab);
