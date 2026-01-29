@@ -5,7 +5,7 @@ title: About authentik bindings
 A binding is, simply put, a connection between two components (a flow, stage, policy, source, user, or group). The use of a binding adds additional functionality to one those existing components; for example, a policy binding can cause a new stage to be presented within a flow to a specific user or group.
 
 :::info
-For information about creating and managing bindings, refer to [Working with bindings](./work_with_bindings.md).
+For information about creating and managing bindings, refer to [Work with bindings](./work_with_bindings.md).
 :::
 
 Bindings are an important part of authentik; the majority of configuration options are set in bindings.
@@ -22,7 +22,7 @@ A _stage binding_ connects a stage to a flow. The "additional content" (i.e. the
 
 A _policy binding_ connects a specific policy to a flow or to a stage. With the binding, the flow (or stage) will now have additional content (i.e. the policy rules).
 
-You can also bind groups and users to another component (a policy, a stage, a flow, etc.). For example, you can create a binding for a specific group, and then [bind that to a stage binding](../flows-stages/stages/index.md#bind-users-and-groups-to-a-flows-stage-binding), with the result that everyone in that group now will see that stage (and any policies bound to that stage) as part of their flow. Or more specifically, and going one step deeper, you can also _bind a binding to a binding_.
+With _user and group_ bindings, you can bind groups and users to another component (an application, a policy, a stage, a flow, etc.). For example, you can create a binding for a specific group, and then [bind that to a stage binding](../flows-stages/stages/index.md#bind-users-and-groups-to-a-flows-stage-binding), with the result that everyone in that group now will see that stage (and any policies bound to that stage) as part of their flow. Or more specifically, and going one step deeper, you can also _bind a binding to a binding_.
 
 Bindings are also used for [Application Entitlements](../../add-secure-apps/applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to the application.
 

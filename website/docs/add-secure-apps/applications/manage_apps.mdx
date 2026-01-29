@@ -19,7 +19,7 @@ To add an application to authentik and have it display on users' **My applicatio
 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
-    - **Configure Bindings**: to manage the display and access to applications on a user's **My applications** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using applicarion entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
+    - **Configure Bindings**: to manage the display and access to applications on a user's **My applications** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
 
 4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Submit**.
 
@@ -27,20 +27,25 @@ To add an application to authentik and have it display on users' **My applicatio
 
 By default, all users can access applications when no [bindings](../) are defined on the application.
 
+You can bind policies, groups, and users to grant access to an application. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
+
 When multiple policies/groups/users are attached, you can configure the _Policy engine mode_ to either:
 
 - Require users to pass all policies or be member of all groups (ALL), or
 - Require users to pass any single policy or be member of any group (ANY)
 
-You can control access to an application by using bindings, defined in the application's configuration. The most common ways to do this are: 1. [create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) in which a policy is used to determine whether or not a user can access an application. 2. bind a user or group to the application.
+The most common ways to control access to an application by using bindings are:
+
+1. [create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) in which a policy is used to determine whether or not a user can access an application.
+2. bind a user or group to the application.
 
 ### Policy-driven authorization
 
 To use a [policy](../../customize/policies/index.md) to control which users or groups can access an application, click on an application in the applications list, click the **Policy/Group/User Bindings** tab, and then select **Policy** from the **Policy/Group/User Bindings** options.
 
-###
+### Bind a user or group to an application
 
-You can bind policies, groups, and users to grant access to an application. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
+To bind a user or group to an application, click on an application in the applications list, click the **Policy/Group/User Bindings** tab, select **Group** or **User** from the **Policy/Group/User Bindings** options, and then select the group or user.
 
 ## Application Entitlements
 
