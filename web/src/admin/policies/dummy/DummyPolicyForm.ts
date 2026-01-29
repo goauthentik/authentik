@@ -33,7 +33,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",

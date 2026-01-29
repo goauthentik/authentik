@@ -1,11 +1,13 @@
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
+import { applyThemeChoice } from "#common/theme";
+import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
 
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { AKConfigMixin, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, type LocaleMixin } from "#elements/mixins/locale";
-import { SessionContext, SessionMixin } from "#elements/mixins/session";
+import { SessionContext, SessionMixin, UIConfigContext } from "#elements/mixins/session";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { SessionUser } from "@goauthentik/api";
@@ -25,6 +27,8 @@ export class SessionContextController extends ReactiveContextController<APIResul
     public host: ReactiveElementHost<LocaleMixin & SessionMixin & AKConfigMixin>;
     public context: ContextProvider<SessionContext>;
 
+    protected uiConfigContext: ContextProvider<UIConfigContext>;
+
     constructor(
         host: ReactiveElementHost<SessionMixin & AKConfigMixin>,
         initialValue?: APIResult<SessionUser>,
@@ -37,13 +41,18 @@ export class SessionContextController extends ReactiveContextController<APIResul
             context: SessionContext,
             initialValue: initialValue ?? { loading: true, error: null },
         });
+
+        this.uiConfigContext = new ContextProvider(this.host, {
+            context: UIConfigContext,
+            initialValue: DefaultUIConfig,
+        });
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
         return me(requestInit);
     }
 
-    protected doRefresh(session: APIResult<SessionUser>) {
+    protected doRefresh(session: APIResult<SessionUser>): void {
         this.context.setValue(session);
         this.host.session = session;
 
@@ -55,6 +64,14 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 this.logger.info(`Activating user's configured locale '${locale}'`);
                 this.host[kAKLocale]?.setLocale(locale);
             }
+
+            const { settings = {} } = session.user || {};
+
+            const nextUIConfig = createUIConfig(settings);
+            this.uiConfigContext.setValue(nextUIConfig);
+            this.host.uiConfig = nextUIConfig;
+
+            applyThemeChoice(nextUIConfig.theme.base, this.host.ownerDocument);
 
             const config = this.host[kAKConfig];
 

@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 
 import { AKElement } from "#elements/Base";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
@@ -18,21 +19,22 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
  * #TODO: Rework this in the future
  */
 @customElement("ak-rbac-object-permission-modal-form")
-export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
+export class ObjectPermissionsPageForm extends ModelForm<never, string> {
     @property()
     public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
-    loadInstance(): Promise<unknown> {
-        return Promise.resolve();
-    }
-    send(): Promise<unknown> {
-        return Promise.resolve();
+    protected loadInstance(): Promise<never> {
+        return Promise.resolve() as never;
     }
 
-    renderForm(): TemplateResult {
+    protected send(): Promise<never> {
+        return Promise.resolve() as never;
+    }
+
+    protected renderForm(): SlottedTemplateResult {
         return html`<ak-rbac-object-permission-page
             embedded
             .model=${this.model}

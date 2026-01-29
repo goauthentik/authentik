@@ -85,7 +85,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
                 label=${msg("Name")}

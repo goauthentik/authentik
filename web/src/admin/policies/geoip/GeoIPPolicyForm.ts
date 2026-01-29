@@ -48,7 +48,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg(
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",

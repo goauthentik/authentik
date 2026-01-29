@@ -5,7 +5,6 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
