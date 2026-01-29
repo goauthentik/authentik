@@ -1,0 +1,21 @@
+/**
+ * Mermaid architecture diagram styles
+ */
+
+#service-install {
+    --service-icon-color: #fd4b2d;
+}
+
+#service-acl {
+    --service-icon-color: #fd4b2d;
+}
+
+#service-apps {
+    --service-icon-color: #fd4b2d;
+}
+#service-users {
+    --service-icon-color: #fd4b2d;
+}
+#service-further {
+    --service-icon-color: #fd4b2d;
+}

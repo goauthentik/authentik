@@ -42,4 +42,4 @@ return False
 
 ## Bind the policy to the stage
 
-The new expression policy needs to be bound to the stage binding that comes after the Identification stage (or any custom stage that you might have created). For more information read our documentation about [bindings](../../../../add-secure-apps/flows-stages/bindings/), and for instructions to bind a policy, see [Bind a policy to a stage](../../../../customize/policies/working_with_policies/#bind-a-policy-to-a-stage).
+The new expression policy needs to be bound to the stage binding that comes after the Identification stage (or any custom stage that you might have created). For more information read our documentation about [bindings](../../../add-secure-apps/flows-stages/flow-stage-bindings/index.md), and for instructions to bind a policy, see [Bind a policy to a stage](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage).
