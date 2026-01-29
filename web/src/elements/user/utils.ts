@@ -1,6 +1,8 @@
+import { DEFAULT_CONFIG } from "#common/api/config";
+
 import { DeleteForm } from "#elements/forms/DeleteForm";
 
-import { User } from "@goauthentik/api";
+import { CoreApi, User } from "@goauthentik/api";
 
 export function UserOption(user: User): string {
     let finalString = user.username;
@@ -39,4 +41,23 @@ export class UserDeleteForm extends DeleteForm {
     protected override getObjectDisplayName(): string | undefined {
         return this.obj ? getUserDisplayName(this.obj as unknown as User) : undefined;
     }
+}
+
+/**
+ * Get the list of objects that depend on a user.
+ * Used for delete confirmation dialogs.
+ */
+export function userUsedBy(user: User) {
+    return new CoreApi(DEFAULT_CONFIG).coreUsersUsedByList({
+        id: user.pk,
+    });
+}
+
+/**
+ * Delete a user via the API.
+ */
+export function deleteUser(user: User) {
+    return new CoreApi(DEFAULT_CONFIG).coreUsersDestroy({
+        id: user.pk,
+    });
 }

@@ -8,6 +8,7 @@ import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserViewDeleteForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
@@ -41,6 +42,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
+import { deleteUser, userUsedBy } from "#elements/user/utils";
 
 import {
     CapabilitiesEnum,
@@ -197,6 +199,18 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                       </ak-forms-modal>
                   `
                 : nothing}
+            <ak-user-view-delete-form
+                .obj=${user}
+                objectLabel=${msg("User")}
+                .usedBy=${() => userUsedBy(user)}
+                .delete=${() => deleteUser(user)}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
+                    <pf-tooltip position="top" content=${msg("Permanently delete this user")}>
+                        ${msg("Delete")}
+                    </pf-tooltip>
+                </button>
+            </ak-user-view-delete-form>
         </div> `;
     }
 
