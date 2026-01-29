@@ -5,7 +5,6 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell uv run python -m scripts.generate_semver)
 PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
@@ -49,6 +48,8 @@ ifeq ($(UNAME_S),Darwin)
 		UV := LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv
 	endif
 endif
+
+NPM_VERSION = $(shell $(UV) run python -m scripts.generate_semver)
 
 all: lint-fix lint gen web test  ## Lint, build, and test everything
 
