@@ -16,10 +16,8 @@ from sentry_sdk import start_span
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
+from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
 from authentik.endpoints.models import Device
-from authentik.enterprise.endpoints.connectors.agent.views.auth_interactive import (
-    PLAN_CONTEXT_DEVICE_AUTH_TOKEN,
-)
 from authentik.events.middleware import audit_ignore
 from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
