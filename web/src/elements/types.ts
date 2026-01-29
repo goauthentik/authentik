@@ -223,7 +223,7 @@ export type SelectOption<T = never> = [
     /**
      * A string or TemplateResult used to describe the option.
      */
-    desc?: string | TemplateResult,
+    desc: SlottedTemplateResult,
     /**
      * The object the key represents; used by some specific apps. API layers may use
      *   this as a way to find the referenced object, rather than the string and keeping a local map.

@@ -36,8 +36,8 @@ import { map } from "lit/directives/map.js";
 interface ProviderBase {
     pk: number;
     name: string;
-    assignedBackchannelApplicationName?: string;
-    assignedApplicationName?: string;
+    assignedBackchannelApplicationName?: string | null;
+    assignedApplicationName?: string | null;
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
@@ -105,6 +105,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     providers: DataProvider = providerProvider(this.type);
 
     defaultConfig?: OutpostDefaultConfig;
+
+    public override reset(): void {
+        super.reset();
+
+        this.type = OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(this.type);
+    }
 
     async loadInstance(pk: string): Promise<Outpost> {
         const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
@@ -208,9 +215,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     .renderElement=${(item: ServiceConnection): string => {
                         return item.name;
                     }}
-                    .value=${(item: ServiceConnection | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: ServiceConnection | null) => item?.pk}
                     .groupBy=${(items: ServiceConnection[]) => {
                         return groupBy(items, (item) => item.verboseName);
                     }}

@@ -1,6 +1,7 @@
 import "@openlayers-elements/core/ol-layer-vector";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
+import "./OpenLayer.d.ts";
 
 import { EventWithContext } from "#common/events";
 import { globalAK } from "#common/global";
@@ -162,5 +163,12 @@ export class EventMap extends AKElement {
                 <ol-layer-vector></ol-layer-vector>
             </ak-map>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-map": Map;
+        "ak-events-map": EventMap;
     }
 }

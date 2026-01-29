@@ -6,18 +6,24 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { EnterpriseApi, License } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {
     @state()
-    installID?: string;
+    protected installID: string | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.installID = null;
+    }
 
     loadInstance(pk: string): Promise<License> {
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({
@@ -61,7 +67,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
                     spellcheck="false"
                     readonly
                     type="text"
-                    value="${ifDefined(this.installID)}"
+                    value="${ifPresent(this.installID)}"
                 />
             </ak-form-element-horizontal>
             <ak-secret-textarea-input

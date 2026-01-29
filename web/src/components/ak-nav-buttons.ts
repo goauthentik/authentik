@@ -219,3 +219,9 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-nav-buttons": NavigationButtons;
+    }
+}

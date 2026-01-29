@@ -40,7 +40,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
     @state()
-    hasSigningCert = false;
+    protected hasSigningCert = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.hasSigningCert = false;
+    }
 
     setHasSigningCert(ev: InputEvent): void {
         const target = ev.target as AkCryptoCertificateSearch;
