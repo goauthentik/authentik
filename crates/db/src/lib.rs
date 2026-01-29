@@ -49,7 +49,7 @@ async fn update_connect_opts_on_config_change(
                 if res.is_err() {
                     break;
                 }
-                let db = get_raw_db();
+                let db = get_db();
                 db.set_connect_options(get_connect_opts().await?);
             },
             _ = stop.cancelled() => break,

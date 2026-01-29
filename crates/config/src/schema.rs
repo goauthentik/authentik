@@ -31,6 +31,8 @@ pub struct Config {
 
     pub worker: WorkerConfig,
 
+    pub storage: StorageConfig,
+
     // Outpost specific config
     // These are only relevant for outposts, and cannot be set via YAML
     // They are loaded via this config loader to support file:// schemas
@@ -124,4 +126,28 @@ pub struct WebConfig {
 pub struct WorkerConfig {
     pub processes: u32,
     pub threads: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageConfig {
+    pub backend: String,
+    pub file: StorageFileConfig,
+    pub media: Option<StorageOverrideConfig>,
+    pub reports: Option<StorageOverrideConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageFileConfig {
+    pub path: PathBuf,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct StorageOverrideConfig {
+    pub backend: Option<String>,
+    pub file: Option<StorageFileOverrideConfig>,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct StorageFileOverrideConfig {
+    pub path: Option<PathBuf>,
 }

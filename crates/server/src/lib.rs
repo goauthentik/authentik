@@ -2,7 +2,6 @@ use std::{net::SocketAddr, process::Stdio, sync::Arc, time::Duration};
 
 use argh::FromArgs;
 use authentik_config::get_config;
-use authentik_db::get_db;
 use axum::Router;
 use axum_reverse_proxy::ReverseProxy;
 use axum_server::{Handle, tls_rustls::RustlsConfig};
@@ -15,7 +14,7 @@ use nix::{
 };
 use rcgen::{
     Certificate, CertificateParams, DistinguishedName, DnType, ExtendedKeyUsagePurpose, KeyPair,
-    KeyUsagePurpose, SanType,
+    KeyUsagePurpose, PKCS_ECDSA_P256_SHA256, SanType, SignatureAlgorithm,
 };
 use rustls::{
     ServerConfig,
@@ -32,6 +31,8 @@ use tokio::{
 };
 use tokio_util::sync::CancellationToken;
 use tracing::{info, warn};
+
+mod r#static;
 
 struct ServerState {
     gunicorn: Child,
@@ -151,7 +152,13 @@ async fn build_app() -> Router {
         .set_host(false)
         .build(connector);
     let proxy = ReverseProxy::new_with_client("/", "http://localhost:8000", client);
-    proxy.into()
+
+    let mut router = Router::new();
+
+    router = router.merge(r#static::build_router().await);
+    router = router.fallback_service(proxy);
+
+    router
 }
 
 async fn start_server_plain(
@@ -181,8 +188,8 @@ async fn start_server_tls(
     Ok(())
 }
 
-fn generate_self_signed_cert() -> Result<(Certificate, KeyPair)> {
-    let signing_key = KeyPair::generate()?;
+fn generate_self_signed_cert(alg: &'static SignatureAlgorithm) -> Result<(Certificate, KeyPair)> {
+    let signing_key = KeyPair::generate_for(alg)?;
 
     let mut params: CertificateParams = Default::default();
     params.not_before = time::OffsetDateTime::now_utc();
@@ -212,7 +219,7 @@ struct CertResolver {
 
 impl CertResolver {
     fn new() -> Result<Self> {
-        let (cert, keypair) = generate_self_signed_cert()?;
+        let (cert, keypair) = generate_self_signed_cert(&PKCS_ECDSA_P256_SHA256)?;
 
         let cert_der = cert.der().to_vec();
         let key_der = keypair.serialize_der();
