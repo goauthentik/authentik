@@ -42,7 +42,7 @@ OpenProject requires a first and last name for each user. By default authentik o
         "name": request.user.name,
         "preferred_username": request.user.username,
         "nickname": request.user.username,
-        "groups": [group.name for group in request.user.groups.all()],
+        "groups": [group.name for group in request.user.ak_groups.all()],
         "last_name": request.user.name.rsplit(" ", 1)[-1],
         "first_name": request.user.name.rsplit(" ", 1)[0],
     }

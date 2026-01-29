@@ -98,11 +98,11 @@ You can add users to the groups at any point.
     ```python showLineNumbers
     gitea_claims = {}
 
-    if request.user.groups.filter(name="gituser").exists():
+    if request.user.ak_groups.filter(name="gituser").exists():
         gitea_claims["gitea"]= "user"
-    if request.user.groups.filter(name="gitadmin").exists():
+    if request.user.ak_groups.filter(name="gitadmin").exists():
         gitea_claims["gitea"]= "admin"
-    if request.user.groups.filter(name="gitrestricted").exists():
+    if request.user.ak_groups.filter(name="gitrestricted").exists():
         gitea_claims["gitea"]= "restricted"
 
     return gitea_claims

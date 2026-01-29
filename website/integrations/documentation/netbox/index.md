@@ -237,7 +237,7 @@ Expression:
 
 ```python
 return {
-  "groups": ["superusers" if group.name == "netbox_admin" else "staff" if group.name == "netbox_staff" else group.name for group in request.user.groups.all()],
+  "groups": ["superusers" if group.name == "netbox_admin" else "staff" if group.name == "netbox_staff" else group.name for group in request.user.ak_groups.all()],
 }
 ```
 

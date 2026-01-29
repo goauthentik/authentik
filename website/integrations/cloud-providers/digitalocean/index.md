@@ -35,7 +35,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 
     ```py
     # Extract the names of all groups the user belongs to
-    group_names = user.groups.values_list("name", flat=True)
+    group_names = user.ak_groups.values_list("name", flat=True)
 
     # From the group names, filter out those that start with "do:"
     # Strip off the "do:" prefix so we’re left with just the role name

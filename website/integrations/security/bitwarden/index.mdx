@@ -60,7 +60,7 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
             "name": request.user.name,
             "preferred_username": request.user.username,
             "nickname": request.user.username,
-            "groups": [group.name for group in request.user.groups.all()],
+            "groups": [group.name for group in request.user.ak_groups.all()],
             "surname": request.user.name.rsplit(" ", 1)[-1],
             "givenname": request.user.name.rsplit(" ", 1)[0],
         }

@@ -117,7 +117,7 @@ return {
     "unique_name": request.user.name,                                  # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
     "preferred_username": request.user.username,                       # (Optional) The primary username that represents the user.
     "nickname": request.user.username,                                 # (Optional) Used for troubleshooting within JWT tokens or to setup SharePoint like ADFS
-    "roles": [group.name for group in request.user.groups.all()],      # The set of roles that were assigned to the user who is logging in.
+    "roles": [group.name for group in request.user.ak_groups.all()],   # The set of roles that were assigned to the user who is logging in.
 }
 ```
 

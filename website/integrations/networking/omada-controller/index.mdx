@@ -58,7 +58,7 @@ To support the integration of Omada Controller with authentik, you need to creat
     - **Expression**:
 
     ```python
-    omada_groups = [g.name for g in user.groups.all() if g.name.startswith("Omada-")]
+    omada_groups = [g.name for g in user.ak_groups.all() if g.name.startswith("Omada-")]
 
     yield omada_groups[0] if omada_groups else None
     ```

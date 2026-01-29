@@ -87,10 +87,10 @@ We will also presume that two groups have been created in authentik: `Portainer 
         ```python showLineNumbers
         groups = []
 
-        if request.user.groups.filter(name="Portainer Admins").exists():
+        if request.user.ak_groups.filter(name="Portainer Admins").exists():
             groups.append("admin")
 
-        if request.user.groups.filter(name="Portainer Users").exists():
+        if request.user.ak_groups.filter(name="Portainer Users").exists():
             groups.append("user")
 
         return {
