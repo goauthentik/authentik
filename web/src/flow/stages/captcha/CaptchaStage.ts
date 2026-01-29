@@ -7,6 +7,8 @@ import { akEmptyState } from "#elements/EmptyState";
 import { ListenerController } from "#elements/utils/listenerController";
 import { randomId } from "#elements/utils/randomId";
 
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/captcha/CaptchaStage.css";
@@ -101,8 +103,8 @@ export class CaptchaStage
 
     //#region State
 
-    @state()
-    protected error: string | null = null;
+    @property({ attribute: false })
+    public error: ErrorProp | null = null;
 
     @state()
     protected iframeHeight = 65;
@@ -112,11 +114,6 @@ export class CaptchaStage
      */
     @state()
     protected activeController: CaptchaController | null = null;
-
-    /**
-     * The script element loading the captcha provider's JS API.
-     */
-    #scriptElement?: HTMLScriptElement;
 
     /**
      * The desired source URL of the iframe. Note that this may differ from the actual
@@ -179,7 +176,10 @@ export class CaptchaStage
 
     protected renderBody() {
         if (this.error) {
-            return akEmptyState({ icon: "fa-times" }, { heading: this.error });
+            return html`<ak-empty-state icon="fa-times" .defaultLabel=${false}>
+                <div>${msg("The CAPTCHA challenge failed to load.")}</div>
+                <div slot="body">${AKFormErrors({ errors: [this.error] })}</div></ak-empty-state
+            >`;
         }
 
         if (this.challenge?.interactive) {
@@ -188,7 +188,7 @@ export class CaptchaStage
                     aria-label=${msg("CAPTCHA challenge")}
                     ${ref(this.iframeRef)}
                     style="height: ${this.iframeHeight}px;"
-                    data-ready="${this.#iframeLoaded ? "ready" : "loading"}"
+                    data-ready=${this.#iframeLoaded ? "ready" : "loading"}
                     class="ak-interactive-challenge"
                     id="ak-captcha"
                 ></iframe>
@@ -244,7 +244,7 @@ export class CaptchaStage
     public override firstUpdated(changedProperties: PropertyValues<this>) {
         super.firstUpdated(changedProperties);
 
-        if (changedProperties.has("challenge")) {
+        if (changedProperties.has("challenge") && this.challenge) {
             this.#refreshControllers();
         }
     }
@@ -256,51 +256,52 @@ export class CaptchaStage
             return;
         }
 
-        if (!this.activeController) {
-            return;
-        }
-
         this.#logger.debug("refresh triggered");
 
-        this.#run(this.activeController);
+        if (this.activeController) {
+            return this.challenge.interactive
+                ? this.activeController.refreshInteractive()
+                : this.activeController.refresh();
+        }
     }
 
-    /**
-     * Refresh the captcha controllers based on the current challenge.
-     */
-    async #refreshControllers(): Promise<void> {
+    #refreshControllers() {
         if (!this.challenge) {
             this.#logger.debug("No challenge, skipping controller refresh.");
             return;
         }
 
+        // First, remove any existing script & listeners...
+        window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
+
         if (!this.challenge.interactive) {
             document.body.appendChild(this.captchaDocumentContainer);
         }
 
-        const challengeURL = new URL(this.challenge?.jsUrl ?? "");
+        const challengeURL =
+            this.challenge?.jsUrl && URL.canParse(this.challenge.jsUrl)
+                ? new URL(this.challenge.jsUrl)
+                : null;
 
-        const existingScriptElement =
-            this.#scriptElement ||
-            this.ownerDocument.querySelector<HTMLScriptElement>(
-                `script[src="${challengeURL.href}"]`,
-            );
-
-        // Has the script already been loaded?
-        if (existingScriptElement && existingScriptElement.src === challengeURL.href) {
-            // Do we need to create a new controller instance?
-            if (!this.activeController) {
-                return this.#scriptLoadListener();
-            }
-
-            return this.#run(this.activeController);
+        if (!challengeURL) {
+            this.#logger.debug("No challenge URL, skipping controller refresh.");
+            return;
         }
 
-        // Unlikely, but possible if the captcha provider changed...
-        if (this.activeController) {
-            window.removeEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener);
-            this.removeController(this.activeController);
-            this.activeController = null;
+        // It's possible that the script has already been loaded by another stage instance.
+        // So long as the URL matches, we can reuse it.
+        const matchedScript = Iterator.from(this.ownerDocument.querySelectorAll("script")).find(
+            (script) => script.src === challengeURL.href,
+        );
+
+        if (matchedScript) {
+            this.#logger.debug("Reusing existing script element.");
+
+            if (this.activeController) {
+                return this.#run(this.activeController);
+            }
+
+            return this.#scriptLoadListener();
         }
 
         // Then, load the new script...
@@ -311,8 +312,12 @@ export class CaptchaStage
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
 
-        this.#scriptElement?.remove();
-        this.#scriptElement = document.head.appendChild(scriptElement);
+        document.head.appendChild(scriptElement);
+
+        if (this.activeController) {
+            this.removeController(this.activeController);
+            this.activeController = null;
+        }
     }
 
     #localeStatusListener = (event: CustomEvent<LocaleStatusEventDetail>) => {
@@ -438,8 +443,9 @@ export class CaptchaStage
      * An event listener that is called when the captcha provider's script has loaded,
      * attempting to initialize each available controller in order.
      */
-    #scriptLoadListener = async (): Promise<void> => {
-        this.#logger.debug("Script loaded");
+    #scriptLoadListener = async (event?: Event): Promise<void> => {
+        const scriptElement = event?.currentTarget as HTMLScriptElement | null;
+        this.#logger.debug("Script loaded", scriptElement?.src ?? "unknown source");
 
         this.error = null;
         this.#iframeLoaded = false;
@@ -534,9 +540,12 @@ export class CaptchaStage
             // iframe structure.
             // We fallback to the deprecated `document.write` to get around this.
             this.#iframeSource = "about:blank";
-            contentDocument.open();
-            contentDocument.write(template);
-            contentDocument.close();
+
+            requestAnimationFrame(() => {
+                contentDocument.open();
+                contentDocument.write(template);
+                contentDocument.close();
+            });
 
             return;
         }

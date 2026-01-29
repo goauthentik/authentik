@@ -17,17 +17,6 @@ export class HCaptchaController extends CaptchaController {
 
     #hcaptchaID: HCaptchaId | null = null;
 
-    public prepareURL(): URL | null {
-        const result = super.prepareURL();
-
-        if (!result) return null;
-
-        // hCaptcha requires the "onload" query parameter to be set to "onloadCallback"
-        // result.searchParams.set("onload", "onloadCallback");
-        // result.searchParams.set("render", "explicit");
-        return result;
-    }
-
     public interactive = () => {
         return html`<div
             id="ak-container"
@@ -36,6 +25,10 @@ export class HCaptchaController extends CaptchaController {
             data-theme=${this.host.activeTheme}
             data-callback="callback"
         ></div>`;
+    };
+
+    public refreshInteractive = async () => {
+        this.host.iframeRef.value?.contentWindow?.hcaptcha?.reset();
     };
 
     public execute = async () => {
@@ -49,10 +42,6 @@ export class HCaptchaController extends CaptchaController {
         await hcaptcha.execute(this.#hcaptchaID, {
             async: true,
         });
-    };
-
-    public refreshInteractive = async () => {
-        this.host.iframeRef.value?.contentWindow?.hcaptcha?.reset();
     };
 
     public refresh = async () => {
