@@ -50,5 +50,4 @@ Immich documentation can be found here: https://immich.app/docs/administration/o
     - **Client ID**: Enter your Client ID from authentik
     - **Client Secret**: Enter your Client Secret from authentik
     - **Scope**: `openid email profile`
-    # Change signing response algorithm if not using the default RS256
-    # - **ID_TOKEN_SIGNED_RESPONSE_ALG**: `HS256`
+    - **ID_TOKEN_SIGNED_RESPONSE_ALG**: If you are not using the default RS256, set the desired signing response algorithm (e.g `HS256`)
