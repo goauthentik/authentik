@@ -1,11 +1,21 @@
 use std::{net::SocketAddr, process::Stdio, sync::Arc, time::Duration};
 
 use argh::FromArgs;
+use authentik_axum::extract::{ClientIP, Host, Scheme};
 use authentik_config::get_config;
-use axum::Router;
+use axum::{
+    Router,
+    body::Body,
+    extract::{ConnectInfo, Request, State},
+    http::{HeaderName, StatusCode, Uri},
+    middleware::{self, Next},
+    response::Response,
+    routing::any,
+};
 use axum_reverse_proxy::ReverseProxy;
 use axum_server::{Handle, tls_rustls::RustlsConfig};
 use eyre::{Result, eyre};
+use http_body_util::BodyExt;
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
 use nix::{
@@ -30,7 +40,8 @@ use tokio::{
     task::JoinSet,
 };
 use tokio_util::sync::CancellationToken;
-use tracing::{info, warn};
+use tower::ServiceExt;
+use tracing::{info, trace, warn};
 
 mod r#static;
 
@@ -144,7 +155,82 @@ async fn watch_gunicorn(
     }
 }
 
-async fn build_app() -> Router {
+async fn forward_request(
+    ClientIP(client_ip): ClientIP,
+    Host(host): Host,
+    Scheme(scheme): Scheme,
+    req: Request,
+) -> Response {
+    warn!(?req, "forwarding");
+    let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
+    let client: Client<_, Body> = Client::builder(TokioExecutor::new())
+        .pool_idle_timeout(Duration::from_secs(60))
+        .pool_max_idle_per_host(get_config().await.web.workers * get_config().await.web.threads)
+        .set_host(false)
+        .build(connector);
+
+    let path_q = req.uri().path_and_query().map(|x| x.as_str()).unwrap_or("");
+    // let target_uri: Uri = "http://localhost:8000".parse().unwrap();
+    // let scheme = target_uri.scheme_str().unwrap_or("http");
+    // let authority = target_uri.authority().unwrap().as_str().to_owned();
+
+    let uri = Uri::builder()
+        .scheme("http")
+        .authority("localhost:8000")
+        .path_and_query(path_q)
+        .build()
+        .unwrap();
+
+    let forward_req = {
+        let mut builder = Request::builder().method(req.method().clone()).uri(uri);
+
+        let ignore_headers = &[
+            HeaderName::from_static("forwarded"),
+            HeaderName::from_static("host"),
+            HeaderName::from_static("x-forwarded-for"),
+            HeaderName::from_static("x-forwarded-host"),
+            HeaderName::from_static("x-forwarded-proto"),
+            HeaderName::from_static("x-forwarded-scheme"),
+            HeaderName::from_static("x-real-ip"),
+        ];
+
+        for (key, value) in req.headers() {
+            if !ignore_headers.contains(key) {
+                builder = builder.header(key, value);
+            }
+        }
+        builder = builder.header("X-Forwarded-For", client_ip.to_string());
+        builder = builder.header("Host", host);
+        builder = builder.header("X-Forwarded-Proto", scheme.to_string());
+
+        let (_, body) = req.into_parts();
+        builder.body(body).unwrap()
+    };
+
+    warn!(?forward_req, "the request that will be sent");
+
+    match client.request(forward_req).await {
+        Ok(res) => {
+            let (parts, body) = res.into_parts();
+            let body = Body::from_stream(body.into_data_stream());
+
+            let mut response = Response::new(body);
+            *response.status_mut() = parts.status;
+            *response.version_mut() = parts.version;
+            *response.headers_mut() = parts.headers;
+            response
+        }
+        Err(e) => {
+            let error_msg = e.to_string();
+            Response::builder()
+                .status(StatusCode::BAD_GATEWAY)
+                .body(Body::from(error_msg))
+                .unwrap()
+        }
+    }
+}
+
+async fn build_core_router() -> Router {
     let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
     let client = Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
@@ -156,33 +242,49 @@ async fn build_app() -> Router {
     let mut router = Router::new();
 
     router = router.merge(r#static::build_router().await);
-    router = router.fallback_service(proxy);
+    // router = router.fallback_service(proxy);
+    router = router.fallback(forward_request);
 
     router
 }
 
+async fn build_router() -> Router {
+    let core_router = build_core_router().await;
+    let proxy_router: Option<Router> = None;
+
+    Router::new().fallback(any(|request: Request<Body>| async move {
+        if let Some(proxy_router) = proxy_router
+            && authentik_proxy::can_handle(&request)
+        {
+            proxy_router.oneshot(request).await
+        } else {
+            core_router.oneshot(request).await
+        }
+    }))
+}
+
 async fn start_server_plain(
-    app: Router,
+    router: Router,
     addr: SocketAddr,
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
     axum_server::bind(addr)
         .handle(handle)
-        .serve(app.into_make_service())
+        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;
 
     Ok(())
 }
 
 async fn start_server_tls(
-    app: Router,
+    router: Router,
     addr: SocketAddr,
     config: RustlsConfig,
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
     axum_server::bind_rustls(addr, config)
         .handle(handle)
-        .serve(app.into_make_service())
+        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;
 
     Ok(())
@@ -259,7 +361,7 @@ pub async fn run(
     signals_tx: broadcast::Sender<SignalKind>,
 ) -> Result<()> {
     let config = get_config().await;
-    let app = build_app().await;
+    let router = build_router().await;
     let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
 
     let mut handles = Vec::with_capacity(
@@ -268,14 +370,14 @@ pub async fn run(
 
     config.listen.http.iter().for_each(|addr| {
         let handle = Handle::new();
-        tasks.spawn(start_server_plain(app.clone(), *addr, handle.clone()));
+        tasks.spawn(start_server_plain(router.clone(), *addr, handle.clone()));
         handles.push(handle);
     });
 
     config.listen.https.iter().for_each(|addr| {
         let handle = Handle::new();
         tasks.spawn(start_server_tls(
-            app.clone(),
+            router.clone(),
             *addr,
             tls_config.clone(),
             handle.clone(),

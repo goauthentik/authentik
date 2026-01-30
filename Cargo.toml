@@ -17,6 +17,7 @@ async-trait = "0.1.89"
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
 axum-reverse-proxy = { version = "1.1.1", default-features = false }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
+client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 color-eyre = "0.6.5"
 config = { version = "0.15.19", default-features = false, features = [
   "yaml",
@@ -24,7 +25,9 @@ config = { version = "0.15.19", default-features = false, features = [
 ] }
 console-subscriber = "0.5.0"
 eyre = "0.6.12"
+forwarded-header-value = "0.1.1"
 glob = "0.3.3"
+http-body-util = "0.1.3"
 hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.19"
 ipnet = { version = "2.11.0", features = ["serde"] }
@@ -68,8 +71,10 @@ tracing = "0.1.44"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 
+authentik-axum = { version = "0.0.0", path = "./crates/axum" }
 authentik-config = { version = "0.0.0", path = "./crates/config" }
 authentik-db = { version = "0.0.0", path = "./crates/db" }
+authentik-proxy = { version = "0.0.0", path = "./crates/proxy" }
 authentik-server = { version = "0.0.0", path = "./crates/server" }
 authentik-worker = { version = "0.0.0", path = "./crates/worker" }
 

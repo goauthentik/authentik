@@ -1,5 +1,4 @@
-use std::sync::OnceLock;
-use std::{str::FromStr, time::Duration};
+use std::{str::FromStr, sync::OnceLock, time::Duration};
 
 use authentik_config::get_config;
 use eyre::Result;
