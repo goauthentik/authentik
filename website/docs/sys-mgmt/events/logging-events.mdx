@@ -34,17 +34,28 @@ With the enterprise version, you can view recent events on both a world map view
 
 ![](./event-map-chart.png)
 
+## Export events :ak-enterprise
+
+You can export your authentik instance's events to a CSV file. To generate a data export, follow these steps:
+
+1. Log in to authentik as an administrator and navigate to **Events > Logs**.
+2. Set a [search query](#tell-me-more) as well as the ordering, as needed. The data export will honor these settings.
+3. Click **Export** above the event list.
+4. Confirm the export parameters in the confirmation dialog.
+5. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the notification drawer.
+6. In the notification, click **Download**.
+
+To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
+
 ## Advanced queries for event logs:ak-enterprise {#tell-me-more}
 
 You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
-
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
-
 - **Values**: `True`, `False`, `None`, and more
 
-### Keyboard Interactions
+### Keyboard shortcuts
 
 <KeyBindingsTable
     aria-label="Keyboard shortcuts for the Query Language (QL) search"
@@ -72,31 +83,31 @@ You can construct advanced queries to find specific event logs. In the Admin int
 
 ### Example queries
 
-```sh title="Search event by application name"
+```sh Search event by application name
 app startswith "N"
 ```
 
-```sh title="Search event by action"
+```sh Search event by action
 action = "login"
 ```
 
-```sh title="Search event by authorized application context"
+```sh Search event by authorized application context
 authorized_application.name = "My app"
 ```
 
-```sh title="Search event by country"
+```sh Search event by country
 context.geo.country = "Germany"
 ```
 
-```sh title="Search event by IP address"
+```sh Search event by IP address
 client_ip = "10.0.0.1"
 ```
 
-```sh title="Search event by brand"
+```sh Search event by brand
 brand.name = "my brand"
 ```
 
-```sh title="Search event by user"
+```sh Search event by user
 user.username in ["ana", "akadmin"]
 ```
 
@@ -106,7 +117,8 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 
 1. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
 2. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
-   :::
+
+:::
 
 ## Export events :ak-enterprise
 
