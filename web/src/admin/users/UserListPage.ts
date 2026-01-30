@@ -230,10 +230,10 @@ export class UserListPage extends WithLicenseSummary(
                 </button>
             </ak-forms-delete-bulk>
             ${this.hasEnterpriseLicense
-                ? html`<ak-action-button
-                      class="pf-m-danger"
+                ? html`<button
+                      class="pf-c-button pf-m-danger"
                       ?disabled=${disabled}
-                      .apiRequest=${async () => {
+                      @click=${async () => {
                           const response = await new CoreApi(
                               DEFAULT_CONFIG,
                           ).coreUsersAccountLockdownBulkCreate({
@@ -247,7 +247,7 @@ export class UserListPage extends WithLicenseSummary(
                       }}
                   >
                       ${msg("Account Lockdown")}
-                  </ak-action-button>`
+                  </button>`
                 : nothing}`;
     }
 
