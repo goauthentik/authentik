@@ -65,3 +65,20 @@ DIGEST_ALGORITHM_TRANSLATION_MAP = {
     SHA384: xmlsec.constants.TransformSha384,
     SHA512: xmlsec.constants.TransformSha512,
 }
+
+ATTRIBUTE_NAME_TRANSLATION_MAP = {
+    # email attributes
+    "urn:oid:0.9.2342.19200300.100.1.3": "email",
+    "urn:mace:dir:attribute-def:mail": "email",
+    "mail": "email",
+    # eduPersonPrincipalName attributes
+    "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "eppn",
+    "urn:mace:dir:attribute-def:eduPersonPrincipalName": "eppn",
+    "eduPersonPrincipalName": "eppn",
+    # eduPersonTargetedID attributes
+    "urn:oid:1.3.6.1.4.1.5923.1.1.1.10": "eptid",
+    "eduPersonTargetedID": "eptid",
+    # uid attributes
+    "urn:oid:0.9.2342.19200300.100.1.1": "uid",
+    "urn:mace:dir:attribute-def:uid": "uid",
+}
