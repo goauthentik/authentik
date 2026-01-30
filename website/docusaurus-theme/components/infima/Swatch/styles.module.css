@@ -1,0 +1,68 @@
+.colorGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--ifm-global-spacing);
+}
+
+.utilityGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--ifm-global-spacing);
+}
+
+.swatch {
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(128, 128, 128, 0.15);
+    position: relative;
+    min-height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.swatch:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.swatchLabel {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.swatchVar {
+    font-size: 10px;
+    opacity: 0.8;
+    font-family: monospace;
+    word-break: break-all;
+}
+
+.swatchHex {
+    font-size: 11px;
+    margin-top: 4px;
+    font-family: monospace;
+}
+
+.copiedToast {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.inlineCode {
+    background-color: var(--ifm-code-background);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
