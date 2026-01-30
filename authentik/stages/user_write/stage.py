@@ -186,9 +186,9 @@ class UserWriteStageView(StageView):
             with transaction.atomic():
                 user.save()
                 if self.executor.current_stage.create_users_group:
-                    user.ak_groups.add(self.executor.current_stage.create_users_group)
+                    user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
-                    user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+                    user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))

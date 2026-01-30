@@ -1,8 +1,9 @@
-import { type allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
+import { allLocales, sourceLocale as SourceLanguageTag } from "../../../locale-codes.js";
 
 import type { LocaleModule } from "@lit/localize";
 
 export type TargetLanguageTag = (typeof allLocales)[number];
+export const TargetLanguageTags = new Set<TargetLanguageTag>(allLocales);
 
 /**
  * The language tag representing the pseudo-locale for testing.
