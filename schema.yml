@@ -33522,11 +33522,23 @@ components:
         skipped:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/AccountLockdownSkippedUser'
           description: Users skipped with reasons
       required:
       - processed
       - skipped
+    AccountLockdownSkippedUser:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of skipped user
+        reason:
+          type: string
+          description: Reason user was skipped
+      required:
+      - reason
+      - username
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods

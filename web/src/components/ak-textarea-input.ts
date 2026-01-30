@@ -9,6 +9,15 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     public value = "";
 
+    @property({ type: Number })
+    public rows?: number;
+
+    @property({ type: Number })
+    public maxLength?: number;
+
+    @property({ type: String })
+    public placeholder?: string;
+
     connectedCallback(): void {
         super.connectedCallback();
         // Listen for form reset events to clear the value
@@ -37,6 +46,9 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
             class="pf-c-form-control"
             ?required=${this.required}
             name=${this.name}
+            rows=${ifDefined(this.rows)}
+            maxlength=${ifDefined(this.maxLength)}
+            placeholder=${ifDefined(this.placeholder)}
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
         >${this.value !== undefined ? this.value : ""}</textarea
