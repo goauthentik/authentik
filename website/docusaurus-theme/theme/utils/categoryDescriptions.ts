@@ -18,9 +18,9 @@ export interface CategoryMetadata {
  * Add new categories here as they are created.
  */
 const categoryMetadata: Record<string, CategoryMetadata> = {
-    "Category A": categoryA as CategoryMetadata,
-    "Category B": categoryB as CategoryMetadata,
-    "Category C": categoryC as CategoryMetadata,
+    "Customize your instance": categoryA as CategoryMetadata,
+    "Manage Users, Groups, & Sources": categoryB as CategoryMetadata,
+    "Troubleshooting": categoryC as CategoryMetadata,
 };
 
 /**

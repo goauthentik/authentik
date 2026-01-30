@@ -14,7 +14,7 @@ export const FilterInput: React.FC<FilterInputProps> = ({
     value,
     onChange,
     onClear,
-    placeholder = "Search resources...",
+    placeholder = "Search articles...",
 }) => {
     return (
         <div className={styles.filter}>
