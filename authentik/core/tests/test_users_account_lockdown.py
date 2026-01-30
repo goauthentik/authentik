@@ -68,7 +68,7 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.user.username)
-        self.assertEqual(event.context["triggered_by"], self.admin.username)
+        self.assertEqual(event.user["username"], self.admin.username)
 
     def test_account_lockdown_deletes_sessions(self):
         """Test that account lockdown deletes user sessions"""
@@ -250,11 +250,12 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
 
         self.assertEqual(response.status_code, 204)
 
-        # Verify event was created with self-service action
-        event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED).first()
+        # Verify event was created
+        event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "Security incident")
         self.assertEqual(event.context["affected_user"], self.user.username)
+        self.assertEqual(event.user["username"], self.user.username)
 
     def test_account_lockdown_self_deletes_sessions(self):
         """Test that self-service lockdown deletes user sessions"""

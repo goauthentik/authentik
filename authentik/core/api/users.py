@@ -979,28 +979,24 @@ class UserViewSet(
 
         # Create event outside atomic block - lockdown succeeded, now log it
         # This ensures the lockdown happens even if event creation fails
+        # event.user is set from request.user - for self-service it's the user themselves,
+        # for admin-triggered it's the admin who triggered it
         if self_service:
             LOGGER.info(
                 "Self-service account lockdown triggered",
                 user=user.username,
             )
-            Event.new(
-                EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED,
-                reason=reason,
-                affected_user=user.username,
-            ).from_http(request, user)
         else:
             LOGGER.info(
                 "Account lockdown triggered",
                 user=user.username,
                 triggered_by=request.user.username,
             )
-            Event.new(
-                EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
-                reason=reason,
-                affected_user=user.username,
-                triggered_by=request.user.username,
-            ).from_http(request, user)
+        Event.new(
+            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+            reason=reason,
+            affected_user=user.username,
+        ).from_http(request)
 
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
