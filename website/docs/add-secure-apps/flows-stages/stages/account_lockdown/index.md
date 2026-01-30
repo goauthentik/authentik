@@ -20,13 +20,13 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 
 ## Stage settings
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| **Deactivate user** | Set `is_active` to False | Enabled |
-| **Set unusable password** | Invalidate the password | Enabled |
-| **Delete sessions** | Terminate all active sessions | Enabled |
-| **Revoke tokens** | Delete all API tokens and app passwords | Enabled |
-| **Completion flow** | Flow for self-service completion (must not require auth) | None |
+| Setting                   | Description                                              | Default |
+| ------------------------- | -------------------------------------------------------- | ------- |
+| **Deactivate user**       | Set `is_active` to False                                 | Enabled |
+| **Set unusable password** | Invalidate the password                                  | Enabled |
+| **Delete sessions**       | Terminate all active sessions                            | Enabled |
+| **Revoke tokens**         | Delete all API tokens and app passwords                  | Enabled |
+| **Completion flow**       | Flow for self-service completion (must not require auth) | None    |
 
 :::warning
 Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
@@ -44,18 +44,18 @@ The stage determines which user(s) to lock down using this priority:
 
 ### Input
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `lockdown_target_user` | User | Single target (admin) |
-| `lockdown_target_users` | List[User] | Multiple targets (bulk) |
-| `lockdown_self_service` | bool | `True` for self-service |
-| `pending_user` | User | Current user in flow |
-| `prompt_data.reason` | str | Reason from Prompt stage |
+| Key                     | Type       | Description              |
+| ----------------------- | ---------- | ------------------------ |
+| `lockdown_target_user`  | User       | Single target (admin)    |
+| `lockdown_target_users` | List[User] | Multiple targets (bulk)  |
+| `lockdown_self_service` | bool       | `True` for self-service  |
+| `pending_user`          | User       | Current user in flow     |
+| `prompt_data.reason`    | str        | Reason from Prompt stage |
 
 ### Output
 
-| Key | Type | Description |
-|-----|------|-------------|
+| Key                | Type       | Description                       |
+| ------------------ | ---------- | --------------------------------- |
 | `lockdown_results` | List[dict] | `{user, success, error}` per user |
 
 ## Self-service behavior
@@ -126,9 +126,9 @@ return f"<ul>{''.join(lines)}</ul>"
 
 ## Error handling
 
-| Error | Cause |
-|-------|-------|
-| "No target user specified" | No user found in context |
-| Per-user failure | Check `lockdown_results` for error details |
+| Error                      | Cause                                      |
+| -------------------------- | ------------------------------------------ |
+| "No target user specified" | No user found in context                   |
+| Per-user failure           | Check `lockdown_results` for error details |
 
 Failed lockdowns for individual users do not stop processing of other users.
