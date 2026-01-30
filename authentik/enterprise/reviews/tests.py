@@ -46,9 +46,7 @@ class TestReviewModels(TestCase):
                 self._create_rule_for_object(obj)
                 content_type = ContentType.objects.get_for_model(obj)
 
-                before_events = Event.objects.filter(
-                    action=EventAction.REVIEW_INITIATED
-                ).count()
+                before_events = Event.objects.filter(action=EventAction.REVIEW_INITIATED).count()
                 review = Review.start(content_type=content_type, object_id=str(obj.pk))
 
                 self.assertEqual(review.state, ReviewState.PENDING)
