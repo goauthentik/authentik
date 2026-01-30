@@ -1,5 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -118,7 +120,9 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                             <span class="pf-c-switch__label">${msg("Revoke tokens")}</span>
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Revoke all API and app password tokens for the user.")}
+                            ${msg(
+                                "Revoke all tokens for the user (API, app password, recovery, verification).",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -140,9 +144,28 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                             .currentFlow=${this.instance?.selfServiceCompletionFlow}
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted. If not set, the user will be redirected to the login page.")}
+                            ${msg(
+                                "Flow to redirect users to after self-service lockdown. This flow must not require authentication since the user's session is deleted. If not set, the user will be shown the message below.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-text-input
+                        label=${msg("Self-service message title")}
+                        name="selfServiceMessageTitle"
+                        value="${ifDefined(this.instance?.selfServiceMessageTitle)}"
+                        help=${msg("Title shown to users after self-service lockdown.")}
+                    >
+                    </ak-text-input>
+                    <ak-textarea-input
+                        label=${msg("Self-service message")}
+                        name="selfServiceMessage"
+                        value=${ifDefined(this.instance?.selfServiceMessage)}
+                        rows="6"
+                        help=${msg(
+                            "HTML message shown to users after self-service lockdown. Supports HTML formatting.",
+                        )}
+                    >
+                    </ak-textarea-input>
                 </div>
             </ak-form-group>
         `;

@@ -13,7 +13,7 @@ When triggered, Account Lockdown performs the following actions (all configurabl
 - **Deactivates the user account**: The user can no longer log in
 - **Sets an unusable password**: Invalidates the user's password
 - **Terminates all active sessions**: Immediately logs the user out of all devices and applications
-- **Revokes all tokens**: Invalidates all API tokens and app passwords
+- **Revokes all tokens**: Invalidates API, app password, recovery, and verification tokens
 - **Creates an audit event**: Records the lockdown with the provided reason (can trigger [notifications](#configure-notifications))
 
 :::note Protected accounts
@@ -24,7 +24,7 @@ Account Lockdown cannot be triggered on the anonymous user or internal service a
 
 1. A **Lockdown Flow** must be configured on your Brand (**System** > **Brands**)
 2. The flow must contain an [Account Lockdown Stage](../add-secure-apps/flows-stages/stages/account_lockdown/index.md) (Enterprise)
-3. For self-service lockdown, configure a **Completion Flow** on the stage
+3. For self-service lockdown, configure a **Completion Flow** on the stage or customize the self-service message
 
 ## The default lockdown flow
 
@@ -80,15 +80,15 @@ Users can lock their own account from the User interface:
 2. In the **Account Lockdown** section, click **Lock my account**.
 3. Enter a reason and click **Continue**.
 
-After lockdown, the user can be redirected to a completion page (if configured). They cannot log back in until an administrator restores access.
+After lockdown, the user can be redirected to a completion page (if configured) or see the stage's self-service message. They cannot log back in until an administrator restores access.
 
 ### Configure the completion message
 
-Since the user's session is deleted, a separate unauthenticated flow shows the final message:
+Since the user's session is deleted, the stage can either show a built-in message or redirect to a separate unauthenticated flow:
 
 1. Create a flow with **Authentication** set to **No authentication required**
 2. Add a Prompt Stage with an alert field containing your message
-3. On your Account Lockdown Stage, set **Completion flow** to this flow
+3. On your Account Lockdown Stage, set **Completion flow** to this flow (optional if using the stage message)
 
 ## Configure notifications
 

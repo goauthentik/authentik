@@ -26983,6 +26983,19 @@ paths:
           type: boolean
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
+        name: self_service_completion_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: self_service_message
+        schema:
+          type: string
+      - in: query
+        name: self_service_message_title
+        schema:
+          type: string
+      - in: query
         name: set_unusable_password
         schema:
           type: boolean
@@ -34101,7 +34114,21 @@ components:
           description: Delete all active sessions for the user
         revoke_tokens:
           type: boolean
-          description: Revoke all API and app password tokens for the user
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification)
+        self_service_message_title:
+          type: string
+          description: Title shown to users after self-service lockdown
+        self_service_message:
+          type: string
+          description: HTML message shown to users after self-service lockdown. Supports
+            HTML formatting.
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
       required:
       - component
       - flow_set
@@ -34128,7 +34155,23 @@ components:
           description: Delete all active sessions for the user
         revoke_tokens:
           type: boolean
-          description: Revoke all API and app password tokens for the user
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification)
+        self_service_message_title:
+          type: string
+          minLength: 1
+          description: Title shown to users after self-service lockdown
+        self_service_message:
+          type: string
+          minLength: 1
+          description: HTML message shown to users after self-service lockdown. Supports
+            HTML formatting.
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
       required:
       - name
     AgentAuthenticationResponse:
@@ -47525,7 +47568,23 @@ components:
           description: Delete all active sessions for the user
         revoke_tokens:
           type: boolean
-          description: Revoke all API and app password tokens for the user
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification)
+        self_service_message_title:
+          type: string
+          minLength: 1
+          description: Title shown to users after self-service lockdown
+        self_service_message:
+          type: string
+          minLength: 1
+          description: HTML message shown to users after self-service lockdown. Supports
+            HTML formatting.
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
     PatchedAgentConnectorRequest:
       type: object
       properties:

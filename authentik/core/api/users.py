@@ -1,6 +1,7 @@
 """User API Views"""
 
 from datetime import timedelta
+from hashlib import sha256
 from json import loads
 from typing import Any
 
@@ -414,6 +415,18 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
         .exclude(type=UserTypes.INTERNAL_SERVICE_ACCOUNT),
         help_text="Users to lock",
     )
+
+    def validate_users(self, users: list[User]) -> list[User]:
+        if not users:
+            raise ValidationError("At least one user is required.")
+        seen: set[int] = set()
+        unique_users: list[User] = []
+        for user in users:
+            if user.pk in seen:
+                continue
+            seen.add(user.pk)
+            unique_users.append(user)
+        return unique_users
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -970,10 +983,11 @@ class UserViewSet(
             LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
             return None
 
-        # Use a unique identifier for bulk lockdown
-        user_ids = "-".join(str(u.pk) for u in users[:5])  # Limit to avoid too long identifier
+        # Use a stable hash so different selections don't collide
+        user_ids = ",".join(str(u.pk) for u in users)
+        digest = sha256(user_ids.encode("utf-8")).hexdigest()[:12]
         token, __ = FlowToken.objects.update_or_create(
-            identifier=slugify(f"ak-lockdown-bulk-{user_ids}"),
+            identifier=slugify(f"ak-lockdown-bulk-{digest}"),
             defaults={
                 "user": request.user,
                 "flow": flow,
@@ -1067,6 +1081,16 @@ class UserViewSet(
         to redirect to.
         """
         users = body.validated_data["users"]
+        perm = "authentik_core.change_user"
+        if not request.user.has_perm(perm):
+            for user in users:
+                if not request.user.has_perm(perm, user):
+                    LOGGER.debug(
+                        "Permission denied for bulk account lockdown",
+                        user=request.user,
+                        perm=perm,
+                    )
+                    self.permission_denied(request)
 
         flow_url = self._create_lockdown_flow_url_bulk(request, users)
         if not flow_url:

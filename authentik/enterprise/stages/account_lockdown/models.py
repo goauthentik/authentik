@@ -41,7 +41,9 @@ class AccountLockdownStage(Stage):
     )
     revoke_tokens = models.BooleanField(
         default=True,
-        help_text=_("Revoke all API and app password tokens for the user"),
+        help_text=_(
+            "Revoke all tokens for the user (API, app password, recovery, verification)"
+        ),
     )
     self_service_message_title = models.TextField(
         default="Your account has been locked",
