@@ -9,6 +9,7 @@ from authentik.flows.models import Stage
 
 # Context keys for account lockdown
 PLAN_CONTEXT_LOCKDOWN_TARGET = "lockdown_target_user"
+PLAN_CONTEXT_LOCKDOWN_TARGETS = "lockdown_target_users"  # List of users for bulk lockdown
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
 PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE = "lockdown_self_service"
 

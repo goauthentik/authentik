@@ -235,13 +235,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 )}
             >
             </ak-text-input>
-            <ak-switch-input
-                name="accountLockdownEnabled"
-                label=${msg("Enable account lockdown")}
-                ?checked=${settings.accountLockdownEnabled}
-                help=${msg("Enable the account lockdown feature for administrators.")}
-            >
-            </ak-switch-input>
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}

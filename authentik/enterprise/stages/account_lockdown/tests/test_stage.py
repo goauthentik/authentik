@@ -7,6 +7,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_TARGET,
+    PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
 )
 from authentik.events.models import Event, EventAction
@@ -202,3 +203,67 @@ class TestAccountLockdownStage(FlowTestCase):
         # Event should still be created
         event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
+
+    def test_lockdown_bulk_multiple_users(self):
+        """Test lockdown stage with multiple users (bulk lockdown)"""
+        target_user2 = create_test_admin_user()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+        target_user2.is_active = True
+        target_user2.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [self.target_user, target_user2]
+        plan.context[PLAN_CONTEXT_LOCKDOWN_REASON] = "Bulk security incident"
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        # Both users should be deactivated
+        self.target_user.refresh_from_db()
+        target_user2.refresh_from_db()
+        self.assertFalse(self.target_user.is_active)
+        self.assertFalse(target_user2.is_active)
+        self.assertFalse(self.target_user.has_usable_password())
+        self.assertFalse(target_user2.has_usable_password())
+
+        # Events should be created for each user
+        events = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED)
+        self.assertEqual(events.count(), 2)
+        usernames = {event.context["affected_user"] for event in events}
+        self.assertIn(self.target_user.username, usernames)
+        self.assertIn(target_user2.username, usernames)
+
+    def test_lockdown_bulk_single_user_targets(self):
+        """Test that LOCKDOWN_TARGETS takes priority over LOCKDOWN_TARGET"""
+        target_user2 = create_test_admin_user()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+        target_user2.is_active = True
+        target_user2.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        # Set both - TARGETS should take priority
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGETS] = [target_user2]
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGET] = self.target_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        # Only target_user2 should be deactivated (from TARGETS)
+        self.target_user.refresh_from_db()
+        target_user2.refresh_from_db()
+        self.assertTrue(self.target_user.is_active)  # Not affected
+        self.assertFalse(target_user2.is_active)  # Affected via TARGETS

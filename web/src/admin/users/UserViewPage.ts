@@ -7,7 +7,6 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
-import "#admin/users/UserAccountLockdownForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
@@ -184,18 +183,23 @@ export class UserViewPage extends WithLicenseSummary(
             </ak-user-active-form>
             ${canTriggerLockdown
                 ? html`
-                      <ak-forms-modal size=${PFSize.Medium} id="account-lockdown-request">
-                          <span slot="submit">${msg("Trigger Lockdown")}</span>
-                          <span slot="header">${msg("Account Lockdown")}</span>
-                          <ak-user-account-lockdown-form
-                              slot="form"
-                              .instancePk=${user.pk}
-                              .username=${user.username}
-                          ></ak-user-account-lockdown-form>
-                          <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
-                              ${msg("Account Lockdown")}
-                          </button>
-                      </ak-forms-modal>
+                      <ak-action-button
+                          class="pf-m-danger pf-m-block"
+                          .apiRequest=${async () => {
+                              const response = await new CoreApi(
+                                  DEFAULT_CONFIG,
+                              ).coreUsersAccountLockdownCreate({
+                                  userAccountLockdownRequest: {
+                                      user: user.pk,
+                                  },
+                              });
+                              if (response.flowUrl) {
+                                  window.location.assign(response.flowUrl);
+                              }
+                          }}
+                      >
+                          ${msg("Account Lockdown")}
+                      </ak-action-button>
                   `
                 : nothing}
             ${canImpersonate
