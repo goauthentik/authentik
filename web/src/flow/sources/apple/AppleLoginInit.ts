@@ -28,8 +28,13 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
         appleAuth.type = "text/javascript";
         appleAuth.onload = () => {
+            if (!this.challenge) {
+                console.warn("No challenge present for Apple Login");
+                return;
+            }
+
             AppleID.auth.init({
-                clientId: this.challenge?.clientId,
+                clientId: this.challenge.clientId,
                 scope: this.challenge.scope,
                 redirectURI: this.challenge.redirectUri,
                 state: this.challenge.state,
