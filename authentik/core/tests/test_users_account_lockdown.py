@@ -509,4 +509,3 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         body = loads(response.content)
         self.assertIn("Account lockdown feature is disabled", body["non_field_errors"][0])
-
