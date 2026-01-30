@@ -5,11 +5,11 @@ authentik_version: "2026.2"
 
 Account Lockdown is a security feature that allows administrators to quickly secure a user account in emergency situations, such as suspected compromise or unauthorized access.
 
-:::info
+:::info Enable or disable account lockdown
 Account Lockdown can be enabled or disabled in **System** > **Settings** under **Enable account lockdown**.
 :::
 
-:::info
+:::info Security email address
 The security email address for notifications can be configured in **System** > **Settings** under **Security email**.
 :::
 
@@ -21,11 +21,11 @@ When triggered, Account Lockdown performs the following actions:
 - **Resets the user's password**: Sets a new random password, invalidating the old one
 - **Terminates all active sessions**: Immediately logs the user out of all devices and applications
 
-An event is created that can be used to trigger notifications via Notification Rules.
+An event is created that can be used to [trigger notifications via Notification Rules](#configure-notifications).
 
 ## Trigger an Account Lockdown for a single user
 
-1. Log in to authentik as an admin, and open the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users**.
 3. Click on the user you want to lock down.
 4. Click the **Account Lockdown** button.
@@ -34,7 +34,7 @@ An event is created that can be used to trigger notifications via Notification R
 
 ## Trigger an Account Lockdown for multiple users
 
-1. Log in to authentik as an admin, and open the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users**.
 3. Select the users you want to lock down using the checkboxes.
 4. Click the **Account Lockdown** button in the toolbar.
@@ -45,7 +45,7 @@ An event is created that can be used to trigger notifications via Notification R
 
 Account lockdown events can trigger notifications via the Notification Rules system. To set up notifications:
 
-1. Log in to authentik as an admin, and open the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
 3. Click **Create** and select **Event Matcher Policy**.
 4. Give the policy a name (e.g., "Match account lockdown events").
@@ -65,7 +65,7 @@ Account lockdown events can trigger notifications via the Notification Rules sys
 
 ## Restore access after lockdown
 
-1. Log in to authentik as an admin, and open the Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users**.
 3. Find the locked user.
 4. Click **Activate** to re-enable the account.
