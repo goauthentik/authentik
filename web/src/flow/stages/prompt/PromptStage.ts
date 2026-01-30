@@ -26,6 +26,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
@@ -47,6 +48,7 @@ export class PromptStage extends WithCapabilitiesConfig(
     static styles: CSSResult[] = [
         PFLogin,
         PFAlert,
+        PFContent,
         PFForm,
         PFFormControl,
         PFInputGroup,
@@ -202,7 +204,7 @@ ${prompt.initialValue}</textarea
                     ${prompt.label
                         ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
                         : nothing}
-                    <div class="pf-c-alert__description">
+                    <div class="pf-c-alert__description pf-c-content">
                         ${unsafeHTML(prompt.initialValue)}
                     </div>
                 </div>`;
@@ -214,7 +216,7 @@ ${prompt.initialValue}</textarea
                     ${prompt.label
                         ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
                         : nothing}
-                    <div class="pf-c-alert__description">
+                    <div class="pf-c-alert__description pf-c-content">
                         ${unsafeHTML(prompt.initialValue)}
                     </div>
                 </div>`;
@@ -226,7 +228,7 @@ ${prompt.initialValue}</textarea
                     ${prompt.label
                         ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
                         : nothing}
-                    <div class="pf-c-alert__description">
+                    <div class="pf-c-alert__description pf-c-content">
                         ${unsafeHTML(prompt.initialValue)}
                     </div>
                 </div>`;

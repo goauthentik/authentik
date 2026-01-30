@@ -201,11 +201,6 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                   <div class="pf-l-stack pf-m-gutter">
                                       <div class="pf-l-stack__item">
                                           <div class="pf-c-card">
-                                              <div class="pf-c-card__title">
-                                                  ${msg(
-                                                      "If you suspect your account has been compromised, you can immediately lock it down. This will sign you out of all sessions, invalidate your password, and revoke all tokens.",
-                                                  )}
-                                              </div>
                                               <div class="pf-c-card__body">
                                                   <button
                                                       class="pf-c-button pf-m-danger"
