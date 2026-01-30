@@ -99,7 +99,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 </p>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                        "If no group is selected, 'Send notification to event user' is disabled, and 'Send email to security address' is disabled, the rule is disabled.",
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -108,7 +108,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 label=${msg("Send notification to event user")}
                 ?checked=${this.instance?.destinationEventUser ?? false}
                 help=${msg(
-                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. ",
+                    "When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.",
                 )}
             >
             </ak-switch-input>
