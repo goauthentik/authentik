@@ -4418,38 +4418,6 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /core/users/{id}/account_lockdown/:
-    post:
-      operationId: core_users_account_lockdown_create
-      description: |-
-        Trigger account lockdown for a user.
-
-        When targeting yourself, this is a self-service lockdown that only requires
-        authentication. When targeting another user, admin permissions are required.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserAccountLockdownRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Successfully triggered account lockdown
-        '400':
-          description: Account lockdown feature is disabled or invalid target
-        '403':
-          description: Permission denied (when targeting another user)
   /core/users/{id}/impersonate/:
     post:
       operationId: core_users_impersonate_create
@@ -4594,6 +4562,31 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/account_lockdown/:
+    post:
+      operationId: core_users_account_lockdown_create
+      description: |-
+        Trigger account lockdown for a user.
+
+        If no user is specified, locks the current user (self-service).
+        When targeting another user, admin permissions are required.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountLockdownRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully triggered account lockdown
+        '400':
+          description: Account lockdown feature is disabled or invalid target
+        '403':
+          description: Permission denied (when targeting another user)
   /core/users/account_lockdown_bulk/:
     post:
       operationId: core_users_account_lockdown_bulk_create
@@ -56878,6 +56871,10 @@ components:
       type: object
       description: Payload to trigger account lockdown for a user
       properties:
+        user:
+          type: integer
+          nullable: true
+          description: User to lock. If omitted, locks the current user (self-service).
         reason:
           type: string
           minLength: 1

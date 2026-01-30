@@ -12,8 +12,10 @@ export class UserAccountLockdownForm extends SingleUserAccountLockdownForm {
 
     async send(data: AccountLockdownRequest): Promise<void> {
         await this.coreApi.coreUsersAccountLockdownCreate({
-            id: this.instancePk || 0,
-            userAccountLockdownRequest: data,
+            userAccountLockdownRequest: {
+                ...data,
+                user: this.instancePk,
+            },
         });
     }
 }

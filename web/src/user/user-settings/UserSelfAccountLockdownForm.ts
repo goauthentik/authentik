@@ -7,16 +7,13 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 /**
  * Self-service account lockdown form for users to lock their own account.
  */
 @customElement("ak-user-self-account-lockdown-form")
 export class UserSelfAccountLockdownForm extends SingleUserAccountLockdownForm {
-    @property({ type: Number })
-    public instancePk?: number;
-
     @state()
     private confirmed = false;
 
@@ -78,7 +75,6 @@ export class UserSelfAccountLockdownForm extends SingleUserAccountLockdownForm {
             );
         }
         await this.coreApi.coreUsersAccountLockdownCreate({
-            id: this.instancePk!,
             userAccountLockdownRequest: data,
         });
     }
