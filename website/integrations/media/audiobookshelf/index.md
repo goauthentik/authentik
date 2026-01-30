@@ -15,6 +15,9 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `audiobookshelf.company` is the FQDN of the Audiobookshelf installation.
+  - Most steps assume this FQDN includes a sub-domain, when used.
+  - The two rediect related steps are broken into subdomain (example: `abs.audiobookshelf.company`) or subfolder (example: `audiobookshelf.company/audiobookshelf`).
+  - A Redirect URI Error will thrown by Authentik when there is a subdomain/subfolder mismatch. For example, the Authentik redirect URLs do not contain a subfolder and Audiobookshelf expects the /audiobookshelf subfolder (default setting).
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -34,12 +37,16 @@ To support the integration of Audiobookshelf with authentik, you need to create 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Add two `Strict` redirect URIs:
-            - `https://audiobookshelf.company/auth/openid/callback`
-            - `https://audiobookshelf.company/auth/openid/mobile-redirect`
+          - Subdomain users (example, `abs.audiobookshelf.company`):
+            - `https://abs.audiobookshelf.company/auth/openid/callback`
+            - `https://abs.audiobookshelf.company/auth/openid/mobile-redirect`
+          - Subfolder users (example, `audiobookshelf.company/audiobookshelf`):
+            - `https://audiobookshelf.company/audiobookshelf/auth/openid/callback`
+            - `https://audiobookshelf.company/audiobookshelf/auth/openid/mobile-redirect`
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-3. Click **Submit** to save the new application and provider.
+1. Click **Submit** to save the new application and provider.
 
 ## Audiobookshelf configuration
 
@@ -54,12 +61,15 @@ To support the integration of Audiobookshelf with authentik, you need to create 
     - **User Info URL**: `https://authentik.company/application/o/userinfo/`
     - **JWKS URL**: `https://authentik.company/application/o/<application_slug>/jwks/`
     - **Signing Algorithm**: `RS256`
+    - `Subfolder for Redirect URLs`:
+      - Subdomain users (example, `abs.audiobookshelf.company`): `None`
+      - Subfolder users (example, `audiobookshelf.company/audiobookshelf`): `/audiobookshelf`
     - **Allow Mobile Redirect URLs**: `https://audiobookshelf.company/auth/openid/mobile-redirect`
     - **Match existing users by**: `username`
     - **Groups** _(optional)_: select a group to assign new users to.
     - **Auto Launch** _(optional)_: enable to automatically redirect to SSO on the login page.
     - **Auto Register** _(optional)_: enable to create new users automatically after first login.
-4. Click **Save**.
+1. Click **Save**.
 
 :::info
 To bypass SSO for troubleshooting, navigate to `https://audiobookshelf.company/login?autoLaunch=0` to access the local login form.
