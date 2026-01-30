@@ -8,86 +8,127 @@ authentik_enterprise: true
 This stage performs destructive actions on a user account. Ensure the flow includes appropriate warnings and confirmation steps before this stage executes.
 :::
 
-The Account Lockdown stage executes security lockdown actions on a target user account. It is designed to quickly secure an account that may have been compromised.
+The Account Lockdown stage executes security lockdown actions on a target user account. For the feature overview and usage instructions, see [Account Lockdown](../../../../security/account-lockdown.md).
 
-For more information about the Account Lockdown feature, see [Account Lockdown](../../../../security/account-lockdown.md).
+## Stage behavior
 
-## Actions
-
-The stage can perform the following actions (all configurable):
-
-| Action | Description |
-|--------|-------------|
-| **Deactivate user** | Sets `is_active` to False, preventing login |
-| **Set unusable password** | Invalidates the user's password |
-| **Delete sessions** | Terminates all active sessions for the user |
-| **Revoke tokens** | Deletes all API tokens and app passwords |
-
-## Target user
-
-The stage determines which user(s) to lock down from the flow context:
-
-1. `lockdown_target_users` - List of users for bulk lockdown
-2. `lockdown_target_user` - Single target user
-3. `pending_user` - The user currently being processed in the flow
-
-## Flow context
-
-The stage reads from and writes to the flow context:
-
-### Input context
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `lockdown_target_user` | User | Single user to lock down |
-| `lockdown_target_users` | List[User] | Multiple users for bulk lockdown |
-| `lockdown_self_service` | bool | Whether this is a self-service lockdown |
-| `prompt_data.reason` | str | Reason for lockdown (from a Prompt stage) |
-| `lockdown_reason` | str | Alternative location for reason |
-
-### Output context
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `lockdown_results` | List[dict] | Results for each user: `{user, success, error}` |
-
-## Self-service lockdown
-
-When `lockdown_self_service` is True in the flow context, the stage handles the lockdown differently:
-
-1. All lockdown actions are executed
-2. Since the user's session is deleted, they cannot continue in the current flow
-3. The user is redirected to the **Completion flow** configured on the stage
-
-The completion flow must have **Authentication** set to **No authentication required** since the user is no longer authenticated.
+1. **Resolves target users** from context (see [Target user resolution](#target-user-resolution))
+2. **For each user**, performs configured actions
+3. **Creates an event** for each user locked down
+4. **Stores results** in `lockdown_results` context variable
+5. **For self-service**: redirects to completion flow (if configured) or login page
 
 ## Stage settings
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| Name | Stage name | Required |
-| Deactivate user | Deactivate the user account | Enabled |
-| Set unusable password | Invalidate the user's password | Enabled |
-| Delete sessions | Terminate all active sessions | Enabled |
-| Revoke tokens | Delete all API tokens and app passwords | Enabled |
-| Completion flow | Flow to redirect users to after self-service lockdown | None |
+| **Deactivate user** | Set `is_active` to False | Enabled |
+| **Set unusable password** | Invalidate the password | Enabled |
+| **Delete sessions** | Terminate all active sessions | Enabled |
+| **Revoke tokens** | Delete all API tokens and app passwords | Enabled |
+| **Completion flow** | Flow for self-service completion (must not require auth) | None |
+
+:::warning
+Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
+:::
+
+## Target user resolution
+
+The stage determines which user(s) to lock down using this priority:
+
+1. `lockdown_target_users` - List of Users (bulk lockdown)
+2. `lockdown_target_user` - Single User (admin lockdown)
+3. `pending_user` - Current user in flow (self-service)
+
+## Flow context
+
+### Input
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `lockdown_target_user` | User | Single target (admin) |
+| `lockdown_target_users` | List[User] | Multiple targets (bulk) |
+| `lockdown_self_service` | bool | `True` for self-service |
+| `pending_user` | User | Current user in flow |
+| `prompt_data.reason` | str | Reason from Prompt stage |
+
+### Output
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `lockdown_results` | List[dict] | `{user, success, error}` per user |
+
+## Self-service behavior
+
+When `lockdown_self_service` is `True`, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow** if configured, otherwise to the login page.
+
+The completion flow must have **Authentication** set to **No authentication required**.
 
 ## Events
 
-The stage creates an **Account Lockdown Triggered** event for each user locked down. The event includes:
+Creates an **Account Lockdown Triggered** event per user:
 
-- The reason provided for the lockdown
-- The affected user's username
-- The HTTP request context
+```json
+{
+    "action": "account_lockdown_triggered",
+    "context": {
+        "reason": "User-provided reason",
+        "affected_user": "username"
+    }
+}
+```
 
-These events can be used with [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts when lockdowns occur.
+## Usage examples
 
-## Example flow structure
+### Policy to hide results stage for self-service
 
-A typical lockdown flow includes:
+```python
+return not request.context.get("lockdown_self_service", False)
+```
 
-1. **Prompt Stage** - Display warning message and collect reason
-2. **Account Lockdown Stage** - Execute lockdown actions
-3. **Prompt Stage** (admin only) - Display results
+### Dynamic warning message
 
-For self-service lockdowns, the completion message is shown in a separate unauthenticated flow configured on the stage.
+Prompt field with **Initial value expression** enabled:
+
+```python
+is_self_service = prompt_context.get("lockdown_self_service", False)
+if is_self_service:
+    return """<p><strong>This will immediately:</strong></p>
+    <ul>
+        <li>Invalidate your password</li>
+        <li>Deactivate your account</li>
+        <li>Terminate all sessions</li>
+        <li>Revoke all tokens</li>
+    </ul>"""
+else:
+    targets = prompt_context.get("lockdown_target_users", [])
+    if not targets:
+        target = prompt_context.get("lockdown_target_user")
+        if target:
+            targets = [target]
+    user_list = "".join(f"<li><code>{u.username}</code></li>" for u in targets)
+    return f"<p><strong>Locking down:</strong></p><ul>{user_list}</ul>"
+```
+
+### Results display
+
+Prompt field with **Initial value expression** enabled:
+
+```python
+results = prompt_context.get("lockdown_results", [])
+lines = []
+for r in results:
+    username = r["user"].username if r.get("user") else "Unknown"
+    status = "Locked" if r.get("success") else f"Failed: {r.get('error')}"
+    lines.append(f"<li><code>{username}</code> - {status}</li>")
+return f"<ul>{''.join(lines)}</ul>"
+```
+
+## Error handling
+
+| Error | Cause |
+|-------|-------|
+| "No target user specified" | No user found in context |
+| Per-user failure | Check `lockdown_results` for error details |
+
+Failed lockdowns for individual users do not stop processing of other users.

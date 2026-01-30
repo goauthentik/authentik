@@ -8,135 +8,106 @@ Account Lockdown is a security feature that allows administrators to quickly sec
 
 ## What Account Lockdown does
 
-When triggered, Account Lockdown performs the following actions (configurable per stage):
+When triggered, Account Lockdown performs the following actions (all configurable):
 
 - **Deactivates the user account**: The user can no longer log in
 - **Sets an unusable password**: Invalidates the user's password
 - **Terminates all active sessions**: Immediately logs the user out of all devices and applications
-- **Revokes all tokens**: Invalidates all API tokens and app passwords associated with the user account
-
-An event is created that can be used to [trigger notifications via Notification Rules](#configure-notifications).
+- **Revokes all tokens**: Invalidates all API tokens and app passwords
 
 :::note Protected accounts
-Account Lockdown cannot be triggered on:
+Account Lockdown cannot be triggered on the anonymous user or internal service accounts.
+:::
 
-- The anonymous user
-- Internal service accounts
-  :::
+## Prerequisites
 
-## How it works
+1. A **Lockdown Flow** must be configured on your Brand (**System** > **Brands**)
+2. The flow must contain an [Account Lockdown Stage](../add-secure-apps/flows-stages/stages/account_lockdown/index.md) (Enterprise)
+3. For self-service lockdown, configure a **Completion Flow** on the stage
 
-Account Lockdown is implemented as a flow-based feature. When a lockdown is triggered:
+## The default lockdown flow
 
-1. The user is redirected to the configured **Lockdown Flow** (set on the Brand)
-2. The flow displays a warning and collects a reason for the lockdown
-3. The **Account Lockdown Stage** executes the lockdown actions
-4. For admin-initiated lockdowns, a completion message shows the results
-5. For self-service lockdowns, the user can be redirected to a separate **Completion Flow** (since their session is deleted)
+authentik includes a default lockdown flow (`default-account-lockdown`) with:
 
-## Configure the Lockdown Flow
+| Order | Stage | Purpose |
+|-------|-------|---------|
+| 0 | Prompt Stage | Warning message and reason input |
+| 10 | Account Lockdown Stage | Executes lockdown actions |
+| 20 | Prompt Stage (admin only) | Shows results |
 
-A default lockdown flow is created when authentik is installed. To configure a custom flow:
+A separate completion flow (`default-account-lockdown-complete`) displays a message after self-service lockdowns.
 
-1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **System** > **Brands**.
-3. Edit your brand and set the **Lockdown flow** to your desired flow.
+### Use the default flow
 
-The lockdown flow should contain:
-- A **Prompt Stage** to display warnings and collect a reason
-- An **Account Lockdown Stage** to perform the lockdown actions
-- Optionally, a completion stage to show results (for admin lockdowns)
+1. Navigate to **System** > **Brands**.
+2. Edit your brand and set **Lockdown flow** to `default-account-lockdown`.
 
-## Account Lockdown Stage settings
+### Create a custom flow
 
-The Account Lockdown Stage can be configured with the following options:
+1. Navigate to **Flows and Stages** > **Flows** and create a flow with:
+    - **Designation**: Stage Configuration
+    - **Authentication**: Require authenticated user
+2. Add a Prompt Stage for warnings and reason collection
+3. Add an Account Lockdown Stage
+4. Optionally add a results Prompt Stage (with policy to hide for self-service)
+5. Set this flow as **Lockdown flow** on your Brand
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Deactivate user | Set the user's `is_active` to False | Enabled |
-| Set unusable password | Invalidate the user's password | Enabled |
-| Delete sessions | Terminate all active sessions | Enabled |
-| Revoke tokens | Delete all API tokens and app passwords | Enabled |
-| Completion flow | Flow to redirect users to after self-service lockdown (must not require authentication) | None |
+For stage configuration details, see the [Account Lockdown Stage documentation](../add-secure-apps/flows-stages/stages/account_lockdown/index.md).
 
 ## Trigger an Account Lockdown
 
 ### From the Users list
 
-1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Directory** > **Users**.
-3. Select one or more users using the checkboxes.
-4. Click the **Account Lockdown** button.
-5. Review the warning and enter a reason for the lockdown (recorded in the event log).
-6. Click **Continue** to execute the lockdown.
-
-The completion screen will show success or failure status for each user.
+1. Navigate to **Directory** > **Users**.
+2. Select one or more users using the checkboxes.
+3. Click **Account Lockdown**.
+4. Review the warning, enter a reason, and click **Continue**.
 
 ### From a User's detail page
 
-1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Directory** > **Users**.
-3. Click on a user to open their detail page.
-4. Click the **Account Lockdown** button.
-5. Review the warning and enter a reason for the lockdown.
-6. Click **Continue** to execute the lockdown.
+1. Navigate to **Directory** > **Users** and click on a user.
+2. Click **Account Lockdown**.
+3. Review the warning, enter a reason, and click **Continue**.
 
 ## Self-service Account Lockdown
 
-Users can lock down their own account if they suspect it has been compromised. This is useful when a user notices suspicious activity and wants to immediately secure their account without waiting for an administrator.
+Users can lock their own account from the User interface:
 
-### Lock your own account
+1. Navigate to **Settings**.
+2. In the **Account Lockdown** section, click **Lock my account**.
+3. Enter a reason and click **Continue**.
 
-1. Log in to authentik and open the User interface.
-2. Navigate to **Settings**.
-3. Scroll to the **Account Lockdown** section.
-4. Click the **Lock my account** button.
-5. You will be redirected to the lockdown flow.
-6. Enter a reason describing why you are locking your account.
-7. Click **Continue** to lock your account.
+After lockdown, the user can be redirected to a completion page (if configured). They cannot log back in until an administrator restores access.
 
-After locking your account, you will be redirected to a completion page with information about next steps. You will not be able to log back in until an administrator restores your access.
+### Configure the completion message
 
-### Customize the self-service completion message
+Since the user's session is deleted, a separate unauthenticated flow shows the final message:
 
-The message shown to users after they lock their own account is displayed in the **Completion Flow** configured on the Account Lockdown Stage. To customize this message:
-
-1. Navigate to **Flows and Stages** > **Stages**.
-2. Find the Account Lockdown Stage used in your lockdown flow.
-3. Edit the stage and set the **Completion flow** to a flow that displays your custom message.
-
-The completion flow should:
-- Have **Authentication** set to **No authentication required** (the user's session is deleted)
-- Contain a Prompt Stage with an alert field displaying your message
+1. Create a flow with **Authentication** set to **No authentication required**
+2. Add a Prompt Stage with an alert field containing your message
+3. On your Account Lockdown Stage, set **Completion flow** to this flow
 
 ## Configure notifications
 
-Account lockdown events can trigger notifications via the Notification Rules system using the **Account Lockdown Triggered** event type. This event is created for both administrator-triggered and self-service lockdowns.
+Use Notification Rules to alert when lockdowns occur:
 
-To set up notifications:
-
-1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Customization** > **Policies**.
-3. Click **Create** and select **Event Matcher Policy**.
-4. Give the policy a name (e.g., "Match account lockdown events").
-5. In the **Action** field, select **Account Lockdown Triggered**.
-6. Click **Create** to save the policy.
-7. Navigate to **Events** > **Notification Rules**.
-8. Click **Create** to add a new notification rule.
-9. Configure the rule:
-    - **Name**: Give the rule a descriptive name
-    - **Transports**: Select the notification transports (e.g., email, webhook)
-    - **Severity**: Select the notification severity level
-10. Click **Create** to save the notification rule.
-11. In the notification rules list, click the arrow next to your new rule to expand it.
-12. Click **Bind existing Policy/Group/User**.
-13. Select the Event Matcher Policy you created and click **Create**.
+1. Navigate to **Customization** > **Policies** and create an **Event Matcher Policy**
+2. Set **Action** to **Account Lockdown Triggered**
+3. Navigate to **Events** > **Notification Rules** and create a rule
+4. Bind the Event Matcher Policy to the rule
 
 ## Restore access after lockdown
 
-1. Log in to authentik as an administrator and open the Admin interface.
-2. Navigate to **Directory** > **Users**.
-3. Find the locked user (they will show as inactive).
-4. Click **Activate** to re-enable the account.
-5. Use **Set password** or **Create Recovery Link** to set a new password.
-6. Advise the user to review their account security settings and re-enroll any MFA devices.
+1. Navigate to **Directory** > **Users** and find the locked user (shown as inactive).
+2. Click **Activate** to re-enable the account.
+3. Use **Set password** or **Create Recovery Link** to set a new password.
+4. Advise the user to re-enroll MFA devices.
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| "No lockdown flow configured" | Set a lockdown flow on your Brand (**System** > **Brands**) |
+| Self-service shows login page | Configure a **Completion flow** on the stage with **No authentication required** |
+| Warning message not showing | Ensure **Initial value expression** is enabled and field type is an alert type |
+| Bulk lockdown not working | Ensure expressions handle `lockdown_target_users` (list), not just `lockdown_target_user` |
