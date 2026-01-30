@@ -1,7 +1,6 @@
 import "#admin/reports/ExportButton";
 import "#admin/users/ServiceAccountForm";
 import "#admin/users/UserActiveForm";
-import "#admin/users/UserBulkAccountLockdownForm";
 import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
@@ -231,21 +230,24 @@ export class UserListPage extends WithLicenseSummary(
                 </button>
             </ak-forms-delete-bulk>
             ${this.hasEnterpriseLicense
-                ? html`<ak-forms-modal
-                      size=${PFSize.Medium}
-                      .closeAfterSuccessfulSubmit=${false}
-                      .cancelText=${msg("Close")}
+                ? html`<ak-action-button
+                      class="pf-m-danger"
+                      ?disabled=${disabled}
+                      .apiRequest=${async () => {
+                          const response = await new CoreApi(
+                              DEFAULT_CONFIG,
+                          ).coreUsersAccountLockdownBulkCreate({
+                              userBulkAccountLockdownRequest: {
+                                  users: this.selectedElements.map((u) => u.pk),
+                              },
+                          });
+                          if (response.flowUrl) {
+                              window.location.assign(response.flowUrl);
+                          }
+                      }}
                   >
-                      <span slot="submit">${msg("Trigger Lockdown")}</span>
-                      <span slot="header">${msg("Account Lockdown for Selected Users")}</span>
-                      <ak-user-bulk-account-lockdown-form
-                          slot="form"
-                          .users=${this.selectedElements}
-                      ></ak-user-bulk-account-lockdown-form>
-                      <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                          ${msg("Account Lockdown")}
-                      </button>
-                  </ak-forms-modal>`
+                      ${msg("Account Lockdown")}
+                  </ak-action-button>`
                 : nothing}`;
     }
 

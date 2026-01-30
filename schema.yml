@@ -4585,7 +4585,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserAccountLockdownRequest'
-        required: true
       security:
       - authentik: []
       responses:
@@ -4596,14 +4595,17 @@ paths:
                 $ref: '#/components/schemas/AccountLockdownFlowResponse'
           description: ''
         '400':
-          description: Account lockdown feature is disabled, no lockdown flow configured,
-            or invalid target
+          description: No lockdown flow configured or invalid target
         '403':
           description: Permission denied (when targeting another user)
   /core/users/account_lockdown_bulk/:
     post:
       operationId: core_users_account_lockdown_bulk_create
-      description: Trigger account lockdown for multiple users
+      description: |-
+        Trigger account lockdown for multiple users.
+
+        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
+        to redirect to.
       tags:
       - core
       requestBody:
@@ -4619,10 +4621,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountLockdownBulkResponse'
+                $ref: '#/components/schemas/AccountLockdownBulkFlowResponse'
           description: ''
         '400':
-          description: Account lockdown feature is disabled
+          description: No lockdown flow configured
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/users/export/:
@@ -34037,46 +34039,22 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-    AccountLockdownBulkResponse:
+    AccountLockdownBulkFlowResponse:
       type: object
       properties:
-        processed:
-          type: array
-          items:
-            type: string
-          description: Users successfully locked
-        skipped:
-          type: array
-          items:
-            $ref: '#/components/schemas/AccountLockdownSkippedUser'
-          description: Users skipped with reasons
+        flow_url:
+          type: string
+          description: URL to redirect to for lockdown flow
       required:
-      - processed
-      - skipped
+      - flow_url
     AccountLockdownFlowResponse:
       type: object
       properties:
         flow_url:
           type: string
           description: URL to redirect to for lockdown flow
-        status:
-          type: string
-          description: Status of the lockdown operation
       required:
       - flow_url
-      - status
-    AccountLockdownSkippedUser:
-      type: object
-      properties:
-        username:
-          type: string
-          description: Username of skipped user
-        reason:
-          type: string
-          description: Reason user was skipped
-      required:
-      - reason
-      - username
     AccountLockdownStage:
       type: object
       description: AccountLockdownStage Serializer
@@ -50914,9 +50892,6 @@ components:
           format: email
           description: Security team email address for security notifications.
           maxLength: 254
-        account_lockdown_enabled:
-          type: boolean
-          description: Enable the account lockdown feature for administrators.
         flags:
           type: object
           properties:
@@ -55621,9 +55596,6 @@ components:
           format: email
           description: Security team email address for security notifications.
           maxLength: 254
-        account_lockdown_enabled:
-          type: boolean
-          description: Enable the account lockdown feature for administrators.
         flags:
           type: object
           properties:
@@ -55707,9 +55679,6 @@ components:
           format: email
           description: Security team email address for security notifications.
           maxLength: 254
-        account_lockdown_enabled:
-          type: boolean
-          description: Enable the account lockdown feature for administrators.
         flags:
           type: object
           properties:
@@ -57235,12 +57204,6 @@ components:
           type: integer
           nullable: true
           description: User to lock. If omitted, locks the current user (self-service).
-        reason:
-          type: string
-          minLength: 1
-          description: Reason for triggering account lockdown
-      required:
-      - reason
     UserAccountRequest:
       type: object
       description: Account adding/removing operations
@@ -57271,12 +57234,7 @@ components:
           items:
             type: integer
           description: Users to lock
-        reason:
-          type: string
-          minLength: 1
-          description: Reason for triggering account lockdown
       required:
-      - reason
       - users
     UserConsent:
       type: object
