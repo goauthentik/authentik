@@ -76,6 +76,14 @@ ak config setup --authentik-url https://authentik.company
 
 2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
+## Check version of installed components
+
+You can check the version of all installed authentik components by running the following command:
+
+```bash
+ak version
+```
+
 ## Logging
 
 The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for authentik-related processes such as `authentik-agent` or `authentik-sysd`.
