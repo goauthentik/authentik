@@ -392,9 +392,7 @@ class UserAccountLockdownSerializer(PassiveSerializer):
 
     reason = CharField(
         required=True,
-        min_length=1,
-        max_length=500,
-        help_text="Reason for triggering account lockdown (max 500 characters)",
+        help_text="Reason for triggering account lockdown",
     )
 
 
@@ -406,9 +404,7 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
     )
     reason = CharField(
         required=True,
-        min_length=1,
-        max_length=500,
-        help_text="Reason for triggering account lockdown (max 500 characters)",
+        help_text="Reason for triggering account lockdown",
     )
 
 

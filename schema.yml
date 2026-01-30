@@ -6989,7 +6989,6 @@ paths:
           items:
             type: string
             enum:
-            - account_lockdown_self_triggered
             - account_lockdown_triggered
             - authorize_application
             - configuration_error
@@ -7253,7 +7252,6 @@ paths:
           items:
             type: string
             enum:
-            - account_lockdown_self_triggered
             - account_lockdown_triggered
             - authorize_application
             - configuration_error
@@ -7383,7 +7381,6 @@ paths:
           items:
             type: string
             enum:
-            - account_lockdown_self_triggered
             - account_lockdown_triggered
             - authorize_application
             - configuration_error
@@ -11046,7 +11043,6 @@ paths:
           type: string
           nullable: true
           enum:
-          - account_lockdown_self_triggered
           - account_lockdown_triggered
           - authorize_application
           - configuration_error
@@ -38226,7 +38222,6 @@ components:
       - impersonation_started
       - impersonation_ended
       - account_lockdown_triggered
-      - account_lockdown_self_triggered
       - flow_execution
       - policy_execution
       - policy_exception
@@ -56146,8 +56141,7 @@ components:
         reason:
           type: string
           minLength: 1
-          description: Reason for triggering account lockdown (max 500 characters)
-          maxLength: 500
+          description: Reason for triggering account lockdown
       required:
       - reason
     UserAccountRequest:
@@ -56183,8 +56177,7 @@ components:
         reason:
           type: string
           minLength: 1
-          description: Reason for triggering account lockdown (max 500 characters)
-          maxLength: 500
+          description: Reason for triggering account lockdown
       required:
       - reason
       - users
