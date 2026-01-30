@@ -1090,6 +1090,11 @@ class UserViewSet(
 
         for user in users:
             if validation_error := self._validate_lockdown_target(request, user):
+                LOGGER.debug(
+                    "Account lockdown validation failed",
+                    user=user.username,
+                    reason=validation_error,
+                )
                 skipped.append({"username": user.username, "reason": str(validation_error)})
                 continue
 
