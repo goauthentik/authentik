@@ -5,7 +5,7 @@ import Styles from "./ak-flow-card.css";
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { ChallengeTypes } from "@goauthentik/api";
+import { FlowChallengeLike } from "#flow/components/types";
 
 import { CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -13,8 +13,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-type ExcludeComponent<T> = T extends { component: string } ? Omit<T, "component"> : T;
 
 /**
  * @element ak-flow-card
@@ -30,7 +28,7 @@ export class FlowCard extends AKElement {
     role = "presentation";
 
     @property({ type: Object })
-    challenge?: ExcludeComponent<ChallengeTypes>;
+    challenge?: Pick<FlowChallengeLike, "flowInfo">;
 
     @property({ type: Boolean })
     loading = false;

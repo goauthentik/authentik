@@ -3,6 +3,15 @@
  */
 
 /**
+ * Type utility to make all properties in T recursively optional.
+ */
+export type DeepPartial<T> = T extends object
+    ? {
+          [P in keyof T]?: DeepPartial<T[P]>;
+      }
+    : T;
+
+/**
  * Type utility to make readonly properties mutable.
  */
 export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
