@@ -396,7 +396,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     public override firstUpdated(changedProperties: PropertyValues<this>) {
         super.firstUpdated(changedProperties);
 
-        if (!(changedProperties.has("challenge") && typeof this.challenge !== "undefined")) {
+        if (!changedProperties.has("challenge") || !this.challenge) {
             return;
         }
 
