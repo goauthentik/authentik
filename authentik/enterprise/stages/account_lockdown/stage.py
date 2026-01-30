@@ -1,10 +1,9 @@
 """Account lockdown stage logic"""
 
-from django.contrib.sessions.models import Session
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse
 
-from authentik.core.models import Token, User
+from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
