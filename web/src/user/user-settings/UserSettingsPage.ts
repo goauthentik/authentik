@@ -221,7 +221,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                       ></ak-user-self-account-lockdown-form>
                                                       <button
                                                           slot="trigger"
-                                                          class="pf-c-button pf-m-primary"
+                                                          class="pf-c-button pf-m-danger"
                                                       >
                                                           ${msg("Lock my account")}
                                                       </button>

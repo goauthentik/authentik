@@ -4,12 +4,14 @@ from json import loads
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 from authentik.tenants.models import Tenant
 
 # Patch for enterprise license check
@@ -116,6 +118,43 @@ class TestUsersAccountLockdownAPI(APITestCase):
 
         # Verify tokens were deleted
         self.assertEqual(Token.objects.filter(user=self.user).count(), 0)
+
+    def test_account_lockdown_revokes_oauth2_tokens(self):
+        """Test that account lockdown revokes OAuth2 access and refresh tokens"""
+        self.client.force_login(self.admin)
+
+        # Create a minimal OAuth2 provider for the tokens
+        provider = OAuth2Provider.objects.create(
+            name=f"test-provider-{generate_id()}",
+            client_id=generate_id(),
+            authorization_flow=None,
+        )
+
+        # Create OAuth2 tokens for the target user
+        AccessToken.objects.create(
+            user=self.user,
+            provider=provider,
+            token=generate_id(),
+            auth_time=now(),
+            _id_token="{}",
+        )
+        RefreshToken.objects.create(
+            user=self.user,
+            provider=provider,
+            token=generate_id(),
+            auth_time=now(),
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
+            data={"reason": "OAuth2 token compromise"},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        # Verify OAuth2 tokens were deleted
+        self.assertEqual(AccessToken.objects.filter(user=self.user).count(), 0)
+        self.assertEqual(RefreshToken.objects.filter(user=self.user).count(), 0)
 
     def test_account_lockdown_disabled(self):
         """Test account lockdown when feature is disabled"""
