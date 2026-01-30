@@ -6,11 +6,15 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+/**
+ * @event clickNew
+ * @event clickDelete
+ */
 
 @customElement("ak-application-wizard-bindings-toolbar")
 export class ApplicationWizardBindingsToolbar extends AKElement {
-    static styles = [PFBase, PFButton, PFToolbar];
+    static styles = [PFButton, PFToolbar];
 
     @property({ type: Boolean, attribute: "can-delete", reflect: true })
     canDelete = false;

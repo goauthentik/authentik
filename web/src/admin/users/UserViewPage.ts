@@ -9,6 +9,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
+import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -59,7 +60,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
@@ -80,7 +80,6 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
     protected user: User | null = null;
 
     static styles = [
-        PFBase,
         PFPage,
         PFButton,
         PFDisplay,
@@ -370,6 +369,42 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
         </div>`;
     }
 
+    protected renderTabRoles(user: User): TemplateResult {
+        return html`
+            <ak-tabs pageIdentifier="userRoles" vertical>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-assigned-roles"
+                    id="page-assigned-roles"
+                    aria-label=${msg("Assigned Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${user}> </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-all-roles"
+                    id="page-all-roles"
+                    aria-label=${msg("All Roles")}
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-role-related-list .targetUser=${user} showInherited>
+                            </ak-role-related-list>
+                        </div>
+                    </div>
+                </div>
+            </ak-tabs>
+        `;
+    }
+
     render() {
         if (!this.user) {
             return nothing;
@@ -429,6 +464,11 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                                 </ak-object-changelog>
                             </div>
                         </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <ak-object-attributes-card
+                                .objectAttributes=${this.user.attributes}
+                            ></ak-object-attributes-card>
+                        </div>
                     </div>
                 </div>
                 <div
@@ -452,13 +492,8 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     slot="page-roles"
                     id="page-roles"
                     aria-label=${msg("Roles")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-role-related-list .targetUser=${this.user}> </ak-role-related-list>
-                        </div>
-                    </div>
+                    ${this.renderTabRoles(this.user)}
                 </div>
                 <div
                     role="tabpanel"

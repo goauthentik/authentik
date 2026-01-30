@@ -8,6 +8,8 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
+from authentik.flows.models import NotConfiguredAction
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -50,3 +52,28 @@ class TestFlowsLoginSFE(SeleniumTestCase):
         login_sfe(self.driver, self.user)
         self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    def test_login_mfa_static_deny(self):
+        """test default login flow"""
+        mfa = AuthenticatorValidateStage.objects.get(
+            name="default-authentication-mfa-validation",
+        )
+        mfa.not_configured_action = NotConfiguredAction.DENY
+        mfa.device_classes = [DeviceClasses.STATIC]
+        mfa.save()
+
+        self.driver.get(
+            self.url(
+                "authentik_core:if-flow",
+                flow_slug="default-authentication-flow",
+                query={"sfe": True},
+            )
+        )
+        login_sfe(self.driver, self.user)
+        msg = self.driver.find_element(By.CSS_SELECTOR, "#access-denied > p")
+        self.assertEqual(msg.text, "No (allowed) MFA authenticator configured.")

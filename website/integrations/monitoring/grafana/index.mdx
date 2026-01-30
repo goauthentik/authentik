@@ -42,7 +42,8 @@ To support the integration of Grafana with authentik, you need to create an appl
 
 3. Click **Submit** to save the new application and provider.
 
-## Terraform provider
+<details>
+<summary>Configure with Terraform</summary>
 
 ```hcl
 data "authentik_flow" "default-provider-authorization-implicit-consent" {
@@ -103,8 +104,9 @@ resource "authentik_group" "grafana_editors" {
 resource "authentik_group" "grafana_viewers" {
   name    = "Grafana Viewers"
 }
-
 ```
+
+</details>
 
 ## Grafana configuration
 

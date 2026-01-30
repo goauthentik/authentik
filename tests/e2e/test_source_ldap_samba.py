@@ -103,14 +103,14 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         self.assertIsNotNone(User.objects.get(username="harry"))
         self.assertIsNotNone(Group.objects.get(name="dev"))
         self.assertEqual(
-            list(User.objects.get(username="bob").ak_groups.all()), [Group.objects.get(name="dev")]
+            list(User.objects.get(username="bob").groups.all()), [Group.objects.get(name="dev")]
         )
-        self.assertEqual(list(User.objects.get(username="james").ak_groups.all()), [])
+        self.assertEqual(list(User.objects.get(username="james").groups.all()), [])
         self.assertEqual(
-            list(User.objects.get(username="john").ak_groups.all().order_by("name")),
+            list(User.objects.get(username="john").groups.all().order_by("name")),
             [Group.objects.get(name="admins"), Group.objects.get(name="dev")],
         )
-        self.assertEqual(list(User.objects.get(username="harry").ak_groups.all()), [])
+        self.assertEqual(list(User.objects.get(username="harry").groups.all()), [])
 
     @retry(exceptions=[LDAPSessionTerminatedByServerError])
     @apply_blueprint(

@@ -13,25 +13,26 @@ import "#flow/stages/RedirectStage";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import {
-    EVENT_FLOW_ADVANCE,
-    EVENT_FLOW_INSPECTOR_TOGGLE,
-    EVENT_WS_MESSAGE,
-} from "#common/constants";
-import { pluckErrorDetail } from "#common/errors/network";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
-import { WebsocketClient, WSMessage } from "#common/ws";
+import { AKSessionAuthenticatedEvent } from "#common/ws/events";
+import { WebsocketClient } from "#common/ws/WebSocketClient";
 
+import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
+import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import {
     CapabilitiesEnum,
@@ -49,6 +50,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -59,12 +61,20 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+/// <reference types="../../types/lit.d.ts" />
+
+/**
+ * An executor for authentik flows.
+ *
+ * @attr {string} slug - The slug of the flow to execute.
+ * @prop {ChallengeTypes | null} challenge - The current challenge to render.
+ */
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
     implements StageHost
 {
-    static readonly DefaultLayout: FlowLayoutEnum =
+    public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
     //#region Styles
@@ -86,20 +96,30 @@ export class FlowExecutor
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    #challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    public set challenge(value: ChallengeTypes | undefined) {
+    public set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+        const previousTitle = previousValue?.flowInfo?.title;
+        const nextTitle = value?.flowInfo?.title;
+
         this.#challenge = value;
-        if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
-        } else {
-            document.title = this.brandingTitle;
+
+        if (value?.flowInfo) {
+            this.flowInfo = value.flowInfo;
         }
-        this.requestUpdate();
+
+        if (!nextTitle) {
+            document.title = this.brandingTitle;
+        } else if (nextTitle !== previousTitle) {
+            document.title = `${nextTitle} - ${this.brandingTitle}`;
+        }
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    public get challenge(): ChallengeTypes | undefined {
+    public get challenge(): ChallengeTypes | null {
         return this.#challenge;
     }
 
@@ -111,6 +131,7 @@ export class FlowExecutor
     //#region State
 
     #inspectorLoaded = false;
+    #logger = ConsoleLogger.prefix("flow-executor");
 
     @property({ type: Boolean })
     public inspectorOpen?: boolean;
@@ -118,7 +139,7 @@ export class FlowExecutor
     @property({ type: Boolean })
     public inspectorAvailable?: boolean;
 
-    @property({ type: String, attribute: "data-layout", useDefault: true })
+    @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     @state()
@@ -135,7 +156,7 @@ export class FlowExecutor
 
         WebsocketClient.connect();
 
-        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
+        const inspector = new URLSearchParams(window.location.search).get("inspector");
 
         if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
@@ -160,35 +181,48 @@ export class FlowExecutor
         });
     }
 
-    #websocketHandler = (e: CustomEvent<WSMessage>) => {
-        if (e.detail.message_type === "session.authenticated") {
-            if (!document.hidden) {
-                return;
-            }
-            console.debug("authentik/ws: Reloading after session authenticated event");
-            window.location.reload();
+    /**
+     * Synchronize flow info such as background image with the current state.
+     */
+    #synchronizeFlowInfo() {
+        if (!this.flowInfo) {
+            return;
         }
-    };
 
-    public connectedCallback(): void {
-        super.connectedCallback();
+        const background =
+            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
 
-        window.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
-        window.addEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
+        // Storybook has a different document structure, so we need to adjust the target accordingly.
+        const target =
+            import.meta.env.AK_BUNDLER === "storybook"
+                ? this.closest<HTMLDivElement>(".docs-story")
+                : this.ownerDocument.body;
+
+        applyBackgroundImageProperty(background, { target });
     }
+
+    //#region Listeners
+
+    @listen(AKSessionAuthenticatedEvent)
+    protected sessionAuthenticatedListener = () => {
+        if (!document.hidden) {
+            return;
+        }
+
+        console.debug("authentik/ws: Reloading after session authenticated event");
+        window.location.reload();
+    };
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        window.removeEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, this.#toggleInspector);
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#websocketHandler as EventListener);
-
         WebsocketClient.close();
     }
 
-    public async firstUpdated(): Promise<void> {
-        if (this.can(CapabilitiesEnum.CanDebug)) {
-            this.inspectorAvailable = true;
+    protected refresh = (): Promise<void> => {
+        if (!this.flowSlug) {
+            this.#logger.debug("Skipping refresh, no flow slug provided");
+            return Promise.resolve();
         }
 
         this.loading = true;
@@ -198,34 +232,39 @@ export class FlowExecutor
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
             })
-            .then((challenge: ChallengeTypes) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_FLOW_ADVANCE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }
-
+            .then((challenge) => {
                 this.challenge = challenge;
-
-                if (this.challenge.flowInfo) {
-                    this.flowInfo = this.challenge.flowInfo;
-                }
             })
-            .catch((error) => {
+            .catch(async (error) => {
+                const parsedError = await parseAPIResponseError(error);
+
                 const challenge: FlowErrorChallenge = {
                     component: "ak-stage-flow-error",
-                    error: pluckErrorDetail(error),
+                    error: pluckErrorDetail(parsedError),
                     requestId: "",
                 };
+
+                showAPIErrorMessage(parsedError);
 
                 this.challenge = challenge as ChallengeTypes;
             })
             .finally(() => {
                 this.loading = false;
             });
+    };
+
+    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+        super.firstUpdated(changed);
+
+        if (this.can(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
+        }
+
+        this.refresh().then(() => {
+            if (this.inspectorOpen) {
+                window.dispatchEvent(new AKFlowAdvanceEvent());
+            }
+        });
     }
 
     // DOM post-processing has to happen after the render.
@@ -236,8 +275,11 @@ export class FlowExecutor
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") && this.flowInfo) {
-            applyBackgroundImageProperty(this.flowInfo.background);
+        if (
+            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
+            this.flowInfo
+        ) {
+            this.#synchronizeFlowInfo();
         }
 
         if (
@@ -262,6 +304,16 @@ export class FlowExecutor
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
 
+        if (!this.flowSlug) {
+            if (import.meta.env.AK_BUNDLER === "storybook") {
+                this.#logger.debug("Skipping submit flow slug check in storybook");
+
+                return true;
+            }
+
+            throw new Error("No flow slug provided");
+        }
+
         payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
 
         if (!options?.invisible) {
@@ -276,12 +328,7 @@ export class FlowExecutor
             })
             .then((challenge) => {
                 if (this.inspectorOpen) {
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_FLOW_ADVANCE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
+                    window.dispatchEvent(new AKFlowAdvanceEvent());
                 }
 
                 this.challenge = challenge;
@@ -309,7 +356,9 @@ export class FlowExecutor
 
     //#region Render Challenge
 
-    async renderChallenge(component: ChallengeTypes["component"]): Promise<TemplateResult> {
+    protected async renderChallenge(
+        component: ChallengeTypes["component"],
+    ): Promise<TemplateResult> {
         const { challenge, inspectorOpen } = this;
 
         const stageProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
@@ -452,7 +501,8 @@ export class FlowExecutor
 
     //#region Render Inspector
 
-    #toggleInspector = () => {
+    @listen(AKFlowInspectorChangeEvent)
+    protected toggleInspector = () => {
         this.inspectorOpen = !this.inspectorOpen;
 
         const drawer = document.getElementById("flow-drawer");
@@ -466,21 +516,23 @@ export class FlowExecutor
     };
 
     protected renderInspectorButton() {
-        if (!this.inspectorAvailable || this.inspectorOpen) {
-            return null;
-        }
+        return guard([this.inspectorAvailable, this.inspectorOpen], () => {
+            if (!this.inspectorAvailable || this.inspectorOpen) {
+                return null;
+            }
 
-        return html`<button
-            aria-label=${this.inspectorOpen
-                ? msg("Close flow inspector")
-                : msg("Open flow inspector")}
-            aria-expanded=${this.inspectorOpen ? "true" : "false"}
-            class="inspector-toggle pf-c-button pf-m-primary"
-            aria-controls="flow-inspector"
-            @click=${this.#toggleInspector}
-        >
-            <i class="fa fa-search-plus" aria-hidden="true"></i>
-        </button>`;
+            return html`<button
+                aria-label=${this.inspectorOpen
+                    ? msg("Close flow inspector")
+                    : msg("Open flow inspector")}
+                aria-expanded=${this.inspectorOpen ? "true" : "false"}
+                class="inspector-toggle pf-c-button pf-m-primary"
+                aria-controls="flow-inspector"
+                @click=${this.toggleInspector}
+            >
+                <i class="fa fa-search-plus" aria-hidden="true"></i>
+            </button>`;
+        });
     }
 
     //#endregion
@@ -491,12 +543,13 @@ export class FlowExecutor
         return html`<slot class="slotted-content" name="placeholder"></slot>`;
     }
 
-    public override render(): TemplateResult {
+    protected override render(): TemplateResult {
         const { component } = this.challenge || {};
 
-        return html` <ak-locale-select
+        return html`<ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
+                class="pf-m-dark"
             ></ak-locale-select>
 
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
@@ -507,7 +560,13 @@ export class FlowExecutor
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "branding-logo")}
+                    ${ThemedImage({
+                        src: this.brandingLogo,
+                        alt: msg("authentik Logo"),
+                        className: "branding-logo",
+                        theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
+                    })}
                 </div>
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`

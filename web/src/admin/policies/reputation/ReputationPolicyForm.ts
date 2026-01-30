@@ -33,7 +33,7 @@ export class ReputationPolicyForm extends BasePolicyForm<ReputationPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Allows/denys requests based on the users and/or the IPs reputation.")}
             </span>

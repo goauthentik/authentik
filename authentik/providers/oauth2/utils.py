@@ -121,7 +121,7 @@ def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
         try:
             user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
             client_id, _, client_secret = user_pass
-        except (ValueError, Error):
+        except ValueError, Error:
             client_id = client_secret = ""  # nosec
     else:
         client_id = request.POST.get("client_id", "")
@@ -259,4 +259,4 @@ def create_logout_token(
     if session_key:
         payload["sid"] = hash_session_key(session_key)
     # Encode the token
-    return provider.encode(payload)
+    return provider.encode(payload, jwt_type="logout+jwt")

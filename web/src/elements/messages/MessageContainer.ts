@@ -1,13 +1,11 @@
 import "#elements/messages/Message";
 
-import { EVENT_MESSAGE, EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "#common/constants";
 import { APIError, pluckErrorDetail } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
-import { SentryIgnoredError } from "#common/sentry/index";
-import { WSMessage } from "#common/ws";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
-import { APIMessage } from "#elements/messages/Message";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
@@ -16,7 +14,8 @@ import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+const logger = ConsoleLogger.prefix("messages");
 
 /**
  * Adds a message to the message container, displaying it to the user.
@@ -31,17 +30,20 @@ export function showMessage(message: APIMessage | null, unique = false): void {
         return;
     }
 
-    const container = document.querySelector<MessageContainer>("ak-message-container");
-
-    if (!container) {
-        throw new SentryIgnoredError("failed to find message container");
-    }
-
     if (!message.message.trim()) {
-        console.warn("authentik/messages: `showMessage` received an empty message", message);
+        logger.warn("authentik/messages: `showMessage` received an empty message", message);
 
         message.message = msg("An unknown error occurred");
         message.description ??= msg("Please check the browser console for more details.");
+    }
+
+    const container = document.querySelector<MessageContainer>("ak-message-container");
+
+    if (!container) {
+        logger.warn("authentik/messages: No message container found in DOM");
+        logger.info("authentik/messages: Message to show:", message);
+
+        return;
     }
 
     container.addMessage(message, unique);
@@ -92,7 +94,6 @@ export class MessageContainer extends AKElement {
     alignment: "top" | "bottom" = "top";
 
     static styles: CSSResult[] = [
-        PFBase,
         PFAlertGroup,
         css`
             /* Fix spacing between messages */
@@ -112,15 +113,9 @@ export class MessageContainer extends AKElement {
         // Note: This seems to be susceptible to race conditions.
         // Events are dispatched regardless if the message container is listening.
 
-        window.addEventListener(EVENT_WS_MESSAGE, ((e: CustomEvent<WSMessage>) => {
-            if (e.detail.message_type !== WS_MSG_TYPE_MESSAGE) return;
-
-            this.addMessage(e.detail as unknown as APIMessage);
-        }) as EventListener);
-
-        window.addEventListener(EVENT_MESSAGE, ((e: CustomEvent<APIMessage>) => {
-            this.addMessage(e.detail);
-        }) as EventListener);
+        window.addEventListener("ak-message", (event) => {
+            this.addMessage(event.message);
+        });
     }
 
     public addMessage(message: APIMessage, unique = false): void {

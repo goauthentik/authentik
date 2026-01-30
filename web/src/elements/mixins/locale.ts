@@ -1,4 +1,4 @@
-import { TargetLanguageTag } from "#common/ui/locale/definitions";
+import { SourceLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
 
 import { createMixin } from "#elements/types";
 
@@ -16,9 +16,7 @@ export const kAKLocale = Symbol("kAKLocale");
  * @see {@linkcode LocaleMixin}
  * @see {@linkcode WithLocale}
  */
-export const LocaleContext = createContext<LocaleContextValue>(
-    Symbol.for("authentik-locale-context"),
-);
+export const LocaleContext = createContext<LocaleContextValue>(Symbol("authentik-locale-context"));
 
 export type LocaleContext = typeof LocaleContext;
 
@@ -34,7 +32,7 @@ export interface LocaleMixin {
      *
      * @internal
      */
-    readonly [kAKLocale]: Readonly<LocaleContextValue>;
+    readonly [kAKLocale]?: Readonly<LocaleContextValue>;
 
     /**
      * The current locale language tag.
@@ -56,18 +54,31 @@ export const WithLocale = createMixin<LocaleMixin>(
         subscribe = true,
     }) => {
         abstract class LocaleProvider extends SuperClass implements LocaleMixin {
+            #contextWarning = false;
+
             @consume({
                 context: LocaleContext,
                 subscribe,
             })
-            public [kAKLocale]!: LocaleContextValue;
+            public [kAKLocale]?: LocaleContextValue;
 
             public get activeLanguageTag(): TargetLanguageTag {
-                return this[kAKLocale].getLocale() as TargetLanguageTag;
+                if (!this[kAKLocale]) {
+                    if (!this.#contextWarning) {
+                        console.warn(
+                            `[WithLocale] The locale context is not available on <${this.constructor.name}>. Did you forget to add the LocaleContextController?`,
+                        );
+                        this.#contextWarning = true;
+                    }
+
+                    return SourceLanguageTag;
+                }
+
+                return this[kAKLocale]?.getLocale() as TargetLanguageTag;
             }
 
             public set activeLanguageTag(value: TargetLanguageTag) {
-                this[kAKLocale].setLocale(value);
+                this[kAKLocale]?.setLocale(value);
             }
         }
 

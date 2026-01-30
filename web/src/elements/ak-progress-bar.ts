@@ -64,19 +64,19 @@ export class ProgressBar extends AKElement {
         `,
     ];
 
-    @property({ type: Number })
+    @property({ type: Number, reflect: true, useDefault: true })
     public min = 0;
 
-    @property({ type: Number })
+    @property({ type: Number, reflect: true, useDefault: true })
     public max = 100;
 
-    @property({ type: Number })
+    @property({ type: Number, reflect: true, useDefault: true })
     public value = 0;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true, useDefault: true })
     public indeterminate = false;
 
-    @property({ type: String })
+    @property({ type: String, reflect: true, useDefault: true })
     public size: PFSize = PFSize.Medium;
 
     @property({ type: String })
@@ -105,7 +105,7 @@ export class ProgressBar extends AKElement {
                   `
                 : nothing}
             <div
-                class="pf-c-progress__bar"
+                class="pf-c-progress__bar ak-fade-in"
                 role="progressbar"
                 aria-valuemin=${this.min}
                 aria-valuemax=${this.max}

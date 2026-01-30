@@ -215,6 +215,9 @@ runs:
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick")
 
+              # Assign the PR to the original author
+              gh pr edit "$NEW_PR" --assignee "$PR_AUTHOR"
+
               echo "✅ Created cherry-pick PR $NEW_PR for $TARGET_BRANCH"
 
               # Comment on original PR
@@ -253,6 +256,9 @@ runs:
                 --base "$TARGET_BRANCH" \
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick")
+
+              # Assign the PR to the original author
+              gh pr edit "$NEW_PR" --assignee "$PR_AUTHOR"
 
               echo "⚠️ Created conflict resolution PR $NEW_PR for $TARGET_BRANCH"
 

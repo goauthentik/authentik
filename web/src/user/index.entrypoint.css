@@ -54,13 +54,11 @@
     --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--100);
 }
 
-.pf-c-drawer {
-    /* TODO: Revisit this after native <dialog> modals are implemented. */
-    --pf-c-drawer__panel--ZIndex: auto;
-    --pf-c-drawer__content--ZIndex: auto;
-}
-
 .pf-c-drawer__main {
     min-height: calc(100vh - 76px);
     max-height: calc(100vh - 76px);
+}
+
+.pf-c-drawer__panel {
+    background-color: transparent !important;
 }
