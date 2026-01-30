@@ -1,0 +1,52 @@
+---
+title: Documentation Theming
+sidebar_label: Theming
+---
+
+import { InfimaColorPalette, UtilityColors, ColorGroup } from "@goauthentik/docusaurus-theme/components/infima/Swatch/index.tsx";
+
+
+:::info Advanced
+
+This section is intended for developers of authentik's documentation site. If you are looking to customize the theming of your own authentik instance, please refer to the [branding](../../../sys-mgmt/brands.md) documentation.
+
+:::
+
+The authentik documentation site is built using Meta's [Docusaurus](https://docusaurus.io/), which uses their internal [Infima CSS framework](https://infima.dev/) for its styling and theming capabilities. Infima's own documentation is limited, possibly due to it's internal nature and Docusaurus being the primary consumer. This document aims to provide an overview of how theming is handled in the authentik documentation site, and how you can customize it.
+
+
+## Infima Color Palette
+
+With the exception of a few customizations, our color palette is managed through Infima's theming system.
+
+
+
+### Primary
+
+<ColorGroup name="primary" />
+
+### Secondary
+
+<ColorGroup name="secondary" />
+
+### Success
+
+<ColorGroup name="success" />
+
+### Info
+
+<ColorGroup name="info" />
+
+### Warning
+
+<ColorGroup name="warning" />
+
+### Danger
+
+<ColorGroup name="danger" />
+
+
+
+### Utility & UI Colors
+
+<UtilityColors />

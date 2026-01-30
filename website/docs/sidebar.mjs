@@ -856,6 +856,7 @@ const items = [
                 },
                 items: [
                     "developer-docs/docs/style-guide",
+                    "developer-docs/docs/theming/index",
                     {
                         type: "category",
                         label: "Templates",
