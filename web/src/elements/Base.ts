@@ -60,11 +60,6 @@ export class AKElement extends LitElement implements AKElementProps {
 
         const { brand } = globalAK();
 
-        const preferredColorScheme = resolveUITheme(
-            this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme,
-        );
-        this.activeTheme = preferredColorScheme;
-
         this.#customCSSStyleSheet = brand?.brandingCustomCss
             ? createStyleSheetUnsafe(brand.brandingCustomCss)
             : null;
@@ -88,6 +83,24 @@ export class AKElement extends LitElement implements AKElementProps {
                     `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
                 );
             };
+        }
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        if (this.renderRoot !== this) {
+            property({
+                attribute: "theme",
+                type: String,
+                reflect: true,
+            })(this, "activeTheme");
+
+            const hint =
+                this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme;
+            const preferredColorScheme = resolveUITheme(hint);
+
+            this.activeTheme = preferredColorScheme;
         }
     }
 
@@ -117,15 +130,14 @@ export class AKElement extends LitElement implements AKElementProps {
      *
      * @remarks
      *
+     * This property is lazy-initialized when the element is connected.
+     *
      * Unlike the browser's current color scheme, this is a value that can be
      * resolved to a specific theme, i.e. dark or light.
+     *
+     * @attr ("light" | "dark") activeTheme
      */
-    @property({
-        attribute: "theme",
-        type: String,
-        reflect: true,
-    })
-    public activeTheme: ResolvedUITheme;
+    public activeTheme!: ResolvedUITheme;
 
     //#endregion
 
