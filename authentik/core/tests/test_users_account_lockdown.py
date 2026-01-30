@@ -485,7 +485,7 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         self.assertEqual(len(body["processed"]), 1)
         self.assertEqual(len(body["skipped"]), 1)
         self.assertEqual(body["skipped"][0]["username"], internal_sa.username)
-        self.assertIn("internal service account", body["skipped"][0]["reason"].lower())
+        self.assertIn("cannot be locked down", body["skipped"][0]["reason"].lower())
 
         # Verify internal SA was not affected
         internal_sa.refresh_from_db()
