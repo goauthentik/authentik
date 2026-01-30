@@ -200,7 +200,7 @@
         "@rollup/rollup-darwin-arm64": "^4.57.0",
         "@rollup/rollup-linux-arm64-gnu": "^4.57.0",
         "@rollup/rollup-linux-x64-gnu": "^4.57.0",
-        "chromedriver": "^144.0.1"
+        "chromedriver": "^145.0.0"
     },
     "wireit": {
         "build": {
