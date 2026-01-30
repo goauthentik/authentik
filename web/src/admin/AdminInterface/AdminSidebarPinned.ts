@@ -91,14 +91,9 @@ export async function handlePinToggle(
 export function renderSidebarEntry(
     entry: SidebarEntry,
     pinnedPaths: string[],
-    excludePinned = false,
+    _excludePinned = false,
 ): TemplateResult | typeof nothing {
     const [path, label, attributes, children] = entry;
-
-    // Exclude pinned entries from their original location
-    if (excludePinned && path && pinnedPaths.includes(path)) {
-        return nothing;
-    }
 
     const properties: Record<string, unknown> = Array.isArray(attributes)
         ? { ".activeWhen": attributes }
@@ -113,19 +108,6 @@ export function renderSidebarEntry(
         }
     }
 
-    // Filter out pinned children
-    const visibleChildren = children
-        ? children.filter((child) => {
-              const [childPath] = child;
-              return !excludePinned || !childPath || !pinnedPaths.includes(childPath);
-          })
-        : undefined;
-
-    // Hide parent if all children are pinned (and excluded)
-    if (children && excludePinned && (!visibleChildren || visibleChildren.length === 0)) {
-        return nothing;
-    }
-
     return html`<ak-sidebar-item
         exportparts="list-item, link"
         label=${label}
@@ -136,9 +118,7 @@ export function renderSidebarEntry(
         ?enterprise=${properties.enterprise}
         .activeWhen=${properties[".activeWhen"] ?? []}
     >
-        ${visibleChildren
-            ? visibleChildren.map((child) => renderSidebarEntry(child, pinnedPaths, excludePinned))
-            : nothing}
+        ${children ? children.map((child) => renderSidebarEntry(child, pinnedPaths)) : nothing}
     </ak-sidebar-item>`;
 }
 
@@ -161,7 +141,7 @@ export function renderPinnedSection(
 }
 
 /**
- * Render sidebar entries, excluding pinned items from their original location.
+ * Render sidebar entries.
  */
 export function renderSidebarEntries(
     entries: readonly SidebarEntry[],
