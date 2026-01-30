@@ -1,18 +1,18 @@
 import styles from "./styles.module.css";
 
 import {
-    useComputedPalette,
-    useComputedUtilityColors,
+    ColorEntry,
+    ColorGroupProp,
+    computeColor,
+    ComputedColor,
+    createComputedColorGroup,
+    Prefix,
 } from "@goauthentik/docusaurus-theme/components/infima/shared.ts";
 
 import { useColorMode } from "@docusaurus/theme-common";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-interface ColorSwatchProps {
-    cssVar: string;
-    label: string;
-    hex: string | null;
-    contrastColor: string;
+interface ColorSwatchProps extends ComputedColor {
     showVar?: boolean;
 }
 
@@ -53,42 +53,21 @@ const ColorSwatch: React.FC<ColorSwatchProps> = ({
 };
 
 export interface ColorGroupProps {
-    name: string;
+    group?: ColorGroupProp;
 }
 
-export const ColorGroup: React.FC<ColorGroupProps> = ({ name }) => {
+export const ColorGroup: React.FC<ColorGroupProps> = ({ group }) => {
     const { colorMode } = useColorMode();
-    const palette = useComputedPalette(colorMode);
-    const group = palette.get(name);
 
     if (!group) {
-        return null;
+        throw new TypeError("Invalid color group name");
     }
 
-    return (
-        <>
-            <div className={styles.colorGrid}>
-                {group.map((color) => (
-                    <ColorSwatch
-                        key={color.cssVar}
-                        cssVar={color.cssVar}
-                        label={color.label}
-                        hex={color.hex}
-                        contrastColor={color.contrastColor}
-                    />
-                ))}
-            </div>
-        </>
-    );
-};
-
-export const UtilityColors: React.FC = () => {
-    const { colorMode } = useColorMode();
-    const utilityColors = useComputedUtilityColors(colorMode);
+    const computed = useMemo(() => createComputedColorGroup(group, colorMode), [group, colorMode]);
 
     return (
-        <div className={styles.utilityGrid}>
-            {utilityColors.map((color) => (
+        <div className={styles.colorGrid}>
+            {computed.colors.map((color) => (
                 <ColorSwatch
                     key={color.cssVar}
                     cssVar={color.cssVar}
@@ -101,18 +80,31 @@ export const UtilityColors: React.FC = () => {
     );
 };
 
-export const InfimaColorPalette: React.FC = () => {
+export interface PaletteGroupProps {
+    entries?: Iterable<ColorEntry>;
+}
+
+export const PaletteGroup: React.FC<PaletteGroupProps> = ({ entries }) => {
     const { colorMode } = useColorMode();
-    const palette = useComputedPalette(colorMode);
+
+    if (!entries) {
+        throw new TypeError("Invalid utility color entries");
+    }
+
+    const swatchProps: ColorSwatchProps[] = useMemo(() => {
+        return Array.from(entries, ([label, partialCSSVar]) => {
+            const cssVar = `${Prefix.Infima}${partialCSSVar}`;
+            const { hex, contrastColor } = computeColor(cssVar);
+
+            return { cssVar, label, hex, contrastColor, showVar: true, colorMode };
+        });
+    }, [entries, colorMode]);
 
     return (
-        <>
-            <div className="container margin-vert--md">
-                <strong>Current Mode: {colorMode === "dark" ? "Dark" : "Light"}</strong>
-            </div>
-            {/* {palette.map((group) => (
-                <ColorGroup key={group.name} group={group} />
-            ))} */}
-        </>
+        <div className={styles.colorGrid}>
+            {swatchProps.map((props) => (
+                <ColorSwatch key={props.cssVar} {...props} />
+            ))}
+        </div>
     );
 };

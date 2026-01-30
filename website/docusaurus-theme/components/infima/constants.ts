@@ -1,103 +1,126 @@
 import {
-    ColorGroup,
-    UtilityColor,
+    ColorEntry,
+    ColorGroupProp,
+    Shade,
 } from "@goauthentik/docusaurus-theme/components/infima/shared.ts";
 
-export const infimalColors: ColorGroup[] = [
-    {
-        name: "Primary",
-        cssVar: "--ifm-color-primary",
-        shades: [
-            { name: "Darkest", suffix: "-darkest" },
-            { name: "Darker", suffix: "-darker" },
-            { name: "Dark", suffix: "-dark" },
-            { name: "Default", suffix: "" },
-            { name: "Light", suffix: "-light" },
-            { name: "Lighter", suffix: "-lighter" },
-            { name: "Lightest", suffix: "-lightest" },
-        ],
-    },
-    {
-        name: "Secondary",
-        cssVar: "--ifm-color-secondary",
-        shades: [
-            { name: "Darkest", suffix: "-darkest" },
-            { name: "Darker", suffix: "-darker" },
-            { name: "Dark", suffix: "-dark" },
-            { name: "Default", suffix: "" },
-            { name: "Light", suffix: "-light" },
-            { name: "Lighter", suffix: "-lighter" },
-            { name: "Lightest", suffix: "-lightest" },
-        ],
-    },
-    {
-        name: "Success",
-        cssVar: "--ifm-color-success",
-        shades: [
-            { name: "Darkest", suffix: "-darkest" },
-            { name: "Darker", suffix: "-darker" },
-            { name: "Dark", suffix: "-dark" },
-            { name: "Default", suffix: "" },
-            { name: "Light", suffix: "-light" },
-            { name: "Lighter", suffix: "-lighter" },
-            { name: "Lightest", suffix: "-lightest" },
-        ],
-    },
-    {
-        name: "Info",
-        cssVar: "--ifm-color-info",
-        shades: [
-            { name: "Darkest", suffix: "-darkest" },
-            { name: "Darker", suffix: "-darker" },
-            { name: "Dark", suffix: "-dark" },
-            { name: "Default", suffix: "" },
-            { name: "Light", suffix: "-light" },
-            { name: "Lighter", suffix: "-lighter" },
-            { name: "Lightest", suffix: "-lightest" },
-        ],
-    },
-    {
-        name: "Warning",
-        cssVar: "--ifm-color-warning",
-        shades: [
-            { name: "Darkest", suffix: "-darkest" },
-            { name: "Darker", suffix: "-darker" },
-            { name: "Dark", suffix: "-dark" },
-            { name: "Default", suffix: "" },
-            { name: "Light", suffix: "-light" },
-            { name: "Lighter", suffix: "-lighter" },
-            { name: "Lightest", suffix: "-lightest" },
-        ],
-    },
-    {
-        name: "Danger",
-        cssVar: "--ifm-color-danger",
-        shades: [
-            { name: "Darkest", suffix: "-darkest" },
-            { name: "Darker", suffix: "-darker" },
-            { name: "Dark", suffix: "-dark" },
-            { name: "Default", suffix: "" },
-            { name: "Light", suffix: "-light" },
-            { name: "Lighter", suffix: "-lighter" },
-            { name: "Lightest", suffix: "-lightest" },
-        ],
-    },
+const shades: Shade[] = [
+    ["Darkest", "-darkest"],
+    ["Darker", "-darker"],
+    ["Dark", "-dark"],
+    ["Default", ""],
+    ["Light", "-light"],
+    ["Lighter", "-lighter"],
+    ["Lightest", "-lightest"],
 ];
 
-export const utilityColorDefs: UtilityColor[] = [
-    { name: "Background Color", cssVar: "--ifm-background-color" },
-    { name: "Background Surface", cssVar: "--ifm-background-surface-color" },
-    { name: "Font Color Base", cssVar: "--ifm-font-color-base" },
-    { name: "Font Color Secondary", cssVar: "--ifm-font-color-secondary" },
-    { name: "Heading Color", cssVar: "--ifm-heading-color" },
-    { name: "Link Color", cssVar: "--ifm-link-color" },
-    { name: "Menu Color", cssVar: "--ifm-menu-color" },
-    { name: "Menu Color Active", cssVar: "--ifm-menu-color-active" },
-    { name: "Navbar Background", cssVar: "--ifm-navbar-background-color" },
-    { name: "Footer Background", cssVar: "--ifm-footer-background-color" },
-    { name: "Card Background", cssVar: "--ifm-card-background-color" },
-    { name: "Code Background", cssVar: "--ifm-code-background" },
-    { name: "Toc Border", cssVar: "--ifm-toc-border-color" },
-    { name: "Table Stripe", cssVar: "--ifm-table-stripe-background" },
-    { name: "Hover Overlay", cssVar: "--ifm-hover-overlay" },
+export const InfimaColorsMap: ReadonlyMap<string, ColorGroupProp> = new Map([
+    [
+        "primary",
+        {
+            label: "Primary",
+            cssVar: "color-primary",
+            shades,
+        },
+    ],
+    [
+        "secondary",
+        {
+            label: "Secondary",
+            cssVar: "color-secondary",
+            shades,
+        },
+    ],
+    [
+        "success",
+        {
+            label: "Success",
+            cssVar: "color-success",
+            shades,
+        },
+    ],
+    [
+        "info",
+        {
+            label: "Info",
+            cssVar: "color-info",
+            shades,
+        },
+    ],
+    [
+        "warning",
+        {
+            label: "Warning",
+            cssVar: "color-warning",
+            shades,
+        },
+    ],
+    [
+        "danger",
+        {
+            label: "Danger",
+            cssVar: "color-danger",
+            shades,
+        },
+    ],
+]);
+
+export const UtilityColorEntries: readonly ColorEntry[] = [
+    ["Background Color", "background-color"],
+    ["Background Surface", "background-surface-color"],
+    ["Font Color Base", "font-color-base"],
+    ["Font Color Secondary", "font-color-secondary"],
+    ["Content Color", "color-content"],
+    ["Content Color Inverse", "color-content-inverse"],
+    ["Content Color Secondary", "color-content-secondary"],
+    ["Heading Color", "heading-color"],
+    ["Link Color", "link-color"],
+    ["Menu Color", "menu-color"],
+    ["Menu Color Active", "menu-color-active"],
+    ["Navbar Background", "navbar-background-color"],
+    ["Footer Background", "footer-background-color"],
+    ["Card Background", "card-background-color"],
+    ["Code Background", "code-background"],
+    ["Toc Border", "toc-border-color"],
+    ["Table Stripe", "table-stripe-background"],
+    ["Hover Overlay", "hover-overlay"],
+];
+
+export const DispositionInfoColorEntries: readonly ColorEntry[] = [
+    ["Contrast Background", "color-info-contrast-background"],
+    ["Dark", "color-info-dark"],
+    ["Darker", "color-info-darker"],
+    ["Darkest", "color-info-darkest"],
+    ["Light", "color-info-light"],
+    ["Lighter", "color-info-lighter"],
+    ["Lightest", "color-info-lightest"],
+];
+
+export const DispositionSuccessColorEntries: readonly ColorEntry[] = [
+    ["Contrast Background", "color-success-contrast-background"],
+    ["Dark", "color-success-dark"],
+    ["Darker", "color-success-darker"],
+    ["Darkest", "color-success-darkest"],
+    ["Light", "color-success-light"],
+    ["Lighter", "color-success-lighter"],
+    ["Lightest", "color-success-lightest"],
+];
+export const DispositionWarningColorEntries: readonly ColorEntry[] = [
+    ["Contrast Background", "color-warning-contrast-background"],
+    ["Dark", "color-warning-dark"],
+    ["Darker", "color-warning-darker"],
+    ["Darkest", "color-warning-darkest"],
+    ["Light", "color-warning-light"],
+    ["Lighter", "color-warning-lighter"],
+    ["Lightest", "color-warning-lightest"],
+];
+
+export const DispositionDangerColorEntries: readonly ColorEntry[] = [
+    ["Contrast Background", "color-danger-contrast-background"],
+    ["Dark", "color-danger-dark"],
+    ["Darker", "color-danger-darker"],
+    ["Darkest", "color-danger-darkest"],
+    ["Light", "color-danger-light"],
+    ["Lighter", "color-danger-lighter"],
+    ["Lightest", "color-danger-lightest"],
 ];
