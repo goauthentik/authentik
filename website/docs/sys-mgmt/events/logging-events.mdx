@@ -55,33 +55,9 @@ You can construct advanced queries to find specific event logs. In the Admin int
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
 - **Values**: `True`, `False`, `None`, and more
 
-### Keyboard shortcuts
+### Examples
 
-<KeyBindingsTable
-    aria-label="Keyboard shortcuts for the Query Language (QL) search"
-
-    bindings={[
-        [
-            "Autocomplete",
-            [
-                ["Select next suggestion", <kbd aria-label="Down arrow">↓</kbd>],
-                ["Select previous suggestion", <kbd aria-label="Up arrow">↑</kbd>],
-                ["Accept the current suggestion", <kbd aria-label="Enter key">Enter</kbd>],
-                ["Dismiss suggestions", <kbd aria-label="Escape key">ESC</kbd>],
-            ],
-        ],
-        [
-            "Search",
-            [
-                ["Submit the current query", <kbd aria-label="Enter key">Enter</kbd>],
-                ["Clear the current query", <kbd aria-label="Escape key">ESC</kbd>],
-            ],
-        ],
-    ]}
-
-/>
-
-### Example queries
+The following are examples of advanced queries:
 
 ```sh Search event by application name
 app startswith "N"
@@ -117,18 +93,32 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 
 1. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
 2. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
+   :::
 
-:::
+### Keyboard shortcuts for advanced queries
 
-## Export events :ak-enterprise
+The following keyboard shortcuts can be used in the advanced query search:
 
-You can export your authentik instance's events to a CSV file. To generate a data export, follow these steps:
+<KeyBindingsTable
+    aria-label="Keyboard shortcuts for the Query Language (QL) search"
 
-1. Log in to authentik as an administrator and navigate to **Events > Logs**.
-2. Set a [search query](#tell-me-more) as well as the ordering, as needed. The data export will honor these settings.
-3. Click **Export** above the event list.
-4. Confirm the export parameters in the confirmation dialog.
-5. Note that the export is processed in the background. Once the export is ready, you will receive a notification in the notification drawer.
-6. In the notification, click **Download**.
+    bindings={[
+        [
+            "Autocomplete",
+            [
+                ["Select next suggestion", <kbd aria-label="Down arrow">↓</kbd>],
+                ["Select previous suggestion", <kbd aria-label="Up arrow">↑</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Dismiss suggestions", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+        [
+            "Search",
+            [
+                ["Submit the current query", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Clear the current query", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+    ]}
 
-To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
+/>
