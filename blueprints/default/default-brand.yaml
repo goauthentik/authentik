@@ -17,6 +17,11 @@ entries:
       identifiers:
         name: Default - User settings flow
       required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Account lockdown flow
+      required: false
   - attrs:
       flow_authentication:
         !Find [authentik_flows.flow, [slug, default-authentication-flow]]
@@ -24,6 +29,8 @@ entries:
         !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
       flow_user_settings:
         !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+      flow_lockdown:
+        !Find [authentik_flows.flow, [slug, default-account-lockdown]]
     identifiers:
       domain: authentik-default
       default: true

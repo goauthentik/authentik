@@ -11,12 +11,16 @@ export class UserAccountLockdownForm extends SingleUserAccountLockdownForm {
     public instancePk?: number;
 
     async send(data: AccountLockdownRequest): Promise<void> {
-        await this.coreApi.coreUsersAccountLockdownCreate({
+        const response = await this.coreApi.coreUsersAccountLockdownCreate({
             userAccountLockdownRequest: {
                 ...data,
                 user: this.instancePk,
             },
         });
+        // Redirect to the lockdown flow if one is configured
+        if (response.flowUrl) {
+            window.location.assign(response.flowUrl);
+        }
     }
 }
 
