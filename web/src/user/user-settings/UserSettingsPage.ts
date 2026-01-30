@@ -218,6 +218,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                                       <ak-user-self-account-lockdown-form
                                                           slot="form"
                                                           .username=${currentUser?.username}
+                                                          .instancePk=${currentUser?.pk}
                                                       ></ak-user-self-account-lockdown-form>
                                                       <button
                                                           slot="trigger"
