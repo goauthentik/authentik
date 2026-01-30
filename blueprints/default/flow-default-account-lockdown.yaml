@@ -28,6 +28,7 @@ entries:
     type: alert_danger
     field_key: lockdown_warning
     label: Warning
+    sub_text: ""
   identifiers:
     name: default-account-lockdown-field-warning
   id: prompt-field-warning
@@ -43,6 +44,7 @@ entries:
     type: alert_info
     field_key: lockdown_info
     label: When to use
+    sub_text: ""
   identifiers:
     name: default-account-lockdown-field-info
   id: prompt-field-info
@@ -92,6 +94,7 @@ entries:
     type: alert_warning
     field_key: lockdown_complete
     label: Your account has been locked
+    sub_text: ""
   identifiers:
     name: default-account-lockdown-field-complete
   id: prompt-field-complete
