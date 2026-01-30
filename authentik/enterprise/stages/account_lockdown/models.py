@@ -41,9 +41,7 @@ class AccountLockdownStage(Stage):
     )
     revoke_tokens = models.BooleanField(
         default=True,
-        help_text=_(
-            "Revoke all tokens for the user (API, app password, recovery, verification)"
-        ),
+        help_text=_("Revoke all tokens for the user (API, app password, recovery, verification)"),
     )
     self_service_message_title = models.TextField(
         default="Your account has been locked",
@@ -51,10 +49,14 @@ class AccountLockdownStage(Stage):
     )
     self_service_message = models.TextField(
         default=(
-            "<p>You have been logged out of all sessions and your password has been invalidated.</p>"
-            "<p>To regain access to your account, please contact your IT administrator or security team.</p>"
+            "<p>You have been logged out of all sessions and your password has been "
+            "invalidated.</p>"
+            "<p>To regain access to your account, please contact your IT administrator "
+            "or security team.</p>"
         ),
-        help_text=_("HTML message shown to users after self-service lockdown. Supports HTML formatting."),
+        help_text=_(
+            "HTML message shown to users after self-service lockdown. Supports HTML formatting."
+        ),
     )
     self_service_completion_flow = models.ForeignKey(
         "authentik_flows.Flow",

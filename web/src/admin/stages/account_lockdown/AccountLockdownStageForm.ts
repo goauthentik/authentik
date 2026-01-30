@@ -7,7 +7,11 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { AccountLockdownStage, FlowsInstancesListDesignationEnum, StagesApi } from "@goauthentik/api";
+import {
+    AccountLockdownStage,
+    FlowsInstancesListDesignationEnum,
+    StagesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
