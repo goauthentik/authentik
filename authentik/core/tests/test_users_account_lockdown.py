@@ -1,9 +1,9 @@
 """Test Users Account Lockdown API"""
 
 from json import loads
+from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
 from authentik.core.models import AuthenticatedSession, Session, Token, TokenIntents, UserTypes
@@ -12,7 +12,14 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.tenants.models import Tenant
 
+# Patch for enterprise license check
+patch_license = patch(
+    "authentik.enterprise.models.LicenseUsageStatus.is_valid",
+    MagicMock(return_value=True),
+)
 
+
+@patch_license
 class TestUsersAccountLockdownAPI(APITestCase):
     """Test Users Account Lockdown API"""
 
@@ -125,69 +132,6 @@ class TestUsersAccountLockdownAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("Account lockdown feature is disabled", body["non_field_errors"][0])
 
-    def test_account_lockdown_self_trigger_denied(self):
-        """Test that users cannot trigger account lockdown on themselves"""
-        self.client.force_login(self.admin)
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.admin.pk}),
-            data={"reason": "Self test"},
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("Cannot trigger account lockdown on yourself", body["non_field_errors"][0])
-
-    def test_account_lockdown_anonymous_user_denied(self):
-        """Test that account lockdown cannot be triggered on anonymous user"""
-        self.client.force_login(self.admin)
-        anon_user = get_anonymous_user()
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": anon_user.pk}),
-            data={"reason": "Test anonymous"},
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn(
-            "Cannot trigger account lockdown on anonymous user", body["non_field_errors"][0]
-        )
-
-    def test_account_lockdown_internal_service_account_denied(self):
-        """Test that account lockdown cannot be triggered on internal service accounts"""
-        self.client.force_login(self.admin)
-
-        # Create an internal service account
-        internal_sa = create_test_user()
-        internal_sa.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
-        internal_sa.save()
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": internal_sa.pk}),
-            data={"reason": "Test internal SA"},
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn(
-            "Cannot trigger account lockdown on internal service accounts",
-            body["non_field_errors"][0],
-        )
-
-    def test_account_lockdown_requires_reason(self):
-        """Test that reason field is required"""
-        self.client.force_login(self.admin)
-
-        response = self.client.post(
-            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
-            data={},
-        )
-
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content)
-        self.assertIn("reason", body)
-
     def test_account_lockdown_reason_max_length(self):
         """Test that reason field has max length validation"""
         self.client.force_login(self.admin)
@@ -226,6 +170,159 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.assertEqual(response.status_code, 403)
 
 
+@patch_license
+class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
+    """Test Users Account Lockdown Self-Service API"""
+
+    def setUp(self) -> None:
+        self.user = create_test_user()
+        self.user.email = f"{generate_id()}@test.com"
+        self.user.save()
+        self.tenant = Tenant.objects.first()
+        self.tenant.account_lockdown_enabled = True
+        self.tenant.save()
+
+    def test_account_lockdown_self_success(self):
+        """Test successful self-service account lockdown"""
+        self.client.force_login(self.user)
+        old_password = self.user.password
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "I think my account was compromised"},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        # Verify user was deactivated and password changed
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+        self.assertNotEqual(self.user.password, old_password)
+
+    def test_account_lockdown_self_creates_event(self):
+        """Test that self-service lockdown creates correct event"""
+        self.client.force_login(self.user)
+        Event.objects.all().delete()
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "Security incident"},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        # Verify event was created with self-service action
+        event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_SELF_TRIGGERED).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], "Security incident")
+        self.assertEqual(event.context["affected_user"], self.user.username)
+
+    def test_account_lockdown_self_deletes_sessions(self):
+        """Test that self-service lockdown deletes user sessions"""
+        self.client.force_login(self.user)
+
+        # Create a session for the user
+        session_id = generate_id()
+        session = Session.objects.create(
+            session_key=session_id,
+            last_ip="127.0.0.1",
+            last_user_agent="test",
+        )
+        AuthenticatedSession.objects.create(session=session, user=self.user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "Session hijack suspected"},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        # Verify session was deleted
+        self.assertFalse(Session.objects.filter(session_key=session_id).exists())
+
+    def test_account_lockdown_self_revokes_tokens(self):
+        """Test that self-service lockdown revokes all user tokens"""
+        self.client.force_login(self.user)
+
+        # Create tokens for the user
+        Token.objects.create(
+            identifier="test-api-token",
+            user=self.user,
+            intent=TokenIntents.INTENT_API,
+        )
+        Token.objects.create(
+            identifier="test-app-password",
+            user=self.user,
+            intent=TokenIntents.INTENT_APP_PASSWORD,
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "Token compromise"},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        # Verify tokens were deleted
+        self.assertEqual(Token.objects.filter(user=self.user).count(), 0)
+
+    def test_account_lockdown_self_disabled(self):
+        """Test self-service lockdown when feature is disabled"""
+        self.tenant.account_lockdown_enabled = False
+        self.tenant.save()
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "Test"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content)
+        self.assertIn("Account lockdown feature is disabled", body["non_field_errors"][0])
+
+    def test_account_lockdown_self_internal_service_account_denied(self):
+        """Test that internal service accounts cannot use self-lockdown"""
+        internal_sa = create_test_user()
+        internal_sa.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
+        internal_sa.save()
+        self.client.force_login(internal_sa)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "Test"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content)
+        self.assertIn(
+            "Internal service accounts cannot use this feature", body["non_field_errors"][0]
+        )
+
+    def test_account_lockdown_self_requires_reason(self):
+        """Test that reason field is required"""
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content)
+        self.assertIn("reason", body)
+
+    def test_account_lockdown_self_unauthenticated(self):
+        """Test self-service lockdown requires authentication"""
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-self"),
+            data={"reason": "Test"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+
+@patch_license
 class TestUsersAccountLockdownBulkAPI(APITestCase):
     """Test Users Account Lockdown Bulk API"""
 

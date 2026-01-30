@@ -1,14 +1,17 @@
 import "#components/ak-textarea-input";
 import "#elements/Alert";
+import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
 
 import { CoreApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, html, TemplateResult } from "lit";
+import { css, html, nothing, TemplateResult } from "lit";
+import { property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -116,10 +119,23 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
                 <div class="pf-c-alert__description">
                     <p>${msg("This action will immediately:")}</p>
                     <ul class="pf-c-list">
-                        <li>${msg("Deactivate the user account")}</li>
-                        <li>${msg("Reset the password to a random value")}</li>
-                        <li>${msg("Terminate all active sessions")}</li>
-                        <li>${msg("Revoke all API tokens and OAuth tokens")}</li>
+                        <li>
+                            ${msg("Invalidate the user's password")}
+                            <ul class="pf-c-list">
+                                <li>
+                                    ${msg(
+                                        "The password will be set to a random value and cannot be recovered",
+                                    )}
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            ${msg("Deactivate the user account")}
+                            <ul class="pf-c-list">
+                                <li>${msg("Terminate all active authentik sessions")}</li>
+                                <li>${msg("Revoke all API tokens and OAuth tokens")}</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -172,5 +188,55 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
             ${this.renderWarningAlert()} ${this.renderInfoAlert()} ${this.renderAffectedUsers()}
             ${this.renderReasonInput()}
         `;
+    }
+}
+
+/**
+ * Base class for single-user account lockdown forms (admin and self-service).
+ * Provides shared functionality for forms that lock a single user account.
+ */
+export abstract class SingleUserAccountLockdownForm extends AccountLockdownFormBase<AccountLockdownRequest> {
+    @property({ type: String })
+    public username?: string;
+
+    /**
+     * Success message description shown after lockdown.
+     * Override in subclasses for context-specific messaging.
+     */
+    protected get successDescription(): string {
+        return msg("The user's account has been secured.");
+    }
+
+    protected override formatAPISuccessMessage(): APIMessage | null {
+        return {
+            level: MessageLevel.success,
+            message: msg(str`Account lockdown triggered successfully.`),
+            description: this.successDescription,
+        };
+    }
+
+    protected renderAffectedUsers(): TemplateResult {
+        if (!this.username) {
+            return html`${nothing}`;
+        }
+        return html`
+            <ak-form-element-horizontal label=${this.affectedUserLabel}>
+                <div class="pf-c-form-control-static">${this.usernameDisplay}</div>
+            </ak-form-element-horizontal>
+        `;
+    }
+
+    /**
+     * Label for the affected user field.
+     */
+    protected get affectedUserLabel(): string {
+        return msg("Affected user");
+    }
+
+    /**
+     * How to display the username in the form.
+     */
+    protected get usernameDisplay(): string | TemplateResult {
+        return this.username ?? "";
     }
 }

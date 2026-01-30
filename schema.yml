@@ -4615,6 +4615,30 @@ paths:
           description: Account lockdown feature is disabled
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/account_lockdown_self/:
+    post:
+      operationId: core_users_account_lockdown_self_create
+      description: |-
+        Trigger account lockdown for the current user (self-service).
+
+        This allows users to lock down their own account in case of a security incident.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountLockdownRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully triggered account lockdown
+        '400':
+          description: Account lockdown feature is disabled
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/export/:
     post:
       operationId: core_users_export_create
@@ -6965,6 +6989,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_self_triggered
             - account_lockdown_triggered
             - authorize_application
             - configuration_error
@@ -7228,6 +7253,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_self_triggered
             - account_lockdown_triggered
             - authorize_application
             - configuration_error
@@ -7357,6 +7383,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_self_triggered
             - account_lockdown_triggered
             - authorize_application
             - configuration_error
@@ -11019,6 +11046,7 @@ paths:
           type: string
           nullable: true
           enum:
+          - account_lockdown_self_triggered
           - account_lockdown_triggered
           - authorize_application
           - configuration_error
@@ -38186,6 +38214,7 @@ components:
       - impersonation_started
       - impersonation_ended
       - account_lockdown_triggered
+      - account_lockdown_self_triggered
       - flow_execution
       - policy_execution
       - policy_exception
