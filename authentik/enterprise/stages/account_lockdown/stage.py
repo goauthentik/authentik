@@ -1,5 +1,6 @@
 """Account lockdown stage logic"""
 
+from django.db import DatabaseError
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils.html import escape
@@ -114,7 +115,7 @@ class AccountLockdownStageView(StageView):
                 self._lockdown_user(request, stage, user, reason)
                 self.logger.info("Account lockdown completed", user=user.username)
                 results.append({"user": user, "success": True, "error": None})
-            except Exception as exc:
+            except DatabaseError as exc:
                 self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
                 results.append({"user": user, "success": False, "error": str(exc)})
 
