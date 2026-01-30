@@ -17,6 +17,7 @@ from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.policies.engine import PolicyEngine
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
 
 LOGGER = get_logger()
@@ -87,8 +88,11 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     exclude_users_service_account = models.BooleanField(default=False)
 
-    filter_group = models.ForeignKey(
-        "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
+    group_filters = models.ManyToManyField(
+        "authentik_core.group",
+        default=None,
+        blank=True,
+        help_text=_("Group filters used to define sync-scope for groups."),
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
@@ -176,22 +180,47 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         cache.delete(cache_key)
         super().save(*args, **kwargs)
 
-    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = User.objects.all().exclude_anonymous()
+            base = User.objects.all().exclude_anonymous().filter(**kwargs)
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
                 )
-            if self.filter_group:
-                base = base.filter(ak_groups__in=[self.filter_group])
+
+            # Filter users by their access to the backchannel application if an application is set
+            # This handles both policy bindings and group_filters
+            if self.backchannel_application:
+                base = base.filter(
+                    pk__in=[
+                        user.pk
+                        for user in base
+                        if PolicyEngine(self.backchannel_application, user, None).build().passing
+                    ]
+                )
             return base.order_by("pk")
+
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            return Group.objects.all().order_by("pk")
+            # according to the provider's settings
+            base = Group.objects.prefetch_related("scimprovidergroup_set").all().filter(**kwargs)
+
+            # Filter groups by group_filters if set
+            if self.group_filters.exists():
+                base = base.filter(pk__in=self.group_filters.values_list("pk", flat=True))
+
+            return base.order_by("pk")
         raise ValueError(f"Invalid type {type}")
+
+    @classmethod
+    def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:
+        if isinstance(obj, User):
+            return list(obj.scimprovideruser_set.values_list("provider__pk", "scim_id"))
+        if isinstance(obj, Group):
+            return list(obj.scimprovidergroup_set.values_list("provider__pk", "scim_id"))
+        raise ValueError(f"Invalid type {type(obj)}")
 
     @property
     def component(self) -> str:

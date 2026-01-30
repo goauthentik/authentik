@@ -50,9 +50,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             self._task.info("Group syncing is disabled for this Source")
             return -1
         membership_count = 0
-        for group in page_data:
+        for group_data in page_data:
             if self._source.lookup_groups_from_user:
-                group_dn = group.get("dn", {})
+                group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
                 group_filter = f"({self._source.group_membership_field}={escaped_dn})"
                 group_members = self._source.connection().extend.standard.paged_search(
@@ -66,12 +66,12 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                     group_member_dn = group_member.get("dn", {})
                     members.append(group_member_dn)
             else:
-                if (attributes := self.get_attributes(group)) is None:
+                if (attributes := self.get_attributes(group_data)) is None:
                     continue
                 members = attributes.get(self._source.group_membership_field, [])
 
-            ak_group = self.get_group(group)
-            if not ak_group:
+            group = self.get_group(group_data)
+            if not group:
                 continue
 
             users = User.objects.filter(
@@ -79,14 +79,14 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 | Q(
                     **{
                         f"attributes__{self._source.user_membership_attribute}__isnull": True,
-                        "ak_groups__in": [ak_group],
+                        "groups__in": [group],
                     }
                 )
             ).distinct()
             membership_count += 1
             membership_count += users.count()
-            ak_group.users.set(users)
-            ak_group.save()
+            group.users.set(users)
+            group.save()
         self._logger.debug("Successfully updated group membership")
         return membership_count
 

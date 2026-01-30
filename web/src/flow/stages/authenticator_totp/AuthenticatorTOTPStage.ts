@@ -1,14 +1,17 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "webcomponent-qr-code";
+import "#types/qr-code";
 
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -17,9 +20,8 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -27,7 +29,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
@@ -35,7 +36,6 @@ export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFFormControl,
@@ -51,20 +51,15 @@ export class AuthenticatorTOTPStage extends BaseStage<
         `,
     ];
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
 
                 <div class="pf-c-form__group">

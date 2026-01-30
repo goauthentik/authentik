@@ -1,6 +1,9 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -9,9 +12,8 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -19,7 +21,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
@@ -27,7 +28,6 @@ export class AuthenticatorStaticStage extends BaseStage<
     AuthenticatorStaticChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFFormControl,
@@ -50,20 +50,15 @@ export class AuthenticatorStaticStage extends BaseStage<
         `,
     ];
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <ul class="pf-c-form__group token-list">
                     ${this.challenge.codes.map((token) => {
                         return html`<li>${token}</li>`;

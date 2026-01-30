@@ -191,7 +191,7 @@ class ResponseProcessor:
         if message is not None:
             raise ValueError(message.text)
 
-    def _get_name_id(self) -> "Element":
+    def _get_name_id(self) -> Element:
         """Get NameID Element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:

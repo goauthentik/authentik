@@ -1,9 +1,13 @@
 ---
 title: Google Chrome Device Trust Authenticator Stage
 authentik_version: "2024.10"
-authentik_preview: true
 authentik_enterprise: true
+support_level: deprecated
 ---
+
+:::warning Deprecated
+This stage has been deprecated and is being replaced by the [Device Compliance](../../../../endpoint-devices/device-compliance/index.mdx) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
+:::
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
 

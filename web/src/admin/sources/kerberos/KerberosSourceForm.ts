@@ -85,7 +85,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
                 label=${msg("Name")}
@@ -243,11 +243,6 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                                     label: "Heimdal",
                                     value: KadminTypeEnum.Heimdal,
                                     description: html`${msg("Heimdal kadmin")}`,
-                                },
-                                {
-                                    label: msg("Other"),
-                                    value: KadminTypeEnum.Other,
-                                    description: html`${msg("Other type of kadmin")}`,
                                 },
                             ]}
                             .value=${this.instance?.kadminType}

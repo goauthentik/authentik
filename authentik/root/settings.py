@@ -148,6 +148,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
+GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
@@ -191,6 +192,7 @@ SPECTACULAR_SETTINGS = {
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "StageModeEnum": "authentik.endpoints.models.StageMode",
         "LicenseSummaryStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
+        "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,

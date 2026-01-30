@@ -26,7 +26,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
@@ -58,6 +58,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+/// <reference types="../../types/lit.d.ts" />
+
 @customElement("ak-flow-executor")
 export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
@@ -85,20 +87,26 @@ export class FlowExecutor
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    #challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    public set challenge(value: ChallengeTypes | undefined) {
+    public set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+        const previousTitle = previousValue?.flowInfo?.title;
+        const nextTitle = value?.flowInfo?.title;
+
         this.#challenge = value;
-        if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
-        } else {
+
+        if (!nextTitle) {
             document.title = this.brandingTitle;
+        } else if (nextTitle !== previousTitle) {
+            document.title = `${nextTitle} - ${this.brandingTitle}`;
         }
-        this.requestUpdate();
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    public get challenge(): ChallengeTypes | undefined {
+    public get challenge(): ChallengeTypes | null {
         return this.#challenge;
     }
 
@@ -117,7 +125,7 @@ export class FlowExecutor
     @property({ type: Boolean })
     public inspectorAvailable?: boolean;
 
-    @property({ type: String, attribute: "data-layout", useDefault: true })
+    @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
     @state()
@@ -159,6 +167,8 @@ export class FlowExecutor
         });
     }
 
+    //#region Listeners
+
     @listen(AKSessionAuthenticatedEvent)
     protected sessionAuthenticatedListener = () => {
         if (!document.hidden) {
@@ -175,11 +185,7 @@ export class FlowExecutor
         WebsocketClient.close();
     }
 
-    public async firstUpdated(): Promise<void> {
-        if (this.can(CapabilitiesEnum.CanDebug)) {
-            this.inspectorAvailable = true;
-        }
-
+    protected refresh = () => {
         this.loading = true;
 
         return new FlowsApi(DEFAULT_CONFIG)
@@ -187,11 +193,7 @@ export class FlowExecutor
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
             })
-            .then((challenge: ChallengeTypes) => {
-                if (this.inspectorOpen) {
-                    window.dispatchEvent(new AKFlowAdvanceEvent());
-                }
-
+            .then((challenge) => {
                 this.challenge = challenge;
 
                 if (this.challenge.flowInfo) {
@@ -210,6 +212,20 @@ export class FlowExecutor
             .finally(() => {
                 this.loading = false;
             });
+    };
+
+    public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
+        super.firstUpdated(changed);
+
+        if (this.can(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
+        }
+
+        this.refresh().then(() => {
+            if (this.inspectorOpen) {
+                window.dispatchEvent(new AKFlowAdvanceEvent());
+            }
+        });
     }
 
     // DOM post-processing has to happen after the render.
@@ -220,8 +236,16 @@ export class FlowExecutor
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (changedProperties.has("flowInfo") && this.flowInfo) {
-            applyBackgroundImageProperty(this.flowInfo.background);
+        if (
+            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
+            this.flowInfo
+        ) {
+            // Use themed background URL if available, otherwise fall back to default
+            const backgroundUrl =
+                (this.flowInfo.backgroundThemedUrls as Record<string, string> | null | undefined)?.[
+                    this.activeTheme
+                ] ?? this.flowInfo.background;
+            applyBackgroundImageProperty(backgroundUrl);
         }
 
         if (
@@ -479,6 +503,7 @@ export class FlowExecutor
         return html`<ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
+                class="pf-m-dark"
             ></ak-locale-select>
 
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
@@ -489,7 +514,13 @@ export class FlowExecutor
                 part="main"
             >
                 <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "branding-logo")}
+                    ${ThemedImage({
+                        src: this.brandingLogo,
+                        alt: msg("authentik Logo"),
+                        className: "branding-logo",
+                        theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
+                    })}
                 </div>
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`

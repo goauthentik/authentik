@@ -1,64 +1,28 @@
 import "#elements/forms/HorizontalFormElement";
 import "#flow/components/ak-flow-card";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
+import { autoDetectLanguage, setSessionLocale } from "#common/ui/locale/utils";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
 import { PromptStage } from "#flow/stages/prompt/PromptStage";
 
-import { AdminApi, PromptTypeEnum, Settings, StagePrompt } from "@goauthentik/api";
+import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
+/**
+ * @prop {StageHost} host - The host managing this stage.
+ *
+ */
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
-    @state()
-    private settings?: Settings;
-
-    constructor() {
-        super();
-        new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
-            this.settings = settings;
-        });
-    }
-
-    isFieldReadOnly(prompt: StagePrompt): boolean {
-        if (
-            prompt.type === PromptTypeEnum.Email &&
-            this.settings?.defaultUserChangeEmail === false
-        ) {
-            return true;
-        }
-        if (
-            prompt.type === PromptTypeEnum.Username &&
-            this.settings?.defaultUserChangeUsername === false
-        ) {
-            return true;
-        }
-        if (
-            prompt.type === PromptTypeEnum.Text &&
-            prompt.fieldKey === "name" &&
-            this.settings?.defaultUserChangeName === false
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-    renderPromptHelpText(prompt: StagePrompt) {
-        if (this.isFieldReadOnly(prompt)) {
-            return html`<p class="pf-c-form__helper-text">
-                ${msg("Not allowed to change this field. Please contact your administrator.")}
-            </p>`;
-        }
-        return super.renderPromptHelpText(prompt);
-    }
-
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    protected override renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<input
                 type="checkbox"
@@ -70,11 +34,10 @@ export class UserSettingsPromptStage extends PromptStage {
             />`;
         }
 
-        const disabled = this.isFieldReadOnly(prompt);
-        return super.renderPromptInner(prompt, disabled);
+        return super.renderPromptInner(prompt);
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected override renderField(prompt: StagePrompt): SlottedTemplateResult {
         const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
 
         if (this.shouldRenderInWrapper(prompt)) {
@@ -97,10 +60,10 @@ export class UserSettingsPromptStage extends PromptStage {
                 </ak-form-element-horizontal>
             `;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
+        return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 
-    renderContinue(): TemplateResult {
+    protected override renderContinue(): SlottedTemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
@@ -121,19 +84,51 @@ export class UserSettingsPromptStage extends PromptStage {
         </div>`;
     }
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
                     @submit=${this.submitForm}
                 >
-                    ${this.challenge.fields.map((prompt) => {
+                    ${Array.from(this.challenge?.fields || [], (prompt) => {
                         return this.renderField(prompt);
                     })}
                     ${this.renderNonFieldErrors()} ${this.renderContinue()}
                 </form>
             </div>
             </ak-flow-card>`;
+    }
+
+    /**
+     * Detects if the locale was changed in a prompt stage and updates the session accordingly.
+     */
+    protected override onSubmitSuccess(payload: Record<string, unknown>): void {
+        super.onSubmitSuccess?.(payload);
+
+        if (this.challenge?.component !== "ak-stage-prompt") return;
+
+        const localeField = this.challenge.fields.find(
+            (field) => field.type === PromptTypeEnum.AkLocale,
+        );
+
+        if (!localeField) return;
+
+        const previousLanguageTag = localeField.initialValue;
+        const languageTag = localeField?.fieldKey ? payload[localeField.fieldKey] : null;
+
+        if (typeof languageTag !== "string") return;
+
+        // Remove the temporary session locale...
+        setSessionLocale(null);
+
+        if (languageTag !== this.activeLanguageTag) {
+            this.logger.info("A prompt stage changed the locale", {
+                languageTag,
+                previousLanguageTag,
+            });
+
+            this.activeLanguageTag = autoDetectLanguage(languageTag);
+        }
     }
 }
 

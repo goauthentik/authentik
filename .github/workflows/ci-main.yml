@@ -37,7 +37,7 @@ jobs:
           - mypy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
@@ -45,7 +45,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -71,7 +71,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 0
       - name: checkout stable
@@ -84,7 +84,7 @@ jobs:
           # Current version family based on
           current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
           if [[ -n $current_version_family ]]; then
-              prev_stable=$current_version_family
+              prev_stable="version/${current_version_family}"
           fi
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
@@ -136,7 +136,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -156,7 +156,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
@@ -187,6 +187,8 @@ jobs:
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
+          - name: ws-fed
+            glob: tests/e2e/test_provider_ws_fed*
           - name: radius
             glob: tests/e2e/test_provider_radius*
           - name: scim
@@ -196,14 +198,14 @@ jobs:
           - name: endpoints
             glob: tests/e2e/test_endpoints_*
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -236,7 +238,7 @@ jobs:
           - name: implicit
             glob: tests/openid_conformance/test_implicit.py
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -246,7 +248,7 @@ jobs:
         run: |
           docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -310,7 +312,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: prepare variables

@@ -90,7 +90,7 @@ class Stage(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def view(self) -> type["StageView"]:
+    def view(self) -> type[StageView]:
         """Return StageView class that implements logic for this stage"""
         # This is a bit of a workaround, since we can't set class methods with setattr
         if hasattr(self, "__in_memory_type"):
@@ -117,7 +117,7 @@ class Stage(SerializerModel):
         return f"Stage {self.name}"
 
 
-def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
+def in_memory_stage(view: type[StageView], **kwargs) -> Stage:
     """Creates an in-memory stage instance, based on a `view` as view.
     Any key-word arguments are set as attributes on the stage object,
     accessible via `self.executor.current_stage`."""
@@ -195,6 +195,15 @@ class Flow(SerializerModel, PolicyBindingModel):
             )
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.background, request)
+
+    def background_themed_urls(self, request: HttpRequest | None = None) -> dict[str, str] | None:
+        """Get themed URLs for background if it contains %(theme)s"""
+        if not self.background:
+            if request:
+                return request.brand.branding_default_flow_background_themed_urls()
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.background, request)
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
@@ -310,13 +319,13 @@ class FlowToken(InternallyManagedMixin, Token):
     revoke_on_execution = models.BooleanField(default=True)
 
     @staticmethod
-    def pickle(plan: "FlowPlan") -> str:
+    def pickle(plan: FlowPlan) -> str:
         """Pickle into string"""
         data = dumps(plan)
         return b64encode(data).decode()
 
     @property
-    def plan(self) -> "FlowPlan":
+    def plan(self) -> FlowPlan:
         """Load Flow plan from pickled version"""
         return loads(b64decode(self._plan.encode()))  # nosec
 

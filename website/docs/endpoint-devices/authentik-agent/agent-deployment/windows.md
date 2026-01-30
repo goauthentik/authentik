@@ -53,6 +53,10 @@ If you already have an enrollment token, skip to the [next section](#install-the
 It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
 :::
 
+:::info Serial number required
+The Agent requires a serial number be presented by Windows. Some hypervisors don't set serial numbers. When deploying on a virtual machine, ensure that it has a serial number set.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
@@ -92,6 +96,4 @@ ak config setup --authentik-url https://authentik.company
 
 ## Logging
 
-The authentik Agent primarily outputs logs to Windows Event Viewer.
-
-WCP logs to the `wcp.log` located in `C:\Program Files\Authentik Security Inc\wcp`.
+All components of the authentik Agent output logs to the "authentik" log in the Windows Event Viewer.

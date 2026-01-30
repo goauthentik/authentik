@@ -16,9 +16,7 @@ export const kAKLocale = Symbol("kAKLocale");
  * @see {@linkcode LocaleMixin}
  * @see {@linkcode WithLocale}
  */
-export const LocaleContext = createContext<LocaleContextValue>(
-    Symbol.for("authentik-locale-context"),
-);
+export const LocaleContext = createContext<LocaleContextValue>(Symbol("authentik-locale-context"));
 
 export type LocaleContext = typeof LocaleContext;
 

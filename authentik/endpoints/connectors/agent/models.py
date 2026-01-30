@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -52,6 +53,10 @@ class AgentConnector(Connector):
     challenge_trigger_check_in = models.BooleanField(default=False)
 
     @property
+    def icon_url(self):
+        return static("dist/assets/icons/icon.svg")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.endpoints.connectors.agent.api.connectors import (
             AgentConnectorSerializer,
@@ -68,7 +73,7 @@ class AgentConnector(Connector):
         return AuthenticatorEndpointStageView
 
     @property
-    def controller(self) -> type["AgentConnectorController"]:
+    def controller(self) -> type[AgentConnectorController]:
         from authentik.endpoints.connectors.agent.controller import AgentConnectorController
 
         return AgentConnectorController

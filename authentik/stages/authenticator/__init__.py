@@ -68,7 +68,7 @@ def match_token(user, token):
     return device
 
 
-def devices_for_user(user: "User", confirmed: bool | None = True, for_verify: bool = False):
+def devices_for_user(user: User, confirmed: bool | None = True, for_verify: bool = False):
     """
     Return an iterable of all devices registered to the given user.
 
