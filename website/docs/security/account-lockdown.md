@@ -28,7 +28,6 @@ An event is created that can be used to [trigger notifications via Notification 
 :::note Protected accounts
 Account Lockdown cannot be triggered on:
 
-- Your own account
 - The anonymous user
 - Internal service accounts
   :::
@@ -39,7 +38,7 @@ Account Lockdown cannot be triggered on:
 2. Navigate to **Directory** > **Users**.
 3. Click on the user you want to lock down.
 4. Click the **Account Lockdown** button.
-5. Enter a reason for the lockdown (this is logged for audit purposes).
+5. Enter a reason for the lockdown.
 6. Click **Trigger Lockdown**.
 
 ## Trigger an Account Lockdown for multiple users
@@ -64,7 +63,7 @@ Self-service lockdown creates a separate event type (**Account Lockdown Self-Ser
 1. Log in to authentik and open the User interface.
 2. Navigate to **Settings** > **Security**.
 3. Click the **Lock my account** button.
-4. Enter a reason describing why you are locking your account (this is logged for audit purposes).
+4. Enter a reason describing why you are locking your account.
 5. Click **Lock My Account**.
 
 After locking your account, you will be immediately logged out and will not be able to log back in until an administrator restores your access.
