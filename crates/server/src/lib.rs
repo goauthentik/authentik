@@ -1,4 +1,12 @@
-use std::{net::SocketAddr, process::Stdio, sync::Arc, time::Duration};
+use std::{
+    net::SocketAddr,
+    process::Stdio,
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
+    time::Duration,
+};
 
 use argh::FromArgs;
 use authentik_axum::extract::{ClientIP, Host, Scheme};
@@ -6,13 +14,11 @@ use authentik_config::get_config;
 use axum::{
     Router,
     body::Body,
-    extract::{ConnectInfo, Request, State},
+    extract::{Request, State},
     http::{HeaderName, StatusCode, Uri},
-    middleware::{self, Next},
     response::Response,
     routing::any,
 };
-use axum_reverse_proxy::ReverseProxy;
 use axum_server::{Handle, tls_rustls::RustlsConfig};
 use eyre::{Result, eyre};
 use http_body_util::BodyExt;
@@ -36,18 +42,21 @@ use rustls::{
 use tokio::{
     process::{Child, Command},
     signal::unix::SignalKind,
-    sync::{RwLock, broadcast, broadcast::error::RecvError},
+    sync::{
+        RwLock,
+        broadcast::{self, error::RecvError},
+    },
     task::JoinSet,
 };
 use tokio_util::sync::CancellationToken;
 use tower::ServiceExt;
-use tracing::{info, trace, warn};
+use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
+use tracing::{Level, info, warn};
 
 mod r#static;
 
 struct ServerState {
     gunicorn: Child,
-    ready: bool,
     handles: Vec<Handle<SocketAddr>>,
 }
 
@@ -64,7 +73,6 @@ impl ServerState {
                 .stdout(Stdio::inherit())
                 .stderr(Stdio::inherit())
                 .spawn()?,
-            ready: false,
             handles,
         })
     }
@@ -102,6 +110,7 @@ async fn watch_gunicorn(
     state_lock: Arc<RwLock<ServerState>>,
     stop: CancellationToken,
     signals_tx: broadcast::Sender<SignalKind>,
+    gunicorn_ready: Arc<AtomicBool>,
 ) -> Result<()> {
     let mut signals_rx = signals_tx.subscribe();
     loop {
@@ -116,9 +125,10 @@ async fn watch_gunicorn(
                         } else if signal == SignalKind::terminate() {
                             state.graceful_shutdown().await?;
                             return Ok(())
-                        } else if signal == SignalKind::user_defined1() {
+                        } else if signal == SignalKind::user_defined1()
+                        {
                             info!("gunicorn is marked ready for operation");
-                            state.ready = true;
+                            gunicorn_ready.store(true, Ordering::Relaxed);
                         }
                     }
                     Err(RecvError::Lagged(_)) => continue,
@@ -155,24 +165,20 @@ async fn watch_gunicorn(
     }
 }
 
+#[derive(Clone, Debug)]
+struct CoreRouterState {
+    client: Client<UnixSocketConnector<&'static str>, Body>,
+    gunicorn_ready: Arc<AtomicBool>,
+}
+
 async fn forward_request(
     ClientIP(client_ip): ClientIP,
     Host(host): Host,
     Scheme(scheme): Scheme,
+    State(state): State<CoreRouterState>,
     req: Request,
 ) -> Response {
-    warn!(?req, "forwarding");
-    let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
-    let client: Client<_, Body> = Client::builder(TokioExecutor::new())
-        .pool_idle_timeout(Duration::from_secs(60))
-        .pool_max_idle_per_host(get_config().await.web.workers * get_config().await.web.threads)
-        .set_host(false)
-        .build(connector);
-
     let path_q = req.uri().path_and_query().map(|x| x.as_str()).unwrap_or("");
-    // let target_uri: Uri = "http://localhost:8000".parse().unwrap();
-    // let scheme = target_uri.scheme_str().unwrap_or("http");
-    // let authority = target_uri.authority().unwrap().as_str().to_owned();
 
     let uri = Uri::builder()
         .scheme("http")
@@ -207,9 +213,7 @@ async fn forward_request(
         builder.body(body).unwrap()
     };
 
-    warn!(?forward_req, "the request that will be sent");
-
-    match client.request(forward_req).await {
+    match state.client.request(forward_req).await {
         Ok(res) => {
             let (parts, body) = res.into_parts();
             let body = Body::from_stream(body.into_data_stream());
@@ -230,26 +234,38 @@ async fn forward_request(
     }
 }
 
-async fn build_core_router() -> Router {
+async fn build_core_proxy_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
     let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
     let client = Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
         .pool_max_idle_per_host(get_config().await.web.workers * get_config().await.web.threads)
         .set_host(false)
         .build(connector);
-    let proxy = ReverseProxy::new_with_client("/", "http://localhost:8000", client);
 
-    let mut router = Router::new();
+    let state = CoreRouterState {
+        client,
+        gunicorn_ready,
+    };
 
-    router = router.merge(r#static::build_router().await);
-    // router = router.fallback_service(proxy);
-    router = router.fallback(forward_request);
-
-    router
+    Router::new().fallback(forward_request).with_state(state)
 }
 
-async fn build_router() -> Router {
-    let core_router = build_core_router().await;
+async fn build_core_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
+    Router::new()
+        .merge(r#static::build_router().await)
+        .layer(
+            // TODO: refine this, probably extract it to its own thing to be used with the proxy
+            // outpost
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                .on_request(DefaultOnRequest::new().level(Level::INFO))
+                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+        )
+        .merge(build_core_proxy_router(gunicorn_ready).await)
+}
+
+async fn build_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
+    let core_router = build_core_router(gunicorn_ready).await;
     let proxy_router: Option<Router> = None;
 
     Router::new().fallback(any(|request: Request<Body>| async move {
@@ -360,8 +376,9 @@ pub async fn run(
     stop: CancellationToken,
     signals_tx: broadcast::Sender<SignalKind>,
 ) -> Result<()> {
+    let gunicorn_ready = Arc::new(AtomicBool::new(false));
     let config = get_config().await;
-    let router = build_router().await;
+    let router = build_router(Arc::clone(&gunicorn_ready)).await;
     let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
 
     let mut handles = Vec::with_capacity(
@@ -390,6 +407,7 @@ pub async fn run(
         Arc::clone(&state_lock),
         stop.clone(),
         signals_tx,
+        gunicorn_ready,
     ));
 
     Ok(())

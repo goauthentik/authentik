@@ -15,7 +15,6 @@ publish = false
 argh = "0.1.13"
 async-trait = "0.1.89"
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
-axum-reverse-proxy = { version = "1.1.1", default-features = false }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 color-eyre = "0.6.5"
@@ -66,7 +65,7 @@ time = "0.3.45"
 tokio = { version = "1.49.0", features = ["full"] }
 tokio-util = "0.7.18"
 tower = "0.5.3"
-tower-http = { version = "0.6.8", features = ["fs"] }
+tower-http = { version = "0.6.8", features = ["fs", "trace"] }
 tracing = "0.1.44"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }

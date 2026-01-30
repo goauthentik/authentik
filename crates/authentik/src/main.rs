@@ -86,8 +86,8 @@ async fn install_tracing() -> Result<()> {
                 .expect("Invalid log_level"),
         )
         .parse(default)?;
-    let filter_layer = if let Some(directive) = &get_config().await.log.rust_log {
-        filter_layer.add_directive(directive.parse()?)
+    let filter_layer = if !get_config().await.log.rust_log.is_empty() {
+        filter_layer.add_directive(get_config().await.log.rust_log.join(",").parse()?)
     } else {
         filter_layer
     };

@@ -76,7 +76,7 @@ pub struct ListenConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LogConfig {
     pub http_headers: Vec<String>,
-    pub rust_log: Option<String>,
+    pub rust_log: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

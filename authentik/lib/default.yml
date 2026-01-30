@@ -74,6 +74,8 @@ log_level: info
 log:
   http_headers:
     - User-Agent
+  rust_log:
+    - hyper_util::client::legacy::pool=warn
 
 sessions:
   unauthenticated_age: days=1

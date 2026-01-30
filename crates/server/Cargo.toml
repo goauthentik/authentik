@@ -12,7 +12,6 @@ publish.workspace = true
 [dependencies]
 argh.workspace = true
 axum.workspace = true
-axum-reverse-proxy.workspace = true
 axum-server.workspace = true
 eyre.workspace = true
 http-body-util.workspace = true
