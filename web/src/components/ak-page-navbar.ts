@@ -165,7 +165,7 @@ export class AKPageNavbar
 
     protected renderBrand() {
         return guard(
-            [this.brandingLogo, this.activeTheme],
+            [this.brandingLogo, this.brandingLogoThemedUrls, this.activeTheme],
             () =>
                 html`<aside role="presentation" class="brand">
                     <a aria-label="${msg("Home")}" href="#/">
@@ -174,6 +174,7 @@ export class AKPageNavbar
                                 src: this.brandingLogo,
                                 alt: msg("authentik Logo"),
                                 theme: this.activeTheme,
+                                themedUrls: this.brandingLogoThemedUrls,
                             })}
                         </div>
                     </a>

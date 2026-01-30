@@ -4,6 +4,7 @@ from pathlib import PurePosixPath
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+from authentik.admin.files.backends.base import THEME_VARIABLE
 from authentik.admin.files.backends.passthrough import PassthroughBackend
 from authentik.admin.files.backends.static import StaticBackend
 from authentik.admin.files.usage import FileUsage
@@ -11,10 +12,6 @@ from authentik.admin.files.usage import FileUsage
 # File upload limits
 MAX_FILE_NAME_LENGTH = 1024
 MAX_PATH_COMPONENT_LENGTH = 255
-
-# Theme variable placeholder that can be used in file paths
-# This allows for theme-specific files like logo-%(theme)s.png
-THEME_VARIABLE = "%(theme)s"
 
 
 def validate_file_name(name: str) -> None:
@@ -44,16 +41,16 @@ def validate_upload_file_name(
         raise ValidationError(_("File name cannot be empty"))
 
     # Allow %(theme)s placeholder for theme-specific files
-    # We temporarily replace it for validation, then check the result
+    # Replace with placeholder for validation, then check the result
     name_for_validation = name.replace(THEME_VARIABLE, "theme")
 
-    # Same regex is used in the frontend as well (without %(theme)s handling there)
+    # Same regex is used in the frontend as well (with %(theme)s handling)
     if not re.match(r"^[a-zA-Z0-9._/-]+$", name_for_validation):
         raise ValidationError(
             _(
                 "File name can only contain letters (a-z, A-Z), numbers (0-9), "
                 "dots (.), hyphens (-), underscores (_), forward slashes (/), "
-                "and the special placeholder %(theme)s for theme-specific files"
+                "and the placeholder %(theme)s for theme-specific files"
             )
         )
 
