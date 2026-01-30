@@ -15575,6 +15575,9 @@
                         "separator",
                         "hidden",
                         "static",
+                        "alert_info",
+                        "alert_warning",
+                        "alert_danger",
                         "ak-locale"
                     ],
                     "title": "Type"
