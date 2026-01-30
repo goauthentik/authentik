@@ -227,7 +227,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         old_password = self.user.password
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={"reason": "I think my account was compromised"},
         )
 
@@ -244,13 +244,13 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         Event.objects.all().delete()
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={"reason": "Security incident"},
         )
 
         self.assertEqual(response.status_code, 204)
 
-        # Verify event was created
+        # Verify event was created - for self-service, event.user is the user themselves
         event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "Security incident")
@@ -271,7 +271,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         AuthenticatedSession.objects.create(session=session, user=self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={"reason": "Session hijack suspected"},
         )
 
@@ -297,7 +297,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         )
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={"reason": "Token compromise"},
         )
 
@@ -313,7 +313,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={"reason": "Test"},
         )
 
@@ -329,14 +329,15 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.client.force_login(internal_sa)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": internal_sa.pk}),
             data={"reason": "Test"},
         )
 
         self.assertEqual(response.status_code, 400)
         body = loads(response.content)
         self.assertIn(
-            "Internal service accounts cannot use this feature", body["non_field_errors"][0]
+            "Cannot trigger account lockdown on internal service accounts",
+            body["non_field_errors"][0],
         )
 
     def test_account_lockdown_self_requires_reason(self):
@@ -344,7 +345,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={},
         )
 
@@ -355,7 +356,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
     def test_account_lockdown_self_unauthenticated(self):
         """Test self-service lockdown requires authentication"""
         response = self.client.post(
-            reverse("authentik_api:user-account-lockdown-self"),
+            reverse("authentik_api:user-account-lockdown", kwargs={"pk": self.user.pk}),
             data={"reason": "Test"},
         )
 
