@@ -14,6 +14,21 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String })
     public placeholder: string | null = null;
 
+    connectedCallback(): void {
+        super.connectedCallback();
+        // Listen for form reset events to clear the value
+        this.closest("form")?.addEventListener("reset", this.handleReset);
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.closest("form")?.removeEventListener("reset", this.handleReset);
+    }
+
+    private handleReset = (): void => {
+        this.value = "";
+    };
+
     public override renderControl() {
         const code = this.inputHint === "code";
         const setValue = (ev: InputEvent) => {

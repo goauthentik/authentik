@@ -2,10 +2,9 @@ import "#elements/forms/HorizontalFormElement";
 
 import { AccountLockdownFormBase, AccountLockdownRequest } from "./AccountLockdownFormBase";
 
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { ModalForm } from "#elements/forms/ModalForm";
-import { APIMessage } from "#elements/messages/Message";
 import { showMessage } from "#elements/messages/MessageContainer";
 
 import { AccountLockdownBulkResponse, User } from "@goauthentik/api";

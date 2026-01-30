@@ -103,6 +103,7 @@ class EventAction(models.TextChoices):
     IMPERSONATION_ENDED = "impersonation_ended"
 
     ACCOUNT_LOCKDOWN_TRIGGERED = "account_lockdown_triggered"
+    ACCOUNT_LOCKDOWN_SELF_TRIGGERED = "account_lockdown_self_triggered"
 
     FLOW_EXECUTION = "flow_execution"
     POLICY_EXECUTION = "policy_execution"
