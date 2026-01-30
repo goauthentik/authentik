@@ -3,7 +3,6 @@ import {
     type DifficultyLevel,
     extractAvailableCategories,
     extractAvailableDifficulties,
-    extractAvailableTags,
     type LearningCenterResource,
 } from "../utils/learningCenterUtils";
 
@@ -24,22 +23,20 @@ export interface UseLearningCenterFilterResult {
     selectedCategories: string[];
     /** Toggle a category selection */
     toggleCategory: (category: string) => void;
-    /** Currently selected tags */
-    selectedTags: string[];
-    /** Toggle a tag selection */
-    toggleTag: (tag: string) => void;
     /** Currently selected difficulty */
     selectedDifficulty: DifficultyLevel | null;
     /** Set difficulty filter */
     setDifficulty: (difficulty: DifficultyLevel | null) => void;
+    /** Currently selected learning path tag */
+    selectedLearningPath: string | null;
+    /** Set learning path filter */
+    setLearningPath: (pathTag: string | null) => void;
     /** Resources after applying all filters */
     filteredResources: LearningCenterResource[];
     /** Resources grouped by first letter (for alphabetical navigation) */
     resourcesByAlphabet: Grouped<LearningCenterResource>;
     /** All available categories extracted from resources */
     availableCategories: string[];
-    /** All available tags extracted from resources */
-    availableTags: string[];
     /** All available difficulty levels extracted from resources */
     availableDifficulties: DifficultyLevel[];
 }
@@ -54,8 +51,8 @@ export function useLearningCenterFilter(
     const [filter, setFilter] = useState("");
     const [debouncedFilter, setDebouncedFilter] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | null>(null);
+    const [selectedLearningPath, setSelectedLearningPath] = useState<string | null>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     // Debounce the filter value for performance
@@ -84,8 +81,7 @@ export function useLearningCenterFilter(
                     resource.shortDescription.toLowerCase().includes(lowerFilter) ||
                     (resource.longDescription &&
                         resource.longDescription.toLowerCase().includes(lowerFilter)) ||
-                    resource.category.toLowerCase().includes(lowerFilter) ||
-                    resource.tags.some((tag) => tag.toLowerCase().includes(lowerFilter)),
+                    resource.category.toLowerCase().includes(lowerFilter),
             );
         }
 
@@ -94,20 +90,20 @@ export function useLearningCenterFilter(
             result = result.filter((resource) => selectedCategories.includes(resource.category));
         }
 
-        // Tag filter
-        if (selectedTags.length > 0) {
-            result = result.filter((resource) =>
-                resource.tags.some((tag) => selectedTags.includes(tag)),
-            );
-        }
-
         // Difficulty filter
         if (selectedDifficulty) {
             result = result.filter((resource) => resource.difficulty === selectedDifficulty);
         }
 
+        // Learning path filter (filters by learningPaths field)
+        if (selectedLearningPath) {
+            result = result.filter((resource) =>
+                resource.learningPaths.includes(selectedLearningPath),
+            );
+        }
+
         return result;
-    }, [debouncedFilter, selectedCategories, selectedTags, selectedDifficulty, resources]);
+    }, [debouncedFilter, selectedCategories, selectedDifficulty, selectedLearningPath, resources]);
 
     // Pre-computed grouping for alphabetical navigation
     const resourcesByAlphabet = useMemo(
@@ -117,7 +113,6 @@ export function useLearningCenterFilter(
 
     // Extract all unique values from resources
     const availableCategories = useMemo(() => extractAvailableCategories(resources), [resources]);
-    const availableTags = useMemo(() => extractAvailableTags(resources), [resources]);
     const availableDifficulties = useMemo(
         () => extractAvailableDifficulties(resources),
         [resources],
@@ -130,15 +125,12 @@ export function useLearningCenterFilter(
         });
     }, []);
 
-    const toggleTag = useCallback((tag: string) => {
-        setSelectedTags((prev) => {
-            if (prev.includes(tag)) return prev.filter((t) => t !== tag);
-            return [...prev, tag];
-        });
-    }, []);
-
     const setDifficulty = useCallback((difficulty: DifficultyLevel | null) => {
         setSelectedDifficulty(difficulty);
+    }, []);
+
+    const setLearningPath = useCallback((pathTag: string | null) => {
+        setSelectedLearningPath(pathTag);
     }, []);
 
     const clearFilter = useCallback(() => setFilter(""), []);
@@ -150,14 +142,13 @@ export function useLearningCenterFilter(
         clearFilter,
         selectedCategories,
         toggleCategory,
-        selectedTags,
-        toggleTag,
         selectedDifficulty,
         setDifficulty,
+        selectedLearningPath,
+        setLearningPath,
         filteredResources,
         resourcesByAlphabet,
         availableCategories,
-        availableTags,
         availableDifficulties,
     };
 }

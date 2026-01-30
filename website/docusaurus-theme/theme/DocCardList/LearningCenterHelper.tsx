@@ -1,6 +1,7 @@
 import CategoryNav from "../../components/LearningCenter/CategoryNav";
 import DifficultyFilter from "../../components/LearningCenter/DifficultyFilter";
 import FilterInput from "../../components/LearningCenter/FilterInput";
+import LearningPaths, { type LearningPathDef } from "../../components/LearningCenter/LearningPaths";
 import styles from "../../components/LearningCenter/styles.module.css";
 import { getCategoryDescription } from "../utils/categoryDescriptions";
 import type { LearningCenterResource } from "../utils/learningCenterUtils";
@@ -19,6 +20,8 @@ export interface LearningCenterHelperProps {
     children: (filteredResources: LearningCenterResource[], searchFilter: string) => ReactNode;
     /** Optional CSS class name for styling */
     className?: string;
+    /** Optional array of featured learning paths to display at the top */
+    learningPaths?: LearningPathDef[];
 }
 
 /**
@@ -57,6 +60,7 @@ export function LearningCenterHelper({
     resources,
     children,
     className,
+    learningPaths,
 }: LearningCenterHelperProps): ReactNode {
     const {
         filter,
@@ -67,6 +71,8 @@ export function LearningCenterHelper({
         toggleCategory,
         selectedDifficulty,
         setDifficulty,
+        selectedLearningPath,
+        setLearningPath,
         filteredResources,
         availableCategories,
         availableDifficulties,
@@ -74,6 +80,15 @@ export function LearningCenterHelper({
 
     return (
         <div className={clsx(styles.learningCenter, className)}>
+            {learningPaths && learningPaths.length > 0 && (
+                <LearningPaths
+                    paths={learningPaths}
+                    resources={resources}
+                    selectedPath={selectedLearningPath}
+                    onSelectPath={setLearningPath}
+                />
+            )}
+
             <FilterInput value={filter} onChange={setFilter} onClear={clearFilter} />
 
             {availableCategories.length > 1 && (

@@ -25,7 +25,7 @@ export interface LearningCenterResource {
     id: string;
     resourceName: string;
     category: string;
-    tags: string[];
+    learningPaths: string[];
     shortDescription: string;
     longDescription?: string;
     difficulty: DifficultyLevel;
@@ -205,11 +205,6 @@ export const extractAvailableCategories = (
     resources: readonly LearningCenterResource[],
 ): string[] => Array.from(new Set(resources.map((r) => r.category))).toSorted();
 
-/**
- * Extracts all available tags from a collection of resources.
- */
-export const extractAvailableTags = (resources: readonly LearningCenterResource[]): string[] =>
-    Array.from(new Set(resources.flatMap((r) => r.tags))).toSorted();
 
 /**
  * Extracts all available difficulty levels from a collection of resources.

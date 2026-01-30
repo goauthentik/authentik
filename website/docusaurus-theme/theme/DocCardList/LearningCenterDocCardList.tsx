@@ -1,5 +1,5 @@
+import type { LearningPathDef } from "../../components/LearningCenter/LearningPaths";
 import styles from "../../components/LearningCenter/styles.module.css";
-import { formatTag } from "../../components/LearningCenter/utils";
 import {
     type DifficultyLevel,
     getDifficultyLabel,
@@ -31,7 +31,7 @@ interface ResourceCache {
     [docId: string]: {
         resourceName: string;
         category: string;
-        tags: string[];
+        learningPaths: string[];
         shortDescription: string;
         longDescription: string;
         difficulty: DifficultyLevel;
@@ -96,11 +96,8 @@ function ResourceCard({
 
     const {
         resourceName,
-        category,
-        tags,
         shortDescription,
         difficulty,
-        resourceType,
         estimatedTime,
     } = cachedData;
 
@@ -143,16 +140,6 @@ function ResourceCard({
                         ? highlightText(shortDescription, searchFilter, "short")
                         : "Description not provided."}
                 </p>
-
-                {tags.length > 0 && (
-                    <div className={styles.resourceTags}>
-                        {tags.map((tag) => (
-                            <span key={tag} className={styles.tagChip}>
-                                {formatTag(tag)}
-                            </span>
-                        ))}
-                    </div>
-                )}
             </article>
         </a>
     );
@@ -182,7 +169,7 @@ export default function LearningCenterDocCardList({
                         item.docId ||
                         "Resource",
                     category: safeStringExtract(sidebarProps.category, "General"),
-                    tags: safeStringArrayExtract(sidebarProps.tags),
+                    learningPaths: safeStringArrayExtract(sidebarProps.learningPaths),
                     shortDescription: safeStringExtract(sidebarProps.shortDescription),
                     longDescription: safeStringExtract(sidebarProps.longDescription),
                     difficulty: safeDifficultyExtract(sidebarProps.difficulty),
@@ -215,7 +202,7 @@ export default function LearningCenterDocCardList({
                     id: item.docId,
                     resourceName: cached.resourceName,
                     category: cached.category,
-                    tags: cached.tags,
+                    learningPaths: cached.learningPaths,
                     shortDescription: cached.shortDescription,
                     longDescription: cached.longDescription || undefined,
                     difficulty: cached.difficulty,
@@ -229,6 +216,35 @@ export default function LearningCenterDocCardList({
             })
             .filter((resource): resource is NonNullable<typeof resource> => resource !== null);
     }, [resourcePool, resourceCache]);
+
+    // Sample learning paths for the featured section
+    // These are curated collections of articles filtered by tag
+    // Article counts are calculated dynamically from resources with matching tags
+    const sampleLearningPaths: LearningPathDef[] = useMemo(
+        () => [
+            {
+                title: "Getting Started with authentik",
+                filterTag: "getting-started",
+                difficulty: "beginner",
+            },
+            {
+                title: "Managing Users and Sources",
+                filterTag: "users-sources",
+                difficulty: "intermediate",
+            },
+            {
+                title: "Security Best Practices",
+                filterTag: "security",
+                difficulty: "advanced",
+            },
+            {
+                title: "Understanding our Providers and Protocols",
+                filterTag: "providers-protocols",
+                difficulty: "advanced",
+            },
+        ],
+        [],
+    );
 
     // Render function for resources - grouped by category
     const renderResources = useCallback(
@@ -287,7 +303,11 @@ export default function LearningCenterDocCardList({
                 </div>
             }
         >
-            <LearningCenterHelper resources={learningResources} className={className}>
+            <LearningCenterHelper
+                resources={learningResources}
+                className={className}
+                learningPaths={sampleLearningPaths}
+            >
                 {renderResources}
             </LearningCenterHelper>
         </ErrorBoundary>

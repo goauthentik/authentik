@@ -13,4 +13,7 @@ export type { FilterInputProps } from "./FilterInput";
 export { ViewToggle } from "./ViewToggle";
 export type { ViewMode, ViewToggleProps } from "./ViewToggle";
 
+export { LearningPaths } from "./LearningPaths";
+export type { LearningPathDef, LearningPathsProps } from "./LearningPaths";
+
 export * from "./utils";
