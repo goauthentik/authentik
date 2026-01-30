@@ -1,25 +1,19 @@
-import {
-    infimalColors,
-    utilityColorDefs,
-} from "@goauthentik/docusaurus-theme/components/infima/constants.ts";
+import { ColorMode } from "@docusaurus/theme-common";
 
-import { useCallback, useMemo, useSyncExternalStore } from "react";
+export type Shade = [label: string, suffix: string];
 
-export interface Shade {
-    name: string;
-    suffix: string;
-}
-
-export interface ColorGroup {
-    name: string;
+export interface ColorGroupProp {
+    label: string;
     cssVar: string;
     shades: Shade[];
 }
 
-export interface UtilityColor {
-    name: string;
-    cssVar: string;
-}
+export type ColorEntry = [label: string, cssVar: string];
+
+export const Prefix = {
+    Infima: "--ifm-",
+    Authentik: "--ak-",
+} as const satisfies Record<string, string>;
 
 export interface ComputedColor {
     cssVar: string;
@@ -53,91 +47,36 @@ export function rgbToHex(rgb: string): string | null {
     return `#${hex(r)}${hex(g)}${hex(b)}`;
 }
 
-export function computeColor(cssVar: string): { hex: string | null; contrastColor: string } {
+export function computeColor(cssVar: string): Pick<ComputedColor, "hex" | "contrastColor"> {
     if (typeof document === "undefined") {
         return { hex: null, contrastColor: "#000000" };
     }
     const computedColor = getComputedStyle(document.documentElement)
         .getPropertyValue(cssVar)
         .trim();
+
     const hex = rgbToHex(computedColor) || computedColor || null;
     const contrastColor = getContrastColor(hex);
+
     return { hex, contrastColor };
 }
 
 export interface ComputedColorGroup {
-    name: string;
+    label: string;
     colors: ComputedColor[];
 }
 
-export function computePalette(): ComputedColorGroup[] {
-    return infimalColors.map((group) => ({
-        name: group.name,
-        colors: group.shades.map((shade) => {
-            const cssVar = `${group.cssVar}${shade.suffix}`;
+export function createComputedColorGroup(
+    group: ColorGroupProp,
+    _colorMode: ColorMode,
+): ComputedColorGroup {
+    return {
+        label: group.label,
+        colors: group.shades.map(([label, suffix]) => {
+            const cssVar = `${Prefix.Infima}${group.cssVar}${suffix}`;
             const { hex, contrastColor } = computeColor(cssVar);
-            return { cssVar, label: shade.name, hex, contrastColor };
+
+            return { cssVar, label, hex, contrastColor };
         }),
-    }));
-}
-
-export function computeUtilityColors(): ComputedColor[] {
-    return utilityColorDefs.map((color) => {
-        const { hex, contrastColor } = computeColor(color.cssVar);
-        return { cssVar: color.cssVar, label: color.name, hex, contrastColor };
-    });
-}
-
-export function useComputedPalette(colorMode: string): Map<string, ComputedColor[]> {
-    const subscribe = useCallback((callback: () => void) => {
-        const observer = new MutationObserver(callback);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-        return () => observer.disconnect();
-    }, []);
-
-    const getSnapshot = useCallback(() => {
-        return JSON.stringify({ colorMode, palette: computePalette() });
-    }, [colorMode]);
-
-    const getServerSnapshot = useCallback(() => {
-        return JSON.stringify({ colorMode, palette: [] });
-    }, [colorMode]);
-
-    const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-
-    return useMemo(() => {
-        const parsed = JSON.parse(snapshot) as { colorMode: string; palette: ComputedColorGroup[] };
-
-        const colorMap = new Map<string, ComputedColor[]>();
-        for (const group of parsed.palette) {
-            colorMap.set(group.name.toLowerCase(), group.colors);
-        }
-
-        return colorMap;
-    }, [snapshot]);
-}
-
-export function useComputedUtilityColors(colorMode: string): ComputedColor[] {
-    const subscribe = useCallback((callback: () => void) => {
-        const observer = new MutationObserver(callback);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-        return () => observer.disconnect();
-    }, []);
-
-    const getSnapshot = useCallback(() => {
-        return JSON.stringify({ colorMode, colors: computeUtilityColors() });
-    }, [colorMode]);
-
-    const getServerSnapshot = useCallback(() => {
-        return JSON.stringify({ colorMode, colors: [] });
-    }, [colorMode]);
-
-    const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-    return useMemo(() => JSON.parse(snapshot).colors, [snapshot]);
+    };
 }
