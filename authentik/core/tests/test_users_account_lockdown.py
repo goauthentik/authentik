@@ -4,11 +4,14 @@ from json import loads
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
-from authentik.brands.models import Brand
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_brand,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 
@@ -30,7 +33,7 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.user.save()
         # Create and configure lockdown flow on brand
         self.lockdown_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
-        self.brand = Brand.objects.first()
+        self.brand = create_test_brand()
         self.brand.flow_lockdown = self.lockdown_flow
         self.brand.save()
 
@@ -99,7 +102,7 @@ class TestUsersAccountLockdownSelfServiceAPI(APITestCase):
         self.user.save()
         # Create and configure lockdown flow on brand
         self.lockdown_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
-        self.brand = Brand.objects.first()
+        self.brand = create_test_brand()
         self.brand.flow_lockdown = self.lockdown_flow
         self.brand.save()
 
@@ -159,7 +162,7 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         self.user2.save()
         # Create and configure lockdown flow on brand
         self.lockdown_flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
-        self.brand = Brand.objects.first()
+        self.brand = create_test_brand()
         self.brand.flow_lockdown = self.lockdown_flow
         self.brand.save()
 
@@ -213,7 +216,10 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
     def test_account_lockdown_bulk_object_permission_required(self):
         """Test bulk lockdown requires object-level permissions when not admin"""
         regular_user = create_test_user()
-        assign_perm("authentik_core.change_user", regular_user, self.user1)
+        regular_user.assign_perms_to_managed_role(
+            "authentik_core.change_user",
+            self.user1,
+        )
         self.client.force_login(regular_user)
 
         response = self.client.post(
