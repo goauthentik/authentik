@@ -2,6 +2,8 @@
 
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.utils.html import escape
+from django.utils.translation import gettext as _
 
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
@@ -119,11 +121,13 @@ class AccountLockdownStageView(StageView):
         # Store results in plan context for completion stage
         self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_RESULTS] = results
 
-        # For self-service, all sessions are deleted so we can't continue to
-        # another stage. Show the completion message directly via shell challenge.
-        # The message is loaded from the configured prompt field for customization.
         if self_service:
-            return self._self_service_completion_response(request)
+            any_failed = any(not result["success"] for result in results)
+            if any_failed:
+                return self._self_service_message_response(request, stage, success=False)
+            if stage.delete_sessions:
+                return self._self_service_completion_response(request)
+            return self.executor.stage_ok()
 
         return self.executor.stage_ok()
 
@@ -138,17 +142,31 @@ class AccountLockdownStageView(StageView):
         flow executor's challenge handling may try to access the session
         which we just deleted.
         """
-        # Flush the current request's session to prevent Django's session
-        # middleware from trying to save a deleted session
-        if hasattr(request, "session"):
-            request.session.flush()
-
         stage: AccountLockdownStage = self.executor.current_stage
         completion_flow = stage.self_service_completion_flow
         if completion_flow:
+            # Flush the current request's session to prevent Django's session
+            # middleware from trying to save a deleted session
+            if hasattr(request, "session"):
+                request.session.flush()
             redirect_to = f"/if/flow/{completion_flow.slug}/"
-        else:
-            # Fallback to root (login page) if no completion flow configured
-            redirect_to = "/"
+            return HttpResponseRedirect(redirect_to)
+        return self._self_service_message_response(request, stage, success=True)
 
-        return HttpResponseRedirect(redirect_to)
+    def _self_service_message_response(
+        self, request: HttpRequest, stage: AccountLockdownStage, *, success: bool
+    ) -> HttpResponse:
+        """Return a message response for self-service lockdowns."""
+        if stage.delete_sessions and hasattr(request, "session"):
+            request.session.flush()
+        if success:
+            title = stage.self_service_message_title
+            body = stage.self_service_message
+        else:
+            title = _("Account lockdown failed")
+            body = _(
+                "<p>We could not lock your account. Please contact your administrator or "
+                "security team for assistance.</p>"
+            )
+        html = f"<h1>{escape(title)}</h1>{body}"
+        return HttpResponse(html)

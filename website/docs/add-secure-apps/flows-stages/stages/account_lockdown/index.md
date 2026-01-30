@@ -16,7 +16,7 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 2. **For each user**, performs configured actions
 3. **Creates an event** for each user locked down
 4. **Stores results** in `lockdown_results` context variable
-5. **For self-service**: redirects to completion flow (if configured) or login page
+5. **For self-service**: if sessions are deleted, redirects to completion flow (if configured) or shows the stage message
 
 ## Stage settings
 
@@ -25,8 +25,10 @@ The Account Lockdown stage executes security lockdown actions on a target user a
 | **Deactivate user**       | Set `is_active` to False                                 | Enabled |
 | **Set unusable password** | Invalidate the password                                  | Enabled |
 | **Delete sessions**       | Terminate all active sessions                            | Enabled |
-| **Revoke tokens**         | Delete all API tokens and app passwords                  | Enabled |
+| **Revoke tokens**         | Delete all tokens (API, app password, recovery, verification) | Enabled |
 | **Completion flow**       | Flow for self-service completion (must not require auth) | None    |
+| **Self-service message title** | Title shown after self-service lockdown             | "Your account has been locked" |
+| **Self-service message**  | HTML message shown after self-service lockdown           | Default HTML |
 
 :::warning
 Disabling **Delete sessions** is not recommended as it would allow an attacker with an active session to continue using the account.
@@ -60,7 +62,9 @@ The stage determines which user(s) to lock down using this priority:
 
 ## Self-service behavior
 
-When `lockdown_self_service` is `True`, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow** if configured, otherwise to the login page.
+When `lockdown_self_service` is `True` and **Delete sessions** is enabled, the user's session is deleted during lockdown. The stage cannot continue to the next stage, so it redirects to the **Completion flow** if configured, otherwise it displays the **Self-service message** configured on the stage.
+
+If **Delete sessions** is disabled, the flow continues normally and can show its own completion stages.
 
 The completion flow must have **Authentication** set to **No authentication required**.
 

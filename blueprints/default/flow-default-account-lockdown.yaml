@@ -33,7 +33,7 @@ entries:
         <li><strong>Invalidate your password</strong> - Your password will be set to a random value and cannot be recovered</li>
         <li><strong>Deactivate your account</strong> - Your account will be disabled</li>
         <li><strong>Terminate all your sessions</strong> - You will be logged out everywhere</li>
-        <li><strong>Revoke all your tokens</strong> - All your API tokens and app passwords will be revoked</li>
+        <li><strong>Revoke all your tokens</strong> - All your API, app password, recovery, and verification tokens will be revoked</li>
       </ul>
       <p><strong>This action cannot be easily undone.</strong></p>"""
       else:
@@ -57,7 +57,7 @@ entries:
         <li>Invalidate passwords - Passwords will be set to random values</li>
         <li>Deactivate accounts - Accounts will be disabled</li>
         <li>Terminate all sessions - All active sessions will be ended</li>
-        <li>Revoke all tokens - All API tokens and app passwords will be revoked</li>
+        <li>Revoke all tokens - All API, app password, recovery, and verification tokens will be revoked</li>
       </ul>
       <p><strong>This action cannot be easily undone.</strong></p>"""
     initial_value_expression: true

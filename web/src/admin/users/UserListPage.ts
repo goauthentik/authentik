@@ -229,20 +229,24 @@ export class UserListPage extends WithLicenseSummary(
                     ${msg("Delete")}
                 </button>
             </ak-forms-delete-bulk>
-            ${this.hasEnterpriseLicense
+                    ${this.hasEnterpriseLicense
                 ? html`<button
                       class="pf-c-button pf-m-danger"
                       ?disabled=${disabled}
                       @click=${async () => {
-                          const response = await new CoreApi(
-                              DEFAULT_CONFIG,
-                          ).coreUsersAccountLockdownBulkCreate({
-                              userBulkAccountLockdownRequest: {
-                                  users: this.selectedElements.map((u) => u.pk),
-                              },
-                          });
-                          if (response.flowUrl) {
-                              window.location.assign(response.flowUrl);
+                          try {
+                              const response = await new CoreApi(
+                                  DEFAULT_CONFIG,
+                              ).coreUsersAccountLockdownBulkCreate({
+                                  userBulkAccountLockdownRequest: {
+                                      users: this.selectedElements.map((u) => u.pk),
+                                  },
+                              });
+                              if (response.flowUrl) {
+                                  window.location.assign(response.flowUrl);
+                              }
+                          } catch (error) {
+                              showAPIErrorMessage(error);
                           }
                       }}
                   >

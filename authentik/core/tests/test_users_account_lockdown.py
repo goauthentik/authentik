@@ -4,6 +4,7 @@ from json import loads
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
+from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
@@ -203,6 +204,22 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
             reverse("authentik_api:user-account-lockdown-bulk"),
             data={
                 "users": [self.user1.pk],
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_account_lockdown_bulk_object_permission_required(self):
+        """Test bulk lockdown requires object-level permissions when not admin"""
+        regular_user = create_test_user()
+        assign_perm("authentik_core.change_user", regular_user, self.user1)
+        self.client.force_login(regular_user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.user1.pk, self.user2.pk],
             },
             format="json",
         )
