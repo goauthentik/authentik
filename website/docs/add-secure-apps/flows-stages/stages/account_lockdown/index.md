@@ -66,7 +66,7 @@ The completion flow must have **Authentication** set to **No authentication requ
 
 ## Events
 
-Creates an **Account Lockdown Triggered** event per user:
+Creates an **Account Lockdown Triggered** event per user. Use [Notification Rules](../../../../sys-mgmt/events/index.md) to send alerts.
 
 ```json
 {
