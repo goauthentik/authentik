@@ -896,10 +896,10 @@ class UserViewSet(
 
         return Response(status=204)
 
-    def _validate_lockdown_target(self, request: Request, user: User) -> str | None:
+    def _validate_lockdown_target(self, request: Request, user: User) -> None:
         """Validate if a user can be targeted for account lockdown.
 
-        Returns an error message if validation fails, None if valid.
+        Raises ValidationError if validation fails.
         """
         from guardian.shortcuts import get_anonymous_user
 
@@ -907,28 +907,28 @@ class UserViewSet(
         try:
             anon_user = get_anonymous_user()
             if user.pk == anon_user.pk:
-                return _("Cannot trigger account lockdown on anonymous user.")
+                raise ValidationError(
+                    {"non_field_errors": [_("Cannot trigger account lockdown on anonymous user.")]}
+                )
         except User.DoesNotExist:
             pass
 
         # Cannot lock down internal service accounts
         if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            return _("Cannot trigger account lockdown on internal service accounts.")
+            raise ValidationError(
+                {"non_field_errors": [_("Cannot trigger account lockdown on internal service accounts.")]}
+            )
 
-        return None
-
-    def _check_lockdown_enabled(self, request: Request) -> Response | None:
+    def _check_lockdown_enabled(self, request: Request) -> None:
         """Check if account lockdown feature is enabled.
 
-        Returns a 400 Response if disabled, None if enabled.
+        Raises ValidationError if disabled.
         """
         if not request.tenant.account_lockdown_enabled:
             LOGGER.debug("Account lockdown feature is disabled")
-            return Response(
-                data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
-                status=400,
+            raise ValidationError(
+                {"non_field_errors": [_("Account lockdown feature is disabled.")]}
             )
-        return None
 
     def _trigger_account_lockdown(
         self,
@@ -1013,8 +1013,7 @@ class UserViewSet(
         When targeting yourself, this is a self-service lockdown that only requires
         authentication. When targeting another user, admin permissions are required.
         """
-        if disabled_response := self._check_lockdown_enabled(request):
-            return disabled_response
+        self._check_lockdown_enabled(request)
 
         user: User = self.get_object()
         reason = body.validated_data["reason"]
@@ -1027,17 +1026,7 @@ class UserViewSet(
                     LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
                     self.permission_denied(request)
 
-        if validation_error := self._validate_lockdown_target(request, user):
-            LOGGER.debug(
-                "Account lockdown validation failed",
-                user=user.username,
-                reason=validation_error,
-            )
-            return Response(
-                data={"non_field_errors": [validation_error]},
-                status=400,
-            )
-
+        self._validate_lockdown_target(request, user)
         self._trigger_account_lockdown(request, user, reason, self_service=self_service)
 
         return Response(status=204)
@@ -1079,8 +1068,7 @@ class UserViewSet(
         self, request: Request, body: UserBulkAccountLockdownSerializer
     ) -> Response:
         """Trigger account lockdown for multiple users"""
-        if disabled_response := self._check_lockdown_enabled(request):
-            return disabled_response
+        self._check_lockdown_enabled(request)
 
         users = body.validated_data["users"]
         reason = body.validated_data["reason"]
@@ -1089,13 +1077,12 @@ class UserViewSet(
         skipped = []
 
         for user in users:
-            if validation_error := self._validate_lockdown_target(request, user):
-                LOGGER.debug(
-                    "Account lockdown validation failed",
-                    user=user.username,
-                    reason=validation_error,
-                )
-                skipped.append({"username": user.username, "reason": str(validation_error)})
+            try:
+                self._validate_lockdown_target(request, user)
+            except ValidationError as exc:
+                # Extract error message from ValidationError
+                error_msg = exc.detail.get("non_field_errors", [str(exc)])[0]
+                skipped.append({"username": user.username, "reason": str(error_msg)})
                 continue
 
             self._trigger_account_lockdown(request, user, reason)
