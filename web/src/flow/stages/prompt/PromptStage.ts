@@ -192,6 +192,42 @@ ${prompt.initialValue}</textarea
                 />`;
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
+            case PromptTypeEnum.AlertInfo:
+                return html`<div class="pf-c-alert pf-m-info pf-m-inline">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-fw fa-info-circle" aria-hidden="true"></i>
+                    </div>
+                    ${prompt.label
+                        ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
+                        : nothing}
+                    <div class="pf-c-alert__description">
+                        ${unsafeHTML(prompt.initialValue)}
+                    </div>
+                </div>`;
+            case PromptTypeEnum.AlertWarning:
+                return html`<div class="pf-c-alert pf-m-warning pf-m-inline">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                    </div>
+                    ${prompt.label
+                        ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
+                        : nothing}
+                    <div class="pf-c-alert__description">
+                        ${unsafeHTML(prompt.initialValue)}
+                    </div>
+                </div>`;
+            case PromptTypeEnum.AlertDanger:
+                return html`<div class="pf-c-alert pf-m-danger pf-m-inline">
+                    <div class="pf-c-alert__icon">
+                        <i class="fas fa-fw fa-exclamation-circle" aria-hidden="true"></i>
+                    </div>
+                    ${prompt.label
+                        ? html`<h4 class="pf-c-alert__title">${prompt.label}</h4>`
+                        : nothing}
+                    <div class="pf-c-alert__description">
+                        ${unsafeHTML(prompt.initialValue)}
+                    </div>
+                </div>`;
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
@@ -245,7 +281,10 @@ ${prompt.initialValue}</textarea
         return !(
             prompt.type === PromptTypeEnum.Static ||
             prompt.type === PromptTypeEnum.Hidden ||
-            prompt.type === PromptTypeEnum.Separator
+            prompt.type === PromptTypeEnum.Separator ||
+            prompt.type === PromptTypeEnum.AlertInfo ||
+            prompt.type === PromptTypeEnum.AlertWarning ||
+            prompt.type === PromptTypeEnum.AlertDanger
         );
     }
 
