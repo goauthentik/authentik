@@ -58,6 +58,9 @@ class Brand(SerializerModel):
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
     )
+    flow_lockdown = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_lockdown"
+    )
 
     default_application = models.ForeignKey(
         "authentik_core.Application",

@@ -1,0 +1,72 @@
+version: 1
+metadata:
+  name: Default - Account lockdown flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: Account Lockdown
+    title: Lock Account
+    authentication: require_authenticated
+  identifiers:
+    slug: default-account-lockdown
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    order: 100
+    placeholder: Please provide a reason for locking this account
+    placeholder_expression: false
+    required: true
+    type: text_area
+    field_key: reason
+    label: Reason
+  identifiers:
+    name: default-account-lockdown-field-reason
+  id: prompt-field-reason
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 200
+    placeholder: ""
+    placeholder_expression: false
+    required: false
+    type: static
+    sub_text: |
+      This action will:
+      - Deactivate the user account
+      - Revoke the user's password
+      - Terminate all active sessions
+      - Revoke all API tokens and app passwords
+
+      This action cannot be easily undone.
+    field_key: lockdown_warning
+    label: Warning
+  identifiers:
+    name: default-account-lockdown-field-warning
+  id: prompt-field-warning
+  model: authentik_stages_prompt.prompt
+- attrs:
+    fields:
+    - !KeyOf prompt-field-reason
+    - !KeyOf prompt-field-warning
+  identifiers:
+    name: default-account-lockdown-prompt
+  id: default-account-lockdown-prompt
+  model: authentik_stages_prompt.promptstage
+- identifiers:
+    name: default-account-lockdown-stage
+  id: default-account-lockdown-stage
+  model: authentik_stages_account_lockdown.accountlockdownstage
+  attrs:
+    deactivate_user: true
+    set_unusable_password: true
+    delete_sessions: true
+    revoke_tokens: true
+- identifiers:
+    order: 0
+    stage: !KeyOf default-account-lockdown-prompt
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 10
+    stage: !KeyOf default-account-lockdown-stage
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding

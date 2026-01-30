@@ -74,9 +74,13 @@ export class UserSelfAccountLockdownForm extends SingleUserAccountLockdownForm {
                 msg("You must confirm that you understand this action cannot be undone."),
             );
         }
-        await this.coreApi.coreUsersAccountLockdownCreate({
+        const response = await this.coreApi.coreUsersAccountLockdownCreate({
             userAccountLockdownRequest: data,
         });
+        // Redirect to the lockdown flow if one is configured
+        if (response.flowUrl) {
+            window.location.assign(response.flowUrl);
+        }
     }
 }
 
