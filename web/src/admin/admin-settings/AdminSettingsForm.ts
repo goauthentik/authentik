@@ -227,6 +227,22 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
             </ak-switch-input>
             <ak-text-input
+                name="securityEmail"
+                label=${msg("Security email")}
+                value="${ifDefined(settings.securityEmail)}"
+                help=${msg(
+                    "Security team email address for security notifications. Used by Notification Rules with 'Send email to security address' enabled.",
+                )}
+            >
+            </ak-text-input>
+            <ak-switch-input
+                name="panicButtonEnabled"
+                label=${msg("Enable account lockdown")}
+                ?checked=${settings.panicButtonEnabled}
+                help=${msg("Enable the account lockdown feature for administrators.")}
+            >
+            </ak-switch-input>
+            <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}
                 input-hint="code"

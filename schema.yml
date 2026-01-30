@@ -4446,6 +4446,34 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/panic_button/:
+    post:
+      operationId: core_users_panic_button_create
+      description: Trigger account lockdown for a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPanicButtonRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully triggered account lockdown
+        '400':
+          description: Account lockdown feature is disabled
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
@@ -4752,6 +4780,27 @@ paths:
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/panic_button_bulk/:
+    post:
+      operationId: core_users_panic_button_bulk_create
+      description: Trigger account lockdown for multiple users
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserBulkPanicButtonRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully triggered account lockdown
+        '400':
+          description: Account lockdown feature is disabled
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
   /core/users/paths/:
@@ -6928,6 +6977,7 @@ paths:
             - model_created
             - model_deleted
             - model_updated
+            - panic_button_triggered
             - password_set
             - policy_exception
             - policy_execution
@@ -7194,6 +7244,7 @@ paths:
             - model_created
             - model_deleted
             - model_updated
+            - panic_button_triggered
             - password_set
             - policy_exception
             - policy_execution
@@ -7326,6 +7377,7 @@ paths:
             - model_created
             - model_deleted
             - model_updated
+            - panic_button_triggered
             - password_set
             - policy_exception
             - policy_execution
@@ -11267,6 +11319,7 @@ paths:
           - model_created
           - model_deleted
           - model_updated
+          - panic_button_triggered
           - password_set
           - policy_exception
           - policy_execution
@@ -38441,6 +38494,7 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
+      - panic_button_triggered
       - flow_execution
       - policy_execution
       - policy_exception
@@ -43236,6 +43290,10 @@ components:
           description: When enabled, notification will be sent to user the user that
             triggered the event.When destination_group is configured, notification
             is sent to both.
+        destination_security_email:
+          type: boolean
+          description: When enabled, notification will be sent to the security email
+            address configured in System Settings.
       required:
       - destination_group_obj
       - name
@@ -43271,6 +43329,10 @@ components:
           description: When enabled, notification will be sent to user the user that
             triggered the event.When destination_group is configured, notification
             is sent to both.
+        destination_security_email:
+          type: boolean
+          description: When enabled, notification will be sent to the security email
+            address configured in System Settings.
       required:
       - name
     NotificationTransport:
@@ -48998,6 +49060,10 @@ components:
           description: When enabled, notification will be sent to user the user that
             triggered the event.When destination_group is configured, notification
             is sent to both.
+        destination_security_email:
+          type: boolean
+          description: When enabled, notification will be sent to the security email
+            address configured in System Settings.
     PatchedNotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
@@ -50454,6 +50520,14 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
+        security_email:
+          type: string
+          format: email
+          description: Security team email address for security notifications.
+          maxLength: 254
+        panic_button_enabled:
+          type: boolean
+          description: Enable the account lockdown feature for administrators.
         flags:
           type: object
           properties:
@@ -55153,6 +55227,14 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
+        security_email:
+          type: string
+          format: email
+          description: Security team email address for security notifications.
+          maxLength: 254
+        panic_button_enabled:
+          type: boolean
+          description: Enable the account lockdown feature for administrators.
         flags:
           type: object
           properties:
@@ -55231,6 +55313,14 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
+        security_email:
+          type: string
+          format: email
+          description: Security team email address for security notifications.
+          maxLength: 254
+        panic_button_enabled:
+          type: boolean
+          description: Enable the account lockdown feature for administrators.
         flags:
           type: object
           properties:
@@ -56769,6 +56859,22 @@ components:
       - username
       - email
       type: string
+    UserBulkPanicButtonRequest:
+      type: object
+      description: Payload to trigger account lockdown for multiple users
+      properties:
+        users:
+          type: array
+          items:
+            type: integer
+          description: Users to lock
+        reason:
+          type: string
+          minLength: 1
+          description: Reason for triggering account lockdown
+      required:
+      - reason
+      - users
     UserConsent:
       type: object
       description: UserConsent Serializer
@@ -57213,6 +57319,16 @@ components:
       - identifier
       - source
       - user
+    UserPanicButtonRequest:
+      type: object
+      description: Payload to trigger account lockdown for a user
+      properties:
+        reason:
+          type: string
+          minLength: 1
+          description: Reason for triggering account lockdown
+      required:
+      - reason
     UserPasswordSetRequest:
       type: object
       description: Payload to set a users' password directly
