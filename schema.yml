@@ -6932,6 +6932,10 @@ paths:
             - policy_exception
             - policy_execution
             - property_mapping_exception
+            - review_attested
+            - review_completed
+            - review_initiated
+            - review_overdue
             - secret_rotate
             - secret_view
             - source_linked
@@ -7194,6 +7198,10 @@ paths:
             - policy_exception
             - policy_execution
             - property_mapping_exception
+            - review_attested
+            - review_completed
+            - review_initiated
+            - review_overdue
             - secret_rotate
             - secret_view
             - source_linked
@@ -7322,6 +7330,10 @@ paths:
             - policy_exception
             - policy_execution
             - property_mapping_exception
+            - review_attested
+            - review_completed
+            - review_initiated
+            - review_overdue
             - secret_rotate
             - secret_view
             - source_linked
@@ -10983,6 +10995,10 @@ paths:
           - policy_exception
           - policy_execution
           - property_mapping_exception
+          - review_attested
+          - review_completed
+          - review_initiated
+          - review_overdue
           - secret_rotate
           - secret_view
           - source_linked
@@ -20567,6 +20583,9 @@ paths:
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
           - authentik_reports.dataexport
+          - authentik_reviews.attestation
+          - authentik_reviews.lifecyclerule
+          - authentik_reviews.review
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
           - authentik_sources_kerberos.kerberossourcepropertymapping
@@ -21091,6 +21110,225 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reviews/lifecycle_rules/:
+    get:
+      operationId: reviews_lifecycle_rules_list
+      parameters:
+      - in: query
+        name: content_type
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - reviews
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLifecycleRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: reviews_lifecycle_rules_create
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reviews/lifecycle_rules/{id}/:
+    get:
+      operationId: reviews_lifecycle_rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - reviews
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: reviews_lifecycle_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: reviews_lifecycle_rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLifecycleRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: reviews_lifecycle_rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - reviews
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reviews/reviews/:
+    post:
+      operationId: reviews_reviews_create
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reviews/reviews/latest/{content_type}/{object_id}/:
+    get:
+      operationId: reviews_reviews_latest_retrieve
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      parameters:
+      - in: path
+        name: content_type
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: path
+        name: object_id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - reviews
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -33761,6 +33999,7 @@ components:
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.providers.ws_federation
       - authentik.enterprise.reports
+      - authentik.enterprise.reviews
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
@@ -36129,6 +36368,12 @@ components:
       - id
       - model
       - verbose_name_plural
+    ContentTypeEnum:
+      enum:
+      - authentik_core.application
+      - authentik_core.group
+      - authentik_rbac.role
+      type: string
     ContextualFlowInfo:
       type: object
       description: Contextual flow information for a challenge
@@ -38127,6 +38372,10 @@ components:
       - email_sent
       - update_available
       - export_ready
+      - review_initiated
+      - review_overdue
+      - review_attested
+      - review_completed
       - custom_
       type: string
     EventMatcherPolicy:
@@ -39065,6 +39314,28 @@ components:
           type: string
       required:
       - detail
+    GenericForeignKey:
+      type: object
+      properties:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          format: uuid
+      required:
+      - content_type
+      - object_id
+    GenericForeignKeyRequest:
+      type: object
+      properties:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          format: uuid
+      required:
+      - content_type
+      - object_id
     GeoIPPolicy:
       type: object
       description: GeoIP Policy Serializer
@@ -41811,6 +42082,118 @@ components:
       - limit_exceeded_user
       - read_only
       type: string
+    LifecycleRule:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          nullable: true
+        interval_months:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        grace_period_days:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reviewer_groups_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedGroup'
+          readOnly: true
+          nullable: true
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        reviewers:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reviewers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedUser'
+          readOnly: true
+          nullable: true
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the reviewers.
+            If none are selected, the notification will only be shown in the authentik
+            UI.
+        target_verbose:
+          type: string
+          readOnly: true
+      required:
+      - content_type
+      - id
+      - reviewer_groups_obj
+      - reviewers
+      - reviewers_obj
+      - target_verbose
+    LifecycleRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          nullable: true
+          minLength: 1
+        interval_months:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        grace_period_days:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        reviewers:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the reviewers.
+            If none are selected, the notification will only be shown in the authentik
+            UI.
+      required:
+      - content_type
+      - reviewers
     Link:
       type: object
       description: Returns a single link
@@ -42340,6 +42723,9 @@ components:
       - authentik_providers_ssf.ssfprovider
       - authentik_providers_ws_federation.wsfederationprovider
       - authentik_reports.dataexport
+      - authentik_reviews.lifecyclerule
+      - authentik_reviews.review
+      - authentik_reviews.attestation
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
@@ -44780,6 +45166,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/License'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedLifecycleRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LifecycleRule'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -48193,6 +48594,48 @@ components:
         key:
           type: string
           minLength: 1
+    PatchedLifecycleRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          nullable: true
+          minLength: 1
+        interval_months:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        grace_period_days:
+          type: integer
+          maximum: 32767
+          minimum: -32768
+        reviewer_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        reviewers:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Select which transports should be used to notify the reviewers.
+            If none are selected, the notification will only be shown in the authentik
+            UI.
     PatchedMicrosoftEntraProviderMappingRequest:
       type: object
       description: MicrosoftEntraProviderMapping Serializer
@@ -52264,6 +52707,31 @@ components:
       - group_uuid
       - name
       - pk
+    RelatedUser:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+      required:
+      - name
+      - pk
+      - username
+      - uuid
     Reputation:
       type: object
       description: Reputation Serializer
@@ -52372,6 +52840,47 @@ components:
       - discouraged
       - preferred
       - required
+      type: string
+    Review:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          $ref: '#/components/schemas/GenericForeignKey'
+        state:
+          $ref: '#/components/schemas/ReviewStateEnum'
+        opened_on:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - object
+      - opened_on
+    ReviewRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+        object:
+          $ref: '#/components/schemas/GenericForeignKeyRequest'
+        state:
+          $ref: '#/components/schemas/ReviewStateEnum'
+      required:
+      - object
+    ReviewStateEnum:
+      enum:
+      - REVIEWED
+      - PENDING
+      - OVERDUE
       type: string
     Role:
       type: object
@@ -54846,16 +55355,6 @@ components:
       - required
       - sub_text
       - type
-    StateEnum:
-      enum:
-      - queued
-      - consumed
-      - preprocess
-      - running
-      - postprocess
-      - rejected
-      - done
-      type: string
     StaticDevice:
       type: object
       description: Serializer for static authenticator devices
@@ -55081,7 +55580,7 @@ components:
           description: Dramatiq actor name
         state:
           allOf:
-          - $ref: '#/components/schemas/StateEnum'
+          - $ref: '#/components/schemas/TaskStateEnum'
           description: Task status
         mtime:
           type: string
@@ -55148,6 +55647,16 @@ components:
       - info
       - warning
       - error
+      type: string
+    TaskStateEnum:
+      enum:
+      - queued
+      - consumed
+      - preprocess
+      - running
+      - postprocess
+      - rejected
+      - done
       type: string
     TelegramAuthRequest:
       type: object

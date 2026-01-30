@@ -1064,6 +1064,126 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_reviews.attestation"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_reviews.attestation_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_reviews.attestation"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_reviews.attestation"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_reviews.lifecyclerule"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_reviews.lifecyclerule_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_reviews.lifecyclerule"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_reviews.lifecyclerule"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_reviews.review"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_reviews.review_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_reviews.review"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_reviews.review"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                         },
                         "id": {
@@ -5789,6 +5909,18 @@
                             "authentik_reports.change_dataexport",
                             "authentik_reports.delete_dataexport",
                             "authentik_reports.view_dataexport",
+                            "authentik_reviews.add_attestation",
+                            "authentik_reviews.add_lifecyclerule",
+                            "authentik_reviews.add_review",
+                            "authentik_reviews.change_attestation",
+                            "authentik_reviews.change_lifecyclerule",
+                            "authentik_reviews.change_review",
+                            "authentik_reviews.delete_attestation",
+                            "authentik_reviews.delete_lifecyclerule",
+                            "authentik_reviews.delete_review",
+                            "authentik_reviews.view_attestation",
+                            "authentik_reviews.view_lifecyclerule",
+                            "authentik_reviews.view_review",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -7323,6 +7455,218 @@
                 }
             }
         },
+        "model_authentik_reviews.attestation": {
+            "type": "object",
+            "properties": {
+                "review": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Review"
+                },
+                "reviewer": {
+                    "type": "integer",
+                    "title": "Reviewer"
+                },
+                "note": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Note"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_reviews.attestation_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_attestation",
+                            "change_attestation",
+                            "delete_attestation",
+                            "view_attestation"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_reviews.lifecyclerule": {
+            "type": "object",
+            "properties": {
+                "content_type": {
+                    "type": "string",
+                    "enum": [
+                        "authentik_core.application",
+                        "authentik_core.group",
+                        "authentik_rbac.role"
+                    ],
+                    "title": "Content type"
+                },
+                "object_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Object id"
+                },
+                "interval_months": {
+                    "type": "integer",
+                    "minimum": -32768,
+                    "maximum": 32767,
+                    "title": "Interval months"
+                },
+                "grace_period_days": {
+                    "type": "integer",
+                    "minimum": -32768,
+                    "maximum": 32767,
+                    "title": "Grace period days"
+                },
+                "reviewer_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Reviewer groups"
+                },
+                "min_reviewers": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 32767,
+                    "title": "Min reviewers"
+                },
+                "reviewers": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "title": "Reviewers"
+                },
+                "notification_transports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI."
+                    },
+                    "title": "Notification transports",
+                    "description": "Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_reviews.lifecyclerule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_lifecyclerule",
+                            "change_lifecyclerule",
+                            "delete_lifecyclerule",
+                            "view_lifecyclerule"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_reviews.review": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Id"
+                },
+                "object": {
+                    "type": "object",
+                    "properties": {
+                        "content_type": {
+                            "type": "string",
+                            "enum": [
+                                "authentik_core.application",
+                                "authentik_core.group",
+                                "authentik_rbac.role"
+                            ],
+                            "title": "Content type"
+                        },
+                        "object_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "title": "Object id"
+                        }
+                    },
+                    "required": [
+                        "content_type",
+                        "object_id"
+                    ],
+                    "title": "Object"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": [
+                        "REVIEWED",
+                        "PENDING",
+                        "OVERDUE"
+                    ],
+                    "title": "State"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_reviews.review_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_review",
+                            "change_review",
+                            "delete_review",
+                            "view_review"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage": {
             "type": "object",
             "properties": {
@@ -7535,6 +7879,10 @@
                         "email_sent",
                         "update_available",
                         "export_ready",
+                        "review_initiated",
+                        "review_overdue",
+                        "review_attested",
+                        "review_completed",
                         "custom_"
                     ],
                     "title": "Action"
@@ -7653,6 +8001,10 @@
                                 "email_sent",
                                 "update_available",
                                 "export_ready",
+                                "review_initiated",
+                                "review_overdue",
+                                "review_attested",
+                                "review_completed",
                                 "custom_"
                             ],
                             "title": "Action"
@@ -8402,6 +8754,10 @@
                         "email_sent",
                         "update_available",
                         "export_ready",
+                        "review_initiated",
+                        "review_overdue",
+                        "review_attested",
+                        "review_completed",
                         "custom_"
                     ],
                     "title": "Action",
@@ -8497,6 +8853,7 @@
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
+                        "authentik.enterprise.reviews",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
@@ -8626,6 +8983,9 @@
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_providers_ws_federation.wsfederationprovider",
                         "authentik_reports.dataexport",
+                        "authentik_reviews.lifecyclerule",
+                        "authentik_reviews.review",
+                        "authentik_reviews.attestation",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
@@ -11163,6 +11523,18 @@
                             "authentik_reports.change_dataexport",
                             "authentik_reports.delete_dataexport",
                             "authentik_reports.view_dataexport",
+                            "authentik_reviews.add_attestation",
+                            "authentik_reviews.add_lifecyclerule",
+                            "authentik_reviews.add_review",
+                            "authentik_reviews.change_attestation",
+                            "authentik_reviews.change_lifecyclerule",
+                            "authentik_reviews.change_review",
+                            "authentik_reviews.delete_attestation",
+                            "authentik_reviews.delete_lifecyclerule",
+                            "authentik_reviews.delete_review",
+                            "authentik_reviews.view_attestation",
+                            "authentik_reviews.view_lifecyclerule",
+                            "authentik_reviews.view_review",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",

@@ -9,6 +9,7 @@ from django.db.models import QuerySet
 from django.db.models.functions import Cast
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
@@ -18,18 +19,18 @@ from authentik.lib.models import SerializerModel
 class LifecycleRule(SerializerModel):
     id = models.UUIDField(primary_key=True, default=uuid4)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.TextField(null=True)
+    object_id = models.TextField(null=True, default=None)
     object = GenericForeignKey("content_type", "object_id")
 
     interval_months = models.SmallIntegerField(default=1)
     # Grace period starts after a review is due
-    grace_period_days = models.SmallIntegerField(default=30)
+    grace_period_days = models.SmallIntegerField(default=28)
 
     # The review can be conducted by either `min_reviewers` members of `reviewer_groups`
     # or all of `reviewers`
-    reviewer_groups = models.ManyToManyField("authentik_core.Group")
+    reviewer_groups = models.ManyToManyField("authentik_core.Group", blank=True)
     min_reviewers = models.PositiveSmallIntegerField(default=1)
-    reviewers = models.ManyToManyField("authentik_core.User")
+    reviewers = models.ManyToManyField("authentik_core.User", blank=True)
 
     notification_transports = models.ManyToManyField(
         NotificationTransport,
@@ -43,6 +44,12 @@ class LifecycleRule(SerializerModel):
     class Meta:
         unique_together = ("content_type", "object_id")
         indexes = [models.Index(fields=["content_type"])]
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.enterprise.reviews.api.lifecycle_rules import LifecycleRuleSerializer
+
+        return LifecycleRuleSerializer
 
     def get_reviews(self):
         qs = Review.objects.filter(content_type=self.content_type)
@@ -129,7 +136,7 @@ class ReviewState(models.TextChoices):
 
 
 class Review(SerializerModel):
-    id = models.UUIDField(primary_key=True, default=uuid4)
+    id = models.UUIDField(primary_key=True, default=uuid4, null=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(null=False)
     object = GenericForeignKey("content_type", "object_id")
@@ -139,6 +146,12 @@ class Review(SerializerModel):
 
     class Meta:
         indexes = [models.Index(fields=["content_type", "opened_on"])]
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.enterprise.reviews.api.reviews import ReviewSerializer
+
+        return ReviewSerializer
 
     @property
     def rule(self) -> LifecycleRule:
@@ -205,6 +218,12 @@ class Attestation(SerializerModel):
     reviewer = models.ForeignKey("authentik_core.User", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     note = models.TextField(null=True)
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.enterprise.reviews.api.attestations import AttestationSerializer
+
+        return AttestationSerializer
 
     def save(self, *args, **kwargs):
         creating = self.pk is None or kwargs.get("force_insert", False)
