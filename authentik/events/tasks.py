@@ -94,6 +94,13 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
             count += 1
             if transport.send_once:
                 break
+    # Send to security email if enabled
+    if trigger.destination_security_email:
+        notification_security_email.send_with_options(
+            args=(event.pk, trigger.pk),
+            rel_obj=trigger,
+        )
+        count += 1
     self.info(f"Created {count} notification tasks")
 
 
@@ -123,6 +130,59 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     transport.send(notification)
 
 
+@actor(description=_("Send notification to security email."))
+def notification_security_email(event_pk: str, trigger_pk: str):
+    """Send notification to security email address configured in tenant settings."""
+    from authentik.stages.email.tasks import send_mail
+    from authentik.stages.email.utils import TemplateEmailMessage
+    from authentik.tenants.models import Tenant
+
+    event = Event.objects.filter(pk=event_pk).first()
+    if not event:
+        LOGGER.warning("notification_security_email: event not found", event_pk=event_pk)
+        return
+
+    trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
+    if not trigger:
+        LOGGER.warning("notification_security_email: trigger not found", trigger_pk=trigger_pk)
+        return
+
+    tenant = Tenant.objects.first()
+    if not tenant or not tenant.security_email:
+        LOGGER.info(
+            "notification_security_email: no security email configured",
+            has_tenant=bool(tenant),
+        )
+        return
+
+    # Build context from event
+    context = {
+        "key_value": {},
+        "body": event.summary,
+        "title": event.action,
+    }
+    if event.user:
+        context["key_value"]["event_user_email"] = event.user.get("email", "")
+        context["key_value"]["event_user_username"] = event.user.get("username", "")
+    for key, value in event.context.items():
+        if isinstance(value, str):
+            context["key_value"][key] = value
+
+    mail = TemplateEmailMessage(
+        subject=f"[Security] {event.action}",
+        to=[("Security Team", tenant.security_email)],
+        language="en",
+        template_name="email/event_notification.html",
+        template_context=context,
+    )
+    send_mail.send_with_options(args=(mail.__dict__,))
+    LOGGER.info(
+        "notification_security_email: sent to security email",
+        email=tenant.security_email,
+        event_action=event.action,
+    )
+
+
 @actor(description=_("Cleanup events for GDPR compliance."))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
@@ -141,3 +201,5 @@ def notification_cleanup():
     notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
     self.info(f"Expired {amount} Notifications")
+
+
