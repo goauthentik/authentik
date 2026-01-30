@@ -1015,19 +1015,18 @@ class UserViewSet(
         reason = body.validated_data["reason"]
         self_service = user.pk == request.user.pk
 
-        # For non-self lockdown, require admin permissions
+        # For non-self lockdown, require permission on the target user
         if not self_service:
-            for perm in ["authentik_core.reset_user_password", "authentik_core.change_user"]:
-                if not request.user.has_perm(perm):
-                    LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
-                    self.permission_denied(request)
+            perm = "authentik_core.change_user"
+            if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
+                LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
+                self.permission_denied(request)
 
         self._validate_lockdown_target(request, user)
         self._trigger_account_lockdown(request, user, reason, self_service=self_service)
 
         return Response(status=204)
 
-    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
         request=UserBulkAccountLockdownSerializer,
         responses={
@@ -1073,12 +1072,16 @@ class UserViewSet(
         skipped = []
 
         for user in users:
+            # Check object permission for each user
+            perm = "authentik_core.change_user"
+            if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
+                skipped.append({"username": user.username, "reason": _("Permission denied")})
+                continue
+
             try:
                 self._validate_lockdown_target(request, user)
             except ValidationError as exc:
-                # Extract error message from ValidationError
-                error_msg = exc.detail.get("non_field_errors", [str(exc)])[0]
-                skipped.append({"username": user.username, "reason": str(error_msg)})
+                skipped.append({"username": user.username, "reason": str(exc)})
                 continue
 
             self._trigger_account_lockdown(request, user, reason)
