@@ -1,6 +1,9 @@
+import type {
+    DifficultyLevel,
+    LearningCenterResource,
+} from "../../theme/utils/learningCenterUtils";
 import styles from "./styles.module.css";
 
-import type { DifficultyLevel, LearningCenterResource } from "../../theme/utils/learningCenterUtils";
 import clsx from "clsx";
 import React from "react";
 

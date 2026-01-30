@@ -205,7 +205,6 @@ export const extractAvailableCategories = (
     resources: readonly LearningCenterResource[],
 ): string[] => Array.from(new Set(resources.map((r) => r.category))).toSorted();
 
-
 /**
  * Extracts all available difficulty levels from a collection of resources.
  */

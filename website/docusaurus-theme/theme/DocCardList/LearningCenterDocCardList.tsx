@@ -94,12 +94,7 @@ function ResourceCard({
         return null;
     }
 
-    const {
-        resourceName,
-        shortDescription,
-        difficulty,
-        estimatedTime,
-    } = cachedData;
+    const { resourceName, shortDescription, difficulty, estimatedTime } = cachedData;
 
     // Link to the article page
     const articleHref = item.href || "";
