@@ -12,6 +12,7 @@ PLAN_CONTEXT_LOCKDOWN_TARGET = "lockdown_target_user"
 PLAN_CONTEXT_LOCKDOWN_TARGETS = "lockdown_target_users"  # List of users for bulk lockdown
 PLAN_CONTEXT_LOCKDOWN_REASON = "lockdown_reason"
 PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE = "lockdown_self_service"
+PLAN_CONTEXT_LOCKDOWN_RESULTS = "lockdown_results"  # List of {user, success, error} dicts
 
 
 class AccountLockdownStage(Stage):
@@ -41,6 +42,17 @@ class AccountLockdownStage(Stage):
     revoke_tokens = models.BooleanField(
         default=True,
         help_text=_("Revoke all API and app password tokens for the user"),
+    )
+    self_service_message_title = models.TextField(
+        default="Your account has been locked",
+        help_text=_("Title shown to users after self-service lockdown"),
+    )
+    self_service_message = models.TextField(
+        default=(
+            "<p>You have been logged out of all sessions and your password has been invalidated.</p>"
+            "<p>To regain access to your account, please contact your IT administrator or security team.</p>"
+        ),
+        help_text=_("HTML message shown to users after self-service lockdown. Supports HTML formatting."),
     )
 
     @property

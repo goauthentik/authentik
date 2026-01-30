@@ -11,19 +11,45 @@ entries:
     slug: default-account-lockdown
   model: authentik_flows.flow
   id: flow
-# Warning field - danger alert box
+# Warning field - danger alert box (content varies based on self-service vs admin)
 - attrs:
     order: 50
     initial_value: |
-      <p><strong>This action will immediately:</strong></p>
+      is_self_service = prompt_context.get("lockdown_self_service", False)
+      if is_self_service:
+          return """<p><strong>This will immediately:</strong></p>
       <ul>
-        <li><strong>Invalidate the user's password</strong> - The password will be set to a random value and cannot be recovered</li>
-        <li><strong>Deactivate the user account</strong> - The account will be disabled</li>
-        <li><strong>Terminate all active sessions</strong> - All authentik sessions will be ended</li>
-        <li><strong>Revoke all tokens</strong> - All API tokens and app passwords will be revoked</li>
+        <li><strong>Invalidate your password</strong> - Your password will be set to a random value and cannot be recovered</li>
+        <li><strong>Deactivate your account</strong> - Your account will be disabled</li>
+        <li><strong>Terminate all your sessions</strong> - You will be logged out everywhere</li>
+        <li><strong>Revoke all your tokens</strong> - All your API tokens and app passwords will be revoked</li>
       </ul>
-      <p><strong>This action cannot be easily undone.</strong></p>
-    initial_value_expression: false
+      <p><strong>This action cannot be easily undone.</strong></p>"""
+      else:
+          # Check for bulk lockdown (multiple users)
+          targets = prompt_context.get("lockdown_target_users", [])
+          if not targets:
+              # Single user lockdown
+              target = prompt_context.get("lockdown_target_user")
+              if target:
+                  targets = [target]
+
+          if targets:
+              user_list = "<ul>" + "".join(f"<li><code>{u.username}</code> ({u.email or u.name or 'No email'})</li>" for u in targets) + "</ul>"
+          else:
+              user_list = "<p>the selected user(s)</p>"
+
+          return f"""<p><strong>You are about to lock down:</strong></p>
+      {user_list}
+      <p><strong>This will immediately:</strong></p>
+      <ul>
+        <li>Invalidate passwords - Passwords will be set to random values</li>
+        <li>Deactivate accounts - Accounts will be disabled</li>
+        <li>Terminate all sessions - All active sessions will be ended</li>
+        <li>Revoke all tokens - All API tokens and app passwords will be revoked</li>
+      </ul>
+      <p><strong>This action cannot be easily undone.</strong></p>"""
+    initial_value_expression: true
     required: false
     type: alert_danger
     field_key: lockdown_warning
@@ -33,13 +59,18 @@ entries:
     name: default-account-lockdown-field-warning
   id: prompt-field-warning
   model: authentik_stages_prompt.prompt
-# Info field - when to use lockdown
+# Info field - when to use lockdown (content varies based on self-service vs admin)
 - attrs:
     order: 100
     initial_value: |
-      Use this when you suspect an account has been compromised.
-      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>
-    initial_value_expression: false
+      is_self_service = prompt_context.get("lockdown_self_service", False)
+      if is_self_service:
+          return """Use this if you suspect your account has been compromised.
+      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
+      else:
+          return """Use this when you suspect a user's account has been compromised.
+      <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>"""
+    initial_value_expression: true
     required: false
     type: alert_info
     field_key: lockdown_info
@@ -52,8 +83,13 @@ entries:
 # Reason field - text area for lockdown reason
 - attrs:
     order: 200
-    placeholder: Describe why this account is being locked down...
-    placeholder_expression: false
+    placeholder: |
+      is_self_service = prompt_context.get("lockdown_self_service", False)
+      if is_self_service:
+          return "Describe why you are locking your account..."
+      else:
+          return "Describe why this account is being locked down..."
+    placeholder_expression: true
     required: true
     type: text_area
     field_key: reason
@@ -83,23 +119,60 @@ entries:
     set_unusable_password: true
     delete_sessions: true
     revoke_tokens: true
-# Completion message field - shown only for self-service lockdown
+    self_service_message_title: Your account has been locked
+    self_service_message: |
+      <p>You have been logged out of all sessions and your password has been invalidated.</p>
+      <p>To regain access to your account, please contact your IT administrator or security team.</p>
+# Completion message field - dynamic content for admin lockdown results
 - attrs:
     order: 300
     initial_value: |
-      <p>You have been logged out of all sessions and your password has been invalidated.</p>
-      <p>To regain access to your account, please contact your IT administrator or security team.</p>
-    initial_value_expression: false
+      results = prompt_context.get("lockdown_results", [])
+
+      if not results:
+          return "<p>Lockdown completed.</p>"
+
+      # Build results list
+      all_success = all(r.get("success", False) for r in results)
+
+      if len(results) == 1:
+          # Single user
+          r = results[0]
+          user = r.get("user")
+          username = user.username if user else "Unknown"
+          if r.get("success"):
+              return f"<p>Successfully locked down <code>{username}</code>.</p>"
+          else:
+              error = r.get("error", "Unknown error")
+              return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
+
+      # Multiple users - show per-user results
+      lines = []
+      for r in results:
+          user = r.get("user")
+          username = user.username if user else "Unknown"
+          if r.get("success"):
+              lines.append(f"<li><code>{username}</code> - Locked</li>")
+          else:
+              error = r.get("error", "Unknown error")
+              lines.append(f"<li><code>{username}</code> - Failed: {error}</li>")
+
+      result_list = "<ul>" + "".join(lines) + "</ul>"
+      if all_success:
+          return f"<p><strong>All accounts locked successfully:</strong></p>{result_list}"
+      else:
+          return f"<p><strong>Lockdown results:</strong></p>{result_list}"
+    initial_value_expression: true
     required: false
-    type: alert_warning
+    type: alert_info
     field_key: lockdown_complete
-    label: Your account has been locked
+    label: Lockdown Complete
     sub_text: ""
   identifiers:
     name: default-account-lockdown-field-complete
   id: prompt-field-complete
   model: authentik_stages_prompt.prompt
-# Prompt stage for completion message
+# Prompt stage for admin completion message
 - attrs:
     fields:
     - !KeyOf prompt-field-complete
@@ -107,15 +180,14 @@ entries:
     name: default-account-lockdown-complete-prompt
   id: default-account-lockdown-complete-prompt
   model: authentik_stages_prompt.promptstage
-# Expression policy to check if this is a self-service lockdown
+# Expression policy to check if this is NOT a self-service lockdown (admin)
 - attrs:
-    name: default-account-lockdown-self-service-policy
+    name: default-account-lockdown-admin-policy
     expression: |
-      # Only show completion message for self-service lockdown
-      return request.context.get("lockdown_self_service", False)
+      return not request.context.get("lockdown_self_service", False)
   identifiers:
-    name: default-account-lockdown-self-service-policy
-  id: self-service-policy
+    name: default-account-lockdown-admin-policy
+  id: admin-policy
   model: authentik_policies_expression.expressionpolicy
 # Stage bindings
 - identifiers:
@@ -128,19 +200,19 @@ entries:
     stage: !KeyOf default-account-lockdown-stage
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
-# Completion stage binding - only shown for self-service lockdown
+# Admin completion stage binding - shown for admin lockdown only
 - identifiers:
     order: 20
     stage: !KeyOf default-account-lockdown-complete-prompt
     target: !KeyOf flow
-  id: completion-binding
+  id: admin-completion-binding
   model: authentik_flows.flowstagebinding
-# Bind the self-service policy to the completion stage
+# Bind the admin policy to the admin completion stage
 - attrs:
     enabled: true
     negate: false
     order: 0
   identifiers:
-    policy: !KeyOf self-service-policy
-    target: !KeyOf completion-binding
+    policy: !KeyOf admin-policy
+    target: !KeyOf admin-completion-binding
   model: authentik_policies.policybinding
