@@ -14,7 +14,7 @@ entries:
 # Warning field - danger alert box
 - attrs:
     order: 50
-    placeholder: |
+    initial_value: |
       <p><strong>This action will immediately:</strong></p>
       <ul>
         <li><strong>Invalidate the user's password</strong> - The password will be set to a random value and cannot be recovered</li>
@@ -23,7 +23,7 @@ entries:
         <li><strong>Revoke all tokens</strong> - All API tokens and app passwords will be revoked</li>
       </ul>
       <p><strong>This action cannot be easily undone.</strong></p>
-    placeholder_expression: false
+    initial_value_expression: false
     required: false
     type: alert_danger
     field_key: lockdown_warning
@@ -35,10 +35,10 @@ entries:
 # Info field - when to use lockdown
 - attrs:
     order: 100
-    placeholder: |
+    initial_value: |
       Use this when you suspect an account has been compromised.
       <a href="https://docs.goauthentik.io/docs/security/account-lockdown?utm_source=authentik" target="_blank" rel="noopener noreferrer">Learn more about account lockdown</a>
-    placeholder_expression: false
+    initial_value_expression: false
     required: false
     type: alert_info
     field_key: lockdown_info
@@ -84,10 +84,10 @@ entries:
 # Completion message field - shown only for self-service lockdown
 - attrs:
     order: 300
-    placeholder: |
+    initial_value: |
       <p>You have been logged out of all sessions and your password has been invalidated.</p>
       <p>To regain access to your account, please contact your IT administrator or security team.</p>
-    placeholder_expression: false
+    initial_value_expression: false
     required: false
     type: alert_warning
     field_key: lockdown_complete
