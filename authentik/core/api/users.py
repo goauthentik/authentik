@@ -1084,6 +1084,11 @@ class UserViewSet(
         skipped = []
 
         for user in users:
+            # Cannot lock yourself in bulk operations
+            if user.pk == request.user.pk:
+                skipped.append({"username": user.username, "reason": _("Cannot lock yourself")})
+                continue
+
             # Check object permission for each user
             perm = "authentik_core.change_user"
             if not request.user.has_perm(perm) and not request.user.has_perm(perm, user):
