@@ -1,7 +1,7 @@
 """Account lockdown stage logic"""
 
 from django.db.transaction import atomic
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
@@ -13,7 +13,6 @@ from authentik.enterprise.stages.account_lockdown.models import (
     AccountLockdownStage,
 )
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import HttpChallengeResponse, RedirectChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -124,17 +123,26 @@ class AccountLockdownStageView(StageView):
         # another stage. Show the completion message directly via shell challenge.
         # The message is loaded from the configured prompt field for customization.
         if self_service:
-            return self._self_service_completion_response()
+            return self._self_service_completion_response(request)
 
         return self.executor.stage_ok()
 
-    def _self_service_completion_response(self) -> HttpResponse:
+    def _self_service_completion_response(self, request: HttpRequest) -> HttpResponse:
         """Redirect to completion flow after self-service lockdown.
 
         Since all sessions are deleted, the user cannot continue in the flow.
         Redirect them to an unauthenticated completion flow that shows the
         lockdown message.
+
+        We use a direct HTTP redirect instead of a challenge because the
+        flow executor's challenge handling may try to access the session
+        which we just deleted.
         """
+        # Flush the current request's session to prevent Django's session
+        # middleware from trying to save a deleted session
+        if hasattr(request, "session"):
+            request.session.flush()
+
         stage: AccountLockdownStage = self.executor.current_stage
         completion_flow = stage.self_service_completion_flow
         if completion_flow:
@@ -143,10 +151,4 @@ class AccountLockdownStageView(StageView):
             # Fallback to root (login page) if no completion flow configured
             redirect_to = "/"
 
-        challenge = RedirectChallenge(
-            data={
-                "to": redirect_to,
-            }
-        )
-        challenge.is_valid()
-        return HttpChallengeResponse(challenge)
+        return HttpResponseRedirect(redirect_to)
