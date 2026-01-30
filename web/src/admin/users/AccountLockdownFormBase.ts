@@ -98,10 +98,8 @@ export abstract class AccountLockdownFormBase<T extends AccountLockdownRequest> 
      */
     protected get reasonHelp(): string {
         return this.accountCount === 1
-            ? msg("Required. This explanation will be recorded in the audit log.")
-            : msg(
-                  "Required. This explanation will be recorded in the audit log for each user.",
-              );
+            ? msg("This explanation will be recorded in the audit log.")
+            : msg("This explanation will be recorded in the audit log for each user.");
     }
 
     /**
