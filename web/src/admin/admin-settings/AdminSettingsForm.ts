@@ -236,9 +236,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
             </ak-text-input>
             <ak-switch-input
-                name="panicButtonEnabled"
+                name="accountLockdownEnabled"
                 label=${msg("Enable account lockdown")}
-                ?checked=${settings.panicButtonEnabled}
+                ?checked=${settings.accountLockdownEnabled}
                 help=${msg("Enable the account lockdown feature for administrators.")}
             >
             </ak-switch-input>

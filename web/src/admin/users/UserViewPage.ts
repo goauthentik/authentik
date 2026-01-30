@@ -7,7 +7,7 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
-import "#admin/users/UserPanicButtonForm";
+import "#admin/users/UserAccountLockdownForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
 import "#components/ak-object-attributes-card";
@@ -184,11 +184,11 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                       <ak-forms-modal size=${PFSize.Medium} id="account-lockdown-request">
                           <span slot="submit">${msg("Trigger Lockdown")}</span>
                           <span slot="header">${msg("Account Lockdown")}</span>
-                          <ak-user-panic-button-form
+                          <ak-user-account-lockdown-form
                               slot="form"
                               .instancePk=${user.pk}
-                              .user=${user}
-                          ></ak-user-panic-button-form>
+                              .username=${user.username}
+                          ></ak-user-account-lockdown-form>
                           <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
                               ${msg("Account Lockdown")}
                           </button>
