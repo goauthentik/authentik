@@ -110,4 +110,4 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
             r"\Z",
             re.IGNORECASE,
         )
-        self.schemes = ["http", "https", "blank"] + list(self.schemes)
+        self.schemes = ["http", "https", "blank", "ssh", "sftp"] + list(self.schemes)
