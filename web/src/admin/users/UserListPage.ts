@@ -6,6 +6,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#admin/users/UserResetEmailForm";
+import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
 import "#elements/TreeView";
 import "#elements/buttons/ActionButton/index";
@@ -15,12 +16,9 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
-import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
-import { MessageLevel } from "#common/messages";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
@@ -28,7 +26,6 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -65,37 +62,17 @@ export const renderRecoveryButtons = ({
         </ak-forms-modal>
         ${brandHasRecoveryFlow
             ? html`
-                  <ak-action-button
-                      class="pf-m-secondary"
-                      .apiRequest=${() =>
-                          new CoreApi(DEFAULT_CONFIG)
-                              .coreUsersRecoveryCreate({
-                                  id: user.pk,
-                              })
-                              .then((rec) =>
-                                  writeToClipboard(rec.link).then((wroteToClipboard) =>
-                                      showMessage({
-                                          level: MessageLevel.success,
-                                          message: rec.link,
-                                          description: wroteToClipboard
-                                              ? msg(
-                                                    "A copy of this recovery link has been placed in your clipboard",
-                                                )
-                                              : "",
-                                      }),
-                                  ),
-                              )
-                              .catch((error: unknown) =>
-                                  parseAPIResponseError(error).then(showAPIErrorMessage),
-                              )}
-                  >
-                      ${msg("Create recovery link")}
-                  </ak-action-button>
+                  <ak-forms-modal id="ak-link-recovery-request">
+                      <span slot="submit"> ${msg("Create link")} </span>
+                      <span slot="header"> ${msg("Create recovery link")} </span>
+                      <ak-user-recovery-link-form slot="form" .user=${user}>
+                      </ak-user-recovery-link-form>
+                      <button slot="trigger" class="pf-c-button pf-m-secondary">
+                          ${msg("Create recovery link")}
+                      </button>
+                  </ak-forms-modal>
                   ${user.email
-                      ? html`<ak-forms-modal
-                            .closeAfterSuccessfulSubmit=${false}
-                            id="ak-email-recovery-request"
-                        >
+                      ? html`<ak-forms-modal id="ak-email-recovery-request">
                             <span slot="submit">${msg("Send link")}</span>
                             <span slot="header">${msg("Send recovery link to user")}</span>
                             <ak-user-reset-email-form slot="form" .user=${user}>

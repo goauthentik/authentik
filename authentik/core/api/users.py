@@ -77,6 +77,7 @@ from authentik.core.models import (
     TokenIntents,
     User,
     UserTypes,
+    default_token_duration,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -86,6 +87,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.lib.utils.uuid import is_uuid_valid
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
@@ -543,7 +545,7 @@ class UserViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(self, token_duration: str, for_email=False) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request.brand
@@ -569,6 +571,11 @@ class UserViewSet(
         _plan = FlowToken.pickle(plan)
         if for_email:
             _plan = pickle_flow_token_for_email(plan)
+        if token_duration:
+            timedelta_string_validator(token_duration)
+            expires = now() + timedelta_from_string(token_duration)
+        else:
+            expires = default_token_duration()
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
@@ -576,6 +583,7 @@ class UserViewSet(
                 "flow": flow,
                 "_plan": _plan,
                 "revoke_on_execution": not for_email,
+                "expires": expires,
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
@@ -723,6 +731,13 @@ class UserViewSet(
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="token_duration",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            ),
+        ],
         responses={
             "200": LinkSerializer(many=False),
         },
@@ -731,7 +746,8 @@ class UserViewSet(
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their account"""
-        link, _ = self._create_recovery_link()
+        token_duration = request.query_params.get("token_duration", "")
+        link, _ = self._create_recovery_link(token_duration=token_duration)
         return Response({"link": link})
 
     @permission_required("authentik_core.reset_user_password")
@@ -742,7 +758,12 @@ class UserViewSet(
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.STR,
                 required=True,
-            )
+            ),
+            OpenApiParameter(
+                name="token_duration",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            ),
         ],
         responses={
             "204": OpenApiResponse(description="Successfully sent recover email"),
@@ -769,7 +790,8 @@ class UserViewSet(
             raise ValidationError(
                 {"non_field_errors": _("User has no view access to email stage.")}
             )
-        link, token = self._create_recovery_link(for_email=True)
+        token_duration = request.query_params.get("token_duration", "")
+        link, token = self._create_recovery_link(token_duration=token_duration, for_email=True)
         message = TemplateEmailMessage(
             subject=_(email_stage.subject),
             to=[(user.name, user.email)],

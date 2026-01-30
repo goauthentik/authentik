@@ -1,9 +1,10 @@
 """Test Users API"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from json import loads
 
 from django.urls.base import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
@@ -126,6 +127,53 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_recovery_duration(self):
+        """Test user recovery token duration"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
+            + "?token_duration=days=33"
+        )
+        self.assertEqual(response.status_code, 200)
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=33)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+
+    def test_recovery_duration_update(self):
+        """Test user recovery token duration update"""
+        Token.objects.all().delete()
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
+            + "?token_duration=days=33"
+        )
+        self.assertEqual(response.status_code, 200)
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=33)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
+        response = self.client.post(
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
+            + "?token_duration=days=66"
+        )
+        expires = Token.objects.first().expires
+        expected_expires = now() + timedelta(days=66)
+        self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
 
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""

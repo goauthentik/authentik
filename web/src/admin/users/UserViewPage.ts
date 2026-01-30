@@ -104,9 +104,9 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                 margin-right: 0;
             }
 
-            #ak-email-recovery-request,
             #update-password-request .pf-c-button,
-            #ak-email-recovery-request .pf-c-button {
+            #ak-email-recovery-request .pf-c-button,
+            #ak-link-recovery-request .pf-c-button {
                 width: 100%;
             }
         `,

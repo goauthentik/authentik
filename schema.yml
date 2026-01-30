@@ -4457,6 +4457,10 @@ paths:
           type: integer
         description: A unique integer value identifying this User.
         required: true
+      - in: query
+        name: token_duration
+        schema:
+          type: string
       tags:
       - core
       security:
@@ -4489,6 +4493,10 @@ paths:
           type: integer
         description: A unique integer value identifying this User.
         required: true
+      - in: query
+        name: token_duration
+        schema:
+          type: string
       tags:
       - core
       security:
