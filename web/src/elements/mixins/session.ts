@@ -29,6 +29,18 @@ export const SessionContext = createContext<APIResult<SessionUser>>(
 export type SessionContext = typeof SessionContext;
 
 /**
+ * The Lit context for the user interface configuration.
+ *
+ * @category Context
+ * @see {@linkcode WithSession}
+ */
+export const UIConfigContext = createContext<Readonly<UIConfig>>(
+    Symbol("authentik-ui-config-context"),
+);
+
+export type UIConfigContext = typeof UIConfigContext;
+
+/**
  * A consumer that provides session information to the element.
  *
  * @category Mixin
@@ -85,8 +97,6 @@ export function canAccessAdmin(user?: UserSelf | null) {
     );
 }
 
-// console.debug.bind(console, `authentik/session:${this.constructor.name}`);
-
 /**
  * A mixin that provides the session information to the element.
  *
@@ -116,7 +126,16 @@ export const WithSession = createMixin<SessionMixin>(
             })
             public [kAKLocale]!: LocaleContextValue;
 
-            #uiConfig: Readonly<UIConfig> = DefaultUIConfig;
+            @consume({
+                context: UIConfigContext,
+                subscribe,
+            })
+            @property({ attribute: false, useDefault: true })
+            public uiConfig: Readonly<UIConfig> = {
+                // Debugging symbol to identify default config in the element lifecycle.
+                [Symbol.for("ak-default-brand")]: true,
+                ...DefaultUIConfig,
+            };
 
             @consume({
                 context: SessionContext,
@@ -127,10 +146,6 @@ export const WithSession = createMixin<SessionMixin>(
             //#endregion
 
             //#region Properties
-
-            public get uiConfig(): Readonly<UIConfig> {
-                return this.#uiConfig;
-            }
 
             public get currentUser(): Readonly<UserSelf> | null {
                 return (isAPIResultReady(this.session) && this.session.user) || null;
@@ -158,7 +173,7 @@ export const WithSession = createMixin<SessionMixin>(
 
                 const { settings = {} } = nextResult.user || {};
 
-                this.#uiConfig = createUIConfig(settings);
+                this.uiConfig = createUIConfig(settings);
 
                 return nextResult;
             }

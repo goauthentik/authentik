@@ -88,6 +88,28 @@ class FileManager:
         LOGGER.warning(f"Could not find file backend for file: {name}")
         return ""
 
+    def themed_urls(
+        self,
+        name: str | None,
+        request: HttpRequest | Request | None = None,
+    ) -> dict[str, str] | None:
+        """
+        Get URLs for each theme variant when filename contains %(theme)s.
+
+        Returns dict mapping theme to URL if %(theme)s present, None otherwise.
+        """
+        if not name:
+            return None
+
+        if isinstance(request, Request):
+            request = request._request
+
+        for backend in self.backends:
+            if backend.supports_file(name):
+                return backend.themed_urls(name, request)
+
+        return None
+
     def _check_manageable(self) -> None:
         if not self.manageable:
             raise ImproperlyConfigured("No file management backend configured.")

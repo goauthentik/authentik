@@ -7,9 +7,9 @@ requires-python = "==3.14.*"
 dependencies = [
   "ak-guardian==3.2.0",
   "argon2-cffi==25.1.0",
-  "cachetools==6.2.5",
+  "cachetools==6.2.6",
   "channels==4.3.2",
-  "cryptography==46.0.3",
+  "cryptography==46.0.4",
   "dacite==1.9.2",
   "deepmerge==2.0",
   "defusedxml==0.7.1",
@@ -27,7 +27,7 @@ dependencies = [
   "django-storages[s3]==1.14.6",
   "django-tenants==3.9.0",
   "django==5.2.10",
-  "djangoql==0.18.2",
+  "djangoql==0.19.1",
   "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.8.0",
@@ -38,7 +38,7 @@ dependencies = [
   "geoip2==5.2.0",
   "geopy==2.4.1",
   "google-api-python-client==2.188.0",
-  "gssapi==1.10.1",
+  "gssapi==1.11.1",
   "gunicorn==24.1.1",
   "jsonpatch==1.33",
   "jwcrypto==1.5.6",
@@ -53,12 +53,12 @@ dependencies = [
   "pydantic-scim==0.0.8",
   "pydantic==2.12.5",
   "pyjwt==2.10.1",
-  "pyrad==2.4",
+  "pyrad==2.5.2",
   "python-kadmin-rs==0.7.0",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",
   "scim2-filter-parser==0.7.0",
-  "sentry-sdk==2.50.0",
+  "sentry-sdk==2.51.0",
   "service-identity==24.2.0",
   "setproctitle==1.3.7",
   "structlog==25.5.0",
@@ -179,6 +179,8 @@ skip = [
   "./gen-go-api",             # Generated Go API
   "./data",                   # Media files
   "./media",                  # Legacy media files
+  "./schemas/**",             # XML Schemas
+  "**vendored**",             # Vendored files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"

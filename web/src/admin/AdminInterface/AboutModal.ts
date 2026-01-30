@@ -100,6 +100,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                             alt: msg("authentik Logo"),
                             className: "pf-c-about-modal-box__brand-image",
                             theme: this.activeTheme,
+                            themedUrls: this.brandingFaviconThemedUrls,
                         })}
                     </div>
                     <div class="pf-c-about-modal-box__close">
