@@ -2,9 +2,10 @@ import "#elements/messages/Message";
 
 import { APIError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
-import { SentryIgnoredError } from "#common/sentry/index";
 
 import { AKElement } from "#elements/Base";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
@@ -13,6 +14,8 @@ import { css, CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+
+const logger = ConsoleLogger.prefix("messages");
 
 /**
  * Adds a message to the message container, displaying it to the user.
@@ -27,17 +30,20 @@ export function showMessage(message: APIMessage | null, unique = false): void {
         return;
     }
 
-    const container = document.querySelector<MessageContainer>("ak-message-container");
-
-    if (!container) {
-        throw new SentryIgnoredError("failed to find message container");
-    }
-
     if (!message.message.trim()) {
-        console.warn("authentik/messages: `showMessage` received an empty message", message);
+        logger.warn("authentik/messages: `showMessage` received an empty message", message);
 
         message.message = msg("An unknown error occurred");
         message.description ??= msg("Please check the browser console for more details.");
+    }
+
+    const container = document.querySelector<MessageContainer>("ak-message-container");
+
+    if (!container) {
+        logger.warn("authentik/messages: No message container found in DOM");
+        logger.info("authentik/messages: Message to show:", message);
+
+        return;
     }
 
     container.addMessage(message, unique);

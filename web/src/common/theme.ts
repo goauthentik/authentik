@@ -337,6 +337,11 @@ function pluckCurrentBackgroundURL(
     return null;
 }
 
+export interface BackgroundImageInit {
+    baseOrigin?: string;
+    target?: HTMLElement | null;
+}
+
 /**
  * Applies the given background image URL to the document body.
  *
@@ -344,22 +349,26 @@ function pluckCurrentBackgroundURL(
  */
 export function applyBackgroundImageProperty(
     value?: string | null,
-    baseOrigin = window.location.origin,
+    init?: BackgroundImageInit,
 ): void {
+    const baseOrigin = init?.baseOrigin ?? window.location.origin;
+
     if (!value || !URL.canParse(value, baseOrigin)) {
         return;
     }
 
+    const target = init?.target ?? document.body;
+
     const nextURL = new URL(value, baseOrigin);
 
-    const { backgroundImage } = getComputedStyle(document.body, "::before");
+    const { backgroundImage } = getComputedStyle(target, "::before");
 
     const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
     if (currentURL?.href === nextURL.href) {
         return;
     }
 
-    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
+    target.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
 }
 
 /**
