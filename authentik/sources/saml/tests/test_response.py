@@ -1,7 +1,6 @@
 """SAML Source tests"""
 
 from base64 import b64encode
-from hashlib import sha256
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -226,11 +225,69 @@ class TestResponseProcessor(TestCase):
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
 
+    def test_verification_incorrect_response(self):
+        """Test verifying signature inside response"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_incorrect_signed_response.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaisesMessage(InvalidSignature, ""):
+            parser.parse()
+
+    def test_signed_encrypted_response(self):
+        """Test signed & encrypted response"""
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=verification_key,
+        )
+
+        encrypted_key = load_fixture("fixtures/encrypted-key2.pem")
+        ekp = CertificateKeyPair.objects.create(name=generate_id(), key_data=encrypted_key)
+
+        self.source.verification_kp = vkp
+        self.source.encryption_kp = ekp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_encrypted.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+
     @patch("authentik.sources.saml.processors.response.now")
     def test_transient(self, mocked_now):
-        """Test SAML transient NameID with attributes"""
+        """Test SAML transient NameID"""
         fixed_time = timezone.make_aware(timezone.datetime(2020, 10, 30, 19, 30))
         mocked_now.return_value = fixed_time
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=verification_key,
+        )
+        self.source.verification_kp = vkp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
         request = self.factory.post(
             "/",
             data={
@@ -243,17 +300,18 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
+
+        self.assertEqual(sfm.identifier, "test001@example.org")
         self.assertEqual(
             sfm.user_properties,
             {
                 "username": "test001@example.org",
-                "eppn": "test001@example.org",
                 "path": self.source.get_user_path(),
-                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
-                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
-                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
-                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
                 "attributes": {},
+                "email": "test001@mail.example.org",
+                "eppn": "test001@example.org",
+                "uid": "test001",
+                "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
             },
         )
 
@@ -273,7 +331,12 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
+
         username = "_ef5783d83c0d4147212322815d7e4064"
+        self.assertEqual(
+            sfm.identifier,
+            username,
+        )
         self.assertEqual(
             sfm.user_properties,
             {
@@ -281,11 +344,10 @@ class TestResponseProcessor(TestCase):
                 "path": self.source.get_user_path(),
                 "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
                 "attributes": {
+                    "goauthentik.io/user/delete-on-logout": True,
                     "goauthentik.io/user/expires": 1604172600.0,
                     "goauthentik.io/user/generated": True,
-                    "goauthentik.io/user/transient-token": sha256(
-                        username.encode("utf-8")
-                    ).hexdigest(),
+                    "goauthentik.io/user/sources": [self.source.name],
                 },
             },
         )
@@ -307,10 +369,10 @@ class TestResponseProcessor(TestCase):
         self.assertEqual(
             sfm.user_properties,
             {
-                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
-                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "email": "test001@example.org",
+                "eppn": "test001@example.org",
                 "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
-                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "uid": "test001",
                 "username": "LHPJHTQTRBOHWQRFZIYHL7PASE67UJVM",
                 "path": self.source.get_user_path(),
                 "attributes": {},
@@ -335,11 +397,10 @@ class TestResponseProcessor(TestCase):
         self.assertEqual(
             sfm.user_properties,
             {
-                "email": "test001@example.org",
-                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
-                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "eppn": "test001@example.org",
+                "uid": "test001",
                 "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
-                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "email": "test001@example.org",
                 "username": "LHPJHTQTRBOHWQRFZIYHL7PASE67UJVM",
                 "path": self.source.get_user_path(),
                 "attributes": {},
@@ -361,13 +422,14 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
+        self.assertEqual(sfm.identifier, "LHPJHTQTRBOHWQRFZIYHL7PASE67UJVM")
         self.assertEqual(
             sfm.user_properties,
             {
-                "urn:oid:0.9.2342.19200300.100.1.1": "test001",
-                "urn:oid:0.9.2342.19200300.100.1.3": "test001@example.org",
+                "uid": "test001",
+                "email": "test001@example.org",
                 "urn:oid:1.3.6.1.4.1.25178.1.2.9": "example.org",
-                "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "test001@example.org",
+                "eppn": "test001@example.org",
                 "username": "test001@example.org",
                 "path": self.source.get_user_path(),
                 "attributes": {},

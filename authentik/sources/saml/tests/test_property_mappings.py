@@ -36,20 +36,7 @@ class TestPropertyMappings(TestCase):
 
     def test_user_base_properties(self):
         """Test user base properties"""
-        request = self.factory.post(
-            "/",
-            data={
-                "SAMLResponse": b64encode(
-                    load_fixture("fixtures/response_success.xml").encode()
-                ).decode()
-            },
-        )
-
-        parser = ResponseProcessor(self.source, request)
-        parser.parse()
-        user_info = parser.get_user_properties()
-
-        properties = self.source.get_base_user_properties(name_id=NAME_ID, info=user_info)
+        properties = self.source.get_base_user_properties(root=ROOT, name_id=NAME_ID)
         self.assertEqual(
             properties,
             {
@@ -62,23 +49,10 @@ class TestPropertyMappings(TestCase):
 
     def test_group_base_properties(self):
         """Test group base properties"""
-        request = self.factory.post(
-            "/",
-            data={
-                "SAMLResponse": b64encode(
-                    load_fixture("fixtures/response_success_groups.xml").encode()
-                ).decode()
-            },
-        )
-
-        parser = ResponseProcessor(self.source, request)
-        parser.parse()
-        user_info = parser.get_user_properties()
-
-        properties = self.source.get_base_user_properties(name_id=NAME_ID, info=user_info)
+        properties = self.source.get_base_user_properties(root=ROOT_GROUPS, name_id=NAME_ID)
         self.assertEqual(properties["groups"], ["group 1", "group 2"])
         for group_id in ["group 1", "group 2"]:
-            properties = self.source.get_base_group_properties(group_id=group_id)
+            properties = self.source.get_base_group_properties(root=ROOT, group_id=group_id)
             self.assertEqual(properties, {"name": group_id})
 
     def test_user_property_mappings(self):

@@ -1,9 +1,8 @@
 """authentik saml source processor"""
 
 from base64 import b64decode
-from hashlib import sha256
 from time import mktime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import xmlsec
 from defusedxml.lxml import fromstring
@@ -12,16 +11,17 @@ from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
 from django.utils.timezone import now
 from lxml import etree  # nosec
+from lxml.etree import _Element  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
+    USER_ATTRIBUTE_DELETE_ON_LOGOUT,
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    USER_ATTRIBUTE_TRANSIENT_TOKEN,
+    USER_ATTRIBUTE_SOURCES,
     SourceUserMatchingModes,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
@@ -39,10 +39,6 @@ from authentik.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
-    SAML_ATTRIBUTES_EPPN,
-    SAML_ATTRIBUTES_EPTID,
-    SAML_ATTRIBUTES_GROUP,
-    SAML_ATTRIBUTES_MAIL,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
@@ -63,7 +59,7 @@ class ResponseProcessor:
 
     _source: SAMLSource
 
-    _root: Any
+    _root: _Element
     _root_xml: bytes
 
     _http_request: HttpRequest
@@ -82,13 +78,20 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
+        # Verify response signature BEFORE decryption (signature covers encrypted content)
+        if self._source.verification_kp and self._source.signed_response:
+            self._verify_response_signature()
+
         if self._source.encryption_kp:
             self._decrypt_response()
 
-        if self._source.verification_kp:
-            self._verify_signed()
+        # Verify assertion signature AFTER decryption (signature is inside encrypted content)
+        if self._source.verification_kp and self._source.signed_assertion:
+            self._verify_assertion_signature()
+
         self._verify_request_id()
         self._verify_status()
+        self._source.extract_attributes(self._root)
 
     def _decrypt_response(self):
         """Decrypt SAMLResponse EncryptedAssertion Element"""
@@ -119,45 +122,45 @@ class ResponseProcessor:
             decrypted_assertion,
         )
 
-    def _verify_signed(self):
-        """Verify SAML Response's Signature"""
-        signatures = []
+    def _verify_signature(self, signature_node: _Element):
+        """Verify a single signature node"""
+        xmlsec.tree.add_ids(self._root, ["ID"])
 
-        if self._source.signed_response:
-            signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
+        ctx = xmlsec.SignatureContext()
+        key = xmlsec.Key.from_memory(
+            self._source.verification_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+        )
+        ctx.key = key
 
-            if len(signature_nodes) != 1:
-                raise InvalidSignature("No Signature exists in the Response element.")
-            signatures.extend(signature_nodes)
+        ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
+        try:
+            ctx.verify(signature_node)
+        except xmlsec.Error as exc:
+            raise InvalidSignature(
+                "The signature of the SAML object is either missing or invalid."
+            ) from exc
+        LOGGER.debug("Successfully verified signature")
 
-        if self._source.signed_assertion:
-            signature_nodes = self._root.xpath(
-                "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
-            )
+    def _verify_response_signature(self):
+        """Verify SAML Response's Signature (before decryption)"""
+        signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
 
-            if len(signature_nodes) != 1:
-                raise InvalidSignature("No Signature exists in the Assertion element.")
-            signatures.extend(signature_nodes)
+        if len(signature_nodes) != 1:
+            raise InvalidSignature("No Signature exists in the Response element.")
 
-        if len(signatures) == 0:
-            raise InvalidSignature()
+        self._verify_signature(signature_nodes[0])
 
-        for signature_node in signatures:
-            xmlsec.tree.add_ids(self._root, ["ID"])
+    def _verify_assertion_signature(self):
+        """Verify SAML Assertion's Signature (after decryption)"""
+        signature_nodes = self._root.xpath(
+            "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
+        )
 
-            ctx = xmlsec.SignatureContext()
-            key = xmlsec.Key.from_memory(
-                self._source.verification_kp.certificate_data,
-                xmlsec.constants.KeyDataFormatCertPem,
-            )
-            ctx.key = key
+        if len(signature_nodes) != 1:
+            raise InvalidSignature("No Signature exists in the Assertion element.")
 
-            ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
-            try:
-                ctx.verify(signature_node)
-            except xmlsec.Error as exc:
-                raise InvalidSignature() from exc
-            LOGGER.debug("Successfully verified signature")
+        self._verify_signature(signature_nodes[0])
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
@@ -209,14 +212,12 @@ class ResponseProcessor:
         name_id = name_id_el.text
         if not name_id:
             raise UnsupportedNameIDFormat("Subject's NameID is empty.")
-        _format = name_id_el.attrib.get("Format")
+        _format = name_id_el.attrib["Format"]
         if not _format:
             raise UnsupportedNameIDFormat("Subject's NameID has no Format attribute.")
         if _format == SAML_NAME_ID_FORMAT_EMAIL:
             return {"email": name_id}
-        if _format == SAML_NAME_ID_FORMAT_PERSISTENT:
-            return {"username": name_id}
-        if _format == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if _format in [SAML_NAME_ID_FORMAT_PERSISTENT, SAML_NAME_ID_FORMAT_TRANSIENT]:
             return {"username": name_id}
         if _format == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
@@ -229,113 +230,59 @@ class ResponseProcessor:
             f"Assertion contains NameID with unsupported format {_format}."
         )
 
-    def get_user_properties(self) -> dict[str, Any]:
-        properties = {}
-        root = self._root
-        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
-        if assertion is None:
-            raise ValueError("Assertion element not found")
-        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
-        if attribute_statement is None:
-            return properties
-        # Get all attributes and their values into sub-attributes dict
-        for attribute in attribute_statement.iterchildren():
-            key = attribute.attrib["Name"]
-            properties.setdefault(key, [])
-            for value in attribute.iterchildren():
-                if value.text is not None:
-                    properties[key].append(value.text)
-        if SAML_ATTRIBUTES_GROUP in properties:
-            properties["groups"] = properties[SAML_ATTRIBUTES_GROUP]
-            del properties[SAML_ATTRIBUTES_GROUP]
-        # Flatten all lists in the dict except group
-        for key, value in properties.items():
-            if key != "groups":
-                properties[key] = BaseEvaluator.expr_flatten(value)
-
-        # Try to convert from SAML attributes if matching mode requires it
-        if self._source.user_matching_mode in [
-            SourceUserMatchingModes.EMAIL_LINK,
-            SourceUserMatchingModes.EMAIL_DENY,
-        ]:
-            for attr in SAML_ATTRIBUTES_MAIL:
-                if attr in properties:
-                    properties["email"] = properties[attr]
-                    break
-        elif self._source.user_matching_mode in [
-            SourceUserMatchingModes.USERNAME_LINK,
-            SourceUserMatchingModes.USERNAME_DENY,
-        ]:
-            for attr in tuple(SAML_ATTRIBUTES_EPPN) + tuple(SAML_ATTRIBUTES_EPTID):
-                if attr in properties:
-                    properties["username"] = properties[attr]
-                    break
-        return properties
-
-    def get_transient_connection_id(self, properties: dict, default: str) -> tuple[str, str]:
-        """Prepare attributes for transient NameID handling"""
-        identifier = default
-        key = None
-        for name, attrs in {
-            "eppn": SAML_ATTRIBUTES_EPPN,
-            "eptid": SAML_ATTRIBUTES_EPTID,
-            "mail": SAML_ATTRIBUTES_MAIL,
-            #            "uid": SAML_ATTRIBUTES_UID,
-        }.items():
-            for attr in attrs:
-                if attr not in properties:
-                    continue
-                identifier = properties[attr]
-                if isinstance(identifier, str) and identifier.strip():
-                    key = name
-                    properties[name] = identifier
-                    break
-            if key:
-                break
-        if not key:
-            # No ID attribute found, handle as transient NameID
-            if "attributes" not in properties:
-                properties["attributes"] = {}
-            properties["attributes"][USER_ATTRIBUTE_TRANSIENT_TOKEN] = sha256(
-                default.encode("utf-8")
-            ).hexdigest()
-            expiry = mktime(
-                (
-                    now() + timedelta_from_string(self._source.temporary_user_delete_after)
-                ).timetuple()
-            )
-            properties["attributes"][USER_ATTRIBUTE_EXPIRES] = expiry
-            properties["attributes"][USER_ATTRIBUTE_GENERATED] = True
-        return (key, identifier)
-
     def prepare_flow_manager(self) -> SourceFlowManager:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id = self._get_name_id()
         # Sanity check, show a warning if NameIDPolicy doesn't match what we go
-        fmt = name_id.attrib.get("Format")
-        if self._source.name_id_policy != fmt:
+        if self._source.name_id_policy != name_id.attrib["Format"]:
             LOGGER.warning(
                 "NameID from IdP doesn't match our policy",
                 expected=self._source.name_id_policy,
-                got=fmt,
+                got=name_id.attrib["Format"],
             )
-        properties = self.get_user_properties()
-        identifier = name_id.text
+        connection_id = name_id.text
+        attributes = self._source.attributes
 
-        if fmt == SAML_NAME_ID_FORMAT_TRANSIENT:
-            key, identifier = self.get_transient_connection_id(properties, name_id.text)
-            # Ensure friendly username
-            if key and "username" not in properties:
-                properties["username"] = properties[key]
+        # Prepare attributes required matching policy
+        if self._source.user_matching_mode in [
+            SourceUserMatchingModes.USERNAME_LINK,
+            SourceUserMatchingModes.USERNAME_DENY,
+        ]:
+            if "eppn" in attributes:
+                attributes["username"] = attributes["eppn"]
+            elif "eduPersonPrincipalName" in attributes:
+                attributes["username"] = attributes["eptid"]
+
+        # Some SAML style can identify user, even with Transient name ID.
+        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+            for key in ["eppn", "eptid", "email"]:
+                if key in attributes:
+                    connection_id = attributes[key]
+                    attributes["username"] = attributes[key]
+                    break
+            else:
+                # Build properties for an ephemeral user
+                expiry = mktime(
+                    (
+                        now() + timedelta_from_string(self._source.temporary_user_delete_after)
+                    ).timetuple()
+                )
+                attributes["attributes"] = {
+                    USER_ATTRIBUTE_GENERATED: True,
+                    USER_ATTRIBUTE_SOURCES: [
+                        self._source.name,
+                    ],
+                    USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
+                    USER_ATTRIBUTE_EXPIRES: expiry,
+                }
 
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=identifier,
+            identifier=connection_id,
             user_info={
                 "root": self._root,
                 "name_id": name_id,
-                "info": properties,
             },
             policy_context={
                 "saml_response": etree.tostring(self._root),
