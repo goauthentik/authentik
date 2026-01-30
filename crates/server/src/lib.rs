@@ -1,3 +1,4 @@
+use serde_json::json;
 use std::{
     net::SocketAddr,
     process::Stdio,
@@ -15,7 +16,10 @@ use axum::{
     Router,
     body::Body,
     extract::{Request, State},
-    http::{HeaderName, StatusCode, Uri},
+    http::{
+        HeaderName, StatusCode, Uri,
+        header::{CONTENT_TYPE, RETRY_AFTER},
+    },
     response::Response,
     routing::any,
 };
@@ -178,6 +182,38 @@ async fn forward_request(
     State(state): State<CoreRouterState>,
     req: Request,
 ) -> Response {
+    if !state.gunicorn_ready.load(Ordering::Relaxed) {
+        let accept = req
+            .headers()
+            .get("accept")
+            .map(|v| v.to_str().unwrap_or(""))
+            .unwrap_or("");
+        let mut response = Response::builder();
+        response = response.status(StatusCode::SERVICE_UNAVAILABLE);
+
+        if accept.contains("application/json") {
+            response = response.header(RETRY_AFTER, "5");
+            response = response.header(CONTENT_TYPE, "application/json");
+            return response
+                .body(
+                    json!({
+                        "error": "authentik starting",
+                    })
+                    .to_string()
+                    .into(),
+                )
+                .unwrap();
+        } else if accept.contains("text/html") {
+            response = response.header(CONTENT_TYPE, "text/html");
+            return response
+                .body(include_str!("../../../web/dist/standalone/loading/startup.html").into())
+                .unwrap();
+        } else {
+            response = response.header(CONTENT_TYPE, "text/plain");
+            return response.body("authentik starting".into()).unwrap();
+        }
+    }
+
     let path_q = req.uri().path_and_query().map(|x| x.as_str()).unwrap_or("");
 
     let uri = Uri::builder()
@@ -250,6 +286,7 @@ async fn build_core_proxy_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
     Router::new().fallback(forward_request).with_state(state)
 }
 
+// TODO: subpath
 async fn build_core_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
     Router::new()
         .merge(r#static::build_router().await)

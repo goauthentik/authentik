@@ -65,7 +65,14 @@ time = "0.3.45"
 tokio = { version = "1.49.0", features = ["full"] }
 tokio-util = "0.7.18"
 tower = "0.5.3"
-tower-http = { version = "0.6.8", features = ["fs", "trace"] }
+tower-http = { version = "0.6.8", features = [
+  "compression-br",
+  "compression-deflate",
+  "compression-gzip",
+  "compression-zstd",
+  "fs",
+  "trace",
+] }
 tracing = "0.1.44"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }

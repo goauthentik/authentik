@@ -7,7 +7,10 @@ use axum::{
     response::Response,
     routing::any,
 };
-use tower_http::services::fs::ServeDir;
+use tower_http::{
+    compression::{CompressionLayer, predicate::SizeAbove},
+    services::fs::ServeDir,
+};
 
 async fn static_header_middleware(request: Request, next: Next) -> Response {
     let mut response = next.run(request).await;
@@ -33,8 +36,6 @@ pub(crate) async fn build_router() -> Router {
     let config = get_config().await;
 
     let mut router = Router::new().layer(middleware::from_fn(static_header_middleware));
-
-    let subpath = &config.web.path;
 
     let dist_fs = ServeDir::new("./web/dist/").append_index_html_on_directories(false);
     let static_fs = ServeDir::new("./web/authentik/").append_index_html_on_directories(false);
@@ -110,9 +111,7 @@ pub(crate) async fn build_router() -> Router {
 
     router = router.layer(middleware::from_fn(static_header_middleware));
 
-    if subpath == "/" {
-        router
-    } else {
-        Router::new().nest(subpath, router)
-    }
+    router = router.layer(CompressionLayer::new().compress_when(SizeAbove::new(32)));
+
+    router
 }
