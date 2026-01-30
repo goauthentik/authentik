@@ -6,12 +6,14 @@ from django.http import HttpRequest, HttpResponse
 from authentik.core.models import Session, Token, User
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
+    PLAN_CONTEXT_LOCKDOWN_RESULTS,
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
     PLAN_CONTEXT_LOCKDOWN_TARGET,
     PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
 )
 from authentik.events.models import Event, EventAction
+from authentik.flows.challenge import HttpChallengeResponse, ShellChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -52,7 +54,11 @@ class AccountLockdownStageView(StageView):
         return self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_REASON, "")
 
     def _lockdown_user(
-        self, request: HttpRequest, stage: AccountLockdownStage, user: User, reason: str
+        self,
+        request: HttpRequest,
+        stage: AccountLockdownStage,
+        user: User,
+        reason: str,
     ) -> None:
         """Execute lockdown actions on a single user."""
         with atomic():
@@ -88,6 +94,9 @@ class AccountLockdownStageView(StageView):
         reason = self.get_reason()
         self_service = self.executor.plan.context.get(PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE, False)
 
+        # Track results for each user
+        results = []
+
         for user in users:
             self.logger.info(
                 "Executing account lockdown",
@@ -100,7 +109,49 @@ class AccountLockdownStageView(StageView):
                 revoke_tokens=stage.revoke_tokens,
             )
 
-            self._lockdown_user(request, stage, user, reason)
-            self.logger.info("Account lockdown completed", user=user.username)
+            try:
+                self._lockdown_user(request, stage, user, reason)
+                self.logger.info("Account lockdown completed", user=user.username)
+                results.append({"user": user, "success": True, "error": None})
+            except Exception as exc:
+                self.logger.warning("Account lockdown failed", user=user.username, exc=exc)
+                results.append({"user": user, "success": False, "error": str(exc)})
+
+        # Store results in plan context for completion stage
+        self.executor.plan.context[PLAN_CONTEXT_LOCKDOWN_RESULTS] = results
+
+        # For self-service, all sessions are deleted so we can't continue to
+        # another stage. Show the completion message directly via shell challenge.
+        # The message is loaded from the configured prompt field for customization.
+        if self_service:
+            return self._self_service_completion_response(stage)
 
         return self.executor.stage_ok()
+
+    def _self_service_completion_response(self, stage: AccountLockdownStage) -> HttpResponse:
+        """Return a shell challenge with the self-service completion message.
+
+        The message is loaded from the stage's self_service_message fields.
+        """
+        title = stage.self_service_message_title
+        message = stage.self_service_message
+
+        message_html = f"""
+            <div class="pf-c-alert pf-m-warning pf-m-inline">
+                <div class="pf-c-alert__icon">
+                    <i class="fas fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                </div>
+                <h4 class="pf-c-alert__title">{title}</h4>
+                <div class="pf-c-alert__description">
+                    {message}
+                </div>
+            </div>
+        """
+
+        challenge = ShellChallenge(
+            data={
+                "body": message_html,
+            }
+        )
+        challenge.is_valid()
+        return HttpChallengeResponse(challenge)
