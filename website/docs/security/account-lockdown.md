@@ -14,6 +14,7 @@ When triggered, Account Lockdown performs the following actions (all configurabl
 - **Sets an unusable password**: Invalidates the user's password
 - **Terminates all active sessions**: Immediately logs the user out of all devices and applications
 - **Revokes all tokens**: Invalidates all API tokens and app passwords
+- **Creates an audit event**: Records the lockdown with the provided reason (can trigger [notifications](#configure-notifications))
 
 :::note Protected accounts
 Account Lockdown cannot be triggered on the anonymous user or internal service accounts.
@@ -61,13 +62,15 @@ For stage configuration details, see the [Account Lockdown Stage documentation](
 1. Navigate to **Directory** > **Users**.
 2. Select one or more users using the checkboxes.
 3. Click **Account Lockdown**.
-4. Review the warning, enter a reason, and click **Continue**.
+4. Review the warning, enter a reason (recorded in the audit log), and click **Continue**.
+5. The results screen shows success or failure for each user.
 
 ### From a User's detail page
 
 1. Navigate to **Directory** > **Users** and click on a user.
 2. Click **Account Lockdown**.
-3. Review the warning, enter a reason, and click **Continue**.
+3. Review the warning, enter a reason (recorded in the audit log), and click **Continue**.
+4. The results screen shows the lockdown status.
 
 ## Self-service Account Lockdown
 
