@@ -11,46 +11,69 @@ entries:
     slug: default-account-lockdown
   model: authentik_flows.flow
   id: flow
+# Warning field - danger alert style information
 - attrs:
-    order: 100
-    placeholder: Please provide a reason for locking this account
-    placeholder_expression: false
-    required: true
-    type: text_area
-    field_key: reason
-    label: Reason
-  identifiers:
-    name: default-account-lockdown-field-reason
-  id: prompt-field-reason
-  model: authentik_stages_prompt.prompt
-- attrs:
-    order: 200
+    order: 50
     placeholder: ""
     placeholder_expression: false
     required: false
     type: static
     sub_text: |
-      This action will:
-      - Deactivate the user account
-      - Revoke the user's password
-      - Terminate all active sessions
-      - Revoke all API tokens and app passwords
+      **This action will immediately:**
 
-      This action cannot be easily undone.
+      - **Invalidate the user's password** - The password will be set to a random value and cannot be recovered
+      - **Deactivate the user account** - The account will be disabled
+      - **Terminate all active sessions** - All authentik sessions will be ended
+      - **Revoke all tokens** - All API tokens and app passwords will be revoked
+
+      ⚠️ **This action cannot be easily undone.**
     field_key: lockdown_warning
     label: Warning
   identifiers:
     name: default-account-lockdown-field-warning
   id: prompt-field-warning
   model: authentik_stages_prompt.prompt
+# Info field - when to use lockdown
+- attrs:
+    order: 100
+    placeholder: ""
+    placeholder_expression: false
+    required: false
+    type: static
+    sub_text: |
+      Use this when you suspect an account has been compromised.
+      [Learn more about account lockdown](https://docs.goauthentik.io/docs/security/account-lockdown)
+    field_key: lockdown_info
+    label: ""
+  identifiers:
+    name: default-account-lockdown-field-info
+  id: prompt-field-info
+  model: authentik_stages_prompt.prompt
+# Reason field - text area for lockdown reason
+- attrs:
+    order: 200
+    placeholder: Describe why this account is being locked down...
+    placeholder_expression: false
+    required: true
+    type: text_area
+    field_key: reason
+    label: Reason
+    sub_text: This explanation will be recorded in the audit log.
+  identifiers:
+    name: default-account-lockdown-field-reason
+  id: prompt-field-reason
+  model: authentik_stages_prompt.prompt
+# Prompt stage for warnings and reason input
 - attrs:
     fields:
-    - !KeyOf prompt-field-reason
     - !KeyOf prompt-field-warning
+    - !KeyOf prompt-field-info
+    - !KeyOf prompt-field-reason
   identifiers:
     name: default-account-lockdown-prompt
   id: default-account-lockdown-prompt
   model: authentik_stages_prompt.promptstage
+# Account lockdown stage - performs the actual lockdown
 - identifiers:
     name: default-account-lockdown-stage
   id: default-account-lockdown-stage
@@ -60,6 +83,44 @@ entries:
     set_unusable_password: true
     delete_sessions: true
     revoke_tokens: true
+# Completion message field - shown only for self-service lockdown
+- attrs:
+    order: 300
+    placeholder: ""
+    placeholder_expression: false
+    required: false
+    type: static
+    sub_text: |
+      **Your account has been locked.**
+
+      You have been logged out of all sessions and your password has been invalidated.
+
+      To regain access to your account, please contact your IT administrator or security team.
+    field_key: lockdown_complete
+    label: Account Locked
+  identifiers:
+    name: default-account-lockdown-field-complete
+  id: prompt-field-complete
+  model: authentik_stages_prompt.prompt
+# Prompt stage for completion message
+- attrs:
+    fields:
+    - !KeyOf prompt-field-complete
+  identifiers:
+    name: default-account-lockdown-complete-prompt
+  id: default-account-lockdown-complete-prompt
+  model: authentik_stages_prompt.promptstage
+# Expression policy to check if this is a self-service lockdown
+- attrs:
+    name: default-account-lockdown-self-service-policy
+    expression: |
+      # Only show completion message for self-service lockdown
+      return request.context.get("lockdown_self_service", False)
+  identifiers:
+    name: default-account-lockdown-self-service-policy
+  id: self-service-policy
+  model: authentik_policies_expression.expressionpolicy
+# Stage bindings
 - identifiers:
     order: 0
     stage: !KeyOf default-account-lockdown-prompt
@@ -70,3 +131,19 @@ entries:
     stage: !KeyOf default-account-lockdown-stage
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
+# Completion stage binding - only shown for self-service lockdown
+- identifiers:
+    order: 20
+    stage: !KeyOf default-account-lockdown-complete-prompt
+    target: !KeyOf flow
+  id: completion-binding
+  model: authentik_flows.flowstagebinding
+# Bind the self-service policy to the completion stage
+- attrs:
+    enabled: true
+    negate: false
+    order: 0
+  identifiers:
+    policy: !KeyOf self-service-policy
+    target: !KeyOf completion-binding
+  model: authentik_policies.policybinding
