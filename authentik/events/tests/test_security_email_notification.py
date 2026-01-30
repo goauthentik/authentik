@@ -23,7 +23,7 @@ class TestSecurityEmailNotification(TestCase):
     def test_security_email_sent_when_configured(self):
         """Test that email is sent when security_email is configured"""
         event = Event.new(
-            EventAction.PANIC_BUTTON_TRIGGERED,
+            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
             reason="Test reason",
             affected_user="testuser",
             triggered_by="admin",
@@ -47,7 +47,7 @@ class TestSecurityEmailNotification(TestCase):
         self.tenant.save()
 
         event = Event.new(
-            EventAction.PANIC_BUTTON_TRIGGERED,
+            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
             reason="Test reason",
             affected_user="testuser",
             triggered_by="admin",
@@ -80,7 +80,7 @@ class TestSecurityEmailNotification(TestCase):
     def test_security_email_not_sent_when_rule_missing(self):
         """Test that task handles missing rule gracefully"""
         event = Event.new(
-            EventAction.PANIC_BUTTON_TRIGGERED,
+            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
             reason="Test reason",
             affected_user="testuser",
             triggered_by="admin",
@@ -96,7 +96,7 @@ class TestSecurityEmailNotification(TestCase):
     def test_security_email_includes_event_context(self):
         """Test that email includes event context in the message"""
         event = Event.new(
-            EventAction.PANIC_BUTTON_TRIGGERED,
+            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
             reason="Suspicious activity detected",
             affected_user="compromised_user",
             triggered_by="security_admin",
@@ -123,4 +123,4 @@ class TestSecurityEmailNotification(TestCase):
 
             # Verify the email contains the correct recipient and subject
             self.assertIn("security@test.com", str(email_dict["to"]))
-            self.assertIn(EventAction.PANIC_BUTTON_TRIGGERED, email_dict["subject"])
+            self.assertIn(EventAction.ACCOUNT_LOCKDOWN_TRIGGERED, email_dict["subject"])

@@ -90,6 +90,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.providers.oauth2.models import AccessToken, RefreshToken
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -385,19 +386,29 @@ class UserPasswordSetSerializer(PassiveSerializer):
     password = CharField(required=True)
 
 
-class UserPanicButtonSerializer(PassiveSerializer):
+class UserAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for a user"""
 
-    reason = CharField(required=True, help_text="Reason for triggering account lockdown")
+    reason = CharField(
+        required=True,
+        min_length=1,
+        max_length=500,
+        help_text="Reason for triggering account lockdown (max 500 characters)",
+    )
 
 
-class UserBulkPanicButtonSerializer(PassiveSerializer):
+class UserBulkAccountLockdownSerializer(PassiveSerializer):
     """Payload to trigger account lockdown for multiple users"""
 
     users = PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all().exclude_anonymous(), help_text="Users to lock"
     )
-    reason = CharField(required=True, help_text="Reason for triggering account lockdown")
+    reason = CharField(
+        required=True,
+        min_length=1,
+        max_length=500,
+        help_text="Reason for triggering account lockdown (max 500 characters)",
+    )
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -887,7 +898,32 @@ class UserViewSet(
 
         return Response(status=204)
 
-    def _trigger_panic_button(
+    def _validate_lockdown_target(self, request: Request, user: User) -> str | None:
+        """Validate if a user can be targeted for account lockdown.
+
+        Returns an error message if validation fails, None if valid.
+        """
+        from guardian.shortcuts import get_anonymous_user
+
+        # Cannot lock down yourself
+        if user.pk == request.user.pk:
+            return _("Cannot trigger account lockdown on yourself.")
+
+        # Cannot lock down anonymous user
+        try:
+            anon_user = get_anonymous_user()
+            if user.pk == anon_user.pk:
+                return _("Cannot trigger account lockdown on anonymous user.")
+        except User.DoesNotExist:
+            pass
+
+        # Cannot lock down internal service accounts
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            return _("Cannot trigger account lockdown on internal service accounts.")
+
+        return None
+
+    def _trigger_account_lockdown(
         self,
         request: Request,
         user: User,
@@ -899,7 +935,8 @@ class UserViewSet(
         1. Deactivates the user account
         2. Resets the password to a random value
         3. Terminates all active sessions
-        4. Creates an event that can trigger notifications via NotificationRules
+        4. Revokes all tokens (API, OAuth, app passwords)
+        5. Creates an event that can trigger notifications via NotificationRules
         """
         from secrets import token_urlsafe
 
@@ -909,29 +946,47 @@ class UserViewSet(
             user.set_password(new_password)
             user.save()
 
+            # Delete all sessions
             Session.objects.filter(authenticatedsession__user=user).delete()
-            LOGGER.info("Account lockdown triggered", user=user.username, triggered_by=request.user)
 
-        Event.new(
-            EventAction.PANIC_BUTTON_TRIGGERED,
-            reason=reason,
-            affected_user=user.username,
-            triggered_by=request.user.username,
-        ).from_http(request, user)
+            # Revoke all API and app password tokens
+            Token.objects.filter(user=user).delete()
+
+            # Revoke OAuth2 tokens
+            AccessToken.objects.filter(user=user).delete()
+            RefreshToken.objects.filter(user=user).delete()
+
+            LOGGER.info(
+                "Account lockdown triggered",
+                user=user.username,
+                triggered_by=request.user.username,
+            )
+
+            # Create event
+            Event.new(
+                EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+                reason=reason,
+                affected_user=user.username,
+                triggered_by=request.user.username,
+            ).from_http(request, user)
 
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
-        request=UserPanicButtonSerializer,
+        request=UserAccountLockdownSerializer,
         responses={
             "204": OpenApiResponse(description="Successfully triggered account lockdown"),
-            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
+            "400": OpenApiResponse(
+                description="Account lockdown feature is disabled or invalid target"
+            ),
         },
     )
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
-    @validate(UserPanicButtonSerializer)
-    def panic_button(self, request: Request, pk: int, body: UserPanicButtonSerializer) -> Response:
+    @validate(UserAccountLockdownSerializer)
+    def account_lockdown(
+        self, request: Request, pk: int, body: UserAccountLockdownSerializer
+    ) -> Response:
         """Trigger account lockdown for a user"""
-        if not request.tenant.panic_button_enabled:
+        if not request.tenant.account_lockdown_enabled:
             LOGGER.debug("Account lockdown feature is disabled")
             return Response(
                 data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
@@ -941,24 +996,36 @@ class UserViewSet(
         user: User = self.get_object()
         reason = body.validated_data["reason"]
 
-        if user.pk == request.user.pk:
+        # Validate target user
+        validation_error = self._validate_lockdown_target(request, user)
+        if validation_error:
             LOGGER.debug(
-                "User attempted to trigger account lockdown on themselves", user=request.user
+                "Account lockdown validation failed",
+                user=user.username,
+                reason=validation_error,
             )
             return Response(
-                data={"non_field_errors": [_("Cannot trigger account lockdown on yourself.")]},
+                data={"non_field_errors": [validation_error]},
                 status=400,
             )
 
-        self._trigger_panic_button(request, user, reason)
+        self._trigger_account_lockdown(request, user, reason)
 
         return Response(status=204)
 
     @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
-        request=UserBulkPanicButtonSerializer,
+        request=UserBulkAccountLockdownSerializer,
         responses={
-            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
+            "200": inline_serializer(
+                "AccountLockdownBulkResponse",
+                {
+                    "processed": ListField(
+                        child=CharField(), help_text="Users successfully locked"
+                    ),
+                    "skipped": ListField(child=CharField(), help_text="Users skipped with reasons"),
+                },
+            ),
             "400": OpenApiResponse(description="Account lockdown feature is disabled"),
         },
     )
@@ -966,12 +1033,14 @@ class UserViewSet(
         detail=False,
         methods=["POST"],
         permission_classes=[IsAuthenticated],
-        url_path="panic_button_bulk",
+        url_path="account_lockdown_bulk",
     )
-    @validate(UserBulkPanicButtonSerializer)
-    def panic_button_bulk(self, request: Request, body: UserBulkPanicButtonSerializer) -> Response:
+    @validate(UserBulkAccountLockdownSerializer)
+    def account_lockdown_bulk(
+        self, request: Request, body: UserBulkAccountLockdownSerializer
+    ) -> Response:
         """Trigger account lockdown for multiple users"""
-        if not request.tenant.panic_button_enabled:
+        if not request.tenant.account_lockdown_enabled:
             LOGGER.debug("Account lockdown feature is disabled")
             return Response(
                 data={"non_field_errors": [_("Account lockdown feature is disabled.")]},
@@ -981,13 +1050,20 @@ class UserViewSet(
         users = body.validated_data["users"]
         reason = body.validated_data["reason"]
 
+        processed = []
+        skipped = []
+
         for user in users:
-            if user.pk == request.user.pk:
-                continue  # Skip self
+            # Validate target user
+            validation_error = self._validate_lockdown_target(request, user)
+            if validation_error:
+                skipped.append({"username": user.username, "reason": str(validation_error)})
+                continue
 
-            self._trigger_panic_button(request, user, reason)
+            self._trigger_account_lockdown(request, user, reason)
+            processed.append(user.username)
 
-        return Response(status=204)
+        return Response({"processed": processed, "skipped": skipped})
 
     @extend_schema(
         responses={

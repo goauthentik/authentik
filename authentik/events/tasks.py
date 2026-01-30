@@ -19,6 +19,7 @@ from authentik.lib.utils.db import chunked_queryset
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.tasks.middleware import CurrentTask
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
@@ -135,7 +136,7 @@ def notification_security_email(event_pk: str, trigger_pk: str):
     """Send notification to security email address configured in tenant settings."""
     from authentik.stages.email.tasks import send_mail
     from authentik.stages.email.utils import TemplateEmailMessage
-    from authentik.tenants.models import Tenant
+    from authentik.tenants.utils import get_current_tenant
 
     event = Event.objects.filter(pk=event_pk).first()
     if not event:
@@ -147,12 +148,14 @@ def notification_security_email(event_pk: str, trigger_pk: str):
         LOGGER.warning("notification_security_email: trigger not found", trigger_pk=trigger_pk)
         return
 
-    tenant = Tenant.objects.first()
-    if not tenant or not tenant.security_email:
-        LOGGER.info(
-            "notification_security_email: no security email configured",
-            has_tenant=bool(tenant),
-        )
+    try:
+        tenant = get_current_tenant()
+    except Tenant.DoesNotExist:
+        LOGGER.warning("notification_security_email: failed to get current tenant")
+        return
+
+    if not tenant.security_email:
+        LOGGER.info("notification_security_email: no security email configured")
         return
 
     # Build context from event
@@ -168,10 +171,13 @@ def notification_security_email(event_pk: str, trigger_pk: str):
         if isinstance(value, str):
             context["key_value"][key] = value
 
+    # Use the locale from tenant settings or default to the system locale
+    locale = getattr(tenant, "locale", "en") or "en"
+
     mail = TemplateEmailMessage(
         subject=f"[Security] {event.action}",
         to=[("Security Team", tenant.security_email)],
-        language="en",
+        language=locale,
         template_name="email/event_notification.html",
         template_context=context,
     )

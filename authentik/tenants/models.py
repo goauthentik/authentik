@@ -123,7 +123,7 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
         default=100,
     )
 
-    panic_button_enabled = models.BooleanField(
+    account_lockdown_enabled = models.BooleanField(
         help_text=_("Enable the account lockdown feature for administrators."), default=True
     )
     security_email = models.EmailField(

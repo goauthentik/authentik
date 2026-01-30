@@ -20,8 +20,17 @@ When triggered, Account Lockdown performs the following actions:
 - **Deactivates the user account**: The user can no longer log in
 - **Resets the user's password**: Sets a new random password, invalidating the old one
 - **Terminates all active sessions**: Immediately logs the user out of all devices and applications
+- **Revokes all tokens**: Invalidates all API tokens, OAuth access tokens, and refresh tokens
 
 An event is created that can be used to [trigger notifications via Notification Rules](#configure-notifications).
+
+:::note Protected accounts
+Account Lockdown cannot be triggered on:
+
+- Your own account
+- The anonymous user
+- Internal service accounts
+  :::
 
 ## Trigger an Account Lockdown for a single user
 
