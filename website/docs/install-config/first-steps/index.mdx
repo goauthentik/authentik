@@ -40,7 +40,7 @@ architecture-beta
 
 The following tutorial assumes that you have already:
 
-1. Installed authentik on either [Docker Compose](../../install-config/install/docker-compose.mdx#install-and-start-authentik), [Kubernetes](../../install-config/install/kubernetes.md#install-authentik-helm-chart), or [AWS CloudFormation](../../install-config/install/aws.md) and then started the server and worker.
+1. Installed authentik on either [Docker Compose](../../install-config/install/docker-compose.mdx#install-and-start-authentik), [Kubernetes](../../install-config/install/kubernetes.md#install-authentik-helm-chart), or [AWS CloudFormation](../../install-config/install/aws.md) and confirmed that the server, worker, and the PostgreSQL database are started and running.
 
 2. Opened authentik in your browser to the `initial-setup` flow and added credentials for a default Admin account. ([Docker](../../install-config/install/docker-compose.mdx#access-authentik), [Kubernetes](../../install-config/install/kubernetes.md#access-authentik)), or [AWS CloudFormation](../../install-config/install/aws.md#access-authentik-from-aws-cloudformation).
 
@@ -67,7 +67,7 @@ In a production environment, best practice is to first [create a group](../../us
 
 :::
 
-authentik supports any application; refer to our [Integrations documentation](https://integrations.goauthentik.io/index.mdx) to view integrations guides for over 150 of the most common ones.
+authentik supports any application; refer to our [Integrations documentation](https://integrations.goauthentik.io) to view integrations guides for over 180 of the most common ones.
 
 **In this guide we'll be setting up Grafana as an example application.**
 
@@ -76,7 +76,7 @@ authentik supports any application; refer to our [Integrations documentation](ht
 
 We'll use Grafana as an example application in this guide as it is very common and straight forward to setup.
 
-For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](https://integrations.goauthentik.io/monitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
+For more configuration options and full details about integrating with Grafana, refer to our [full integration guide](/integrationsmonitoring/grafana/). The following steps require that you have [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/), and that you can access the authentik Admin interface.
 
 </details>
 
@@ -85,14 +85,14 @@ For more configuration options and full details about integrating with Grafana, 
     **A.** In the Admin interface, navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
 
 :::tip About application and provider pairs
-Every application that you add to authentik requires a provider, which is used to configure the specific protocol between the application and authentik, for example OIDC, SAML, LDAP, or others.
+Every application that you add to authentik requires a provider, which is used to configure the specific protocol between the application and authentik, for example OAuth2/OIDC, SAML, LDAP, or others.
 :::
 
 **B.** Provide the details for the application (Grafana) and provider (OAuth2/OIDC).
 
 - **Configure the Application**:
     - **Name**: provide a descriptive name (such as Grafana).
-        - **Group**: select an optional group for the type of application. For example, you can choose to classify applications that your Sales team uses, or your Infrastructure team.
+        - **Group**: select an optional group for the application; groups are used to visually separate applications. For example, you can choose to group applications that you use for coding from those you use for internal communication.
     - **Policy engine mode**: select **Any** for this tutorial; the mode determnes how strictly policies are adhered to.
         - <font color="green">
               <b>TIP</b>: in authentik,
@@ -104,7 +104,7 @@ Every application that you add to authentik requires a provider, which is used t
               means that every one of any policies bound to the application must pass in order for a
               user to have access to the application.{" "}
           </font>
-    - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the \*\*My Applications\*\* page: an optional icon, the publisher of the application, and a brief description.
+    - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **My Applications** page: an optional icon, the publisher of the application, and a brief description.
 
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 
@@ -118,12 +118,14 @@ Every application that you add to authentik requires a provider, which is used t
           various steps, or [_stages_](../../add-secure-apps/flows-stages/stages/index.md) of
           authorization are defined and executed. The defined set of stages construct the workflows
           of authentication, authorization, etc.
-    - **Protocol settings** provide the following required configurations: - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik. - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
-        - <font color="green">
-              <b>TIP</b>
-          </font>
-          : The Redirect URI is where the application will go as soon as authentik's authorization
-          flow is successfully completed.
+    - **Protocol settings** provide the following required configurations:
+        - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later when you configure Grafana to use authentik.
+        - Set a `Strict` redirect URI to `https://grafana.company/login/generic_oauth`.
+            - <font color="green">
+                  <b>TIP</b>
+              </font>
+              : The Redirect URI is where the application will go as soon as authentik's
+              authorization flow is successfully completed.
     - **Logout URI**: set to `https://grafana.company/logout`.
     - **Logout Method**: set to `Front-channel`.
         - <font color="green">
@@ -137,11 +139,15 @@ Every application that you add to authentik requires a provider, which is used t
           </font>
           : authentik generates a key that you can use, called the `authentik Self-signed
           Certificate`, if you do not have a specific signing key for an application.
-- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can create a binding to manage the display and access to applications on a user's **My applications** page.
+
+- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work_with_bindings.md) to manage the display and access to applications on a user's **My applications** page.
     - <font color="green">
           <b>TIP</b>
       </font>
-      : Short summary about how bindings works.
+      : By creating a binding between an application and a specific user, you are ensuring that the
+      application is accessible only to that user and any other users or groups for whom you created
+      a binding. Learn more about how bindings are used in authentik in our [Bindings
+      overview](../../add-secure-apps/bindings-overview/index.md).
 
     For any fields not mentioned above, you can leave the default value.
 
@@ -153,13 +159,11 @@ For some applications, you log into the application and configure settings there
 
 **A.** In the Grafana Docker Compose file, set the following environment variables:
 
-:::tip Docker-specific values
-Note that these values are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/)).
+:::tip Tips
+These values below are for a [Grafana instance running in Docker](https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/); for standalone or Helm Chart instances refer to our [Grafana integration guide](https://integrations.goauthentik.io/monitoring/grafana/).
+
+Note that `authentik.company` is a placeholder that we use in our example settings; replace this with the domain that authentik is running on in your environment.
 :::
-
-# TODO: Explain authentik.company placeholder
-
-MOVE THIS UP MAYBE TO BE BY THE REDIRECT URI?? We want to explain that this is a placeholder that we use, but they would replace the domain that authentik is running on... just like grafana.company is the domain for grafama
 
 ```
 environment:
@@ -195,8 +199,16 @@ Now that you can access the authentik Admin interface, and you have added an app
     **B.** Fill in the **_required_** fields:
 
     - **Username**: This value must be unique across all users.
-    # TODO: what is the path used for, link to ??? about this. State that paths are used to organize your users... for example HR vs Sales, etc. They do not imoact access,, etc., purely organizational. Note to me: the top-level user dir shows all user including those in sub-dirs
+    - <font color="green">
+              <b>TIP</b>
+          </font>
+          : With OAuth2, front-channel logout is considered the default because most application
+          (including Grafana) do not support back-channel logout.
     - **Path**: The path where the user will be created. By default the new user is created in the `users` directory, but you can change that later by editing the user.
+        - <font color="green">
+              <b>TIP</b>
+          </font>
+          : Paths are basically directories, that are used to organize your users (for example HR vs Sales, etc.). Paths do not ipoact access; they are purely organizational. Note that the top-level **users** directory displays all users in that directory and all sub-directories.
 
     For information about the **_optional_** fields below, refer to our [documentation on managing users](../../users-sources/user/user_basic_operations.md#create-a-user).
 
@@ -242,3 +254,7 @@ We highly recommend that you do NOT use the `:latest` tag with container images 
 ### Using bindings to allow or restrict access to applications
 
 Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [authorization](../../add-secure-apps/applications/manage_apps.mdx#policy-driven-authorization) and [hiding an application](../../add-secure-apps/applications/manage_apps.mdx#hide-applications).
+
+### Upgrades
+
+When you are ready to upgrade to the latest version, be sure to read our [Upgrade documentation](../upgrade.mdx) and refer to the [Release Notes](../../releases/) for the specific version.
