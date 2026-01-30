@@ -903,10 +903,6 @@ class UserViewSet(
         """
         from guardian.shortcuts import get_anonymous_user
 
-        # Cannot lock down yourself
-        if user.pk == request.user.pk:
-            return _("Cannot trigger account lockdown on yourself.")
-
         # Cannot lock down anonymous user
         try:
             anon_user = get_anonymous_user()
@@ -994,13 +990,15 @@ class UserViewSet(
             affected_user=user.username,
         ).from_http(request)
 
-    @permission_required(None, ["authentik_core.reset_user_password", "authentik_core.change_user"])
     @extend_schema(
         request=UserAccountLockdownSerializer,
         responses={
             "204": OpenApiResponse(description="Successfully triggered account lockdown"),
             "400": OpenApiResponse(
                 description="Account lockdown feature is disabled or invalid target"
+            ),
+            "403": OpenApiResponse(
+                description="Permission denied (when targeting another user)"
             ),
         },
     )
@@ -1010,12 +1008,24 @@ class UserViewSet(
     def account_lockdown(
         self, request: Request, pk: int, body: UserAccountLockdownSerializer
     ) -> Response:
-        """Trigger account lockdown for a user"""
+        """Trigger account lockdown for a user.
+
+        When targeting yourself, this is a self-service lockdown that only requires
+        authentication. When targeting another user, admin permissions are required.
+        """
         if disabled_response := self._check_lockdown_enabled(request):
             return disabled_response
 
         user: User = self.get_object()
         reason = body.validated_data["reason"]
+        self_service = user.pk == request.user.pk
+
+        # For non-self lockdown, require admin permissions
+        if not self_service:
+            for perm in ["authentik_core.reset_user_password", "authentik_core.change_user"]:
+                if not request.user.has_perm(perm):
+                    LOGGER.debug("Permission denied for account lockdown", user=request.user, perm=perm)
+                    self.permission_denied(request)
 
         if validation_error := self._validate_lockdown_target(request, user):
             LOGGER.debug(
@@ -1028,7 +1038,7 @@ class UserViewSet(
                 status=400,
             )
 
-        self._trigger_account_lockdown(request, user, reason)
+        self._trigger_account_lockdown(request, user, reason, self_service=self_service)
 
         return Response(status=204)
 
@@ -1087,48 +1097,6 @@ class UserViewSet(
             processed.append(user.username)
 
         return Response({"processed": processed, "skipped": skipped})
-
-    @extend_schema(
-        request=UserAccountLockdownSerializer,
-        responses={
-            "204": OpenApiResponse(description="Successfully triggered account lockdown"),
-            "400": OpenApiResponse(description="Account lockdown feature is disabled"),
-        },
-    )
-    @action(
-        detail=False,
-        methods=["POST"],
-        permission_classes=[IsAuthenticated],
-        url_path="account_lockdown_self",
-    )
-    @validate(UserAccountLockdownSerializer)
-    @enterprise_action
-    def account_lockdown_self(
-        self, request: Request, body: UserAccountLockdownSerializer
-    ) -> Response:
-        """Trigger account lockdown for the current user (self-service).
-
-        This allows users to lock down their own account in case of a security incident.
-        """
-        if disabled_response := self._check_lockdown_enabled(request):
-            return disabled_response
-
-        user: User = request.user
-        reason = body.validated_data["reason"]
-
-        # Prevent internal service accounts from locking themselves
-        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            LOGGER.debug("Internal service account attempted self-lockdown", user=user.username)
-            return Response(
-                data={
-                    "non_field_errors": [_("Internal service accounts cannot use this feature.")]
-                },
-                status=400,
-            )
-
-        self._trigger_account_lockdown(request, user, reason, self_service=True)
-
-        return Response(status=204)
 
     @extend_schema(
         responses={
