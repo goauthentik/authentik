@@ -622,13 +622,6 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
             "When destination_group is configured, notification is sent to both."
         ),
     )
-    destination_security_email = models.BooleanField(
-        default=False,
-        help_text=_(
-            "When enabled, notification will be sent to the security email address "
-            "configured in System Settings."
-        ),
-    )
 
     def destination_users(self, event: Event) -> Generator[User, Any]:
         if self.destination_event_user and event.user.get("pk"):
