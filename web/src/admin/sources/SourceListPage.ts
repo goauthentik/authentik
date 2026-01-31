@@ -93,6 +93,7 @@ export class SourceListPage extends TablePage<Source> {
                     slot: "form",
                     instancePk: item.slug,
                 })}
+                <span slot="submit">${msg("Update")}</span>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>
