@@ -35,6 +35,21 @@ export function isAKElementConstructor(input: CustomElementConstructor): input i
     return Object.prototype.isPrototypeOf.call(AKElement, input);
 }
 
+function getPrefix(type: unknown, isProperty: boolean) {
+    if (isProperty) {
+        return ".";
+    }
+
+    switch (type) {
+        case String:
+            return "";
+        case Boolean:
+            return "?";
+        default:
+            return ".";
+    }
+}
+
 /**
  * Given a pre-registered custom element tag name and a record of properties,
  * render the element with the given properties applied.
@@ -92,15 +107,13 @@ export function StrictUnsafe<T extends string>(
             const propDeclaration = elementProperties.get(key);
 
             if (propDeclaration) {
-                const prefix = propDeclaration.type === Boolean ? "?" : ".";
+                const prefix = getPrefix(propDeclaration.type, !propDeclaration.attribute);
                 filteredProps[`${prefix}${key}`] = value;
-
                 continue;
             }
 
             if (observedAttributes.has(key) || key in ElementConstructor.prototype) {
                 filteredProps[key] = String(value);
-
                 continue;
             }
 
