@@ -43665,10 +43665,6 @@ components:
           description: When enabled, notification will be sent to user the user that
             triggered the event.When destination_group is configured, notification
             is sent to both.
-        destination_security_email:
-          type: boolean
-          description: When enabled, notification will be sent to the security email
-            address configured in System Settings.
       required:
       - destination_group_obj
       - name
@@ -43704,10 +43700,6 @@ components:
           description: When enabled, notification will be sent to user the user that
             triggered the event.When destination_group is configured, notification
             is sent to both.
-        destination_security_email:
-          type: boolean
-          description: When enabled, notification will be sent to the security email
-            address configured in System Settings.
       required:
       - name
     NotificationTransport:
@@ -49489,10 +49481,6 @@ components:
           description: When enabled, notification will be sent to user the user that
             triggered the event.When destination_group is configured, notification
             is sent to both.
-        destination_security_email:
-          type: boolean
-          description: When enabled, notification will be sent to the security email
-            address configured in System Settings.
     PatchedNotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
@@ -50949,11 +50937,6 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
-        security_email:
-          type: string
-          format: email
-          description: Security team email address for security notifications.
-          maxLength: 254
         flags:
           type: object
           properties:
@@ -55656,11 +55639,6 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
-        security_email:
-          type: string
-          format: email
-          description: Security team email address for security notifications.
-          maxLength: 254
         flags:
           type: object
           properties:
@@ -55739,11 +55717,6 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Maximum page size
-        security_email:
-          type: string
-          format: email
-          description: Security team email address for security notifications.
-          maxLength: 254
         flags:
           type: object
           properties:
