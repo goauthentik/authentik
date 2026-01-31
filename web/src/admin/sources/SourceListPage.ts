@@ -90,6 +90,7 @@ export class SourceListPage extends TablePage<Source> {
             html`${item.verboseName}`,
             html` <ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                    slot: "form",
                     instancePk: item.slug,
                 })}
                 <button slot="trigger" class="pf-c-button pf-m-plain">
