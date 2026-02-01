@@ -1,6 +1,7 @@
 """authentik saml source processor"""
 
 from base64 import b64decode
+from hashlib import sha256
 from time import mktime
 from typing import TYPE_CHECKING
 
@@ -197,11 +198,15 @@ class ResponseProcessor:
         on logout and periodically."""
         # Create a temporary User
         name_id = self._get_name_id()
+        # Hash the NameID if it exceeds the 150-char username limit
+        username = name_id.text
+        if len(username) > 150:  # noqa: PLR2004
+            username = sha256(username.encode()).hexdigest()
         expiry = mktime(
             (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
         )
         user: User = User.objects.create(
-            username=name_id.text,
+            username=username,
             attributes={
                 USER_ATTRIBUTE_GENERATED: True,
                 USER_ATTRIBUTE_SOURCES: [
