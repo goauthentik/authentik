@@ -65,7 +65,7 @@ When an unauthenticated user attempts to access a secured resource, they are red
 
 When a user authenticates/enrolls via an external source, this will be set to the source they are using.
 
-#### `outpost` (dictionary):ak-version[2024.10]
+#### `outpost` (dictionary)
 
 When a flow is executed by an Outpost (for example the [LDAP](../../../providers/ldap/index.md) or [RADIUS](../../../providers/radius/index.mdx)), this will be set to a dictionary containing the Outpost instance under the key `"instance"`.
 
@@ -79,7 +79,7 @@ This key is set to `True` when the flow is executed from an "SSO" context. For e
 
 This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.md) when returning back to the initial flow the Source stage was run on.
 
-#### `is_redirected` (Flow object):ak-version[2024.12]
+#### `is_redirected` (Flow object)
 
 This key is set when the current flow was reached through a [Redirect stage](../../stages/redirect/index.md) in Flow mode.
 
@@ -101,7 +101,7 @@ URL that the form will be submitted to.
 
 Key-value pairs of the data that is included in the form and will be submitted to `url`.
 
-#### Captcha stage:ak-version[2024.6]
+#### Captcha stage:ak-version
 
 ##### `captcha` (dictionary)
 
@@ -221,7 +221,7 @@ This value can be set either via [Prompt data](#prompt_data-dictionary) or via p
 
 #### Redirect stage
 
-##### `redirect_stage_target` (string):ak-version[2024.12]
+##### `redirect_stage_target` (string)
 
 [Set this key](../../../../customize/policies/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
 
