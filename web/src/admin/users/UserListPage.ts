@@ -6,26 +6,30 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#admin/users/UserResetEmailForm";
-import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
 import "#elements/TreeView";
 import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#components/ak-toggle-group";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
+import { MessageLevel } from "#common/messages";
 import { DefaultUIConfig } from "#common/ui/config";
 
+import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, getURLParams, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -37,6 +41,36 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
+type UserStatusFilter = "all" | "active" | "inactive";
+
+export const requestRecoveryLink = (user: User) =>
+    new CoreApi(DEFAULT_CONFIG)
+        .coreUsersRecoveryCreate({
+            id: user.pk,
+        })
+        .then((rec) =>
+            writeToClipboard(rec.link).then((wroteToClipboard) =>
+                showMessage({
+                    level: MessageLevel.success,
+                    message: rec.link,
+                    description: wroteToClipboard
+                        ? msg("A copy of this recovery link has been placed in your clipboard")
+                        : "",
+                }),
+            ),
+        )
+        .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
+
+export const renderRecoveryEmailRequest = (user: User) =>
+    html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
+        <span slot="submit">${msg("Send link")}</span>
+        <span slot="header">${msg("Send recovery link to user")}</span>
+        <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
+        <button slot="trigger" class="pf-c-button pf-m-secondary">
+            ${msg("Email recovery link")}
+        </button>
+    </ak-forms-modal>`;
 
 export const renderRecoveryButtons = ({
     user,
@@ -62,28 +96,13 @@ export const renderRecoveryButtons = ({
         </ak-forms-modal>
         ${brandHasRecoveryFlow
             ? html`
-                  <ak-forms-modal id="ak-link-recovery-request">
-                      <span slot="submit"> ${msg("Create link")} </span>
-                      <span slot="header"> ${msg("Create recovery link")} </span>
-                      <ak-user-recovery-link-form slot="form" .user=${user}>
-                      </ak-user-recovery-link-form>
-                      <button slot="trigger" class="pf-c-button pf-m-secondary">
-                          ${msg("Create recovery link")}
-                      </button>
-                  </ak-forms-modal>
-                  ${user.email
-                      ? html`<ak-forms-modal id="ak-email-recovery-request">
-                            <span slot="submit">${msg("Send link")}</span>
-                            <span slot="header">${msg("Send recovery link to user")}</span>
-                            <ak-user-reset-email-form slot="form" .user=${user}>
-                            </ak-user-reset-email-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Email recovery link")}
-                            </button>
-                        </ak-forms-modal>`
-                      : html`<p>
-                            ${msg("To email a recovery link, set an email address for this user.")}
-                        </p>`}
+                  <ak-action-button
+                      class="pf-c-button pf-m-secondary"
+                      .apiRequest=${() => requestRecoveryLink(user)}
+                  >
+                      ${msg("Create recovery link")}
+                  </ak-action-button>
+                  ${user.email ? renderRecoveryEmailRequest(user) : nothing}
               `
             : html` <p>
                   ${msg("To create a recovery link, set a recovery flow for the current brand.")}
@@ -126,7 +145,7 @@ export class UserListPage extends WithBrandConfig(
     activePath;
 
     @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    userStatusFilter: UserStatusFilter = "all";
 
     @state()
     userPaths?: UserPath;
@@ -146,13 +165,33 @@ export class UserListPage extends WithBrandConfig(
         if (this.uiConfig.defaults.userPath !== defaultPath) {
             this.activePath = this.uiConfig.defaults.userPath;
         }
+
+        // Migrate legacy hideDeactivated parameter to userStatus
+        const params = getURLParams();
+        if ("hideDeactivated" in params) {
+            const legacyHideDeactivated =
+                params.hideDeactivated === true || params.hideDeactivated === "true";
+            this.userStatusFilter = legacyHideDeactivated ? "active" : "all";
+            const { hideDeactivated, ...cleanParams } = params;
+            updateURLParams({ ...cleanParams, userStatus: this.userStatusFilter }, true);
+        } else {
+            const urlStatus = getURLParam<string>("userStatus", "all");
+            this.userStatusFilter = ["all", "active", "inactive"].includes(urlStatus)
+                ? (urlStatus as UserStatusFilter)
+                : "all";
+        }
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive:
+                this.userStatusFilter === "active"
+                    ? true
+                    : this.userStatusFilter === "inactive"
+                      ? false
+                      : undefined,
             includeGroups: false,
         });
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
@@ -233,36 +272,19 @@ export class UserListPage extends WithBrandConfig(
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label
-                        class="pf-c-switch"
-                        for="hide-deactivated-users"
-                        aria-labelledby="hide-deactivated-users-label"
-                    >
-                        <input
-                            id="hide-deactivated-users"
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${!this.hideDeactivated}
-                            @change=${() => {
-                                this.hideDeactivated = !this.hideDeactivated;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideDeactivated: this.hideDeactivated,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
-                            ${msg("Show deactivated users")}
-                        </span>
-                    </label>
-                </div>
+                <ak-toggle-group
+                    value=${this.userStatusFilter}
+                    @ak-toggle=${(ev: CustomEvent<{ value: UserStatusFilter }>) => {
+                        this.userStatusFilter = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                        updateURLParams({ userStatus: this.userStatusFilter });
+                    }}
+                >
+                    <option value="all">${msg("All users")}</option>
+                    <option value="active">${msg("Active only")}</option>
+                    <option value="inactive">${msg("Inactive only")}</option>
+                </ak-toggle-group>
             </div>
         </div>`;
     }
@@ -396,7 +418,12 @@ export class UserListPage extends WithBrandConfig(
                     return {
                         ...(await this.defaultEndpointConfig()),
                         pathStartswith: this.activePath,
-                        isActive: this.hideDeactivated ? true : undefined,
+                        isActive:
+                            this.userStatusFilter === "active"
+                                ? true
+                                : this.userStatusFilter === "inactive"
+                                  ? false
+                                  : undefined,
                     };
                 }}
             ></ak-reports-export-button>
