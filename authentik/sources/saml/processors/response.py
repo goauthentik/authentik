@@ -250,7 +250,7 @@ class ResponseProcessor:
         ]:
             if "eppn" in attributes:
                 attributes["username"] = attributes["eppn"]
-            elif "eduPersonPrincipalName" in attributes:
+            elif "eptid" in attributes:
                 attributes["username"] = attributes["eptid"]
 
         # Some SAML style can identify user, even with Transient name ID.
