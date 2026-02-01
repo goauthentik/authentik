@@ -178,9 +178,6 @@ export class AKElement extends LitElement implements AKElementProps {
             },
         );
 
-        // Immediately apply Brand CSS to the style root.
-        // This ensures nested Shadow DOM components created after the initial
-        // ThemeChangeEvent still receive the custom brand styles.
         if (this.#customCSSStyleSheet) {
             applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
         }
