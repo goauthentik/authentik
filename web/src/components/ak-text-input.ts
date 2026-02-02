@@ -2,6 +2,7 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { ifPresent } from "#elements/utils/attributes";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -27,17 +28,36 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: Boolean, attribute: "readonly" })
     public readOnly: boolean = false;
 
+    @property({ type: String, attribute: "inputmode", useDefault: true })
+    inputMode: string = "text";
+
     @property({ type: String })
-    public type: "text" | "email" = "text";
+    public type: "text" | "email" | "url" = "text";
 
     #inputListener(ev: InputEvent) {
         this.value = (ev.target as HTMLInputElement).value;
     }
 
-    public override renderControl() {
-        const code = this.inputHint === "code";
+    #formatPlaceholder(): string | null {
+        if (this.placeholder) {
+            return this.placeholder;
+        }
 
-        return html` <input
+        if (this.inputMode === "url" || this.type === "url") {
+            return "https://...";
+        }
+
+        if (this.inputMode === "email" || this.type === "email") {
+            return msg("Type an email address...");
+        }
+
+        return null;
+    }
+
+    public override renderControl() {
+        const code = this.inputHint === "code" || this.type === "url";
+
+        return html`<input
             type=${this.type}
             id=${ifDefined(this.fieldID)}
             @input=${this.#inputListener}
@@ -51,9 +71,11 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             autocomplete=${ifPresent(code ? "off" : this.autocomplete)}
             spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
             aria-describedby=${this.helpID}
-            placeholder=${ifPresent(this.placeholder)}
-            inputmode=${ifPresent(this.inputMode)}
+            placeholder=${ifPresent(this.#formatPlaceholder())}
+            inputmode=${this.inputMode}
             ?required=${this.required}
+            ?autofocus=${this.autofocus}
+            ${this.autofocusTarget.toRef()}
         />`;
     }
 }

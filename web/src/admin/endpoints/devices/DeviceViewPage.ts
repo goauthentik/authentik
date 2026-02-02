@@ -1,7 +1,9 @@
+import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
 import "#admin/endpoints/devices/facts/DeviceProcessTable";
 import "#admin/endpoints/devices/facts/DeviceUserTable";
+import "#admin/endpoints/devices/facts/DeviceSoftwareTable";
 import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceForm";
 import "#elements/forms/ModalForm";
@@ -14,11 +16,11 @@ import { AKElement } from "#elements/Base";
 import { Timestamp } from "#elements/table/shared";
 
 import { setPageDetails } from "#components/ak-page-navbar";
-import renderDescriptionList from "#components/DescriptionList";
+import renderDescriptionList, { DescriptionPair } from "#components/DescriptionList";
 
 import { getSize } from "#admin/endpoints/devices/utils";
 
-import { Disk, EndpointDeviceDetails, EndpointsApi } from "@goauthentik/api";
+import { DeviceConnection, Disk, EndpointDeviceDetails, EndpointsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -29,7 +31,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-device-view")
 export class DeviceViewPage extends AKElement {
@@ -42,7 +43,7 @@ export class DeviceViewPage extends AKElement {
     @state()
     protected error?: APIError;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
+    static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
         new EndpointsApi(DEFAULT_CONFIG)
@@ -68,7 +69,7 @@ export class DeviceViewPage extends AKElement {
                 ? msg(str`Device ${this.device?.name}`)
                 : msg("Loading device..."),
             description: this.device?.facts.data.os
-                ? this.device?.facts.data.os?.name + " " + this.device?.facts.data.os?.version
+                ? `${this.device?.facts.data.os?.name} ${this.device?.facts.data.os?.version}`
                 : undefined,
             icon: "fa fa-laptop",
         });
@@ -110,7 +111,7 @@ export class DeviceViewPage extends AKElement {
                                     ?good=${this.device.facts.data.network?.firewallEnabled}
                                 ></ak-status-label>`,
                             ],
-                            [msg("Group"), this.device.accessGroupObj?.name ?? "-"],
+                            [msg("Device access group"), this.device.accessGroupObj?.name ?? "-"],
                             [
                                 msg("Actions"),
                                 html`<ak-forms-modal>
@@ -162,13 +163,13 @@ export class DeviceViewPage extends AKElement {
                                 ></ak-status-label>`,
                             ],
                             [
-                                msg("Disk size"),
+                                msg("Primary disk size"),
                                 rootDisk?.capacityTotalBytes
                                     ? getSize(rootDisk.capacityTotalBytes)
                                     : "-",
                             ],
                             [
-                                msg("Disk usage"),
+                                msg("Primary disk usage"),
                                 rootDisk?.capacityTotalBytes && rootDisk.capacityUsedBytes
                                     ? html`<progress
                                               value="${rootDisk.capacityUsedBytes}"
@@ -188,24 +189,24 @@ export class DeviceViewPage extends AKElement {
             <div class="pf-l-grid__item pf-m-4-col pf-c-card">
                 <div class="pf-c-card__title">${msg("Connections")}</div>
                 <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        ${this.device.connectionsObj.map((conn) => {
-                            return html`<div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${conn.connectorObj.name}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
+                    ${renderDescriptionList(
+                        this.device.connectionsObj.map((conn) => {
+                            return [
+                                html`${conn.connectorObj.name}`,
+                                html`<div class="pf-c-description-list__text">
+                                        ${this.agentVersion(conn) ?? "-"}
+                                    </div>
                                     <div class="pf-c-description-list__text">
                                         ${conn.latestSnapshot?.created
                                             ? Timestamp(conn.latestSnapshot.created)
-                                            : html`-`}
-                                    </div>
-                                </dd>
-                            </div>`;
-                        })}
-                    </dl>
+                                            : nothing}
+                                    </div>`,
+                            ];
+                        }) as DescriptionPair[],
+                        {
+                            horizontal: true,
+                        },
+                    )}
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-12-col pf-c-card">
@@ -216,7 +217,22 @@ export class DeviceViewPage extends AKElement {
                     ></ak-bound-device-users-list>
                 </div>
             </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <ak-object-attributes-card
+                    .objectAttributes=${this.device.attributes}
+                    .excludeNotes=${false}
+                ></ak-object-attributes-card>
+            </div>
         </div>`;
+    }
+
+    agentVersion(conn: DeviceConnection): string | undefined {
+        const vendorContainer = conn.latestSnapshot?.data.vendor;
+        if (!vendorContainer) return;
+        const vendorData = vendorContainer[conn.latestSnapshot.vendor];
+        if (!vendorData) return;
+        if (!("agent_version" in vendorData)) return;
+        return msg(str`Agent version: ${vendorData.agent_version ?? "-"}`);
     }
 
     renderProcesses() {
@@ -244,6 +260,15 @@ export class DeviceViewPage extends AKElement {
         return html`<ak-endpoints-device-groups-table
             .device=${this.device}
         ></ak-endpoints-device-groups-table>`;
+    }
+
+    renderSoftware() {
+        if (!this.device) {
+            return nothing;
+        }
+        return html`<ak-endpoints-device-software-table
+            .device=${this.device}
+        ></ak-endpoints-device-software-table>`;
     }
 
     render() {
@@ -288,6 +313,16 @@ export class DeviceViewPage extends AKElement {
                     class="pf-c-page__main-section"
                 >
                     ${this.renderGroups()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-software"
+                    id="page-software"
+                    aria-label="${msg("Software")}"
+                    class="pf-c-page__main-section"
+                >
+                    ${this.renderSoftware()}
                 </div>
             </ak-tabs>
         </main>`;

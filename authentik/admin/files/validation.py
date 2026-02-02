@@ -4,6 +4,7 @@ from pathlib import PurePosixPath
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+from authentik.admin.files.backends.base import THEME_VARIABLE
 from authentik.admin.files.backends.passthrough import PassthroughBackend
 from authentik.admin.files.backends.static import StaticBackend
 from authentik.admin.files.usage import FileUsage
@@ -39,12 +40,17 @@ def validate_upload_file_name(
     if not name:
         raise ValidationError(_("File name cannot be empty"))
 
-    # Same regex is used in the frontend as well
-    if not re.match(r"^[a-zA-Z0-9._/-]+$", name):
+    # Allow %(theme)s placeholder for theme-specific files
+    # Replace with placeholder for validation, then check the result
+    name_for_validation = name.replace(THEME_VARIABLE, "theme")
+
+    # Same regex is used in the frontend as well (with %(theme)s handling)
+    if not re.match(r"^[a-zA-Z0-9._/-]+$", name_for_validation):
         raise ValidationError(
             _(
                 "File name can only contain letters (a-z, A-Z), numbers (0-9), "
-                "dots (.), hyphens (-), underscores (_), and forward slashes (/)"
+                "dots (.), hyphens (-), underscores (_), forward slashes (/), "
+                "and the placeholder %(theme)s for theme-specific files"
             )
         )
 

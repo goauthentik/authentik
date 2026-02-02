@@ -55,7 +55,7 @@ def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
     return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
 
 
-def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:
+def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # noqa: UP047
     @functools.wraps(func)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
@@ -94,7 +94,7 @@ class PostgresBroker(Broker):
         return cast(DatabaseWrapper, connections[self.db_alias])
 
     @property
-    def consumer_class(self) -> "type[_PostgresConsumer]":
+    def consumer_class(self) -> type[_PostgresConsumer]:
         return _PostgresConsumer
 
     @cached_property
@@ -329,8 +329,7 @@ class _PostgresConsumer(Consumer):
 
         with self.locks_connection.cursor() as cursor:
             cursor.execute(
-                sql.SQL(
-                    """
+                sql.SQL("""
                     UPDATE {table}
                     SET {state} = %(state)s, {mtime} = %(mtime)s
                     WHERE
@@ -341,8 +340,7 @@ class _PostgresConsumer(Consumer):
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
                         AND
                         pg_try_advisory_lock(%(lock_id)s)
-                    """
-                ).format(
+                    """).format(
                     table=sql.Identifier(self.query_set.model._meta.db_table),
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),
@@ -449,6 +447,7 @@ class _PostgresConsumer(Consumer):
             pass
         self.to_unlock.add(str(message.message_id))
         task = message.options.pop("task", None)
+        m = b"" if state == TaskState.DONE else message.encode()
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -456,7 +455,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.QUEUED,
         ).update(
             state=state,
-            message=message.encode(),
+            message=m,
             mtime=timezone.now(),
             eta=None,
         )
@@ -529,3 +528,7 @@ class _PostgresConsumer(Consumer):
                     conn.close()
                 except DATABASE_ERRORS:
                     pass
+            try:
+                connections.close_all()
+            except DATABASE_ERRORS:
+                pass

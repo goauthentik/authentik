@@ -16,7 +16,7 @@ For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, 
 
 ## Overview of workflow
 
-The basic steps to upgrades PostgreSQL on Kubernetes are:
+The basic steps to upgrade PostgreSQL on Kubernetes are:
 
 1. Stop authentik services
 2. Back up the database

@@ -1,0 +1,57 @@
+---
+title: Endpoint Devices
+sidebar_label: Endpoint Devices
+---
+
+import DocCardList from "@theme/DocCardList";
+
+:::danger Early preview
+The endpoint devices feature set is currently in early preview and in development. **It is not recommended for production use.**
+
+The features, methods, and even the name are yet to be confirmed.
+
+Breaking changes and bugs should be expected.
+:::
+
+:::info Enterprise License Required
+An enterprise license is required to access some of these features, refer to the [current features overview table](#features-overview) below for more details.
+
+During this early preview stage, short trial licenses are available for testers. Please contact us via hello@goauthentik.io for more details.
+:::
+
+## What are endpoint devices?
+
+Endpoint devices are end-user devices or servers that are registered with authentik.
+
+There are two purposes for registration: [Device authentication](./device-authentication/index.mdx) and [Device compliance](./device-compliance/index.mdx).
+
+Devices can be registered by installing the [authentik Agent](./authentik-agent/index.mdx) which supports:
+
+- [Device compliance](./device-compliance/index.mdx) by reporting information about endpoint devices to authentik.
+- [Local device login](./device-authentication/local-device-login/index.mdx) with authentik credentials.
+- [Connecting via SSH to endpoint devices](./device-authentication/ssh-authentication.mdx) with authentik credentials.
+- [Authenticating to CLI applications](./device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials.
+
+Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services such as Fleet. This allows for device information to be reported to authentik for [Device compliance](./device-compliance/index.mdx) purposes.
+
+## Features overview
+
+| Feature                                                   | Linux          | Windows        | macOS          | Status                                                        |
+| --------------------------------------------------------- | -------------- | -------------- | -------------- | ------------------------------------------------------------- |
+| **Local device login**                                    | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview on Windows and Linux.             |
+| **SSH authentication**                                    | Open source    | Open source    | Open source    | Available for early preview. Only supports Linux SSH targets. |
+| **Device compliance**                                     | Open source    | Open source    | Open source    | Available for early preview.                                  |
+| **Advanced device compliance**                            | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
+| **authentik Agent**                                       | Open source    | Open source    | Open source    | Available for early preview.                                  |
+| **Fleet Connectors**                                      | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview.                                  |
+| **Other Connectors** (Entra, Intune, Cloudflare WARP etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
+
+## How to provide feedback and report bugs
+
+Report issues via our [GitHub](https://github.com/goauthentik/platform/issues). Please include as much information as possible to assist us in troubleshooting.
+
+## More information
+
+For more information refer to each of the topics below:
+
+<DocCardList />

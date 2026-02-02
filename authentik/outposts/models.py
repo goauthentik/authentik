@@ -86,7 +86,7 @@ class OutpostConfig:
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
         """Return a list of all required objects"""
         return [self]
 
@@ -304,7 +304,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         return f"goauthentik.io/outposts/state/{self.uuid.hex}"
 
     @property
-    def state(self) -> list["OutpostState"]:
+    def state(self) -> list[OutpostState]:
         """Get outpost's health status"""
         return OutpostState.for_outpost(self)
 
@@ -332,41 +332,35 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         """Create per-object and global permissions for outpost service-account"""
         # To ensure the user only has the correct permissions, we delete all of them and re-add
         # the ones the user needs
-        with transaction.atomic():
-            user.remove_all_perms_from_managed_role()
-            for model_or_perm in self.get_required_objects():
-                if isinstance(model_or_perm, models.Model):
-                    model_or_perm: models.Model
-                    code_name = (
-                        f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
-                    )
-                    try:
-                        user.assign_perms_to_managed_role(code_name, model_or_perm)
-                    except (Permission.DoesNotExist, AttributeError) as exc:
-                        LOGGER.warning(
-                            "permission doesn't exist",
-                            code_name=code_name,
-                            user=user,
-                            model=model_or_perm,
+        try:
+            with transaction.atomic():
+                user.remove_all_perms_from_managed_role()
+                for model_or_perm in self.get_required_objects():
+                    if isinstance(model_or_perm, models.Model):
+                        code_name = (
+                            f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
                         )
-                        Event.new(
-                            action=EventAction.SYSTEM_EXCEPTION,
-                            message=(
-                                "While setting the permissions for the service-account, a "
-                                "permission was not found: Check "
-                                "https://docs.goauthentik.io/troubleshooting/missing_permission"
-                            ),
-                        ).with_exception(exc).set_user(user).save()
-                else:
-                    app_label, perm = model_or_perm.split(".")
-                    permission = Permission.objects.filter(
-                        codename=perm,
-                        content_type__app_label=app_label,
-                    )
-                    if not permission.exists():
-                        LOGGER.warning("permission doesn't exist", perm=model_or_perm)
-                        continue
-                    user.assign_perms_to_managed_role(permission.first())
+                        user.assign_perms_to_managed_role(code_name, model_or_perm)
+                    elif isinstance(model_or_perm, tuple):
+                        perm, obj = model_or_perm
+                        user.assign_perms_to_managed_role(perm, obj)
+                    else:
+                        user.assign_perms_to_managed_role(model_or_perm)
+        except (Permission.DoesNotExist, AttributeError) as exc:
+            LOGGER.warning(
+                "permission doesn't exist",
+                code_name=code_name,
+                user=user,
+                model=model_or_perm,
+            )
+            Event.new(
+                action=EventAction.SYSTEM_EXCEPTION,
+                message=(
+                    "While setting the permissions for the service-account, a "
+                    "permission was not found: Check "
+                    "https://docs.goauthentik.io/troubleshooting/missing_permission"
+                ),
+            ).with_exception(exc).set_user(user).save()
         LOGGER.debug(
             "Updated service account's permissions",
             obj_perms=user.get_all_obj_perms_on_managed_role(),
@@ -431,7 +425,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
             Token.objects.filter(identifier=self.token_identifier).delete()
             return self.token
 
-    def get_required_objects(self) -> Iterable[models.Model | str]:
+    def get_required_objects(self) -> Iterable[models.Model | str | tuple[str, models.Model]]:
         """Get an iterator of all objects the user needs read access to"""
         objects: list[models.Model | str] = [
             self,
@@ -445,7 +439,13 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         if self.managed:
             for brand in Brand.objects.filter(web_certificate__isnull=False):
                 objects.append(brand)
-                objects.append(brand.web_certificate)
+                objects.append(("authentik_crypto.view_certificatekeypair", brand.web_certificate))
+                objects.append(
+                    ("authentik_crypto.view_certificatekeypair_certificate", brand.web_certificate)
+                )
+                objects.append(
+                    ("authentik_crypto.view_certificatekeypair_key", brand.web_certificate)
+                )
         return objects
 
     def __str__(self) -> str:
@@ -484,7 +484,7 @@ class OutpostState:
         return parse(self.version) != OUR_VERSION
 
     @staticmethod
-    def for_outpost(outpost: Outpost) -> list["OutpostState"]:
+    def for_outpost(outpost: Outpost) -> list[OutpostState]:
         """Get all states for an outpost"""
         keys = cache.keys(f"{outpost.state_cache_prefix}/*")
         if not keys:
@@ -496,7 +496,7 @@ class OutpostState:
         return states
 
     @staticmethod
-    def for_instance_uid(outpost: Outpost, uid: str) -> "OutpostState":
+    def for_instance_uid(outpost: Outpost, uid: str) -> OutpostState:
         """Get state for a single instance"""
         key = f"{outpost.state_cache_prefix}/{uid}"
         default_data = {"uid": uid}

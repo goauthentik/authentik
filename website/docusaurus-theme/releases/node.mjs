@@ -13,6 +13,46 @@ import FastGlob from "fast-glob";
 import { coerce } from "semver";
 
 /**
+ * Number of supported releases to show in the sidebar.
+ */
+export const SUPPORTED_RELEASE_COUNT = 3;
+
+/**
+ * @typedef {FastGlob.Entry & AKReleaseFile} AKReleaseFileEntry
+ */
+
+/**
+ * Reads and parses the front matter of recent release files.
+ *
+ * @param {string} releasesParentDirectory
+ * @param {AKReleaseFileEntry} release
+ * @param {number} index
+ */
+function parseRelease(releasesParentDirectory, release, index) {
+    if (index > SUPPORTED_RELEASE_COUNT - 1) {
+        return release;
+    }
+
+    const extension = extname(release.dirent.name);
+
+    const fileContent = readFileSync(
+        join(releasesParentDirectory, `${release.path}${extension}`),
+        "utf-8",
+    );
+
+    const { frontMatter } = parseFileContentFrontMatter(fileContent);
+
+    if (frontMatter.beta) {
+        release.name += " (Release Candidate)";
+    }
+
+    return {
+        ...release,
+        frontMatter,
+    };
+}
+
+/**
  * Collect all Markdown files from the releases directory.
  *
  * @param {string} releasesParentDirectory
@@ -20,7 +60,7 @@ import { coerce } from "semver";
  */
 export function collectReleaseFiles(releasesParentDirectory) {
     /**
-     * @type {Array<FastGlob.Entry & AKReleaseFile>}
+     * @type {AKReleaseFileEntry[]}
      */
     const releaseFiles = FastGlob.sync("releases/**/v*.{md,mdx}", {
         cwd: releasesParentDirectory,
@@ -45,25 +85,12 @@ export function collectReleaseFiles(releasesParentDirectory) {
             return b.name.localeCompare(a.name);
         });
 
-    const [latestRelease] = releaseFiles;
+    const parsedReleaseFiles = releaseFiles.map((release, index) =>
+        parseRelease(releasesParentDirectory, release, index),
+    );
 
-    if (latestRelease) {
-        const extension = extname(latestRelease.dirent.name);
-
-        const fileContent = readFileSync(
-            join(releasesParentDirectory, `${latestRelease.path}${extension}`),
-            "utf-8",
-        );
-
-        const { frontMatter } = parseFileContentFrontMatter(fileContent);
-
-        latestRelease.frontMatter = frontMatter;
-    }
-
-    return releaseFiles;
+    return parsedReleaseFiles;
 }
-
-export const SUPPORTED_RELEASE_COUNT = 3;
 
 /**
  *
@@ -73,7 +100,14 @@ export function createReleaseSidebarEntries(releaseFiles) {
     /**
      * @type {SidebarItemConfig[]}
      */
-    let sidebarEntries = releaseFiles.map((fileEntry) => fileEntry.path);
+    let sidebarEntries = releaseFiles.map((fileEntry) => {
+        return {
+            type: "doc",
+            id: fileEntry.path,
+            label: fileEntry.name,
+            key: `release-${fileEntry.name}`,
+        };
+    });
 
     if (releaseFiles.length > SUPPORTED_RELEASE_COUNT) {
         // Then we add the rest of the releases as a category.

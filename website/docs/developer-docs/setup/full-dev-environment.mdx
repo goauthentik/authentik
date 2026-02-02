@@ -16,7 +16,7 @@ import Tabs from "@theme/Tabs";
 
 Before you begin, ensure you have the following tools installed. You can run the [provided script](#3-installing-platform-specific-dependencies) below in **Installing platform-specific dependencies** to install these required tools.
 
-- [Python](https://www.python.org/) (3.13 or later)
+- [Python](https://www.python.org/) (3.14)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (Latest stable release)
 - [Go](https://go.dev/) (1.24 or later)
 - [Node.js](https://nodejs.org/en) (24 or later)
@@ -46,7 +46,7 @@ authentik depends on several external services:
 The easiest way to set up these services is using the provided Docker Compose configuration:
 
 ```shell
-docker compose -f scripts/docker-compose.yml up -d
+docker compose -f scripts/compose.yml up -d
 ```
 
 ## 3. Installing platform-specific dependencies
@@ -179,7 +179,7 @@ When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environ
 Start the E2E test services with the following command:
 
 ```shell
-docker compose -f tests/e2e/docker-compose.yml up -d
+docker compose -f tests/e2e/compose.yml up -d
 ```
 
 You can then view the Selenium Chrome browser via http://localhost:7900/ using the password: `secret`.

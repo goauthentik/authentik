@@ -129,7 +129,6 @@ class UserSerializer(ModelSerializer):
     groups = PrimaryKeyRelatedField(
         allow_empty=True,
         many=True,
-        source="ak_groups",
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
@@ -165,7 +164,7 @@ class UserSerializer(ModelSerializer):
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return PartialGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.groups, many=True).data
 
     @extend_schema_field(RoleSerializer(many=True))
     def get_roles_obj(self, instance: User) -> list[RoleSerializer] | None:
@@ -416,7 +415,12 @@ class UsersFilter(FilterSet):
     last_updated = IsoDateTimeFilter(field_name="last_updated")
     last_updated__gt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="gt")
 
-    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
+    last_login__lt = IsoDateTimeFilter(field_name="last_login", lookup_expr="lt")
+    last_login = IsoDateTimeFilter(field_name="last_login")
+    last_login__gt = IsoDateTimeFilter(field_name="last_login", lookup_expr="gt")
+    last_login__isnull = BooleanFilter(field_name="last_login", lookup_expr="isnull")
+
+    is_superuser = BooleanFilter(field_name="groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -425,12 +429,12 @@ class UsersFilter(FilterSet):
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
-        field_name="ak_groups__name",
+        field_name="groups__name",
         to_field_name="name",
         queryset=Group.objects.all().order_by("name"),
     )
     groups_by_pk = ModelMultipleChoiceFilter(
-        field_name="ak_groups",
+        field_name="groups",
         queryset=Group.objects.all().order_by("name"),
     )
 
@@ -446,8 +450,8 @@ class UsersFilter(FilterSet):
 
     def filter_is_superuser(self, queryset, name, value):
         if value:
-            return queryset.filter(ak_groups__is_superuser=True).distinct()
-        return queryset.exclude(ak_groups__is_superuser=True).distinct()
+            return queryset.filter(groups__is_superuser=True).distinct()
+        return queryset.exclude(groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -473,6 +477,7 @@ class UsersFilter(FilterSet):
             "email",
             "date_joined",
             "last_updated",
+            "last_login",
             "name",
             "is_active",
             "is_superuser",
@@ -493,7 +498,7 @@ class UserViewSet(
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username", "date_joined", "last_updated"]
+    ordering = ["username", "date_joined", "last_updated", "last_login"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = ["email", "name", "uuid", "username"]
@@ -518,13 +523,13 @@ class UserViewSet(
             StrField(User, "path"),
             BoolField(User, "is_active", nullable=True),
             ChoiceSearchField(User, "type"),
-            JSONSearchField(User, "attributes", suggest_nested=False),
+            JSONSearchField(User, "attributes"),
         ]
 
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
         if self.serializer_class(context={"request": self.request})._should_include_groups:
-            base_qs = base_qs.prefetch_related("ak_groups")
+            base_qs = base_qs.prefetch_related("groups")
         if self.serializer_class(context={"request": self.request})._should_include_roles:
             base_qs = base_qs.prefetch_related("roles")
         return base_qs

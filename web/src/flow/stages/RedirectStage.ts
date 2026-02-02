@@ -1,11 +1,13 @@
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { BaseStage } from "#flow/stages/base";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -13,7 +15,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
@@ -24,7 +25,6 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     startedRedirect = false;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFButton,
@@ -38,12 +38,15 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     ];
 
     getURL(): string {
-        return new URL(this.challenge.to, document.baseURI).toString();
+        return new URL(this.challenge?.to || "", document.baseURI).toString();
     }
 
-    firstUpdated(changed: PropertyValues<this>): void {
-        super.firstUpdated(changed);
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
 
+        if (!changed.has("challenge")) {
+            return;
+        }
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
@@ -58,9 +61,10 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
-            this.challenge.to,
+            this.challenge?.to,
         );
-        window.location.assign(this.challenge.to);
+
+        window.location.assign(this.challenge?.to || "");
         this.startedRedirect = true;
     }
 
@@ -80,10 +84,15 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }
+
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">

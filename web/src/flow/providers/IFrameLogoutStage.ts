@@ -19,7 +19,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 enum LogoutStatusStatus {
     Pending = "pending",
@@ -66,7 +65,6 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     public static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFButton,
@@ -111,7 +109,7 @@ export class IFrameLogoutStage extends BaseStage<
         super.firstUpdated(changedProperties);
 
         // Initialize status tracking
-        const logoutUrls = this.challenge.logoutUrls ?? [];
+        const logoutUrls = (this.challenge?.logoutUrls as LogoutURLData[]) || [];
 
         this.logoutStatuses = logoutUrls.map(
             (url): LogoutStatus => ({
@@ -125,14 +123,16 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     protected async performLogouts(): Promise<void> {
+        const logoutUrls = (this.challenge?.logoutUrls as LogoutURLData[]) || [];
+
         // Create iframes for each logout URL
-        this.challenge.logoutUrls?.forEach((logoutData, index) => {
+        logoutUrls.forEach((logoutData, index) => {
             this.createLogoutIframe(logoutData, index);
         });
 
         // Set a final timeout to complete even if some iframes don't respond
         this.#moveOnTimeout = setTimeout(() => {
-            if (this.completedCount < (this.challenge.logoutUrls?.length || 0)) {
+            if (this.completedCount < logoutUrls.length) {
                 const submitEvent = new SubmitEvent("submit");
                 this.submitForm(submitEvent);
             }
@@ -225,7 +225,7 @@ export class IFrameLogoutStage extends BaseStage<
         this.completedCount++;
 
         // Check if all are done
-        if (this.completedCount >= (this.challenge.logoutUrls?.length || 0)) {
+        if (this.completedCount >= (this.challenge?.logoutUrls?.length || 0)) {
             // All done, submit the form
             const submitEvent = new SubmitEvent("submit");
             this.submitForm(submitEvent);
@@ -233,7 +233,7 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     protected renderProgress(): TemplateResult {
-        const total = this.challenge.logoutUrls?.length || 0;
+        const total = this.challenge?.logoutUrls?.length || 0;
         const percentage = total > 0 ? Math.round((this.completedCount / total) * 100) : 0;
 
         return html`
@@ -257,7 +257,7 @@ export class IFrameLogoutStage extends BaseStage<
 
     public override render(): TemplateResult {
         // If no logout URLs, stage may have gotten double injected
-        if (!this.challenge.logoutUrls || this.challenge.logoutUrls.length === 0) {
+        if (!this.challenge?.logoutUrls || !this.challenge.logoutUrls.length) {
             const submitEvent = new SubmitEvent("submit");
             this.submitForm(submitEvent);
             return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;

@@ -9,6 +9,12 @@ from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.constants import (
+    NS_MAP,
+    SAML_BINDING_POST,
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
+)
 from authentik.core.tests.utils import (
     RequestFactory,
     create_test_admin_user,
@@ -24,12 +30,6 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import (
-    NS_MAP,
-    SAML_BINDING_REDIRECT,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_UNSPECIFIED,
-)
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
@@ -113,7 +113,7 @@ class TestAuthNRequest(TestCase):
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
         auth_n = request_proc.get_auth_n()
-        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_REDIRECT)
+        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_POST)
 
         request = request_proc.build_auth_n()
         # Now we check the ID and signature
@@ -144,6 +144,50 @@ class TestAuthNRequest(TestCase):
         response = response_proc.build_response()
 
         # Now parse the response (source)
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
+
+    def test_request_encrypt_cert_only(self):
+        """Test SAML encryption with certificate-only keypair (no private key).
+
+        This tests the scenario where the IdP (provider) only has the SP's public
+        certificate for encryption, without a private key. This is the expected
+        real-world scenario since the SP would never share their private key.
+        """
+        # Create a full keypair for the source (SP) - it needs the private key to decrypt
+        full_keypair = create_test_cert()
+
+        # Create a certificate-only keypair for the provider (IdP)
+        # This simulates having only the SP's public certificate
+        cert_only = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=full_keypair.certificate_data,
+            key_data="",  # No private key
+        )
+
+        self.provider.encryption_kp = cert_only
+        self.provider.save()
+        self.source.encryption_kp = full_keypair
+        self.source.save()
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        # This should work with only the certificate (public key) for encryption
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Now parse the response (source) - decryption requires the private key
         http_request.POST = QueryDict(mutable=True)
         http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
 

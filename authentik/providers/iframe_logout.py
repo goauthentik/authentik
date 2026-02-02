@@ -4,9 +4,9 @@ from django.http import HttpResponse
 from rest_framework.fields import CharField, ListField
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.stage import ChallengeStageView
-from authentik.providers.oauth2.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
 from authentik.providers.saml.views.flows import PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS
 
 

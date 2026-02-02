@@ -5,7 +5,6 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
@@ -105,7 +104,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             <p>${msg("These bindings control which users have access to this entitlement.")}</p>
             <ak-bound-policies-list
                 .target=${item.pbmUuid}
-                .allowedTypes=${[PolicyBindingCheckTarget.group, PolicyBindingCheckTarget.user]}
+                .allowedTypes=${[PolicyBindingCheckTarget.Group, PolicyBindingCheckTarget.User]}
             >
             </ak-bound-policies-list>
         </div>`;
@@ -142,5 +141,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-application-roles-list": ApplicationEntitlementsPage;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-entitlements-list": ApplicationEntitlementsPage;
     }
 }

@@ -14,14 +14,13 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-endpoint-agent")
 export class EndpointAgentStage extends BaseStage<
     EndpointAgentChallenge,
     EndpointAgentChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
     firstUpdated() {
         window.addEventListener("message", (ev) => {
@@ -36,6 +35,9 @@ export class EndpointAgentStage extends BaseStage<
                 );
             }
         });
+
+        const delay = this.challenge?.challengeIdleTimeout ?? 3000;
+
         // Fallback in case we don't get a response
         setTimeout(() => {
             this.host?.submit(
@@ -46,13 +48,13 @@ export class EndpointAgentStage extends BaseStage<
                     invisible: true,
                 },
             );
-        }, this.challenge.challengeIdleTimeout * 1000);
+        }, delay);
     }
 
     updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             if (this.challenge.responseErrors) {
                 return;
             }
@@ -65,7 +67,7 @@ export class EndpointAgentStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            ${this.challenge.responseErrors
+            ${this.challenge?.responseErrors
                 ? html`
                       <ak-empty-state icon="fa-times"
                           ><span>${msg("Failed to validate device.")}</span>
@@ -80,5 +82,11 @@ export class EndpointAgentStage extends BaseStage<
                       ><span>${msg("Verifying your device...")}</span>
                   </ak-empty-state>`}
         </ak-flow-card>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-endpoint-agent": EndpointAgentStage;
     }
 }

@@ -1,10 +1,9 @@
 import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { MessageLevel } from "#common/messages";
+import { APIMessage, MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
-import { APIMessage } from "#elements/messages/Message";
 
 import { AdminApi, CoreApi, ImpersonationRequest } from "@goauthentik/api";
 
@@ -20,7 +19,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
     @state()
     private requireReason = false;
 
-    async firstUpdated(): Promise<void> {
+    #onOpen = async () => {
         try {
             const settings = await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
             this.requireReason = settings.impersonationRequireReason ?? false;
@@ -29,6 +28,21 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             // fallback to reason not required as the backend will still validate it
             this.requireReason = false;
         }
+    };
+
+    constructor() {
+        super();
+        this.#onOpen = this.#onOpen.bind(this);
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener("ak-modal-show", this.#onOpen);
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.removeEventListener("ak-modal-show", this.#onOpen);
     }
 
     protected override formatAPISuccessMessage(): APIMessage | null {
@@ -50,7 +64,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
             name="reason"
             label=${msg("Reason")}

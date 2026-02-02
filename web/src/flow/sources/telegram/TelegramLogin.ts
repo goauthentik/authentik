@@ -1,3 +1,5 @@
+import "#flow/components/ak-flow-card";
+
 import { loadTelegramWidget, TelegramUserResponse } from "./utils";
 
 import { BaseStage } from "#flow/stages/base";
@@ -34,6 +36,11 @@ export class TelegramLogin extends BaseStage<
     btnRef = createRef();
 
     firstUpdated(): void {
+        if (!this.challenge) {
+            console.warn("No challenge present for Telegram Login");
+            return;
+        }
+
         loadTelegramWidget(
             this.btnRef.value,
             this.challenge.botUsername,

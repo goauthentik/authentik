@@ -1,3 +1,6 @@
+import "#components/ak-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
@@ -19,10 +22,10 @@ import {
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
+    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
-    SAMLProviderLogoutMethodEnum,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -83,16 +86,16 @@ function renderHasSlsUrl(
     const logoutMethodOptions: RadioOption<string>[] = [
         {
             label: msg("Front-channel (Iframe)"),
-            value: SAMLProviderLogoutMethodEnum.FrontchannelIframe,
+            value: SAMLLogoutMethods.FrontchannelIframe,
             default: true,
         },
         {
             label: msg("Front-channel (Native)"),
-            value: SAMLProviderLogoutMethodEnum.FrontchannelNative,
+            value: SAMLLogoutMethods.FrontchannelNative,
         },
         {
             label: msg("Back-channel (POST)"),
-            value: SAMLProviderLogoutMethodEnum.Backchannel,
+            value: SAMLLogoutMethods.Backchannel,
             disabled: !hasPostBinding,
         },
     ];
@@ -173,7 +176,7 @@ export function renderForm({
                     label=${msg("ACS URL")}
                     placeholder=${msg("https://...")}
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.acsUrl)}"
                     required
                     .errorMessages=${errors.acsUrl}
@@ -202,7 +205,7 @@ export function renderForm({
                     label=${msg("Audience")}
                     placeholder="https://..."
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.audience)}"
                     .errorMessages=${errors.audience}
                 ></ak-text-input>
@@ -211,7 +214,7 @@ export function renderForm({
                     label=${msg("SLS URL")}
                     placeholder=${msg("https://...")}
                     input-hint="code"
-                    input-mode="url"
+                    inputmode="url"
                     value="${ifDefined(provider.slsUrl)}"
                     .errorMessages=${errors.slsUrl}
                     help=${msg(
@@ -301,6 +304,7 @@ export function renderForm({
                 >
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
+                        nokey
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
@@ -322,7 +326,6 @@ export function renderForm({
                     name="nameIdMapping"
                 >
                     <ak-search-select
-                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",
@@ -358,7 +361,6 @@ export function renderForm({
                     name="authnContextClassRefMapping"
                 >
                     <ak-search-select
-                        required
                         .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
                             const args: PropertymappingsProviderSamlListRequest = {
                                 ordering: "saml_name",

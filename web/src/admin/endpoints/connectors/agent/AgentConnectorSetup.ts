@@ -24,7 +24,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-connector-agent-setup")
 export class AgentConnectorSetup extends AKElement {
@@ -37,7 +36,6 @@ export class AgentConnectorSetup extends AKElement {
     #tokenSelectRef = createRef<SearchSelect<EnrollmentToken>>();
 
     static styles: CSSResult[] = [
-        PFBase,
         PFGrid,
         PFButton,
         PFList,
@@ -77,7 +75,11 @@ export class AgentConnectorSetup extends AKElement {
                     <p>${msg("Afterwards, select the enrollment token you want to use:")}</p>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
-                    <p>${msg("Then download the configuration to deploy the authentik Agent")}</p>
+                    <p>
+                        ${msg(
+                            "Next, download the configuration to deploy the authentik Agent via MDM",
+                        )}
+                    </p>
                 </div>
             </div>
             <div class="pf-l-grid__item pf-m-6-col pf-l-grid">
@@ -131,7 +133,7 @@ export class AgentConnectorSetup extends AKElement {
                         .renderDescription=${(token: EnrollmentToken) => {
                             return html`${token.name}`;
                         }}
-                        .value=${(token: EnrollmentToken | undefined): string | undefined => {
+                        .value=${(token: EnrollmentToken | null) => {
                             return token?.tokenUuid;
                         }}
                         @ak-change=${(ev: CustomEvent) => {
@@ -145,7 +147,6 @@ export class AgentConnectorSetup extends AKElement {
                         <li>
                             <ak-endpoints-agent-connector-config
                                 class="pf-m-secondary"
-                                label=${msg("Windows")}
                                 .request=${{
                                     connectorUuid: this.connector?.connectorUuid || "",
                                     mDMConfigRequest: {
@@ -166,7 +167,6 @@ export class AgentConnectorSetup extends AKElement {
                         <li>
                             <ak-endpoints-agent-connector-config
                                 class="pf-m-link"
-                                label=${msg("macOS")}
                                 .request=${{
                                     connectorUuid: this.connector?.connectorUuid || "",
                                     mDMConfigRequest: {

@@ -1,21 +1,22 @@
 import "#admin/endpoints/connectors/ConnectorWizard";
 import "#admin/endpoints/connectors/agent/AgentConnectorForm";
+import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ProxyForm";
 import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Connector, EndpointsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-connectors-list")
 export class ConnectorsListPage extends TablePage<Connector> {
@@ -44,23 +45,23 @@ export class ConnectorsListPage extends TablePage<Connector> {
         return [
             html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
             html`${item.verboseName}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Connector")}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
+            html`<div>
+                <ak-forms-modal>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
                         instancePk: item.connectorUuid,
-                    }}
-                    type=${ifDefined(item.component)}
-                >
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 

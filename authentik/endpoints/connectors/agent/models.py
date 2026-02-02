@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -16,7 +17,7 @@ from authentik.endpoints.models import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 if TYPE_CHECKING:
@@ -52,6 +53,10 @@ class AgentConnector(Connector):
     challenge_trigger_check_in = models.BooleanField(default=False)
 
     @property
+    def icon_url(self):
+        return static("dist/assets/icons/icon.svg")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.endpoints.connectors.agent.api.connectors import (
             AgentConnectorSerializer,
@@ -68,7 +73,7 @@ class AgentConnector(Connector):
         return AuthenticatorEndpointStageView
 
     @property
-    def controller(self) -> type["AgentConnectorController"]:
+    def controller(self) -> type[AgentConnectorController]:
         from authentik.endpoints.connectors.agent.controller import AgentConnectorController
 
         return AgentConnectorController
@@ -97,7 +102,7 @@ class AgentDeviceUserBinding(DeviceUserBinding):
     apple_enclave_key_id = models.TextField()
 
 
-class DeviceToken(ExpiringModel):
+class DeviceToken(InternallyManagedMixin, ExpiringModel):
     """Per-device token used for authentication."""
 
     token_uuid = models.UUIDField(primary_key=True, default=uuid4)
@@ -143,7 +148,7 @@ class EnrollmentToken(ExpiringModel, SerializerModel):
         ]
 
 
-class DeviceAuthenticationToken(ExpiringModel):
+class DeviceAuthenticationToken(InternallyManagedMixin, ExpiringModel):
 
     identifier = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
@@ -160,7 +165,7 @@ class DeviceAuthenticationToken(ExpiringModel):
         verbose_name_plural = _("Device authentication tokens")
 
 
-class AppleNonce(ExpiringModel):
+class AppleNonce(InternallyManagedMixin, ExpiringModel):
     nonce = models.TextField()
     device_token = models.ForeignKey(DeviceToken, on_delete=models.CASCADE)
 

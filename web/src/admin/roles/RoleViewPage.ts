@@ -27,7 +27,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-role-view")
@@ -47,7 +46,6 @@ export class RoleViewPage extends AKElement {
     targetRole?: Role;
 
     static styles = [
-        PFBase,
         PFPage,
         PFButton,
         PFDisplay,
@@ -61,7 +59,7 @@ export class RoleViewPage extends AKElement {
                 margin-bottom: 6px;
             }
             .ak-button-collection {
-                max-width: 12em;
+                max-width: 13em;
             }
         `,
     ];

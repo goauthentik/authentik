@@ -6,7 +6,7 @@ Some models behave differently and allow for access to different API fields when
 
 ### `key`
 
-Via the standard API, a token's key cannot be changed, it can only be rotated. This is to ensure a high entropy in it's key, and to prevent insecure data from being used. However, when provisioning tokens via a blueprint, it may be required to set a token to an existing value.
+Via the standard API, a token's key cannot be changed, it can only be rotated. This is to ensure a high entropy in its key, and to prevent insecure data from being used. However, when provisioning tokens via a blueprint, it may be required to set a token to an existing value.
 
 With blueprints, the field `key` can be set, to set the token's key to any value.
 
@@ -45,7 +45,7 @@ For example:
       password: this-should-be-a-long-value
 ```
 
-### `permissions`:ak-version[2024.8]
+### `permissions`
 
 The `permissions` field can be used to set global permissions for a user. A full list of possible permissions is included in the JSON schema for blueprints.
 
@@ -119,7 +119,7 @@ For example:
 
 ## `authentik_rbac.role`
 
-### `permissions`:ak-version[2024.8]
+### `permissions`
 
 The `permissions` field can be used to set global permissions for a role. A full list of possible permissions is included in the JSON schema for blueprints.
 
@@ -180,4 +180,25 @@ Example with multiple bindings to the same application:
       order: 1
   attrs:
       group: !Find [authentik_core.group, [name, admins]]
+```
+
+## `authentik_endpoints_connectors_agent.enrollmenttoken`
+
+### `key`
+
+Via the standard API, a token's key cannot be changed, it can only be rotated. This is to ensure a high entropy in its key, and to prevent insecure data from being used. However, when provisioning enrollment tokens via a blueprint, it may be required to set a token to an existing value.
+
+With blueprints, the field `key` can be set, to set the enrollment token's key to any value.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_endpoints_connectors_agent.enrollmenttoken
+  state: present
+  identifiers:
+      name: my-token
+  attrs:
+      key: this-should-be-a-long-value
+      connector: !KeyOf connector
 ```

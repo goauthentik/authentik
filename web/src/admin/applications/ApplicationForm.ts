@@ -9,7 +9,6 @@ import "#elements/Alert";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -32,6 +31,11 @@ import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+/**
+ * Application Form
+ *
+ * @prop {string} instancePk - The primary key of the instance to load.
+ */
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
     #api = new CoreApi(DEFAULT_CONFIG);
@@ -51,6 +55,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
     @state()
     protected backchannelProviders: Provider[] = [];
+
+    public override reset(): void {
+        super.reset();
+        this.backchannelProviders = [];
+    }
 
     public override getSuccessMessage(): string {
         return this.instance
@@ -95,7 +104,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         };
     };
 
-    public override renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
@@ -117,7 +126,6 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
-                autocomplete="off"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required

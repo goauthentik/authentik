@@ -1,3 +1,8 @@
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-slug-input";
+import "#components/ak-secret-text-input";
+import "#elements/forms/Radio";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
@@ -45,7 +50,7 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
         return source;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
