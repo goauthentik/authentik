@@ -345,7 +345,7 @@ const items = [
                     type: "doc",
                     id: "add-secure-apps/bindings-overview/index",
                 },
-                items: ["add-secure-apps/bindings-overview/work_with_bindings"],
+                items: ["add-secure-apps/bindings-overview/work-with-bindings"],
             },
             {
                 //#endregion

@@ -87,13 +87,13 @@ With policy bindings, you can also bind groups and users to another component (a
 Bindings are also used for [Application Entitlements](../../add-secure-apps/applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to certain areas _within an application_.
 
 ::: info
-Be aware that policy bindings that are bound directly to the flow are evalated _before_ the flow executes, so if the user is not authenticated, the flow will not start.
+Be aware that policy bindings that are bound directly to the flow are evaluated _before_ the flow executes, so if the user is not authenticated, the flow will not start.
 :::
 
 ### Flow-stage bindings
 
 :::info
-Be aware that depending on context, user and group policy bindings are not evaluated (i.e. ignored). For example, if you are not authenticated or if authentik has not yet identified the user, a policy binding that depends on knowing who the user is cannot be evaulated.
+Be aware that depending on context, user and group policy bindings are not evaluated (i.e. ignored). For example, if you are not authenticated or if authentik has not yet identified the user, a policy binding that depends on knowing who the user is cannot be evaluated.
 :::
 
 Flow-stage bindings are analyzed by authentik's Flow Plan, which starts with the flow, then assesses all of the bound policies, and then runs them in order to build out the plan.
@@ -105,9 +105,9 @@ For example, you can create a binding for a specific group, and then [bind that 
 Flow-stage bindings can have policy bindings bound to them; this can be used to conditionally run or skip stages within a flow. There are two settings in a flow-stage binding that configure _when_ these policies are executed:
 
 - **Evaluate when flow is planned**
-    Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case,user-specific attributes are only available if the user is already authentiticated before beginning the flow.
+  Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case,user-specific attributes are only available if the user is already authentiticated before beginning the flow.
 
 - **Evaluate when the stage is run**
-    Policies bound to a flow-stage binding are evaluated before the stage is run (i.e after the flow has started but before the stage is reached in the flow). Therefore the context with which policy bindings to the flow-stage binding are evaulated reflects the current state of the flow.
+  Policies bound to a flow-stage binding are evaluated before the stage is run (i.e after the flow has started but before the stage is reached in the flow). Therefore the context with which policy bindings to the flow-stage binding are evaluated reflects the current state of the flow.
 
     For example, when configuring an authentication flow with an identification stage bound to it, and a user bound to a Captcha flow-stage binding, with this setting (**Evaluate when stage is run**) enabled authentik can check against the user who has identified themselves previously.
