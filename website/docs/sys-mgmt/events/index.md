@@ -14,7 +14,7 @@ Events can be used to define [notification rules](notifications.md), with specif
 
 Event logging in authentik provides several layers of transparency about user and system actions, from a quick view on the Overview dashboard, to a full, searchable list of all events, with a volume graph to highlight any spikes, in the Admin interface under **Events > Logs**.
 
-Refer to our [Logging documentation](./logging-events.md) for more information.
+Refer to our [Logging documentation](./logging-events.mdx) for more information.
 
 ## Event retention and forwarding
 

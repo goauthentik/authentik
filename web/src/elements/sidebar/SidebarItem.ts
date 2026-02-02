@@ -6,6 +6,7 @@ import { WithLicenseSummary } from "../mixins/license";
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -73,9 +74,18 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         });
     }
 
-    firstUpdated(): void {
-        this.onHashChange();
-        window.addEventListener("hashchange", () => this.onHashChange());
+    public get activeWhen(): RegExp[] {
+        return this.activeMatchers;
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.synchronize();
+    }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        cancelAnimationFrame(this.#scrollAnimationFrame);
     }
 
     public updated(changedProperties: PropertyValues): void {
@@ -103,13 +113,15 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         this.#scrollBehavior ??= "smooth";
     };
 
-    onHashChange(): void {
-        const activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
+    @listen("hashchange")
+    public synchronize = (): void => {
+        const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
+
         this.current = this.matchesPath(activePath);
-    }
+    };
 
     private matchesPath(path: string): boolean {
         if (!this.path) {

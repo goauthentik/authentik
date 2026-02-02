@@ -7,6 +7,14 @@ from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.oauth.constants import (
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_PASSWORD,
+    SCOPE_OPENID,
+    SCOPE_OPENID_EMAIL,
+    SCOPE_OPENID_PROFILE,
+    TOKEN_TYPE,
+)
 from authentik.core.models import Application, Group, Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import (
     create_test_admin_user,
@@ -15,14 +23,6 @@ from authentik.core.tests.utils import (
     create_test_user,
 )
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
-    GRANT_TYPE_CLIENT_CREDENTIALS,
-    GRANT_TYPE_PASSWORD,
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
-    TOKEN_TYPE,
-)
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     OAuth2Provider,

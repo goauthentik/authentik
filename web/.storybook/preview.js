@@ -5,6 +5,7 @@
  */
 
 import "#styles/authentik/interface.global.css";
+import "#styles/authentik/static.global.css";
 import "#styles/authentik/storybook.css";
 
 import { ThemedDocsContainer } from "./DocsContainer.tsx";

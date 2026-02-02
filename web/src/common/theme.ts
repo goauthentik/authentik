@@ -118,7 +118,9 @@ export function resolveUITheme(
 ): ResolvedUITheme {
     const colorScheme = formatColorScheme(hint);
 
-    if (colorScheme !== "auto") return colorScheme;
+    if (colorScheme !== "auto") {
+        return colorScheme;
+    }
 
     // Given that we don't know the user's preference,
     // we can determine the theme based on whether the default theme is
@@ -286,9 +288,23 @@ export const applyDocumentTheme = ((currentUITheme = resolveUITheme(), doc = doc
  *
  * @param hint The theme choice hint to apply.
  * @param documentElement The document element to apply the theme choice to.
+ *
+ * @remarks
+ * There are a few scenarios that this function covers:
+ *
+ * - No hint, `"auto"` (via a media query), or `"automatic"` (via a user attribute)
+ * - `"dark"` or `"light"` (explicit user choice)
+ *
+ * This may appear redundantly defensive when following this logic through the codebase.
+ * However, there are some cases that only appear in development, such as...
+ *
+ * - The developer tools overriding the system color scheme
+ * - The attribute is manually changed to an invalid value
  */
-export function applyThemeChoice(hint?: string, doc: Document = document): void {
-    doc.documentElement.dataset.themeChoice = hint ? resolveUITheme(hint) : "auto";
+export function applyThemeChoice(hint?: CSSColorSchemeValue, doc: Document = document): void {
+    const themeChoice = !hint || hint === "auto" ? "auto" : resolveUITheme(hint);
+
+    doc.documentElement.dataset.themeChoice = themeChoice;
 }
 
 /**
@@ -321,6 +337,11 @@ function pluckCurrentBackgroundURL(
     return null;
 }
 
+export interface BackgroundImageInit {
+    baseOrigin?: string;
+    target?: HTMLElement | null;
+}
+
 /**
  * Applies the given background image URL to the document body.
  *
@@ -328,22 +349,26 @@ function pluckCurrentBackgroundURL(
  */
 export function applyBackgroundImageProperty(
     value?: string | null,
-    baseOrigin = window.location.origin,
+    init?: BackgroundImageInit,
 ): void {
+    const baseOrigin = init?.baseOrigin ?? window.location.origin;
+
     if (!value || !URL.canParse(value, baseOrigin)) {
         return;
     }
 
+    const target = init?.target ?? document.body;
+
     const nextURL = new URL(value, baseOrigin);
 
-    const { backgroundImage } = getComputedStyle(document.body, "::before");
+    const { backgroundImage } = getComputedStyle(target, "::before");
 
     const currentURL = pluckCurrentBackgroundURL(backgroundImage, baseOrigin);
     if (currentURL?.href === nextURL.href) {
         return;
     }
 
-    document.body.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
+    target.style.setProperty(AKBackgroundImageProperty, `url("${nextURL.href}")`);
 }
 
 /**

@@ -5,11 +5,11 @@ from base64 import b64encode
 from defusedxml.lxml import fromstring
 from django.test import TestCase
 
+from authentik.common.saml.constants import NS_SAML_ASSERTION
 from authentik.core.tests.utils import RequestFactory, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource, SAMLSourcePropertyMapping
-from authentik.sources.saml.processors.constants import NS_SAML_ASSERTION
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 ROOT = fromstring(load_fixture("fixtures/response_success.xml").encode())

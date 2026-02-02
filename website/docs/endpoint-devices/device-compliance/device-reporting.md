@@ -37,7 +37,7 @@ For an example of the facts provided for a Linux device, see [here](./facts-linu
 
 ## Endpoint devices in event logs
 
-Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.md). For example:
+Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.mdx). For example:
 
 ![Example of device authentication event](device-event-example.png)
 
@@ -49,4 +49,4 @@ To search for event logs matching a specific endpoint device:
 2. Navigate to **Events** > **Logs**.
 3. In the search bar, enter: `context.device.name = "<device_name>"`
 
-For more information on searching the events logs, see [Logging events](../../sys-mgmt/events/logging-events.md).
+For more information on searching the events logs, see [Logging events](../../sys-mgmt/events/logging-events.mdx).

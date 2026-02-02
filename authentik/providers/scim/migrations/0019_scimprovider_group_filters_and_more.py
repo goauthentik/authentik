@@ -8,20 +8,34 @@ from django.apps.registry import Apps
 
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
+from authentik.events.models import EventAction
+
 
 def make_many_groups(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    """
-    Adds the Group object in SCIMProvider.filter_group to the
-    many-to-many relationship in SCIMProvider.group_filters
-    """
+    """Adds the Group object in SCIMProvider.filter_group to the
+    many-to-many relationship in SCIMProvider.group_filters"""
+    db_alias = schema_editor.connection.alias
+
+    Event = apps.get_model("authentik_events", "Event")
+
     SCIMProvider = apps.get_model("authentik_providers_scim", "scimprovider")
 
-    for provider in SCIMProvider.objects.all():
+    for provider in SCIMProvider.objects.using(db_alias).all():
         if not provider.filter_group:
             continue
         provider.group_filters.add(provider.filter_group)
         provider.dry_run = True
         provider.save(update_fields=["dry_run"])
+        event = Event.new(
+            action=EventAction.CONFIGURATION_WARNING,
+            message=(
+                "SCIM Providers' `filter_group` has been removed in favor of `group_filters`. Your configuration has been migrated."
+                "To prevent users/groups from being removed, the provider's dry-run mode has been enabled. Please review "
+                " its configuration and disable the dry-run mode."
+            ),
+            provider=provider,
+        )
+        event.save(using=db_alias)
 
 
 class Migration(migrations.Migration):

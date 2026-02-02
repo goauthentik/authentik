@@ -10,6 +10,7 @@ from jwt import PyJWTError, decode, encode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import TOKEN_TYPE
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
@@ -26,7 +27,6 @@ from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.flows.planner import PLAN_CONTEXT_DEVICE
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import JWTAlgorithms
 from authentik.root.middleware import SessionMiddleware

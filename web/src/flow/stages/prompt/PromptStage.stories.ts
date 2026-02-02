@@ -1,59 +1,21 @@
 import "@patternfly/patternfly/components/Login/login.css";
-import "../../../stories/flow-interface.js";
 import "./PromptStage.js";
 
-import {
-    ContextualFlowInfoLayoutEnum,
-    PromptChallenge,
-    PromptTypeEnum,
-    UiThemeEnum,
-} from "@goauthentik/api";
+import { flowFactory } from "#stories/flow-interface";
 
-import type { StoryObj } from "@storybook/web-components";
+import { PromptTypeEnum } from "@goauthentik/api";
 
-import { html } from "lit";
+import { capitalCase } from "change-case";
 
 export default {
     title: "Flow / Stages / <ak-stage-prompt>",
 };
 
-function promptFactory(challenge: PromptChallenge): StoryObj {
-    return {
-        render: ({ theme, challenge }) => {
-            return html`<ak-storybook-interface-flow theme=${theme}>
-                <ak-stage-prompt .challenge=${challenge}></ak-stage-prompt>
-            </ak-storybook-interface-flow>`;
-        },
-        args: {
-            theme: "automatic",
-            challenge: challenge,
-        },
-        argTypes: {
-            theme: {
-                options: [UiThemeEnum.Automatic, UiThemeEnum.Light, UiThemeEnum.Dark],
-                control: {
-                    type: "select",
-                },
-            },
-        },
-    };
-}
-
-export const ChallengeDefault = promptFactory({
-    flowInfo: {
-        title: "<ak-stage-prompt>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
-    },
+export const ChallengeDefault = flowFactory("ak-stage-prompt", {
     fields: [],
 });
 
-export const AllFieldTypes = promptFactory({
-    flowInfo: {
-        title: "<ak-stage-prompt>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
-    },
+export const AllFieldTypes = flowFactory("ak-stage-prompt", {
     fields: [
         PromptTypeEnum.Text,
         PromptTypeEnum.TextArea,
@@ -77,12 +39,12 @@ export const AllFieldTypes = promptFactory({
         return {
             fieldKey: `fk_${type}`,
             type: type,
-            label: `label_${type}`,
+            label: `${capitalCase(type)} (${type})`,
             order: idx,
             required: true,
-            placeholder: `pl_${type}`,
-            initialValue: `iv_${type}`,
-            subText: `st_${type}`,
+            placeholder: `Placeholder (${type})`,
+            initialValue: `initial_value_${type}`,
+            subText: `Subtext (${type})`,
             choices: [],
         };
     }),

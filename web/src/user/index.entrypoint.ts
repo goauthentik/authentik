@@ -5,8 +5,6 @@ import "#elements/messages/MessageContainer";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
-import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
@@ -174,7 +172,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                                         class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        defaultUrl="/library"
+                                        default-url="/library"
                                         .routes=${ROUTES}
                                     >
                                     </ak-router-outlet>

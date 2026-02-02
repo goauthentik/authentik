@@ -155,6 +155,21 @@ git push -u origin feature/my-awesome-feature
 
 Then open your PR from the feature branch.
 
+:::tip Accidentally made changes on main?
+If you already started working on `main` (even if you've already made commits), you can still recover by creating a branch from your current state, then resetting `main`:
+
+```bash
+# Create a new branch with your current changes/commits
+git checkout -b feature/my-awesome-feature
+
+# Switch back to main and reset it to match origin
+git checkout main
+git reset --hard origin/main
+```
+
+Your changes are now safely on the feature branch, and `main` is back in sync with the remote.
+:::
+
 Please follow these steps to have your contribution considered by the maintainers:
 
 1. Follow the [style guides](#style-guides)

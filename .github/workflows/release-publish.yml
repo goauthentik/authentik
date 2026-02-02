@@ -87,6 +87,11 @@ jobs:
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
         with:
           go-version-file: "go.mod"
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+        with:
+          node-version-file: web/package.json
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
       - name: Set up QEMU
         uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
       - name: Set up Docker Buildx
@@ -98,10 +103,10 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/${{ matrix.type }},authentik/${{ matrix.type }}
-      - name: make empty clients
+      - name: Generate API Clients
         run: |
-          mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
+          make gen-client-ts
+          make gen-client-go
       - name: Docker Login Registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:

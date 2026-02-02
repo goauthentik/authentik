@@ -4,14 +4,14 @@ from urllib.parse import parse_qs, urlparse
 
 from django.test import TestCase
 
+from authentik.common.saml.constants import (
+    RSA_SHA256,
+    SAML_NAME_ID_FORMAT_EMAIL,
+)
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
-from authentik.sources.saml.processors.constants import (
-    RSA_SHA256,
-    SAML_NAME_ID_FORMAT_EMAIL,
-)
 
 
 class TestLogoutIntegration(TestCase):

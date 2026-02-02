@@ -77,6 +77,13 @@ const BASE_ESBUILD_OPTIONS = {
         ".png": "file",
         ".svg": "file",
     },
+    /**
+     * Conditions for module resolution.
+     *
+     * @see https://esbuild.github.io/api/#conditions
+     * @see https://nodejs.org/api/packages.html#packages_conditional_exports
+     */
+    conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
     plugins: [
         {
             name: "copy",

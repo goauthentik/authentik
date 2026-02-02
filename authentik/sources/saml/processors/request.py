@@ -8,12 +8,7 @@ from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
 
-from authentik.lib.xml import remove_xml_newlines
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -21,6 +16,11 @@ from authentik.sources.saml.processors.constants import (
     SAML_BINDING_POST,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.utils import get_random_id
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.time import get_time_string
+from authentik.sources.saml.models import SAMLSource
 
 SESSION_KEY_REQUEST_ID = "authentik/sources/saml/request_id"
 

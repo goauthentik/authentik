@@ -9,16 +9,16 @@ from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.crypto.models import CertificateKeyPair, format_cert
-from authentik.flows.models import Flow
-from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from authentik.sources.saml.models import SAMLNameIDPolicy
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     NS_MAP,
     NS_SAML_METADATA,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
 )
+from authentik.crypto.models import CertificateKeyPair, format_cert
+from authentik.flows.models import Flow
+from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
+from authentik.sources.saml.models import SAMLNameIDPolicy
 
 LOGGER = get_logger()
 

@@ -10281,6 +10281,24 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s36b4b8f51a90009a">
   <source>Example WS-Federation attributes</source>
 </trans-unit>
+<trans-unit id="scde666c4a777dd66">
+  <source>Group Filter</source>
+</trans-unit>
+<trans-unit id="s5bbedc6d1d078553">
+  <source>Groups to be synced. If empty, all groups will be synced.</source>
+</trans-unit>
+<trans-unit id="s93aad5cd9b47f65f">
+  <source>Custom Attributes</source>
+</trans-unit>
+<trans-unit id="s254696510e45f3bb">
+  <source>No custom attributes defined.</source>
+</trans-unit>
+<trans-unit id="sb94beab52540d2b7">
+  <source>The CAPTCHA challenge failed to load.</source>
+</trans-unit>
+<trans-unit id="s217a96c47caaf73d">
+  <source>Could not find a suitable CAPTCHA provider.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
