@@ -188,6 +188,31 @@ class AuthentikStack(Stack):
 
         # Storage
 
+        data_fs = efs.FileSystem(
+            self,
+            "AuthentikDataEFS",
+            vpc=vpc,
+            removal_policy=RemovalPolicy.RETAIN,
+            security_group=ec2.SecurityGroup(
+                self,
+                "AuthentikDataEFSSecurityGroup",
+                vpc=vpc,
+                description="Security group for authentik data EFS",
+                allow_all_outbound=True,
+            ),
+            encrypted=True,
+            performance_mode=efs.PerformanceMode.GENERAL_PURPOSE,
+            throughput_mode=efs.ThroughputMode.BURSTING,
+        )
+        data_fs.connections.allow_default_port_from(authentik_security_group)
+
+        data_access_point = data_fs.add_access_point(
+            "AuthentikDataAccessPoint",
+            path="/data",
+            create_acl=efs.Acl(owner_uid="1000", owner_gid="1000", permissions="755"),
+            posix_user=efs.PosixUser(uid="1000", gid="1000"),
+        )
+
         media_fs = efs.FileSystem(
             self,
             "AuthentikMediaEFS",
@@ -236,6 +261,17 @@ class AuthentikStack(Stack):
             memory_limit_mib=server_memory.value_as_number,
         )
         server_task.add_volume(
+            name="data",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=data_fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=data_access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
+        )
+        server_task.add_volume(
             name="media",
             efs_volume_configuration=ecs.EfsVolumeConfiguration(
                 file_system_id=media_fs.file_system_id,
@@ -266,7 +302,10 @@ class AuthentikStack(Stack):
         )
         server_container.add_port_mappings(ecs.PortMapping(container_port=9000))
         server_container.add_mount_points(
-            ecs.MountPoint(container_path="/media", source_volume="media", read_only=False)
+            ecs.MountPoint(container_path="/data", source_volume="data", read_only=False)
+        )
+        server_container.add_mount_points(
+            ecs.MountPoint(container_path="/data/media", source_volume="media", read_only=False)
         )
         server_service = ecs.FargateService(
             self,
@@ -285,6 +324,17 @@ class AuthentikStack(Stack):
             "AuthentikWorkerTask",
             cpu=worker_cpu.value_as_number,
             memory_limit_mib=worker_memory.value_as_number,
+        )
+        worker_task.add_volume(
+            name="data",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=data_fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=data_access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
         )
         worker_task.add_volume(
             name="media",
@@ -316,7 +366,10 @@ class AuthentikStack(Stack):
             ),
         )
         worker_container.add_mount_points(
-            ecs.MountPoint(container_path="/media", source_volume="media", read_only=False)
+            ecs.MountPoint(container_path="/data", source_volume="data", read_only=False)
+        )
+        worker_container.add_mount_points(
+            ecs.MountPoint(container_path="/data/media", source_volume="media", read_only=False)
         )
         worker_service = ecs.FargateService(  # noqa: F841
             self,
