@@ -196,8 +196,10 @@ class TestCrypto(APITestCase):
         """Test certificate export (download)"""
         keypair = create_test_cert()
         user = create_test_user()
-        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
-        user.assign_perms_to_managed_role("view_certificatekeypair_certificate", keypair)
+        user.assign_perms_to_managed_role("authentik_crypto.view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role(
+            "authentik_crypto.view_certificatekeypair_certificate", keypair
+        )
         self.client.force_login(user)
         response = self.client.get(
             reverse(
@@ -220,8 +222,8 @@ class TestCrypto(APITestCase):
         """Test private_key export (download)"""
         keypair = create_test_cert()
         user = create_test_user()
-        user.assign_perms_to_managed_role("view_certificatekeypair", keypair)
-        user.assign_perms_to_managed_role("view_certificatekeypair_key", keypair)
+        user.assign_perms_to_managed_role("authentik_crypto.view_certificatekeypair", keypair)
+        user.assign_perms_to_managed_role("authentik_crypto.view_certificatekeypair_key", keypair)
         self.client.force_login(user)
         response = self.client.get(
             reverse(

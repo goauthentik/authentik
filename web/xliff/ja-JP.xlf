@@ -1601,18 +1601,6 @@
   <source>Selected options</source>
   <target>選択済みオプション</target>
 </trans-unit>
-<trans-unit id="sd429eba21dd59f44">
-  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
-  <target><x id="0" equiv-text="${availableCount}"/> 個のアイテムが追加対象です。</target>
-</trans-unit>
-<trans-unit id="s4abfe4e0d0665fd1">
-  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
-  <target><x id="0" equiv-text="${selectedTotal}"/> 個のアイテムが選択されています。</target>
-</trans-unit>
-<trans-unit id="s56b3d54118c34b2f">
-  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
-  <target><x id="0" equiv-text="${selectedCount}"/> 個のアイテムが削除対象です。</target>
-</trans-unit>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
   <target><x id="0" equiv-text="${this.availableLabel}"/> を検索...</target>
@@ -9069,7 +9057,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>アプリには以下の新しい権限が必要です:</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
-  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
+  <source>Stage name: <x id="0" equiv-text="${this.challenge?.name}"/></source>
   <target>ステージ名: <x id="0" equiv-text="${this.challenge.name}"/></target>
 </trans-unit>
 <trans-unit id="sbd19064fc3f405c1">
@@ -9274,7 +9262,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>デバイスが正常に認証されました。</target>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
-  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
   <target><x id="0" equiv-text="${this.challenge.applicationName}"/> からログアウトしました。
           概要に戻って別のアプリを起動するか、authentik アカウントからログアウトできます。</target>
 </trans-unit>
@@ -9283,11 +9271,11 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>概要に戻る</target>
 </trans-unit>
 <trans-unit id="sdb749e793de55478">
-  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
+  <source>Log out of <x id="0" equiv-text="${challenge.brandName}"/></source>
   <target><x id="0" equiv-text="${this.challenge.brandName}"/> からログアウト</target>
 </trans-unit>
 <trans-unit id="s521681ed1d5ff814">
-  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
+  <source>Log back into <x id="0" equiv-text="${challenge.applicationName}"/></source>
   <target><x id="0" equiv-text="${this.challenge.applicationName}"/> に再度ログイン</target>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
@@ -9988,9 +9976,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
   <note from="lit-localize">Label for progress bar shown when table data is loading</note>
 </trans-unit>
-<trans-unit id="s6ecf01b9b8304dba">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s</source>
-</trans-unit>
 <trans-unit id="sb6650552aaaf5da0">
   <source>Assigned Roles</source>
 </trans-unit>
@@ -10251,6 +10236,75 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>API keys can be obtained from the
                         <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
+</trans-unit>
+<trans-unit id="s87f858ca3c8e5579">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="s3934affe32f6a454">
+  <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
+</trans-unit>
+<trans-unit id="s8b68948382758d57">
+  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
+</trans-unit>
+<trans-unit id="s3a482e34c3713e41">
+  <source><x id="0" equiv-text="${selectedTotal}"/> item selected.</source>
+</trans-unit>
+<trans-unit id="s726a7342e18dc660">
+  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
+</trans-unit>
+<trans-unit id="s403a360d48a11d5f">
+  <source><x id="0" equiv-text="${selectedCount}"/> item marked to remove.</source>
+</trans-unit>
+<trans-unit id="s2e92b61847f32e72">
+  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
+</trans-unit>
+<trans-unit id="s7468188f0c6d8a22">
+  <source>Flow used when authorizing this this.instance?.</source>
+</trans-unit>
+<trans-unit id="sa5d4a82c5daae3de">
+  <source>Reply URL</source>
+</trans-unit>
+<trans-unit id="s7953f5ca7564d098">
+  <source>Flow used when logging out of this this.instance?.</source>
+</trans-unit>
+<trans-unit id="s2c5e9b1b859bdba6">
+  <source>Certificate used to sign outgoing Responses going to the Service this.instance?.</source>
+</trans-unit>
+<trans-unit id="s513e09d45feee5dd">
+  <source>Update WS-Federation Provider</source>
+</trans-unit>
+<trans-unit id="s02d3bec9a0ff82bd">
+  <source>WS-Federation Configuration</source>
+</trans-unit>
+<trans-unit id="s7eeab4c954cfed12">
+  <source>WS-Federation URL</source>
+</trans-unit>
+<trans-unit id="sb001338b056bf9d5">
+  <source>Realm (wtrealm)</source>
+</trans-unit>
+<trans-unit id="s7ac77ffc2d88bc94">
+  <source>WS-Federation Metadata</source>
+</trans-unit>
+<trans-unit id="s36b4b8f51a90009a">
+  <source>Example WS-Federation attributes</source>
+</trans-unit>
+<trans-unit id="scde666c4a777dd66">
+  <source>Group Filter</source>
+</trans-unit>
+<trans-unit id="s5bbedc6d1d078553">
+  <source>Groups to be synced. If empty, all groups will be synced.</source>
+</trans-unit>
+<trans-unit id="s93aad5cd9b47f65f">
+  <source>Custom Attributes</source>
+</trans-unit>
+<trans-unit id="s254696510e45f3bb">
+  <source>No custom attributes defined.</source>
+</trans-unit>
+<trans-unit id="sb94beab52540d2b7">
+  <source>The CAPTCHA challenge failed to load.</source>
+</trans-unit>
+<trans-unit id="s217a96c47caaf73d">
+  <source>Could not find a suitable CAPTCHA provider.</source>
 </trans-unit>
 </body>
 </file>

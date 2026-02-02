@@ -15,6 +15,8 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: production
     strategy:
       fail-fast: false
       matrix:
@@ -30,7 +32,8 @@ jobs:
         run: npm run ${{ matrix.command }}
   build-docs:
     runs-on: ubuntu-latest
-
+    env:
+      NODE_ENV: production
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
@@ -46,7 +49,8 @@ jobs:
         run: npm run build
   build-integrations:
     runs-on: ubuntu-latest
-
+    env:
+      NODE_ENV: production
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
@@ -85,7 +89,7 @@ jobs:
           image-name: ghcr.io/goauthentik/dev-docs
       - name: Login to Container Registry
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}

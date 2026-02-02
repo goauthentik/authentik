@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from authentik.providers.oauth2.constants import SCOPE_GITHUB_ORG_READ, SCOPE_GITHUB_USER_EMAIL
+from authentik.common.oauth.constants import SCOPE_GITHUB_ORG_READ, SCOPE_GITHUB_USER_EMAIL
 from authentik.providers.oauth2.models import RefreshToken
 from authentik.providers.oauth2.utils import protected_resource_view
 
@@ -78,7 +78,7 @@ class GitHubUserTeamsView(View):
         user = token.user
 
         orgs_response = []
-        for org in user.ak_groups.all():
+        for org in user.groups.all():
             _org = {
                 "id": org.num_pk,
                 "node_id": "",

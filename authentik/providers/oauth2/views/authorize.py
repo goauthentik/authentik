@@ -17,6 +17,19 @@ from django.utils import timezone, translation
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import (
+    PKCE_METHOD_PLAIN,
+    PKCE_METHOD_S256,
+    PROMPT_CONSENT,
+    PROMPT_LOGIN,
+    PROMPT_NONE,
+    QS_LOGIN_HINT,
+    SCOPE_GITHUB,
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    TOKEN_TYPE,
+    UI_LOCALES,
+)
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -33,19 +46,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import BufferedPolicyAccessView, RequestValidationError
-from authentik.providers.oauth2.constants import (
-    PKCE_METHOD_PLAIN,
-    PKCE_METHOD_S256,
-    PROMPT_CONSENT,
-    PROMPT_LOGIN,
-    PROMPT_NONE,
-    QS_LOGIN_HINT,
-    SCOPE_GITHUB,
-    SCOPE_OFFLINE_ACCESS,
-    SCOPE_OPENID,
-    TOKEN_TYPE,
-    UI_LOCALES,
-)
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
     ClientIdError,
