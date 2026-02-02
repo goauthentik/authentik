@@ -119,9 +119,12 @@ class CertificateBuilder:
     @property
     def private_key(self):
         """Return private key in PEM format"""
+        format = serialization.PrivateFormat.TraditionalOpenSSL
+        if isinstance(self.__private_key, (Ed25519PrivateKey | Ed448PrivateKey)):
+            format = serialization.PrivateFormat.PKCS8
         return self.__private_key.private_bytes(
             encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
+            format=format,
             encryption_algorithm=serialization.NoEncryption(),
         ).decode("utf-8")
 
