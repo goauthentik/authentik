@@ -1,4 +1,3 @@
-use serde_json::json;
 use std::{
     net::SocketAddr,
     process::Stdio,
@@ -10,7 +9,10 @@ use std::{
 };
 
 use argh::FromArgs;
-use authentik_axum::extract::{ClientIP, Host, Scheme};
+use authentik_axum::{
+    accept::tls::TlsAcceptor,
+    extract::{ClientIP, Host, Scheme},
+};
 use authentik_config::get_config;
 use axum::{
     Router,
@@ -23,7 +25,11 @@ use axum::{
     response::Response,
     routing::any,
 };
-use axum_server::{Handle, tls_rustls::RustlsConfig};
+use axum_server::{
+    Handle,
+    accept::DefaultAcceptor,
+    tls_rustls::{RustlsAcceptor, RustlsConfig},
+};
 use eyre::{Result, eyre};
 use http_body_util::BodyExt;
 use hyper_unix_socket::UnixSocketConnector;
@@ -43,6 +49,7 @@ use rustls::{
     server::{ClientHello, ResolvesServerCert},
     sign::CertifiedKey,
 };
+use serde_json::json;
 use tokio::{
     process::{Child, Command},
     signal::unix::SignalKind,
@@ -321,7 +328,8 @@ async fn start_server_plain(
     addr: SocketAddr,
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
-    axum_server::bind(addr)
+    axum_server::Server::bind(addr)
+        .acceptor(DefaultAcceptor::new())
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;
@@ -335,7 +343,8 @@ async fn start_server_tls(
     config: RustlsConfig,
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
-    axum_server::bind_rustls(addr, config)
+    axum_server::Server::bind(addr)
+        .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config)))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;
