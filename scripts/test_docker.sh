@@ -20,9 +20,9 @@ if [[ -v BUILD ]]; then
 
     # Ensure buildx is installed
     docker buildx install
-    # For release builds we have an empty client here as we use the NPM package
-    mkdir -p ./gen-ts-api
-    touch .env
+    make gen-client-ts
+    make gen-client-go
+    touch lifecycle/container/.env
 
     docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" .
 fi
