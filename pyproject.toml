@@ -52,7 +52,7 @@ dependencies = [
   "psycopg[c,pool]==3.3.2",
   "pydantic-scim==0.0.8",
   "pydantic==2.12.5",
-  "pyjwt==2.10.1",
+  "pyjwt==2.11.0",
   "pyrad==2.5.2",
   "python-kadmin-rs==0.7.0",
   "pyyaml==6.0.3",
