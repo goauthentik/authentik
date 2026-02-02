@@ -101,6 +101,12 @@ On the flipside, to grant permissions on a user object to a role, review ["Manag
 Users also inherit roles from the groups they belong to. The **Roles** tab has two sub-tabs: **Assigned Roles** shows roles directly assigned to the user, while **All Roles** shows all roles including those inherited from groups. Inherited roles are marked with an "Inherited" label.
 :::
 
+## Bind a user to an application
+These bindings control which users can access an application, and whether or not the application is visible in the user's **My applications** page. If no bindings for an application are defined, this means that all users and groups can access the application.
+
+For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
+
+
 ## User credentials recovery
 
 If a user has lost their credentials and needs to recover their account, there are two available options:
