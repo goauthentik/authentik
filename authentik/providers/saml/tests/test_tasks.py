@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 from django.test import TestCase
 from requests.exceptions import ConnectionError, HTTPError
 
+from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.tasks import (
@@ -12,7 +13,6 @@ from authentik.providers.saml.tasks import (
     send_saml_logout_request,
     send_saml_logout_response,
 )
-from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
 
 
 class TestSendSamlLogoutResponse(TestCase):
