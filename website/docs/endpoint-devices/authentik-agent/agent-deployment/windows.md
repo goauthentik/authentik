@@ -94,6 +94,14 @@ ak config setup --authentik-url https://authentik.company
 
 2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
+## Check version of installed components
+
+You can check the version of all installed authentik components by running the following command:
+
+```bash
+ak version
+```
+
 ## Logging
 
 All components of the authentik Agent output logs to the "authentik" log in the Windows Event Viewer.

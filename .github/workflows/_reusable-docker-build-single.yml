@@ -67,19 +67,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty clients
-        if: ${{ inputs.release }}
-        run: |
-          mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
-      - name: Setup node
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
-      - name: generate ts client
-        run: make gen-client-ts
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
+        with:
+          go-version-file: "go.mod"
+      - name: Generate API Clients
+        run: |
+          make gen-client-ts
+          make gen-client-go
       - name: Build Docker Image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
         id: push
