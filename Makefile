@@ -49,7 +49,13 @@ ifeq ($(UNAME_S),Darwin)
 	endif
 endif
 
-NPM_VERSION = $(shell $(UV) run python -m scripts.generate_semver)
+NPM_VERSION :=
+UV_EXISTS := $(shell command -v uv 2> /dev/null)
+ifdef UV_EXISTS
+	NPM_VERSION := $(shell $(UV) run python -m scripts.generate_semver)
+else
+	NPM_VERSION = $(shell python -m scripts.generate_semver)
+endif
 
 all: lint-fix lint gen web test  ## Lint, build, and test everything
 
