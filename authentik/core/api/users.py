@@ -967,6 +967,11 @@ class UserViewSet(
         if not flow:
             return None
 
+        # If the actor is in the target list, treat this as self-service too so
+        # the stage can use the safe self-service completion path after sessions
+        # are revoked.
+        self_service = any(user.pk == request.user.pk for user in users)
+
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         try:
@@ -974,7 +979,7 @@ class UserViewSet(
                 request._request,
                 {
                     PLAN_CONTEXT_LOCKDOWN_TARGETS: users,
-                    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: False,
+                    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
                 },
             )
         except FlowNonApplicableException:
