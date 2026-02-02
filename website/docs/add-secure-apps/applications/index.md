@@ -32,11 +32,7 @@ The following options can be configured:
 
     Only applications whose launch URL starts with `http://` or `https://` or are relative URLs are shown on the users' **My applications** page. This can also be used to hide applications that shouldn't be visible on the **My applications** page but are still accessible by users, by setting the _Launch URL_ to `blank://blank`.
 
-- _Icon (URL)_: Optionally configure an Icon for the application
-
-    If the authentik server does not have a volume mounted under `/media`, you'll get a text input. This accepts absolute URLs. If you've mounted single files into the container, you can reference them using `https://authentik.company/media/my-file.png`.
-
-    If there is a mount under `/media` or if [S3 storage](../../sys-mgmt/ops/storage-s3.md) is configured, you'll instead see a field to upload a file.
+- _Icon (URL)_: Optionally configure an Icon for the application. You can select from files uploaded to the [Files](../../customize/files.md) library or enter an absolute URL.
 
 - _Publisher_: Text shown in the application card's expandable kebab menu (⋮)
 - _Description_: Text shown in the application card's expandable kebab menu (⋮)
