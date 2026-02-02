@@ -25,7 +25,7 @@ To add an application to authentik and have it display on users' **My applicatio
 
 ## Use bindings to control access
 
-By default, all users can access applications when no [bindings](../) are defined on the application.
+By default, all users can access applications when no bindings are defined on the application.
 
 You can bind policies, groups, and users to grant access to an application. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
 
@@ -37,7 +37,7 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 The most common ways to control access to an application by using bindings are:
 
 1. [create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) in which a policy is used to determine whether or not a user can access an application.
-2. bind a user or group to the application.
+2. [bind a user or group to the application](#bind-a-user-or-group-to-an-application).
 
 ### Policy-driven authorization
 
@@ -45,7 +45,15 @@ To use a [policy](../../customize/policies/index.md) to control which users or g
 
 ### Bind a user or group to an application
 
-To bind a user or group to an application, click on an application in the applications list, click the **Policy/Group/User Bindings** tab, select **Group** or **User** from the **Policy/Group/User Bindings** options, and then select the group or user.
+You can bind a user or group to an application either when you create a new application and provider or later, after the application is created.
+
+#### When creating an application and provider
+
+Follow the instructions for [creating a new application and provider](#create-an-application-and-provider-pair). On the **Policy/Group/User Bindings** tab at the top of the page, you can select **Group** or *User** to bind a specific group or userto the application.
+
+#### Add binding to an existing application
+
+To bind a user or group to an existing application, click on an application in the applications list, select **Group** or **User** from the **Policy/Group/User Bindings** options, and then select the group or user that you want to bind to the application.
 
 ## Application Entitlements
 
