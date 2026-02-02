@@ -771,20 +771,18 @@ class UserViewSet(
         self, request: Request, pk: int, body: UserRecoveryEmailSerializer
     ) -> Response:
         """Send an email with a temporary link that a user can use to recover their account"""
+        email_error_message = _("User does not have an email address set.")
+        stage_error_message = _("Email stage not found.")
         user: User = self.get_object()
         if not user.email:
             LOGGER.debug("User doesn't have an email address")
-            raise ValidationError(
-                {"non_field_errors": _("User does not have an email address set.")}
-            )
+            raise ValidationError({"non_field_errors": email_error_message})
         if not (stage := EmailStage.objects.filter(pk=body.validated_data["email_stage"]).first()):
             LOGGER.debug("Email stage does not exist")
-            raise ValidationError({"non_field_errors": _("Email stage does not exist.")})
+            raise ValidationError({"non_field_errors": stage_error_message})
         if not request.user.has_perm("authentik_stages_email.view_emailstage", stage):
             LOGGER.debug("User has no view access to email stage")
-            raise ValidationError(
-                {"non_field_errors": _("User has no view access to email stage.")}
-            )
+            raise ValidationError({"non_field_errors": stage_error_message})
         link, token = self._create_recovery_link(
             token_duration=body.validated_data.get("token_duration"), for_email=True
         )
