@@ -9,6 +9,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
+import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -59,7 +60,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
@@ -80,7 +80,6 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
     protected user: User | null = null;
 
     static styles = [
-        PFBase,
         PFPage,
         PFButton,
         PFDisplay,
@@ -464,6 +463,11 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                                 >
                                 </ak-object-changelog>
                             </div>
+                        </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <ak-object-attributes-card
+                                .objectAttributes=${this.user.attributes}
+                            ></ak-object-attributes-card>
                         </div>
                     </div>
                 </div>

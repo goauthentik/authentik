@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from jwt import PyJWKSet, PyJWTError, decode, get_unverified_header
 from requests.auth import AuthBase, HTTPBasicAuth
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
@@ -35,6 +36,22 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
         if self.source.authorization_code_auth_method == AuthorizationCodeAuthMethod.BASIC_AUTH:
             return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
         return None
+
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
+        profile = super().get_profile_info(token)
+        if profile:
+            return profile
+        if "id_token" not in token:
+            self.logger.warning("no id_token given")
+            return None
+        id_token = token["id_token"]
+        try:
+            raw = get_unverified_header(id_token)
+            jwk = PyJWKSet.from_dict(self.source.oidc_jwks)
+            key = [key for key in jwk.keys if key.key_id == raw["kid"]][0]
+            return decode(id_token, key=key, algorithms=raw["alg"])
+        except PyJWTError, IndexError, ValueError:
+            return None
 
 
 class OpenIDConnectOAuth2Callback(OAuthCallback):

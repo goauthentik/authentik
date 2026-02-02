@@ -54,7 +54,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

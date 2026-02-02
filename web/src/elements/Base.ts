@@ -34,17 +34,21 @@ export class AKElement extends LitElement implements AKElementProps {
 
     public static styles?: Array<CSSResult | CSSModule>;
 
-    protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
-        if (!styles) return [$PFBase, $AKBase];
-
-        if (!Array.isArray(styles)) return [createCSSResult(styles), $PFBase, $AKBase];
-
-        return [
+    protected static override finalizeStyles(styles: CSSResultGroup = []): CSSResultOrNative[] {
+        const elementStyles = [
             $PFBase,
-            // ---
-            ...(styles.flat() as CSSResultOrNative[]).map(createCSSResult),
+            // Route around TSC`s known-to-fail typechecking of `.flat(Infinity)`. Removes types.
+            ...([styles] as Array<unknown>).flat(Infinity),
             $AKBase,
-        ];
+            // Restore types. Safe: we control AKBase and PFBase in this file, and `styles` are
+            // typed on function signature.
+        ] as CSSResultOrNative[];
+
+        // Remove duplicates in reverse order to preserve last-insert-wins semantics of CSS. See:
+        // https://github.com/lit/lit/blob/main/packages/reactive-element/src/reactive-element.ts#L945
+        const elementSet = new Set(elementStyles.reverse());
+        // Reverse again because the return type is an array, and process as a CSSResult
+        return Array.from(elementSet).reverse().map(createCSSResult);
     }
 
     //#endregion
@@ -55,11 +59,6 @@ export class AKElement extends LitElement implements AKElementProps {
         super();
 
         const { brand } = globalAK();
-
-        const preferredColorScheme = resolveUITheme(
-            document.documentElement.dataset.theme || globalAK().brand.uiTheme,
-        );
-        this.activeTheme = preferredColorScheme;
 
         this.#customCSSStyleSheet = brand?.brandingCustomCss
             ? createStyleSheetUnsafe(brand.brandingCustomCss)
@@ -84,6 +83,24 @@ export class AKElement extends LitElement implements AKElementProps {
                     `${unregisteredElements.length} unregistered custom elements found in the DOM. See console for details.`,
                 );
             };
+        }
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        if (this.renderRoot !== this) {
+            property({
+                attribute: "theme",
+                type: String,
+                reflect: true,
+            })(this, "activeTheme");
+
+            const hint =
+                this.ownerDocument.documentElement.dataset.theme || globalAK().brand.uiTheme;
+            const preferredColorScheme = resolveUITheme(hint);
+
+            this.activeTheme = preferredColorScheme;
         }
     }
 
@@ -113,15 +130,14 @@ export class AKElement extends LitElement implements AKElementProps {
      *
      * @remarks
      *
+     * This property is lazy-initialized when the element is connected.
+     *
      * Unlike the browser's current color scheme, this is a value that can be
      * resolved to a specific theme, i.e. dark or light.
+     *
+     * @attr ("light" | "dark") activeTheme
      */
-    @property({
-        attribute: "theme",
-        type: String,
-        reflect: true,
-    })
-    public activeTheme: ResolvedUITheme;
+    public activeTheme!: ResolvedUITheme;
 
     //#endregion
 
@@ -129,6 +145,13 @@ export class AKElement extends LitElement implements AKElementProps {
 
     /**
      * A custom CSS style sheet to apply to the element.
+     *
+     * @deprecated Use CSS parts and custom properties instead.
+     *
+     * @remarks
+     * The use of injected style sheets may result in brittle styles that are hard to
+     * maintain across authentik versions.
+     *
      */
     readonly #customCSSStyleSheet: CSSStyleSheet | null;
 
@@ -140,6 +163,13 @@ export class AKElement extends LitElement implements AKElementProps {
      * The style root to which the theme is applied.
      */
     #styleRoot?: StyleRoot;
+
+    /**
+     * The style root to which the theme is applied.
+     */
+    protected get styleRoot(): StyleRoot | undefined {
+        return this.#styleRoot;
+    }
 
     protected set styleRoot(nextStyleRoot: StyleRoot | undefined) {
         this.#themeAbortController?.abort();
@@ -161,10 +191,10 @@ export class AKElement extends LitElement implements AKElementProps {
                 signal: this.#themeAbortController.signal,
             },
         );
-    }
 
-    protected get styleRoot(): StyleRoot | undefined {
-        return this.#styleRoot;
+        if (this.#customCSSStyleSheet) {
+            applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
+        }
     }
 
     protected hasSlotted(name: string | null) {

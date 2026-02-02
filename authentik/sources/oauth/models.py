@@ -85,7 +85,7 @@ class OAuthSource(NonCreatableType, Source):
     )
 
     @property
-    def source_type(self) -> type["SourceType"]:
+    def source_type(self) -> type[SourceType]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 

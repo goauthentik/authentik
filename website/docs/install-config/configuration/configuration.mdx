@@ -115,7 +115,7 @@ These settings control connection persistence and behavior, which is particularl
 
 ### Advanced Settings
 
-- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA` :ak-version[2024.12]
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`
 
     The name of the database schema for authentik to use. Defaults to `public`.
 
@@ -326,6 +326,8 @@ How long generated URLs for file access are valid for.
 Defaults to `minutes=15`.
 
 ### S3 storage backend settings
+
+For more information on S3 storage, see [S3 storage setup](../../sys-mgmt/ops/storage-s3.md).
 
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
@@ -599,7 +601,7 @@ Configure how long reputation scores should be saved for in seconds.
 
 Defaults to `86400`.
 
-### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
+### `AUTHENTIK_SESSION_STORAGE`
 
 :::info Deprecated
 This setting is removed as of version 2025.4. Sessions are now exclusively stored in the database. See our [2025.4 release notes](../../releases/2025.4#sessions-are-now-stored-in-the-database) for more information.
@@ -627,15 +629,11 @@ Defaults to 4.
 
 ### `AUTHENTIK_WEB__PATH`
 
-:::info
-Requires authentik 2024.8
-:::
-
 Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
 
-## System settings:ak-version[2024.2]
+## System settings
 
 Additional settings are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
