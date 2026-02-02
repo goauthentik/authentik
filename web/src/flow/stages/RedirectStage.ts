@@ -61,7 +61,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     isForeignURL() {
         try {
-            const destination = new URL(this.challenge.to, window.origin);
+            const destination = new URL(this.challenge!.to, window.origin);
             return destination.origin === window.origin;
         } catch {
             return true;
@@ -77,7 +77,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (this.isForeignURL()) {
             await multiTabOrchestrateResume();
         }
-        window.location.assign(this.challenge.to);
+        window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }
 
