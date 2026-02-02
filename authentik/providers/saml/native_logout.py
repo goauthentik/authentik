@@ -1,11 +1,12 @@
 """SAML Logout stages for automatic injection"""
 
 from django.http import HttpResponse
-from rest_framework.fields import BooleanField, CharField
+from rest_framework.fields import BooleanField, CharField, ChoiceField
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse, HttpChallengeResponse
 from authentik.flows.stage import ChallengeStageView
+from authentik.providers.saml.models import SAMLBindings
 from authentik.providers.saml.views.flows import PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS
 
 LOGGER = get_logger()
@@ -19,14 +20,16 @@ class NativeLogoutChallenge(Challenge):
     """Challenge for native browser logout"""
 
     component = CharField(default="ak-provider-saml-native-logout")
+    provider_name = CharField(required=False)
+    is_complete = BooleanField(required=False, default=False)
+
     post_url = CharField(required=False)
+    redirect_url = CharField(required=False)
+
+    saml_binding = ChoiceField(choices=SAMLBindings.choices, required=False)
     saml_request = CharField(required=False)
     saml_response = CharField(required=False)
-    relay_state = CharField(required=False)
-    provider_name = CharField(required=False)
-    binding = CharField(required=False)
-    redirect_url = CharField(required=False)
-    is_complete = BooleanField(required=False, default=False)
+    saml_relay_state = CharField(required=False)
 
 
 class NativeLogoutChallengeResponse(ChallengeResponse):

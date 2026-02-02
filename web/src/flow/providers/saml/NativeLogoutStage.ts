@@ -46,12 +46,12 @@ export class NativeLogoutStage extends BaseStage<
         }
 
         // If POST binding, auto-submit the form
-        if (this.challenge.binding === SAMLBindingsEnum.Post && this.#formRef.value) {
+        if (this.challenge.samlBinding === SAMLBindingsEnum.Post && this.#formRef.value) {
             this.#formRef.value.submit();
         }
 
         // If redirect binding, perform the redirect
-        if (this.challenge.binding === SAMLBindingsEnum.Redirect) {
+        if (this.challenge.samlBinding === SAMLBindingsEnum.Redirect) {
             if (!this.challenge.redirectUrl) {
                 throw new TypeError(`Binding challenge does not a have a redirect URL`);
             }
@@ -78,18 +78,18 @@ export class NativeLogoutStage extends BaseStage<
         }
 
         // For redirect binding, just show loading and firstUpdated will redirect for us
-        if (this.challenge.binding === SAMLBindingsEnum.Redirect) {
+        if (this.challenge.samlBinding === SAMLBindingsEnum.Redirect) {
             return html`<ak-flow-card .challenge=${this.challenge} loading>
                 <span slot="title">${msg(str`Redirecting to SAML provider: ${providerName}`)}</span>
             </ak-flow-card>`;
         }
 
-        if (this.challenge.binding !== SAMLBindingsEnum.Post) {
-            throw new TypeError(`Unknown challenge binding type ${this.challenge.binding}`);
+        if (this.challenge.samlBinding !== SAMLBindingsEnum.Post) {
+            throw new TypeError(`Unknown challenge binding type ${this.challenge.samlBinding}`);
         }
 
         // For POST binding, render auto-submit form
-        if (this.challenge.binding === SAMLBindingsEnum.Post) {
+        if (this.challenge.samlBinding === SAMLBindingsEnum.Post) {
             const title = this.challenge.samlResponse
                 ? msg(str`Posting logout response to SAML provider: ${providerName}`)
                 : msg(str`Posting logout request to SAML provider: ${providerName}`);
@@ -115,11 +115,11 @@ export class NativeLogoutStage extends BaseStage<
                               value="${this.challenge.samlResponse}"
                           />`
                         : nothing}
-                    ${this.challenge.relayState
+                    ${this.challenge.samlRelayState
                         ? html`<input
                               type="hidden"
                               name="RelayState"
-                              value="${this.challenge.relayState}"
+                              value="${this.challenge.samlRelayState}"
                           />`
                         : nothing}
                 </form>

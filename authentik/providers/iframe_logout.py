@@ -3,8 +3,8 @@
 from django.http import HttpResponse
 from rest_framework.fields import CharField, ListField
 
-from authentik.core.api.utils import PassiveSerializer
 from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
+from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.stage import ChallengeStageView
 from authentik.providers.saml.views.flows import PLAN_CONTEXT_SAML_LOGOUT_IFRAME_SESSIONS
@@ -14,18 +14,23 @@ class LogoutURL(PassiveSerializer):
     """Data for a single logout URL"""
 
     url = CharField()
-    saml_request = CharField(required=False, allow_null=True)
-    saml_response = CharField(required=False, allow_null=True)
-    relay_state = CharField(required=False, allow_null=True)
     provider_name = CharField(required=False, allow_null=True)
     binding = CharField(required=False, allow_null=True)
+
+
+class SAMLLogoutURL(LogoutURL):
+    """SAML-specific logout URL data"""
+
+    saml_request = CharField(required=False, allow_null=True)
+    saml_response = CharField(required=False, allow_null=True)
+    saml_relay_state = CharField(required=False, allow_null=True)
 
 
 class IframeLogoutChallenge(Challenge):
     """Challenge for iframe logout"""
 
     component = CharField(default="ak-provider-iframe-logout")
-    logout_urls = ListField(child=LogoutURL(), default=list)
+    logout_urls = ListField(child=SAMLLogoutURL(), default=list)
 
 
 class IframeLogoutChallengeResponse(ChallengeResponse):

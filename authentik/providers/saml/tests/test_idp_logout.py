@@ -69,7 +69,7 @@ class TestNativeLogoutStageView(TestCase):
             {
                 "redirect_url": "https://sp1.example.com/sls?SAMLRequest=encoded",
                 "provider_name": "test-provider-1",
-                "binding": "redirect",
+                "saml_binding": "redirect",
             }
         ]
         stage_view = NativeLogoutStageView(
@@ -85,7 +85,7 @@ class TestNativeLogoutStageView(TestCase):
 
         # Should return a NativeLogoutChallenge
         self.assertIsInstance(challenge, NativeLogoutChallenge)
-        self.assertEqual(challenge.initial_data["binding"], "redirect")
+        self.assertEqual(challenge.initial_data["saml_binding"], "redirect")
         self.assertEqual(challenge.initial_data["provider_name"], "test-provider-1")
         self.assertIn("redirect_url", challenge.initial_data)
 
@@ -102,9 +102,9 @@ class TestNativeLogoutStageView(TestCase):
             {
                 "post_url": "https://sp2.example.com/sls",
                 "saml_request": "encoded_saml_request",
-                "relay_state": "https://idp.example.com/flow/test-flow",
+                "saml_relay_state": "https://idp.example.com/flow/test-flow",
                 "provider_name": "test-provider-2",
-                "binding": "post",
+                "saml_binding": "post",
             }
         ]
         stage_view = NativeLogoutStageView(
@@ -120,11 +120,11 @@ class TestNativeLogoutStageView(TestCase):
 
         # Should return a NativeLogoutChallenge
         self.assertIsInstance(challenge, NativeLogoutChallenge)
-        self.assertEqual(challenge.initial_data["binding"], "post")
+        self.assertEqual(challenge.initial_data["saml_binding"], "post")
         self.assertEqual(challenge.initial_data["provider_name"], "test-provider-2")
         self.assertEqual(challenge.initial_data["post_url"], "https://sp2.example.com/sls")
         self.assertIn("saml_request", challenge.initial_data)
-        self.assertIn("relay_state", challenge.initial_data)
+        self.assertIn("saml_relay_state", challenge.initial_data)
 
     def test_get_challenge_all_complete(self):
         """Test get_challenge when all providers are done"""

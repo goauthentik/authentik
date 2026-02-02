@@ -12,7 +12,7 @@ from authentik.providers.saml.tasks import (
     send_saml_logout_request,
     send_saml_logout_response,
 )
-from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
+from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
 
 
 class TestSendSamlLogoutResponse(TestCase):

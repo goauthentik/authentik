@@ -102,16 +102,16 @@ class SPInitiatedSLOView(PolicyAccessView):
                     logout_data = {
                         "post_url": self.provider.sls_url,
                         "saml_response": logout_response,
-                        "relay_state": relay_state,
+                        "saml_relay_state": relay_state,
                         "provider_name": self.provider.name,
-                        "binding": SAMLBindings.POST,
+                        "saml_binding": SAMLBindings.POST,
                     }
                 else:
                     logout_url = processor.get_redirect_url()
                     logout_data = {
                         "redirect_url": logout_url,
                         "provider_name": self.provider.name,
-                        "binding": SAMLBindings.REDIRECT,
+                        "saml_binding": SAMLBindings.REDIRECT,
                     }
 
                 plan.context[PLAN_CONTEXT_SAML_LOGOUT_NATIVE_SESSIONS] = [logout_data]
@@ -158,7 +158,7 @@ class SPInitiatedSLOView(PolicyAccessView):
                     logout_data = {
                         "url": self.provider.sls_url,
                         "saml_response": nice64(logout_response),
-                        "relay_state": relay_state,
+                        "saml_relay_state": relay_state,
                         "provider_name": self.provider.name,
                         "binding": SAMLBindings.POST,
                     }

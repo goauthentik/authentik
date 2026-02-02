@@ -19570,6 +19570,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sign_logout_response
+        schema:
+          type: boolean
+      - in: query
         name: sign_response
         schema:
           type: boolean
@@ -40382,7 +40386,7 @@ components:
         logout_urls:
           type: array
           items:
-            $ref: '#/components/schemas/LogoutURL'
+            $ref: '#/components/schemas/SAMLLogoutURL'
     IframeLogoutChallengeResponseRequest:
       type: object
       description: Response for iframe logout
@@ -41873,29 +41877,6 @@ components:
       required:
       - challenge
       - name
-    LogoutURL:
-      type: object
-      description: Data for a single logout URL
-      properties:
-        url:
-          type: string
-        saml_request:
-          type: string
-          nullable: true
-        saml_response:
-          type: string
-          nullable: true
-        relay_state:
-          type: string
-          nullable: true
-        provider_name:
-          type: string
-          nullable: true
-        binding:
-          type: string
-          nullable: true
-      required:
-      - url
     MDMConfigRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -42456,23 +42437,23 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        post_url:
-          type: string
-        saml_request:
-          type: string
-        saml_response:
-          type: string
-        relay_state:
-          type: string
         provider_name:
-          type: string
-        binding:
-          type: string
-        redirect_url:
           type: string
         is_complete:
           type: boolean
           default: false
+        post_url:
+          type: string
+        redirect_url:
+          type: string
+        saml_binding:
+          $ref: '#/components/schemas/SAMLBindingsEnum'
+        saml_request:
+          type: string
+        saml_response:
+          type: string
+        saml_relay_state:
+          type: string
     NativeLogoutChallengeResponseRequest:
       type: object
       description: Response for native browser logout
@@ -52500,6 +52481,29 @@ components:
       - frontchannel_native
       - backchannel
       type: string
+    SAMLLogoutURL:
+      type: object
+      description: SAML-specific logout URL data
+      properties:
+        url:
+          type: string
+        provider_name:
+          type: string
+          nullable: true
+        binding:
+          type: string
+          nullable: true
+        saml_request:
+          type: string
+          nullable: true
+        saml_response:
+          type: string
+          nullable: true
+        saml_relay_state:
+          type: string
+          nullable: true
+      required:
+      - url
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
