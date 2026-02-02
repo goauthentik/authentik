@@ -585,11 +585,10 @@ class UserViewSet(
         _plan = FlowToken.pickle(plan)
         if for_email:
             _plan = pickle_flow_token_for_email(plan)
+        expires = default_token_duration()
         if token_duration:
             timedelta_string_validator(token_duration)
             expires = now() + timedelta_from_string(token_duration)
-        else:
-            expires = default_token_duration()
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
