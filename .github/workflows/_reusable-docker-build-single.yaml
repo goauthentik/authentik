@@ -67,14 +67,20 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty clients
-        if: ${{ inputs.release }}
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: web/package.json
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - name: Generate API Clients
         run: |
-          mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
-      - name: generate ts client
-        if: ${{ !inputs.release }}
-        run: make gen-client-ts
+          make gen-client-ts
+          make gen-client-go
       - name: Build Docker Image
         uses: docker/build-push-action@v6
         id: push
