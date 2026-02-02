@@ -74,4 +74,4 @@ To bind a user or a group to a stage binding for a specific flow, follow these s
 8. In the drop-down list, select the group or user.
 9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the box.
 
-Learn more about the different types of [bindings](../../bindings-overview/index.md) in authentik and [working with them](../../bindings-overview/work_with_bindings.md).
+Learn more about the different types of [bindings](../../bindings-overview/index.md) in authentik and [working with them](../../bindings-overview/work-with-bindings.md).

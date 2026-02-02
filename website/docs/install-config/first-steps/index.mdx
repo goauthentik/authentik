@@ -63,7 +63,7 @@ Now that you have your authentik instance installed and configured with the requ
 
 :::tip Security Best Practice
 
-In a production environment, best practice is to first [create a group](../../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../../users-sources/user/user_basic_operations.md#create-a-user), and then add the application. Then you can configure the application to have a [binding](../../add-secure-apps/bindings-overview/work_with_bindings.md#) to a specific group or user. The binding controls the access to the application (whether or not it is displayed on a user's My Applications page).
+In a production environment, best practice is to first [create a group](../../users-sources/groups/manage_groups.mdx#create-a-group), then [create the user(s)](../../users-sources/user/user_basic_operations.md#create-a-user), and then add the application. Then you can configure the application to have a [binding](../../add-secure-apps/bindings-overview/work-with-bindings.md#) to a specific group or user. The binding controls the access to the application (whether or not it is displayed on a user's My Applications page).
 
 :::
 
@@ -140,7 +140,7 @@ Every application that you add to authentik requires a provider, which is used t
           : authentik generates a key that you can use, called the `authentik Self-signed
           Certificate`, if you do not have a specific signing key for an application.
 
-- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work_with_bindings.md) to manage the display and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: for this tutorial, skip this step because you do not yet have a user. Later, after you create your first user, you can [create a binding](../../add-secure-apps/bindings-overview/work-with-bindings.md) to manage the display and access to applications on a user's **My applications** page.
     - <font color="green">
           <b>TIP</b>
       </font>

@@ -102,10 +102,10 @@ Users also inherit roles from the groups they belong to. The **Roles** tab has t
 :::
 
 ## Bind a user to an application
+
 These bindings control which users can access an application, and whether or not the application is visible in the user's **My applications** page. If no bindings for an application are defined, this means that all users and groups can access the application.
 
 For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
-
 
 ## User credentials recovery
 

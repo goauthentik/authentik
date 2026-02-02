@@ -5,7 +5,7 @@ title: authentik bindings
 A binding is, simply put, a connection between two components. The use of a binding adds additional functionality to one the existing components; for example, a policy binding can cause a new stage to be presented within a flow to a specific user or group.
 
 :::info
-For information about creating and managing bindings, refer to [Work with bindings](./work_with_bindings.md).
+For information about creating and managing bindings, refer to [Work with bindings](./work-with-bindings.md).
 :::
 
 Bindings are an important part of authentik; the majority of configuration options are defined in bindings.
