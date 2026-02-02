@@ -556,7 +556,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender=sender,
                 user=self,
                 password=raw_password,
-                password_from_hash=False,
                 request=request,
             )
         self.password_change_date = now()
@@ -580,7 +579,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender=sender,
                 user=self,
                 password=None,
-                password_from_hash=True,
                 request=request,
             )
         self.password = password_hash

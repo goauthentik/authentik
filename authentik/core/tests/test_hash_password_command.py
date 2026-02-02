@@ -336,7 +336,6 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertEqual(len(captured), 1)
         self.assertIsNone(captured[0]["password"])
-        self.assertTrue(captured[0]["password_from_hash"])
 
     def test_set_password_signal_marks_non_hash_password(self):
         """Test password_changed signal payload for a regular password set."""
@@ -356,4 +355,3 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertEqual(len(captured), 1)
         self.assertEqual(captured[0]["password"], "new-password")
-        self.assertFalse(captured[0]["password_from_hash"])
