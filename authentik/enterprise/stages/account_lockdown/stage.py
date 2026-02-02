@@ -3,6 +3,7 @@
 from django.db import DatabaseError
 from django.db.transaction import atomic
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.utils.html import escape
 from django.utils.translation import gettext as _
 
@@ -150,7 +151,10 @@ class AccountLockdownStageView(StageView):
             # middleware from trying to save a deleted session
             if hasattr(request, "session"):
                 request.session.flush()
-            redirect_to = f"/if/flow/{completion_flow.slug}/"
+            redirect_to = reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": completion_flow.slug},
+            )
             return HttpResponseRedirect(redirect_to)
         return self._self_service_message_response(request, stage, success=True)
 

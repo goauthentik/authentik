@@ -27,6 +27,17 @@ entries:
     order: 50
     initial_value: |
       is_self_service = prompt_context.get("lockdown_self_service", False)
+
+      def esc(value):
+          text = str(value or "")
+          return (
+              text.replace("&", "&amp;")
+              .replace("<", "&lt;")
+              .replace(">", "&gt;")
+              .replace('"', "&quot;")
+              .replace("'", "&#x27;")
+          )
+
       if is_self_service:
           return """<p><strong>This will immediately:</strong></p>
       <ul>
@@ -46,7 +57,10 @@ entries:
                   targets = [target]
 
           if targets:
-              user_list = "<ul>" + "".join(f"<li><code>{u.username}</code> ({u.email or u.name or 'No email'})</li>" for u in targets) + "</ul>"
+              user_list = "<ul>" + "".join(
+                  f"<li><code>{esc(u.username)}</code> ({esc(u.email or u.name or 'No email')})</li>"
+                  for u in targets
+              ) + "</ul>"
           else:
               user_list = "<p>the selected user(s)</p>"
 
@@ -137,6 +151,16 @@ entries:
     initial_value: |
       results = prompt_context.get("lockdown_results", [])
 
+      def esc(value):
+          text = str(value or "")
+          return (
+              text.replace("&", "&amp;")
+              .replace("<", "&lt;")
+              .replace(">", "&gt;")
+              .replace('"', "&quot;")
+              .replace("'", "&#x27;")
+          )
+
       if not results:
           return "<p>Lockdown completed.</p>"
 
@@ -147,22 +171,22 @@ entries:
           # Single user
           r = results[0]
           user = r.get("user")
-          username = user.username if user else "Unknown"
+          username = esc(user.username if user else "Unknown")
           if r.get("success"):
               return f"<p>Successfully locked down <code>{username}</code>.</p>"
           else:
-              error = r.get("error", "Unknown error")
+              error = esc(r.get("error", "Unknown error"))
               return f"<p>Failed to lock down <code>{username}</code>: {error}</p>"
 
       # Multiple users - show per-user results
       lines = []
       for r in results:
           user = r.get("user")
-          username = user.username if user else "Unknown"
+          username = esc(user.username if user else "Unknown")
           if r.get("success"):
               lines.append(f"<li><code>{username}</code> - Locked</li>")
           else:
-              error = r.get("error", "Unknown error")
+              error = esc(r.get("error", "Unknown error"))
               lines.append(f"<li><code>{username}</code> - Failed: {error}</li>")
 
       result_list = "<ul>" + "".join(lines) + "</ul>"

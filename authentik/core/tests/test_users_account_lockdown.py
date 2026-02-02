@@ -2,6 +2,7 @@
 
 from json import loads
 from unittest.mock import MagicMock, patch
+from urllib.parse import parse_qs, urlparse
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -12,7 +13,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.flows.models import FlowDesignation
+from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.lib.generators import generate_id
 
 # Patch for enterprise license check
@@ -231,3 +232,22 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_account_lockdown_bulk_including_self_sets_self_service_context(self):
+        """Test bulk lockdown including current user enables self-service context"""
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.admin.pk, self.user1.pk],
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        token_key = parse_qs(urlparse(body["flow_url"]).query).get("flow_token", [None])[0]
+        self.assertIsNotNone(token_key)
+        token = FlowToken.objects.get(key=token_key)
+        self.assertTrue(token.plan.context["lockdown_self_service"])
