@@ -37,12 +37,12 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
+import { deleteUser, userUsedBy } from "#elements/user/utils";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import { renderRecoveryButtons } from "#admin/users/UserListPage";
-import { deleteUser, userUsedBy } from "#elements/user/utils";
 
 import {
     CapabilitiesEnum,
