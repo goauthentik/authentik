@@ -117,7 +117,7 @@ aws s3 cp \
 ```
 
 :::note Terraform uploads
-The `Content-Type` header is not set when files are programatically uploaded to S3 via Terraform.
+The `Content-Type` header is not set when files are programmatically uploaded to S3 via Terraform.
 :::
 
 ### Configuring authentik
