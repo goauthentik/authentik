@@ -112,10 +112,10 @@ Use Notification Rules to alert when lockdowns occur:
 
 ## Troubleshooting
 
-| Issue                         | Solution                                                                                  |
-| ----------------------------- | ----------------------------------------------------------------------------------------- |
-| "No lockdown flow configured" | Set a lockdown flow on your Brand (**System** > **Brands**)                               |
-| Self-service shows login page | Configure a **Completion flow** on the stage with **No authentication required**          |
-| Warning message not showing   | Ensure **Initial value expression** is enabled and field type is an alert type            |
-| Bulk lockdown not working     | Ensure expressions handle `lockdown_target_users` (list), not just `lockdown_target_user` |
+| Issue                             | Solution                                                                                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| "No lockdown flow configured"     | Set a lockdown flow on your Brand (**System** > **Brands**)                                                   |
+| Self-service shows login page     | Configure a **Completion flow** on the stage with **No authentication required**                              |
+| Warning message not showing       | Ensure **Initial value expression** is enabled and field type is an alert type                                |
+| Bulk lockdown not working         | Ensure expressions handle `lockdown_target_users` (list), not just `lockdown_target_user`                     |
 | Bulk including self skips results | Expected when **Delete sessions** is enabled; your session is terminated and self-service completion is shown |
