@@ -91,7 +91,6 @@ export async function handlePinToggle(
 export function renderSidebarEntry(
     entry: SidebarEntry,
     pinnedPaths: string[],
-    _excludePinned = false,
 ): TemplateResult | typeof nothing {
     const [path, label, attributes, children] = entry;
 
@@ -136,7 +135,7 @@ export function renderPinnedSection(
     if (pinnedEntries.length === 0) return nothing;
 
     return html`<ak-sidebar-item label=${msg("Pinned")} ?expanded=${true}>
-        ${pinnedEntries.map((entry) => renderSidebarEntry(entry, pinnedPaths, false))}
+        ${pinnedEntries.map((entry) => renderSidebarEntry(entry, pinnedPaths))}
     </ak-sidebar-item>`;
 }
 
@@ -148,6 +147,6 @@ export function renderSidebarEntries(
     pinnedPaths: string[],
 ): TemplateResult[] {
     return entries
-        .map((entry) => renderSidebarEntry(entry, pinnedPaths, true))
+        .map((entry) => renderSidebarEntry(entry, pinnedPaths))
         .filter((t): t is TemplateResult => t !== nothing);
 }
