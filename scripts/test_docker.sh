@@ -22,7 +22,7 @@ if [[ -v BUILD ]]; then
     docker buildx install
     make gen-client-ts
     make gen-client-go
-    touch lifecycle/container/.env
+    touch .env
 
     docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" .
 fi
