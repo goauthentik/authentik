@@ -16,6 +16,7 @@ argh = "0.1.13"
 async-trait = "0.1.89"
 axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
 axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
+bytes = "1.11.0"
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 color-eyre = "0.6.5"
 config = { version = "0.15.19", default-features = false, features = [
@@ -34,6 +35,7 @@ hyper-util = "0.1.19"
 ipnet = { version = "2.11.0", features = ["serde"] }
 nix = { version = "0.31.0", features = ["signal"] }
 notify = "8.2.0"
+pin-project-lite = "0.2.16"
 pyo3 = "0.27.2"
 rcgen = { version = "0.14.7", default-features = false, features = [
   "aws_lc_rs",

@@ -12,12 +12,14 @@ publish.workspace = true
 [dependencies]
 axum.workspace = true
 axum-server.workspace = true
+bytes.workspace = true
 client-ip.workspace = true
 forwarded-header-value.workspace = true
 eyre.workspace = true
 futures.workspace = true
 hyper.workspace = true
 hyper-util.workspace = true
+pin-project-lite.workspace = true
 tokio.workspace = true
 tokio-rustls.workspace = true
 tower.workspace = true
