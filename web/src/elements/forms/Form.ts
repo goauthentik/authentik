@@ -117,7 +117,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
                 const valueAsNumber = inputElement.valueAsNumber;
                 return assignValue(
                     inputElement,
-                    isNaN(valueAsNumber) ? null : dateToUTC(new Date(valueAsNumber)),
+                    isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
                     json,
                 );
             }
@@ -128,7 +128,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
                 const date = new Date(inputElement.value);
                 return assignValue(
                     inputElement,
-                    isNaN(date.getTime()) ? null : dateToUTC(date),
+                    isNaN(date.getTime()) ? undefined : dateToUTC(date),
                     json,
                 );
             }
