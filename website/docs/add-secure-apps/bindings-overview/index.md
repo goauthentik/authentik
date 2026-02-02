@@ -71,7 +71,7 @@ flowchart TD
     policy_binding --> flow_stage_binding
 ```
 
-### Types of bindings
+## Types of bindings
 
 The two most common types of bindings in authentik are:
 
