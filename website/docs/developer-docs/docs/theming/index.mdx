@@ -1,0 +1,75 @@
+---
+title: Documentation Theming
+sidebar_label: Theming
+---
+
+import {
+    PaletteGroup,
+    ColorGroup,
+} from "@goauthentik/docusaurus-theme/components/infima/Swatch/index.tsx";
+import {
+    DispositionDangerColorEntries,
+    DispositionInfoColorEntries,
+    DispositionSuccessColorEntries,
+    DispositionWarningColorEntries,
+    InfimaColorsMap,
+    UtilityColorEntries,
+} from "@goauthentik/docusaurus-theme/components/infima/constants.ts";
+
+:::info Advanced
+
+This section is intended for developers of authentik's documentation site. If you are looking to customize the theming of your own authentik instance, please refer to the [branding](../../../sys-mgmt/brands.md) documentation.
+
+:::
+
+The authentik documentation site is built using Meta's [Docusaurus](https://docusaurus.io/), which uses their internal [Infima CSS framework](https://infima.dev/) for its styling and theming capabilities. Infima's own documentation is limited, possibly due to it's internal nature and Docusaurus being the primary consumer. This document aims to provide an overview of how theming is handled in the authentik documentation site, and how you can customize it.
+
+## Infima Color Palette
+
+With the exception of a few customizations, our color palette is managed through Infima's theming system.
+
+### Primary
+
+<ColorGroup group={InfimaColorsMap.get("primary")} />
+
+### Secondary
+
+<ColorGroup group={InfimaColorsMap.get("secondary")} />
+
+### Success
+
+<ColorGroup group={InfimaColorsMap.get("success")} />
+
+### Info
+
+<ColorGroup group={InfimaColorsMap.get("info")} />
+
+### Warning
+
+<ColorGroup group={InfimaColorsMap.get("warning")} />
+
+### Danger
+
+<ColorGroup group={InfimaColorsMap.get("danger")} />
+
+## Utility & UI Colors
+
+<PaletteGroup entries={UtilityColorEntries} />
+
+## Dispositions
+
+### Info
+
+<PaletteGroup entries={DispositionInfoColorEntries} />
+
+### Success
+
+<PaletteGroup entries={DispositionSuccessColorEntries} />
+
+### Warning
+
+<PaletteGroup entries={DispositionWarningColorEntries} />
+
+### Danger
+
+<PaletteGroup entries={DispositionDangerColorEntries} />
