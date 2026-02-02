@@ -140,8 +140,8 @@ class TestUsersAPI(APITestCase):
         brand.save()
         self.client.force_login(self.admin)
         response = self.client.post(
-            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
-            + "?token_duration=days=33"
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=33"},
         )
         self.assertEqual(response.status_code, 200)
         expires = Token.objects.first().expires
@@ -160,16 +160,16 @@ class TestUsersAPI(APITestCase):
         brand.save()
         self.client.force_login(self.admin)
         response = self.client.post(
-            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
-            + "?token_duration=days=33"
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=33"},
         )
         self.assertEqual(response.status_code, 200)
         expires = Token.objects.first().expires
         expected_expires = now() + timedelta(days=33)
         self.assertTrue(timedelta(minutes=-1) < expected_expires - expires < timedelta(minutes=1))
         response = self.client.post(
-            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
-            + "?token_duration=days=66"
+            reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk}),
+            data={"token_duration": "days=66"},
         )
         expires = Token.objects.first().expires
         expected_expires = now() + timedelta(days=66)
@@ -182,8 +182,8 @@ class TestUsersAPI(APITestCase):
         self.user.save()
         stage = EmailStage.objects.create(name="email")
         response = self.client.post(
-            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
-            + f"?email_stage={stage.pk}"
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
@@ -192,8 +192,8 @@ class TestUsersAPI(APITestCase):
         self.user.email = "foo@bar.baz"
         self.user.save()
         response = self.client.post(
-            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
-            + f"?email_stage={stage.pk}"
+            reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk}),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
@@ -211,7 +211,7 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(response.content, {"non_field_errors": "Email stage does not exist."})
+        self.assertJSONEqual(response.content, {"email_stage": ["This field is required."]})
 
     def test_recovery_email(self):
         """Test user recovery link"""
@@ -229,8 +229,8 @@ class TestUsersAPI(APITestCase):
             reverse(
                 "authentik_api:user-recovery-email",
                 kwargs={"pk": self.user.pk},
-            )
-            + f"?email_stage={stage.pk}"
+            ),
+            data={"email_stage": stage.pk},
         )
         self.assertEqual(response.status_code, 204)
 

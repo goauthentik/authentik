@@ -4457,12 +4457,13 @@ paths:
           type: integer
         description: A unique integer value identifying this User.
         required: true
-      - in: query
-        name: token_duration
-        schema:
-          type: string
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRecoveryLinkRequest'
       security:
       - authentik: []
       responses:
@@ -4482,23 +4483,20 @@ paths:
       description: Send an email with a temporary link that a user can use to recover
         their account
       parameters:
-      - in: query
-        name: email_stage
-        schema:
-          type: string
-        required: true
       - in: path
         name: id
         schema:
           type: integer
         description: A unique integer value identifying this User.
         required: true
-      - in: query
-        name: token_duration
-        schema:
-          type: string
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRecoveryEmailRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -56524,6 +56522,25 @@ components:
       - plex_token
       - source
       - user
+    UserRecoveryEmailRequest:
+      type: object
+      description: Payload to create and email a recovery link
+      properties:
+        token_duration:
+          type: string
+          minLength: 1
+        email_stage:
+          type: string
+          format: uuid
+      required:
+      - email_stage
+    UserRecoveryLinkRequest:
+      type: object
+      description: Payload to create a recovery link
+      properties:
+        token_duration:
+          type: string
+          minLength: 1
     UserRequest:
       type: object
       description: User Serializer

@@ -5,20 +5,22 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { Form } from "#elements/forms/Form";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
-import { CoreApi, CoreUsersRecoveryCreateRequest, Link, User } from "@goauthentik/api";
+import { CoreApi, Link, User, UserRecoveryLinkRequest } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-recovery-link-form")
-export class UserRecoveryLinkForm extends Form<CoreUsersRecoveryCreateRequest> {
+export class UserRecoveryLinkForm extends Form<UserRecoveryLinkRequest> {
     @property({ attribute: false })
     user!: User;
 
-    async send(data: CoreUsersRecoveryCreateRequest): Promise<Link> {
-        data.id = this.user.pk;
-        const response = await new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryCreate(data);
+    async send(data: UserRecoveryLinkRequest): Promise<Link> {
+        const response = await new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryCreate({
+            id: this.user.pk,
+            userRecoveryLinkRequest: data,
+        });
 
         const wroteToClipboard = await writeToClipboard(response.link);
         if (wroteToClipboard) {

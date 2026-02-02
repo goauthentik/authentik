@@ -9,11 +9,11 @@ import { Form } from "#elements/forms/Form";
 
 import {
     CoreApi,
-    CoreUsersRecoveryEmailCreateRequest,
     Stage,
     StagesAllListRequest,
     StagesApi,
     User,
+    UserRecoveryEmailRequest,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -21,7 +21,7 @@ import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-reset-email-form")
-export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest> {
+export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
     @property({ attribute: false })
     user!: User;
 
@@ -29,9 +29,11 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
         return msg("Successfully sent email.");
     }
 
-    async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
-        data.id = this.user.pk;
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
+    async send(data: UserRecoveryEmailRequest): Promise<void> {
+        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate({
+            id: this.user.pk,
+            userRecoveryEmailRequest: data,
+        });
     }
 
     protected override renderForm(): TemplateResult {

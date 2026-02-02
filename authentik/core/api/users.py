@@ -41,6 +41,7 @@ from rest_framework.fields import (
     IntegerField,
     ListField,
     SerializerMethodField,
+    UUIDField,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -88,7 +89,6 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.lib.utils.uuid import is_uuid_valid
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -399,6 +399,18 @@ class UserServiceAccountSerializer(PassiveSerializer):
     )
 
 
+class UserRecoveryLinkSerializer(PassiveSerializer):
+    """Payload to create a recovery link"""
+
+    token_duration = CharField(required=False)
+
+
+class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
+    """Payload to create and email a recovery link"""
+
+    email_stage = UUIDField()
+
+
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -545,7 +557,9 @@ class UserViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, token_duration: str, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(
+        self, token_duration: str | None, for_email=False
+    ) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request.brand
@@ -731,47 +745,32 @@ class UserViewSet(
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="token_duration",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-            ),
-        ],
+        request=UserRecoveryLinkSerializer,
         responses={
             "200": LinkSerializer(many=False),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryLinkSerializer)
+    def recovery(self, request: Request, pk: int, body: UserRecoveryLinkSerializer) -> Response:
         """Create a temporary link that a user can use to recover their account"""
-        token_duration = request.query_params.get("token_duration", "")
-        link, _ = self._create_recovery_link(token_duration=token_duration)
+        link, _ = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration")
+        )
         return Response({"link": link})
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="email_stage",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-                required=True,
-            ),
-            OpenApiParameter(
-                name="token_duration",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-            ),
-        ],
+        request=UserRecoveryEmailSerializer,
         responses={
             "204": OpenApiResponse(description="Successfully sent recover email"),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery_email(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryEmailSerializer)
+    def recovery_email(
+        self, request: Request, pk: int, body: UserRecoveryEmailSerializer
+    ) -> Response:
         """Send an email with a temporary link that a user can use to recover their account"""
         user: User = self.get_object()
         if not user.email:
@@ -779,23 +778,21 @@ class UserViewSet(
             raise ValidationError(
                 {"non_field_errors": _("User does not have an email address set.")}
             )
-        email_stage_uuid = request.query_params.get("email_stage", "")
-        if not is_uuid_valid(email_stage_uuid) or not (
-            email_stage := EmailStage.objects.filter(pk=email_stage_uuid).first()
-        ):
+        if not (stage := EmailStage.objects.filter(pk=body.validated_data["email_stage"]).first()):
             LOGGER.debug("Email stage does not exist")
             raise ValidationError({"non_field_errors": _("Email stage does not exist.")})
-        if not request.user.has_perm("authentik_stages_email.view_emailstage", email_stage):
+        if not request.user.has_perm("authentik_stages_email.view_emailstage", stage):
             LOGGER.debug("User has no view access to email stage")
             raise ValidationError(
                 {"non_field_errors": _("User has no view access to email stage.")}
             )
-        token_duration = request.query_params.get("token_duration", "")
-        link, token = self._create_recovery_link(token_duration=token_duration, for_email=True)
+        link, token = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration"), for_email=True
+        )
         message = TemplateEmailMessage(
-            subject=_(email_stage.subject),
+            subject=_(stage.subject),
             to=[(user.name, user.email)],
-            template_name=email_stage.template,
+            template_name=stage.template,
             language=user.locale(request),
             template_context={
                 "url": link,
@@ -803,7 +800,7 @@ class UserViewSet(
                 "expires": token.expires,
             },
         )
-        send_mails(email_stage, message)
+        send_mails(stage, message)
         return Response(status=204)
 
     @permission_required("authentik_core.impersonate")
