@@ -53,7 +53,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     ) -> BaseOutgoingSyncClient[T, Any, Any, Self]:
         raise NotImplementedError
 
-    def get_object_qs[T: User | Group](self, type: type[T]) -> QuerySet[T]:
+    def get_object_qs[T: User | Group](self, type: type[T], **kwargs) -> QuerySet[T]:
         raise NotImplementedError
 
     @classmethod

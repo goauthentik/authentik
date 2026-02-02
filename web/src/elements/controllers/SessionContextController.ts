@@ -1,5 +1,5 @@
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
-import { applyThemeChoice } from "#common/theme";
+import { applyThemeChoice, formatColorScheme } from "#common/theme";
 import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
 import { me } from "#common/users";
@@ -70,8 +70,9 @@ export class SessionContextController extends ReactiveContextController<APIResul
             const nextUIConfig = createUIConfig(settings);
             this.uiConfigContext.setValue(nextUIConfig);
             this.host.uiConfig = nextUIConfig;
+            const colorScheme = formatColorScheme(nextUIConfig.theme.base);
 
-            applyThemeChoice(nextUIConfig.theme.base, this.host.ownerDocument);
+            applyThemeChoice(colorScheme, this.host.ownerDocument);
 
             const config = this.host[kAKConfig];
 

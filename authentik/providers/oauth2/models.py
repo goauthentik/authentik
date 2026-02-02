@@ -33,6 +33,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
+from authentik.common.oauth.constants import SubModes
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -44,7 +45,6 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:

@@ -84,7 +84,7 @@ lint-fix: lint-codespell  ## Lint and automatically fix errors in the python sou
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
 
-lint: ci-bandit ## Lint the python and golang sources
+lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:

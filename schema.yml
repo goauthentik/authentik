@@ -6908,6 +6908,7 @@ paths:
             enum:
             - authorize_application
             - configuration_error
+            - configuration_warning
             - custom_
             - email_sent
             - export_ready
@@ -7169,6 +7170,7 @@ paths:
             enum:
             - authorize_application
             - configuration_error
+            - configuration_warning
             - custom_
             - email_sent
             - export_ready
@@ -7296,6 +7298,7 @@ paths:
             enum:
             - authorize_application
             - configuration_error
+            - configuration_warning
             - custom_
             - email_sent
             - export_ready
@@ -10956,6 +10959,7 @@ paths:
           enum:
           - authorize_application
           - configuration_error
+          - configuration_warning
           - custom_
           - email_sent
           - export_ready
@@ -18712,10 +18716,14 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
+        name: group_filters
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -20445,10 +20453,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: user
-        schema:
-          type: integer
       tags:
       - rbac
       security:
@@ -20743,7 +20747,7 @@ paths:
       description: Role viewset
       parameters:
       - in: query
-        name: ak_groups
+        name: groups
         schema:
           type: string
           format: uuid
@@ -20751,7 +20755,7 @@ paths:
         name: inherited
         schema:
           type: boolean
-        description: Include inherited roles (requires users or ak_groups filter)
+        description: Include inherited roles (requires users or groups filter)
       - in: query
         name: managed
         schema:
@@ -38106,6 +38110,7 @@ components:
       - system_task_exception
       - system_exception
       - configuration_error
+      - configuration_warning
       - model_created
       - model_updated
       - model_deleted
@@ -49169,7 +49174,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 150
     PatchedSAMLPropertyMappingRequest:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -49533,10 +49537,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -49546,6 +49546,12 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -52363,7 +52369,6 @@ components:
           title: Uuid
         name:
           type: string
-          maxLength: 150
       required:
       - name
       - pk
@@ -52452,7 +52457,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 150
       required:
       - name
     SAMLBindingsEnum:
@@ -53439,10 +53443,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -53451,6 +53451,12 @@ components:
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -53561,10 +53567,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -53574,6 +53576,12 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in

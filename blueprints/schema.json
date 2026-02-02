@@ -5399,7 +5399,6 @@
                             "authentik_core.add_user",
                             "authentik_core.add_user_to_group",
                             "authentik_core.add_usersourceconnection",
-                            "authentik_core.assign_user_permissions",
                             "authentik_core.change_application",
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
@@ -5433,7 +5432,6 @@
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
                             "authentik_core.set_token_key",
-                            "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
@@ -6084,13 +6082,11 @@
                         "type": "string",
                         "enum": [
                             "add_user",
-                            "assign_user_permissions",
                             "change_user",
                             "delete_user",
                             "impersonate",
                             "preview_user",
                             "reset_user_password",
-                            "unassign_user_permissions",
                             "view_user",
                             "view_user_applications"
                         ]
@@ -7527,6 +7523,7 @@
                         "system_task_exception",
                         "system_exception",
                         "configuration_error",
+                        "configuration_warning",
                         "model_created",
                         "model_updated",
                         "model_deleted",
@@ -7644,6 +7641,7 @@
                                 "system_task_exception",
                                 "system_exception",
                                 "configuration_error",
+                                "configuration_warning",
                                 "model_created",
                                 "model_updated",
                                 "model_deleted",
@@ -8390,6 +8388,7 @@
                         "system_task_exception",
                         "system_exception",
                         "configuration_error",
+                        "configuration_warning",
                         "model_created",
                         "model_updated",
                         "model_deleted",
@@ -10625,11 +10624,6 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
-                },
                 "sync_page_size": {
                     "type": "integer",
                     "minimum": 1,
@@ -10642,6 +10636,16 @@
                     "minLength": 1,
                     "title": "Sync page timeout",
                     "description": "Timeout for synchronization of a single page"
+                },
+                "group_filters": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Group filters used to define sync-scope for groups."
+                    },
+                    "title": "Group filters",
+                    "description": "Group filters used to define sync-scope for groups."
                 },
                 "dry_run": {
                     "type": "boolean",
@@ -10732,7 +10736,6 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 150,
                     "minLength": 1,
                     "title": "Name"
                 },
@@ -10763,7 +10766,6 @@
                             "authentik_core.add_user",
                             "authentik_core.add_user_to_group",
                             "authentik_core.add_usersourceconnection",
-                            "authentik_core.assign_user_permissions",
                             "authentik_core.change_application",
                             "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
@@ -10797,7 +10799,6 @@
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
                             "authentik_core.set_token_key",
-                            "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
