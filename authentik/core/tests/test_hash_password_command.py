@@ -11,6 +11,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
+from authentik.core.signals import password_changed
 from authentik.lib.generators import generate_id
 
 
@@ -314,3 +315,45 @@ class TestUserSerializerPasswordHash(TestCase):
         user = serializer.save()
 
         self.assertTrue(user.check_password(password))
+
+    def test_set_password_from_hash_signal_does_not_expose_raw_password(self):
+        """Test password_changed signal payload when password hash is set directly."""
+        user = User.objects.create(username=generate_id(), name="Test User")
+        user.set_password("old-password")  # nosec
+        user.save()
+        captured = []
+        dispatch_uid = generate_id()
+
+        def receiver(sender, **kwargs):
+            captured.append(kwargs)
+
+        password_changed.connect(receiver, dispatch_uid=dispatch_uid)
+        try:
+            user.set_password_from_hash(make_password("new-password"))  # nosec
+            user.save()
+        finally:
+            password_changed.disconnect(dispatch_uid=dispatch_uid)
+
+        self.assertEqual(len(captured), 1)
+        self.assertIsNone(captured[0]["password"])
+        self.assertTrue(captured[0]["password_from_hash"])
+
+    def test_set_password_signal_marks_non_hash_password(self):
+        """Test password_changed signal payload for a regular password set."""
+        user = User.objects.create(username=generate_id(), name="Test User")
+        captured = []
+        dispatch_uid = generate_id()
+
+        def receiver(sender, **kwargs):
+            captured.append(kwargs)
+
+        password_changed.connect(receiver, dispatch_uid=dispatch_uid)
+        try:
+            user.set_password("new-password")  # nosec
+            user.save()
+        finally:
+            password_changed.disconnect(dispatch_uid=dispatch_uid)
+
+        self.assertEqual(len(captured), 1)
+        self.assertEqual(captured[0]["password"], "new-password")
+        self.assertFalse(captured[0]["password_from_hash"])

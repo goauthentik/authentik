@@ -22,7 +22,7 @@ from authentik.core.models import (
 from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
 from authentik.root.ws.consumer import build_device_group
 
-# Arguments: user: User, password: str
+# Arguments: user: User, password: str | None, password_from_hash: bool
 password_changed = Signal()
 # Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
 login_failed = Signal()
