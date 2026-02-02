@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2025.12.2"
+version = "2025.12.3"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
