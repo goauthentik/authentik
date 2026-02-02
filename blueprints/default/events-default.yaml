@@ -49,6 +49,28 @@ entries:
     target: !KeyOf default-notify-configuration-error
 
 - model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-configuration-warning
+  attrs:
+    action: configuration_warning
+  identifiers:
+    name: default-match-configuration-warning
+- model: authentik_events.notificationrule
+  id: default-notify-configuration-warning
+  identifiers:
+    name: default-notify-configuration-warning
+  attrs:
+    severity: warning
+    group: !KeyOf group
+    transports:
+      - !KeyOf default-email-transport
+      - !KeyOf default-local-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-configuration-warning
+    target: !KeyOf default-notify-configuration-warning
+
+- model: authentik_policies_event_matcher.eventmatcherpolicy
   id: default-match-update
   attrs:
     action: update_available
