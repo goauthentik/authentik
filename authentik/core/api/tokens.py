@@ -76,7 +76,8 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
                 except ValueError:
                     pass
 
-            if "expires" in attrs and attrs.get("expires") > max_token_lifetime_dt:
+            expires = attrs.get("expires")
+            if expires is not None and expires > max_token_lifetime_dt:
                 raise ValidationError(
                     {
                         "expires": (
