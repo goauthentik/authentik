@@ -529,6 +529,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                     ${this.renderTabApplications(this.user)}
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
