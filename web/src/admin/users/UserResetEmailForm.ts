@@ -26,7 +26,7 @@ export class UserResetEmailForm extends Form<UserRecoveryEmailRequest> {
     user!: User;
 
     getSuccessMessage(): string {
-        return msg("Successfully sent email.");
+        return msg("Successfully queued email.");
     }
 
     async send(data: UserRecoveryEmailRequest): Promise<void> {
