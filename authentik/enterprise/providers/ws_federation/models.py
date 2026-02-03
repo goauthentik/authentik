@@ -8,6 +8,10 @@ from authentik.providers.saml.models import SAMLProvider
 class WSFederationProvider(SAMLProvider):
     """WS-Federation for applications which support WS-Fed."""
 
+    # Alias'd fields:
+    # - acs_url -> reply_url
+    # - issuer -> realm / wtrealm
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.enterprise.providers.ws_federation.api.providers import (

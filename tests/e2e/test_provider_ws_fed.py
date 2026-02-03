@@ -18,6 +18,10 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderWSFed(SeleniumTestCase):
     """test WS Federation flow"""
 
+    def setUp(self):
+        self.realm = generate_id()
+        super().setUp()
+
     def setup_client(self, provider: WSFederationProvider, app: Application, **kwargs):
         metadata_url = (
             self.url(
@@ -32,7 +36,7 @@ class TestProviderWSFed(SeleniumTestCase):
                 "8080": "8080",
             },
             environment={
-                "WSFED_TEST_SP_WTREALM": f"goauthentik.io://app/{app.slug}",
+                "WSFED_TEST_SP_WTREALM": self.realm,
                 "WSFED_TEST_SP_METADATA": metadata_url,
                 **kwargs,
             },
@@ -61,6 +65,7 @@ class TestProviderWSFed(SeleniumTestCase):
         provider = WSFederationProvider.objects.create(
             name=generate_id(),
             acs_url="http://localhost:8080",
+            issuer=self.realm,
             authorization_flow=authorization_flow,
             invalidation_flow=invalidation_flow,
             signing_kp=create_test_cert(),
@@ -147,6 +152,7 @@ class TestProviderWSFed(SeleniumTestCase):
         provider = WSFederationProvider.objects.create(
             name=generate_id(),
             acs_url="http://localhost:8080",
+            issuer=self.realm,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
         )

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -15,8 +14,6 @@ class SignOutRequest:
     wtrealm: str
     wreply: str
 
-    app_slug: str
-
     @staticmethod
     def parse(request: HttpRequest) -> SignOutRequest:
         action = request.GET.get("wa")
@@ -25,13 +22,11 @@ class SignOutRequest:
         realm = request.GET.get("wtrealm")
         if not realm:
             raise ValueError("Missing Realm")
-        parsed = urlparse(realm)
 
         req = SignOutRequest(
             wa=action,
             wtrealm=realm,
             wreply=request.GET.get("wreply"),
-            app_slug=parsed.path[1:],
         )
 
         _, provider = req.get_app_provider()
@@ -40,8 +35,8 @@ class SignOutRequest:
         return req
 
     def get_app_provider(self):
-        application = get_object_or_404(Application, slug=self.app_slug)
         provider: WSFederationProvider = get_object_or_404(
-            WSFederationProvider, pk=application.provider_id
+            WSFederationProvider, issuer=self.wtrealm
         )
+        application = get_object_or_404(Application, provider=provider)
         return application, provider

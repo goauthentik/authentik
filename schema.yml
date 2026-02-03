@@ -50214,6 +50214,9 @@ components:
           type: string
           format: uri
           minLength: 1
+        wtrealm:
+          type: string
+          minLength: 1
         assertion_valid_not_before:
           type: string
           minLength: 1
@@ -57123,6 +57126,8 @@ components:
         reply_url:
           type: string
           format: uri
+        wtrealm:
+          type: string
         assertion_valid_not_before:
           type: string
           description: 'Assertion valid not before current time + this value (Format:
@@ -57183,9 +57188,6 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
-        wtrealm:
-          type: string
-          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -57232,6 +57234,9 @@ components:
         reply_url:
           type: string
           format: uri
+          minLength: 1
+        wtrealm:
+          type: string
           minLength: 1
         assertion_valid_not_before:
           type: string
@@ -57293,6 +57298,7 @@ components:
       - invalidation_flow
       - name
       - reply_url
+      - wtrealm
     WebAuthnDevice:
       type: object
       description: Serializer for WebAuthn authenticator devices
