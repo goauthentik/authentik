@@ -34253,7 +34253,7 @@ components:
           format: uuid
         reviewer:
           allOf:
-          - $ref: '#/components/schemas/RelatedUser'
+          - $ref: '#/components/schemas/ReviewerUser'
           readOnly: true
         timestamp:
           type: string
@@ -42184,7 +42184,7 @@ components:
         reviewer_groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/RelatedGroup'
+            $ref: '#/components/schemas/ReviewerGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -42198,7 +42198,7 @@ components:
         reviewers_obj:
           type: array
           items:
-            $ref: '#/components/schemas/RelatedUser'
+            $ref: '#/components/schemas/ReviewerUser'
           readOnly: true
         notification_transports:
           type: array
@@ -52795,31 +52795,6 @@ components:
       - group_uuid
       - name
       - pk
-    RelatedUser:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-      required:
-      - name
-      - pk
-      - username
-      - uuid
     Reputation:
       type: object
       description: Reputation Serializer
@@ -52943,6 +52918,7 @@ components:
           $ref: '#/components/schemas/ContentTypeEnum'
         object_id:
           type: string
+          readOnly: true
         object_verbose:
           type: string
           readOnly: true
@@ -52950,7 +52926,9 @@ components:
           type: string
           readOnly: true
         state:
-          $ref: '#/components/schemas/ReviewStateEnum'
+          allOf:
+          - $ref: '#/components/schemas/ReviewStateEnum'
+          readOnly: true
         opened_on:
           type: string
           format: date
@@ -52974,7 +52952,7 @@ components:
         reviewer_groups:
           type: array
           items:
-            $ref: '#/components/schemas/RelatedGroup'
+            $ref: '#/components/schemas/ReviewerGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -52982,7 +52960,7 @@ components:
         reviewers:
           type: array
           items:
-            $ref: '#/components/schemas/RelatedUser'
+            $ref: '#/components/schemas/ReviewerUser'
           readOnly: true
       required:
       - attestations
@@ -52997,6 +52975,7 @@ components:
       - opened_on
       - reviewer_groups
       - reviewers
+      - state
       - user_can_attest
     ReviewRequest:
       type: object
@@ -53006,20 +52985,52 @@ components:
       properties:
         content_type:
           $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
-          type: string
-          minLength: 1
-        state:
-          $ref: '#/components/schemas/ReviewStateEnum'
       required:
       - content_type
-      - object_id
     ReviewStateEnum:
       enum:
       - REVIEWED
       - PENDING
       - OVERDUE
       type: string
+    ReviewerGroup:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
+    ReviewerUser:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+      required:
+      - name
+      - pk
+      - username
+      - uuid
     Role:
       type: object
       description: Role serializer

@@ -25,13 +25,15 @@ import PFDescriptionList
     from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import "#admin/reviews/AccessReviewStastus";
 import "#components/ak-textarea-input";
+import "#elements/forms/ModalForm";
+
 
 @customElement("ak-object-attestation-form")
 export class ObjectAttestationForm extends ModelForm<Attestation, string> {
     @property({attribute: false})
     review!: Review;
 
-    protected loadInstance(pk: string): Promise<Attestation> {
+    protected loadInstance(_pk: string): Promise<Attestation> {
         throw new Error("Attestations should not be edited.");
     }
 
@@ -70,7 +72,7 @@ export class ObjectAttestationForm extends ModelForm<Attestation, string> {
 @customElement("ak-access-review-attestations")
 export class AccessReviewAttestations extends Table<Attestation> {
 
-    @property()
+    @property({attribute: false})
     public review?: Review;
 
     public override paginated = false;
@@ -129,8 +131,7 @@ export class AccessReviewAttestations extends Table<Attestation> {
                     </button>
                 </ak-forms-modal>
             `;
-        else
-            return nothing;
+        return nothing;
     }
 
 
@@ -195,10 +196,10 @@ export class ObjectPermissionPage extends AKElement {
             return;
         if (this.review.reviewers.length > 0) {
             return html`${this.review.reviewers.map(u => u.name).join(", ")}`;
-        } else {
-            const groupList = this.review.reviewerGroups.map(g => g.name).join(", ");
-            return html`${msg(`At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`)}`;
         }
+        const groupList = this.review.reviewerGroups.map(g => g.name).join(", ");
+        return html`${msg(`At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`)}`;
+
     }
 
     render() {
@@ -207,9 +208,8 @@ export class ObjectPermissionPage extends AKElement {
                 <ak-empty-state ?loading=${!this.review}>${msg("Loading...")}</ak-empty-state>`
         if (!this.review)
             return html`
-                <ak-empty-state header=${msg("No access review found")}>
-                    <div>${msg("This object does not have an access review yet.")}
-                    </div>
+                <ak-empty-state>
+                    <div>${msg("This object does not have an access review yet.")}</div>
                 </ak-empty-state>`
         return html`
             <div
@@ -304,9 +304,7 @@ export class ObjectPermissionPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">${msg("Attestations")}</div>
                         <div class="pf-c-card__body">
-                            <ak-access-review-attestations
-                                .attestations=${this.review.attestations}
-                                .review=${this.review}>
+                            <ak-access-review-attestations .review=${this.review}>
                             </ak-access-review-attestations>
 
                         </div>

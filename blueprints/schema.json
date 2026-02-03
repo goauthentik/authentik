@@ -7604,20 +7604,6 @@
                         "authentik_rbac.role"
                     ],
                     "title": "Content type"
-                },
-                "object_id": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Object id"
-                },
-                "state": {
-                    "type": "string",
-                    "enum": [
-                        "REVIEWED",
-                        "PENDING",
-                        "OVERDUE"
-                    ],
-                    "title": "State"
                 }
             },
             "required": []
