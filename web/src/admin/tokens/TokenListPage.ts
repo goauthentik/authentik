@@ -86,7 +86,7 @@ export class TokenListPage extends TablePage<Token> {
         return html`
             <ak-forms-modal>
                 <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="header">${msg("New Token")}</span>
                 <ak-token-form slot="form"> </ak-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
