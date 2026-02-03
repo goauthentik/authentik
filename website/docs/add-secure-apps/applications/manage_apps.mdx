@@ -19,7 +19,7 @@ To add an application to authentik and have it display on users' **My applicatio
 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
-    - **Configure Bindings**: to manage the display and access to applications on a user's **My applications** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
+    - **Configure Bindings**: to manage which applications a user can view and access via their **My applications** page, you can optionally create a [binding](../bindings-overview/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [policy-driven authorization](#policy-driven-authorization), [using application entitlements](../applications/manage_apps.mdx#create-an-application-entitlement) and [hiding an application](#hide-applications).
 
 4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Submit**.
 
@@ -36,8 +36,8 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 
 The most common ways to control access to an application by using bindings are:
 
-1. [create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) in which a policy is used to determine whether or not a user can access an application.
-2. [bind a user or group to the application](#bind-a-user-or-group-to-an-application).
+1. [Create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) in which a policy is used to determine whether or not a user can access an application.
+2. [Bind a user or group to the application](#bind-a-user-or-group-to-an-application).
 
 ### Policy-driven authorization
 
