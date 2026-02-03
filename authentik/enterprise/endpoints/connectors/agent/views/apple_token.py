@@ -96,11 +96,13 @@ class TokenView(View):
         self.remote_nonce = decoded.get("nonce")
 
         # Check that the nonce hasn't been used before
-        nonce = AppleNonce.filter_not_expired(nonce=decoded["request_nonce"]).first()
-        if not nonce:
+        # Use atomic delete to prevent race conditions (concurrent requests reusing same nonce)
+        deleted_count, deleted_objects = AppleNonce.objects.filter(
+            nonce=decoded["request_nonce"]
+        ).delete()
+        if deleted_count == 0:
             raise ValidationError("Invalid nonce")
-        self.nonce = nonce
-        nonce.delete()
+        self.nonce = deleted_objects.get("authentik_endpoints_connectors_agent.AppleNonce")[0]
         return decoded
 
     def validate_embedded_assertion(self, assertion: str) -> tuple[AgentDeviceUserBinding, dict]:
