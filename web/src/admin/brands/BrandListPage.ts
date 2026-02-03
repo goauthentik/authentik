@@ -50,7 +50,7 @@ export class BrandListPage extends TablePage<Brand> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Brand(s)")}
+            object-label=${msg("Brand(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Brand) => {
                 return [{ key: msg("Domain"), value: item.domain }];

@@ -64,7 +64,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Permission(s)")}
+            object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Permission) => {
                 return new RbacApi(

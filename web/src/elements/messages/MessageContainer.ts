@@ -4,6 +4,7 @@ import { APIError, pluckErrorDetail } from "#common/errors/network";
 import { APIMessage, MessageLevel } from "#common/messages";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -139,10 +140,11 @@ export class MessageContainer extends AKElement {
             class="pf-c-alert-group pf-m-toast"
         >
             ${this.messages.toReversed().map((message, idx) => {
-                const { message: title, description, level } = message;
+                const { message: title, description, level, icon } = message;
 
                 return html`<ak-message
                     ?live=${idx === 0}
+                    icon=${ifPresent(icon)}
                     level=${level}
                     .description=${description}
                     .onDismiss=${() => this.#removeMessage(message)}

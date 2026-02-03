@@ -1,13 +1,13 @@
 import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { writeToClipboard } from "#common/clipboard";
 
 import { Form } from "#elements/forms/Form";
-import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, Link, User, UserRecoveryLinkRequest } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,16 +22,7 @@ export class UserRecoveryLinkForm extends Form<UserRecoveryLinkRequest> {
             userRecoveryLinkRequest: data,
         });
 
-        const wroteToClipboard = await writeToClipboard(response.link);
-        if (wroteToClipboard) {
-            this.successMessage = msg(
-                str`A copy of this recovery link has been placed in your clipboard: ${response.link}`,
-            );
-        } else {
-            this.successMessage = msg(
-                str`authentik does not have access to your clipboard, please copy the recovery link manually: ${response.link}`,
-            );
-        }
+        await writeToClipboard(response.link, msg("Recovery link"));
 
         return response;
     }

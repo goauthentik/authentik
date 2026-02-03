@@ -68,7 +68,7 @@ export class ProviderListPage extends TablePage<Provider> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Provider(s)")}
+            object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({

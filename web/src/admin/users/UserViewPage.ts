@@ -156,7 +156,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             </ak-forms-modal>
             <ak-user-active-form
                 .obj=${user}
-                objectLabel=${msg("User")}
+                object-label=${msg("User")}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                         id: user.pk,
@@ -493,6 +493,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     ${this.renderTabApplications(this.user)}
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
