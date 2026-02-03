@@ -422,6 +422,9 @@ export class IdentificationStage extends BaseStage<
                       <p>
                           ${msg(
                               "Enter the email or SMS number associated with your account, and we'll send you a link to reset your password.",
+                              {
+                                  id: "flow.designation.recovery.form-instructions",
+                              },
                           )}
                       </p>
                   `
