@@ -131,12 +131,15 @@ export class DevRepeatedRequestsMiddleware implements Middleware, Disposable {
         this.#requests.push(reqSig);
 
         if (count > 2) {
-            showMessage({
-                level: MessageLevel.warning,
-                message: "[Dev] Consecutive requests detected",
-                description: html`${count} identical requests to
-                    <pre>${reqSig}</pre>`,
-            });
+            showMessage(
+                {
+                    level: MessageLevel.warning,
+                    message: "[Dev] Consecutive requests detected",
+                    description: html`${count} identical requests to
+                        <pre>${reqSig}</pre>`,
+                },
+                true,
+            );
 
             this.#logger.trace("Repeated request", reqSig);
         }
