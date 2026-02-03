@@ -12,7 +12,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-active-form")
 export class UserActiveForm extends UserDeleteForm {
-    onSuccess(): void {
+    protected override onSuccess(): void {
         showMessage({
             message: msg(
                 str`Successfully updated ${this.objectLabel} ${this.getObjectDisplayName()}`,
