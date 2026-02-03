@@ -5,7 +5,7 @@ slug: /brands
 
 As an authentik administrator, you can customize your instance's appearance and behavior using brands. Brands apply to a single domain, a domain wildcard, or can be set as default, in which case the brand will be applied when no other brand matches the domain.
 
-For an overview of branding and other customization options in authentik refer to [Customize your instance](../customize/index.md).
+For an overview of branding and other customization options in authentik refer to [Customize your instance](../../customize/index.md).
 
 ## Create or edit a brand
 
@@ -29,7 +29,7 @@ The brand settings define the visual identity of the brand, including:
     :::
 
 - **Favicon**: Shown on the browser tab.
-- **Default flow background** :ak-version[2025.4]: Default background image for the flow executor, can be overridden per flow, see [Flow configuration options](../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options).
+- **Default flow background** :ak-version[2025.4]: Default background image for the flow executor, can be overridden per flow, see [Flow configuration options](../../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options).
 - **Custom CSS** :ak-version[2025.4]: Add custom CSS to further customize the look of authentik. Creating such a file is outside the scope of this document.
 
 ### External user settings
@@ -42,7 +42,7 @@ You can configure authentik to redirect external users to a default application 
 
 ### Default flows
 
-You can explicitly select, in your instance's Brand settings, the _default flows_ to use for the current brand. You can optionally configure these default flows ([learn more about each default flow](../add-secure-apps/flows-stages/flow/examples/default_flows.md)):
+You can explicitly select, in your instance's Brand settings, the _default flows_ to use for the current brand. You can optionally configure these default flows ([learn more about each default flow](../../add-secure-apps/flows-stages/flow/examples/default_flows.md)):
 
 - **Authentication** flow: the flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.
 - **Invalidation flow**: for typical use cases, select the `default-invalidation-flow` (Logout) flow. This flow logs the user out of authentik when the application session ends (user logs out of the app).
@@ -67,11 +67,11 @@ The **Web Certificate** option can be used to configure which certificate authen
 
 #### Client Certificates:ak-version[2025.4]
 
-When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this setting specifies which certificate authorities are trusted to issue client certificates.
+When using the [Mutual TLS Stage](../../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this setting specifies which certificate authorities are trusted to issue client certificates.
 
 #### Attributes
 
-Attributes such as locale, theme settings (light/dark mode), and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../users-sources/user/user_ref.mdx#object-properties).
+Attributes such as locale, theme settings (light/dark mode), and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../../users-sources/user/user_ref.mdx#object-properties).
 
 ## Image optimization
 
