@@ -7,11 +7,7 @@ from tempfile import gettempdir
 from docker.tls import TLSConfig
 
 from authentik.crypto.models import CertificateKeyPair
-
-
-def opener(path, flags):
-    """File opener to create files as 600 perms"""
-    return os.open(path, flags, 0o600)
+from authentik.outposts.docker_ssh import opener
 
 
 class DockerInlineTLS:
