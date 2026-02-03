@@ -1,6 +1,6 @@
 """Create Docker TLSConfig from CertificateKeyPair"""
 
-import os
+from os import unlink
 from pathlib import Path
 from tempfile import gettempdir
 
@@ -38,7 +38,7 @@ class DockerInlineTLS:
     def cleanup(self):
         """Clean up certificates when we're done"""
         for path in self._paths:
-            os.unlink(path)
+            unlink(path)
 
     def write(self) -> TLSConfig:
         """Create TLSConfig with Certificate Key pairs"""
