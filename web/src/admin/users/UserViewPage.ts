@@ -155,7 +155,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
             </ak-forms-modal>
             <ak-user-active-form
                 .obj=${user}
-                objectLabel=${msg("User")}
+                object-label=${msg("User")}
                 .delete=${() => {
                     return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                         id: user.pk,

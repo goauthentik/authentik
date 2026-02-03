@@ -47,7 +47,7 @@ export class StageListPage extends TablePage<Stage> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Stage(s)")}
+            object-label=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({

@@ -60,7 +60,7 @@ export class TokenListPage extends TablePage<Token> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Token(s)")}
+            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => {
                 return [{ key: msg("Identifier"), value: item.identifier }];
