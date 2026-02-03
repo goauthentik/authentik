@@ -6,7 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "#admin/reviews/AccessReviewStastus";
+import "#admin/lifecycle/AccessReviewStastus";
 
 import {DEFAULT_CONFIG} from "#common/api/config";
 

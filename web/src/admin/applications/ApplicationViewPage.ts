@@ -4,7 +4,7 @@ import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#admin/reviews/ObjectAccessReviewPage"
+import "#admin/lifecycle/ObjectAccessReviewPage"
 import "#components/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";

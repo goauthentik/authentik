@@ -3,7 +3,7 @@ import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RelatedRoleList";
 import "#components/ak-object-attributes-card";
-import "#admin/reviews/ObjectAccessReviewPage"
+import "#admin/lifecycle/ObjectAccessReviewPage"
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";

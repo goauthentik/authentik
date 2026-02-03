@@ -1,7 +1,7 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#admin/reviews/ObjectAccessReviewPage"
+import "#admin/lifecycle/ObjectAccessReviewPage"
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";

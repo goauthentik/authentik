@@ -23,7 +23,7 @@ import {ModelForm} from "#elements/forms/ModelForm";
 import {EVENT_REFRESH} from "#common/constants";
 import PFDescriptionList
     from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import "#admin/reviews/AccessReviewStastus";
+import "#admin/lifecycle/AccessReviewStastus";
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
 
