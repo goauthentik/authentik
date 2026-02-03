@@ -15,7 +15,7 @@ from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from guardian.models import RoleObjectPermission, UserObjectPermission
+from guardian.models import RoleObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -70,7 +70,6 @@ def excluded_models() -> list[type[Model]]:
         ContentType,
         Permission,
         RoleObjectPermission,
-        UserObjectPermission,
         # Base classes
         Provider,
         Source,

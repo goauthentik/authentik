@@ -12,7 +12,6 @@ import { map } from "lit/directives/map.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type RawContent = string | number | TemplateResult;
 export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
@@ -75,7 +74,6 @@ export interface ISimpleTable {
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
     static styles = [
-        PFBase,
         PFTable,
         css`
             .pf-c-table thead .pf-c-table__check {

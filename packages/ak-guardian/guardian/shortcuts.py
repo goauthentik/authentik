@@ -15,7 +15,6 @@ from django.db.models import (
 from django.db.models.expressions import RawSQL
 
 from guardian.core import ObjectPermissionChecker
-from guardian.ctypes import get_content_type
 from guardian.exceptions import (
     GuardianError,
     InvalidIdentity,
@@ -23,6 +22,7 @@ from guardian.exceptions import (
 )
 from guardian.utils import (
     get_anonymous_user,
+    get_content_type,
     get_identity,
     get_role_model_perms_model,
     get_role_obj_perms_model,
@@ -46,7 +46,7 @@ def assign_perm(
     perm: str | Permission,
     role: Any,
     obj: Model | None = None,
-) -> str | Permission | None:
+):
     """Assigns permission to role and object pair.
 
     Parameters:
@@ -67,50 +67,37 @@ def assign_perm(
     if not role:
         return None
 
-    # If obj is None we try to operate on global permissions
-    if obj is None:
-        if not isinstance(perm, Permission):
-            try:
-                app_label, codename = perm.split(".", 1)
-            except ValueError:
-                raise ValueError(
-                    "For global permissions, first argument must be in format: "
-                    f"'app_label.codename' (is {perm})"
-                ) from None
-            permission = Permission.objects.get(
-                content_type__app_label=app_label, codename=codename
-            )
-        else:
-            permission = perm
+    if not isinstance(perm, Permission):
+        try:
+            app_label, codename = perm.split(".", 1)
+        except ValueError:
+            raise ValueError(
+                "For global permissions, first argument must be in format: "
+                f"'app_label.codename' (is {perm})"
+            ) from None
+        permission = Permission.objects.get(content_type__app_label=app_label, codename=codename)
+    else:
+        permission = perm
 
-        kwargs = {
-            "content_type": permission.content_type,
-            "permission": permission,
-            "role": role,
-        }
+    kwargs = {
+        "content_type": permission.content_type,
+        "permission": permission,
+        "role": role,
+    }
+    if obj is None:
         model_perm, _ = get_role_model_perms_model().objects.get_or_create(**kwargs)
         return model_perm
-
-    if not isinstance(perm, Permission):
-        if "." in perm:
-            app_label, perm = perm.split(".", 1)
-
-    if isinstance(obj, QuerySet | list):
-        raise RuntimeError("Currently not supported")
-
-    if isinstance(role, QuerySet | list):
-        model = get_role_obj_perms_model(obj)
-        return model.objects.assign_perm_to_many(perm, role, obj)
-
-    model = get_role_obj_perms_model(obj)
-    return model.objects.assign_perm(perm, role, obj)
+    else:
+        kwargs["object_pk"] = obj.pk
+        obj_perm, _ = get_role_obj_perms_model().objects.get_or_create(**kwargs)
+        return obj_perm
 
 
 def remove_perm(
     perm: str | Permission,
     role: Any,
-    obj: Model | QuerySet | None = None,
-) -> None:
+    obj: Model | None = None,
+):
     """Removes permission from role and object pair.
 
     Parameters:
@@ -128,40 +115,30 @@ def remove_perm(
     if not role:
         return None
 
+    if not isinstance(perm, Permission):
+        try:
+            app_label, codename = perm.split(".", 1)
+        except ValueError:
+            raise ValueError(
+                "For global permissions, first argument must be in format: "
+                f"'app_label.codename' (is {perm})"
+            ) from None
+        permission = Permission.objects.get(content_type__app_label=app_label, codename=codename)
+    else:
+        permission = perm
+
+    kwargs = {
+        "content_type": permission.content_type,
+        "permission": permission,
+        "role": role,
+    }
     if obj is None:
-        if not isinstance(perm, Permission):
-            try:
-                app_label, codename = perm.split(".", 1)
-            except ValueError:
-                raise ValueError(
-                    "For global permissions, first argument must be in format: "
-                    f"'app_label.codename' (is {perm})"
-                ) from None
-            permission = Permission.objects.get(
-                content_type__app_label=app_label, codename=codename
-            )
-        else:
-            permission = perm
-
-        kwargs = {
-            "content_type": permission.content_type,
-            "permission": permission,
-            "role": role,
-        }
-
         model_perm = get_role_model_perms_model().objects.filter(**kwargs).delete()
         return model_perm
-
-    if not isinstance(perm, Permission):
-        if "." in perm:
-            app_label, perm = perm.split(".", 1)
-        perm = perm.split(".")[-1]
-
-    if isinstance(obj, QuerySet):
-        raise RuntimeError("Currently not supported")
-
-    model = get_role_obj_perms_model(obj)
-    return model.objects.remove_perm(perm, role, obj)
+    else:
+        kwargs["object_pk"] = obj.pk
+        obj_perm = get_role_obj_perms_model().objects.filter(**kwargs).delete()
+        return obj_perm
 
 
 def get_perms(identity: Any, obj: Model | None = None) -> set[str]:
@@ -272,7 +249,7 @@ def get_objects_for_user(  # noqa: PLR0912 PLR0915
         return queryset
 
     # Now we should extract the list of pk values for which we would filter the queryset
-    role_model = get_role_obj_perms_model(queryset.model)
+    role_model = get_role_obj_perms_model()
     perms_queryset = (
         role_model.objects.filter(role__in=user.all_roles())
         .filter(permission__content_type=ctype)

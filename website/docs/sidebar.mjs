@@ -599,6 +599,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
+                            "users-sources/sources/social-logins/keycloak/index",
                             {
                                 type: "category",
                                 label: "Google",
@@ -856,6 +857,7 @@ const items = [
                 },
                 items: [
                     "developer-docs/docs/style-guide",
+                    "developer-docs/docs/theming/index",
                     {
                         type: "category",
                         label: "Templates",

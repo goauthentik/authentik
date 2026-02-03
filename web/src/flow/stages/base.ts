@@ -58,6 +58,13 @@ export interface ResponseErrorsChallenge {
     };
 }
 
+/**
+ * Base class for all flow stages.
+ *
+ * @template Tin The type of the challenge this stage accepts.
+ * @prop {StageHost} host The host managing this stage.
+ * @prop {Tin} challenge The challenge provided to this stage.
+ */
 export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
@@ -74,7 +81,7 @@ export abstract class BaseStage<
     public host!: StageHost;
 
     @property({ attribute: false })
-    public challenge!: Tin;
+    public challenge: Tin | null = null;
 
     @intersectionObserver()
     public visible = false;
@@ -178,9 +185,10 @@ export abstract class BaseStage<
     }
 
     protected renderUserInfo() {
-        if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
+        if (!this.challenge?.pendingUser || !this.challenge?.pendingUserAvatar) {
             return nothing;
         }
+
         return html`
             ${FlowUserDetails({ challenge: this.challenge })}
             <input

@@ -7,7 +7,6 @@ import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-kerberos-connectivity")
 export class KerberosSourceConnectivity extends AKElement {
@@ -18,7 +17,7 @@ export class KerberosSourceConnectivity extends AKElement {
         };
     };
 
-    static styles: CSSResult[] = [PFBase, PFList];
+    static styles: CSSResult[] = [PFList];
 
     render(): SlottedTemplateResult {
         if (!this.connectivity) {

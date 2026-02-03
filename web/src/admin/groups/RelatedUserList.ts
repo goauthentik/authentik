@@ -80,7 +80,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         // TODO: The `form-control-sibling` container is a workaround to get the
         // table to allow the table to appear as an inline-block element next to the input group.
         // This should be fixed by moving the `@container` query off `:host`.
@@ -195,10 +195,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const disabled = this.selectedElements.length < 1;
         const targetLabel = this.targetGroup?.name || this.targetRole?.name;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("User(s)")}
-            actionLabel=${msg("Remove User(s)")}
+            object-label=${msg("User(s)")}
+            action-label=${msg("Remove User(s)")}
             action=${msg("removed")}
-            actionSubtext=${targetLabel
+            action-subtext=${targetLabel
                 ? msg(str`Are you sure you want to remove the selected users from ${targetLabel}?`)
                 : msg("Are you sure you want to remove the selected users?")}
             .objects=${this.selectedElements}
@@ -303,7 +303,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     <div class="pf-c-description-list__text">
                         <ak-user-active-form
                             .obj=${item}
-                            objectLabel=${msg("User")}
+                            object-label=${msg("User")}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                     id: item.pk || 0,
@@ -439,7 +439,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 : nothing}
             <ak-dropdown class="pf-c-dropdown">
                 <button
-                    class="pf-m-secondary pf-c-dropdown__toggle"
+                    class="pf-c-button pf-m-secondary pf-c-dropdown__toggle"
                     type="button"
                     id="add-user-toggle"
                     aria-haspopup="menu"
@@ -449,10 +449,9 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     <span class="pf-c-dropdown__toggle-text">${msg("Add new user")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-user-menu"
                     aria-labelledby="add-user-toggle"
                     tabindex="-1"
@@ -526,7 +525,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             </a>
                         </ak-forms-modal>
                     </li>
-                </ul>
+                </menu>
             </ak-dropdown>
             ${super.renderToolbar()}
         `;

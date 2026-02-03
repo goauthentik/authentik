@@ -9,6 +9,12 @@ from guardian.utils import get_anonymous_user
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.constants import (
+    NS_MAP,
+    SAML_BINDING_POST,
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
+)
 from authentik.core.tests.utils import (
     RequestFactory,
     create_test_admin_user,
@@ -24,12 +30,6 @@ from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import (
-    NS_MAP,
-    SAML_BINDING_REDIRECT,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_UNSPECIFIED,
-)
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
@@ -113,7 +113,7 @@ class TestAuthNRequest(TestCase):
         # First create an AuthNRequest
         request_proc = RequestProcessor(self.source, http_request, "test_state")
         auth_n = request_proc.get_auth_n()
-        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_REDIRECT)
+        self.assertEqual(auth_n.attrib["ProtocolBinding"], SAML_BINDING_POST)
 
         request = request_proc.build_auth_n()
         # Now we check the ID and signature
