@@ -4,6 +4,7 @@ from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
+from hmac import compare_digest
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -161,9 +162,8 @@ class TokenParams:
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
-            if (
-                self.provider.client_type == ClientTypes.CONFIDENTIAL
-                and self.provider.client_secret != self.client_secret
+            if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
+                self.provider.client_secret, self.client_secret
             ):
                 LOGGER.warning(
                     "Invalid client secret",
