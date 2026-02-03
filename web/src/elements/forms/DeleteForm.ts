@@ -68,7 +68,7 @@ export class DeleteForm extends ModalButton {
             });
     }
 
-    onSuccess(): void {
+    protected onSuccess(): void {
         showMessage({
             message: msg(
                 str`Successfully deleted ${this.objectLabel} ${this.getObjectDisplayName()}`,

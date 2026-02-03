@@ -26,7 +26,6 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { deleteUser, userUsedBy } from "#elements/user/utils";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
@@ -108,6 +107,12 @@ const recoveryButtonStyles = css`
 export class UserListPage extends WithBrandConfig(
     WithCapabilitiesConfig(WithSession(TablePage<User>)),
 ) {
+    #api = new CoreApi(DEFAULT_CONFIG);
+
+    #coreUsersDestroy(args: Parameters<CoreApi["coreUsersDestroy"]>[0]) {
+        return this.#api.coreUsersDestroy(args);
+    }
+
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
@@ -151,13 +156,13 @@ export class UserListPage extends WithBrandConfig(
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
-        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
         });
-        this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
+        this.userPaths = await this.#api.coreUsersPathsRetrieve({
             search: this.search,
         });
         return users;
@@ -201,8 +206,8 @@ export class UserListPage extends WithBrandConfig(
                         { key: msg("UID"), value: item.uid },
                     ];
                 }}
-                .usedBy=${(item: User) => userUsedBy(item)}
-                .delete=${(item: User) => deleteUser(item)}
+                .usedBy=${(item: User) => this.#api.coreUsersUsedByList({ id: item.pk })}
+                .delete=${(item: User) => this.#coreUsersDestroy({ id: item.pk })}
             >
                 ${shouldShowWarning
                     ? html`<div slot="notice" class="pf-c-form__alert">
