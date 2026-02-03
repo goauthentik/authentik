@@ -5,7 +5,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/ak-list-select/ak-list-select";
 import "#components/ak-number-input";
-import {state} from "lit/decorators.js";
+import "#components/ak-switch-input";
 
 import {DEFAULT_CONFIG} from "#common/api/config";
 
@@ -19,7 +19,7 @@ import {
 } from "@goauthentik/api";
 
 import {msg} from "@lit/localize";
-import {css, html, TemplateResult} from "lit";
+import {html, TemplateResult} from "lit";
 import {customElement} from "lit/decorators.js";
 import {createRef, ref} from "lit/directives/ref.js";
 import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
@@ -34,14 +34,10 @@ function userToPair(item: ReviewerUser): DualSelectPair {
 }
 
 function groupToPair(item: ReviewerGroup): DualSelectPair {
-    return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
+    return [item.pk, html`
+        <div class="selection-main">${item.name}</div>`, item.name];
 }
 
-
-enum ReviewerSelection {
-    Groups = "groups",
-    Users = "users",
-}
 
 @customElement("ak-lifecycle-rule-form")
 export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
@@ -50,26 +46,11 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
     #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
 
-    @state()
-    protected selectedReviewerSelection: ReviewerSelection = ReviewerSelection.Groups;
-
-    static get styles() {
-        return [...super.styles, css`
-            .ak-horizontal-radio-select {
-                padding-top: var(
-                    --pf-c-form--m-horizontal__group-label--md--PaddingTop,
-                    var(--pf-global--spacer--form-element)
-                );
-            }
-        `];
-    }
-
     async loadInstance(pk: string): Promise<LifecycleRule> {
         const rule = await new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesRetrieve({
             id: pk,
         });
         this.#selectedContentType = rule.contentType;
-        this.selectedReviewerSelection = rule.reviewers.length > 0 ? ReviewerSelection.Users : ReviewerSelection.Groups;
         return rule;
     }
 
@@ -117,14 +98,6 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
         const ret = super.serialize();
         if (ret === undefined)
             return;
-        if (this.selectedReviewerSelection === ReviewerSelection.Users) {
-            ret.reviewers = (this.#reviewerUsersSelectRef.value?.value || []) as string[];
-            ret.reviewerGroups = [];
-            ret.minReviewers = 0;
-        } else {
-            ret.reviewerGroups = (this.#reviewerGroupsSelectRef.value?.value || []) as string[];
-            ret.reviewers = [];
-        }
         if (ret.objectId === "")
             ret.objectId = null;
         return ret;
@@ -158,10 +131,6 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
         await this.#targetSelectRef.value?.updateData();
     }
 
-    #handleReviewerSelectionChange(ev: Event) {
-        this.selectedReviewerSelection = (ev.target as HTMLInputElement).value as ReviewerSelection;
-    }
-
     renderForm(): TemplateResult {
         return html`
             ${this.#renderTargetSelection()}
@@ -184,55 +153,32 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 value="${this.instance?.gracePeriodDays ?? 28}"
                 help=${msg("Number of days before a review is considered overdue.")}
             ></ak-number-input>
-            <ak-form-element-horizontal label=${msg("Reviewers")}>
-                <div class="pf-c-form__group-control pf-m-stack">
-                    <div class="ak-horizontal-radio-select">
-                        <div class="pf-c-form__group-control pf-m-inline">
-                            <div class="pf-c-radio">
-                                <input type="radio" id="reviewer-selection-groups"
-                                       name="reviewerSelection"
-                                       class="pf-c-radio__input"
-                                       value=${ReviewerSelection.Groups}
-                                       ?checked=${this.selectedReviewerSelection === ReviewerSelection.Groups}
-                                       @change=${this.#handleReviewerSelectionChange} />
-                                <label for="reviewer-selection-groups"
-                                       class="pf-c-radio__label">${msg("Anyone in chosen groups")}</label>
-                            </div>
-                            <div class="">
-                                <input type="radio" id="reviewer-selection-users"
-                                       name="reviewerSelection"
-                                       class="pf-c-radio__input"
-                                       ?checked=${this.selectedReviewerSelection === ReviewerSelection.Users}
-                                       value=${ReviewerSelection.Users}
-                                       @change=${this.#handleReviewerSelectionChange} />
-                                <label for="reviewer-selection-users"
-                                       class="pf-c-radio__label">${msg("Specific users")}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="">${this.#renderReviewerSelection()}</div>
-                </div>
+            <ak-form-element-horizontal label=${msg("Reviewer groups")} name="reviewerGroups">
+                ${this.#renderReviewerGroupsSelection()}
+            </ak-form-element-horizontal>
+            <ak-number-input
+                label=${msg("Min reviewers")}
+                min=${1}
+                name="minReviewers"
+                value="${this.instance?.minReviewers ?? 1}"
+                help=${msg("Number of users from the selected reviewer groups that must approve the review.")}></ak-number-input>
+            <ak-switch-input
+                name="minReviewersIsPerGroup"
+                ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
+                label=${msg("Min reviewers is per-group")}
+                help=${msg(
+                    "If checked, approving a review will require at least that many users from each of the selected groups.",
+                )}
+            >
+            </ak-switch-input>
+
+            <ak-form-element-horizontal label=${msg("Reviewers")} name="reviewers">
+                ${this.#renderReviewerUserSelection()}
             </ak-form-element-horizontal>
             ${this.#renderTransportsSelection()}
         `;
     }
 
-    #renderReviewerSelection(): TemplateResult {
-        if (this.selectedReviewerSelection === ReviewerSelection.Groups)
-            return html`
-                ${this.#renderReviewerGroupsSelection()}
-                <ak-number-input
-                    label=${msg("Min reviewers")}
-                    min=${1}
-                    required
-                    name="minReviewers"
-                    value="${this.instance?.minReviewers ?? 1}"
-                    help=${msg("Number of users from the selected reviewer groups that must approve the review.")}></ak-number-input>
-            `;
-
-        return html`${this.#renderReviewerUserSelection()}`;
-
-    }
 
     #renderTargetSelection(): TemplateResult {
         return html`
@@ -301,7 +247,14 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 .selected=${(this.instance?.reviewersObj ?? []).map(userToPair)}
                 available-label=${msg("Available Users")}
                 selected-label=${msg("Selected Users")}
-            ></ak-dual-select-provider>`;
+
+            ></ak-dual-select-provider>
+            <p class="pf-c-form__helper-text">
+                ${msg(
+                    "A review will require approval from each of the users selected here in addition to group members as per above settings.",
+                )}
+            </p>
+        `;
     }
 
     #renderTransportsSelection(): TemplateResult {

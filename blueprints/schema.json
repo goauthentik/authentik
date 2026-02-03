@@ -6861,6 +6861,10 @@
                     "maximum": 32767,
                     "title": "Min reviewers"
                 },
+                "min_reviewers_is_per_group": {
+                    "type": "boolean",
+                    "title": "Min reviewers is per group"
+                },
                 "reviewers": {
                     "type": "array",
                     "items": {
