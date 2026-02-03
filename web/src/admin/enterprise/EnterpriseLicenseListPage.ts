@@ -113,7 +113,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("License(s)")}
+            object-label=${msg("License(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: License) => {
                 return [

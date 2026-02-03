@@ -68,20 +68,20 @@ export class UserTokenList extends Table<Token> {
     renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="submit">${msg("Create Token")}</span>
+                <span slot="header">${msg("New Token")}</span>
                 <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create Token")}
+                    ${msg("New Token")}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create App password")}</span>
+                <span slot="submit">${msg("Create App Password")}</span>
+                <span slot="header">${msg("New App Password")}</span>
                 <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create App password")}
+                    ${msg("New App Password")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
@@ -141,7 +141,7 @@ export class UserTokenList extends Table<Token> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Token(s)")}
+            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => [{ key: msg("Identifier"), value: item.identifier }]}
             .delete=${(item: Token) =>

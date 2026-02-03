@@ -211,7 +211,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Outpost(s)")}
+            object-label=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
