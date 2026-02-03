@@ -41,9 +41,6 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
                   "opened_on", "grace_period_end", "next_review_date", "attestations",
                   "user_can_attest", "reviewer_groups", "min_reviewers", "reviewers"]
         read_only_fields = fields
-        # read_only_fields = ["id", "opened_on", "object_verbose", "object_admin_url",
-        #                     "grace_period_end", "next_review_date", "attestations",
-        #                     "user_can_attest", "reviewer_groups", "min_reviewers", "reviewers"]
 
     def get_object_verbose(self, review: Review) -> str:
         return str(review.object)

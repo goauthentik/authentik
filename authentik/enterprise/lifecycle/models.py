@@ -7,6 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import QuerySet, Q
 from django.db.models.functions import Cast
+from django.db.models.signals import post_save
+from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
@@ -185,13 +187,19 @@ class Review(SerializerModel, ManagedModel):
     def _get_model_name(self):
         return self.content_type.name.lower()
 
+    def _get_event_args(self):
+        return {
+            "target": self.object,
+            "hyperlink": link_for_model(self.object),
+            "hyperlink_label": _(f"Go to {self._get_model_name()}"),
+            "review": self.id
+        }
+
     def initialize(self):
         event = Event.new(
             EventAction.REVIEW_INITIATED,
-            target=self,
             message=_(f"Access review is due for {self.content_type.name} {str(self.object)}"),
-            hyperlink=link_for_model(self.object),
-            hyperlink_label=_(f"Go to {self._get_model_name()}"),
+            **self._get_event_args(),
         )
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
@@ -201,10 +209,8 @@ class Review(SerializerModel, ManagedModel):
 
         event = Event.new(
             EventAction.REVIEW_OVERDUE,
-            target=self,
             message=_(f"Access review is overdue for {self.content_type.name} {str(self.object)}"),
-            hyperlink=link_for_model(self.object),
-            hyperlink_label=_(f"Go to {self._get_model_name()}"),
+            **self._get_event_args(),
         )
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.ALERT)
@@ -216,24 +222,20 @@ class Review(SerializerModel, ManagedModel):
         review.initialize()
         return review
 
-    def make_reviewed(self):
+    def make_reviewed(self, request: HttpRequest):
         self.state = ReviewState.REVIEWED
-        # TODO: store user and http context
         event = Event.new(
             EventAction.REVIEW_COMPLETED,
-            target=self,
             message=_(f"Access review completed for {self.content_type.name} {str(self.object)}"),
-            hyperlink=link_for_model(self.object),
-            hyperlink_label=_(f"Go to {self._get_model_name()}"),
-        )
+            **self._get_event_args()).from_http(request)
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
         self.save()
 
-    def on_attestation(self):
+    def on_attestation(self, request: HttpRequest):
         assert self.state in (ReviewState.PENDING, ReviewState.OVERDUE)
         if self.rule.is_satisfied_for_review(self):
-            self.make_reviewed()
+            self.make_reviewed(request)
 
     def user_can_attest(self, user: User) -> bool:
         if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
@@ -263,10 +265,3 @@ class Attestation(SerializerModel):
         from authentik.enterprise.lifecycle.api.attestations import AttestationSerializer
 
         return AttestationSerializer
-
-    def save(self, *args, **kwargs):
-        # TODO: use signals
-        creating = self.pk is None or kwargs.get("force_insert", False)
-        super().save(*args, **kwargs)
-        if creating:
-            self.review.on_attestation()

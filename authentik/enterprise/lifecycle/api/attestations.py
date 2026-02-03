@@ -20,4 +20,5 @@ class AttestationViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewS
     serializer_class = AttestationSerializer
 
     def perform_create(self, serializer: AttestationSerializer) -> None:
-        serializer.save(reviewer=self.request.user)
+        attestation = serializer.save(reviewer=self.request.user)
+        attestation.review.on_attestation(self.request)
