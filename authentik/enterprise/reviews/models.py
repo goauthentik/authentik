@@ -8,10 +8,13 @@ from django.db import models
 from django.db.models import QuerySet
 from django.db.models.functions import Cast
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
+from authentik.blueprints.models import ManagedModel
 from authentik.core.models import User
+from authentik.enterprise.reviews.utils import link_for_model
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
 
@@ -51,17 +54,29 @@ class LifecycleRule(SerializerModel):
 
         return LifecycleRuleSerializer
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        from authentik.enterprise.reviews.tasks import apply_lifecycle_rule
+        apply_lifecycle_rule.send_with_options(args=(self.id,), rel_obj=self, )
+
     def get_reviews(self):
         qs = Review.objects.filter(content_type=self.content_type)
         if self.object_id:
             qs = qs.filter(object_id=self.object_id)
         else:
             qs = qs.exclude(
-                object_id__in=LifecycleRule.object.filter(
+                object_id__in=LifecycleRule.objects.filter(
                     content_type=self.content_type
                 ).values_list("object_id", flat=True)
             )
         return qs
+
+    def _get_pk_field(self):
+        model = self.content_type.model_class()
+        pk = model._meta.pk
+        while hasattr(pk, "target_field"):
+            pk = pk.target_field
+        return pk.__class__()
 
     def get_objects(self):
         qs = self.content_type.get_all_objects_for_this_type()
@@ -69,8 +84,8 @@ class LifecycleRule(SerializerModel):
             qs = qs.filter(pk=self.object_id)
         else:
             qs = qs.exclude(
-                pk__in=LifecycleRule.object.filter(content_type=self.content_type).values_list(
-                    "object_id", flat=True
+                pk__in=LifecycleRule.objects.filter(content_type=self.content_type, object_id__isnull=False).values_list(
+                    Cast("object_id", output_field=self._get_pk_field()), flat=True
                 )
             )
         return qs
@@ -82,16 +97,12 @@ class LifecycleRule(SerializerModel):
         )
 
     def _get_newly_due_objects(self) -> QuerySet:
-        model = self.content_type.model_class()
-        pk = model._meta.pk
-        while hasattr(pk, "target_field"):
-            pk = pk.target_field
-        pk_output_field = pk.__class__()
 
         recent_review_ids = Review.objects.filter(
             content_type=self.content_type,
+            object_id__isnull= False,
             opened_on__gte=timezone.now() - relativedelta(months=self.interval_months),
-        ).values_list(Cast("object_id", output_field=pk_output_field), flat=True)
+        ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
 
         return self.get_objects().exclude(pk__in=recent_review_ids)
 
@@ -135,7 +146,7 @@ class ReviewState(models.TextChoices):
     OVERDUE = "OVERDUE", _("Overdue")
 
 
-class Review(SerializerModel):
+class Review(SerializerModel, ManagedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, null=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(null=False)
@@ -153,21 +164,25 @@ class Review(SerializerModel):
 
         return ReviewSerializer
 
-    @property
+    @cached_property
     def rule(self) -> LifecycleRule:
         try:
             return LifecycleRule.objects.get(
                 content_type=self.content_type, object_id=self.object_id
             )
         except LifecycleRule.DoesNotExist:
-            return LifecycleRule(content_type=self.content_type)
+            return LifecycleRule.objects.get(content_type=self.content_type, object_id__isnull=True)
+
+    def _get_model_name(self):
+        return self.content_type.name.lower()
 
     def initialize(self):
         event = Event.new(
             EventAction.REVIEW_INITIATED,
             target=self,
             message=_(f"Access review is due for {self.content_type.name} {str(self.object)}"),
-            # TODO:hyperlink
+            hyperlink=link_for_model(self.object),
+            hyperlink_label=_(f"Go to {self._get_model_name()}"),
         )
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
@@ -179,7 +194,8 @@ class Review(SerializerModel):
             EventAction.REVIEW_OVERDUE,
             target=self,
             message=_(f"Access review is overdue for {self.content_type.name} {str(self.object)}"),
-            # TODO:hyperlink
+            hyperlink=link_for_model(self.object),
+            hyperlink_label=_(f"Go to {self._get_model_name()}"),
         )
         event.save()
 
@@ -199,7 +215,8 @@ class Review(SerializerModel):
             EventAction.REVIEW_COMPLETED,
             target=self,
             message=_(f"Access review completed for {self.content_type.name} {str(self.object)}"),
-            # TODO:hyperlink
+            hyperlink=link_for_model(self.object),
+            hyperlink_label=_(f"Go to {self._get_model_name()}"),
         )
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
@@ -209,6 +226,21 @@ class Review(SerializerModel):
         assert self.state in (ReviewState.PENDING, ReviewState.OVERDUE)
         if self.rule.is_satisfied_for_review(self):
             self.make_reviewed()
+
+    def user_can_attest(self, user: User) -> bool:
+        if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
+            return False
+        if self.attestation_set.filter(reviewer=user).exists():
+            return False
+        groups = self.rule.reviewer_groups.all()
+        if groups:
+            for group in groups:
+                if group.is_member(user):
+                    return True
+            return False
+        else:
+            return user in self.rule.get_reviewers()
+
 
 
 class Attestation(SerializerModel):

@@ -21114,14 +21114,37 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /reviews/attestations/:
+    post:
+      operationId: reviews_attestations_create
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttestationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attestation'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /reviews/lifecycle_rules/:
     get:
       operationId: reviews_lifecycle_rules_list
       parameters:
-      - in: query
-        name: content_type
-        schema:
-          type: integer
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -21328,6 +21351,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /reviews/reviews/open/:
+    get:
+      operationId: reviews_reviews_list_open
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - reviews
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -34189,6 +34238,50 @@ components:
       required:
       - name
       - slug
+    Attestation:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        review:
+          type: string
+          format: uuid
+        reviewer:
+          allOf:
+          - $ref: '#/components/schemas/RelatedUser'
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+        note:
+          type: string
+          nullable: true
+      required:
+      - id
+      - review
+      - reviewer
+      - timestamp
+    AttestationRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        review:
+          type: string
+          format: uuid
+        note:
+          type: string
+          nullable: true
+          minLength: 1
+      required:
+      - review
     AuthTypeEnum:
       enum:
       - basic
@@ -39314,28 +39407,6 @@ components:
           type: string
       required:
       - detail
-    GenericForeignKey:
-      type: object
-      properties:
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
-          type: string
-          format: uuid
-      required:
-      - content_type
-      - object_id
-    GenericForeignKeyRequest:
-      type: object
-      properties:
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
-          type: string
-          format: uuid
-      required:
-      - content_type
-      - object_id
     GeoIPPolicy:
       type: object
       description: GeoIP Policy Serializer
@@ -42099,12 +42170,12 @@ components:
           nullable: true
         interval_months:
           type: integer
-          maximum: 32767
-          minimum: -32768
+          maximum: 24
+          minimum: 1
         grace_period_days:
           type: integer
-          maximum: 32767
-          minimum: -32768
+          maximum: 365
+          minimum: 1
         reviewer_groups:
           type: array
           items:
@@ -42115,7 +42186,6 @@ components:
           items:
             $ref: '#/components/schemas/RelatedGroup'
           readOnly: true
-          nullable: true
         min_reviewers:
           type: integer
           maximum: 32767
@@ -42130,7 +42200,6 @@ components:
           items:
             $ref: '#/components/schemas/RelatedUser'
           readOnly: true
-          nullable: true
         notification_transports:
           type: array
           items:
@@ -42144,7 +42213,9 @@ components:
           readOnly: true
       required:
       - content_type
+      - grace_period_days
       - id
+      - interval_months
       - reviewer_groups_obj
       - reviewers
       - reviewers_obj
@@ -42163,12 +42234,12 @@ components:
           minLength: 1
         interval_months:
           type: integer
-          maximum: 32767
-          minimum: -32768
+          maximum: 24
+          minimum: 1
         grace_period_days:
           type: integer
-          maximum: 32767
-          minimum: -32768
+          maximum: 365
+          minimum: 1
         reviewer_groups:
           type: array
           items:
@@ -42193,6 +42264,8 @@ components:
             UI.
       required:
       - content_type
+      - grace_period_days
+      - interval_months
       - reviewers
     Link:
       type: object
@@ -45712,6 +45785,21 @@ components:
       - pagination
       - results
       - autocomplete
+    PaginatedReviewList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedRoleAssignedObjectPermissionList:
       type: object
       properties:
@@ -48608,12 +48696,12 @@ components:
           minLength: 1
         interval_months:
           type: integer
-          maximum: 32767
-          minimum: -32768
+          maximum: 24
+          minimum: 1
         grace_period_days:
           type: integer
-          maximum: 32767
-          minimum: -32768
+          maximum: 365
+          minimum: 1
         reviewer_groups:
           type: array
           items:
@@ -52850,32 +52938,82 @@ components:
         id:
           type: string
           format: uuid
-        object:
-          $ref: '#/components/schemas/GenericForeignKey'
+          readOnly: true
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+        object_verbose:
+          type: string
+          readOnly: true
+        object_admin_url:
+          type: string
+          readOnly: true
         state:
           $ref: '#/components/schemas/ReviewStateEnum'
         opened_on:
           type: string
           format: date
           readOnly: true
+        grace_period_end:
+          type: string
+          format: date
+          readOnly: true
+        next_review_date:
+          type: string
+          format: date
+          readOnly: true
+        attestations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attestation'
+          readOnly: true
+        user_can_attest:
+          type: boolean
+          readOnly: true
+        reviewer_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedGroup'
+          readOnly: true
+        min_reviewers:
+          type: integer
+          readOnly: true
+        reviewers:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedUser'
+          readOnly: true
       required:
-      - object
+      - attestations
+      - content_type
+      - grace_period_end
+      - id
+      - min_reviewers
+      - next_review_date
+      - object_admin_url
+      - object_id
+      - object_verbose
       - opened_on
+      - reviewer_groups
+      - reviewers
+      - user_can_attest
     ReviewRequest:
       type: object
       description: |-
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
       properties:
-        id:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
           type: string
-          format: uuid
-        object:
-          $ref: '#/components/schemas/GenericForeignKeyRequest'
+          minLength: 1
         state:
           $ref: '#/components/schemas/ReviewStateEnum'
       required:
-      - object
+      - content_type
+      - object_id
     ReviewStateEnum:
       enum:
       - REVIEWED

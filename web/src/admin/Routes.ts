@@ -161,6 +161,10 @@ export const ROUTES: Route[] = [
         await import("#admin/events/LifecycleRuleListPage");
         return html`<ak-lifecycle-rule-list></ak-lifecycle-rule-list>`;
     }),
+    new Route(new RegExp("^/events/access-reviews"), async () => {
+        await import("#admin/events/ReviewListPage");
+        return html`<ak-review-list></ak-review-list>`;
+    }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
         await import("#admin/outposts/OutpostListPage");
         return html`<ak-outpost-list></ak-outpost-list>`;

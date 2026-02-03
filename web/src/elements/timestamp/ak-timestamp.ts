@@ -54,6 +54,9 @@ export class AKTimestamp extends AKElement {
     public datetime: boolean = false;
 
     @property({ type: Boolean, useDefault: true })
+    public dateOnly: boolean = false;
+
+    @property({ type: Boolean, useDefault: true })
     public refresh: boolean = false;
 
     #interval = -1;
@@ -150,7 +153,7 @@ export class AKTimestamp extends AKElement {
             ${this.elapsed ? html`<div part="elapsed" id="elapsed">${elapsed}</div>` : nothing}
             ${this.datetime
                 ? html`<small part="datetime" id="datetime"
-                      >${this.timestamp.toLocaleString()}</small
+                      >${this.dateOnly ? this.timestamp.toLocaleDateString() : this.timestamp.toLocaleString()}</small
                   >`
                 : nothing}
         </time>`;

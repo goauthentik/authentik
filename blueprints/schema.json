@@ -7463,10 +7463,6 @@
                     "format": "uuid",
                     "title": "Review"
                 },
-                "reviewer": {
-                    "type": "integer",
-                    "title": "Reviewer"
-                },
                 "note": {
                     "type": [
                         "string",
@@ -7526,14 +7522,14 @@
                 },
                 "interval_months": {
                     "type": "integer",
-                    "minimum": -32768,
-                    "maximum": 32767,
+                    "minimum": 1,
+                    "maximum": 24,
                     "title": "Interval months"
                 },
                 "grace_period_days": {
                     "type": "integer",
-                    "minimum": -32768,
-                    "maximum": 32767,
+                    "minimum": 1,
+                    "maximum": 365,
                     "title": "Grace period days"
                 },
                 "reviewer_groups": {
@@ -7600,34 +7596,19 @@
         "model_authentik_reviews.review": {
             "type": "object",
             "properties": {
-                "id": {
+                "content_type": {
                     "type": "string",
-                    "format": "uuid",
-                    "title": "Id"
-                },
-                "object": {
-                    "type": "object",
-                    "properties": {
-                        "content_type": {
-                            "type": "string",
-                            "enum": [
-                                "authentik_core.application",
-                                "authentik_core.group",
-                                "authentik_rbac.role"
-                            ],
-                            "title": "Content type"
-                        },
-                        "object_id": {
-                            "type": "string",
-                            "format": "uuid",
-                            "title": "Object id"
-                        }
-                    },
-                    "required": [
-                        "content_type",
-                        "object_id"
+                    "enum": [
+                        "authentik_core.application",
+                        "authentik_core.group",
+                        "authentik_rbac.role"
                     ],
-                    "title": "Object"
+                    "title": "Content type"
+                },
+                "object_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Object id"
                 },
                 "state": {
                     "type": "string",

@@ -4,6 +4,7 @@ import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/reviews/ObjectAccessReviewPage"
 import "#components/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
@@ -18,8 +19,8 @@ import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import {
-    Application,
-    CoreApi,
+    Application, ContentTypeEnum,
+    CoreApi, LicenseStatusEnum,
     OutpostsApi,
     RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
@@ -37,9 +38,10 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import {WithLicenseSummary} from "#elements/mixins/license";
 
 @customElement("ak-application-view")
-export class ApplicationViewPage extends AKElement {
+export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     static styles: CSSResult[] = [
         PFList,
         PFBanner,
@@ -409,6 +411,17 @@ export class ApplicationViewPage extends AKElement {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed ?
+                    html`
+                        <ak-object-access-review-page
+                            role="tabpanel"
+                            tabindex="0"
+                            slot="page-access-review"
+                            id="page-access-review"
+                            aria-label="${msg("Access review")}"
+                            model=${ContentTypeEnum.AuthentikCoreApplication}
+                            objectPk=${this.application.pk}
+                        ></ak-object-access-review-page>` : nothing}
             </ak-tabs>
         </main>`;
     }

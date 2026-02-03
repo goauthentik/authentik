@@ -25,7 +25,7 @@ import {customElement, property} from "lit/decorators.js";
 
 @customElement("ak-lifecycle-rule-list")
 export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
-    expandable = true;
+    expandable = false;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -44,7 +44,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Target"), "target"],
+        [msg("Target"), "content_type__model"],
         [msg("Frequency (months)"), "interval_months"],
         [msg("Grace period (days)"), "grace_period_days"],
         [msg("Actions"), null, msg("Row Actions")],
