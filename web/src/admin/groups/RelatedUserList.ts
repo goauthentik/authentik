@@ -439,7 +439,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 : nothing}
             <ak-dropdown class="pf-c-dropdown">
                 <button
-                    class="pf-m-secondary pf-c-dropdown__toggle"
+                    class="pf-c-button pf-m-secondary pf-c-dropdown__toggle"
                     type="button"
                     id="add-user-toggle"
                     aria-haspopup="menu"
@@ -449,10 +449,9 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     <span class="pf-c-dropdown__toggle-text">${msg("Add new user")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-user-menu"
                     aria-labelledby="add-user-toggle"
                     tabindex="-1"
@@ -526,7 +525,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             </a>
                         </ak-forms-modal>
                     </li>
-                </ul>
+                </menu>
             </ak-dropdown>
             ${super.renderToolbar()}
         `;

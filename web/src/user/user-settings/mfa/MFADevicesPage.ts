@@ -82,10 +82,9 @@ export class MFADevicesPage extends Table<Device> {
                     <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-mfa-menu"
                     aria-labelledby="add-mfa-toggle"
                     tabindex="-1"
@@ -105,7 +104,7 @@ export class MFADevicesPage extends Table<Device> {
                             </a>
                         </li>`;
                     })}
-                </ul>
+                </menu>
             </ak-dropdown>`;
         });
     }
