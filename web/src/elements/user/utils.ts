@@ -2,6 +2,8 @@ import { DeleteForm } from "#elements/forms/DeleteForm";
 
 import { User } from "@goauthentik/api";
 
+import { customElement } from "lit/decorators.js";
+
 export function UserOption(user: User): string {
     let finalString = user.username;
     if (user.name || user.email) {
@@ -35,8 +37,15 @@ export function getUserDisplayName(user: User): string {
  * Base class for delete/update forms that work with User objects.
  * Automatically uses username as fallback when user has no display name.
  */
+@customElement("ak-user-delete-form")
 export class UserDeleteForm extends DeleteForm {
     protected override getObjectDisplayName(): string | undefined {
         return this.obj ? getUserDisplayName(this.obj as unknown as User) : undefined;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-delete-form": UserDeleteForm;
     }
 }

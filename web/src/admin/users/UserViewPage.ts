@@ -20,6 +20,7 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
 import "#elements/oauth/UserAccessTokenList";
 import "#elements/oauth/UserRefreshTokenList";
+import "#elements/user/utils";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
@@ -65,11 +66,13 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement)) {
+    #api = new CoreApi(DEFAULT_CONFIG);
+
     @property({ type: Number })
     set userId(id: number) {
-        new CoreApi(DEFAULT_CONFIG)
+        this.#api
             .coreUsersRetrieve({
-                id: id,
+                id,
             })
             .then((user) => {
                 this.user = user;
@@ -157,7 +160,7 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                 .obj=${user}
                 object-label=${msg("User")}
                 .delete=${() => {
-                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                    return this.#api.coreUsersPartialUpdate({
                         id: user.pk,
                         patchedUserRequest: {
                             isActive: !user.isActive,
@@ -196,6 +199,24 @@ export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement))
                       </ak-forms-modal>
                   `
                 : nothing}
+            <ak-user-delete-form
+                .obj=${user}
+                objectLabel=${msg("User")}
+                .usedBy=${() =>
+                    this.#api.coreUsersUsedByList({
+                        id: user.pk,
+                    })}
+                .delete=${() =>
+                    this.#api.coreUsersDestroy({
+                        id: user.pk,
+                    })}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-danger pf-m-block">
+                    <pf-tooltip position="top" content=${msg("Permanently delete this user")}>
+                        ${msg("Delete")}
+                    </pf-tooltip>
+                </button>
+            </ak-user-delete-form>
         </div> `;
     }
 
