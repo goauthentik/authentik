@@ -30,6 +30,7 @@ import "#elements/forms/ModalForm";
 
 @customElement("ak-object-attestation-form")
 export class ObjectAttestationForm extends ModelForm<Attestation, string> {
+
     @property({attribute: false})
     review!: Review;
 
@@ -38,17 +39,7 @@ export class ObjectAttestationForm extends ModelForm<Attestation, string> {
     }
 
     send(data: Attestation): Promise<unknown> {
-        return new ReviewsApi(DEFAULT_CONFIG).reviewsAttestationsCreate({attestationRequest: data}).then(attestation => {
-            this.review.attestations.push(attestation);
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-
-            return attestation;
-        });
+        return new ReviewsApi(DEFAULT_CONFIG).reviewsAttestationsCreate({attestationRequest: data});
     }
 
     protected override serialize(): Attestation | undefined {
@@ -95,6 +86,12 @@ export class AccessReviewAttestations extends Table<Attestation> {
         });
     }
 
+    protected override updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
+        if (changedProperties.has('review'))
+            this.fetch();
+    }
+
     protected columns: TableColumn[] = [
         [msg("Reviewed on"), "timestamp"],
         [msg("Reviewer"), "reviewer"],
@@ -137,7 +134,6 @@ export class AccessReviewAttestations extends Table<Attestation> {
 
 }
 
-
 @customElement("ak-object-access-review-page")
 export class ObjectPermissionPage extends AKElement {
     @property()
@@ -149,20 +145,24 @@ export class ObjectPermissionPage extends AKElement {
     @state()
     protected review?: Review | null;
 
+    protected loading = false;
 
     protected fetchReview() {
-        if (!this.model || !this.objectPk) {
+        if (!this.model || !this.objectPk || this.loading) {
             return
         }
+        this.loading = true;
         new ReviewsApi(DEFAULT_CONFIG).reviewsReviewsLatestRetrieve({
             contentType: this.model,
             objectId: this.objectPk.toString()
         }).then(review => {
             this.review = review;
+            this.loading = false
         }).catch(error => {
             if (error.response.status === 404) {
                 this.review = null;
             }
+            this.loading = false;
         })
     }
 
@@ -182,7 +182,7 @@ export class ObjectPermissionPage extends AKElement {
 
 
     protected override willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("objectPk") && this.objectPk) {
+        if (changedProperties.has("objectPk") && this.objectPk && this.checkVisibility()) {
             this.fetchReview();
         }
     }
