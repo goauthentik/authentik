@@ -270,7 +270,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                             tabindex="0"
                             slot="page-access-review"
                             id="page-access-review"
-                            aria-label="${msg("Access review")}"
+                            aria-label="${msg("Lifecycle")}"
                             model=${ContentTypeEnum.AuthentikCoreGroup}
                             objectPk=${this.group.pk}
                         ></ak-object-access-review-page>` : nothing}

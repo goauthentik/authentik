@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
 
 from authentik.core.models import User
-from authentik.enterprise.reviews.models import LifecycleRule
+from authentik.enterprise.lifecycle.models import LifecycleRule
 from authentik.events.models import Event, Notification, NotificationTransport
 
 

@@ -8759,6 +8759,274 @@ paths:
           description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/attestations/:
+    post:
+      operationId: lifecycle_attestations_create
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttestationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attestation'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/lifecycle_rules/:
+    get:
+      operationId: lifecycle_lifecycle_rules_list
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLifecycleRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_lifecycle_rules_create
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/lifecycle_rules/{id}/:
+    get:
+      operationId: lifecycle_lifecycle_rules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: lifecycle_lifecycle_rules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifecycleRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: lifecycle_lifecycle_rules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLifecycleRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: lifecycle_lifecycle_rules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/reviews/:
+    post:
+      operationId: lifecycle_reviews_create
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/reviews/latest/{content_type}/{object_id}/:
+    get:
+      operationId: lifecycle_reviews_latest_retrieve
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      parameters:
+      - in: path
+        name: content_type
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: path
+        name: object_id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/reviews/open/:
+    get:
+      operationId: lifecycle_reviews_list_open
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /managed/blueprints/:
     get:
       operationId: managed_blueprints_list
@@ -20549,6 +20817,9 @@ paths:
           - authentik_events.notificationwebhookmapping
           - authentik_flows.flow
           - authentik_flows.flowstagebinding
+          - authentik_lifecycle.attestation
+          - authentik_lifecycle.lifecyclerule
+          - authentik_lifecycle.review
           - authentik_outposts.dockerserviceconnection
           - authentik_outposts.kubernetesserviceconnection
           - authentik_outposts.outpost
@@ -20583,9 +20854,6 @@ paths:
           - authentik_rbac.initialpermissions
           - authentik_rbac.role
           - authentik_reports.dataexport
-          - authentik_reviews.attestation
-          - authentik_reviews.lifecyclerule
-          - authentik_reviews.review
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
           - authentik_sources_kerberos.kerberossourcepropertymapping
@@ -21110,274 +21378,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /reviews/attestations/:
-    post:
-      operationId: reviews_attestations_create
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      tags:
-      - reviews
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AttestationRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Attestation'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /reviews/lifecycle_rules/:
-    get:
-      operationId: reviews_lifecycle_rules_list
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - reviews
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedLifecycleRuleList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: reviews_lifecycle_rules_create
-      tags:
-      - reviews
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LifecycleRuleRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LifecycleRule'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /reviews/lifecycle_rules/{id}/:
-    get:
-      operationId: reviews_lifecycle_rules_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this lifecycle rule.
-        required: true
-      tags:
-      - reviews
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LifecycleRule'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: reviews_lifecycle_rules_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this lifecycle rule.
-        required: true
-      tags:
-      - reviews
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LifecycleRuleRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LifecycleRule'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: reviews_lifecycle_rules_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this lifecycle rule.
-        required: true
-      tags:
-      - reviews
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLifecycleRuleRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LifecycleRule'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: reviews_lifecycle_rules_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this lifecycle rule.
-        required: true
-      tags:
-      - reviews
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /reviews/reviews/:
-    post:
-      operationId: reviews_reviews_create
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      tags:
-      - reviews
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReviewRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Review'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /reviews/reviews/latest/{content_type}/{object_id}/:
-    get:
-      operationId: reviews_reviews_latest_retrieve
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      parameters:
-      - in: path
-        name: content_type
-        schema:
-          type: string
-          pattern: ^[^/]+$
-        required: true
-      - in: path
-        name: object_id
-        schema:
-          type: string
-          pattern: ^[^/]+$
-        required: true
-      tags:
-      - reviews
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Review'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /reviews/reviews/open/:
-    get:
-      operationId: reviews_reviews_list_open
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - reviews
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedReviewList'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -34040,6 +34040,7 @@ components:
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
+      - authentik.enterprise.lifecycle
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
@@ -34048,7 +34049,6 @@ components:
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.providers.ws_federation
       - authentik.enterprise.reports
-      - authentik.enterprise.reviews
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
@@ -42788,6 +42788,9 @@ components:
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_endpoints_connectors_fleet.fleetconnector
+      - authentik_lifecycle.lifecyclerule
+      - authentik_lifecycle.review
+      - authentik_lifecycle.attestation
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -42796,9 +42799,6 @@ components:
       - authentik_providers_ssf.ssfprovider
       - authentik_providers_ws_federation.wsfederationprovider
       - authentik_reports.dataexport
-      - authentik_reviews.lifecyclerule
-      - authentik_reviews.review
-      - authentik_reviews.attestation
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage

@@ -12,7 +12,7 @@ import {
     Attestation,
     ContentTypeEnum,
     Review,
-    ReviewsApi,
+    LifecycleApi,
     ReviewStateEnum
 } from "@goauthentik/api";
 import {msg} from "@lit/localize";
@@ -39,7 +39,7 @@ export class ObjectAttestationForm extends ModelForm<Attestation, string> {
     }
 
     send(data: Attestation): Promise<unknown> {
-        return new ReviewsApi(DEFAULT_CONFIG).reviewsAttestationsCreate({attestationRequest: data});
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleAttestationsCreate({attestationRequest: data});
     }
 
     protected override serialize(): Attestation | undefined {
@@ -152,7 +152,7 @@ export class ObjectPermissionPage extends AKElement {
             return
         }
         this.loading = true;
-        new ReviewsApi(DEFAULT_CONFIG).reviewsReviewsLatestRetrieve({
+        new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsLatestRetrieve({
             contentType: this.model,
             objectId: this.objectPk.toString()
         }).then(review => {

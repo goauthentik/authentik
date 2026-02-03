@@ -13,11 +13,11 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.reviews.api.attestations import AttestationSerializer
-from authentik.enterprise.reviews.utils import parse_content_type, \
+from authentik.enterprise.lifecycle.api.attestations import AttestationSerializer
+from authentik.enterprise.lifecycle.utils import parse_content_type, \
     ContentTypeField, ReviewerGroupSerializer, ReviewerUserSerializer, \
     admin_link_for_model
-from authentik.enterprise.reviews.models import Review, ReviewState
+from authentik.enterprise.lifecycle.models import Review, ReviewState
 
 
 class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
@@ -85,7 +85,7 @@ class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
 
-    @extend_schema(operation_id="reviews_reviews_list_open",
+    @extend_schema(operation_id="lifecycle_reviews_list_open",
                    responses={200: ReviewSerializer(many=True)}, )
     @action(
         detail=False,

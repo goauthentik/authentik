@@ -164,7 +164,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                             tabindex="0"
                             slot="page-access-review"
                             id="page-access-review"
-                            aria-label="${msg("Access review")}"
+                            aria-label="${msg("Lifecycle")}"
                             model=${ContentTypeEnum.AuthentikRbacRole}
                             objectPk=${this.targetRole.pk}
                         ></ak-object-access-review-page>` : nothing}

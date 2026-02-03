@@ -418,7 +418,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                             tabindex="0"
                             slot="page-access-review"
                             id="page-access-review"
-                            aria-label="${msg("Access review")}"
+                            aria-label="${msg("Lifecycle")}"
                             model=${ContentTypeEnum.AuthentikCoreApplication}
                             objectPk=${this.application.pk}
                         ></ak-object-access-review-page>` : nothing}
