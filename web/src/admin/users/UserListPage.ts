@@ -6,6 +6,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#admin/users/UserResetEmailForm";
+import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
 import "#elements/TreeView";
 import "#elements/buttons/ActionButton/index";
@@ -14,13 +15,10 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { writeToClipboard } from "#common/clipboard";
 import { PFSize } from "#common/enums";
-import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
@@ -40,23 +38,56 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-export const requestRecoveryLink = (user: User) =>
-    new CoreApi(DEFAULT_CONFIG)
-        .coreUsersRecoveryCreate({
-            id: user.pk,
-        })
-        .then((rec) => writeToClipboard(rec.link, msg("Recovery link copied to clipboard.")))
-        .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
-
-export const renderRecoveryEmailRequest = (user: User) =>
-    html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
-        <span slot="submit">${msg("Send link")}</span>
-        <span slot="header">${msg("Send recovery link to user")}</span>
-        <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
-        <button slot="trigger" class="pf-c-button pf-m-secondary">
-            ${msg("Email recovery link")}
-        </button>
-    </ak-forms-modal>`;
+export const renderRecoveryButtons = ({
+    user,
+    brandHasRecoveryFlow,
+}: {
+    user: User;
+    brandHasRecoveryFlow: boolean;
+}) =>
+    html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
+            <span slot="submit">${msg("Update password")}</span>
+            <span slot="header">
+                ${msg(str`Update ${user.name || user.username}'s password`)}
+            </span>
+            <ak-user-password-form
+                username=${user.username}
+                email=${ifDefined(user.email)}
+                slot="form"
+                .instancePk=${user.pk}
+            ></ak-user-password-form>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                ${msg("Set password")}
+            </button>
+        </ak-forms-modal>
+        ${brandHasRecoveryFlow
+            ? html`
+                  <ak-forms-modal id="ak-link-recovery-request">
+                      <span slot="submit"> ${msg("Create link")} </span>
+                      <span slot="header"> ${msg("Create recovery link")} </span>
+                      <ak-user-recovery-link-form slot="form" .user=${user}>
+                      </ak-user-recovery-link-form>
+                      <button slot="trigger" class="pf-c-button pf-m-secondary">
+                          ${msg("Create recovery link")}
+                      </button>
+                  </ak-forms-modal>
+                  ${user.email
+                      ? html`<ak-forms-modal id="ak-email-recovery-request">
+                            <span slot="submit">${msg("Send link")}</span>
+                            <span slot="header">${msg("Send recovery link to user")}</span>
+                            <ak-user-reset-email-form slot="form" .user=${user}>
+                            </ak-user-reset-email-form>
+                            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                                ${msg("Email recovery link")}
+                            </button>
+                        </ak-forms-modal>`
+                      : html`<p>
+                            ${msg("To email a recovery link, set an email address for this user.")}
+                        </p>`}
+              `
+            : html` <p>
+                  ${msg("To create a recovery link, set a recovery flow for the current brand.")}
+              </p>`}`;
 
 const recoveryButtonStyles = css`
     #recovery-request-buttons {
@@ -331,42 +362,10 @@ export class UserListPage extends WithBrandConfig(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text" id="recovery-request-buttons">
-                        <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
-                            <span slot="submit">${msg("Update password")}</span>
-                            <span slot="header">
-                                ${msg(str`Update ${item.name || item.username}'s password`)}
-                            </span>
-                            <ak-user-password-form
-                                username=${item.username}
-                                email=${ifDefined(item.email)}
-                                slot="form"
-                                .instancePk=${item.pk}
-                            ></ak-user-password-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Set password")}
-                            </button>
-                        </ak-forms-modal>
-                        ${this.brand.flowRecovery
-                            ? html`
-                                  <ak-action-button
-                                      class="pf-m-secondary"
-                                      .apiRequest=${() => requestRecoveryLink(item)}
-                                  >
-                                      ${msg("Create recovery link")}
-                                  </ak-action-button>
-                                  ${item.email
-                                      ? renderRecoveryEmailRequest(item)
-                                      : html`<span
-                                            >${msg(
-                                                "Recovery link cannot be emailed, user has no email address saved.",
-                                            )}</span
-                                        >`}
-                              `
-                            : html` <p>
-                                  ${msg(
-                                      "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
-                                  )}
-                              </p>`}
+                        ${renderRecoveryButtons({
+                            user: item,
+                            brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                        })}
                     </div>
                 </dd>
             </div>
