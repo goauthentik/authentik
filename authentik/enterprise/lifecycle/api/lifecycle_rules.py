@@ -33,6 +33,7 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "reviewer_groups",
             "reviewer_groups_obj",
             "min_reviewers",
+            "min_reviewers_is_per_group",
             "reviewers",
             "reviewers_obj",
             "notification_transports",
@@ -63,8 +64,6 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
         reviewers = attrs.get("reviewers", [])
         if len(reviewer_groups) == 0 and len(reviewers) == 0:
             raise ValidationError(_("Either a reviewer group or a reviewer must be set."))
-        if len(reviewer_groups) > 0 and len(reviewers) > 0:
-            raise ValidationError(_("Cannot set both reviewer groups and reviewers."))
         if attrs.get("grace_period_days") > 28 + (attrs.get("interval_months") - 1) * 30:
             raise ValidationError(
                 {"grace_period": _("Grace period must be shorter than the interval.")}

@@ -42190,6 +42190,8 @@ components:
           type: integer
           maximum: 32767
           minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
         reviewers:
           type: array
           items:
@@ -42249,6 +42251,8 @@ components:
           type: integer
           maximum: 32767
           minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
         reviewers:
           type: array
           items:
@@ -48711,6 +48715,8 @@ components:
           type: integer
           maximum: 32767
           minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
         reviewers:
           type: array
           items:

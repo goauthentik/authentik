@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from django.db.models.functions import Cast
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -13,7 +13,7 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.models import User
+from authentik.core.models import User, Group
 from authentik.enterprise.lifecycle.utils import link_for_model
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
@@ -29,10 +29,12 @@ class LifecycleRule(SerializerModel):
     # Grace period starts after a review is due
     grace_period_days = models.SmallIntegerField(default=28)
 
-    # The review can be conducted by either `min_reviewers` members of `reviewer_groups`
-    # or all of `reviewers`
+    # The review has to be conducted by `min_reviewers` members of `reviewer_groups`
+    # (total or per group depending on `min_reviewers_is_per_group` flag) as well
+    # as all of `reviewers`
     reviewer_groups = models.ManyToManyField("authentik_core.Group", blank=True)
     min_reviewers = models.PositiveSmallIntegerField(default=1)
+    min_reviewers_is_per_group = models.BooleanField(default=False)
     reviewers = models.ManyToManyField("authentik_core.User", blank=True)
 
     notification_transports = models.ManyToManyField(
@@ -84,7 +86,8 @@ class LifecycleRule(SerializerModel):
             qs = qs.filter(pk=self.object_id)
         else:
             qs = qs.exclude(
-                pk__in=LifecycleRule.objects.filter(content_type=self.content_type, object_id__isnull=False).values_list(
+                pk__in=LifecycleRule.objects.filter(content_type=self.content_type,
+                                                    object_id__isnull=False).values_list(
                     Cast("object_id", output_field=self._get_pk_field()), flat=True
                 )
             )
@@ -100,7 +103,7 @@ class LifecycleRule(SerializerModel):
 
         recent_review_ids = Review.objects.filter(
             content_type=self.content_type,
-            object_id__isnull= False,
+            object_id__isnull=False,
             opened_on__gte=timezone.now() - relativedelta(months=self.interval_months),
         ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
 
@@ -114,18 +117,24 @@ class LifecycleRule(SerializerModel):
             Review.start(content_type=self.content_type, object_id=obj.pk)
 
     def is_satisfied_for_review(self, review: Review) -> bool:
-        reviewers = list(self.reviewers.all())
-        if reviewers:
-            return review.attestation_set.filter(reviewer__in=reviewers).distinct(
-                "reviewer"
-            ).count() == len(reviewers)
+        reviewers = self.reviewers.all()
+        if review.attestation_set.filter(reviewer__in=reviewers).distinct(
+            "reviewer"
+        ).count() < reviewers.count():
+            return False
+        if self.min_reviewers_is_per_group:
+            for g in self.reviewer_groups.all():
+                if review.attestation_set.filter(reviewer__groups__in=Group.objects.filter(
+                    pk=g.pk).with_descendants()).distinct().count() < self.min_reviewers:
+                    return False
+            return True
         else:
-            return review.attestation_set.distinct("reviewer").count() >= self.min_reviewers
+            return review.attestation_set.filter(
+                reviewer__groups__in=self.reviewer_groups.all().with_descendants()).distinct().count() >= self.min_reviewers
 
-    def get_reviewers(self) -> list[User]:
-        return list(self.reviewers.all()) or list(
-            User.objects.filter(groups__in=self.reviewer_groups.all())
-        )
+    def get_reviewers(self) -> QuerySet[User]:
+        return User.objects.filter(Q(id__in=self.reviewers.all().values_list('pk', flat=True)) | Q(
+            groups__in=self.reviewer_groups.all().with_descendants()))
 
     def notify_reviewers(self, event: Event, severity: str):
         from authentik.enterprise.lifecycle.tasks import send_notification
@@ -239,7 +248,6 @@ class Review(SerializerModel, ManagedModel):
             return False
         else:
             return user in self.rule.get_reviewers()
-
 
 
 class Attestation(SerializerModel):
