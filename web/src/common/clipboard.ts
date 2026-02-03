@@ -61,7 +61,8 @@ export function writeToClipboard(
 
             return true;
         })
-        .catch(() => {
+        .catch((error) => {
+            console.error("Failed to write to clipboard:", error);
             const fallbackDescription = msg(
                 "Clipboard not available. Please copy the value manually.",
                 {

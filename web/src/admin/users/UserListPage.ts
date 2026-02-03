@@ -159,7 +159,7 @@ export class UserListPage extends WithBrandConfig(
                 </button>
             </ak-user-bulk-revoke-sessions>
             <ak-forms-delete-bulk
-                objectLabel=${msg("User(s)")}
+                object-label=${msg("User(s)")}
                 .objects=${this.selectedElements}
                 .metadata=${(item: User) => {
                     return [
@@ -307,8 +307,8 @@ export class UserListPage extends WithBrandConfig(
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         <ak-user-active-form
+                            object-label=${msg("User")}
                             .obj=${item}
-                            objectLabel=${msg("User")}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                     id: item.pk,
