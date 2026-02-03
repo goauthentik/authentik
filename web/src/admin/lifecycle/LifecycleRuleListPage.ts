@@ -1,4 +1,4 @@
-import "#admin/events/LifecycleRuleForm";
+import "#admin/lifecycle/LifecycleRuleForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
