@@ -39,6 +39,11 @@ export class UserPasswordHashForm extends Form<UserPasswordHashSetRequest> {
                 <p class="pf-c-form__helper-text">
                     ${msg("Enter a pre-hashed password (e.g. pbkdf2_sha256$iterations$salt$hash).")}
                 </p>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Warning: Password hashes set here are not synced back to LDAP or Kerberos.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
         `;
     }
