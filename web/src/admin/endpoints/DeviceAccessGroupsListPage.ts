@@ -76,7 +76,7 @@ export class DeviceAccessGroupsListPage extends TablePage<DeviceAccessGroup> {
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device Group(s)")}
+            object-label=${msg("Device Group(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: DeviceAccessGroup) => {
                 return [{ key: msg("Name"), value: item.name }];

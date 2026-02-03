@@ -89,13 +89,25 @@ class Brand(SerializerModel):
         """Get branding_logo URL"""
         return get_file_manager(FileUsage.MEDIA).file_url(self.branding_logo)
 
+    def branding_logo_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for branding_logo if it contains %(theme)s"""
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_logo)
+
     def branding_favicon_url(self) -> str:
         """Get branding_favicon URL"""
         return get_file_manager(FileUsage.MEDIA).file_url(self.branding_favicon)
 
+    def branding_favicon_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for branding_favicon if it contains %(theme)s"""
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_favicon)
+
     def branding_default_flow_background_url(self) -> str:
         """Get branding_default_flow_background URL"""
         return get_file_manager(FileUsage.MEDIA).file_url(self.branding_default_flow_background)
+
+    def branding_default_flow_background_themed_urls(self) -> dict[str, str] | None:
+        """Get themed URLs for branding_default_flow_background if it contains %(theme)s"""
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.branding_default_flow_background)
 
     @property
     def serializer(self) -> type[Serializer]:

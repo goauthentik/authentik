@@ -55,7 +55,7 @@ def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
     return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
 
 
-def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:
+def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:  # noqa: UP047
     @functools.wraps(func)
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
@@ -94,7 +94,7 @@ class PostgresBroker(Broker):
         return cast(DatabaseWrapper, connections[self.db_alias])
 
     @property
-    def consumer_class(self) -> "type[_PostgresConsumer]":
+    def consumer_class(self) -> type[_PostgresConsumer]:
         return _PostgresConsumer
 
     @cached_property
@@ -329,8 +329,7 @@ class _PostgresConsumer(Consumer):
 
         with self.locks_connection.cursor() as cursor:
             cursor.execute(
-                sql.SQL(
-                    """
+                sql.SQL("""
                     UPDATE {table}
                     SET {state} = %(state)s, {mtime} = %(mtime)s
                     WHERE
@@ -341,8 +340,7 @@ class _PostgresConsumer(Consumer):
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
                         AND
                         pg_try_advisory_lock(%(lock_id)s)
-                    """
-                ).format(
+                    """).format(
                     table=sql.Identifier(self.query_set.model._meta.db_table),
                     state=sql.Identifier("state"),
                     mtime=sql.Identifier("mtime"),

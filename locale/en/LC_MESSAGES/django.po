@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-07 00:12+0000\n"
+"POT-Creation-Date: 2026-02-02 00:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,8 +30,8 @@ msgstr ""
 #, python-format
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
-"hyphens (-), underscores (_), forward slashes (/), and the special "
-"placeholder %(theme)s for theme-specific files"
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -178,6 +178,32 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr ""
@@ -282,14 +308,6 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Can impersonate other users"
-msgstr ""
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr ""
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
 msgstr ""
 
 #: authentik/core/models.py
@@ -507,7 +525,9 @@ msgstr ""
 msgid "Powered by authentik"
 msgstr ""
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -658,6 +678,16 @@ msgstr ""
 msgid "Apple Nonces"
 msgstr ""
 
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+
 #: authentik/endpoints/models.py
 msgid "Device"
 msgstr ""
@@ -716,6 +746,21 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
 msgstr ""
 
 #: authentik/enterprise/models.py
@@ -834,6 +879,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -892,6 +947,15 @@ msgstr ""
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra providers."
 msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
@@ -955,6 +1019,21 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
 msgstr ""
 
 #: authentik/enterprise/reports/models.py
@@ -1076,12 +1155,6 @@ msgstr ""
 msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
-msgstr ""
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
 msgstr ""
 
 #: authentik/events/models.py
@@ -1790,32 +1863,6 @@ msgstr ""
 msgid "Invalid Regex Pattern: {url}"
 msgstr ""
 
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
 msgstr ""
@@ -2066,12 +2113,6 @@ msgstr ""
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Handle backchannel logout notifications dispatched via signal"
-msgstr ""
-
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
 msgstr ""
 
 #: authentik/providers/oauth2/views/device_init.py
@@ -2508,6 +2549,10 @@ msgid "Salesforce"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
@@ -2566,6 +2611,14 @@ msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
 msgstr ""
 
 #: authentik/providers/scim/tasks.py

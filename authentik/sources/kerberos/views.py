@@ -54,13 +54,11 @@ class SPNEGOView(View):
             "if/error.html",
             context={
                 "title": _("SPNEGO authentication required"),
-                "message": _(
-                    """
+                "message": _("""
                     Make sure you have valid tickets (obtainable via kinit)
                     and configured the browser correctly.
                     Please contact your administrator.
-                """
-                ),
+                """),
             },
             status=401,
         )
@@ -130,7 +128,7 @@ class SPNEGOView(View):
 
         try:
             in_token = b64decode(authstr)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             return self.challenge(request)
 
         with Krb5ConfContext(self.source):

@@ -1,17 +1,17 @@
 import "#elements/Divider";
 import "#flow/components/ak-flow-card";
 
-import { formatLocaleDisplayNames, renderLocaleDisplayNames } from "#common/ui/locale/format";
-import { getBestMatchLocale } from "#common/ui/locale/utils";
-
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
 import { BaseStage } from "#flow/stages/base";
+import { LocalePrompt } from "#flow/stages/prompt/components/locale";
 
 import {
+    CapabilitiesEnum,
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
@@ -19,7 +19,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -31,17 +31,18 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // Fixes horizontal rule <hr> warning in select dropdowns.
-/* eslint-disable lit/no-invalid-html */
 
+/**
+ * @prop {PromptChallenge} challenge - The challenge provided to this stage.
+ * @prop {StageHost} host - The host managing this stage.
+ */
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFAlert,
         PFForm,
@@ -59,7 +60,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
-    renderPromptInner(prompt: StagePrompt, disabled = false): TemplateResult {
+    protected renderPromptInner(prompt: StagePrompt): SlottedTemplateResult {
         const fieldId = `field-${prompt.fieldKey}`;
 
         switch (prompt.type) {
@@ -71,7 +72,6 @@ export class PromptStage extends WithCapabilitiesConfig(
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -82,7 +82,6 @@ export class PromptStage extends WithCapabilitiesConfig(
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                 >
 ${prompt.initialValue}</textarea
@@ -116,7 +115,6 @@ ${prompt.initialValue}</textarea
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -128,7 +126,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -140,7 +137,6 @@ ${prompt.initialValue}</textarea
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                 />`;
             case PromptTypeEnum.Number:
@@ -150,7 +146,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -161,7 +156,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -172,7 +166,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -183,7 +176,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?disabled=${disabled}
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -201,11 +193,7 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
             case PromptTypeEnum.Dropdown:
-                return html`<select
-                    class="pf-c-form-control"
-                    name="${prompt.fieldKey}"
-                    ?disabled=${disabled}
-                >
+                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
                         return html`<option
                             value="${choice.value}"
@@ -225,7 +213,6 @@ ${prompt.initialValue}</textarea
                             name="${prompt.fieldKey}"
                             id="${id}"
                             ?checked="${prompt.initialValue === choice.value}"
-                            ?disabled=${disabled}
                             ?required="${prompt.required}"
                             value="${choice.value}"
                         />
@@ -233,38 +220,19 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const entries = formatLocaleDisplayNames(this.activeLanguageTag);
-
-                const currentLanguageTag = prompt.initialValue
-                    ? getBestMatchLocale(prompt.initialValue)
-                    : null;
-
-                return html`<select
-                    class="pf-c-form-control ak-m-capitalize"
-                    id=${fieldId}
-                    name="${prompt.fieldKey}"
-                    ?disabled=${disabled}
-                    aria-label=${msg("Select language", {
-                        id: "language-selector-label",
-                        desc: "Label for the language selection dropdown",
-                    })}
-                >
-                    <option value="" ?selected=${!currentLanguageTag}>
-                        ${msg("Auto-detect", {
-                            id: "locale-auto-detect-option",
-                            desc: "Label for the auto-detect locale option in language selection dropdown",
-                        })}
-                    </option>
-                    <hr />
-                    ${renderLocaleDisplayNames(entries, currentLanguageTag)}
-                </select>`;
+                return LocalePrompt({
+                    activeLanguageTag: this.activeLanguageTag,
+                    prompt,
+                    fieldId,
+                    debug: this.can(CapabilitiesEnum.CanDebug),
+                });
             }
             default:
                 return html`<p>invalid type '${prompt.type}'</p>`;
         }
     }
 
-    renderPromptHelpText(prompt: StagePrompt) {
+    protected renderPromptHelpText(prompt: StagePrompt) {
         if (!prompt.subText) {
             return nothing;
         }
@@ -272,7 +240,7 @@ ${prompt.initialValue}</textarea
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
-    shouldRenderInWrapper(prompt: StagePrompt): boolean {
+    protected shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
         return !(
             prompt.type === PromptTypeEnum.Static ||
@@ -281,7 +249,7 @@ ${prompt.initialValue}</textarea
         );
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected renderField(prompt: StagePrompt): SlottedTemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
@@ -315,10 +283,10 @@ ${prompt.initialValue}</textarea
                 ${AKFormErrors({ errors })}
             </div>`;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
+        return html`${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
-    renderContinue(): TemplateResult {
+    protected renderContinue(): SlottedTemplateResult {
         return html`<fieldset class="pf-c-form__group pf-m-action">
             <legend class="sr-only">${msg("Form actions")}</legend>
             <button name="continue" type="submit" class="pf-c-button pf-m-primary pf-m-block">
@@ -327,10 +295,10 @@ ${prompt.initialValue}</textarea
         </fieldset>`;
     }
 
-    render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${this.challenge.fields.map((prompt) => {
+                ${Array.from(this.challenge?.fields || [], (prompt) => {
                     return this.renderField(prompt);
                 })}
                 ${this.renderNonFieldErrors()} ${this.renderContinue()}

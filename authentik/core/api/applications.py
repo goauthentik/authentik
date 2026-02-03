@@ -24,7 +24,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer
@@ -53,6 +53,9 @@ class ApplicationSerializer(ModelSerializer):
     )
 
     meta_icon_url = ReadOnlyField(source="get_meta_icon")
+    meta_icon_themed_urls = ThemedUrlsSerializer(
+        source="get_meta_icon_themed_urls", read_only=True, allow_null=True
+    )
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -63,7 +66,7 @@ class ApplicationSerializer(ModelSerializer):
             user = self.context["request"].user
 
         # Cache serialized user data to avoid N+1 when formatting launch URLs
-        # for multiple applications. UserSerializer accesses user.ak_groups which
+        # for multiple applications. UserSerializer accesses user.groups which
         # would otherwise trigger a query for each application.
         if user is not None:
             if "_cached_user_data" not in self.context:
@@ -102,6 +105,7 @@ class ApplicationSerializer(ModelSerializer):
             "meta_launch_url",
             "meta_icon",
             "meta_icon_url",
+            "meta_icon_themed_urls",
             "meta_description",
             "meta_publisher",
             "policy_engine_mode",

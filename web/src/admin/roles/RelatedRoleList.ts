@@ -49,7 +49,7 @@ export class RelatedRoleAdd extends Form<{ roles: string[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Roles to add")} name="roles">
             <div class="pf-c-input-group">
                 <ak-user-role-select-table
@@ -120,7 +120,7 @@ export class RelatedRoleList extends Table<Role> {
         if (this.targetGroup) {
             return this.#api.rbacRolesList({
                 ...config,
-                akGroups: this.targetGroup.pk,
+                groups: this.targetGroup.pk,
                 inherited: this.showInherited,
             });
         }
@@ -150,12 +150,12 @@ export class RelatedRoleList extends Table<Role> {
         }
         const disabled = !this.selectedElements.length;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Role(s)")}
-            actionLabel=${msg("Remove from Role(s)")}
-            actionSubtext=${msg(
+            object-label=${msg("Role(s)")}
+            action-label=${msg("Remove from Role(s)")}
+            action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following roles?`,
             )}
-            buttonLabel=${msg("Remove")}
+            button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Role) => {
                 if (!this.targetUser) return;

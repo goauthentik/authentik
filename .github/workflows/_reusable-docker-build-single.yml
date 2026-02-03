@@ -42,7 +42,7 @@ jobs:
       # Needed for checkout
       contents: read
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - name: prepare variables
@@ -56,30 +56,29 @@ jobs:
           release: ${{ inputs.release }}
       - name: Login to Docker Hub
         if: ${{ inputs.registry_dockerhub }}
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ secrets.DOCKER_CORP_USERNAME }}
           password: ${{ secrets.DOCKER_CORP_PASSWORD }}
       - name: Login to GitHub Container Registry
         if: ${{ inputs.registry_ghcr }}
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty clients
-        if: ${{ inputs.release }}
-        run: |
-          mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
-      - name: Setup node
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
-      - name: generate ts client
-        run: make gen-client-ts
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6
+        with:
+          go-version-file: "go.mod"
+      - name: Generate API Clients
+        run: |
+          make gen-client-ts
+          make gen-client-go
       - name: Build Docker Image
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
         id: push
@@ -96,7 +95,7 @@ jobs:
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
           cache-to: ${{ steps.ev.outputs.cacheTo }}
-      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:

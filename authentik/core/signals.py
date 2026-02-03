@@ -51,7 +51,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     if session:
         session.save()
 
-    if not RefreshOtherFlowsAfterAuthentication().get():
+    if not RefreshOtherFlowsAfterAuthentication.get():
         return
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")
@@ -63,7 +63,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
 
 
 @receiver(post_delete, sender=AuthenticatedSession)
-def authenticated_session_delete(sender: type[Model], instance: "AuthenticatedSession", **_):
+def authenticated_session_delete(sender: type[Model], instance: AuthenticatedSession, **_):
     """Delete session when authenticated session is deleted"""
     Session.objects.filter(session_key=instance.pk).delete()
 

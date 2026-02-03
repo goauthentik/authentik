@@ -28,6 +28,51 @@ If using AWS S3, you can omit `--endpoint-url`, but you may need to specify `--r
 
 The bucket ACL is set to private. Depending on your provider you can alternatively disable ACLs and rely on bucket policies.
 
+### Bucket policy
+
+The following actions need to be allowed on the bucket:
+
+```text
+ListObjectsV2
+GetObject
+PutObject
+CreateMultipartUpload
+CompleteMultipartUpload
+AbortMultipartUpload
+DeleteObject
+HeadObject
+```
+
+The following policy can be used in AWS:
+
+```json IAM policy
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ListObjectsInBucket",
+            "Effect": "Allow",
+            "Action": ["s3:ListBucket"],
+            "Resource": "arn:aws:s3:::<bucket_name>"
+        },
+        {
+            "Sid": "ObjectLevelAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:AbortMultipartUpload",
+                "s3:CreateMultipartUpload",
+                "s3:CompleteMultipartUpload",
+                "s3:HeadObject"
+            ],
+            "Resource": "arn:aws:s3:::<bucket_name>/*"
+        }
+    ]
+}
+```
+
 ### CORS policy
 
 Apply a CORS policy to the bucket, allowing the authentik web interface to access images directly.
@@ -54,6 +99,26 @@ Apply the policy to the bucket:
 ```bash
 AWS_ACCESS_KEY_ID=access_key AWS_SECRET_ACCESS_KEY=secret_key aws s3api --endpoint-url=https://s3.provider put-bucket-cors --bucket=authentik-data --cors-configuration=file://cors.json
 ```
+
+### Content-Type
+
+Browsers rely on the HTTP `Content-Type` header to determine how to handle a files; render HTML, display an image, or perform another action.
+
+Ensure that files uploaded to S3 have the correct `Content-Type` header set. If this header is missing or incorrect, browsers may fail to render content properly. For example, images might not display at all. The following command updates the `Content-Type` header for all PNG images in an AWS S3 bucket, and can be adapted for other filetypes:
+
+```bash
+aws s3 cp \
+  s3://<bucket_name>/ s3://<bucket_name/ \
+  --exclude "*" --include "*.png" \
+  --no-guess-mime-type \
+  --content-type "image/png" \
+  --metadata-directive "REPLACE" \
+  --recursive
+```
+
+:::note Terraform uploads
+The `Content-Type` header is not set when files are programmatically uploaded to S3 via Terraform.
+:::
 
 ### Configuring authentik
 

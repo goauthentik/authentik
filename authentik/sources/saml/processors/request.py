@@ -8,17 +8,19 @@ from django.http import HttpRequest
 from lxml import etree  # nosec
 from lxml.etree import Element  # nosec
 
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
+    SAML_BINDING_POST,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.utils import get_random_id
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.time import get_time_string
+from authentik.sources.saml.models import SAMLSource
 
 SESSION_KEY_REQUEST_ID = "authentik/sources/saml/request_id"
 
@@ -63,7 +65,7 @@ class RequestProcessor:
         auth_n_request.attrib["Destination"] = self.source.sso_url
         auth_n_request.attrib["ID"] = self.request_id
         auth_n_request.attrib["IssueInstant"] = self.issue_instant
-        auth_n_request.attrib["ProtocolBinding"] = SAMLBindingTypes(self.source.binding_type).uri
+        auth_n_request.attrib["ProtocolBinding"] = SAML_BINDING_POST
         auth_n_request.attrib["Version"] = "2.0"
         # Create issuer object
         auth_n_request.append(self.get_issuer())
@@ -119,7 +121,7 @@ class RequestProcessor:
             key_info = xmlsec.template.ensure_key_info(signature_node)
             xmlsec.template.add_x509_data(key_info)
 
-            ctx.sign(signature_node)
+            ctx.sign(remove_xml_newlines(auth_n_request, signature_node))
 
         return etree.tostring(auth_n_request).decode()
 
