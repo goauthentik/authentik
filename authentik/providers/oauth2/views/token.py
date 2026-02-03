@@ -3,7 +3,7 @@
 from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -462,9 +462,8 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         if "exp" in token:
-            exp = datetime.fromtimestamp(token["exp"])
-            # Non-timezone aware check since we assume `exp` is in UTC
-            if datetime.now() >= exp:
+            exp = datetime.fromtimestamp(token["exp"], tz=timezone.utc)
+            if datetime.now(timezone.utc) >= exp:
                 LOGGER.info("JWT token expired")
                 raise TokenError("invalid_grant")
 
