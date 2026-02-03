@@ -6,6 +6,7 @@ import {customElement, property, state} from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
@@ -24,8 +25,10 @@ import {EVENT_REFRESH} from "#common/constants";
 import PFDescriptionList
     from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import "#admin/lifecycle/AccessReviewStastus";
+import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 
 @customElement("ak-object-attestation-form")
@@ -188,7 +191,7 @@ export class ObjectPermissionPage extends AKElement {
     }
 
 
-    static styles = [PFBase, PFGrid, PFPage, PFCard, PFDescriptionList];
+    static styles = [PFBase, PFGrid, PFPage, PFBanner, PFCard, PFFlex, PFDescriptionList];
 
 
     protected renderReviewers() {
@@ -212,6 +215,7 @@ export class ObjectPermissionPage extends AKElement {
                     <div>${msg("This object does not have an access review yet.")}</div>
                 </ak-empty-state>`
         return html`
+            <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
             <div
                 role="tabpanel"
                 tabindex="0"
