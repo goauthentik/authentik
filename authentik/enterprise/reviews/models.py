@@ -198,8 +198,7 @@ class Review(SerializerModel, ManagedModel):
             hyperlink_label=_(f"Go to {self._get_model_name()}"),
         )
         event.save()
-
-        # TODO: notifications?
+        self.rule.notify_reviewers(event, NotificationSeverity.ALERT)
         self.save()
 
     @staticmethod
