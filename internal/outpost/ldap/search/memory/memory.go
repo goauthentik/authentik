@@ -52,12 +52,12 @@ func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *
 
 func (ms *MemorySearcher) fetch() {
 	// Error is not handled here, we get an empty/truncated list and the error is logged
-	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
+	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ms.log,
 	})
 	ms.users = users
-	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true), ak.PaginatorOptions{
+	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ms.log,
 	})
