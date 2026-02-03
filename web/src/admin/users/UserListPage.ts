@@ -49,9 +49,7 @@ export const renderRecoveryButtons = ({
 }) =>
     html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
             <span slot="submit">${msg("Update password")}</span>
-            <span slot="header">
-                ${msg(str`Update ${getUserDisplayName(user)}'s password`)}
-            </span>
+            <span slot="header"> ${msg(str`Update ${getUserDisplayName(user)}'s password`)} </span>
             <ak-user-password-form
                 username=${user.username}
                 email=${ifDefined(user.email)}
@@ -64,9 +62,7 @@ export const renderRecoveryButtons = ({
         </ak-forms-modal>
         <ak-forms-modal size=${PFSize.Medium} id="update-password-hash-request">
             <span slot="submit">${msg("Update password")}</span>
-            <span slot="header">
-                ${msg(str`Update ${getUserDisplayName(user)}'s password`)}
-            </span>
+            <span slot="header"> ${msg(str`Update ${getUserDisplayName(user)}'s password`)} </span>
             <ak-user-password-hash-form slot="form" .instancePk=${user.pk}>
             </ak-user-password-hash-form>
             <button slot="trigger" class="pf-c-button pf-m-secondary">
