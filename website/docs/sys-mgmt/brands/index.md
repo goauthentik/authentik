@@ -30,8 +30,8 @@ The brand settings define the visual identity of the brand, including:
     :::
 
 - **Favicon**: Shown on the browser tab.
-- **Default flow background** :ak-version[2025.4]: Default background image for the flow executor, can be overridden per flow, see [Flow configuration options](../../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options).
-- **Custom CSS** :ak-version[2025.4]: Add custom CSS to further customize the look of authentik. Creating such a file is outside the scope of this document.
+- **Default flow background** :ak-version[2025.4]: Default background image for the flow executor.See [Flow configuration options](../../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options) to override this image on a per-flow basis.
+- **Custom CSS** :ak-version[2025.4]: Add custom CSS to further customize the look of authentik. See [Custom CSS documentation](./custom-css.mdx) for more information.
 
 ### External user settings
 
