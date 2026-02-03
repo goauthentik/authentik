@@ -14,7 +14,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import User
-from authentik.enterprise.reviews.utils import link_for_model
+from authentik.enterprise.lifecycle.utils import link_for_model
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
 
@@ -50,13 +50,13 @@ class LifecycleRule(SerializerModel):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.reviews.api.lifecycle_rules import LifecycleRuleSerializer
+        from authentik.enterprise.lifecycle.api.lifecycle_rules import LifecycleRuleSerializer
 
         return LifecycleRuleSerializer
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        from authentik.enterprise.reviews.tasks import apply_lifecycle_rule
+        from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
         apply_lifecycle_rule.send_with_options(args=(self.id,), rel_obj=self, )
 
     def get_reviews(self):
@@ -128,7 +128,7 @@ class LifecycleRule(SerializerModel):
         )
 
     def notify_reviewers(self, event: Event, severity: str):
-        from authentik.enterprise.reviews.tasks import send_notification
+        from authentik.enterprise.lifecycle.tasks import send_notification
 
         for transport in self.notification_transports.all():
             for user in self.get_reviewers():
@@ -160,7 +160,7 @@ class Review(SerializerModel, ManagedModel):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.reviews.api.reviews import ReviewSerializer
+        from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
 
         return ReviewSerializer
 
@@ -252,11 +252,12 @@ class Attestation(SerializerModel):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.reviews.api.attestations import AttestationSerializer
+        from authentik.enterprise.lifecycle.api.attestations import AttestationSerializer
 
         return AttestationSerializer
 
     def save(self, *args, **kwargs):
+        # TODO: use signals
         creating = self.pk is None or kwargs.get("force_insert", False)
         super().save(*args, **kwargs)
         if creating:

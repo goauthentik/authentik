@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_user
-from authentik.enterprise.reviews.models import Attestation, LifecycleRule, Review, ReviewState
+from authentik.enterprise.lifecycle.models import Attestation, LifecycleRule, Review, ReviewState
 from authentik.events.models import (
     Event,
     EventAction,
@@ -121,7 +121,7 @@ class TestReviewModels(TestCase):
         event.save()
 
         with patch(
-            "authentik.enterprise.reviews.tasks.send_notification.send_with_options"
+            "authentik.enterprise.lifecycle.tasks.send_notification.send_with_options"
         ) as send_with_options:
             rule.notify_reviewers(event, NotificationSeverity.NOTICE)
 
@@ -213,7 +213,7 @@ class TestReviewModels(TestCase):
         overdue_before = Event.objects.filter(action=EventAction.REVIEW_OVERDUE).count()
 
         with patch(
-            "authentik.enterprise.reviews.tasks.send_notification.send_with_options"
+            "authentik.enterprise.lifecycle.tasks.send_notification.send_with_options"
         ) as send_with_options:
             rule_due.apply()
             rule_overdue.apply()

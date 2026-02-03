@@ -15,7 +15,7 @@ import {TablePage} from "#elements/table/TablePage";
 import {SlottedTemplateResult} from "#elements/types";
 
 import {
-    Review, ReviewsApi,
+    Review, LifecycleApi,
 } from "@goauthentik/api";
 
 import {msg} from "@lit/localize";
@@ -39,7 +39,7 @@ export class ReviewListPage extends TablePage<Review> {
     order = "grace_period_till";
 
     async apiEndpoint(): Promise<PaginatedResponse<Review>> {
-        return new ReviewsApi(DEFAULT_CONFIG).reviewsReviewsListOpen(await this.defaultEndpointConfig());
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsListOpen(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [

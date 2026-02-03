@@ -16,7 +16,7 @@ import {SlottedTemplateResult} from "#elements/types";
 
 import {
     LifecycleRule,
-    RbacPermissionsAssignedByRolesListModelEnum, ReviewsApi,
+    RbacPermissionsAssignedByRolesListModelEnum, LifecycleApi,
 } from "@goauthentik/api";
 
 import {msg} from "@lit/localize";
@@ -40,7 +40,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
-        return new ReviewsApi(DEFAULT_CONFIG).reviewsLifecycleRulesList(await this.defaultEndpointConfig());
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -58,7 +58,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
                 .objects=${this.selectedElements}
                 .delete=${(item: LifecycleRule) => {
                     if (item.id)
-                        return new ReviewsApi(DEFAULT_CONFIG).reviewsLifecycleRulesDestroy({
+                        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesDestroy({
                             id: item.id,
                         });
                 }}
@@ -91,7 +91,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
                     </ak-forms-modal>
 
                     <ak-rbac-object-permission-modal
-                        model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikReviewsLifecyclerule}
+                        model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikLifecycleLifecyclerule}
                         objectPk=${item.id}
                     >
                     </ak-rbac-object-permission-modal>

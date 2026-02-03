@@ -1,5 +1,4 @@
 from django.utils.translation import gettext as _
-from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import SlugRelatedField
@@ -8,9 +7,9 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.reviews.utils import ContentTypeField, ReviewerGroupSerializer, \
+from authentik.enterprise.lifecycle.utils import ContentTypeField, ReviewerGroupSerializer, \
     ReviewerUserSerializer
-from authentik.enterprise.reviews.models import LifecycleRule
+from authentik.enterprise.lifecycle.models import LifecycleRule
 
 
 

@@ -4,18 +4,18 @@ from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class ReportsConfig(EnterpriseConfig):
-    name = "authentik.enterprise.reviews"
-    label = "authentik_reviews"
+    name = "authentik.enterprise.lifecycle"
+    label = "authentik_lifecycle"
     verbose_name = "authentik Enterprise.Reviews"
     default = True
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.enterprise.reviews.tasks import apply_lifecycle_rules
+        from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rules
 
         return [
             ScheduleSpec(
                 actor=apply_lifecycle_rules,
-                crontab=f"{fqdn_rand('reviews_apply_lifecycle_rules')} 0 * * *",
+                crontab=f"{fqdn_rand('lifecycle_apply_lifecycle_rules')} 0 * * *",
             )
         ]

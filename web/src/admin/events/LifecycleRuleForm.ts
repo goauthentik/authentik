@@ -15,7 +15,7 @@ import {
     Application,
     ContentTypeEnum, CoreApi,
     Group, LifecycleRule, RbacApi, ReviewerGroup, ReviewerUser,
-    ReviewsApi, Role,
+    LifecycleApi, Role,
 } from "@goauthentik/api";
 
 import {msg} from "@lit/localize";
@@ -65,7 +65,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     }
 
     async loadInstance(pk: string): Promise<LifecycleRule> {
-        const rule = await new ReviewsApi(DEFAULT_CONFIG).reviewsLifecycleRulesRetrieve({
+        const rule = await new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesRetrieve({
             id: pk,
         });
         this.#selectedContentType = rule.contentType;
@@ -103,12 +103,12 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
 
     async send(data: LifecycleRule): Promise<LifecycleRule> {
         if (this.instance) {
-            return new ReviewsApi(DEFAULT_CONFIG).reviewsLifecycleRulesUpdate({
+            return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesUpdate({
                 id: this.instance.id || "",
                 lifecycleRuleRequest: data,
             });
         }
-        return new ReviewsApi(DEFAULT_CONFIG).reviewsLifecycleRulesCreate({
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesCreate({
             lifecycleRuleRequest: data,
         });
     }
