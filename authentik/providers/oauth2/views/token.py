@@ -3,6 +3,7 @@
 from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
+from hmac import compare_digest
 from datetime import datetime
 from re import error as RegexError
 from re import fullmatch
@@ -163,7 +164,7 @@ class TokenParams:
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
             if (
                 self.provider.client_type == ClientTypes.CONFIDENTIAL
-                and self.provider.client_secret != self.client_secret
+                and not compare_digest(self.provider.client_secret, self.client_secret)
             ):
                 LOGGER.warning(
                     "Invalid client secret",
@@ -322,7 +323,7 @@ class TokenParams:
                 request, request.POST.get("username"), request.POST.get("password")
             )
         # Standard method which creates an automatic user
-        if self.client_secret == self.provider.client_secret:
+        if compare_digest(self.client_secret, self.provider.client_secret):
             return self.__post_init_client_credentials_generated(request)
         # Standard workaround method which stores username:password
         # as client_secret
