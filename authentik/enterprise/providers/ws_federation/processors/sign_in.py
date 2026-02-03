@@ -53,6 +53,8 @@ class SignInRequest:
         )
 
         _, provider = req.get_app_provider()
+        if not req.wreply:
+            req.wreply = provider.acs_url
         if not req.wreply.startswith(provider.acs_url):
             raise ValueError("Invalid wreply")
         return req
