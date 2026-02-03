@@ -48,13 +48,13 @@ export class TokenCopyButton extends BaseTaskButton<TokenView> {
         });
     }
 
-    public override async onSuccess(token: TokenView) {
+    protected override async onSuccess(token: TokenView) {
         super.onSuccess(token);
 
         return writeToClipboard(token.key, this.entityLabel);
     }
 
-    async onError(error: unknown) {
+    protected async onError(error: unknown) {
         super.onError(error);
         const parsedError = await parseAPIResponseError(error);
 
