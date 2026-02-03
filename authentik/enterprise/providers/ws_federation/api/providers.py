@@ -15,7 +15,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
     """WSFederationProvider Serializer"""
 
     reply_url = URLField(source="acs_url")
-    wtrealm = CharField(source="issuer")
+    wtrealm = CharField(source="audience")
     url_wsfed = SerializerMethodField()
 
     def get_url_wsfed(self, instance: WSFederationProvider) -> str:

@@ -10,7 +10,7 @@ class WSFederationProvider(SAMLProvider):
 
     # Alias'd fields:
     # - acs_url -> reply_url
-    # - issuer -> realm / wtrealm
+    # - audience -> realm / wtrealm
 
     @property
     def serializer(self) -> type[Serializer]:

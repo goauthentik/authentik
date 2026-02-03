@@ -65,7 +65,7 @@ class TestProviderWSFed(SeleniumTestCase):
         provider = WSFederationProvider.objects.create(
             name=generate_id(),
             acs_url="http://localhost:8080",
-            issuer=self.realm,
+            audience=self.realm,
             authorization_flow=authorization_flow,
             invalidation_flow=invalidation_flow,
             signing_kp=create_test_cert(),
@@ -152,7 +152,7 @@ class TestProviderWSFed(SeleniumTestCase):
         provider = WSFederationProvider.objects.create(
             name=generate_id(),
             acs_url="http://localhost:8080",
-            issuer=self.realm,
+            audience=self.realm,
             authorization_flow=authorization_flow,
             signing_kp=create_test_cert(),
         )
