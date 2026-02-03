@@ -124,7 +124,7 @@ class LifecycleRule(SerializerModel):
 
     def get_reviewers(self) -> list[User]:
         return list(self.reviewers.all()) or list(
-            User.objects.filter(ak_groups__in=self.reviewer_groups.all())
+            User.objects.filter(groups__in=self.reviewer_groups.all())
         )
 
     def notify_reviewers(self, event: Event, severity: str):
