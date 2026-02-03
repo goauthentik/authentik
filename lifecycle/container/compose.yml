@@ -36,6 +36,7 @@ services:
     - ${COMPOSE_PORT_HTTP:-9000}:9000
     - ${COMPOSE_PORT_HTTPS:-9443}:9443
     restart: unless-stopped
+    shm_size: 512mb
     volumes:
     - ./data:/data
     - ./custom-templates:/templates
@@ -54,6 +55,7 @@ services:
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2026.2.0-rc1}
     restart: unless-stopped
+    shm_size: 512mb
     user: root
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock

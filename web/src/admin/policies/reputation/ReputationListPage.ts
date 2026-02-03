@@ -58,7 +58,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Reputation")}
+            object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({

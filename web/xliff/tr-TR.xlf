@@ -9744,6 +9744,15 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s217a96c47caaf73d">
   <source>Could not find a suitable CAPTCHA provider.</source>
 </trans-unit>
+<trans-unit id="sdf2794b96386c868">
+  <source>Copy time-based one-time password secret</source>
+</trans-unit>
+<trans-unit id="sd51dfcc50a703c13">
+  <source>Successfully copied TOTP Secret.</source>
+</trans-unit>
+<trans-unit id="sc78d16417878afd0">
+  <source>Copy Secret</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
