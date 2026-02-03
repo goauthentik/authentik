@@ -134,7 +134,7 @@ class LifecycleRule(SerializerModel):
 
     def get_reviewers(self) -> QuerySet[User]:
         return User.objects.filter(Q(id__in=self.reviewers.all().values_list('pk', flat=True)) | Q(
-            groups__in=self.reviewer_groups.all().with_descendants()))
+            groups__in=self.reviewer_groups.all().with_descendants())).distinct()
 
     def notify_reviewers(self, event: Event, severity: str):
         from authentik.enterprise.lifecycle.tasks import send_notification
