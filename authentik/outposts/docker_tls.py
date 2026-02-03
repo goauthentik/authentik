@@ -1,12 +1,17 @@
 """Create Docker TLSConfig from CertificateKeyPair"""
 
-from os import unlink
+import os
 from pathlib import Path
 from tempfile import gettempdir
 
 from docker.tls import TLSConfig
 
 from authentik.crypto.models import CertificateKeyPair
+
+
+def opener(path, flags):
+    """File opener to create files as 600 perms"""
+    return os.open(path, flags, 0o600)
 
 
 class DockerInlineTLS:
@@ -29,7 +34,7 @@ class DockerInlineTLS:
     def write_file(self, name: str, contents: str) -> str:
         """Wrapper for mkstemp that uses fdopen"""
         path = Path(gettempdir(), name)
-        with open(path, "w", encoding="utf8") as _file:
+        with open(path, "w", encoding="utf8", opener=opener) as _file:
             _file.write(contents)
         self._paths.append(str(path))
         return str(path)
@@ -37,7 +42,7 @@ class DockerInlineTLS:
     def cleanup(self):
         """Clean up certificates when we're done"""
         for path in self._paths:
-            unlink(path)
+            os.unlink(path)
 
     def write(self) -> TLSConfig:
         """Create TLSConfig with Certificate Key pairs"""
