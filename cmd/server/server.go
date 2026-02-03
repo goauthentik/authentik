@@ -14,12 +14,15 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/debug"
+	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
 )
+
+var debugWorker = true
 
 var rootCmd = &cobra.Command{
 	Use:              "authentik",
@@ -63,10 +66,30 @@ var rootCmd = &cobra.Command{
 			}
 			go attemptProxyStart(ws, u)
 		})
+		if config.Get().Debug && debugWorker {
+			w := gounicorn.NewWorker(func() bool {
+				return true
+			})
+			go func() {
+				err := w.Start()
+				if err != nil {
+					l.WithError(err).Warning("failed to start worker")
+				}
+			}()
+			defer func() {
+				if w == nil {
+					return
+				}
+				l.Info("Shutting down worker")
+				w.Kill()
+			}()
+		}
 		ws.Start()
+		defer func() {
+			l.Info("shutting down webserver")
+			ws.Shutdown()
+		}()
 		<-ex
-		l.Info("shutting down webserver")
-		go ws.Shutdown()
 	},
 }
 
@@ -105,5 +128,11 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 		} else {
 			select {}
 		}
+	}
+}
+
+func init() {
+	if config.Get().Debug {
+		rootCmd.PersistentFlags().BoolVarP(&debugWorker, "with-worker", "w", true, "Whether to run a worker process in debug mode")
 	}
 }

@@ -81,7 +81,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
+	outposts, _ := retry.DoWithData(
 		func() (*api.PaginatedOutpostList, error) {
 			outposts, _, err := apiClient.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 			return outposts, err
