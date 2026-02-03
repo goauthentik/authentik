@@ -190,7 +190,6 @@ SPECTACULAR_SETTINGS = {
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "StageModeEnum": "authentik.endpoints.models.StageMode",
-        "LicenseSummaryStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
