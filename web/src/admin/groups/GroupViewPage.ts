@@ -3,6 +3,7 @@ import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RelatedRoleList";
 import "#components/ak-object-attributes-card";
+import "#admin/reviews/ObjectAccessReviewPage"
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -20,7 +21,12 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { CoreApi, Group, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+import {
+    ContentTypeEnum,
+    CoreApi,
+    Group, LicenseStatusEnum,
+    RbacPermissionsAssignedByRolesListModelEnum
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -35,9 +41,10 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
+import {WithLicenseSummary} from "#elements/mixins/license";
 
 @customElement("ak-group-view")
-export class GroupViewPage extends AKElement {
+export class GroupViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set groupId(id: string) {
         new CoreApi(DEFAULT_CONFIG)
@@ -256,6 +263,17 @@ export class GroupViewPage extends AKElement {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed ?
+                    html`
+                        <ak-object-access-review-page
+                            role="tabpanel"
+                            tabindex="0"
+                            slot="page-access-review"
+                            id="page-access-review"
+                            aria-label="${msg("Access review")}"
+                            model=${ContentTypeEnum.AuthentikCoreGroup}
+                            objectPk=${this.group.pk}
+                        ></ak-object-access-review-page>` : nothing}
             </ak-tabs>
         </main>`;
     }

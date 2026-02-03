@@ -1,6 +1,7 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/reviews/ObjectAccessReviewPage"
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -15,7 +16,12 @@ import { AKElement } from "#elements/Base";
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import { RbacApi, RbacPermissionsAssignedByRolesListModelEnum, Role } from "@goauthentik/api";
+import {
+    ContentTypeEnum, LicenseStatusEnum,
+    RbacApi,
+    RbacPermissionsAssignedByRolesListModelEnum,
+    Role
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -28,9 +34,10 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
+import {WithLicenseSummary} from "#elements/mixins/license";
 
 @customElement("ak-role-view")
-export class RoleViewPage extends AKElement {
+export class RoleViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set roleId(id: string) {
         new RbacApi(DEFAULT_CONFIG)
@@ -150,6 +157,17 @@ export class RoleViewPage extends AKElement {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed ?
+                    html`
+                        <ak-object-access-review-page
+                            role="tabpanel"
+                            tabindex="0"
+                            slot="page-access-review"
+                            id="page-access-review"
+                            aria-label="${msg("Access review")}"
+                            model=${ContentTypeEnum.AuthentikRbacRole}
+                            objectPk=${this.targetRole.pk}
+                        ></ak-object-access-review-page>` : nothing}
             </ak-tabs>
         </main>`;
     }

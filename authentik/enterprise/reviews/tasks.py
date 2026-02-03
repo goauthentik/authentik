@@ -9,8 +9,16 @@ from authentik.events.models import Event, Notification, NotificationTransport
 @actor(description=_("Apply object lifecycle rules."))
 def apply_lifecycle_rules():
     for rule in LifecycleRule.objects.all():
-        rule.apply()
+        apply_lifecycle_rule.send_with_options(
+            args=(rule.id,),
+            rel_obj=rule,
+        )
 
+@actor(description=_("Apply lifecycle rule."))
+def apply_lifecycle_rule(rule_id: str):
+    rule = LifecycleRule.objects.filter(pk=rule_id).first()
+    if rule:
+        rule.apply()
 
 @actor(description=_("Send notification."))
 def send_notification(transport_pk: int, event_pk: str, user_pk: int, severity: str):
