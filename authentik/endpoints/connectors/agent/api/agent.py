@@ -7,6 +7,8 @@ from rest_framework.fields import (
 )
 
 from authentik.api.v3.config import ConfigSerializer, ConfigView
+from authentik.brands.api import CurrentBrandSerializer
+from authentik.brands.models import Brand
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.models import CertificateKeyPair
@@ -37,6 +39,7 @@ class AgentConfigSerializer(PassiveSerializer):
 
     system_config = SerializerMethodField()
     license_status = SerializerMethodField(required=False, allow_null=True)
+    brand = SerializerMethodField(required=False, allow_null=True)
 
     def get_device_id(self, instance: AgentConnector) -> str:
         device: Device = self.context["device"]
@@ -69,6 +72,10 @@ class AgentConfigSerializer(PassiveSerializer):
             return LicenseKey.cached_summary().status
         except ModuleNotFoundError:
             return None
+
+    def get_brand(self, instance: AgentConnector) -> CurrentBrandSerializer:
+        brand: Brand = self.context["request"]._request.brand
+        return CurrentBrandSerializer(brand, context=self.context).data
 
 
 class EnrollSerializer(PassiveSerializer):

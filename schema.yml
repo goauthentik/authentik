@@ -33466,9 +33466,15 @@ components:
           - $ref: '#/components/schemas/LicenseStatusEnum'
           readOnly: true
           nullable: true
+        brand:
+          allOf:
+          - $ref: '#/components/schemas/CurrentBrand'
+          readOnly: true
+          nullable: true
       required:
       - auth_terminate_session_on_expiry
       - authorization_flow
+      - brand
       - device_id
       - jwks_auth
       - jwks_challenge
