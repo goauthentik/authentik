@@ -633,7 +633,16 @@ const items = [
         collapsed: true,
         items: [
             "sys-mgmt/background-tasks",
-            "sys-mgmt/brands",
+            {
+                type: "category",
+                label: "Brands",
+                collapsed: true,
+                link: {
+                    id: "sys-mgmt/brands/index",
+                    type: "doc",
+                },
+                items: ["sys-mgmt/brands/custom-css"],
+            },
             {
                 //#endregion
 
