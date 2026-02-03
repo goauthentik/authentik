@@ -3,9 +3,8 @@ import "#flow/components/ak-flow-card";
 import "webcomponent-qr-code";
 import "#types/qr-code";
 
-import { MessageLevel } from "#common/messages";
+import { writeToClipboard } from "#common/clipboard";
 
-import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
@@ -29,30 +28,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-
-/**
- * Copies a value to the clipboard and notifies the user about the result.
- */
-function copyToClipboard(value: string, successMessage: string): Promise<void> {
-    if (!navigator.clipboard) {
-        showMessage({
-            level: MessageLevel.info,
-            message: value,
-        });
-
-        return Promise.resolve();
-    }
-
-    return navigator.clipboard.writeText(value).then(() => {
-        showMessage(
-            {
-                level: MessageLevel.success,
-                message: successMessage,
-            },
-            true,
-        );
-    });
-}
 
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
@@ -85,19 +60,35 @@ export class AuthenticatorTOTPStage extends BaseStage<
     #copyTOTPToClipboard = (event: Event): void => {
         event.preventDefault();
 
-        const configUrl = this.challenge?.configUrl;
-        if (!configUrl) return;
-
-        copyToClipboard(configUrl, msg("Successfully copied TOTP Config."));
+        writeToClipboard(
+            this.challenge?.configUrl,
+            msg("TOTP Config", {
+                id: "totp.config",
+            }),
+            msg(
+                "Paste this URL into your authenticator app to set up a time-based one-time password.",
+                {
+                    id: "totp.config.clipboard.description",
+                },
+            ),
+        );
     };
 
     #copySecretToClipboard = (event: Event): void => {
         event.preventDefault();
 
-        const secret = this.#secretParam;
-        if (!secret) return;
-
-        copyToClipboard(secret, msg("Successfully copied TOTP Secret."));
+        writeToClipboard(
+            this.#secretParam,
+            msg("TOTP Secret", {
+                id: "totp.secret",
+            }),
+            msg(
+                "Paste this secret into your authenticator app to set up a time-based one-time password.",
+                {
+                    id: "totp.secret.clipboard.description",
+                },
+            ),
+        );
     };
 
     get #secretParam(): string | null {
@@ -136,7 +127,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                 @click=${this.#copyTOTPToClipboard}
                             >
                                 <span class="pf-c-button__progress"
-                                    ><i class="fas fa-copy" aria-hidden="true"></i
+                                    ><i class="fas fa-code" aria-hidden="true"></i
                                 ></span>
                                 ${msg("Copy TOTP Config")}
                             </button>

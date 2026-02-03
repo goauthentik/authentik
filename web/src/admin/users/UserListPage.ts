@@ -14,13 +14,13 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { writeToClipboard } from "#common/clipboard";
 import { PFSize } from "#common/enums";
 import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
-import { MessageLevel } from "#common/messages";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithSession } from "#elements/mixins/session";
@@ -28,7 +28,6 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -46,17 +45,7 @@ export const requestRecoveryLink = (user: User) =>
         .coreUsersRecoveryCreate({
             id: user.pk,
         })
-        .then((rec) =>
-            writeToClipboard(rec.link).then((wroteToClipboard) =>
-                showMessage({
-                    level: MessageLevel.success,
-                    message: rec.link,
-                    description: wroteToClipboard
-                        ? msg("A copy of this recovery link has been placed in your clipboard")
-                        : "",
-                }),
-            ),
-        )
+        .then((rec) => writeToClipboard(rec.link, msg("Recovery link copied to clipboard.")))
         .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
 
 export const renderRecoveryEmailRequest = (user: User) =>
