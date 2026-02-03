@@ -6,7 +6,7 @@ import { MessageLevel } from "#common/messages";
 import { BaseTaskButton } from "#elements/buttons/SpinnerButton/BaseTaskButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 
-import { CoreApi, TokenView } from "@goauthentik/api";
+import { CoreApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
@@ -27,7 +27,7 @@ import { customElement, property } from "lit/decorators.js";
  */
 
 @customElement("ak-token-copy-button")
-export class TokenCopyButton extends BaseTaskButton<TokenView> {
+export class TokenCopyButton extends BaseTaskButton<null> {
     /**
      * The identifier key associated with this token.
      * @attr
@@ -43,15 +43,16 @@ export class TokenCopyButton extends BaseTaskButton<TokenView> {
             throw new TypeError("No `identifier` set for `TokenCopyButton`");
         }
 
-        return new CoreApi(DEFAULT_CONFIG).coreTokensViewKeyRetrieve({
-            identifier: this.identifier,
+        // Safari permission hack.
+        const text = new ClipboardItem({
+            "text/plain": new CoreApi(DEFAULT_CONFIG)
+                .coreTokensViewKeyRetrieve({
+                    identifier: this.identifier,
+                })
+                .then((tokenView) => new Blob([tokenView.key], { type: "text/plain" })),
         });
-    }
 
-    protected override async onSuccess(token: TokenView) {
-        super.onSuccess(token);
-
-        return writeToClipboard(token.key, this.entityLabel);
+        return writeToClipboard(text, this.entityLabel).then(() => null);
     }
 
     protected async onError(error: unknown) {
