@@ -51,7 +51,7 @@ class GenericForeignKeySerializer(Serializer):
     object_id = UUIDField()
 
 
-class RelatedGroupSerializer(ModelSerializer):
+class ReviewerGroupSerializer(ModelSerializer):
     class Meta:
         model = Group
         fields = [
@@ -59,7 +59,7 @@ class RelatedGroupSerializer(ModelSerializer):
             "name",
         ]
 
-class RelatedUserSerializer(ModelSerializer):
+class ReviewerUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["pk", "uuid", "username", "name"]

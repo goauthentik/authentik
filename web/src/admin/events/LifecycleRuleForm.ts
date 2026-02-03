@@ -14,7 +14,7 @@ import {ModelForm} from "#elements/forms/ModelForm";
 import {
     Application,
     ContentTypeEnum, CoreApi,
-    Group, LifecycleRule, RbacApi, RelatedUser,
+    Group, LifecycleRule, RbacApi, ReviewerGroup, ReviewerUser,
     ReviewsApi, Role,
 } from "@goauthentik/api";
 
@@ -24,15 +24,19 @@ import {customElement} from "lit/decorators.js";
 import {createRef, ref} from "lit/directives/ref.js";
 import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
 import {DataProvision, DualSelectPair} from "#elements/ak-dual-select/types";
-import {coreGroupPair} from "#admin/groups/GroupForm";
 import {eventTransportsProvider, eventTransportsSelector} from "#admin/events/RuleFormHelpers";
 
 type TargetObject = Application | Group | Role;
 
-function userToPair(item: RelatedUser): DualSelectPair {
+function userToPair(item: ReviewerUser): DualSelectPair {
     return [item.uuid, html`
         <div class="selection-main">${item.name}</div>`, item.name];
 }
+
+function groupToPair(item: ReviewerGroup): DualSelectPair {
+    return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
+}
+
 
 enum ReviewerSelection {
     Groups = "groups",
@@ -78,7 +82,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
             .then((results) => {
                 return {
                     pagination: results.pagination,
-                    options: results.results.map(coreGroupPair),
+                    options: results.results.map(groupToPair),
                 };
             });
     };
@@ -281,7 +285,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
             <ak-dual-select-provider
                 ${ref(this.#reviewerGroupsSelectRef)}
                 .provider=${this.#fetchGroups}
-                .selected=${(this.instance?.reviewerGroupsObj ?? []).map(coreGroupPair)}
+                .selected=${(this.instance?.reviewerGroupsObj ?? []).map(groupToPair)}
                 available-label=${msg("Available Groups")}
                 selected-label=${msg("Selected Groups")}
             ></ak-dual-select-provider>

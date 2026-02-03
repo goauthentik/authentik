@@ -2,12 +2,12 @@ from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import  GenericViewSet
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.reviews.utils import RelatedUserSerializer
+from authentik.enterprise.reviews.utils import ReviewerUserSerializer
 from authentik.enterprise.reviews.models import Attestation
 
 
 class AttestationSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    reviewer = RelatedUserSerializer(read_only=True)
+    reviewer = ReviewerUserSerializer(read_only=True)
 
     class Meta:
         model = Attestation

@@ -54,7 +54,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
         const disabled = this.selectedElements.length < 1;
         return html`
             <ak-forms-delete-bulk
-                objectLabel=${msg("Lifecycle rule(s)")}
+                object-label=${msg("Lifecycle rule(s)")}
                 .objects=${this.selectedElements}
                 .delete=${(item: LifecycleRule) => {
                     if (item.id)

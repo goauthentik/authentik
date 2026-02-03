@@ -15,7 +15,7 @@ from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.reviews.api.attestations import AttestationSerializer
 from authentik.enterprise.reviews.utils import parse_content_type, \
-    ContentTypeField, RelatedGroupSerializer, RelatedUserSerializer, \
+    ContentTypeField, ReviewerGroupSerializer, ReviewerUserSerializer, \
     admin_link_for_model
 from authentik.enterprise.reviews.models import Review, ReviewState
 
@@ -28,10 +28,10 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
     attestations = AttestationSerializer(many=True, read_only=True, source="attestation_set.all")
     user_can_attest = SerializerMethodField(read_only=True)
 
-    reviewer_groups = RelatedGroupSerializer(many=True, read_only=True,
-                                             source="rule.reviewer_groups")
+    reviewer_groups = ReviewerGroupSerializer(many=True, read_only=True,
+                                              source="rule.reviewer_groups")
     min_reviewers = IntegerField(read_only=True, source="rule.min_reviewers")
-    reviewers = RelatedUserSerializer(many=True, read_only=True, source="rule.reviewers")
+    reviewers = ReviewerUserSerializer(many=True, read_only=True, source="rule.reviewers")
 
     next_review_date = SerializerMethodField(read_only=True)
 
@@ -40,9 +40,10 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
         fields = ["id", "content_type", "object_id", "object_verbose", "object_admin_url", "state",
                   "opened_on", "grace_period_end", "next_review_date", "attestations",
                   "user_can_attest", "reviewer_groups", "min_reviewers", "reviewers"]
-        read_only_fields = ["id", "opened_on", "object_verbose", "object_admin_url",
-                            "grace_period_end", "next_review_date", "attestations",
-                            "user_can_attest", "reviewer_groups", "min_reviewers", "reviewers"]
+        read_only_fields = fields
+        # read_only_fields = ["id", "opened_on", "object_verbose", "object_admin_url",
+        #                     "grace_period_end", "next_review_date", "attestations",
+        #                     "user_can_attest", "reviewer_groups", "min_reviewers", "reviewers"]
 
     def get_object_verbose(self, review: Review) -> str:
         return str(review.object)

@@ -8,8 +8,8 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.reviews.utils import ContentTypeField, RelatedGroupSerializer, \
-    RelatedUserSerializer
+from authentik.enterprise.reviews.utils import ContentTypeField, ReviewerGroupSerializer, \
+    ReviewerUserSerializer
 from authentik.enterprise.reviews.models import LifecycleRule
 
 
@@ -19,9 +19,9 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
     interval_months = IntegerField(min_value=1, max_value=24)
     grace_period_days = IntegerField(min_value=1, max_value=365)
     target_verbose = SerializerMethodField()
-    reviewer_groups_obj = RelatedGroupSerializer(many=True, read_only=True, source="reviewer_groups")
+    reviewer_groups_obj = ReviewerGroupSerializer(many=True, read_only=True, source="reviewer_groups")
     reviewers = SlugRelatedField(slug_field="uuid", many=True, queryset=User.objects.all())
-    reviewers_obj = RelatedUserSerializer(many=True, read_only=True, source="reviewers")
+    reviewers_obj = ReviewerUserSerializer(many=True, read_only=True, source="reviewers")
 
     class Meta:
         model = LifecycleRule
@@ -41,7 +41,7 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ]
         read_only_fields = ["id", "reviewers_obj", "reviewer_groups_obj", "target_verbose"]
 
-    def get_target_verbose(self, rule: LifecycleRule):
+    def get_target_verbose(self, rule: LifecycleRule) -> str:
         if rule.object_id is None:
             return rule.content_type.model_class()._meta.verbose_name_plural
         else:
