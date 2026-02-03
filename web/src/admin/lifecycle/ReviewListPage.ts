@@ -7,6 +7,7 @@ import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#admin/lifecycle/AccessReviewStastus";
+import "#admin/lifecycle/LifecyclePreviewBanner";
 
 import {DEFAULT_CONFIG} from "#common/api/config";
 
@@ -19,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 import {msg} from "@lit/localize";
-import {html} from "lit";
+import {html, TemplateResult} from "lit";
 import {customElement, property} from "lit/decorators.js";
 
 @customElement("ak-review-list")
@@ -40,6 +41,10 @@ export class ReviewListPage extends TablePage<Review> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Review>> {
         return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsListOpen(await this.defaultEndpointConfig());
+    }
+
+    protected renderSectionBefore?(): TemplateResult {
+        return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>`;
     }
 
     protected columns: TableColumn[] = [

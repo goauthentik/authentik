@@ -1,4 +1,5 @@
 import "#admin/lifecycle/LifecycleRuleForm";
+import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
@@ -41,6 +42,10 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
         return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesList(await this.defaultEndpointConfig());
+    }
+
+    protected renderSectionBefore?(): TemplateResult {
+        return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>`;
     }
 
     protected columns: TableColumn[] = [
