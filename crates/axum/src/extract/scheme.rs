@@ -19,8 +19,7 @@ const X_FORWARDED_SCHEME: &str = "X-Forwarded-Scheme";
 pub struct Scheme(pub http::uri::Scheme);
 
 impl<S> FromRequestParts<S> for Scheme
-where
-    S: Send + Sync,
+where S: Send + Sync
 {
     type Rejection = Infallible;
 

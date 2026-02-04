@@ -1,5 +1,4 @@
-use std::io;
-use std::time::Duration;
+use std::{io, time::Duration};
 
 use authentik_tokio::proxy_protocol::{ProxyProtocolStream, header::Header};
 use axum::{Extension, middleware::AddExtension};
