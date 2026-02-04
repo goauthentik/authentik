@@ -9,7 +9,7 @@ authentik_enterprise: true
 
 Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows devices using authentik credentials.
 
-It currently only supports local login; RDP login is not supported.
+Currently, only local login is supported; RDP login is not yet available but is under development.
 
 :::warning
 
