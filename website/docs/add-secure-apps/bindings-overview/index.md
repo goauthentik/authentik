@@ -10,7 +10,7 @@ For information about creating and managing bindings, refer to [Work with bindin
 
 Bindings are an important part of authentik; the majority of configuration options are defined in bindings.
 
-It's important to remember that bindings are instantiated objects themselves, and conceptually can be considered as a "connector" between two components. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the second binding.
+It's important to remember that bindings are instantiated objects themselves, and conceptually can be considered as a "connector" between two components. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the second binding. Note that stage-bindings are the only type of binding that you can add (or splice) another binding to.
 
 ## Relations with bindings
 
