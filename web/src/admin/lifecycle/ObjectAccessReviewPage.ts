@@ -1,40 +1,39 @@
-import {AKElement} from "#elements/Base";
-
-
-import {html, nothing, PropertyValues, TemplateResult} from "lit";
-import {customElement, property, state} from "lit/decorators.js";
-
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-import {
-    Attestation,
-    ContentTypeEnum,
-    Review,
-    LifecycleApi,
-    ReviewStateEnum
-} from "@goauthentik/api";
-import {msg} from "@lit/localize";
-import {DEFAULT_CONFIG} from "#common/api/config";
-import {PaginatedResponse, Table, TableColumn, Timestamp} from "#elements/table/Table";
-import {SlottedTemplateResult} from "#elements/types";
-import {ModelForm} from "#elements/forms/ModelForm";
-import {EVENT_REFRESH} from "#common/constants";
-import PFDescriptionList
-    from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import "#admin/lifecycle/AccessReviewStastus";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { ModelForm } from "#elements/forms/ModelForm";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import {
+    Attestation,
+    ContentTypeEnum,
+    LifecycleApi,
+    Review,
+    ReviewStateEnum,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-object-attestation-form")
 export class ObjectAttestationForm extends ModelForm<Attestation, string> {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     review!: Review;
 
     protected loadInstance(_pk: string): Promise<Attestation> {
@@ -42,7 +41,9 @@ export class ObjectAttestationForm extends ModelForm<Attestation, string> {
     }
 
     send(data: Attestation): Promise<unknown> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleAttestationsCreate({attestationRequest: data});
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleAttestationsCreate({
+            attestationRequest: data,
+        });
     }
 
     protected override serialize(): Attestation | undefined {
@@ -53,20 +54,13 @@ export class ObjectAttestationForm extends ModelForm<Attestation, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`
-            <ak-textarea-input
-                label=${msg("Note")}
-                name="note"
-            ></ak-textarea-input>
-        `;
+        return html` <ak-textarea-input label=${msg("Note")} name="note"></ak-textarea-input> `;
     }
-
 }
 
 @customElement("ak-access-review-attestations")
 export class AccessReviewAttestations extends Table<Attestation> {
-
-    @property({attribute: false})
+    @property({ attribute: false })
     public review?: Review;
 
     public override paginated = false;
@@ -84,15 +78,14 @@ export class AccessReviewAttestations extends Table<Attestation> {
                 current: 0,
                 totalPages: 1,
                 startIndex: 0,
-                endIndex: attestations.length - 1
+                endIndex: attestations.length - 1,
             },
         });
     }
 
     protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
-        if (changedProperties.has('review'))
-            this.fetch();
+        if (changedProperties.has("review")) this.fetch();
     }
 
     protected columns: TableColumn[] = [
@@ -100,7 +93,6 @@ export class AccessReviewAttestations extends Table<Attestation> {
         [msg("Reviewer"), "reviewer"],
         [msg("Note"), "note"],
     ];
-
 
     protected row(item: Attestation): SlottedTemplateResult[] {
         return [
@@ -119,22 +111,16 @@ export class AccessReviewAttestations extends Table<Attestation> {
             return html`
                 <ak-forms-modal>
                     <span slot="submit">${msg("Attest")}</span>
-                    <span slot="header">
-                    ${msg("Attest this object's access")}
-                </span>
-                    <ak-object-attestation-form
-                        slot="form"
-                        .review=${this.review}
-                    >
+                    <span slot="header"> ${msg("Attest this object's access")} </span>
+                    <ak-object-attestation-form slot="form" .review=${this.review}>
                     </ak-object-attestation-form>
-                    <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Attest")}
+                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                        ${msg("Attest")}
                     </button>
                 </ak-forms-modal>
             `;
         return nothing;
     }
-
-
 }
 
 @customElement("ak-object-access-review-page")
@@ -152,21 +138,24 @@ export class ObjectPermissionPage extends AKElement {
 
     protected fetchReview() {
         if (!this.model || !this.objectPk || this.loading) {
-            return
+            return;
         }
         this.loading = true;
-        new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsLatestRetrieve({
-            contentType: this.model,
-            objectId: this.objectPk.toString()
-        }).then(review => {
-            this.review = review;
-            this.loading = false
-        }).catch(error => {
-            if (error.response.status === 404) {
-                this.review = null;
-            }
-            this.loading = false;
-        })
+        new LifecycleApi(DEFAULT_CONFIG)
+            .lifecycleReviewsLatestRetrieve({
+                contentType: this.model,
+                objectId: this.objectPk.toString(),
+            })
+            .then((review) => {
+                this.review = review;
+                this.loading = false;
+            })
+            .catch((error) => {
+                if (error.response.status === 404) {
+                    this.review = null;
+                }
+                this.loading = false;
+            });
     }
 
     #refreshListener = () => {
@@ -183,39 +172,35 @@ export class ObjectPermissionPage extends AKElement {
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-
     protected override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("objectPk") && this.objectPk && this.checkVisibility()) {
             this.fetchReview();
         }
     }
 
-
     static styles = [PFBase, PFGrid, PFPage, PFBanner, PFCard, PFFlex, PFDescriptionList];
 
-
     protected renderReviewers() {
-        if (!this.review)
-            return;
+        if (!this.review) return;
         if (this.review.reviewers.length > 0) {
-            return html`${this.review.reviewers.map(u => u.name).join(", ")}`;
+            return html`${this.review.reviewers.map((u) => u.name).join(", ")}`;
         }
-        const groupList = this.review.reviewerGroups.map(g => g.name).join(", ");
-        return html`${msg(`At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`)}`;
-
+        const groupList = this.review.reviewerGroups.map((g) => g.name).join(", ");
+        return html`${msg(
+            `At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`,
+        )}`;
     }
 
     render() {
         if (this.review === undefined)
-            return html`
-                <ak-empty-state ?loading=${!this.review}>${msg("Loading...")}</ak-empty-state>`
+            return html` <ak-empty-state ?loading=${!this.review}
+                >${msg("Loading...")}</ak-empty-state
+            >`;
         if (!this.review)
-            return html`
-                <ak-empty-state>
-                    <div>${msg("This object does not have an access review yet.")}</div>
-                </ak-empty-state>`
-        return html`
-            <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
+            return html` <ak-empty-state>
+                <div>${msg("This object does not have an access review yet.")}</div>
+            </ak-empty-state>`;
+        return html` <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
             <div
                 role="tabpanel"
                 tabindex="0"
@@ -228,25 +213,27 @@ export class ObjectPermissionPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">${msg("Access review for this object")}</div>
                         <div class="pf-c-card__body">
-
                             <dl class="pf-c-description-list">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span
-                                            class="pf-c-description-list__text">${msg("Review state")}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Review state")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <ak-access-review-status
-                                                status=${this.review.state}></ak-access-review-status>
+                                                status=${this.review.state}
+                                            ></ak-access-review-status>
                                         </div>
                                     </dd>
                                 </div>
 
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span
-                                            class="pf-c-description-list__text">${msg("Required reviewers")}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Required reviewers")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -254,53 +241,60 @@ export class ObjectPermissionPage extends AKElement {
                                         </div>
                                     </dd>
                                 </div>
-                                ${this.review.state !== ReviewStateEnum.Reviewed ?
-                                    html`
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                        <span
-                                            class="pf-c-description-list__text">${msg("Review opened on")}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ak-timestamp
-                                                        .timestamp=${this.review?.openedOn}
-                                                        .elapsed=${false} dateonly
-                                                        datetime></ak-timestamp>
-                                                </div>
-                                            </dd>
-                                        </div>` :
-                                    html`
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                        <span
-                                            class="pf-c-description-list__text">${msg("Next review date")}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ak-timestamp
-                                                        .timestamp=${this.review?.nextReviewDate}
-                                                        .elapsed=${false} dateonly
-                                                        datetime></ak-timestamp>
-                                                </div>
-                                            </dd>
-                                        </div>`}
-                                ${this.review.state === ReviewStateEnum.Pending ?
-                                    html`
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                        <span
-                                            class="pf-c-description-list__text">${msg("Grace period till")}</span>
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    <ak-timestamp
-                                                        .timestamp=${this.review?.gracePeriodEnd}
-                                                        .elapsed=${false} dateonly
-                                                        datetime></ak-timestamp>
-                                                </div>
-                                            </dd>
-                                        </div>` : nothing}
+                                ${this.review.state !== ReviewStateEnum.Reviewed
+                                    ? html` <div class="pf-c-description-list__group">
+                                          <dt class="pf-c-description-list__term">
+                                              <span class="pf-c-description-list__text"
+                                                  >${msg("Review opened on")}</span
+                                              >
+                                          </dt>
+                                          <dd class="pf-c-description-list__description">
+                                              <div class="pf-c-description-list__text">
+                                                  <ak-timestamp
+                                                      .timestamp=${this.review?.openedOn}
+                                                      .elapsed=${false}
+                                                      dateonly
+                                                      datetime
+                                                  ></ak-timestamp>
+                                              </div>
+                                          </dd>
+                                      </div>`
+                                    : html` <div class="pf-c-description-list__group">
+                                          <dt class="pf-c-description-list__term">
+                                              <span class="pf-c-description-list__text"
+                                                  >${msg("Next review date")}</span
+                                              >
+                                          </dt>
+                                          <dd class="pf-c-description-list__description">
+                                              <div class="pf-c-description-list__text">
+                                                  <ak-timestamp
+                                                      .timestamp=${this.review?.nextReviewDate}
+                                                      .elapsed=${false}
+                                                      dateonly
+                                                      datetime
+                                                  ></ak-timestamp>
+                                              </div>
+                                          </dd>
+                                      </div>`}
+                                ${this.review.state === ReviewStateEnum.Pending
+                                    ? html` <div class="pf-c-description-list__group">
+                                          <dt class="pf-c-description-list__term">
+                                              <span class="pf-c-description-list__text"
+                                                  >${msg("Grace period till")}</span
+                                              >
+                                          </dt>
+                                          <dd class="pf-c-description-list__description">
+                                              <div class="pf-c-description-list__text">
+                                                  <ak-timestamp
+                                                      .timestamp=${this.review?.gracePeriodEnd}
+                                                      .elapsed=${false}
+                                                      dateonly
+                                                      datetime
+                                                  ></ak-timestamp>
+                                              </div>
+                                          </dd>
+                                      </div>`
+                                    : nothing}
                             </dl>
                         </div>
                     </div>
@@ -310,13 +304,11 @@ export class ObjectPermissionPage extends AKElement {
                         <div class="pf-c-card__body">
                             <ak-access-review-attestations .review=${this.review}>
                             </ak-access-review-attestations>
-
                         </div>
                     </div>
                 </div>
-            </div>`
+            </div>`;
     }
-
 }
 
 declare global {

@@ -1,7 +1,7 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#admin/lifecycle/ObjectAccessReviewPage"
+import "#admin/lifecycle/ObjectAccessReviewPage";
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -12,15 +12,17 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
 import {
-    ContentTypeEnum, LicenseStatusEnum,
+    ContentTypeEnum,
+    LicenseStatusEnum,
     RbacApi,
     RbacPermissionsAssignedByRolesListModelEnum,
-    Role
+    Role,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -34,7 +36,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import {WithLicenseSummary} from "#elements/mixins/license";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends WithLicenseSummary(AKElement) {
@@ -157,17 +158,17 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
-                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed ?
-                    html`
-                        <ak-object-access-review-page
-                            role="tabpanel"
-                            tabindex="0"
-                            slot="page-access-review"
-                            id="page-access-review"
-                            aria-label="${msg("Lifecycle")}"
-                            model=${ContentTypeEnum.AuthentikRbacRole}
-                            objectPk=${this.targetRole.pk}
-                        ></ak-object-access-review-page>` : nothing}
+                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed
+                    ? html` <ak-object-access-review-page
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-access-review"
+                          id="page-access-review"
+                          aria-label="${msg("Lifecycle")}"
+                          model=${ContentTypeEnum.AuthentikRbacRole}
+                          objectPk=${this.targetRole.pk}
+                      ></ak-object-access-review-page>`
+                    : nothing}
             </ak-tabs>
         </main>`;
     }

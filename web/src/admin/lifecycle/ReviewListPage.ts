@@ -10,19 +10,17 @@ import "#admin/lifecycle/AccessReviewStastus";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
 
-import {DEFAULT_CONFIG} from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import {PaginatedResponse, TableColumn} from "#elements/table/Table";
-import {TablePage} from "#elements/table/TablePage";
-import {SlottedTemplateResult} from "#elements/types";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    Review, LifecycleApi,
-} from "@goauthentik/api";
+import { LifecycleApi, Review } from "@goauthentik/api";
 
-import {msg} from "@lit/localize";
-import {html, TemplateResult} from "lit";
-import {customElement, property, state} from "lit/decorators.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-review-list")
 export class ReviewListPage extends TablePage<Review> {
@@ -32,9 +30,7 @@ export class ReviewListPage extends TablePage<Review> {
 
     protected override searchEnabled = false;
     public pageTitle = msg("Open Access Reviews");
-    public pageDescription = msg(
-        "See all currently open access reviews.",
-    );
+    public pageDescription = msg("See all currently open access reviews.");
     public pageIcon = "pf-icon pf-icon-history";
 
     @property()
@@ -45,9 +41,9 @@ export class ReviewListPage extends TablePage<Review> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Review>> {
         return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsListOpen({
-            ...await this.defaultEndpointConfig(),
+            ...(await this.defaultEndpointConfig()),
             userIsReviewer: this.showOnlyMine || undefined,
-        },);
+        });
     }
 
     protected renderSectionBefore?(): TemplateResult {
@@ -60,7 +56,10 @@ export class ReviewListPage extends TablePage<Review> {
                 name="showOnlyMine"
                 ?checked=${this.showOnlyMine}
                 label=${msg("Only show reviews where I am a reviewer")}
-                @change=${() => {this.showOnlyMine = !this.showOnlyMine; this.fetch();}}
+                @change=${() => {
+                    this.showOnlyMine = !this.showOnlyMine;
+                    this.fetch();
+                }}
             >
             </ak-switch-input>
             ${super.renderToolbar()}
@@ -82,7 +81,6 @@ export class ReviewListPage extends TablePage<Review> {
             html`<ak-timestamp .timestamp=${item.gracePeriodEnd} datetime dateonly></ak-timestamp>`,
         ];
     }
-
 }
 
 declare global {

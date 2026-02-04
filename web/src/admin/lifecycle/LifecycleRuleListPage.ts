@@ -9,20 +9,21 @@ import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import {DEFAULT_CONFIG} from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import {PaginatedResponse, TableColumn} from "#elements/table/Table";
-import {TablePage} from "#elements/table/TablePage";
-import {SlottedTemplateResult} from "#elements/types";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
+    LifecycleApi,
     LifecycleRule,
-    RbacPermissionsAssignedByRolesListModelEnum, LifecycleApi,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
-import {msg} from "@lit/localize";
-import {html, TemplateResult} from "lit";
-import {customElement, property} from "lit/decorators.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-lifecycle-rule-list")
 export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
@@ -32,16 +33,16 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     protected override searchEnabled = true;
     public pageTitle = msg("Object Lifecycle Rules");
-    public pageDescription = msg(
-        "Schedule periodic access reviews for objects in authentik.",
-    );
+    public pageDescription = msg("Schedule periodic access reviews for objects in authentik.");
     public pageIcon = "pf-icon pf-icon-history";
 
     @property()
     order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesList(await this.defaultEndpointConfig());
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     protected renderSectionBefore?(): TemplateResult {
@@ -57,23 +58,23 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
-        return html`
-            <ak-forms-delete-bulk
-                object-label=${msg("Lifecycle rule(s)")}
-                .objects=${this.selectedElements}
-                .delete=${(item: LifecycleRule) => {
-                    if (item.id)
-                        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesDestroy({
-                            id: item.id,
-                        });
-                }}
-                .metadata=${(item: LifecycleRule) =>
-                    [{key: msg("Target"), value: item.targetVerbose}]}
-            >
-                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                    ${msg("Delete")}
-                </button>
-            </ak-forms-delete-bulk>`;
+        return html` <ak-forms-delete-bulk
+            object-label=${msg("Lifecycle rule(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: LifecycleRule) => {
+                if (item.id)
+                    return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesDestroy({
+                        id: item.id,
+                    });
+            }}
+            .metadata=${(item: LifecycleRule) => [
+                { key: msg("Target"), value: item.targetVerbose },
+            ]}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: LifecycleRule): SlottedTemplateResult[] {
@@ -81,26 +82,27 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
             html`${item.targetVerbose}`,
             html`${item.interval}`,
             html`${item.gracePeriod}`,
-            html`
-                <div>
-                    <ak-forms-modal>
-                        <span slot="submit">${msg("Update")}</span>
-                        <span slot="header">${msg("Update Lifecycle Rule")}</span>
-                        <ak-lifecycle-rule-form slot="form"
-                                                .instancePk=${item.id}></ak-lifecycle-rule-form>
-                        <button slot="trigger" class="pf-c-button pf-m-plain">
-                            <pf-tooltip position="top" content=${msg("Edit")}>
-                                <i class="fas fa-edit" aria-hidden="true"></i>
-                            </pf-tooltip>
-                        </button>
-                    </ak-forms-modal>
+            html` <div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Lifecycle Rule")}</span>
+                    <ak-lifecycle-rule-form
+                        slot="form"
+                        .instancePk=${item.id}
+                    ></ak-lifecycle-rule-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
 
-                    <ak-rbac-object-permission-modal
-                        model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikLifecycleLifecyclerule}
-                        objectPk=${item.id}
-                    >
-                    </ak-rbac-object-permission-modal>
-                </div>`,
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikLifecycleLifecyclerule}
+                    objectPk=${item.id}
+                >
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 

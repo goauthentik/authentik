@@ -6,39 +6,42 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/ak-list-select/ak-list-select";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-number-input";
-import "#components/ak-switch-input";
 
-import {DEFAULT_CONFIG} from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import {ModelForm} from "#elements/forms/ModelForm";
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { ModelForm } from "#elements/forms/ModelForm";
+import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
+
+import { eventTransportsProvider, eventTransportsSelector } from "#admin/events/RuleFormHelpers";
 
 import {
     Application,
-    ContentTypeEnum, CoreApi,
-    Group, LifecycleRule, RbacApi, ReviewerGroup, ReviewerUser,
-    LifecycleApi, Role,
+    ContentTypeEnum,
+    CoreApi,
+    Group,
+    LifecycleApi,
+    LifecycleRule,
+    RbacApi,
+    ReviewerGroup,
+    ReviewerUser,
+    Role,
 } from "@goauthentik/api";
 
-import {msg} from "@lit/localize";
-import {html, TemplateResult} from "lit";
-import {customElement} from "lit/decorators.js";
-import {createRef, ref} from "lit/directives/ref.js";
-import type SearchSelect from "#elements/forms/SearchSelect/SearchSelect";
-import {DataProvision, DualSelectPair} from "#elements/ak-dual-select/types";
-import {eventTransportsProvider, eventTransportsSelector} from "#admin/events/RuleFormHelpers";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 type TargetObject = Application | Group | Role;
 
 function userToPair(item: ReviewerUser): DualSelectPair {
-    return [item.uuid, html`
-        <div class="selection-main">${item.name}</div>`, item.name];
+    return [item.uuid, html` <div class="selection-main">${item.name}</div>`, item.name];
 }
 
 function groupToPair(item: ReviewerGroup): DualSelectPair {
-    return [item.pk, html`
-        <div class="selection-main">${item.name}</div>`, item.name];
+    return [item.pk, html` <div class="selection-main">${item.name}</div>`, item.name];
 }
-
 
 @customElement("ak-lifecycle-rule-form")
 export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
@@ -78,10 +81,10 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
             .then((results) => {
                 return {
                     pagination: results.pagination,
-                    options: results.results.map(userToPair)
-                }
-            })
-    }
+                    options: results.results.map(userToPair),
+                };
+            });
+    };
 
     async send(data: LifecycleRule): Promise<LifecycleRule> {
         if (this.instance) {
@@ -97,34 +100,37 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
 
     protected serialize(): LifecycleRule | undefined {
         const ret = super.serialize();
-        if (ret === undefined)
-            return;
-        if (ret.objectId === "")
-            ret.objectId = null;
+        if (ret === undefined) return;
+        if (ret.objectId === "") ret.objectId = null;
         return ret;
     }
 
     private async loadObjects(query?: string): Promise<TargetObject[]> {
         switch (this.#selectedContentType) {
             case ContentTypeEnum.AuthentikCoreApplication:
-                return (await new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
-                    ordering: "name",
-                    search: query,
-                })).results;
+                return (
+                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+                        ordering: "name",
+                        search: query,
+                    })
+                ).results;
             case ContentTypeEnum.AuthentikCoreGroup:
-                return (await new CoreApi(DEFAULT_CONFIG).coreGroupsList({
-                    ordering: "name",
-                    search: query,
-                })).results;
+                return (
+                    await new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+                        ordering: "name",
+                        search: query,
+                    })
+                ).results;
             case ContentTypeEnum.AuthentikRbacRole:
-                return (await new RbacApi(DEFAULT_CONFIG).rbacRolesList({
-                    ordering: "name",
-                    search: query,
-                })).results;
+                return (
+                    await new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+                        ordering: "name",
+                        search: query,
+                    })
+                ).results;
             default:
                 return [];
         }
-
     }
 
     async #handleContentTypeChange(ev: Event): Promise<void> {
@@ -145,9 +151,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The interval between opening new reviews for matching objects.",
-                    )}
+                    ${msg("The interval between opening new reviews for matching objects.")}
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
@@ -161,9 +165,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The duration of time before an open review is considered overdue.",
-                    )}
+                    ${msg("The duration of time before an open review is considered overdue.")}
                 </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
@@ -176,7 +178,10 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 min=${1}
                 name="minReviewers"
                 value="${this.instance?.minReviewers ?? 1}"
-                help=${msg("Number of users from the selected reviewer groups that must approve the review.")}></ak-number-input>
+                help=${msg(
+                    "Number of users from the selected reviewer groups that must approve the review.",
+                )}
+            ></ak-number-input>
             <ak-switch-input
                 name="minReviewersIsPerGroup"
                 ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
@@ -194,26 +199,35 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
         `;
     }
 
-
     #renderTargetSelection(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Object type")} required name="contentType">
-                <select class="pf-c-form-control"
-                        @change=${this.#handleContentTypeChange}
-                >
+        return html` <ak-form-element-horizontal
+                label=${msg("Object type")}
+                required
+                name="contentType"
+            >
+                <select class="pf-c-form-control" @change=${this.#handleContentTypeChange}>
                     <option value="" ?selected=${this.instance?.contentType === undefined}>
                         ---------
                     </option>
-                    <option value=${ContentTypeEnum.AuthentikCoreApplication}
-                            ?selected=${this.instance?.contentType === ContentTypeEnum.AuthentikCoreApplication}>
+                    <option
+                        value=${ContentTypeEnum.AuthentikCoreApplication}
+                        ?selected=${this.instance?.contentType ===
+                        ContentTypeEnum.AuthentikCoreApplication}
+                    >
                         ${msg("Application")}
                     </option>
-                    <option value=${ContentTypeEnum.AuthentikCoreGroup}
-                            ?selected=${this.instance?.contentType === ContentTypeEnum.AuthentikCoreGroup}>
+                    <option
+                        value=${ContentTypeEnum.AuthentikCoreGroup}
+                        ?selected=${this.instance?.contentType ===
+                        ContentTypeEnum.AuthentikCoreGroup}
+                    >
                         ${msg("Group")}
                     </option>
-                    <option value=${ContentTypeEnum.AuthentikRbacRole}
-                            ?selected=${this.instance?.contentType === ContentTypeEnum.AuthentikRbacRole}>
+                    <option
+                        value=${ContentTypeEnum.AuthentikRbacRole}
+                        ?selected=${this.instance?.contentType ===
+                        ContentTypeEnum.AuthentikRbacRole}
+                    >
                         ${msg("Role")}
                     </option>
                 </select>
@@ -236,7 +250,9 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${msg("When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.")}
+                    ${msg(
+                        "When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.",
+                    )}
                 </p>
             </ak-form-element-horizontal>`;
     }
@@ -251,7 +267,6 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 selected-label=${msg("Selected Groups")}
             ></ak-dual-select-provider>
         `;
-
     }
 
     #renderReviewerUserSelection(): TemplateResult {
@@ -262,7 +277,6 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 .selected=${(this.instance?.reviewersObj ?? []).map(userToPair)}
                 available-label=${msg("Available Users")}
                 selected-label=${msg("Selected Users")}
-
             ></ak-dual-select-provider>
             <p class="pf-c-form__helper-text">
                 ${msg(
@@ -274,8 +288,11 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
 
     #renderTransportsSelection(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Notification transports")} required
-                                        name="notificationTransports">
+            <ak-form-element-horizontal
+                label=${msg("Notification transports")}
+                required
+                name="notificationTransports"
+            >
                 <ak-dual-select-dynamic-selected
                     .provider=${eventTransportsProvider}
                     .selector=${eventTransportsSelector(this.instance?.notificationTransports)}
@@ -290,7 +307,6 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
             </ak-form-element-horizontal>
         `;
     }
-
 }
 
 declare global {
