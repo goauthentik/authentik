@@ -26917,7 +26917,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stage.
+        description: A UUID string identifying this authentik.core.sources.flow_manager.GroupUpdateStage.
         required: true
       tags:
       - stages
@@ -26943,7 +26943,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stage.
+        description: A UUID string identifying this authentik.core.sources.flow_manager.GroupUpdateStage.
         required: true
       tags:
       - stages
@@ -26966,7 +26966,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stage.
+        description: A UUID string identifying this authentik.core.sources.flow_manager.GroupUpdateStage.
         required: true
       tags:
       - stages

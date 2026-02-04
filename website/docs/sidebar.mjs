@@ -675,6 +675,7 @@ const items = [
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
             "sys-mgmt/data-exports",
+            "sys-mgmt/object-lifecycle-management",
         ],
     },
     {
