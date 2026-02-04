@@ -26,9 +26,9 @@ where
     I: AsyncRead + AsyncWrite + Unpin + Send + 'static,
     S: Send + 'static,
 {
-    type Stream = TlsStream<I>;
-    type Service = AddExtension<S, TlsState>;
     type Future = BoxFuture<'static, std::io::Result<(Self::Stream, Self::Service)>>;
+    type Service = AddExtension<S, TlsState>;
+    type Stream = TlsStream<I>;
 
     fn accept(&self, stream: I, service: S) -> Self::Future {
         let acceptor = self.inner.clone();

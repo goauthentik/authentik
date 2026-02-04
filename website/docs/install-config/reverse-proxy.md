@@ -21,6 +21,7 @@ The connection scheme (HTTP/HTTPS) is grabbed as follows. If the incoming connec
 - `X-Forwarded-Proto` header,
 - `X-Forwarded-Scheme` header,
 - `Forwarded` header, as defined in [RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239). If multiple `proto=` stanzas are present, only the first one is retained.
+- whether the connection was made via TLS to the proxy via the PROXY protocol if used.
 
 If the connection is not trusted, or the above is missing, authentik will look at whether the connection was made over plaintext or TLS.
 
@@ -47,7 +48,7 @@ The client IP is grabbed as follows. If the incoming connection is from a truste
 - the rightmost IP in the `X-Forwarded-For` header,
 - `X-Real-IP` header,
 - the rightmost IP in the `Forwarded` header, as defined in [RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239),
-- the IP passed via Proxy Protocol if used.
+- the IP passed via PROXY Protocol if used.
 
 If the connection is not trusted, the client IP will be extracted from the TCP metadata.
 

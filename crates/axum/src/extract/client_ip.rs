@@ -4,18 +4,19 @@ use std::{
 };
 
 use axum::{
-    RequestPartsExt,
+    Extension, RequestPartsExt,
     extract::{ConnectInfo, FromRequestParts, OptionalFromRequestParts},
     http::{StatusCode, request::Parts},
 };
 
-use crate::extract::trusted_proxy::TrustedProxy;
+use crate::{accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy};
 
 #[derive(Clone, Debug)]
 pub struct ClientIP(pub IpAddr);
 
 impl<S> FromRequestParts<S> for ClientIP
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = (StatusCode, &'static str);
 
@@ -30,7 +31,8 @@ where S: Send + Sync
 }
 
 impl<S> OptionalFromRequestParts<S> for ClientIP
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = Infallible;
 
@@ -57,7 +59,13 @@ where S: Send + Sync
                 return Ok(Some(Self(ip)));
             }
 
-            // TODO: proxy protocol
+            if let Ok(Extension(proxy_protocol_state)) =
+                parts.extract::<Extension<ProxyProtocolState>>().await
+                && let Some(header) = &proxy_protocol_state.header
+                && let Some(addr) = header.proxied_address()
+            {
+                return Ok(Some(Self(addr.source.ip())));
+            }
         }
 
         if let Ok(ConnectInfo(addr)) = parts.extract::<ConnectInfo<SocketAddr>>().await {

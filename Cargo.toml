@@ -36,7 +36,6 @@ ipnet = { version = "2.11.0", features = ["serde"] }
 nix = { version = "0.31.0", features = ["signal"] }
 notify = "8.2.0"
 pin-project-lite = "0.2.16"
-ppp = "2.3.0"
 pyo3 = "0.27.2"
 rcgen = { version = "0.14.7", default-features = false, features = [
   "aws_lc_rs",
@@ -57,7 +56,6 @@ serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 serde_yaml_ng = "0.10.0"
 signal-hook = "0.4.1"
-smallvec = "1.15.1"
 sqlx = { version = "0.8.6", default-features = false, features = [
   "runtime-tokio",
   "tls-rustls-aws-lc-rs",
@@ -67,6 +65,7 @@ sqlx = { version = "0.8.6", default-features = false, features = [
   "json",
   "uuid",
 ] }
+thiserror = "2.0.18"
 time = "0.3.45"
 tokio = { version = "1.49.0", features = ["full"] }
 tokio-rustls = "0.26.4"

@@ -10,7 +10,7 @@ use std::{
 
 use argh::FromArgs;
 use authentik_axum::{
-    accept::tls::TlsAcceptor,
+    accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor},
     extract::{ClientIP, Host, Scheme},
 };
 use authentik_config::get_config;
@@ -329,7 +329,7 @@ async fn start_server_plain(
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
     axum_server::Server::bind(addr)
-        .acceptor(DefaultAcceptor::new())
+        .acceptor(ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;
@@ -344,6 +344,7 @@ async fn start_server_tls(
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
     axum_server::Server::bind(addr)
+        // TODO: proxy protocol
         .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config)))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<SocketAddr>())
