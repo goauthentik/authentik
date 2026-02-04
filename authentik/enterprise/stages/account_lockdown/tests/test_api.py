@@ -1,10 +1,12 @@
 """Test Users Account Lockdown API"""
 
+from datetime import timedelta
 from json import loads
 from unittest.mock import MagicMock, patch
 from urllib.parse import parse_qs, urlparse
 
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import (
@@ -52,6 +54,41 @@ class TestUsersAccountLockdownAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
+
+    def test_account_lockdown_refreshes_expired_flow_token(self):
+        """Test account lockdown refreshes token expiry for reused identifiers."""
+        self.client.force_login(self.admin)
+
+        first_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk},
+            format="json",
+        )
+        self.assertEqual(first_response.status_code, 200)
+        first_body = loads(first_response.content)
+        first_token_key = parse_qs(urlparse(first_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(first_token_key)
+
+        first_token = FlowToken.objects.get(key=first_token_key)
+        first_token.expires = now() - timedelta(minutes=1)
+        first_token.save(update_fields=["expires"])
+
+        second_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk},
+            format="json",
+        )
+        self.assertEqual(second_response.status_code, 200)
+        second_body = loads(second_response.content)
+        second_token_key = parse_qs(urlparse(second_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(second_token_key)
+
+        refreshed_token = FlowToken.objects.get(key=second_token_key)
+        self.assertGreater(refreshed_token.expires, now())
 
     def test_account_lockdown_no_flow_configured(self):
         """Test account lockdown when no flow is configured"""
@@ -183,6 +220,45 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         body = loads(response.content)
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
+
+    def test_account_lockdown_bulk_refreshes_expired_flow_token(self):
+        """Test bulk lockdown refreshes token expiry for reused identifiers."""
+        self.client.force_login(self.admin)
+
+        first_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.user1.pk, self.user2.pk],
+            },
+            format="json",
+        )
+        self.assertEqual(first_response.status_code, 200)
+        first_body = loads(first_response.content)
+        first_token_key = parse_qs(urlparse(first_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(first_token_key)
+
+        first_token = FlowToken.objects.get(key=first_token_key)
+        first_token.expires = now() - timedelta(minutes=1)
+        first_token.save(update_fields=["expires"])
+
+        second_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.user1.pk, self.user2.pk],
+            },
+            format="json",
+        )
+        self.assertEqual(second_response.status_code, 200)
+        second_body = loads(second_response.content)
+        second_token_key = parse_qs(urlparse(second_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(second_token_key)
+
+        refreshed_token = FlowToken.objects.get(key=second_token_key)
+        self.assertGreater(refreshed_token.expires, now())
 
     def test_account_lockdown_bulk_no_flow_configured(self):
         """Test bulk lockdown when no flow is configured"""

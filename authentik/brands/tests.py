@@ -8,7 +8,8 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.models import Brand
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_brand
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.flows.models import FlowAuthenticationRequirement
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLProvider
@@ -212,6 +213,42 @@ class TestBrands(APITestCase):
             reverse("authentik_api:brand-list"), data={"domain": "bar", "default": True}
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_create_brand_with_unauthenticated_lockdown_flow(self):
+        """Test lockdown flow validation rejects unauthenticated flows."""
+        flow = create_test_flow()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("authentik_api:brand-list"),
+            data={
+                "domain": f"{generate_id()}.test",
+                "flow_lockdown": flow.pk,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertIn("flow_lockdown", body)
+
+    def test_create_brand_with_authenticated_lockdown_flow(self):
+        """Test lockdown flow validation allows authenticated flows."""
+        flow = create_test_flow(
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        user = create_test_admin_user()
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("authentik_api:brand-list"),
+            data={
+                "domain": f"{generate_id()}.test",
+                "flow_lockdown": flow.pk,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        body = loads(response.content.decode())
+        self.assertEqual(body["flow_lockdown"], flow.pk)
 
     def test_webfinger_no_app(self):
         """Test Webfinger"""

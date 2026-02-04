@@ -20,7 +20,7 @@ from structlog.stdlib import get_logger
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import User, UserTypes
+from authentik.core.models import User, UserTypes, default_token_duration
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
@@ -110,6 +110,43 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
 class UserAccountLockdownMixin:
     """Enterprise account-lockdown API actions for UserViewSet."""
 
+    def _create_flow_url_from_plan(
+        self,
+        request: Request,
+        *,
+        flow,
+        plan_context: dict,
+        identifier: str,
+    ) -> str | None:
+        """Create a flow URL from context, persisting a fresh token expiry."""
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        try:
+            plan = planner.plan(
+                request._request,
+                plan_context,
+            )
+        except FlowNonApplicableException:
+            LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
+            return None
+
+        token, __ = FlowToken.objects.update_or_create(
+            identifier=identifier,
+            defaults={
+                "user": request.user,
+                "flow": flow,
+                "_plan": FlowToken.pickle(plan),
+                # Refresh expiry for reused identifiers so returned URLs are always usable.
+                "expires": default_token_duration(),
+                "expiring": True,
+            },
+        )
+        querystring = urlencode({QS_KEY_TOKEN: token.key})
+        return request.build_absolute_uri(
+            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            + f"?{querystring}"
+        )
+
     def _create_lockdown_flow_url(
         self, request: Request, user: User, self_service: bool
     ) -> str | None:
@@ -119,33 +156,15 @@ class UserAccountLockdownMixin:
         if not flow:
             return None
 
-        planner = FlowPlanner(flow)
-        planner.allow_empty_flows = True
-        try:
-            plan = planner.plan(
-                request._request,
-                {
-                    PLAN_CONTEXT_LOCKDOWN_TARGET: user,
-                    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
-                    PLAN_CONTEXT_PENDING_USER: user,
-                },
-            )
-        except FlowNonApplicableException:
-            LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
-            return None
-
-        token, __ = FlowToken.objects.update_or_create(
-            identifier=slugify(f"ak-lockdown-{user.uid}"),
-            defaults={
-                "user": request.user,
-                "flow": flow,
-                "_plan": FlowToken.pickle(plan),
+        return self._create_flow_url_from_plan(
+            request,
+            flow=flow,
+            plan_context={
+                PLAN_CONTEXT_LOCKDOWN_TARGET: user,
+                PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
+                PLAN_CONTEXT_PENDING_USER: user,
             },
-        )
-        querystring = urlencode({QS_KEY_TOKEN: token.key})
-        return request.build_absolute_uri(
-            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
-            + f"?{querystring}"
+            identifier=slugify(f"ak-lockdown-{user.uid}"),
         )
 
     def _create_lockdown_flow_url_bulk(self, request: Request, users: list[User]) -> str | None:
@@ -159,35 +178,17 @@ class UserAccountLockdownMixin:
         # the stage can use the safe self-service completion path after sessions are revoked.
         self_service = any(user.pk == request.user.pk for user in users)
 
-        planner = FlowPlanner(flow)
-        planner.allow_empty_flows = True
-        try:
-            plan = planner.plan(
-                request._request,
-                {
-                    PLAN_CONTEXT_LOCKDOWN_TARGETS: users,
-                    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
-                },
-            )
-        except FlowNonApplicableException:
-            LOGGER.debug("Lockdown flow not applicable", flow=flow.slug)
-            return None
-
         # Use a stable hash so different selections don't collide.
         user_ids = ",".join(str(u.pk) for u in users)
         digest = sha256(user_ids.encode("utf-8")).hexdigest()[:12]
-        token, __ = FlowToken.objects.update_or_create(
-            identifier=slugify(f"ak-lockdown-bulk-{digest}"),
-            defaults={
-                "user": request.user,
-                "flow": flow,
-                "_plan": FlowToken.pickle(plan),
+        return self._create_flow_url_from_plan(
+            request,
+            flow=flow,
+            plan_context={
+                PLAN_CONTEXT_LOCKDOWN_TARGETS: users,
+                PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
             },
-        )
-        querystring = urlencode({QS_KEY_TOKEN: token.key})
-        return request.build_absolute_uri(
-            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
-            + f"?{querystring}"
+            identifier=slugify(f"ak-lockdown-bulk-{digest}"),
         )
 
     @extend_schema(
@@ -249,6 +250,7 @@ class UserAccountLockdownMixin:
                 },
             ),
             "400": OpenApiResponse(description="No lockdown flow configured"),
+            "403": OpenApiResponse(description="Permission denied"),
         },
     )
     @action(
