@@ -1,0 +1,13 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#        Attributes and values defined in RFC 7155
+#        http://www.ietf.org/rfc/rfc7155.txt
+#
+
+# The Value field contains two octets (00 - 99).  ANSI T1.113 and
+# BELLCORE 394 can be used for additional information about these
+# values and their use.
+ATTRIBUTE	Originating-Line-Info			94	octets[2]
