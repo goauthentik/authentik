@@ -2,11 +2,10 @@
 title: Connectors
 sidebar_label: Connectors
 tags: [device compliance, compliance, connectors, authentik Agent, fleet]
+toc_max_heading_level: 4
 ---
 
-Connectors allow device information to be reported to authentik.
-
-They can be used standalone or alongside the [authentik Agent](../authentik-agent/index.mdx).
+Connectors allow device information to be reported to authentik. They can be used standalone or alongside the [authentik Agent](../authentik-agent/index.mdx).
 
 Currently, the only supported connector is the [authentik Agent](#authentik-agent).
 
