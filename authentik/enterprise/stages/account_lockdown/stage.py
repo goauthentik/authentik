@@ -78,11 +78,19 @@ class AccountLockdownStageView(StageView):
 
         # Create event outside atomic block - lockdown succeeded, now log it
         # This ensures the lockdown happens even if event creation fails
-        Event.new(
-            EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
-            reason=reason,
-            affected_user=user.username,
-        ).from_http(request)
+        try:
+            Event.new(
+                EventAction.ACCOUNT_LOCKDOWN_TRIGGERED,
+                reason=reason,
+                affected_user=user.username,
+            ).from_http(request)
+        except Exception as exc:  # noqa: BLE001
+            # Event emission should not make the lockdown itself fail.
+            self.logger.warning(
+                "Failed to emit account lockdown event",
+                user=user.username,
+                exc=exc,
+            )
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Execute account lockdown actions."""

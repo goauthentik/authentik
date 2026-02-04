@@ -221,6 +221,40 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         self.assertIn("flow_url", body)
         self.assertIn(self.lockdown_flow.slug, body["flow_url"])
 
+    def test_account_lockdown_bulk_reuses_token_for_same_users_different_order(self):
+        """Test bulk lockdown token identifier is stable regardless of user order."""
+        self.client.force_login(self.admin)
+
+        first_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.user1.pk, self.user2.pk],
+            },
+            format="json",
+        )
+        self.assertEqual(first_response.status_code, 200)
+        first_body = loads(first_response.content)
+        first_token_key = parse_qs(urlparse(first_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(first_token_key)
+
+        second_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown-bulk"),
+            data={
+                "users": [self.user2.pk, self.user1.pk],
+            },
+            format="json",
+        )
+        self.assertEqual(second_response.status_code, 200)
+        second_body = loads(second_response.content)
+        second_token_key = parse_qs(urlparse(second_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(second_token_key)
+
+        self.assertEqual(first_token_key, second_token_key)
+
     def test_account_lockdown_bulk_refreshes_expired_flow_token(self):
         """Test bulk lockdown refreshes token expiry for reused identifiers."""
         self.client.force_login(self.admin)
