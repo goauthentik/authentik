@@ -20,9 +20,11 @@ from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.logout import build_frontchannel_logout_url
 from authentik.providers.oauth2.models import (
+    AccessToken,
     OAuth2LogoutMethod,
     RedirectURIMatchingMode,
 )
+from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 
 
 class EndSessionView(PolicyAccessView):
@@ -94,16 +96,40 @@ class EndSessionView(PolicyAccessView):
         if self.post_logout_redirect_uri:
             context[PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI] = self.post_logout_redirect_uri
 
-        # Add frontchannel logout URL if provider has it configured
+        # Get session info for logout notifications
+        auth_session = AuthenticatedSession.from_request(request, request.user)
+        session_key = (
+            auth_session.session.session_key if auth_session and auth_session.session else None
+        )
+
+        # Handle frontchannel logout
         frontchannel_logout_url = None
         if self.provider.logout_method == OAuth2LogoutMethod.FRONTCHANNEL:
-            auth_session = AuthenticatedSession.from_request(request, request.user)
-            session_key = (
-                auth_session.session.session_key if auth_session and auth_session.session else None
-            )
             frontchannel_logout_url = build_frontchannel_logout_url(
                 self.provider, request, session_key
             )
+
+        # Handle backchannel logout
+        if (
+            self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+            and self.provider.logout_uri
+        ):
+            # Find access token to get iss and sub for the logout token
+            access_token = AccessToken.objects.filter(
+                user=request.user,
+                provider=self.provider,
+                session=auth_session,
+            ).first()
+            if access_token and access_token.id_token:
+                send_backchannel_logout_request.send(
+                    self.provider.pk,
+                    access_token.id_token.iss,
+                    access_token.id_token.sub,
+                    session_key,
+                )
+                # Delete the token to prevent duplicate backchannel logout
+                # when UserLogoutStage triggers the session deletion signal
+                access_token.delete()
 
         if frontchannel_logout_url:
             context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
