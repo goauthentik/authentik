@@ -8,6 +8,7 @@ from authentik.core.models import Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.enterprise.stages.account_lockdown.models import (
     PLAN_CONTEXT_LOCKDOWN_REASON,
+    PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE,
     PLAN_CONTEXT_LOCKDOWN_TARGET,
     PLAN_CONTEXT_LOCKDOWN_TARGETS,
     AccountLockdownStage,
@@ -118,6 +119,41 @@ class TestAccountLockdownStage(FlowTestCase):
         event = Event.objects.filter(action=EventAction.ACCOUNT_LOCKDOWN_TRIGGERED).first()
         self.assertIsNotNone(event)
         self.assertEqual(event.context["reason"], "User requested lockdown")
+
+    def test_lockdown_event_failure_does_not_fail_self_service(self):
+        """Test lockdown still succeeds when event emission fails."""
+        self.stage.delete_sessions = False
+        self.stage.save()
+
+        self.target_user.is_active = True
+        self.target_user.save()
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_LOCKDOWN_TARGET] = self.target_user
+        plan.context[PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE] = True
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        original_event_new = Event.new
+
+        def _event_new_side_effect(action, *args, **kwargs):
+            if action == EventAction.ACCOUNT_LOCKDOWN_TRIGGERED:
+                raise RuntimeError("simulated event failure")
+            return original_event_new(action, *args, **kwargs)
+
+        with patch(
+            "authentik.enterprise.stages.account_lockdown.stage.Event.new",
+            side_effect=_event_new_side_effect,
+        ):
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("application/json", response["Content-Type"])
+        self.target_user.refresh_from_db()
+        self.assertFalse(self.target_user.is_active)
 
     def test_lockdown_revokes_tokens(self):
         """Test lockdown stage revokes tokens"""

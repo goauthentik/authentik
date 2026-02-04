@@ -178,8 +178,8 @@ class UserAccountLockdownMixin:
         # the stage can use the safe self-service completion path after sessions are revoked.
         self_service = any(user.pk == request.user.pk for user in users)
 
-        # Use a stable hash so different selections don't collide.
-        user_ids = ",".join(str(u.pk) for u in users)
+        # Hash the sorted target set so the same users produce the same token regardless of order.
+        user_ids = ",".join(str(user_id) for user_id in sorted({user.pk for user in users}))
         digest = sha256(user_ids.encode("utf-8")).hexdigest()[:12]
         return self._create_flow_url_from_plan(
             request,
