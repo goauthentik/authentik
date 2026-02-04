@@ -42913,6 +42913,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
+        post_logout_redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
         logout_uri:
           type: string
           format: uri
@@ -43036,6 +43040,10 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
+        post_logout_redirect_uris:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
@@ -48443,6 +48451,10 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
+        post_logout_redirect_uris:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
