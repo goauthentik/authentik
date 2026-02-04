@@ -45,10 +45,6 @@ export function remarkVersionDirective() {
 
             const yearCutoff = new Date().getFullYear() - 2;
 
-            if (parsed.major <= yearCutoff) {
-                throw new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`);
-            }
-
             const data = node.data || (node.data = {});
 
             const hast = h("span", {
