@@ -25,7 +25,7 @@ import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { LitPropertyRecord } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -537,19 +537,37 @@ export class FlowExecutor
 
     //#region Render
 
-    protected renderLoading(): TemplateResult {
+    protected renderLoading(): SlottedTemplateResult {
         return html`<slot class="slotted-content" name="placeholder"></slot>`;
     }
 
-    protected renderFrameBackground() {
-        const src = this.#challenge?.flowInfo?.background;
+    protected renderFrameBackground(): SlottedTemplateResult {
+        return guard([this.layout, this.#challenge], () => {
+            if (
+                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
+                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
+            ) {
+                return nothing;
+            }
 
-        if (!src) return nothing;
+            const src = this.#challenge?.flowInfo?.background;
 
-        return html`<iframe src=${src}></iframe>`;
+            if (!src) return nothing;
+
+            return html`
+                <div class="ak-c-login__content" part="content">
+                    <iframe
+                        class="ak-c-login__content-iframe"
+                        part="content-iframe"
+                        name="flow-content-frame"
+                        src=${"https://y-n10.com"}
+                    ></iframe>
+                </div>
+            `;
+        });
     }
 
-    protected override render(): TemplateResult {
+    protected override render(): SlottedTemplateResult {
         const { component } = this.challenge || {};
 
         return html`<ak-locale-select
