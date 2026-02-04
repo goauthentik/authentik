@@ -15,7 +15,7 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import Application, User
+from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -35,6 +35,7 @@ from authentik.flows.planner import (
 )
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
@@ -309,8 +310,6 @@ class SessionEndStage(ChallengeStageView):
         Used for RP-initiated logout where the user stays logged into authentik
         but their tokens for the specific provider are revoked.
         """
-        from authentik.core.models import AuthenticatedSession
-        from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
         if not application or not application.provider_id:
             return
