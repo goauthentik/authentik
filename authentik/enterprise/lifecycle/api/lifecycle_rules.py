@@ -83,6 +83,23 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
                 raise ValidationError(
                     {"grace_period": _("Grace period must be shorter than the interval.")}
                 )
+        if "content_type" in attrs or "object_id" in attrs:
+            content_type = attrs.get("content_type", getattr(self.instance, "content_type", None))
+            object_id = attrs.get("object_id", getattr(self.instance, "object_id", None))
+            if content_type is not None and object_id is None:
+                existing = LifecycleRule.objects.filter(
+                    content_type=content_type, object_id__isnull=True
+                )
+                if self.instance:
+                    existing = existing.exclude(pk=self.instance.pk)
+                if existing.exists():
+                    raise ValidationError(
+                        {
+                            "content_type": _(
+                                "Only one type-wide rule for each object type is allowed."
+                            )
+                        }
+                    )
         return attrs
 
 
