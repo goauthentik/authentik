@@ -52998,6 +52998,7 @@ components:
       - REVIEWED
       - PENDING
       - OVERDUE
+      - CANCELED
       type: string
     ReviewerGroup:
       type: object

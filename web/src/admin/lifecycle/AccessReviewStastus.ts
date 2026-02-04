@@ -24,6 +24,9 @@ export class AccessReviewStatus extends AKElement {
             case ReviewStateEnum.Overdue:
                 return html`
                     <ak-label color=${PFColor.Red}>${msg("Overdue")}</ak-label>`;
+            case ReviewStateEnum.Canceled:
+                return html`
+                    <ak-label color=${PFColor.Grey}>${msg("Canceled")}</ak-label>`;
             default:
                 return html``;
         }
