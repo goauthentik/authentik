@@ -1,6 +1,5 @@
 ---
 title: Redirect stage
-authentik_version: "2024.12"
 ---
 
 This stage's main purpose is to redirect the user to a new Flow while keeping flow context. For convenience, it can also redirect the user to a static URL.
