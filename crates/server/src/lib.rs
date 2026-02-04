@@ -344,8 +344,9 @@ async fn start_server_tls(
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
     axum_server::Server::bind(addr)
-        // TODO: proxy protocol
-        .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config)))
+        .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config).acceptor(
+            ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()),
+        )))
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;

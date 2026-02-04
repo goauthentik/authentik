@@ -11,24 +11,28 @@ pub struct TlsState {
 }
 
 #[derive(Clone)]
-pub struct TlsAcceptor {
-    inner: RustlsAcceptor,
+pub struct TlsAcceptor<A> {
+    inner: RustlsAcceptor<A>,
 }
 
-impl TlsAcceptor {
-    pub fn new(inner: RustlsAcceptor) -> Self {
+impl<A> TlsAcceptor<A> {
+    pub fn new(inner: RustlsAcceptor<A>) -> Self {
         Self { inner }
     }
 }
 
-impl<I, S> Accept<I, S> for TlsAcceptor
+impl<A, I, S> Accept<I, S> for TlsAcceptor<A>
 where
+    A: Accept<I, S> + Clone + Send + 'static,
+    A::Stream: AsyncRead + AsyncWrite + Unpin + Send,
+    A::Service: Send,
+    A::Future: Send,
     I: AsyncRead + AsyncWrite + Unpin + Send + 'static,
     S: Send + 'static,
 {
     type Future = BoxFuture<'static, std::io::Result<(Self::Stream, Self::Service)>>;
-    type Service = AddExtension<S, TlsState>;
-    type Stream = TlsStream<I>;
+    type Service = AddExtension<A::Service, TlsState>;
+    type Stream = TlsStream<A::Stream>;
 
     fn accept(&self, stream: I, service: S) -> Self::Future {
         let acceptor = self.inner.clone();
