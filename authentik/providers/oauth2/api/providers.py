@@ -43,8 +43,23 @@ class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
 
     redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
+    post_logout_redirect_uris = RedirectURISerializer(
+        many=True, source="_post_logout_redirect_uris", required=False
+    )
 
     def validate_redirect_uris(self, data: list) -> list:
+        for entry in data:
+            if entry.get("matching_mode") == RedirectURIMatchingMode.REGEX:
+                url = entry.get("url")
+                try:
+                    compile(url)
+                except RegexError:
+                    raise ValidationError(
+                        _("Invalid Regex Pattern: {url}".format(url=url))
+                    ) from None
+        return data
+
+    def validate_post_logout_redirect_uris(self, data: list) -> list:
         for entry in data:
             if entry.get("matching_mode") == RedirectURIMatchingMode.REGEX:
                 url = entry.get("url")
@@ -71,6 +86,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "signing_key",
             "encryption_key",
             "redirect_uris",
+            "post_logout_redirect_uris",
             "logout_uri",
             "logout_method",
             "sub_mode",

@@ -220,6 +220,15 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Frontchannel uses iframes in your browser"
         ),
     )
+    _post_logout_redirect_uris = models.JSONField(
+        default=list,
+        verbose_name=_("Post Logout Redirect URIs"),
+        help_text=_(
+            "Valid URIs to redirect to after logout. "
+            "If post_logout_redirect_uri is provided in the logout request "
+            "and matches one of these URIs, the user will be redirected there."
+        ),
+    )
 
     include_claims_in_id_token = models.BooleanField(
         default=True,
@@ -354,6 +363,26 @@ class OAuth2Provider(WebfingerProvider, Provider):
         for entry in value:
             cleansed.append(asdict(entry))
         self._redirect_uris = cleansed
+
+    @property
+    def post_logout_redirect_uris(self) -> list[RedirectURI]:
+        uris = []
+        for entry in self._post_logout_redirect_uris:
+            uris.append(
+                from_dict(
+                    RedirectURI,
+                    entry,
+                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                )
+            )
+        return uris
+
+    @post_logout_redirect_uris.setter
+    def post_logout_redirect_uris(self, value: list[RedirectURI]):
+        cleansed = []
+        for entry in value:
+            cleansed.append(asdict(entry))
+        self._post_logout_redirect_uris = cleansed
 
     @property
     def launch_url(self) -> str | None:
