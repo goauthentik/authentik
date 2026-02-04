@@ -27,7 +27,7 @@ export class EndpointAgentStage extends BaseStage<
 > {
     static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
-    #timeout = -1;
+    #timeout: ReturnType<typeof setTimeout> | null = null;
 
     #messageHandler = (ev: MessageEvent<BrowserExtensionData>) => {
         if (ev.data._ak_ext !== "authentik-platform-sso") {
@@ -36,7 +36,9 @@ export class EndpointAgentStage extends BaseStage<
         if (!ev.data.response) {
             return;
         }
-        clearTimeout(this.#timeout);
+        if (this.#timeout !== null) {
+            clearTimeout(this.#timeout);
+        }
         this.host?.submit(
             {
                 response: ev.data?.response,
