@@ -89,6 +89,7 @@ class ReviewFilterSet(FilterSet):
 class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    ordering = ["-opened_on"]
     ordering_fields = ["state", "content_type__model", "opened_on", "grace_period_end"]
     filterset_class = ReviewFilterSet
 
