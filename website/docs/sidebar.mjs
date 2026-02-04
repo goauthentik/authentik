@@ -332,7 +332,6 @@ const items = [
                             "add-secure-apps/flows-stages/stages/user_write",
                         ],
                     },
-                    "add-secure-apps/flows-stages/flow-stage-bindings/index",
                 ],
             },
             {

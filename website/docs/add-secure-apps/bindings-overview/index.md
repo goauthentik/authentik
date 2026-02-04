@@ -14,7 +14,7 @@ It's important to remember that bindings are instantiated objects themselves, an
 
 ## Relations with bindings
 
-This diagram shows the relationships that bindings have between components. The primary components are _policy_, _user_, and _group_; these three objects can be bound to either an application, application entitlement, flow, flow-stage binding, source, device, device access group, notification rule, or endpoint.
+This diagram shows the relationships that bindings have between components. The primary components are _policy_, _user_, and _group_; these three objects can be bound to an application, application entitlement, flow, flow-stage binding, source, device, device access group, notification rule, or endpoint.
 
 ```mermaid
 
@@ -86,7 +86,7 @@ With policy bindings, you can also bind groups and users to another component (a
 
 Bindings are also used for [Application Entitlements](../../add-secure-apps/applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to certain areas _within an application_.
 
-::: info
+:::info
 Be aware that policy bindings that are bound directly to the flow are evaluated _before_ the flow executes, so if the user is not authenticated, the flow will not start.
 :::
 
@@ -96,7 +96,7 @@ Be aware that policy bindings that are bound directly to the flow are evaluated 
 Be aware that depending on context, user and group policy bindings are not evaluated (i.e. ignored). For example, if you are not authenticated or if authentik has not yet identified the user, a policy binding that depends on knowing who the user is cannot be evaluated.
 :::
 
-Flow-stage bindings are analyzed by authentik's Flow Plan, which starts with the flow, then assesses all of the bound policies, and then runs them in order to build out the plan.
+Flow-stage bindings (also called stage bindings) are analyzed by authentik's Flow Plan, which starts with the flow, then assesses all of the bound policies, and then runs them in order to build out the plan.
 
 A _flow-stage binding_ connects a stage to a flow in a specified order, so that the stage is executed at the desired point within the flow.
 

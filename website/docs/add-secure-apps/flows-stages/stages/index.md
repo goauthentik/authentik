@@ -43,11 +43,23 @@ To create a stage, follow these steps:
 2. In the Admin interface, navigate to **Flows and Stages > Stages**.
 3. Click **Create**, define the stage using the configuration settings, and then click **Finish**.
 
-After creating the stage, you can then [bind the stage to a flow](#bind-a-stage-to-a-flow) or [bind a policy to the stage](../../../customize/policies/working_with_policies.md) (the policy determines whether or not the stage will be implemented in the flow).
+After creating the stage, you can then use bindings to determine whether or not the stage will be implemented in the flow.
 
-## Bind a stage to a flow
+## Stage bindings
 
-To bind a stage to a flow, follow these steps:
+A _stage binding_ connects a stage to a flow. The "additional content" (i.e. the content in the stage) is now added to the flow.
+
+You can use a binding to determine which exact [stages](../stages/index.md) (all of the _steps_ within a flow) are presented to a user (or a group).
+
+For an overview about all the different types of bindings in authentik and how they are used, refer to [About authentik bindings](../../bindings-overview/index.md).
+
+:::info
+Be aware that some stages and flows do not allow user or group bindings, because in certain scenarios (authentication or enrollment), the flow plan doesn't yet know who the user or group is.
+:::
+
+### Bind a stage to a flow
+
+To bind a stage to a flow (which adds the stage as a "step" in the flow), follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages > Flows**.
@@ -55,7 +67,11 @@ To bind a stage to a flow, follow these steps:
 4. On the Flow page, click the **Stage Bindings** tab at the top.
 5. Here, you can decide if you want to create a new stage and bind it to the flow (**Create and bind Stage**), or if you want to select an existing stage and bind it to the flow (**Bind existing stage**).
 
-## Bind users and groups to a flow's stage binding
+### Control access to a stage
+
+There are several ways use policy bindings to control access to a specific stage of a flow: - Bind a policy to a stage-binding. [See our policy documentation](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding). - Bind a user or group to the stage. [See steps below](#bind-users-and-groups-to-a-flows-stage-binding).
+
+### Bind users and groups to a flow's stage binding
 
 You can use bindings to determine whether or not a stage is presented to a single user or any users within a group. You do this by binding the user or group to a stage binding within a specific flow. For example, if you have a flow that contains a stage that prompts the user for multi-factor authentication, but you only want certain users to see this stage (and fulfill the MFA prompt), then you would bind the appropriate group (or single user) to the stage binding for that flow.
 

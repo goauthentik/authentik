@@ -44,7 +44,7 @@ These bindings control which users can access a flow.
 4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
 5. Here, you can decide if you want to create a new policy and bind it to the flow (**Create and bind Policy**), or if you want to select an existing policy and bind it to the flow (**Bind existing policy/group/user**).
 
-### Bind a policy to a stage
+### Bind a policy to a stage binding
 
 These bindings control which stages are applied to a flow.
 
@@ -54,9 +54,9 @@ These bindings control which stages are applied to a flow.
 4. Click on the **Stage Bindings** tab at the top of the page.
 5. Click the arrow (**>**) beside the name of the stage to which you want to bind a policy.
    The details for that stage displays.
-6. Here, you can decide if you want to create a new policy and bind it to the stage (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage (**Bind existing policy/group/user**).
+6. Here, you can decide if you want to create a new policy and bind it to the stage binding (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage binding (**Bind existing policy/group/user**).
 
-## Bind a policy to an application
+### Bind a policy to an application
 
 These bindings control which users or groups can access an application.
 
@@ -68,7 +68,7 @@ These bindings control which users or groups can access an application.
     - **Create and bind Policy**
     - **Bind existing Policy/Group/User**
 
-## Bind a policy to a source
+### Bind a policy to a source
 
 These bindings control which users or groups can access an application.
 

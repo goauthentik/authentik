@@ -3,19 +3,23 @@
  */
 
 #service-install {
-    --service-icon-color: #fd4b2d;
+    --mm-service-icon-color: var(--ifm-color-primary);
 }
 
 #service-acl {
-    --service-icon-color: #fd4b2d;
+    --mm-service-icon-color: var(--ifm-color-primary);
 }
 
 #service-apps {
-    --service-icon-color: #fd4b2d;
+    --mm-service-icon-color: var(--ifm-color-primary);
 }
 #service-users {
-    --service-icon-color: #fd4b2d;
+    --mm-service-icon-color: var(--ifm-color-primary);
 }
 #service-further {
-    --service-icon-color: #fd4b2d;
+    --mm-service-icon-color: var(--ifm-color-primary);
+}
+
+.tip {
+    color: var(--ifm-color-success-dark);
 }
