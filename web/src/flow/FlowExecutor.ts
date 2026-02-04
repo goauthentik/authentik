@@ -32,7 +32,6 @@ import { ConsoleLogger } from "#logger/browser";
 import {
     CapabilitiesEnum,
     ChallengeTypes,
-    ContextualFlowInfo,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowLayoutEnum,
@@ -41,11 +40,11 @@ import {
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -93,42 +92,11 @@ export class FlowExecutor
     @property({ type: String, attribute: "slug", useDefault: true })
     public flowSlug: string = window.location.pathname.split("/")[3];
 
-    #challenge: ChallengeTypes | null = null;
-
     @property({ attribute: false })
-    public set challenge(value: ChallengeTypes | null) {
-        const previousValue = this.#challenge;
-        const previousTitle = previousValue?.flowInfo?.title;
-        const nextTitle = value?.flowInfo?.title;
-
-        this.#challenge = value;
-
-        if (value?.flowInfo) {
-            this.flowInfo = value.flowInfo;
-        }
-
-        if (!nextTitle) {
-            document.title = this.brandingTitle;
-        } else if (nextTitle !== previousTitle) {
-            document.title = `${nextTitle} - ${this.brandingTitle}`;
-        }
-
-        this.requestUpdate("challenge", previousValue);
-    }
-
-    public get challenge(): ChallengeTypes | null {
-        return this.#challenge;
-    }
+    public challenge: ChallengeTypes | null = null;
 
     @property({ type: Boolean })
     public loading = false;
-
-    //#endregion
-
-    //#region State
-
-    #inspectorLoaded = false;
-    #logger = ConsoleLogger.prefix("flow-executor");
 
     @property({ type: Boolean })
     public inspectorOpen?: boolean;
@@ -139,10 +107,21 @@ export class FlowExecutor
     @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
 
-    @state()
-    public flowInfo?: ContextualFlowInfo;
+    //#endregion
+
+    //#region State
+
+    #inspectorLoaded = false;
+
+    #logger = ConsoleLogger.prefix("flow-executor");
 
     //#endregion
+
+    //#region Accessors
+
+    public get flowInfo() {
+        return this.challenge?.flowInfo ?? null;
+    }
 
     //#region Lifecycle
 
@@ -268,6 +247,10 @@ export class FlowExecutor
     public updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
+        document.title = match(this.challenge?.flowInfo?.title)
+            .with(P.nullish, () => this.brandingTitle)
+            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
@@ -329,11 +312,6 @@ export class FlowExecutor
                 }
 
                 this.challenge = challenge;
-
-                if (this.challenge.flowInfo) {
-                    this.flowInfo = this.challenge.flowInfo;
-                }
-
                 return !this.challenge.responseErrors;
             })
             .catch((error: unknown) => {
