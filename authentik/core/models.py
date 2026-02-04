@@ -579,6 +579,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender=sender,
                 user=self,
                 password=None,
+                password_source="hash",
                 request=request,
             )
         self.password = password_hash

@@ -1,6 +1,7 @@
 """Tests for hash_password management command and password_hash serializer functionality"""
 
 from io import StringIO
+from unittest.mock import patch
 
 from django.contrib.auth.hashers import check_password, identify_hasher, make_password
 from django.core.management import call_command
@@ -336,6 +337,7 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertEqual(len(captured), 1)
         self.assertIsNone(captured[0]["password"])
+        self.assertEqual(captured[0]["password_source"], "hash")
 
     def test_set_password_signal_marks_non_hash_password(self):
         """Test password_changed signal payload for a regular password set."""
@@ -355,3 +357,27 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertEqual(len(captured), 1)
         self.assertEqual(captured[0]["password"], "new-password")
+        self.assertNotIn("password_source", captured[0])
+
+    def test_set_password_from_hash_skips_ldap_and_kerberos_sync_receivers(self):
+        """Hash-based password sets should not hit LDAP/Kerberos sync paths."""
+        user = User.objects.create(
+            username=generate_id(),
+            name="Test User",
+            attributes={"distinguishedName": "cn=test,ou=users,dc=example,dc=com"},
+        )
+
+        with (
+            patch(
+                "authentik.sources.ldap.signals.LDAPSource.objects.filter"
+            ) as ldap_sources_filter,
+            patch(
+                "authentik.sources.kerberos.signals."
+                "UserKerberosSourceConnection.objects.select_related"
+            ) as kerberos_connections_select,
+        ):
+            user.set_password_from_hash(make_password("new-password"))  # nosec
+            user.save()
+
+        ldap_sources_filter.assert_not_called()
+        kerberos_connections_select.assert_not_called()
