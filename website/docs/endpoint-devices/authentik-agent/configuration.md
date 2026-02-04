@@ -34,7 +34,7 @@ The authentik agent requires an OAuth application/provider pair to handle authen
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. `authentik-cli`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: set the **Name** and **Slug** to `authentik-cli`, and provide an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
