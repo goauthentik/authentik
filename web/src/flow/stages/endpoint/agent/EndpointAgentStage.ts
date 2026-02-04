@@ -68,7 +68,7 @@ export class EndpointAgentStage extends BaseStage<
                 _ak_ext: "authentik-platform-sso",
                 challenge: this.challenge.challenge,
             });
-            const delay = this.challenge?.challengeIdleTimeout ?? 3000;
+            const delaySeconds = this.challenge?.challengeIdleTimeout ?? 3;
 
             // Fallback in case we don't get a response
             this.#timeout = setTimeout(() => {
@@ -80,7 +80,7 @@ export class EndpointAgentStage extends BaseStage<
                         invisible: true,
                     },
                 );
-            }, delay);
+            }, delaySeconds * 1000);
         }
     }
 
