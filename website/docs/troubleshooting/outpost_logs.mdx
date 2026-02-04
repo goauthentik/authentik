@@ -1,0 +1,126 @@
+---
+title: Capturing standalone outpost logs
+---
+
+This guide only applies to standalone outposts, the [Embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) outputs logs to the usual authentik logs.
+
+Standalone [outposts](../add-secure-apps/outposts/index.mdx) continually output logs that can be helpful when troubleshooting issues. Just like when [Capturing logs in authentik](./logs.mdx) itself, the log level can be adjusted.
+
+## Adjusting log levels
+
+Outpost containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
+
+To modify the log level, [todo]
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+<Tabs
+groupId="outpost-type"
+defaultValue="admin"
+values={[
+{label: 'admin Interface', value: 'admin'},
+{label: 'Manually Deployed Outposts', value: 'manual'},
+]}>
+<TabItem value="admin">
+
+test
+
+  </TabItem>
+  <TabItem value="manual">
+
+test
+
+  </TabItem>
+</Tabs>
+
+## Enabling `trace` mode
+
+:::danger
+The trace log level provides deeper insights, but be aware that using trace logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using trace unless absolutely necessary.
+:::
+
+To enable `trace` logging, [todo]
+
+<Tabs
+groupId="outpost-type"
+defaultValue="admin"
+values={[
+{label: 'admin Interface', value: 'admin'},
+{label: 'Manually Deployed Outposts', value: 'manual'},
+]}>
+<TabItem value="admin">
+
+test
+
+  </TabItem>
+  <TabItem value="manual">
+
+test
+
+  </TabItem>
+</Tabs>
+
+## Viewing past logs
+
+To review historical logs, you can use the `--since` option with both `docker logs` and `kubectl logs`. This option allows you to specify either a duration (e.g., `1m30s`, `3h`) or a specific timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`) to view logs generated after that point in time.
+
+For more details, see the [`docker logs` documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
+
+<Tabs
+groupId="platform"
+defaultValue="docker"
+values={[
+{label: 'docker', value: 'docker'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker">
+
+To retrieve logs from a specific timeframe, use:
+
+```shell
+docker logs <container_name_or_id> --since 5m
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+To fetch logs from a Kubernetes pod:
+
+```shell
+kubectl logs --since 5m <pod_name>
+```
+
+  </TabItem>
+</Tabs>
+
+## Streaming logs in real-time
+
+To continuously monitor logs, use the `--follow` (`-f`) option. This will stream log output to your terminal until manually stopped (`Ctrl + C` or closing the terminal).
+
+<Tabs
+groupId="platform"
+defaultValue="docker"
+values={[
+{label: 'docker', value: 'docker'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker">
+
+To follow logs in real time:
+
+```shell
+docker logs <container_name_or_id> -f
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+To stream logs from a Kubernetes pod:
+
+```shell
+kubectl logs -f <pod_name>
+```
+
+  </TabItem>
+</Tabs>
