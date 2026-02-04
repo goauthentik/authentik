@@ -265,7 +265,8 @@ class Review(SerializerModel, ManagedModel):
         self.save()
 
     def on_attestation(self, request: HttpRequest):
-        assert self.state in (ReviewState.PENDING, ReviewState.OVERDUE)
+        if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
+            raise AssertionError("Review is not pending or overdue")
         if self.rule.is_satisfied_for_review(self):
             self.make_reviewed(request)
 
