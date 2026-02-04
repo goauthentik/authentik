@@ -18,6 +18,7 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
+    FORBIDDEN_URI_SCHEMES,
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
     PROMPT_CONSENT,
@@ -78,7 +79,6 @@ PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
-FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)

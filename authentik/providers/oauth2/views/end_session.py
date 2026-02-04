@@ -1,12 +1,15 @@
 """oauth2 provider end_session Views"""
 
 from re import fullmatch
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 
-from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
+from authentik.common.oauth.constants import (
+    FORBIDDEN_URI_SCHEMES,
+    PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+)
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
@@ -16,7 +19,8 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.policies.views import PolicyAccessView
+from authentik.lib.views import bad_request_message
+from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -50,6 +54,13 @@ class EndSessionView(PolicyAccessView):
 
         # Validate post_logout_redirect_uri against registered URIs
         if request_redirect_uri:
+            if urlparse(request_redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+                raise RequestValidationError(
+                    bad_request_message(
+                        self.request,
+                        "Forbidden URI scheme in post_logout_redirect_uri",
+                    )
+                )
             for allowed in self.provider.post_logout_redirect_uris:
                 if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
                     if request_redirect_uri == allowed.url:

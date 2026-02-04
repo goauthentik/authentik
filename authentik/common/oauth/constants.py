@@ -37,6 +37,9 @@ TOKEN_TYPE = "Bearer"  # nosec
 
 SCOPE_AUTHENTIK_API = "goauthentik.io/api"
 
+# URI schemes that are forbidden for redirect URIs
+FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
+
 # Read/write full user (including email)
 SCOPE_GITHUB_USER = "user"
 # Read user (without email)
