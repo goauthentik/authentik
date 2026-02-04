@@ -92,3 +92,4 @@ class LifecycleRuleViewSet(ModelViewSet):
     search_fields = ["content_type__model", "reviewer_groups__name", "reviewers__username"]
     ordering = ["content_type__model"]
     ordering_fields = ["content_type__model"]
+    filterset_fields = ["content_type__model"]
