@@ -29,6 +29,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.models import KeyType
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -160,13 +161,25 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "-"
 
     def validate(self, attrs: dict):
-        if attrs.get("signing_kp"):
+        signing_kp = attrs.get("signing_kp")
+        if signing_kp:
             if not attrs.get("sign_assertion") and not attrs.get("sign_response"):
                 raise ValidationError(
                     _(
                         "With a signing keypair selected, at least one of 'Sign assertion' "
                         "and 'Sign Response' must be selected."
                     )
+                )
+
+            key_type = signing_kp.key_type
+
+            if key_type and key_type not in [KeyType.RSA, KeyType.EC, KeyType.DSA]:
+                raise ValidationError(
+                    {
+                        "signing_kp": _(
+                            "Only RSA, EC, and DSA key types are supported for SAML signing."
+                        )
+                    }
                 )
 
         # Validate logout_method - backchannel is only available with POST SLS binding

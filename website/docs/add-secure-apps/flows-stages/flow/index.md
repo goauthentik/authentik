@@ -74,7 +74,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 <Defaultflowlist />
 
-**Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
+**Authentication**: Using this option, you can configure whether the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
 
 **Behavior settings**:
 

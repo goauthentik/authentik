@@ -5,7 +5,13 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
-import { ProvidersApi, SAMLBindingsEnum, SAMLLogoutMethods, SAMLProvider } from "@goauthentik/api";
+import {
+    KeyTypeEnum,
+    ProvidersApi,
+    SAMLBindingsEnum,
+    SAMLLogoutMethods,
+    SAMLProvider,
+} from "@goauthentik/api";
 
 import { customElement, state } from "lit/decorators.js";
 
@@ -31,6 +37,9 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         this.hasPostBinding = false;
         this.logoutMethod = SAMLLogoutMethods.FrontchannelIframe;
     }
+
+    @state()
+    protected signingKeyType: KeyTypeEnum | null = null;
 
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
@@ -68,6 +77,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {
@@ -100,6 +110,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             provider: this.instance,
             setHasSigningKp,
             hasSigningKp: this.hasSigningKp,
+            signingKeyType: this.signingKeyType,
             setHasSlsUrl,
             hasSlsUrl: this.hasSlsUrl,
             setSlsBinding,

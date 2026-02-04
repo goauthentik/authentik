@@ -57,6 +57,14 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                             label: msg("ECDSA"),
                             value: AlgEnum.Ecdsa,
                         },
+                        {
+                            label: msg("ED25519"),
+                            value: AlgEnum.Ed25519,
+                        },
+                        {
+                            label: msg("ED448"),
+                            value: AlgEnum.Ed448,
+                        },
                     ]}
                 >
                 </ak-radio>
