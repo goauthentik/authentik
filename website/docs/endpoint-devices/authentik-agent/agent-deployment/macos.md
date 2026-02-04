@@ -46,7 +46,8 @@ The Agent requires a serial number be presented by macOS. Some hypervisors don't
     - This can be avoided by Option + Right Clicking the package and clicking **Open**.
     - Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"`
 6. Confirm that the authentik Agent is installed by opening a Terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device compliance
 
