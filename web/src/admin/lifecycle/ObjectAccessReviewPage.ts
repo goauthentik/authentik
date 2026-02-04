@@ -19,7 +19,7 @@ import {
     ReviewStateEnum,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -187,7 +187,7 @@ export class ObjectPermissionPage extends AKElement {
         }
         const groupList = this.review.reviewerGroups.map((g) => g.name).join(", ");
         return html`${msg(
-            `At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`,
+            str`At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`,
         )}`;
     }
 
