@@ -1,13 +1,15 @@
 from datetime import timedelta
 from uuid import uuid4
 
+from aiohttp.web_fileresponse import content_type
 from dateutil.relativedelta import relativedelta
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import QuerySet, Q
 from django.db.models.functions import Cast
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
 from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -63,18 +65,6 @@ class LifecycleRule(SerializerModel):
         from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
         apply_lifecycle_rule.send_with_options(args=(self.id,), rel_obj=self, )
 
-    def get_reviews(self):
-        qs = Review.objects.filter(content_type=self.content_type)
-        if self.object_id:
-            qs = qs.filter(object_id=self.object_id)
-        else:
-            qs = qs.exclude(
-                object_id__in=LifecycleRule.objects.filter(
-                    content_type=self.content_type
-                ).values_list("object_id", flat=True)
-            )
-        return qs
-
     def _get_pk_field(self):
         model = self.content_type.model_class()
         pk = model._meta.pk
@@ -95,8 +85,15 @@ class LifecycleRule(SerializerModel):
             )
         return qs
 
+    def _get_stale_reviews(self) -> QuerySet[Review]:
+        filter = ~Q(content_type=self.content_type)
+        if self.object_id:
+            filter = filter | ~Q(object_id=self.object_id)
+        filter = Q(state__in=(ReviewState.PENDING, ReviewState.OVERDUE)) & filter
+        return self.review_set.filter(filter)
+
     def _get_newly_overdue_reviews(self) -> QuerySet[Review]:
-        return self.get_reviews().filter(
+        return self.review_set.filter(
             opened_on__lte=timezone.now() - timedelta(days=self.grace_period_days),
             state=ReviewState.PENDING,
         )
@@ -112,11 +109,13 @@ class LifecycleRule(SerializerModel):
         return self.get_objects().exclude(pk__in=recent_review_ids)
 
     def apply(self):
+        self._get_stale_reviews().update(state=ReviewState.CANCELED)
+
         for review in self._get_newly_overdue_reviews():
             review.make_overdue()
 
         for obj in self._get_newly_due_objects():
-            Review.start(content_type=self.content_type, object_id=obj.pk)
+            Review.start(content_type=self.content_type, object_id=obj.pk, rule=self)
 
     def is_satisfied_for_review(self, review: Review) -> bool:
         reviewers = self.reviewers.all()
@@ -151,10 +150,17 @@ class LifecycleRule(SerializerModel):
                     break
 
 
+@receiver(pre_delete, sender=LifecycleRule)
+def pre_rule_delete(sender, instance: LifecycleRule, **_):
+    instance.review_set.filter(Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)).update(
+        state=ReviewState.CANCELED)
+
+
 class ReviewState(models.TextChoices):
     REVIEWED = "REVIEWED", _("Reviewed")
     PENDING = "PENDING", _("Pending")
     OVERDUE = "OVERDUE", _("Overdue")
+    CANCELED = "CANCELED", _("Canceled")
 
 
 class Review(SerializerModel, ManagedModel):
@@ -162,6 +168,8 @@ class Review(SerializerModel, ManagedModel):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(null=False)
     object = GenericForeignKey("content_type", "object_id")
+
+    rule = models.ForeignKey(LifecycleRule, null=True, on_delete=models.SET_NULL)
 
     state = models.CharField(max_length=10, choices=ReviewState, default=ReviewState.PENDING)
     opened_on = models.DateField(auto_now_add=True)
@@ -174,15 +182,6 @@ class Review(SerializerModel, ManagedModel):
         from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
 
         return ReviewSerializer
-
-    @cached_property
-    def rule(self) -> LifecycleRule:
-        try:
-            return LifecycleRule.objects.get(
-                content_type=self.content_type, object_id=self.object_id
-            )
-        except LifecycleRule.DoesNotExist:
-            return LifecycleRule.objects.get(content_type=self.content_type, object_id__isnull=True)
 
     def _get_model_name(self):
         return self.content_type.name.lower()
@@ -217,8 +216,8 @@ class Review(SerializerModel, ManagedModel):
         self.save()
 
     @staticmethod
-    def start(content_type: ContentType, object_id: str) -> Review:
-        review = Review.objects.create(content_type=content_type, object_id=object_id)
+    def start(content_type: ContentType, object_id: str, rule: LifecycleRule) -> Review:
+        review = Review.objects.create(content_type=content_type, object_id=object_id, rule=rule)
         review.initialize()
         return review
 
