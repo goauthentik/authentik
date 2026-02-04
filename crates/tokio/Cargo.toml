@@ -1,5 +1,5 @@
 [package]
-name = "authentik-axum"
+name = "authentik-tokio"
 version = "0.0.0"
 authors.workspace = true
 edition.workspace = true
@@ -10,24 +10,16 @@ license-file.workspace = true
 publish.workspace = true
 
 [dependencies]
-axum.workspace = true
-axum-server.workspace = true
 bytes.workspace = true
-client-ip.workspace = true
-forwarded-header-value.workspace = true
 eyre.workspace = true
 futures.workspace = true
 hyper.workspace = true
 hyper-util.workspace = true
 pin-project-lite.workspace = true
+ppp.workspace = true
+smallvec.workspace = true
 tokio.workspace = true
-tokio-rustls.workspace = true
-tower.workspace = true
-tower-service.workspace = true
 tracing.workspace = true
-
-authentik-config.workspace = true
-authentik-tokio.workspace = true
 
 [lints]
 workspace = true

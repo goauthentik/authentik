@@ -212,6 +212,7 @@ name = "authentik-axum"
 version = "0.0.0"
 dependencies = [
  "authentik-config",
+ "authentik-tokio",
  "axum",
  "axum-server",
  "bytes",
@@ -307,6 +308,22 @@ dependencies = [
  "tokio-util",
  "tower",
  "tower-http",
+ "tracing",
+]
+
+[[package]]
+name = "authentik-tokio"
+version = "0.0.0"
+dependencies = [
+ "bytes",
+ "eyre",
+ "futures",
+ "hyper",
+ "hyper-util",
+ "pin-project-lite",
+ "ppp",
+ "smallvec",
+ "tokio",
  "tracing",
 ]
 
@@ -2395,6 +2412,15 @@ name = "powerfmt"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391"
+
+[[package]]
+name = "ppp"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a7a2049cd2570bd67bf0228e86bf850f8ceb5190a345c471d03a909da6049e0"
+dependencies = [
+ "thiserror 1.0.69",
+]
 
 [[package]]
 name = "ppv-lite86"
