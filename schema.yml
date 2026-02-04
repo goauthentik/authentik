@@ -8790,6 +8790,10 @@ paths:
     get:
       operationId: lifecycle_lifecycle_rules_list
       parameters:
+      - in: query
+        name: content_type__model
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'

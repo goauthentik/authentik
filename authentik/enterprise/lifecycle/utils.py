@@ -1,8 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.urls import reverse
-from rest_framework.serializers import ChoiceField, ModelSerializer, Serializer, UUIDField
+from rest_framework.serializers import ChoiceField, Serializer, UUIDField
 
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, Group, User
 from authentik.rbac.models import Role
 
