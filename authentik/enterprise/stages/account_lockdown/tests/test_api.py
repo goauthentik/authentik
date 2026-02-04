@@ -25,7 +25,7 @@ patch_license = patch(
 
 @patch_license
 class TestUsersAccountLockdownAPI(APITestCase):
-    """Test Users Account Lockdown API - Flow-based approach"""
+    """Test Users Account Lockdown API"""
 
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
