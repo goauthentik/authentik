@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
@@ -14,6 +16,12 @@ class AttestationSerializer(EnterpriseRequiredMixin, ModelSerializer):
         model = Attestation
         fields = ["id", "review", "reviewer", "timestamp", "note"]
         read_only_fields = ["id", "timestamp", "reviewer"]
+
+    def validate_review(self, review):
+        user = self.context["request"].user
+        if not review.user_can_attest(user):
+            raise ValidationError(_("You are not allowed to attest on this review."))
+        return review
 
 
 class AttestationViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):

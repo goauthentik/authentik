@@ -57,19 +57,25 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     def validate(self, attrs: dict):
         if (
-            attrs["object_id"] is not None
+            attrs.get("object_id") is not None
             and not attrs["content_type"]
             .get_all_objects_for_this_type(pk=attrs["object_id"])
             .exists()
         ):
             raise ValidationError({"object_id": _("Object does not exist")})
-        reviewer_groups = attrs.get("reviewer_groups", [])
-        reviewers = attrs.get("reviewers", [])
-        if len(reviewer_groups) == 0 and len(reviewers) == 0:
-            raise ValidationError(_("Either a reviewer group or a reviewer must be set."))
-        if timedelta_from_string(attrs.get("grace_period")) > timedelta_from_string(attrs.get("interval")):
-            raise ValidationError(
-                {"grace_period": _("Grace period must be shorter than the interval.")}
+        if "reviewer_groups" in attrs or "reviewers" in attrs:
+            reviewer_groups = attrs.get("reviewer_groups", self.instance.reviewer_groups.all() if self.instance else [])
+            reviewers = attrs.get("reviewers", self.instance.reviewers.all() if self.instance else [])
+            if len(reviewer_groups) == 0 and len(reviewers) == 0:
+                raise ValidationError(_("Either a reviewer group or a reviewer must be set."))
+        if "grace_period" in attrs or "interval" in attrs:
+            grace_period = attrs.get("grace_period", getattr(self.instance, "grace_period", None))
+            interval = attrs.get("interval", getattr(self.instance, "interval", None))
+            if grace_period is not None and interval is not None and (
+                timedelta_from_string(grace_period) > timedelta_from_string(interval)
+            ):
+                raise ValidationError(
+                    {"grace_period": _("Grace period must be shorter than the interval.")}
             )
         return attrs
 
@@ -78,4 +84,5 @@ class LifecycleRuleViewSet(ModelViewSet):
     queryset = LifecycleRule.objects.all()
     serializer_class = LifecycleRuleSerializer
     search_fields = ["content_type__model", "reviewer_groups__name", "reviewers__username"]
+    ordering = ["content_type__model"]
     ordering_fields = ["content_type__model"]
