@@ -37,7 +37,7 @@ dependencies = [
   "fido2==2.1.1",
   "geoip2==5.2.0",
   "geopy==2.4.1",
-  "google-api-python-client==2.188.0",
+  "google-api-python-client==2.189.0",
   "gssapi==1.11.1",
   "gunicorn==25.0.1",
   "jsonpatch==1.33",
