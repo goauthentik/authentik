@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-02 00:15+0000\n"
+"POT-Creation-Date: 2026-02-04 00:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -233,6 +233,34 @@ msgid "No empty segments in user path allowed."
 msgstr ""
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr ""
 
@@ -242,6 +270,14 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -550,6 +586,14 @@ msgstr ""
 msgid "ecdsa"
 msgstr ""
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr ""
@@ -560,14 +604,6 @@ msgstr ""
 
 #: authentik/crypto/models.py
 msgid "DSA"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed448"
 msgstr ""
 
 #: authentik/crypto/models.py
@@ -2294,6 +2330,10 @@ msgstr ""
 msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
+msgstr ""
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
 msgstr ""
 
 #: authentik/providers/saml/api/providers.py
