@@ -14,11 +14,13 @@ def apply_lifecycle_rules():
             rel_obj=rule,
         )
 
+
 @actor(description=_("Apply lifecycle rule."))
 def apply_lifecycle_rule(rule_id: str):
     rule = LifecycleRule.objects.filter(pk=rule_id).first()
     if rule:
         rule.apply()
+
 
 @actor(description=_("Send notification."))
 def send_notification(transport_pk: int, event_pk: str, user_pk: int, severity: str):

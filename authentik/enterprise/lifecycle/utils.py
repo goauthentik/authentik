@@ -1,9 +1,9 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.urls import reverse
-from rest_framework.serializers import ChoiceField, Serializer, UUIDField, ModelSerializer
+from rest_framework.serializers import ChoiceField, ModelSerializer, Serializer, UUIDField
 
-from authentik.core.models import Group, User, Application
+from authentik.core.models import Application, Group, User
 from authentik.rbac.models import Role
 
 
@@ -58,6 +58,7 @@ class ReviewerGroupSerializer(ModelSerializer):
             "pk",
             "name",
         ]
+
 
 class ReviewerUserSerializer(ModelSerializer):
     class Meta:

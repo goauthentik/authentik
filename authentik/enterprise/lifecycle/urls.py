@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.enterprise.lifecycle.api.attestations import AttestationViewSet
 from authentik.enterprise.lifecycle.api.lifecycle_rules import LifecycleRuleViewSet
 from authentik.enterprise.lifecycle.api.reviews import ReviewViewSet

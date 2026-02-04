@@ -8,6 +8,7 @@ import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#admin/lifecycle/AccessReviewStastus";
 import "#admin/lifecycle/LifecyclePreviewBanner";
+import "#components/ak-switch-input";
 
 import {DEFAULT_CONFIG} from "#common/api/config";
 
@@ -21,7 +22,7 @@ import {
 
 import {msg} from "@lit/localize";
 import {html, TemplateResult} from "lit";
-import {customElement, property} from "lit/decorators.js";
+import {customElement, property, state} from "lit/decorators.js";
 
 @customElement("ak-review-list")
 export class ReviewListPage extends TablePage<Review> {
@@ -39,12 +40,31 @@ export class ReviewListPage extends TablePage<Review> {
     @property()
     order = "grace_period_till";
 
+    @state()
+    showOnlyMine = false;
+
     async apiEndpoint(): Promise<PaginatedResponse<Review>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsListOpen(await this.defaultEndpointConfig());
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsListOpen({
+            ...await this.defaultEndpointConfig(),
+            userIsReviewer: this.showOnlyMine || undefined,
+        },);
     }
 
     protected renderSectionBefore?(): TemplateResult {
         return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>`;
+    }
+
+    protected renderToolbar(): TemplateResult {
+        return html`
+            <ak-switch-input
+                name="showOnlyMine"
+                ?checked=${this.showOnlyMine}
+                label=${msg("Only show reviews where I am a reviewer")}
+                @change=${(ev: Event) => {this.showOnlyMine = !this.showOnlyMine; this.fetch();}}
+            >
+            </ak-switch-input>
+            ${super.renderToolbar()}
+        `;
     }
 
     protected columns: TableColumn[] = [

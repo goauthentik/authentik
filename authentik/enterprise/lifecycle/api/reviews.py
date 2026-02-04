@@ -1,10 +1,12 @@
 from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
-from django.db.models import Q, F
+from django.db.models import BooleanField as ModelBooleanField
+from django.db.models import Case, Q, Value, When
+from django_filters.rest_framework import BooleanFilter, FilterSet
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
-from rest_framework.fields import SerializerMethodField, DateField, BooleanField, IntegerField
+from rest_framework.fields import BooleanField, DateField, IntegerField, SerializerMethodField
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.request import Request
@@ -14,10 +16,14 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.api.attestations import AttestationSerializer
-from authentik.enterprise.lifecycle.utils import parse_content_type, \
-    ContentTypeField, ReviewerGroupSerializer, ReviewerUserSerializer, \
-    admin_link_for_model
 from authentik.enterprise.lifecycle.models import Review, ReviewState
+from authentik.enterprise.lifecycle.utils import (
+    ContentTypeField,
+    ReviewerGroupSerializer,
+    ReviewerUserSerializer,
+    admin_link_for_model,
+    parse_content_type,
+)
 
 
 class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
@@ -28,8 +34,9 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
     attestations = AttestationSerializer(many=True, read_only=True, source="attestation_set.all")
     user_can_attest = SerializerMethodField(read_only=True)
 
-    reviewer_groups = ReviewerGroupSerializer(many=True, read_only=True,
-                                              source="rule.reviewer_groups")
+    reviewer_groups = ReviewerGroupSerializer(
+        many=True, read_only=True, source="rule.reviewer_groups"
+    )
     min_reviewers = IntegerField(read_only=True, source="rule.min_reviewers")
     reviewers = ReviewerUserSerializer(many=True, read_only=True, source="rule.reviewers")
 
@@ -37,9 +44,22 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ["id", "content_type", "object_id", "object_verbose", "object_admin_url", "state",
-                  "opened_on", "grace_period_end", "next_review_date", "attestations",
-                  "user_can_attest", "reviewer_groups", "min_reviewers", "reviewers"]
+        fields = [
+            "id",
+            "content_type",
+            "object_id",
+            "object_verbose",
+            "object_admin_url",
+            "state",
+            "opened_on",
+            "grace_period_end",
+            "next_review_date",
+            "attestations",
+            "user_can_attest",
+            "reviewer_groups",
+            "min_reviewers",
+            "reviewers",
+        ]
         read_only_fields = fields
 
     def get_object_verbose(self, review: Review) -> str:
@@ -61,10 +81,29 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
         return review.user_can_attest(self.context["request"].user)
 
 
+class ReviewFilterSet(FilterSet):
+    user_is_reviewer = BooleanFilter(field_name="user_is_reviewer", lookup_expr="exact")
+
+
 class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     ordering_fields = ["state", "content_type__model", "opened_on", "grace_period_end"]
+    filterset_class = ReviewFilterSet
+
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset.annotate(
+            user_is_reviewer=Case(
+                When(
+                    Q(rule__reviewers=user)
+                    | Q(rule__reviewer_groups__in=user.groups.all().with_ancestors()),
+                    then=Value(True),
+                ),
+                default=Value(False),
+                output_field=ModelBooleanField(),
+            )
+        )
 
     @action(
         detail=False,
@@ -82,8 +121,10 @@ class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
 
-    @extend_schema(operation_id="lifecycle_reviews_list_open",
-                   responses={200: ReviewSerializer(many=True)}, )
+    @extend_schema(
+        operation_id="lifecycle_reviews_list_open",
+        responses={200: ReviewSerializer(many=True)},
+    )
     @action(
         detail=False,
         methods=["get"],
@@ -91,7 +132,8 @@ class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
     )
     def open_reviews(self, request: Request):
         reviews = self.get_queryset().filter(
-            Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE))
+            Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)
+        )
         reviews = self.filter_queryset(reviews)
         page = self.paginate_queryset(reviews)
         if page is not None:
