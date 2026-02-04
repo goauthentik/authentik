@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.db.models.functions import Cast
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.utils import timezone
@@ -64,15 +64,6 @@ class LifecycleRule(SerializerModel):
         from authentik.enterprise.lifecycle.api.lifecycle_rules import LifecycleRuleSerializer
 
         return LifecycleRuleSerializer
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
-
-        apply_lifecycle_rule.send_with_options(
-            args=(self.id,),
-            rel_obj=self,
-        )
 
     def _get_pk_field(self):
         model = self.content_type.model_class()
@@ -174,6 +165,15 @@ class LifecycleRule(SerializerModel):
                 if transport.send_once:
                     break
 
+
+@receiver(post_save, sender=LifecycleRule)
+def post_rule_save(sender, instance: LifecycleRule, created: bool, **_):
+    from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
+
+    apply_lifecycle_rule.send_with_options(
+        args=(instance.id,),
+        rel_obj=instance,
+    )
 
 @receiver(pre_delete, sender=LifecycleRule)
 def pre_rule_delete(sender, instance: LifecycleRule, **_):
