@@ -153,7 +153,9 @@ export class AKTimestamp extends AKElement {
             ${this.elapsed ? html`<div part="elapsed" id="elapsed">${elapsed}</div>` : nothing}
             ${this.datetime
                 ? html`<small part="datetime" id="datetime"
-                      >${this.dateOnly ? this.timestamp.toLocaleDateString() : this.timestamp.toLocaleString()}</small
+                      >${this.dateOnly
+                          ? this.timestamp.toLocaleDateString()
+                          : this.timestamp.toLocaleString()}</small
                   >`
                 : nothing}
         </time>`;
