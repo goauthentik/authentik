@@ -88,3 +88,7 @@ ak version
 ## Logging
 
 The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for authentik-related processes such as `authentik-agent` or `authentik-sysd`.
+
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

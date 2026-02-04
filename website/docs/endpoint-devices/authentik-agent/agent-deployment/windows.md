@@ -106,3 +106,7 @@ ak version
 ## Logging
 
 All components of the authentik Agent output logs to the "authentik" log in the Windows Event Viewer.
+
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).
