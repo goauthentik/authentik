@@ -3,7 +3,7 @@
 from typing import Any
 
 from django.db.models import Case, F, IntegerField, Q, Value, When
-from django.db.models.functions import Length
+from django.db.models.functions import Concat, Length
 from django.http.request import HttpRequest
 from django.utils.html import _json_script_escapes
 from django.utils.safestring import mark_safe
@@ -26,7 +26,8 @@ def get_brand_for_request(request: HttpRequest) -> Brand:
             domain_length=Length("domain"),
             match_priority=Case(
                 When(
-                    condition=Q(host_domain__iendswith=F("domain")),
+                    condition=Q(host_domain__iexact=F("domain"))
+                    | Q(host_domain__iendswith=Concat(Value("."), F("domain"))),
                     then=F("domain_length"),
                 ),
                 default=Value(-1),
