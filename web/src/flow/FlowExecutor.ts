@@ -115,6 +115,8 @@ export class FlowExecutor
 
     #logger = ConsoleLogger.prefix("flow-executor");
 
+    #api: FlowsApi;
+
     //#endregion
 
     //#region Accessors
@@ -131,6 +133,8 @@ export class FlowExecutor
         super();
 
         WebsocketClient.connect();
+
+        this.#api = new FlowsApi(DEFAULT_CONFIG);
 
         const inspector = new URLSearchParams(window.location.search).get("inspector");
 
@@ -211,7 +215,7 @@ export class FlowExecutor
 
         this.loading = true;
 
-        return new FlowsApi(DEFAULT_CONFIG)
+        return this.#api
             .flowsExecutorGet({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
@@ -302,7 +306,7 @@ export class FlowExecutor
             this.loading = true;
         }
 
-        return new FlowsApi(DEFAULT_CONFIG)
+        return this.#api
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
