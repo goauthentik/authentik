@@ -113,12 +113,14 @@ class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
     )
     def latest_review(self, request: Request, content_type: str, object_id: str) -> Response:
         ct = parse_content_type(content_type)
-        obj = get_object_or_404(
-            self.get_queryset(),
-            content_type__app_label=ct["app_label"],
-            content_type__model=ct["model"],
-            object_id=object_id,
-        )
+        try:
+            obj = self.get_queryset().filter(
+                content_type__app_label=ct["app_label"],
+                content_type__model=ct["model"],
+                object_id=object_id,
+            ).latest("opened_on")
+        except Review.DoesNotExist:
+            return Response(status=404)
         serializer = self.get_serializer(obj)
         return Response(serializer.data)
 
