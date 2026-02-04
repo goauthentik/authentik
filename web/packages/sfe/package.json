@@ -14,7 +14,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@goauthentik/api": "^2026.2.0-rc1-1769523342",
+        "@goauthentik/api": "^2026.2.0-rc1-1770134072",
         "@goauthentik/core": "^1.0.0",
         "@rollup/plugin-commonjs": "^29.0.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
@@ -25,7 +25,7 @@
         "formdata-polyfill": "^2025.11.0",
         "globby": "16.1.0",
         "jquery": "^3.7.1",
-        "rollup": "^4.57.0",
+        "rollup": "^4.57.1",
         "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {

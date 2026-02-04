@@ -82,10 +82,9 @@ export class MFADevicesPage extends Table<Device> {
                     <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-mfa-menu"
                     aria-labelledby="add-mfa-toggle"
                     tabindex="-1"
@@ -105,7 +104,7 @@ export class MFADevicesPage extends Table<Device> {
                             </a>
                         </li>`;
                     })}
-                </ul>
+                </menu>
             </ak-dropdown>`;
         });
     }
@@ -140,7 +139,7 @@ export class MFADevicesPage extends Table<Device> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device(s)")}
+            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);

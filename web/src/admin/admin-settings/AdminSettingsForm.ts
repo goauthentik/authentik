@@ -53,8 +53,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             settingsRequest,
         });
 
-        this.dispatchEvent(new CustomEvent("ak-admin-setting-changed"));
-
         return result;
     }
 

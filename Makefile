@@ -5,7 +5,6 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
@@ -50,6 +49,14 @@ ifeq ($(UNAME_S),Darwin)
 	endif
 endif
 
+NPM_VERSION :=
+UV_EXISTS := $(shell command -v uv 2> /dev/null)
+ifdef UV_EXISTS
+	NPM_VERSION := $(shell $(UV) run python -m scripts.generate_semver)
+else
+	NPM_VERSION = $(shell python -m scripts.generate_semver)
+endif
+
 all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
@@ -77,7 +84,7 @@ lint-fix: lint-codespell  ## Lint and automatically fix errors in the python sou
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
 
-lint: ci-bandit ## Lint the python and golang sources
+lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
