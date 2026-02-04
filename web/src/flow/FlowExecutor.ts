@@ -3,14 +3,9 @@ import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
-import "#flow/sources/apple/AppleLoginInit";
-import "#flow/sources/plex/PlexLoginInit";
-import "#flow/sources/telegram/TelegramLogin";
-import "#flow/stages/FlowErrorStage";
-import "#flow/stages/FlowFrameStage";
-import "#flow/stages/RedirectStage";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
+import { stages } from "./FlowExecutorSelections";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -46,6 +41,7 @@ import {
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -53,6 +49,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
+import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -219,7 +216,7 @@ export class FlowExecutor
         WebsocketClient.close();
     }
 
-    protected refresh = (): Promise<void> => {
+    protected refresh = async () => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
             return Promise.resolve();
@@ -361,140 +358,38 @@ export class FlowExecutor
     ): Promise<TemplateResult> {
         const { challenge, inspectorOpen } = this;
 
-        const stageProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
-            ".challenge": challenge!,
-            ".host": this,
-        };
+        const stage = stages.get(component);
 
-        const props = {
-            ...stageProps,
+        // The special cases!
+        if (!stage) {
+            if (component === "xak-flow-shell") {
+                return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
+            }
+            return html`Invalid native challenge element`;
+        }
+
+        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> =
+            { ".challenge": challenge!, ".host": this };
+
+        const litParts = {
             part: "challenge",
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        switch (component) {
-            case "ak-stage-access-denied":
-                await import("#flow/stages/access_denied/AccessDeniedStage");
-                return html`<ak-stage-access-denied ${spread(props)}></ak-stage-access-denied>`;
-            case "ak-stage-identification":
-                await import("#flow/stages/identification/IdentificationStage");
-                return html`<ak-stage-identification ${spread(props)}></ak-stage-identification>`;
-            case "ak-stage-password":
-                await import("#flow/stages/password/PasswordStage");
-                return html`<ak-stage-password ${spread(props)}></ak-stage-password>`;
-            case "ak-stage-captcha":
-                await import("#flow/stages/captcha/CaptchaStage");
-                return html`<ak-stage-captcha ${spread(props)}></ak-stage-captcha>`;
-            case "ak-stage-consent":
-                await import("#flow/stages/consent/ConsentStage");
-                return html`<ak-stage-consent ${spread(props)}></ak-stage-consent>`;
-            case "ak-stage-dummy":
-                await import("#flow/stages/dummy/DummyStage");
-                return html`<ak-stage-dummy ${spread(props)}></ak-stage-dummy>`;
-            case "ak-stage-email":
-                await import("#flow/stages/email/EmailStage");
-                return html`<ak-stage-email ${spread(props)}></ak-stage-email>`;
-            case "ak-stage-autosubmit":
-                await import("#flow/stages/autosubmit/AutosubmitStage");
-                return html`<ak-stage-autosubmit ${spread(props)}></ak-stage-autosubmit>`;
-            case "ak-stage-prompt":
-                await import("#flow/stages/prompt/PromptStage");
-                return html`<ak-stage-prompt ${spread(props)}></ak-stage-prompt>`;
-            case "ak-stage-authenticator-totp":
-                await import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage");
-                return html`<ak-stage-authenticator-totp
-                    ${spread(props)}
-                ></ak-stage-authenticator-totp>`;
-            case "ak-stage-authenticator-duo":
-                await import("#flow/stages/authenticator_duo/AuthenticatorDuoStage");
-                return html`<ak-stage-authenticator-duo
-                    ${spread(props)}
-                ></ak-stage-authenticator-duo>`;
-            case "ak-stage-authenticator-static":
-                await import("#flow/stages/authenticator_static/AuthenticatorStaticStage");
-                return html`<ak-stage-authenticator-static
-                    ${spread(props)}
-                ></ak-stage-authenticator-static>`;
-            case "ak-stage-authenticator-webauthn":
-                return html`<ak-stage-authenticator-webauthn
-                    ${spread(props)}
-                ></ak-stage-authenticator-webauthn>`;
-            case "ak-stage-authenticator-email":
-                await import("#flow/stages/authenticator_email/AuthenticatorEmailStage");
-                return html`<ak-stage-authenticator-email
-                    ${spread(props)}
-                ></ak-stage-authenticator-email>`;
-            case "ak-stage-authenticator-sms":
-                await import("#flow/stages/authenticator_sms/AuthenticatorSMSStage");
-                return html`<ak-stage-authenticator-sms
-                    ${spread(props)}
-                ></ak-stage-authenticator-sms>`;
-            case "ak-stage-authenticator-validate":
-                await import("#flow/stages/authenticator_validate/AuthenticatorValidateStage");
-                return html`<ak-stage-authenticator-validate
-                    ${spread(props)}
-                ></ak-stage-authenticator-validate>`;
-            case "ak-stage-user-login":
-                await import("#flow/stages/user_login/UserLoginStage");
-                return html`<ak-stage-user-login
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-user-login>`;
-            case "ak-stage-endpoint-agent":
-                await import("#flow/stages/endpoint/agent/EndpointAgentStage");
-                return html`<ak-stage-endpoint-agent
-                    .host=${this as StageHost}
-                    .challenge=${this.challenge}
-                ></ak-stage-endpoint-agent>`;
-            // Sources
-            case "ak-source-plex":
-                return html`<ak-flow-source-plex ${spread(props)}></ak-flow-source-plex>`;
-            case "ak-source-oauth-apple":
-                return html`<ak-flow-source-oauth-apple
-                    ${spread(props)}
-                ></ak-flow-source-oauth-apple>`;
-            case "ak-source-telegram":
-                return html`<ak-flow-source-telegram ${spread(props)}></ak-flow-source-telegram>`;
-            // Providers
-            case "ak-provider-oauth2-device-code":
-                await import("#flow/providers/oauth2/DeviceCode");
-                return html`<ak-flow-provider-oauth2-code
-                    ${spread(props)}
-                ></ak-flow-provider-oauth2-code>`;
-            case "ak-provider-oauth2-device-code-finish":
-                await import("#flow/providers/oauth2/DeviceCodeFinish");
-                return html`<ak-flow-provider-oauth2-code-finish
-                    ${spread(props)}
-                ></ak-flow-provider-oauth2-code-finish>`;
-            case "ak-stage-session-end":
-                await import("#flow/providers/SessionEnd");
-                return html`<ak-stage-session-end ${spread(props)}></ak-stage-session-end>`;
-            case "ak-provider-saml-native-logout":
-                await import("#flow/providers/saml/NativeLogoutStage");
-                return html`<ak-provider-saml-native-logout
-                    ${spread(props)}
-                ></ak-provider-saml-native-logout>`;
-            case "ak-provider-iframe-logout":
-                await import("#flow/providers/IFrameLogoutStage");
-                return html`<ak-provider-iframe-logout
-                    ${spread(props)}
-                ></ak-provider-iframe-logout>`;
-            // Internal stages
-            case "ak-stage-flow-error":
-                return html`<ak-stage-flow-error ${spread(props)}></ak-stage-flow-error>`;
-            case "xak-flow-redirect":
-                return html`<ak-stage-redirect ${spread(props)} ?promptUser=${inspectorOpen}>
-                </ak-stage-redirect>`;
-            case "xak-flow-shell":
-                return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
-            case "xak-flow-frame":
-                return html`<xak-flow-frame
-                    .host=${this}
-                    .challenge=${challenge}
-                ></xak-flow-frame>`;
-            default:
-                return html`Invalid native challenge element`;
+        const { tag, variant, importfn } = stage;
+        if (importfn) {
+            await importfn();
         }
+
+        const props = spread(
+            match(variant)
+                .with("challenge", () => challengeProps)
+                .with("standard", () => ({ ...challengeProps, ...litParts }))
+                .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))
+                .exhaustive(),
+        );
+
+        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
     }
 
     //#endregion
