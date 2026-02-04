@@ -180,6 +180,7 @@ skip = [
   "./data",                   # Media files
   "./media",                  # Legacy media files
   "./schemas/**",             # XML Schemas
+  "./target",                 # Rust compilation artifacts
   "**vendored**",             # Vendored files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
