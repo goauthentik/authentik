@@ -14,7 +14,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@goauthentik/api": "^2026.2.0-rc1-1769650973",
+        "@goauthentik/api": "^2026.2.0-rc1-1770134072",
         "@goauthentik/core": "^1.0.0",
         "@rollup/plugin-commonjs": "^29.0.0",
         "@rollup/plugin-node-resolve": "^16.0.3",
