@@ -7,10 +7,16 @@ This installation method is for test setups and small-scale production setups.
 ## Requirements
 
 - A host with at least 2 CPU cores and 2 GB of RAM
+<<<<<<< HEAD
 - Docker
 - Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
+=======
+- Podman or Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
+>>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 
 ## Video
+
+View our video about installing authentik on Docker.
 
 <iframe
     width="560"
@@ -22,10 +28,14 @@ This installation method is for test setups and small-scale production setups.
     allowFullScreen
 ></iframe>
 
-## Preparation
+## Download the Compose file
 
+<<<<<<< HEAD
 To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
 Run the following command:
+=======
+To download the latest `compose.yml` open your terminal, navigate to the directory of your choice, and then run the following command:
+>>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -44,9 +54,11 @@ import Tabs from "@theme/Tabs";
     </TabItem>
 </Tabs>
 
-If this is a fresh authentik installation, you need to generate a password and a secret key. Use a secure password generator of your choice such as pwgen, or you can use `openssl` as below.
+## Generate PostgreSQL password and secret key
 
-Run the following commands to generate a password and secret key and write them to your `.env` file:
+If this is a fresh authentik installation, you need to generate a PostgreSQL password and a secret key. Use a secure password generator of your choice such as `pwgen`, or you can use `openssl` as below.
+
+Run the following commands to generate a PostgreSQL password and secret key and write them to your `.env` file:
 
 {/* prettier-ignore */}
 ```shell
@@ -64,6 +76,7 @@ To enable error reporting, run the following command:
 echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
 
+<<<<<<< HEAD
 ## Email configuration (optional but recommended)
 
 It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
@@ -94,6 +107,9 @@ You will get a `Not Found` error if initial setup URL doesn't include the traili
 There you are prompted to set a password for the `akadmin` user (the default user).
 
 For an explanation about what each service in the docker compose file does, see [Architecture](../../core/architecture.md).
+=======
+For an explanation about what each service in the Docker Compose file does, see [Architecture](../../core/architecture.md).
+>>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 
 ## Configure custom ports
 
@@ -119,3 +135,40 @@ This is used for [automatic deployment and management of authentik Outposts](../
 Mounting the Docker socket to a container comes with some inherent security risks. To reduce these risks, you can utilize a [Docker Socket Proxy](../../add-secure-apps/outposts/integrations/docker.md#docker-socket-proxy) as an additional layer of protection.
 
 Alternatively, you can remove this mount and instead [manually deploy and manage outposts](../../add-secure-apps/outposts/manual-deploy-docker-compose.md).
+
+## Email configuration (optional but recommended)
+
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+
+For more information, refer to our [Email configuration](../email.mdx) documentation.
+
+## Install and start authentik
+
+:::warning
+All internal operations use UTC. Times displayed in the UI are automatically localized for the user. Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers; it will cause problems with OAuth and SAML authentication, as seen this [GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
+:::
+
+After you have downloaded the `docker-compose.yml` file, generated a password and a secret key, and optionally configured your global email, run these commands to retrieve and install the current version of authentik:
+
+```shell
+docker compose pull
+docker compose up -d
+```
+
+The `compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../../../releases/).
+
+## Access authentik
+
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
+
+:::info Initial setup in browser
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+:::
+
+There you are prompted to set a password for the `akadmin` user (the default user).
+
+## First steps in authentik
+
+import BlurbFirstSteps from "../first-steps/_blurb_first_steps.mdx";
+
+<BlurbFirstSteps />

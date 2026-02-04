@@ -76,10 +76,9 @@ const items = [
                     "install-config/install/kubernetes",
                     "install-config/install/aws",
                 ],
+                //#endregion
             },
             {
-                //#endregion
-
                 //#region Configuration
                 type: "category",
                 label: "Configuration",
@@ -89,6 +88,7 @@ const items = [
                 },
                 items: [],
             },
+            "install-config/first-steps/index",
             "install-config/email",
             "install-config/upgrade",
             "install-config/beta",
@@ -332,16 +332,19 @@ const items = [
                             "add-secure-apps/flows-stages/stages/user_write",
                         ],
                     },
-                    {
-                        type: "category",
-                        label: "Bindings",
-                        link: {
-                            type: "doc",
-                            id: "add-secure-apps/flows-stages/bindings/index",
-                        },
-                        items: ["add-secure-apps/flows-stages/bindings/work_with_bindings"],
-                    },
                 ],
+            },
+            {
+                //#endregion
+
+                //#region Bindings
+                type: "category",
+                label: "Bindings",
+                link: {
+                    type: "doc",
+                    id: "add-secure-apps/bindings-overview/index",
+                },
+                items: ["add-secure-apps/bindings-overview/work-with-bindings"],
             },
             {
                 //#endregion

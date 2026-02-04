@@ -47,6 +47,19 @@ To delete a group, follow these steps:
 
 You can assign a role to a group, and then all users in the group inherit the permissions assigned to that role. For instructions and more information, see [Assign a role to a group](../roles/manage_roles.md#assign-a-role-to-a-group).
 
+<<<<<<< HEAD
+=======
+:::info
+Roles are inherited through group hierarchy. If a parent group has a role assigned, all child groups (and their users) automatically inherit that role's permissions. You can view both directly assigned and inherited roles on a group's detail page under the **Roles** tab.
+:::
+
+## Bind a group to an application
+
+These bindings control which groups can access an application, and whether or not the application is visible in a group member's **My applications** page. If no bindings for an application are defined, this means that all users and groups can access the application.
+
+For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
+
+>>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 ## Delegating group member management
 
 To give a specific role or user the ability to manage group members, the following permissions need to be granted on the matching group object:

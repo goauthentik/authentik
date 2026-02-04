@@ -11,7 +11,7 @@ The following topics are for the basic management of users: how to create, modif
 > If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left side menu.
-2. Select the folder where you want to create a user.
+2. In the **User folders** area, select the folder where you want to create a user.
 3. Click **Create** (for a default user).
 4. Fill in the required fields:
 
@@ -97,6 +97,19 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 2. Click the name of the user to display the full user details page.
 3. Click the **Roles** tab, and then click either **Add to existing role** (or **Add new role** first).
 
+<<<<<<< HEAD
+=======
+:::info
+Users also inherit roles from the groups they belong to. The **Roles** tab has two sub-tabs: **Assigned Roles** shows roles directly assigned to the user, while **All Roles** shows all roles including those inherited from groups. Inherited roles are marked with an "Inherited" label.
+:::
+
+## Bind a user to an application
+
+These bindings control which users can access an application, and whether or not the application is visible in the user's **My applications** page. If no bindings for an application are defined, this means that all users and groups can access the application.
+
+For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
+
+>>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 ## User credentials recovery
 
 If a user has lost their credentials and needs to recover their account, there are two available options:
