@@ -52751,6 +52751,14 @@ components:
           type: string
           description: Get metadata download URL
           readOnly: true
+        url_saml:
+          type: string
+          description: Get unified SAML endpoint URL (handles SSO and SLO)
+          readOnly: true
+        url_saml_init:
+          type: string
+          description: Get IdP-initiated SAML URL
+          readOnly: true
         url_sso_post:
           type: string
           description: Get SSO Post URL
@@ -52784,6 +52792,8 @@ components:
       - name
       - pk
       - url_download_metadata
+      - url_saml
+      - url_saml_init
       - url_slo_post
       - url_slo_redirect
       - url_sso_init

@@ -56,6 +56,11 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     url_download_metadata = SerializerMethodField()
 
+    # Unified SAML endpoint (primary)
+    url_saml = SerializerMethodField()
+    url_saml_init = SerializerMethodField()
+
+    # Legacy endpoints (for backward compatibility)
     url_sso_post = SerializerMethodField()
     url_sso_redirect = SerializerMethodField()
     url_sso_init = SerializerMethodField()
@@ -84,6 +89,36 @@ class SAMLProviderSerializer(ProviderSerializer):
                 )
                 + "?download"
             )
+
+    def get_url_saml(self, instance: SAMLProvider) -> str:
+        """Get unified SAML endpoint URL (handles SSO and SLO)"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:saml",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "-"
+
+    def get_url_saml_init(self, instance: SAMLProvider) -> str:
+        """Get IdP-initiated SAML URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:init",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "-"
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
@@ -219,6 +254,8 @@ class SAMLProviderSerializer(ProviderSerializer):
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",
+            "url_saml",
+            "url_saml_init",
             "url_sso_post",
             "url_sso_redirect",
             "url_sso_init",
