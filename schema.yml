@@ -40579,7 +40579,8 @@ components:
           items: {}
         template:
           type: string
-          description: Email template name to use for sending invitations
+          minLength: 1
+          default: invitation
       required:
       - email_addresses
     InvitationStage:
