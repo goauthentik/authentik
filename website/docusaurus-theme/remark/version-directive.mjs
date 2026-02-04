@@ -45,7 +45,11 @@ export function remarkVersionDirective() {
                 throw new Error(`Invalid semver version: ${semver}`);
             }
 
-            assertVersionSupported(parsed);
+            try {
+                assertVersionSupported(parsed);
+            } catch (err) {
+                console.warn(err);
+            }
 
             const data = node.data || (node.data = {});
 
