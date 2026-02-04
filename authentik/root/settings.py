@@ -474,7 +474,7 @@ STORAGES = {
 # as the maximum for a URL to redirect to, mostly for running on windows.
 # However our URLs can easily exceed that with OAuth/SAML Query parameters or hash values
 # 8192 should cover most cases..
-http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
+http_response.MAX_URL_REDIRECT_LENGTH = http_response.MAX_URL_REDIRECT_LENGTH * 4
 
 
 # Media files
