@@ -6,7 +6,6 @@ from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SES
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.oauth2.logout import build_frontchannel_logout_url
 from authentik.providers.oauth2.models import (
     AccessToken,
     DeviceToken,
@@ -14,6 +13,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
+from authentik.providers.oauth2.utils import build_frontchannel_logout_url
 from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
 

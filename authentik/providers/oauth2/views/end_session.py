@@ -18,13 +18,13 @@ from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.oauth2.logout import build_frontchannel_logout_url
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2LogoutMethod,
     RedirectURIMatchingMode,
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
+from authentik.providers.oauth2.utils import build_frontchannel_logout_url
 
 
 class EndSessionView(PolicyAccessView):
