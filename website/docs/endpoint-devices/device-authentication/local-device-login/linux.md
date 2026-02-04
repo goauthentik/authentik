@@ -19,10 +19,14 @@ You need to have deployed the authentik Agent on the Linux device, see [Deploy t
 
 ## How to log in to a Linux device
 
+:::note
+When configured correctly, when logging in you should see a prompt for **authentik Password** rather than just **Password**.
+:::
+
 1. On the Linux login screen, you enter your authentik credentials.
 2. Once authenticated, you will be logged in to the Linux device.
 
 ## Known issues
 
-- On non-Debian Linux distributions, you will need to manually configure PAM.
-- MFA is supported except for Webauthn.
+- Only Webauthn MFA is supported.
+- On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../authentik-agent/agent-deployment/linux/#local-device-login-on-debian-based-systems).
