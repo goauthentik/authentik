@@ -24,6 +24,7 @@ from authentik.enterprise.lifecycle.utils import (
     admin_link_for_model,
     parse_content_type,
 )
+from authentik.lib.utils.time import timedelta_from_string
 
 
 class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
@@ -70,11 +71,11 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     @extend_schema_field(DateField())
     def get_grace_period_end(self, review: Review):
-        return review.opened_on + timedelta(days=review.rule.grace_period_days)
+        return review.opened_on + timedelta_from_string(review.rule.grace_period)
 
     @extend_schema_field(DateField())
     def get_next_review_date(self, review: Review):
-        return review.opened_on + relativedelta(months=review.rule.interval_months)
+        return review.opened_on + timedelta_from_string(review.rule.interval)
 
     @extend_schema_field(BooleanField())
     def get_user_can_attest(self, review: Review):

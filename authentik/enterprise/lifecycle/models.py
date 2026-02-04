@@ -19,6 +19,7 @@ from authentik.core.models import Group, User
 from authentik.enterprise.lifecycle.utils import link_for_model
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.time import timedelta_string_validator, timedelta_from_string
 
 
 class LifecycleRule(SerializerModel):
@@ -27,9 +28,15 @@ class LifecycleRule(SerializerModel):
     object_id = models.TextField(null=True, default=None)
     object = GenericForeignKey("content_type", "object_id")
 
-    interval_months = models.SmallIntegerField(default=1)
+    interval = models.TextField(
+        default="days=60",
+        validators=[timedelta_string_validator],
+    )
     # Grace period starts after a review is due
-    grace_period_days = models.SmallIntegerField(default=28)
+    grace_period = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+    )
 
     # The review has to be conducted by `min_reviewers` members of `reviewer_groups`
     # (total or per group depending on `min_reviewers_is_per_group` flag) as well
@@ -95,7 +102,7 @@ class LifecycleRule(SerializerModel):
 
     def _get_newly_overdue_reviews(self) -> QuerySet[Review]:
         return self.review_set.filter(
-            opened_on__lte=timezone.now() - timedelta(days=self.grace_period_days),
+            opened_on__lte=timezone.now() - timedelta_from_string(self.grace_period),
             state=ReviewState.PENDING,
         )
 
@@ -104,7 +111,7 @@ class LifecycleRule(SerializerModel):
         recent_review_ids = Review.objects.filter(
             content_type=self.content_type,
             object_id__isnull=False,
-            opened_on__gte=timezone.now() - relativedelta(months=self.interval_months),
+            opened_on__gte=timezone.now() - timedelta_from_string(self.interval),
         ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
 
         return self.get_objects().exclude(pk__in=recent_review_ids)
