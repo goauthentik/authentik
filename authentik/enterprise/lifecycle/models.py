@@ -54,8 +54,15 @@ class LifecycleRule(SerializerModel):
     )
 
     class Meta:
-        unique_together = ("content_type", "object_id")
         indexes = [models.Index(fields=["content_type"])]
+        unique_together = [["content_type", "object_id"]]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["content_type"],
+                condition=Q(object_id__isnull=True),
+                name="uniq_lifecycle_rule_ct_null_object",
+            )
+        ]
 
     @property
     def serializer(self) -> type[BaseSerializer]:
