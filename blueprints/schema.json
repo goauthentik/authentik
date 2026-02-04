@@ -6835,17 +6835,15 @@
                     "minLength": 1,
                     "title": "Object id"
                 },
-                "interval_months": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 24,
-                    "title": "Interval months"
+                "interval": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Interval"
                 },
-                "grace_period_days": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 365,
-                    "title": "Grace period days"
+                "grace_period": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Grace period"
                 },
                 "reviewer_groups": {
                     "type": "array",

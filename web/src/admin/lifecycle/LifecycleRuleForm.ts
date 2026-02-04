@@ -4,6 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/ak-list-select/ak-list-select";
+import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
 
@@ -134,25 +135,39 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     renderForm(): TemplateResult {
         return html`
             ${this.#renderTargetSelection()}
-            <ak-form-element-horizontal label=${msg("Interval")} name="intervalMonths" required>
-                <select class="pf-c-form-control">
-                    ${[1, 2, 3, 4, 6, 8, 12, 18, 24].map(interval =>
-                        html`
-                            <option value=${interval}
-                                    ?selected=${this.instance?.intervalMonths === interval}>
-                                ${interval} ${interval === 1 ? msg("month") : msg("months")}
-                            </option>`
+            <ak-form-element-horizontal label=${msg("Interval")} name="interval" required>
+                <input
+                    type="text"
+                    value="${this.instance?.interval || "days=60"}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "The interval between opening new reviews for matching objects.",
                     )}
-                </select>
+                </p>
+                <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
-            <ak-number-input
-                label=${msg("Grace period")}
-                min=${1}
-                required
-                name="gracePeriodDays"
-                value="${this.instance?.gracePeriodDays ?? 28}"
-                help=${msg("Number of days before a review is considered overdue.")}
-            ></ak-number-input>
+            <ak-form-element-horizontal label=${msg("Grace period")} name="gracePeriod" required>
+                <input
+                    type="text"
+                    value="${this.instance?.gracePeriod || "days=30"}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "The duration of time before an open review is considered overdue.",
+                    )}
+                </p>
+                <ak-utils-time-delta-help></ak-utils-time-delta-help>
+            </ak-form-element-horizontal>
+
             <ak-form-element-horizontal label=${msg("Reviewer groups")} name="reviewerGroups">
                 ${this.#renderReviewerGroupsSelection()}
             </ak-form-element-horizontal>

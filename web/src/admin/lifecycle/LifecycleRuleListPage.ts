@@ -50,8 +50,8 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     protected columns: TableColumn[] = [
         [msg("Target"), "content_type__model"],
-        [msg("Frequency (months)"), "interval_months"],
-        [msg("Grace period (days)"), "grace_period_days"],
+        [msg("Interval"), "interval"],
+        [msg("Grace period"), "grace_period"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
@@ -79,8 +79,8 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     row(item: LifecycleRule): SlottedTemplateResult[] {
         return [
             html`${item.targetVerbose}`,
-            html`${item.intervalMonths}`,
-            html`${item.gracePeriodDays}`,
+            html`${item.interval}`,
+            html`${item.gracePeriod}`,
             html`
                 <div>
                     <ak-forms-modal>

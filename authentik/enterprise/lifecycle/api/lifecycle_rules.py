@@ -13,12 +13,11 @@ from authentik.enterprise.lifecycle.utils import (
     ReviewerGroupSerializer,
     ReviewerUserSerializer,
 )
+from authentik.lib.utils.time import timedelta_from_string
 
 
 class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
     content_type = ContentTypeField()
-    interval_months = IntegerField(min_value=1, max_value=24)
-    grace_period_days = IntegerField(min_value=1, max_value=365)
     target_verbose = SerializerMethodField()
     reviewer_groups_obj = ReviewerGroupSerializer(
         many=True, read_only=True, source="reviewer_groups"
@@ -32,8 +31,8 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "id",
             "content_type",
             "object_id",
-            "interval_months",
-            "grace_period_days",
+            "interval",
+            "grace_period",
             "reviewer_groups",
             "reviewer_groups_obj",
             "min_reviewers",
@@ -68,7 +67,7 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
         reviewers = attrs.get("reviewers", [])
         if len(reviewer_groups) == 0 and len(reviewers) == 0:
             raise ValidationError(_("Either a reviewer group or a reviewer must be set."))
-        if attrs.get("grace_period_days") > 28 + (attrs.get("interval_months") - 1) * 30:
+        if timedelta_from_string(attrs.get("grace_period")) > timedelta_from_string(attrs.get("interval")):
             raise ValidationError(
                 {"grace_period": _("Grace period must be shorter than the interval.")}
             )
@@ -79,4 +78,4 @@ class LifecycleRuleViewSet(ModelViewSet):
     queryset = LifecycleRule.objects.all()
     serializer_class = LifecycleRuleSerializer
     search_fields = ["content_type__model", "reviewer_groups__name", "reviewers__username"]
-    ordering_fields = ["content_type__model", "interval_months", "grace_period_days"]
+    ordering_fields = ["content_type__model"]

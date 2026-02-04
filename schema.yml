@@ -42172,14 +42172,10 @@ components:
         object_id:
           type: string
           nullable: true
-        interval_months:
-          type: integer
-          maximum: 24
-          minimum: 1
-        grace_period_days:
-          type: integer
-          maximum: 365
-          minimum: 1
+        interval:
+          type: string
+        grace_period:
+          type: string
         reviewer_groups:
           type: array
           items:
@@ -42219,9 +42215,7 @@ components:
           readOnly: true
       required:
       - content_type
-      - grace_period_days
       - id
-      - interval_months
       - reviewer_groups_obj
       - reviewers
       - reviewers_obj
@@ -42238,14 +42232,12 @@ components:
           type: string
           nullable: true
           minLength: 1
-        interval_months:
-          type: integer
-          maximum: 24
-          minimum: 1
-        grace_period_days:
-          type: integer
-          maximum: 365
-          minimum: 1
+        interval:
+          type: string
+          minLength: 1
+        grace_period:
+          type: string
+          minLength: 1
         reviewer_groups:
           type: array
           items:
@@ -42272,8 +42264,6 @@ components:
             UI.
       required:
       - content_type
-      - grace_period_days
-      - interval_months
       - reviewers
     Link:
       type: object
@@ -48702,14 +48692,12 @@ components:
           type: string
           nullable: true
           minLength: 1
-        interval_months:
-          type: integer
-          maximum: 24
-          minimum: 1
-        grace_period_days:
-          type: integer
-          maximum: 365
-          minimum: 1
+        interval:
+          type: string
+          minLength: 1
+        grace_period:
+          type: string
+          minLength: 1
         reviewer_groups:
           type: array
           items:
