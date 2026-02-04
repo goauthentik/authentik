@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import IntegerField, SerializerMethodField
+from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.viewsets import ModelViewSet
 
@@ -64,19 +64,25 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ):
             raise ValidationError({"object_id": _("Object does not exist")})
         if "reviewer_groups" in attrs or "reviewers" in attrs:
-            reviewer_groups = attrs.get("reviewer_groups", self.instance.reviewer_groups.all() if self.instance else [])
-            reviewers = attrs.get("reviewers", self.instance.reviewers.all() if self.instance else [])
+            reviewer_groups = attrs.get(
+                "reviewer_groups", self.instance.reviewer_groups.all() if self.instance else []
+            )
+            reviewers = attrs.get(
+                "reviewers", self.instance.reviewers.all() if self.instance else []
+            )
             if len(reviewer_groups) == 0 and len(reviewers) == 0:
                 raise ValidationError(_("Either a reviewer group or a reviewer must be set."))
         if "grace_period" in attrs or "interval" in attrs:
             grace_period = attrs.get("grace_period", getattr(self.instance, "grace_period", None))
             interval = attrs.get("interval", getattr(self.instance, "interval", None))
-            if grace_period is not None and interval is not None and (
-                timedelta_from_string(grace_period) > timedelta_from_string(interval)
+            if (
+                grace_period is not None
+                and interval is not None
+                and (timedelta_from_string(grace_period) > timedelta_from_string(interval))
             ):
                 raise ValidationError(
                     {"grace_period": _("Grace period must be shorter than the interval.")}
-            )
+                )
         return attrs
 
 
