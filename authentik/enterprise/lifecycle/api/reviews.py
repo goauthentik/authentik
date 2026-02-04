@@ -1,13 +1,9 @@
-from datetime import timedelta
-
-from dateutil.relativedelta import relativedelta
 from django.db.models import BooleanField as ModelBooleanField
 from django.db.models import Case, Q, Value, When
 from django_filters.rest_framework import BooleanFilter, FilterSet
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, DateField, IntegerField, SerializerMethodField
-from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -115,11 +111,15 @@ class ReviewViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet):
     def latest_review(self, request: Request, content_type: str, object_id: str) -> Response:
         ct = parse_content_type(content_type)
         try:
-            obj = self.get_queryset().filter(
-                content_type__app_label=ct["app_label"],
-                content_type__model=ct["model"],
-                object_id=object_id,
-            ).latest("opened_on")
+            obj = (
+                self.get_queryset()
+                .filter(
+                    content_type__app_label=ct["app_label"],
+                    content_type__model=ct["model"],
+                    object_id=object_id,
+                )
+                .latest("opened_on")
+            )
         except Review.DoesNotExist:
             return Response(status=404)
         serializer = self.get_serializer(obj)

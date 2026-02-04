@@ -1,13 +1,11 @@
-from datetime import timedelta
 from uuid import uuid4
 
-from dateutil.relativedelta import relativedelta
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, QuerySet
 from django.db.models.functions import Cast
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.utils import timezone
@@ -19,7 +17,7 @@ from authentik.core.models import Group, User
 from authentik.enterprise.lifecycle.utils import link_for_model
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_string_validator, timedelta_from_string
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 
 
 class LifecycleRule(SerializerModel):
@@ -174,6 +172,7 @@ def post_rule_save(sender, instance: LifecycleRule, created: bool, **_):
         args=(instance.id,),
         rel_obj=instance,
     )
+
 
 @receiver(pre_delete, sender=LifecycleRule)
 def pre_rule_delete(sender, instance: LifecycleRule, **_):

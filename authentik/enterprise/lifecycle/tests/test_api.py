@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock, patch
-
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -7,9 +5,8 @@ from rest_framework.test import APITestCase
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.lifecycle.models import LifecycleRule, Review, ReviewState
-from authentik.lib.generators import generate_id
 from authentik.enterprise.reports.tests.utils import patch_license
-
+from authentik.lib.generators import generate_id
 
 
 @patch_license
@@ -405,4 +402,3 @@ class TestAttestationAPI(APITestCase):
             {"review": str(review.pk)},
         )
         self.assertEqual(response.status_code, 400)
-

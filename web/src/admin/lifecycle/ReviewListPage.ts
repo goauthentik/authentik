@@ -60,7 +60,7 @@ export class ReviewListPage extends TablePage<Review> {
                 name="showOnlyMine"
                 ?checked=${this.showOnlyMine}
                 label=${msg("Only show reviews where I am a reviewer")}
-                @change=${(ev: Event) => {this.showOnlyMine = !this.showOnlyMine; this.fetch();}}
+                @change=${() => {this.showOnlyMine = !this.showOnlyMine; this.fetch();}}
             >
             </ak-switch-input>
             ${super.renderToolbar()}
