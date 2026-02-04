@@ -31,6 +31,9 @@ class FlowLayout(models.TextChoices):
     SIDEBAR_LEFT = "sidebar_left"
     SIDEBAR_RIGHT = "sidebar_right"
 
+    SIDEBAR_LEFT_FRAME_BACKGROUND = "sidebar_left_frame_background"
+    SIDEBAR_RIGHT_FRAME_BACKGROUND = "sidebar_right_frame_background"
+
 
 class ErrorDetailSerializer(PassiveSerializer):
     """Serializer for rest_framework's error messages"""
