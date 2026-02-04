@@ -1,9 +1,10 @@
 from rest_framework.mixins import CreateModelMixin
-from rest_framework.viewsets import  GenericViewSet
+from rest_framework.viewsets import GenericViewSet
+
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.lifecycle.utils import ReviewerUserSerializer
 from authentik.enterprise.lifecycle.models import Attestation
+from authentik.enterprise.lifecycle.utils import ReviewerUserSerializer
 
 
 class AttestationSerializer(EnterpriseRequiredMixin, ModelSerializer):

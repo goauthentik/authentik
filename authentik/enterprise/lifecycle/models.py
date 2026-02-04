@@ -1,23 +1,21 @@
 from datetime import timedelta
 from uuid import uuid4
 
-from aiohttp.web_fileresponse import content_type
 from dateutil.relativedelta import relativedelta
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.db.models import QuerySet, Q
+from django.db.models import Q, QuerySet
 from django.db.models.functions import Cast
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 from django.utils import timezone
-from django.utils.functional import cached_property
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.models import User, Group
+from authentik.core.models import Group, User
 from authentik.enterprise.lifecycle.utils import link_for_model
 from authentik.events.models import Event, EventAction, NotificationSeverity, NotificationTransport
 from authentik.lib.models import SerializerModel
@@ -63,7 +61,11 @@ class LifecycleRule(SerializerModel):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
-        apply_lifecycle_rule.send_with_options(args=(self.id,), rel_obj=self, )
+
+        apply_lifecycle_rule.send_with_options(
+            args=(self.id,),
+            rel_obj=self,
+        )
 
     def _get_pk_field(self):
         model = self.content_type.model_class()
@@ -78,10 +80,9 @@ class LifecycleRule(SerializerModel):
             qs = qs.filter(pk=self.object_id)
         else:
             qs = qs.exclude(
-                pk__in=LifecycleRule.objects.filter(content_type=self.content_type,
-                                                    object_id__isnull=False).values_list(
-                    Cast("object_id", output_field=self._get_pk_field()), flat=True
-                )
+                pk__in=LifecycleRule.objects.filter(
+                    content_type=self.content_type, object_id__isnull=False
+                ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
             )
         return qs
 
@@ -119,23 +120,38 @@ class LifecycleRule(SerializerModel):
 
     def is_satisfied_for_review(self, review: Review) -> bool:
         reviewers = self.reviewers.all()
-        if review.attestation_set.filter(reviewer__in=reviewers).distinct(
-            "reviewer"
-        ).count() < reviewers.count():
+        if (
+            review.attestation_set.filter(reviewer__in=reviewers).distinct("reviewer").count()
+            < reviewers.count()
+        ):
             return False
         if self.min_reviewers_is_per_group:
             for g in self.reviewer_groups.all():
-                if review.attestation_set.filter(reviewer__groups__in=Group.objects.filter(
-                    pk=g.pk).with_descendants()).distinct().count() < self.min_reviewers:
+                if (
+                    review.attestation_set.filter(
+                        reviewer__groups__in=Group.objects.filter(pk=g.pk).with_descendants()
+                    )
+                    .distinct()
+                    .count()
+                    < self.min_reviewers
+                ):
                     return False
             return True
         else:
-            return review.attestation_set.filter(
-                reviewer__groups__in=self.reviewer_groups.all().with_descendants()).distinct().count() >= self.min_reviewers
+            return (
+                review.attestation_set.filter(
+                    reviewer__groups__in=self.reviewer_groups.all().with_descendants()
+                )
+                .distinct()
+                .count()
+                >= self.min_reviewers
+            )
 
     def get_reviewers(self) -> QuerySet[User]:
-        return User.objects.filter(Q(id__in=self.reviewers.all().values_list('pk', flat=True)) | Q(
-            groups__in=self.reviewer_groups.all().with_descendants())).distinct()
+        return User.objects.filter(
+            Q(id__in=self.reviewers.all().values_list("pk", flat=True))
+            | Q(groups__in=self.reviewer_groups.all().with_descendants())
+        ).distinct()
 
     def notify_reviewers(self, event: Event, severity: str):
         from authentik.enterprise.lifecycle.tasks import send_notification
@@ -153,7 +169,8 @@ class LifecycleRule(SerializerModel):
 @receiver(pre_delete, sender=LifecycleRule)
 def pre_rule_delete(sender, instance: LifecycleRule, **_):
     instance.review_set.filter(Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)).update(
-        state=ReviewState.CANCELED)
+        state=ReviewState.CANCELED
+    )
 
 
 class ReviewState(models.TextChoices):
@@ -191,7 +208,7 @@ class Review(SerializerModel, ManagedModel):
             "target": self.object,
             "hyperlink": link_for_model(self.object),
             "hyperlink_label": _(f"Go to {self._get_model_name()}"),
-            "review": self.id
+            "review": self.id,
         }
 
     def initialize(self):
@@ -226,7 +243,8 @@ class Review(SerializerModel, ManagedModel):
         event = Event.new(
             EventAction.REVIEW_COMPLETED,
             message=_(f"Access review completed for {self.content_type.name} {str(self.object)}"),
-            **self._get_event_args()).from_http(request)
+            **self._get_event_args(),
+        ).from_http(request)
         event.save()
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
         self.save()
