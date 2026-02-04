@@ -15,6 +15,11 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
+interface BrowserExtensionData {
+    _ak_ext: string;
+    response: string | null;
+}
+
 @customElement("ak-stage-endpoint-agent")
 export class EndpointAgentStage extends BaseStage<
     EndpointAgentChallenge,
@@ -22,33 +27,34 @@ export class EndpointAgentStage extends BaseStage<
 > {
     static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
-    firstUpdated() {
-        window.addEventListener("message", (ev) => {
-            if (ev.data?._ak_ext === "authentik-platform-sso" && ev.data.response) {
-                this.host?.submit(
-                    {
-                        response: ev.data?.response,
-                    } as EndpointAgentChallengeResponseRequest,
-                    {
-                        invisible: true,
-                    },
-                );
-            }
-        });
+    #timeout = -1;
 
-        const delay = this.challenge?.challengeIdleTimeout ?? 3000;
+    #messageHandler = (ev: MessageEvent<BrowserExtensionData>) => {
+        if (ev.data._ak_ext !== "authentik-platform-sso") {
+            return;
+        }
+        if (!ev.data.response) {
+            return;
+        }
+        clearTimeout(this.#timeout);
+        this.host?.submit(
+            {
+                response: ev.data?.response,
+            } as EndpointAgentChallengeResponseRequest,
+            {
+                invisible: true,
+            },
+        );
+    };
 
-        // Fallback in case we don't get a response
-        setTimeout(() => {
-            this.host?.submit(
-                {
-                    response: null,
-                } as EndpointAgentChallengeResponseRequest,
-                {
-                    invisible: true,
-                },
-            );
-        }, delay);
+    public connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener("message", this.#messageHandler);
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener("message", this.#messageHandler);
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -62,6 +68,19 @@ export class EndpointAgentStage extends BaseStage<
                 _ak_ext: "authentik-platform-sso",
                 challenge: this.challenge.challenge,
             });
+            const delay = this.challenge?.challengeIdleTimeout ?? 3000;
+
+            // Fallback in case we don't get a response
+            this.#timeout = setTimeout(() => {
+                this.host?.submit(
+                    {
+                        response: null,
+                    } as EndpointAgentChallengeResponseRequest,
+                    {
+                        invisible: true,
+                    },
+                );
+            }, delay);
         }
     }
 
