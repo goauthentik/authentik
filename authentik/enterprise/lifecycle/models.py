@@ -132,6 +132,8 @@ class LifecycleRule(SerializerModel):
             < reviewers.count()
         ):
             return False
+        if self.reviewer_groups.count() == 0:
+            return True
         if self.min_reviewers_is_per_group:
             for g in self.reviewer_groups.all():
                 if (
