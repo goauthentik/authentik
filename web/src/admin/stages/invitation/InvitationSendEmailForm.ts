@@ -39,8 +39,9 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
 
     fetchAvailableTemplates = async (): Promise<void> => {
         try {
-            this.availableTemplates =
-                await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+            this.availableTemplates = await new StagesApi(
+                DEFAULT_CONFIG,
+            ).stagesEmailTemplatesList();
         } catch (error) {
             console.error("Failed to fetch email templates:", error);
         }
