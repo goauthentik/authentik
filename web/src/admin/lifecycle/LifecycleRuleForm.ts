@@ -187,7 +187,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
                 label=${msg("Min reviewers is per-group")}
                 help=${msg(
-                    "If checked, approving a review will require at least that many users from each of the selected groups.",
+                    "If checked, approving a review will require at least that many users from _each_ of the selected groups. When disabled, the value is a total across all groups.",
                 )}
             >
             </ak-switch-input>
