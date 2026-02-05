@@ -91,7 +91,7 @@ class RequestProcessor:
         (used for POST Bindings)"""
         auth_n_request = self.get_auth_n()
 
-        if self.source.signing_kp:
+        if self.source.signing_kp and self.source.binding_type != SAMLBindingTypes.REDIRECT:
             xmlsec.tree.add_ids(auth_n_request, ["ID"])
 
             ctx = xmlsec.SignatureContext()

@@ -29,7 +29,7 @@ from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
@@ -104,6 +104,7 @@ class TestAuthNRequest(TestCase):
             signing_kp=self.cert,
             verification_kp=self.cert,
             signed_assertion=True,
+            binding_type=SAMLBindingTypes.POST,
         )
 
     def test_signed_valid(self):
