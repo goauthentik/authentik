@@ -38,8 +38,8 @@ Outpost can be manually deployed via [Docker Compose](../../add-secure-apps/outp
 
 In each case, you need to add the following environment variable to the outpost container:
 
-```yaml
-log_level: debug
+```bash
+AUTHENTIK_LOG_LEVEL=debug
 ```
 
 Then redeploy the outpost container for the change to take effect.
@@ -82,8 +82,8 @@ Outpost can be manually deployed via [Docker Compose](../../add-secure-apps/outp
 
 In each case, you need to add the following environment variable to the outpost container:
 
-```yaml
-log_level: trace
+```bash
+AUTHENTIK_LOG_LEVEL=trace
 ```
 
 Then redeploy the outpost container for the change to take effect.
