@@ -4,6 +4,10 @@ title: Automated install
 
 To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables on the worker container:
 
+:::info
+These can't be defined using the file-based syntax (`file://`), so you can't pass them in as secrets in a docker-compose install.
+:::
+
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD`
 
 Configure the default password for the `akadmin` user. Only read on the first startup. Can be used for any flow executor.
