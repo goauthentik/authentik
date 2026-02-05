@@ -12,7 +12,7 @@ The User Logout stage is included in different default flows depending on how th
 
 - **`default-provider-invalidation-flow`**: Used when a user logs out from an application. This flow does **not** include the User Logout stage by default, so only that application's session is ended. The authentik session and other application sessions remain active.
 
-This distinction exists because users may want to sign out of a single application without ending their entire authentik session. To also end the authentik session when users log out from an application, you can add the User Logout stage to the `default-provider-invalidation-flow`. See [Enable full Single Logout for RP-initiated logout](../../providers/single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout) for instructions.
+This distinction exists because a user may want to sign out of a single application without ending their entire authentik session. To also end the authentik session when a user logs out from an application, you can add the User Logout stage to the `default-provider-invalidation-flow`. See [Enable full Single Logout for RP-initiated logout](../../providers/single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout) for instructions.
 
 ## Logout flow injection
 
