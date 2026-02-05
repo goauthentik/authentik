@@ -40386,7 +40386,7 @@ components:
         logout_urls:
           type: array
           items:
-            $ref: '#/components/schemas/SAMLLogoutURL'
+            $ref: '#/components/schemas/LogoutURL'
     IframeLogoutChallengeResponseRequest:
       type: object
       description: Response for iframe logout
@@ -41877,6 +41877,29 @@ components:
       required:
       - challenge
       - name
+    LogoutURL:
+      type: object
+      description: Data for a single logout URL
+      properties:
+        url:
+          type: string
+        provider_name:
+          type: string
+          nullable: true
+        binding:
+          type: string
+          nullable: true
+        saml_request:
+          type: string
+          nullable: true
+        saml_response:
+          type: string
+          nullable: true
+        saml_relay_state:
+          type: string
+          nullable: true
+      required:
+      - url
     MDMConfigRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -52481,29 +52504,6 @@ components:
       - frontchannel_native
       - backchannel
       type: string
-    SAMLLogoutURL:
-      type: object
-      description: SAML-specific logout URL data
-      properties:
-        url:
-          type: string
-        provider_name:
-          type: string
-          nullable: true
-        binding:
-          type: string
-          nullable: true
-        saml_request:
-          type: string
-          nullable: true
-        saml_response:
-          type: string
-          nullable: true
-        saml_relay_state:
-          type: string
-          nullable: true
-      required:
-      - url
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer

@@ -5,8 +5,8 @@ import { BaseStage } from "#flow/stages/base";
 import {
     FlowChallengeResponseRequest,
     IframeLogoutChallenge,
+    LogoutURL,
     SAMLBindingsEnum,
-    SAMLLogoutURL,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -109,7 +109,7 @@ export class IFrameLogoutStage extends BaseStage<
         super.firstUpdated(changedProperties);
 
         // Initialize status tracking
-        const logoutUrls = (this.challenge?.logoutUrls as SAMLLogoutURL[]) || [];
+        const logoutUrls = (this.challenge?.logoutUrls as LogoutURL[]) || [];
 
         this.logoutStatuses = logoutUrls.map(
             (url): LogoutStatus => ({
@@ -123,7 +123,7 @@ export class IFrameLogoutStage extends BaseStage<
     }
 
     protected async performLogouts(): Promise<void> {
-        const logoutUrls = (this.challenge?.logoutUrls as SAMLLogoutURL[]) || [];
+        const logoutUrls = (this.challenge?.logoutUrls as LogoutURL[]) || [];
 
         // Create iframes for each logout URL
         logoutUrls.forEach((logoutData, index) => {
@@ -139,7 +139,7 @@ export class IFrameLogoutStage extends BaseStage<
         }, 6000); // 6 seconds (5 second timeout + 1 second buffer)
     }
 
-    protected createLogoutIframe(logoutData: SAMLLogoutURL, index: number): void {
+    protected createLogoutIframe(logoutData: LogoutURL, index: number): void {
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         iframe.name = `saml-logout-${index}`;

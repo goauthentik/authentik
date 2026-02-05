@@ -16,11 +16,6 @@ class LogoutURL(PassiveSerializer):
     url = CharField()
     provider_name = CharField(required=False, allow_null=True)
     binding = CharField(required=False, allow_null=True)
-
-
-class SAMLLogoutURL(LogoutURL):
-    """SAML-specific logout URL data"""
-
     saml_request = CharField(required=False, allow_null=True)
     saml_response = CharField(required=False, allow_null=True)
     saml_relay_state = CharField(required=False, allow_null=True)
@@ -30,7 +25,7 @@ class IframeLogoutChallenge(Challenge):
     """Challenge for iframe logout"""
 
     component = CharField(default="ak-provider-iframe-logout")
-    logout_urls = ListField(child=SAMLLogoutURL(), default=list)
+    logout_urls = ListField(child=LogoutURL(), default=list)
 
 
 class IframeLogoutChallengeResponse(ChallengeResponse):
