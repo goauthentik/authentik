@@ -4,7 +4,7 @@ sidebar_label: Object Lifecycle Management
 authentik_enterprise: true
 ---
 
-Organizations implementing periodic reviews of their authentication settings can configure authentik to automatically schedule and track such reviews as well as notify the reviewers. This set of functionality is collectively referred to as Object Lifecycle Management.
+Organizations implementing periodic reviews of their authentication settings for groups, roles, and applications, can configure authentik to automatically schedule and track such reviews, as well as notify the reviewers. This set of functionality is collectively referred to as Object Lifecycle Management.
 
 ## Lifecycle rules
 
