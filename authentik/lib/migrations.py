@@ -78,5 +78,5 @@ def migration_event(
 ):
     db_alias = schema_editor.connection.alias
     Event = apps.get_model("authentik_events", "Event")
-    event = Event.new(action=action, app="authentik", context=cleanse_dict(sanitize_dict(kwargs)))
+    event = Event(action=action, app="authentik", context=cleanse_dict(sanitize_dict(kwargs)))
     event.save(using=db_alias)
