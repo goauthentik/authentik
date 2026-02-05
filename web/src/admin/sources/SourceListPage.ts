@@ -55,7 +55,7 @@ export class SourceListPage extends TablePage<Source> {
             this.selectedElements.some((item) => item.component === "");
         const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Source(s)")}
+            object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({

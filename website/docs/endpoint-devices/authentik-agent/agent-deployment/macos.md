@@ -7,8 +7,8 @@ tags: [authentik Agent, mac, macos, deploy]
 ## What it can do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
-- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
-- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
+- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
+- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
 ## Prerequisites
 
@@ -46,7 +46,8 @@ The Agent requires a serial number be presented by macOS. Some hypervisors don't
     - This can be avoided by Option + Right Clicking the package and clicking **Open**.
     - Alternatively use the following command to remove the package from quarantine: `xattr -r -d com.apple.quarantine "$HOME/Downloads/authentik agent installer.pkg"`
 6. Confirm that the authentik Agent is installed by opening a Terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device compliance
 
@@ -66,7 +67,7 @@ sudo "/Applications/authentik Agent.app/Contents/MacOS/ak-sysd" domains join <de
 
 ## Enable SSH client authentication and CLI application authentication
 
-To enable [initiating SSH connections](../../device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
+To enable [initiating SSH connections](../../authentik-agent/device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
 
 1. Open a Terminal session and run the following command:
 
@@ -87,3 +88,7 @@ ak version
 ## Logging
 
 The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for authentik-related processes such as `authentik-agent` or `authentik-sysd`.
+
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

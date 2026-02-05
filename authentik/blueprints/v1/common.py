@@ -43,8 +43,6 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
             continue
         if _field.read_only:
             data.pop(field_name, None)
-        if _field.get_initial() == data.get(field_name, None):
-            data.pop(field_name, None)
         if field_name.endswith("_set"):
             data.pop(field_name, None)
     return data

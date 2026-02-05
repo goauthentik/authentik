@@ -4459,6 +4459,11 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRecoveryLinkRequest'
       security:
       - authentik: []
       responses:
@@ -4478,11 +4483,6 @@ paths:
       description: Send an email with a temporary link that a user can use to recover
         their account
       parameters:
-      - in: query
-        name: email_stage
-        schema:
-          type: string
-        required: true
       - in: path
         name: id
         schema:
@@ -4491,6 +4491,12 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRecoveryEmailRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -33665,6 +33671,8 @@ components:
       enum:
       - rsa
       - ecdsa
+      - ed25519
+      - ed448
       type: string
     App:
       type: object
@@ -36147,6 +36155,8 @@ components:
       - content_right
       - sidebar_left
       - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
       type: string
     CountryCodeEnum:
       enum:
@@ -38799,6 +38809,8 @@ components:
       - content_right
       - sidebar_left
       - sidebar_right
+      - sidebar_left_frame_background
+      - sidebar_right_frame_background
       type: string
     FlowRequest:
       type: object
@@ -56516,6 +56528,25 @@ components:
       - plex_token
       - source
       - user
+    UserRecoveryEmailRequest:
+      type: object
+      description: Payload to create and email a recovery link
+      properties:
+        token_duration:
+          type: string
+          minLength: 1
+        email_stage:
+          type: string
+          format: uuid
+      required:
+      - email_stage
+    UserRecoveryLinkRequest:
+      type: object
+      description: Payload to create a recovery link
+      properties:
+        token_duration:
+          type: string
+          minLength: 1
     UserRequest:
       type: object
       description: User Serializer
