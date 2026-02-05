@@ -32,7 +32,7 @@ A lifecycle rule has the following settings:
 | **Interval**                       | How often reviews are scheduled (e.g., every 60 days). After a review is completed, the next review will be scheduled after this interval.    |
 | **Grace period**                   | The time period reviewers have to complete the review before it becomes overdue. Must be shorter than the interval.                           |
 | **Reviewer groups**                | Groups whose members can attest to reviews.                                                                                                   |
-| **Minimum reviewers**              | The minimum number of attestations required from reviewer group members.                                                                      |
+| **Minimum reviewers**              | The minimum number of attestations required from members of any reviewing group.                                                                      |
 | **Minimum reviewers is per group** | When enabled, the minimum number of reviewers is required from each reviewer group separately. When disabled, it's a total across all groups. |
 | **Explicit reviewers**             | Individual users who must all attest to the review, in addition to the reviewer groups requirement.                                           |
 | **Notification transports**        | How reviewers are notified about pending, overdue, and completed reviews.                                                                     |
