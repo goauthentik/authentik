@@ -27,6 +27,12 @@ To enable single logout, add a **Single Logout Service URL** to your SAML provid
 Back-channel logout ensures users are logged out even when their session is terminated administratively (e.g., when a user is deactivated or their session is deleted). This requires POST SLS binding.
 :::
 
+## SP-initiated Single Logout
+
+SAML Service Providers can initiate logout by sending a SAML logout request to authentik. By default, only that Service Provider's session is ended while the authentik session remains active and the user stays logged in to other applications.
+
+To trigger full Single Logout when users log out from a Service Provider, see [Enable full Single Logout for RP-initiated logout](../single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout).
+
 ## How SAML Single Logout Works
 
 When a user logs out of authentik through a logout flow, authentik initiates the single logout process for all SAML providers configured with an SLS URL and logout method.
