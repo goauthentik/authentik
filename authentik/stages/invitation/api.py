@@ -1,7 +1,5 @@
 """Invitation Stage API Views"""
 
-from smtplib import SMTPException
-
 from django.http import HttpRequest
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
@@ -15,7 +13,6 @@ from rest_framework.serializers import (
     ListField,
     PrimaryKeyRelatedField,
     Serializer,
-    ValidationError,
 )
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
@@ -160,24 +157,18 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
         # Prepare email content
         subject = f"You have been invited to {host}"
 
-        # Queue emails for sending using ak_send_email
+        # Queue emails for sending via async ak_send_email
         evaluator = BaseEvaluator()
 
         for email in email_addresses:
-            try:
-                evaluator.expr_send_email(
-                    address=email,
-                    subject=subject,
-                    template=template,
-                    context=context,
-                    stage=None,
-                    cc=cc_addresses if cc_addresses else None,
-                    bcc=bcc_addresses if bcc_addresses else None,
-                )
-            except (SMTPException, ConnectionError, ValidationError, ValueError) as exc:
-                LOGGER.warning("Failed to queue invitation email", email=email, exc=exc)
-                return Response(
-                    {"error": f"Failed to queue email for {email}: {str(exc)}"}, status=500
-                )
+            evaluator.expr_send_email(
+                address=email,
+                subject=subject,
+                template=template,
+                context=context,
+                stage=None,
+                cc=cc_addresses if cc_addresses else None,
+                bcc=bcc_addresses if bcc_addresses else None,
+            )
 
         return Response(status=204)
