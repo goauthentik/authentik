@@ -6,7 +6,7 @@ from authentik.enterprise.lifecycle.models import LifecycleRule
 from authentik.events.models import Event, Notification, NotificationTransport
 
 
-@actor(description=_("Apply object lifecycle rules."))
+@actor(description=_("Dispatch tasks to validate lifecycle rules."))
 def apply_lifecycle_rules():
     for rule in LifecycleRule.objects.all():
         apply_lifecycle_rule.send_with_options(
