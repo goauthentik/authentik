@@ -7,7 +7,7 @@ import "#flow/stages/RedirectStage";
 
 import { isMatching, match, P } from "ts-pattern";
 
-export const propVariants = ["standard", "challenge", "inspect"] as const;
+export const propVariants = ["standard", "challenge"] as const;
 type PropVariant = (typeof propVariants)[number];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +69,7 @@ const rawStages: RawStage[] = [
     ["ak-stage-prompt", async () => await import("#flow/stages/prompt/PromptStage")],
     ["ak-stage-session-end", async () => await import("#flow/providers/SessionEnd")],
     ["ak-stage-user-login", "challenge", async () => await import("#flow/stages/user_login/UserLoginStage")],
-    ["xak-flow-redirect", "ak-stage-redirect", "inspect"],
+    ["xak-flow-redirect", "ak-stage-redirect"],
     ["xak-flow-frame", "challenge"],
 ];
 

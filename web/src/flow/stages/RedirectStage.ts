@@ -8,7 +8,7 @@ import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/ap
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -18,9 +18,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
-    @property({ type: Boolean })
-    promptUser = false;
-
     @state()
     startedRedirect = false;
 
@@ -39,6 +36,12 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     getURL(): string {
         return new URL(this.challenge?.to || "", document.baseURI).toString();
+    }
+
+    get promptUser() {
+        return (this.getRootNode() as Element | undefined)?.querySelector(
+            "ak-flow-inspector-button",
+        )?.open;
     }
 
     updated(changed: PropertyValues<this>): void {
