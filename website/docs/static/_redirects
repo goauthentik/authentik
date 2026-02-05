@@ -76,6 +76,10 @@
 /security/GHSA-*                                            /security/cves/GHSA-:splat 301!
 #endregion
 
+#region Troubleshooting
+/troublshooting/logs                                        /troubleshooting/logs/logs 301!
+#endregion
+
 #region Integrations
 /integrations                                               https://integrations.goauthentik.io 301!
 /integrations/*                                             https://integrations.goauthentik.io/:splat 301!

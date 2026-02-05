@@ -981,6 +981,14 @@ const items = [
             {
                 //#endregion
 
+                //#region Logs
+                type: "category",
+                label: "Logs",
+                items: ["troubleshooting/logs/logs", "troubleshooting/logs/outpost_logs"],
+            },
+            {
+                //#endregion
+
                 //#region Forward auth
                 type: "category",
                 label: "Forward auth",
@@ -1006,8 +1014,6 @@ const items = [
             },
             "troubleshooting/access",
             "troubleshooting/login",
-            "troubleshooting/logs",
-            "troubleshooting/outpost_logs",
             "troubleshooting/image_upload",
             "troubleshooting/missing_permission",
             "troubleshooting/missing_admin_group",
