@@ -5,7 +5,7 @@
 - **Enrollment**: designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**Email**](../../stages/email/index.mdx) or **Captcha**. At the end, to create the user, you can use the [**User Write**](../../stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
 
 - **Invalidation**: designates a default flow to be used to invalidate a session. There are two default invalidation flows:
-    - `default-invalidation-flow`: Used when users log out directly from authentik. This flow **includes** a [**User Logout**](../../stages/user_logout.md) stage, which ends the authentik session and triggers [Single Logout](../../../providers/single-logout/index.md) for all connected applications.
+    - `default-invalidation-flow`: Used when a user logs out directly from authentik. This flow **includes** a [**User Logout**](../../stages/user_logout.md) stage, which ends the authentik session and triggers [Single Logout](../../../providers/single-logout/index.md) for all connected applications.
 
     - `default-provider-invalidation-flow`: Used when users log out from an application (OIDC, SAML, Proxy, or RAC providers). By default, this flow does **not** include a User Logout stage, meaning only the specific application session ends while the authentik session remains active. To also end the authentik session when users log out from an application, see the [Single Logout documentation](../../../providers/single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout).
 
