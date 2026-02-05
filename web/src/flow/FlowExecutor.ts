@@ -43,10 +43,9 @@ import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, render, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
@@ -243,6 +242,14 @@ export class FlowExecutor
         ) {
             this.#synchronizeFlowInfo();
         }
+
+        Array.from(this.children)
+            .find((el) => el.matches('[slot="slotted-dialog"]') as Element | undefined)
+            ?.remove();
+
+        if (this.challenge) {
+            this.renderChallenge(this.challenge);
+        }
     }
 
     //#endregion
@@ -251,7 +258,7 @@ export class FlowExecutor
 
     public submit = async (
         payload?: FlowChallengeResponseRequest,
-        options?: SubmitOptions,
+        options?: SubmitOptions
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
@@ -294,10 +301,8 @@ export class FlowExecutor
 
     //#region Render Challenge
 
-    protected async renderChallenge(
-        component: ChallengeTypes["component"],
-    ): Promise<TemplateResult> {
-        const { challenge } = this;
+    protected async renderChallenge(challenge: ChallengeTypes) {
+        const { component } = challenge;
 
         const stage = stages.get(component);
 
@@ -326,19 +331,19 @@ export class FlowExecutor
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .exhaustive(),
+                .exhaustive()
         );
 
-        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+        console.log(`Rendered ${tag}`);
+        render(
+            staticHTML`<${unsafeStatic(tag)} ${props} slot="slotted-dialog"></${unsafeStatic(tag)}>`,
+            this
+        );
     }
 
     //#endregion
 
     //#region Render
-
-    protected renderLoading(): TemplateResult {
-        return html`<slot class="slotted-content" name="placeholder"></slot>`;
-    }
 
     protected override render(): TemplateResult {
         const { component } = this.challenge || {};
@@ -370,7 +375,9 @@ export class FlowExecutor
                 ${this.loading && this.challenge
                     ? html`<ak-loading-overlay></ak-loading-overlay>`
                     : nothing}
-                ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
+                ${component
+                    ? html`<slot name="slotted-dialog" value=${component}></slot>`
+                    : html`<slot class="slotted-content" name="placeholder"></slot>`}
             </main>
             <slot name="footer"></slot>`;
     }
