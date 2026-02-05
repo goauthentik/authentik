@@ -38,7 +38,7 @@ class SignOutRequest:
 
     def get_app_provider(self):
         provider: WSFederationProvider = get_object_or_404(
-            WSFederationProvider, issuer=self.wtrealm
+            WSFederationProvider, audience=self.wtrealm
         )
         application = get_object_or_404(Application, provider=provider)
         return application, provider
