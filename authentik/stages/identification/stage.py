@@ -6,7 +6,7 @@ from typing import Any
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
@@ -16,6 +16,7 @@ from sentry_sdk import start_span
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
+from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
 from authentik.endpoints.models import Device
 from authentik.events.middleware import audit_ignore
 from authentik.events.utils import sanitize_item
@@ -93,6 +94,8 @@ class IdentificationChallenge(Challenge):
     """Identification challenges with all UI elements"""
 
     user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
+    pending_user_identifier = CharField(required=False, allow_null=True)
+
     password_fields = BooleanField()
     allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
@@ -282,6 +285,39 @@ class IdentificationStageView(ChallengeStageView):
         self.logger.debug("Generated passkey challenge", challenge=challenge)
         return challenge
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Check for existing pending user identifier and skip stage if possible"""
+        current_stage: IdentificationStage = self.executor.current_stage
+        pending_user_identifier = self.executor.plan.context.get(
+            PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+        )
+
+        if not pending_user_identifier:
+            return super().get(request, *args, **kwargs)
+
+        # Only skip if this is a "simple" identification stage with no extra features
+        can_skip = (
+            not current_stage.password_stage
+            and not current_stage.captcha_stage
+            and not current_stage.webauthn_stage
+            and not self.executor.current_binding.policies.exists()
+        )
+
+        if can_skip:
+            # Use the normal validation flow (handles timing protection, logging, signals)
+            response = IdentificationChallengeResponse(
+                data={"uid_field": pending_user_identifier},
+                stage=self,
+            )
+            if response.is_valid():
+                return self.challenge_valid(response)
+            # Validation failed (user doesn't exist and pretend_user_exists is off)
+            # Don't pre-fill invalid username, fall through to show the challenge
+            self.executor.plan.context.pop(PLAN_CONTEXT_PENDING_USER_IDENTIFIER, None)
+
+        # Can't skip - just pre-fill the username field
+        return super().get(request, *args, **kwargs)
+
     def get_challenge(self) -> Challenge:
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
@@ -315,7 +351,10 @@ class IdentificationStageView(ChallengeStageView):
             challenge.initial_data["application_pre"] = self.executor.plan.context.get(
                 PLAN_CONTEXT_APPLICATION, Application()
             ).name
-        if PLAN_CONTEXT_DEVICE in self.executor.plan.context:
+        if (
+            PLAN_CONTEXT_DEVICE in self.executor.plan.context
+            and PLAN_CONTEXT_DEVICE_AUTH_TOKEN in self.executor.plan.context
+        ):
             challenge.initial_data["application_pre"] = self.executor.plan.context.get(
                 PLAN_CONTEXT_DEVICE, Device()
             ).name
@@ -354,6 +393,11 @@ class IdentificationStageView(ChallengeStageView):
                 button["challenge"] = source_challenge.data
                 ui_sources.append(button)
         challenge.initial_data["sources"] = ui_sources
+
+        # Pre-fill username from login_hint unless user clicked "Not you?"
+        if prefill := self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER):
+            challenge.initial_data["pending_user_identifier"] = prefill
+
         return challenge
 
     def challenge_valid(self, response: IdentificationChallengeResponse) -> HttpResponse:

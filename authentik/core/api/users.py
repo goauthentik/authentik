@@ -30,7 +30,6 @@ from drf_spectacular.utils import (
     extend_schema_field,
     inline_serializer,
 )
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -42,6 +41,7 @@ from rest_framework.fields import (
     IntegerField,
     ListField,
     SerializerMethodField,
+    UUIDField,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -78,6 +78,7 @@ from authentik.core.models import (
     TokenIntents,
     User,
     UserTypes,
+    default_token_duration,
 )
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
@@ -87,6 +88,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -129,7 +131,6 @@ class UserSerializer(ModelSerializer):
     groups = PrimaryKeyRelatedField(
         allow_empty=True,
         many=True,
-        source="ak_groups",
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
@@ -165,7 +166,7 @@ class UserSerializer(ModelSerializer):
     def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return PartialGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.groups, many=True).data
 
     @extend_schema_field(RoleSerializer(many=True))
     def get_roles_obj(self, instance: User) -> list[RoleSerializer] | None:
@@ -239,14 +240,14 @@ class UserSerializer(ModelSerializer):
             and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
             and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
         ):
-            raise ValidationError("Can't change internal service account to other user type.")
+            raise ValidationError(_("Can't change internal service account to other user type."))
         if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
-            raise ValidationError("Setting a user to internal service account is not allowed.")
+            raise ValidationError(_("Setting a user to internal service account is not allowed."))
         return user_type
 
     def validate(self, attrs: dict) -> dict:
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-            raise ValidationError("Can't modify internal service account users")
+            raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
 
     class Meta:
@@ -398,6 +399,18 @@ class UserServiceAccountSerializer(PassiveSerializer):
     )
 
 
+class UserRecoveryLinkSerializer(PassiveSerializer):
+    """Payload to create a recovery link"""
+
+    token_duration = CharField(required=False)
+
+
+class UserRecoveryEmailSerializer(UserRecoveryLinkSerializer):
+    """Payload to create and email a recovery link"""
+
+    email_stage = UUIDField()
+
+
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -421,7 +434,7 @@ class UsersFilter(FilterSet):
     last_login__gt = IsoDateTimeFilter(field_name="last_login", lookup_expr="gt")
     last_login__isnull = BooleanFilter(field_name="last_login", lookup_expr="isnull")
 
-    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
+    is_superuser = BooleanFilter(field_name="groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -430,12 +443,12 @@ class UsersFilter(FilterSet):
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
-        field_name="ak_groups__name",
+        field_name="groups__name",
         to_field_name="name",
         queryset=Group.objects.all().order_by("name"),
     )
     groups_by_pk = ModelMultipleChoiceFilter(
-        field_name="ak_groups",
+        field_name="groups",
         queryset=Group.objects.all().order_by("name"),
     )
 
@@ -451,22 +464,22 @@ class UsersFilter(FilterSet):
 
     def filter_is_superuser(self, queryset, name, value):
         if value:
-            return queryset.filter(ak_groups__is_superuser=True).distinct()
-        return queryset.exclude(ak_groups__is_superuser=True).distinct()
+            return queryset.filter(groups__is_superuser=True).distinct()
+        return queryset.exclude(groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:
             value = loads(value)
         except ValueError:
-            raise ValidationError(detail="filter: failed to parse JSON") from None
+            raise ValidationError(_("filter: failed to parse JSON")) from None
         if not isinstance(value, dict):
-            raise ValidationError(detail="filter: value must be key:value mapping")
+            raise ValidationError(_("filter: value must be key:value mapping"))
         qs = {}
         for key, _value in value.items():
             qs[f"attributes__{key}"] = _value
         try:
-            _ = len(queryset.filter(**qs))
+            __ = len(queryset.filter(**qs))
             return queryset.filter(**qs)
         except ValueError:
             return queryset
@@ -530,7 +543,7 @@ class UserViewSet(
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
         if self.serializer_class(context={"request": self.request})._should_include_groups:
-            base_qs = base_qs.prefetch_related("ak_groups")
+            base_qs = base_qs.prefetch_related("groups")
         if self.serializer_class(context={"request": self.request})._should_include_roles:
             base_qs = base_qs.prefetch_related("roles")
         return base_qs
@@ -544,14 +557,16 @@ class UserViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(
+        self, token_duration: str | None, for_email=False
+    ) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
-        brand: Brand = self.request._request.brand
+        brand: Brand = self.request.brand
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
-            raise ValidationError({"non_field_errors": "No recovery flow set."})
+            raise ValidationError({"non_field_errors": _("No recovery flow set.")})
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
@@ -565,11 +580,15 @@ class UserViewSet(
             )
         except FlowNonApplicableException:
             raise ValidationError(
-                {"non_field_errors": "Recovery flow not applicable to user"}
+                {"non_field_errors": _("Recovery flow not applicable to user")}
             ) from None
         _plan = FlowToken.pickle(plan)
         if for_email:
             _plan = pickle_flow_token_for_email(plan)
+        expires = default_token_duration()
+        if token_duration:
+            timedelta_string_validator(token_duration)
+            expires = now() + timedelta_from_string(token_duration)
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
@@ -577,6 +596,7 @@ class UserViewSet(
                 "flow": flow,
                 "_plan": _plan,
                 "revoke_on_execution": not for_email,
+                "expires": expires,
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
@@ -724,60 +744,60 @@ class UserViewSet(
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
+        request=UserRecoveryLinkSerializer,
         responses={
             "200": LinkSerializer(many=False),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryLinkSerializer)
+    def recovery(self, request: Request, pk: int, body: UserRecoveryLinkSerializer) -> Response:
         """Create a temporary link that a user can use to recover their account"""
-        link, _ = self._create_recovery_link()
+        link, _ = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration")
+        )
         return Response({"link": link})
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="email_stage",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-                required=True,
-            )
-        ],
+        request=UserRecoveryEmailSerializer,
         responses={
             "204": OpenApiResponse(description="Successfully sent recover email"),
         },
-        request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery_email(self, request: Request, pk: int) -> Response:
+    @validate(UserRecoveryEmailSerializer)
+    def recovery_email(
+        self, request: Request, pk: int, body: UserRecoveryEmailSerializer
+    ) -> Response:
         """Send an email with a temporary link that a user can use to recover their account"""
-        for_user: User = self.get_object()
-        if for_user.email == "":
+        email_error_message = _("User does not have an email address set.")
+        stage_error_message = _("Email stage not found.")
+        user: User = self.get_object()
+        if not user.email:
             LOGGER.debug("User doesn't have an email address")
-            raise ValidationError({"non_field_errors": "User does not have an email address set."})
-        link, token = self._create_recovery_link(for_email=True)
-        # Lookup the email stage to assure the current user can access it
-        stages = get_objects_for_user(
-            request.user, "authentik_stages_email.view_emailstage"
-        ).filter(pk=request.query_params.get("email_stage"))
-        if not stages.exists():
-            LOGGER.debug("Email stage does not exist/user has no permissions")
-            raise ValidationError({"non_field_errors": "Email stage does not exist."})
-        email_stage: EmailStage = stages.first()
+            raise ValidationError({"non_field_errors": email_error_message})
+        if not (stage := EmailStage.objects.filter(pk=body.validated_data["email_stage"]).first()):
+            LOGGER.debug("Email stage does not exist")
+            raise ValidationError({"non_field_errors": stage_error_message})
+        if not request.user.has_perm("authentik_stages_email.view_emailstage", stage):
+            LOGGER.debug("User has no view access to email stage")
+            raise ValidationError({"non_field_errors": stage_error_message})
+        link, token = self._create_recovery_link(
+            token_duration=body.validated_data.get("token_duration"), for_email=True
+        )
         message = TemplateEmailMessage(
-            subject=_(email_stage.subject),
-            to=[(for_user.name, for_user.email)],
-            template_name=email_stage.template,
-            language=for_user.locale(request),
+            subject=_(stage.subject),
+            to=[(user.name, user.email)],
+            template_name=stage.template,
+            language=user.locale(request),
             template_context={
                 "url": link,
-                "user": for_user,
+                "user": user,
                 "expires": token.expires,
             },
         )
-        send_mails(email_stage, message)
+        send_mails(stage, message)
         return Response(status=204)
 
     @permission_required("authentik_core.impersonate")

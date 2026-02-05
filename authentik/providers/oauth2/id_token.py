@@ -7,10 +7,7 @@ from typing import TYPE_CHECKING, Any
 from django.http import HttpRequest
 from django.utils import timezone
 
-from authentik.core.models import default_token_duration
-from authentik.events.signals import get_login_event
-from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
     AMR_PASSWORD,
@@ -18,6 +15,9 @@ from authentik.providers.oauth2.constants import (
     AMR_WEBAUTHN,
     SubModes,
 )
+from authentik.core.models import default_token_duration
+from authentik.events.signals import get_login_event
+from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:
@@ -73,8 +73,8 @@ class IDToken:
 
     @staticmethod
     def new(
-        provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
-    ) -> "IDToken":
+        provider: OAuth2Provider, token: BaseGrantModel, request: HttpRequest, **kwargs
+    ) -> IDToken:
         """Create ID Token"""
         id_token = IDToken(provider, token, **kwargs)
         id_token.exp = int(
@@ -147,14 +147,14 @@ class IDToken:
         id_dict.update(self.claims)
         return id_dict
 
-    def to_access_token(self, provider: "OAuth2Provider", token: "BaseGrantModel") -> str:
+    def to_access_token(self, provider: OAuth2Provider, token: BaseGrantModel) -> str:
         """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
         final["azp"] = provider.client_id
         final["uid"] = generate_id()
-        final["scope"] = " ".join(token.scope)
+        final.setdefault("scope", " ".join(token.scope))
         return provider.encode(final)
 
-    def to_jwt(self, provider: "OAuth2Provider") -> str:
+    def to_jwt(self, provider: OAuth2Provider) -> str:
         """Shortcut to encode id_token to jwt, signed by self.provider"""
         return provider.encode(self.to_dict())

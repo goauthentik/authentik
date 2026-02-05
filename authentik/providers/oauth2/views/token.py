@@ -4,6 +4,7 @@ from base64 import b64decode
 from binascii import Error
 from dataclasses import InitVar, dataclass
 from datetime import datetime
+from hmac import compare_digest
 from re import error as RegexError
 from re import fullmatch
 from typing import Any
@@ -19,6 +20,19 @@ from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import (
+    CLIENT_ASSERTION,
+    CLIENT_ASSERTION_TYPE,
+    CLIENT_ASSERTION_TYPE_JWT,
+    GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_PASSWORD,
+    GRANT_TYPE_REFRESH_TOKEN,
+    PKCE_METHOD_S256,
+    SCOPE_OFFLINE_ACCESS,
+    TOKEN_TYPE,
+)
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -36,19 +50,6 @@ from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.providers.oauth2.constants import (
-    CLIENT_ASSERTION,
-    CLIENT_ASSERTION_TYPE,
-    CLIENT_ASSERTION_TYPE_JWT,
-    GRANT_TYPE_AUTHORIZATION_CODE,
-    GRANT_TYPE_CLIENT_CREDENTIALS,
-    GRANT_TYPE_DEVICE_CODE,
-    GRANT_TYPE_PASSWORD,
-    GRANT_TYPE_REFRESH_TOKEN,
-    PKCE_METHOD_S256,
-    SCOPE_OFFLINE_ACCESS,
-    TOKEN_TYPE,
-)
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -104,7 +105,7 @@ class TokenParams:
         provider: OAuth2Provider,
         client_id: str,
         client_secret: str,
-    ) -> "TokenParams":
+    ) -> TokenParams:
         """Parse params for request"""
         return TokenParams(
             # Init vars
@@ -161,9 +162,8 @@ class TokenParams:
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
-            if (
-                self.provider.client_type == ClientTypes.CONFIDENTIAL
-                and self.provider.client_secret != self.client_secret
+            if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
+                self.provider.client_secret, self.client_secret
             ):
                 LOGGER.warning(
                     "Invalid client secret",
@@ -329,7 +329,7 @@ class TokenParams:
         try:
             user, _, password = b64decode(self.client_secret).decode("utf-8").partition(":")
             return self.__post_init_client_credentials_creds(request, user, password)
-        except (ValueError, Error):
+        except ValueError, Error:
             raise TokenError("invalid_grant") from None
 
     def __post_init_client_credentials_creds(

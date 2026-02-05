@@ -2,7 +2,7 @@
 
 from dataclasses import asdict, is_dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 from uuid import UUID
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField
 from rest_framework.request import Request
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
@@ -31,6 +31,9 @@ class FlowLayout(models.TextChoices):
     SIDEBAR_LEFT = "sidebar_left"
     SIDEBAR_RIGHT = "sidebar_right"
 
+    SIDEBAR_LEFT_FRAME_BACKGROUND = "sidebar_left_frame_background"
+    SIDEBAR_RIGHT_FRAME_BACKGROUND = "sidebar_right_frame_background"
+
 
 class ErrorDetailSerializer(PassiveSerializer):
     """Serializer for rest_framework's error messages"""
@@ -44,6 +47,7 @@ class ContextualFlowInfo(PassiveSerializer):
 
     title = CharField(required=False, allow_blank=True)
     background = CharField(required=False)
+    background_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     cancel_url = CharField()
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
 
@@ -137,7 +141,7 @@ class PermissionDict(TypedDict):
 class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 
-    stage: Optional["StageView"]
+    stage: StageView | None
     component = CharField(default="xak-flow-response-default")
 
     def __init__(self, instance=None, data=None, **kwargs):

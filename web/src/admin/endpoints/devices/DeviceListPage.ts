@@ -148,7 +148,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Endpoint Device(s)")}
+            object-label=${msg("Endpoint Device(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: EndpointDevice) => {
                 return [{ key: msg("Name"), value: item.name }];

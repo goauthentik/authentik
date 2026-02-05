@@ -9,6 +9,7 @@ import {
     transformNewAssertionForServer,
 } from "#common/helpers/webauthn";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -19,14 +20,12 @@ import {
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;
@@ -45,7 +44,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFFormControl, PFForm, PFTitle, PFButton];
+    static styles: CSSResult[] = [PFLogin, PFFormControl, PFForm, PFTitle, PFButton];
 
     async register(): Promise<void> {
         if (!this.challenge) {
@@ -102,7 +101,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     }
 
     updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             // convert certain members of the PublicKeyCredentialCreateOptions into
             // byte arrays as expected by the spec.
             this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
@@ -116,17 +115,8 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
                     <span
                         >${this.registerRunning

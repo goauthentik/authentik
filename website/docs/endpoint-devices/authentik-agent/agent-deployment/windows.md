@@ -53,6 +53,10 @@ If you already have an enrollment token, skip to the [next section](#install-the
 It's recommended to deploy the Agent via [MDM or automation tools](./automated.mdx) instead of manually configuring it.
 :::
 
+:::info Serial number required
+The Agent requires a serial number be presented by Windows. Some hypervisors don't set serial numbers. When deploying on a virtual machine, ensure that it has a serial number set.
+:::
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors**.
 3. Click on the authentik Agent connector that you created when [configuring your authentik deployment](../configuration.md) to support the authentik agent.
@@ -60,7 +64,8 @@ It's recommended to deploy the Agent via [MDM or automation tools](./automated.m
 5. Once the download is complete, install the MSI file.
 6. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
 7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device compliance and local device login
 
@@ -90,8 +95,18 @@ ak config setup --authentik-url https://authentik.company
 
 2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
+## Check version of installed components
+
+You can check the version of all installed authentik components by running the following command:
+
+```bash
+ak version
+```
+
 ## Logging
 
-The authentik Agent primarily outputs logs to Windows Event Viewer.
+All components of the authentik Agent output logs to the "authentik" log in the Windows Event Viewer.
 
-WCP logs to the `wcp.log` located in `C:\Program Files\Authentik Security Inc\wcp`.
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

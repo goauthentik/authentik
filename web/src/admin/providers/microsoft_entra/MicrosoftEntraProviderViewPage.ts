@@ -38,7 +38,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {
@@ -49,7 +48,6 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     provider?: MicrosoftEntraProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFForm,
         PFFormControl,
@@ -144,6 +142,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

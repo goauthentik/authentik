@@ -110,3 +110,106 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
         """Test S3Backend with REPORTS usage"""
         self.assertEqual(self.reports_s3_backend.usage, FileUsage.REPORTS)
         self.assertEqual(self.reports_s3_backend.base_path, "reports/public")
+
+    @CONFIG.patch("storage.s3.secure_urls", True)
+    @CONFIG.patch("storage.s3.addressing_style", "path")
+    def test_file_url_custom_domain_with_bucket_no_duplicate(self):
+        """Test file_url doesn't duplicate bucket name when custom_domain includes bucket.
+
+        Regression test for https://github.com/goauthentik/authentik/issues/19521
+
+        When using:
+        - Path-style addressing (bucket name goes in URL path, not subdomain)
+        - Custom domain that includes the bucket name (e.g., s3.example.com/bucket-name)
+
+        The bucket name should NOT appear twice in the final URL.
+
+        Example of the bug:
+        - custom_domain = "s3.example.com/authentik-media"
+        - boto3 presigned URL = "http://s3.example.com/authentik-media/media/public/file.png?..."
+        - Buggy result = "https://s3.example.com/authentik-media/authentik-media/media/public/file.png?..."
+        """
+        bucket_name = self.media_s3_bucket_name
+
+        # Custom domain includes the bucket name
+        custom_domain = f"localhost:8020/{bucket_name}"
+
+        with CONFIG.patch("storage.media.s3.custom_domain", custom_domain):
+            url = self.media_s3_backend.file_url("application-icons/test.svg", use_cache=False)
+
+        # The bucket name should appear exactly once in the URL path, not twice
+        bucket_occurrences = url.count(bucket_name)
+        self.assertEqual(
+            bucket_occurrences,
+            1,
+            f"Bucket name '{bucket_name}' appears {bucket_occurrences} times in URL, expected 1. "
+            f"URL: {url}",
+        )
+
+    def test_themed_urls_without_theme_variable(self):
+        """Test themed_urls returns None when filename has no %(theme)s"""
+        result = self.media_s3_backend.themed_urls("logo.png")
+        self.assertIsNone(result)
+
+    def test_themed_urls_with_theme_variable(self):
+        """Test themed_urls returns dict of presigned URLs for each theme"""
+        result = self.media_s3_backend.themed_urls("logo-%(theme)s.png")
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("light", result)
+        self.assertIn("dark", result)
+
+        # Check URLs are valid presigned URLs with correct file paths
+        self.assertIn("logo-light.png", result["light"])
+        self.assertIn("logo-dark.png", result["dark"])
+        self.assertIn("X-Amz-Signature=", result["light"])
+        self.assertIn("X-Amz-Signature=", result["dark"])
+
+    def test_themed_urls_multiple_theme_variables(self):
+        """Test themed_urls with multiple %(theme)s in path"""
+        result = self.media_s3_backend.themed_urls("%(theme)s/logo-%(theme)s.svg")
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("light/logo-light.svg", result["light"])
+        self.assertIn("dark/logo-dark.svg", result["dark"])
+
+    def test_save_file_sets_content_type_svg(self):
+        """Test save_file sets correct ContentType for SVG files"""
+        self.media_s3_backend.save_file("test.svg", b"<svg></svg>")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.svg",
+        )
+        self.assertEqual(response["ContentType"], "image/svg+xml")
+
+    def test_save_file_sets_content_type_png(self):
+        """Test save_file sets correct ContentType for PNG files"""
+        self.media_s3_backend.save_file("test.png", b"\x89PNG\r\n\x1a\n")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.png",
+        )
+        self.assertEqual(response["ContentType"], "image/png")
+
+    def test_save_file_stream_sets_content_type(self):
+        """Test save_file_stream sets correct ContentType"""
+        with self.media_s3_backend.save_file_stream("test.css") as f:
+            f.write(b"body { color: red; }")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.css",
+        )
+        self.assertEqual(response["ContentType"], "text/css")
+
+    def test_save_file_unknown_extension_octet_stream(self):
+        """Test save_file sets octet-stream for unknown extensions"""
+        self.media_s3_backend.save_file("test.unknownext123", b"data")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.unknownext123",
+        )
+        self.assertEqual(response["ContentType"], "application/octet-stream")

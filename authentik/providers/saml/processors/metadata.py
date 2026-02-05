@@ -6,11 +6,9 @@ from hashlib import sha256
 import xmlsec  # nosec
 from django.http import HttpRequest
 from django.urls import reverse
-from lxml.etree import Element, SubElement, tostring  # nosec
+from lxml.etree import Element, SubElement, _Element, tostring  # nosec
 
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils.encoding import strip_pem_header
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_METADATA,
@@ -24,6 +22,9 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.utils.encoding import strip_pem_header
 
 
 class MetadataProcessor:
@@ -130,7 +131,7 @@ class MetadataProcessor:
             element.attrib["Location"] = url
             yield element
 
-    def _prepare_signature(self, entity_descriptor: Element):
+    def _prepare_signature(self, entity_descriptor: _Element):
         sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
         )
@@ -142,7 +143,7 @@ class MetadataProcessor:
         )
         entity_descriptor.append(signature)
 
-    def _sign(self, entity_descriptor: Element):
+    def _sign(self, entity_descriptor: _Element):
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
         )
@@ -171,17 +172,12 @@ class MetadataProcessor:
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
-        ctx.sign(signature_node)
+        ctx.sign(remove_xml_newlines(assertion, signature_node))
 
-    def build_entity_descriptor(self) -> str:
-        """Build full EntityDescriptor"""
-        entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
-        entity_descriptor.attrib["ID"] = self.xml_id
-        entity_descriptor.attrib["entityID"] = self._get_issuer_value()
+    def add_children(self, entity_descriptor: _Element):
+        self.add_idp_sso(entity_descriptor)
 
-        if self.provider.signing_kp:
-            self._prepare_signature(entity_descriptor)
-
+    def add_idp_sso(self, entity_descriptor: _Element):
         idp_sso_descriptor = SubElement(
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )
@@ -201,6 +197,17 @@ class MetadataProcessor:
 
         for binding in self.get_sso_bindings():
             idp_sso_descriptor.append(binding)
+
+    def build_entity_descriptor(self) -> str:
+        """Build full EntityDescriptor"""
+        entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
+        entity_descriptor.attrib["ID"] = self.xml_id
+        entity_descriptor.attrib["entityID"] = self._get_issuer_value()
+
+        if self.provider.signing_kp:
+            self._prepare_signature(entity_descriptor)
+
+        self.add_children(entity_descriptor)
 
         if self.provider.signing_kp:
             self._sign(entity_descriptor)

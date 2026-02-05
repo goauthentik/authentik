@@ -2,12 +2,14 @@
 
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
+from django.http import HttpRequest
 from django.urls import reverse
 from django.utils import timezone
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.models import in_memory_stage
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLSession
 from authentik.providers.saml.native_logout import NativeLogoutStageView
@@ -25,7 +27,9 @@ LOGGER = get_logger()
 
 
 @receiver(flow_pre_user_logout)
-def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs):
+def handle_saml_iframe_pre_user_logout(
+    sender, request: HttpRequest, user: User, executor: FlowExecutorView, **kwargs
+):
     """Handle SAML iframe logout when user logs out via flow"""
 
     # Only proceed if this is actually a UserLogoutStage
@@ -114,7 +118,9 @@ def handle_saml_iframe_pre_user_logout(sender, request, user, executor, **kwargs
 
 
 @receiver(flow_pre_user_logout)
-def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
+def handle_flow_pre_user_logout(
+    sender, request: HttpRequest, user: User, executor: FlowExecutorView, **kwargs
+):
     """Handle SAML native logout when user logs out via logout flow"""
 
     # Only proceed if this is actually a UserLogoutStage

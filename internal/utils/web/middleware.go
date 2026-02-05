@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
 )
 
 // responseLogger is wrapper of http.ResponseWriter that keeps track of its HTTP status
@@ -71,6 +73,7 @@ type loggingHandler struct {
 	handler      http.Handler
 	logger       *log.Entry
 	afterHandler afterHandler
+	headers      []string
 }
 
 type afterHandler func(l *log.Entry, r *http.Request) *log.Entry
@@ -87,6 +90,7 @@ func NewLoggingHandler(logger *log.Entry, after afterHandler) func(h http.Handle
 			handler:      h,
 			logger:       logger,
 			afterHandler: after,
+			headers:      config.Get().Log.HttpHeaders,
 		}
 	}
 }
@@ -101,7 +105,7 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.TLS != nil {
 		scheme = "https"
 	}
-	h.afterHandler(h.logger.WithFields(log.Fields{
+	fields := log.Fields{
 		"remote":     req.RemoteAddr,
 		"host":       GetHost(req),
 		"runtime":    fmt.Sprintf("%0.3f", duration),
@@ -110,5 +114,13 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		"size":       responseLogger.Size(),
 		"status":     responseLogger.Status(),
 		"user_agent": req.UserAgent(),
-	}), req).Info(url.RequestURI())
+	}
+	for _, h := range h.headers {
+		hv := req.Header.Get(h)
+		if hv == "" {
+			continue
+		}
+		fields[strings.ToLower(strings.ReplaceAll(h, "-", "_"))] = hv
+	}
+	h.afterHandler(h.logger.WithFields(fields), req).Info(url.RequestURI())
 }

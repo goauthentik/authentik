@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
@@ -76,6 +77,30 @@ class TestSAMLProviderAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 201)
+
+    def test_create_validate_unsupported_key_type(self):
+        """Test validation rejects unsupported key types (Ed25519)"""
+
+        # Create an Ed25519 certificate
+        ed25519_cert = create_test_cert(PrivateKeyAlg.ED25519)
+
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "signing_kp": ed25519_cert.pk,
+                "sign_assertion": True,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("signing_kp", loads(response.content))
+        self.assertJSONEqual(
+            response.content,
+            {"signing_kp": ["Only RSA, EC, and DSA key types are supported for SAML signing."]},
+        )
 
     def test_metadata(self):
         """Test metadata export (normal)"""

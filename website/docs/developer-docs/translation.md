@@ -12,7 +12,7 @@ Please review the [Writing documentation](./docs/writing-documentation.md) guide
 
 ## Online translation
 
-To simplify translation you can use https://www.transifex.com/authentik/authentik, which has no local requirements.
+To simplify translation you can use [Transifex](https://explore.transifex.com/authentik/authentik/), which has no local requirements.
 
 ## Local translation
 

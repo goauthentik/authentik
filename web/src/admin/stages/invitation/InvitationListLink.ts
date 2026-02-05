@@ -12,7 +12,6 @@ import { until } from "lit/directives/until.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {
@@ -22,7 +21,7 @@ export class InvitationListLink extends AKElement {
     @property()
     selectedFlow?: string;
 
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFDescriptionList];
+    static styles: CSSResult[] = [PFForm, PFFormControl, PFDescriptionList];
 
     renderLink(): string {
         if (this.invitation?.flowObj) {

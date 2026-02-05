@@ -5,8 +5,6 @@ import "#elements/messages/MessageContainer";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
-import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
@@ -26,7 +24,7 @@ import {
     renderNotificationDrawerPanel,
 } from "#elements/notifications/utils";
 import { ifPresent } from "#elements/utils/attributes";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#user/index.entrypoint.css";
 import { ROUTES } from "#user/Routes";
@@ -35,7 +33,7 @@ import { ConsoleLogger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -67,8 +65,8 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
 
     #logger = ConsoleLogger.prefix("user-interface");
 
-    @state()
-    protected drawer: DrawerState = readDrawerParams();
+    @property({ attribute: false, useDefault: true })
+    public drawer: DrawerState = readDrawerParams();
 
     @listen(AKDrawerChangeEvent)
     protected drawerListener = (event: AKDrawerChangeEvent) => {
@@ -150,7 +148,13 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                 <header part="page__header" class="pf-c-page__header">
                     <div part="brand" class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
-                            ${renderImage(this.brandingLogo, this.brandingTitle, "pf-c-brand")}
+                            ${ThemedImage({
+                                src: this.brandingLogo,
+                                alt: this.brandingTitle,
+                                className: "pf-c-brand",
+                                theme: this.activeTheme,
+                                themedUrls: this.brandingLogoThemedUrls,
+                            })}
                         </a>
                     </div>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
@@ -168,7 +172,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                                         class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        defaultUrl="/library"
+                                        default-url="/library"
                                         .routes=${ROUTES}
                                     >
                                     </ak-router-outlet>

@@ -5,14 +5,9 @@ from urllib.parse import quote, urlencode
 
 import xmlsec
 from lxml import etree  # nosec
-from lxml.etree import Element
+from lxml.etree import Element, _Element
 
-from authentik.core.models import User
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -20,6 +15,12 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.core.models import User
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.utils import get_random_id
+from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
+from authentik.providers.saml.utils.time import get_time_string
 
 
 class LogoutRequestProcessor:
@@ -145,7 +146,7 @@ class LogoutRequestProcessor:
             "RelayState": self.relay_state or "",
         }
 
-    def _sign_logout_request(self, logout_request: Element):
+    def _sign_logout_request(self, logout_request: _Element):
         """Sign the LogoutRequest element"""
         signature_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
@@ -165,7 +166,7 @@ class LogoutRequestProcessor:
 
         self._sign(logout_request)
 
-    def _sign(self, element: Element):
+    def _sign(self, element: _Element):
         """Sign an XML element based on the providers' configured signing settings"""
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
@@ -194,7 +195,7 @@ class LogoutRequestProcessor:
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
-        ctx.sign(signature_node)
+        ctx.sign(remove_xml_newlines(element, signature_node))
 
     def _build_signable_query_string(self, params: dict) -> str:
         """Build query string for signing (order matters per SAML spec)"""

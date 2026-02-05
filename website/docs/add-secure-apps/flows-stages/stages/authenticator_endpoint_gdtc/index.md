@@ -1,15 +1,19 @@
 ---
 title: Google Chrome Device Trust Authenticator Stage
 authentik_version: "2024.10"
-authentik_preview: true
 authentik_enterprise: true
+support_level: deprecated
 ---
+
+:::warning Deprecated
+This stage has been deprecated and is being replaced by the [Device Compliance](../../../../endpoint-devices/device-compliance/index.mdx) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
+:::
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
 
 Support for the Chrome Enterprise Device Trust connector allows organizations to integrate Chrome browsers and ChromeOS devices with authentik as the Identity Provider (IdP), to strengthen their overall security posture.
 
-Device Trust is particularly important in environments with many different device types that are used by a large, remote workforce that might have a BYOD (Bring Your Own Device) policy, or have large teams of of contractors, temporary workers, or volunteers.
+Device Trust is particularly important in environments with many different device types that are used by a large, remote workforce that might have a BYOD (Bring Your Own Device) policy, or have large teams of contractors, temporary workers, or volunteers.
 
 With Device Trust you can enable "context-aware" access policies; for example a policy might require that a device has all security patches installed.
 

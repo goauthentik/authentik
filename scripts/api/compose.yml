@@ -1,14 +1,14 @@
 ---
 services:
   diff:
-    image: docker.io/openapitools/openapi-diff:2.1.6
+    image: docker.io/openapitools/openapi-diff:2.1.7
     restart: never
     network_mode: none
     volumes:
       - ../../:/local
 
   gen:
-    image: docker.io/openapitools/openapi-generator-cli:v7.18.0
+    image: docker.io/openapitools/openapi-generator-cli:v7.19.0
     restart: never
     network_mode: none
     volumes:

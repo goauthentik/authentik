@@ -4,7 +4,7 @@ sidebar_label: SSH authentication
 tags: [ssh, authentik Agent]
 ---
 
-You can use the [authentik Agent](../authentik-agent/index.mdx) to authenticate SSH connections ubetween endpoint devices using authentik credentials.
+You can use the [authentik Agent](../authentik-agent/index.mdx) to authenticate SSH connections between endpoint devices using authentik credentials.
 
 Currently, only [Linux](../authentik-agent/agent-deployment/linux.mdx) devices can serve as SSH endpoints. See [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section for more details.
 
@@ -12,7 +12,7 @@ When connected to an endpoint device in this way, sudo authorization can be hand
 
 ## Prerequisites
 
-- The [authentik Agent must be deployed](../authentik-agent/agent-deployment/index.mdx) on both the source and SSH target devices.
+- The [authentik Agent must be deployed](../authentik-agent/agent-deployment/index.mdx) on both the source and SSH target devices to use the `ak ssh` command. Alternatively, if you're using the standard SSH client (`ssh user@host`) instead of `ak ssh`, the authentik Agent is not required to be deployed on the source and you'll need to authenticate interactively.
 - The target device needs to be configured, see the [Configure SSH authentication on an endpoint device](#configure-ssh-authentication-on-an-endpoint-device) section below.
 
 ## How to SSH to an endpoint device

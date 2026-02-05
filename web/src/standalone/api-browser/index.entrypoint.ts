@@ -1,5 +1,5 @@
-// sort-imports-ignore
 import "rapidoc";
+import "#types/rapi-doc";
 
 import styles from "./index.entrypoint.css";
 
@@ -9,7 +9,7 @@ import { getCookie } from "#common/utils";
 
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { renderImage } from "#elements/utils/images";
+import { ThemedImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -101,7 +101,13 @@ export class APIBrowser extends WithBrandConfig(Interface) {
                 show-method-in-nav-bar="as-colored-text"
             >
                 <div slot="nav-logo">
-                    ${renderImage(this.brandingLogo, msg("authentik Logo"), "logo")}
+                    ${ThemedImage({
+                        src: this.brandingLogo,
+                        alt: msg("authentik Logo"),
+                        className: "logo",
+                        theme: this.activeTheme,
+                        themedUrls: this.brandingLogoThemedUrls,
+                    })}
                 </div>
             </rapi-doc>
         `;

@@ -155,6 +155,21 @@ git push -u origin feature/my-awesome-feature
 
 Then open your PR from the feature branch.
 
+:::tip Accidentally made changes on main?
+If you already started working on `main` (even if you've already made commits), you can still recover by creating a branch from your current state, then resetting `main`:
+
+```bash
+# Create a new branch with your current changes/commits
+git checkout -b feature/my-awesome-feature
+
+# Switch back to main and reset it to match origin
+git checkout main
+git reset --hard origin/main
+```
+
+Your changes are now safely on the feature branch, and `main` is back in sync with the remote.
+:::
+
 Please follow these steps to have your contribution considered by the maintainers:
 
 1. Follow the [style guides](#style-guides)
@@ -185,7 +200,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
-authentik runs on Python 3.13 at the time of writing this.
+authentik runs on Python 3.14 at the time of writing this.
 
 - Use native type-annotations wherever possible.
 - Add meaningful docstrings when possible.

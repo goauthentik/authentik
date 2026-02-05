@@ -38,6 +38,12 @@ You can download our [Example flows](./examples/flows.md) and then import them i
 
 Starting with authentik 2022.8, flows are exported as YAML, but legacy JSON-based flows can still be imported.
 
+:::warning Flow imports
+Flow imports are blueprint files, which may contain objects other than flows (such as policies, users, groups, etc).
+
+You should only import files from trusted sources and review blueprints before importing them.
+:::
+
 ## Create a custom flow
 
 To create a flow, follow these steps:
@@ -68,7 +74,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 <Defaultflowlist />
 
-**Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
+**Authentication**: Using this option, you can configure whether the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
 
 **Behavior settings**:
 

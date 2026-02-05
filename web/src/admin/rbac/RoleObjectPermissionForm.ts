@@ -31,13 +31,19 @@ interface RoleAssignData {
 @customElement("ak-rbac-role-object-permission-form")
 export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> {
     @property()
-    model?: ModelEnum;
+    public model?: ModelEnum;
 
     @property()
-    objectPk?: string;
+    public objectPk?: string;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions: PaginatedPermissionList | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.modelPermissions = null;
+    }
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
