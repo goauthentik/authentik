@@ -49,7 +49,7 @@ For example, if a rule has:
 - Two explicit reviewers (Alice and Bob)
 - Two reviewer groups (Security Team and Compliance Team)
 - Minimum reviewers set to 2
-- "Minimum reviewers is per group" enabled
+- **Min reviewers is per-group** enabled
 
 Then the review requires attestations from: Alice, Bob, at least 2 members of the Security Team, and at least 2 members of the Compliance Team.
 
