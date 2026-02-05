@@ -64,7 +64,8 @@ The Agent requires a serial number be presented by Windows. Some hypervisors don
 5. Once the download is complete, install the MSI file.
 6. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
 7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device compliance and local device login
 
@@ -105,3 +106,7 @@ ak version
 ## Logging
 
 All components of the authentik Agent output logs to the "authentik" log in the Windows Event Viewer.
+
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

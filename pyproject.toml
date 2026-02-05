@@ -103,7 +103,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.0.2",
   "requests-mock==1.12.1",
-  "ruff==0.14.14",
+  "ruff==0.15.0",
   "selenium==4.40.0",
   "types-channels==4.3.0.20250822",
   "types-docker==7.1.0.20260109",
@@ -180,6 +180,7 @@ skip = [
   "./data",                   # Media files
   "./media",                  # Legacy media files
   "./schemas/**",             # XML Schemas
+  "./target",                 # Rust compilation artifacts
   "**vendored**",             # Vendored files
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
