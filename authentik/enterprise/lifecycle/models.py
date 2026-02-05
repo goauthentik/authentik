@@ -70,7 +70,7 @@ class LifecycleRule(SerializerModel):
 
         return LifecycleRuleSerializer
 
-    def _get_pk_field(self):
+    def _get_pk_field(self) -> type[Model]:
         model = self.content_type.model_class()
         pk = model._meta.pk
         while hasattr(pk, "target_field"):
