@@ -2,13 +2,14 @@
 title: Windows local device login
 sidebar_label: Windows
 tags: [authentik Agent, device login, device authentication, windows credential provider, wcp]
+authentik_enterprise: true
 ---
 
 ## Windows Credential Provider
 
 Windows Credential Provider (WCP) is a component of the authentik Agent that allows logging in to Windows devices using authentik credentials.
 
-It currently only supports local login; RDP login is not supported.
+Currently, only local login is supported; RDP login is not yet available and is under development.
 
 :::warning
 

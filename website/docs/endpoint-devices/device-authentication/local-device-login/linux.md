@@ -2,8 +2,31 @@
 title: Linux local device login
 sidebar_label: Linux
 tags: [authentik Agent, device login, device authentication, linux]
+authentik_enterprise: true
 ---
 
 <!-- TODO @BeryJu add screenshot -->
 
-Linux support is possible but not yet implemented. Configuration and testing with various Linux login managers (SDDM, GDM, etc.) and PAM implementations is pending.
+## Prerequisites
+
+You need to have deployed the authentik Agent on the Linux device, see [Deploy the authentik Agent on Linux](../../authentik-agent/agent-deployment/linux.mdx) for more details.
+
+## How it works
+
+- authentik Agent is integrated with the Pluggable Authentication Modules (PAM) framework on the Linux device.
+- The end user logs in via the usual Linux login screen but are prompted for their authentik credentials.
+- The Agent authenticates the credentials against the authentik server and the user is logged in.
+
+## How to log in to a Linux device
+
+:::note
+When configured correctly, when logging in you should see a prompt for **authentik Password** rather than just **Password**.
+:::
+
+1. On the Linux login screen, you enter your authentik credentials.
+2. Once authenticated, you will be logged in to the Linux device.
+
+## Known issues
+
+- Only Webauthn MFA is supported.
+- On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../authentik-agent/agent-deployment/linux.mdx#local-device-login-on-debian-based-systems).

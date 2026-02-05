@@ -46,7 +46,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Permission(s)")}
+            object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ExtraRoleObjectPermission) => {
                 return [

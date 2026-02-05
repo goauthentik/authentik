@@ -51,7 +51,7 @@ export class OAuth2DeviceCode extends BaseStage<
                         value=""
                         required
                     />
-                    ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+                    ${AKFormErrors({ errors: this.challenge?.responseErrors?.code })}
                 </div>
 
                 <div class="pf-c-form__group pf-m-action">

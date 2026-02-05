@@ -1,6 +1,32 @@
 """Email utility functions"""
 
 
+def normalize_addresses(addr: str | list[str] | None) -> list[tuple[str, str]] | None:
+    """Normalize email address parameter to list of (name, email) tuples.
+
+    Args:
+        addr: Email address(es). Can be:
+            - None: Returns None
+            - Single email string: "user@example.com"
+            - List of email strings: ["user1@example.com", "user2@example.com"]
+
+    Returns:
+        List of (name, email) tuples suitable for TemplateEmailMessage, or None
+
+    Raises:
+        ValueError: If address list is empty or addr is not a valid type
+    """
+    if addr is None:
+        return None
+    if isinstance(addr, str):
+        return [("", addr)]
+    if isinstance(addr, list):
+        if not addr:
+            raise ValueError("Address list cannot be empty")
+        return [("", email) for email in addr]
+    raise ValueError("Address must be a string or list of strings")
+
+
 def mask_email(email: str | None) -> str | None:
     """Mask email address for privacy
 

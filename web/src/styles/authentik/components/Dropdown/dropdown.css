@@ -7,6 +7,10 @@
     }
 }
 
+.pf-c-dropdown__menu li {
+    list-style-type: none;
+}
+
 /* #region Dark Theme */
 
 [data-theme="dark"] .pf-c-dropdown,

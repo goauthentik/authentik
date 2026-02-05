@@ -11,7 +11,12 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
-import { digestAlgorithmOptions, signatureAlgorithmOptions } from "./SAMLProviderOptions.js";
+import {
+    availableHashes,
+    digestAlgorithmOptions,
+    retrieveSignatureAlgorithm,
+    SAMLSupportedKeyTypes,
+} from "./SAMLProviderOptions.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -19,13 +24,14 @@ import { RadioOption } from "#elements/forms/Radio";
 
 import {
     FlowsInstancesListDesignationEnum,
+    KeyTypeEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
     SAMLBindingsEnum,
+    SAMLLogoutMethods,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
-    SAMLProviderLogoutMethodEnum,
     ValidationError,
 } from "@goauthentik/api";
 
@@ -79,16 +85,16 @@ function renderHasSlsUrl(
     const logoutMethodOptions: RadioOption<string>[] = [
         {
             label: msg("Front-channel (Iframe)"),
-            value: SAMLProviderLogoutMethodEnum.FrontchannelIframe,
+            value: SAMLLogoutMethods.FrontchannelIframe,
             default: true,
         },
         {
             label: msg("Front-channel (Native)"),
-            value: SAMLProviderLogoutMethodEnum.FrontchannelNative,
+            value: SAMLLogoutMethods.FrontchannelNative,
         },
         {
             label: msg("Back-channel (POST)"),
-            value: SAMLProviderLogoutMethodEnum.Backchannel,
+            value: SAMLLogoutMethods.Backchannel,
             disabled: !hasPostBinding,
         },
     ];
@@ -119,6 +125,7 @@ export interface SAMLProviderFormProps {
     errors?: ValidationError;
     setHasSigningKp: (ev: InputEvent) => void;
     hasSigningKp: boolean;
+    signingKeyType: KeyTypeEnum | null;
     setHasSlsUrl: (ev: Event) => void;
     hasSlsUrl: boolean;
     setSlsBinding: (ev: Event) => void;
@@ -132,6 +139,7 @@ export function renderForm({
     errors = {},
     setHasSigningKp,
     hasSigningKp,
+    signingKeyType,
     setHasSlsUrl,
     hasSlsUrl,
     setSlsBinding,
@@ -139,6 +147,9 @@ export function renderForm({
     logoutMethod,
     setLogoutMethod,
 }: SAMLProviderFormProps) {
+    // Get available hash algorithms for the selected key type
+    const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
+
     return html` <ak-text-input
             name="name"
             value=${ifDefined(provider.name)}
@@ -268,6 +279,7 @@ export function renderForm({
                         .certificate=${provider.signingKp}
                         @input=${setHasSigningKp}
                         singleton
+                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -284,6 +296,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.verificationKp}
                         nokey
+                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -298,6 +311,7 @@ export function renderForm({
                     <ak-crypto-certificate-search
                         .certificate=${provider.encryptionKp}
                         nokey
+                        .allowedKeyTypes=${SAMLSupportedKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("When selected, assertions will be encrypted using this keypair.")}
@@ -470,23 +484,56 @@ export function renderForm({
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-radio-input
-                    name="digestAlgorithm"
+                <ak-form-element-horizontal
                     label=${msg("Digest algorithm")}
-                    .options=${digestAlgorithmOptions}
-                    .value=${provider.digestAlgorithm}
                     required
+                    name="digestAlgorithm"
                 >
-                </ak-radio-input>
+                    <select class="pf-c-form-control">
+                        ${digestAlgorithmOptions.map(
+                            (opt) => html`
+                                <option
+                                    value=${opt.value}
+                                    ?selected=${provider?.digestAlgorithm === opt.value ||
+                                    (!provider?.digestAlgorithm && opt.default)}
+                                >
+                                    ${opt.label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                </ak-form-element-horizontal>
 
-                <ak-radio-input
-                    name="signatureAlgorithm"
+                <ak-form-element-horizontal
                     label=${msg("Signature algorithm")}
-                    .options=${signatureAlgorithmOptions}
-                    .value=${provider.signatureAlgorithm}
                     required
+                    name="signatureAlgorithm"
                 >
-                </ak-radio-input>
+                    <select class="pf-c-form-control">
+                        ${availableHashes.map((hash) => {
+                            const algorithmValue = retrieveSignatureAlgorithm(keyType, hash);
+                            if (!algorithmValue) return nothing;
+
+                            // Default to sha256 or selected sha algorithm if valid
+                            // when switching selected certs
+                            const isCurrentAlgorithmAvailable = availableHashes.some(
+                                (h) =>
+                                    retrieveSignatureAlgorithm(keyType, h) ===
+                                    provider?.signatureAlgorithm,
+                            );
+
+                            return html`
+                                <option
+                                    value=${algorithmValue}
+                                    ?selected=${provider?.signatureAlgorithm === algorithmValue ||
+                                    (!isCurrentAlgorithmAvailable && hash === "SHA256")}
+                                >
+                                    ${hash}
+                                </option>
+                            `;
+                        })}
+                    </select>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
 }

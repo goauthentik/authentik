@@ -38,6 +38,9 @@ export class Message extends AKElement {
     @property({ type: String })
     public level?: MessageLevel;
 
+    @property({ type: String })
+    public icon?: string;
+
     @property({ attribute: false })
     public onDismiss?: (message: APIMessage) => void;
 
@@ -83,7 +86,7 @@ export class Message extends AKElement {
     //#endregion
 
     public render() {
-        const { description, level = MessageLevel.info } = this;
+        const { description, level = MessageLevel.info, icon = LevelIconMap[level] } = this;
         const ariaLive = this.live ? LevelARIALiveMap[level] : "off";
 
         return html`<li
@@ -102,7 +105,7 @@ export class Message extends AKElement {
                 })}"
             >
                 <div class="pf-c-alert__icon">
-                    <i class="${LevelIconMap[level]}" aria-hidden="true"></i>
+                    <i class="${icon}" aria-hidden="true"></i>
                 </div>
                 <p class="pf-c-alert__title" id="message-title">
                     <slot></slot>

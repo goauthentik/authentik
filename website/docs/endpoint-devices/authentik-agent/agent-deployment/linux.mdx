@@ -58,7 +58,17 @@ sudo apt install authentik-cli authentik-agent authentik-sysd
 ```
 
 4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
+
+:::note Headless server
+On a headless server, the system agent (sysd) does not start the user agent (ak-agent). You will need to manually start the user agent with this command:
+
+```bash
+systemctl start --user ak-agent
+```
+
+:::
 
 </TabItem>
 <TabItem value="RedHat-based">
@@ -84,7 +94,17 @@ sudo yum install -y authentik-cli authentik-agent authentik-sysd
 ```
 
 3. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
+
+:::note Headless server
+On a headless server, the system agent (sysd) does not start the user agent (ak-agent). You will need to manually start the user agent with this command:
+
+```bash
+systemctl start --user ak-agent
+```
+
+:::
 
 </TabItem>
 </Tabs>
@@ -105,6 +125,35 @@ sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.co
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
 
+### Local device login on Debian-based systems
+
+On non-Debian Linux distributions, you currently need to manually configure NSS and PAM:
+
+1. Edit `etc/nsswitch.conf` to include `authentik` for `passwd`, `group`, and `shadow`:
+
+```bash title="etc/nsswitch.conf"
+...
+passwd:         files systemd authentik
+group:          files systemd authentik
+shadow:         files systemd authentik
+gshadow:        files systemd
+...
+```
+
+2. Edit the following two files in the `etc/pam.d/` directory. The order matters, both of these lines should be located above `pam_unix` in the respective files.
+
+```bash title="etc/pam.d/common-auth"
+...
+auth    [success=2 default=ignore]      pam_authentik.so
+...
+```
+
+```bash title="etc/pam.d/common-session"
+...
+session required                        pam_authentik.so
+...
+```
+
 ## Enable SSH client authentication and CLI application authentication
 
 To enable [initiating SSH connections](../../device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
@@ -117,6 +166,18 @@ ak config setup --authentik-url https://authentik.company
 
 2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
+## Check version of installed components
+
+You can check the version of all installed authentik components by running the following command:
+
+```bash
+ak version
+```
+
 ## Logging
 
 authentik Agent logs are available via the system journal (`systemd`) or `syslog`, depending on the distribution.
+
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

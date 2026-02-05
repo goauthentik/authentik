@@ -99,7 +99,7 @@ export class PolicyListPage extends TablePage<Policy> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Policy / Policies")}
+            object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({

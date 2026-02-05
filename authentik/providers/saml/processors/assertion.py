@@ -8,24 +8,10 @@ import xmlsec
 from django.http import HttpRequest
 from django.utils.timezone import now
 from lxml import etree  # nosec
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.events.models import Event, EventAction
-from authentik.events.signals import get_login_event
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.saml.exceptions import (
-    InvalidEncryption,
-    InvalidSignature,
-    UnsupportedNameIDFormat,
-)
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -37,6 +23,21 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
+)
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
+from authentik.events.signals import get_login_event
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.providers.saml.utils import get_random_id
+from authentik.providers.saml.utils.time import get_time_string
+from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    UnsupportedNameIDFormat,
 )
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -359,7 +360,7 @@ class AssertionProcessor:
         response.append(self.get_assertion())
         return response
 
-    def _sign(self, element: Element):
+    def _sign(self, element: _Element):
         """Sign an XML element based on the providers' configured signing settings"""
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
@@ -389,11 +390,11 @@ class AssertionProcessor:
         )
         ctx.key = key
         try:
-            ctx.sign(signature_node)
+            ctx.sign(remove_xml_newlines(element, signature_node))
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 
-    def _encrypt(self, element: Element, parent: Element):
+    def _encrypt(self, element: _Element, parent: _Element):
         """Encrypt SAMLResponse EncryptedAssertion Element"""
         # Create a standalone copy so namespace declarations are included in the encrypted content
         element_xml = etree.tostring(element)
