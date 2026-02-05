@@ -7,13 +7,11 @@ toc_max_heading_level: 4
 
 Device compliance policies are used to limit access to authentik and applications based on [Device Compliance](./index.mdx) information.
 
-Device compliance policies are currently in development and inaccessible.
-
-However, similar functionality can be achieved with existing stages and policies.
+Device compliance policies are currently in development and inaccessible. However, similar functionality can be achieved with existing stages and policies.
 
 ## Prerequisites
 
-You must have [configured compliance](./configuration.md) in authentik and on the endpoint device.
+You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#enable-device-compliance-ssh-server-authentication-and-local-device-login), [Windows](../../authentik-agent/agent-deployment/windows/#enable-device-compliance-and-local-device-login), [macOS](../../authentik-agent/agent-deployment/macos/#enable-device-compliance)).
 
 ## Accessing device facts within a flow
 
