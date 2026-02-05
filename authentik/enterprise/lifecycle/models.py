@@ -77,7 +77,7 @@ class LifecycleRule(SerializerModel):
             pk = pk.target_field
         return pk.__class__()
 
-    def get_objects(self):
+    def get_objects(self) -> QuerySet:
         qs = self.content_type.get_all_objects_for_this_type()
         if self.object_id:
             qs = qs.filter(pk=self.object_id)
