@@ -73,8 +73,7 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
     def get_next_review_date(self, review: Review):
         return review.opened_on + timedelta_from_string(review.rule.interval)
 
-    @extend_schema_field(BooleanField())
-    def get_user_can_attest(self, review: Review):
+    def get_user_can_attest(self, review: Review) -> bool:
         return review.user_can_attest(self.context["request"].user)
 
 
