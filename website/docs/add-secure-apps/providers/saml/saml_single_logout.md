@@ -31,7 +31,7 @@ Back-channel logout ensures users are logged out even when their session is term
 
 SAML Service Providers can initiate logout by sending a SAML logout request to authentik. By default, only that Service Provider's session is ended while the authentik session remains active and the user stays logged in to other applications.
 
-To trigger full Single Logout when users log out from a Service Provider, see [Enable full Single Logout for RP-initiated logout](../single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout).
+For instructions on how to trigger full Single Logout when a user logs out from a Service Provider, see [Enable full Single Logout for RP-initiated logout](../single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout).
 
 ## How SAML Single Logout Works
 
