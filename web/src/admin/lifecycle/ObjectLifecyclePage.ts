@@ -75,7 +75,7 @@ export class AccessReviewAttestations extends Table<Attestation> {
                 next: 0,
                 previous: 0,
                 count: attestations.length,
-                current: 0,
+                current: 1,
                 totalPages: 1,
                 startIndex: 0,
                 endIndex: attestations.length - 1,

@@ -162,8 +162,8 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     ? html` <ak-object-lifecycle-page
                           role="tabpanel"
                           tabindex="0"
-                          slot="page-access-review"
-                          id="page-access-review"
+                          slot="page-lifecycle"
+                          id="page-lifecycle"
                           aria-label="${msg("Lifecycle")}"
                           model=${ContentTypeEnum.AuthentikRbacRole}
                           objectPk=${this.targetRole.pk}
