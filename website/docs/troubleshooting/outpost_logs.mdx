@@ -1,8 +1,8 @@
 ---
-title: Capturing standalone outpost logs
+title: Capturing outpost logs
 ---
 
-This guide only applies to standalone outposts, the [Embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) outputs logs to the usual authentik logs.
+This guide only applies to standalone outposts, the [Embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) outputs logs to the usual [authentik logs](./logs.mdx).
 
 Standalone [outposts](../add-secure-apps/outposts/index.mdx) continually output logs that can be helpful when troubleshooting issues. Just like when [Capturing logs in authentik](./logs.mdx) itself, the log level can be adjusted.
 
@@ -10,7 +10,7 @@ Standalone [outposts](../add-secure-apps/outposts/index.mdx) continually output 
 
 Outpost containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
 
-To modify the log level, [todo]
+To modify the log level, follow the instructions below depending on your outpost deployment method:
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -24,12 +24,25 @@ values={[
 ]}>
 <TabItem value="admin">
 
-test
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and click the **Edit** icon of the outpost that you're troubleshooting.
+3. Under **Advanced settings** > **Configuration**, set `log_level` to `debug`, `info`, or `warning`.
+4. Click **Update**.
+
+The outpost will be redeployed with the new log level.
 
   </TabItem>
   <TabItem value="manual">
 
-test
+Outpost can be manually deployed via [Docker Compose](../add-secure-apps/outposts/manual-deploy-docker-compose.md) or [Kubernetes](../add-secure-apps/outposts/manual-deploy-kubernetes.md).
+
+In each case, you need to add the following environment variable to the outpost container:
+
+```yaml
+log_level: debug
+```
+
+Then redeploy the outpost container for the change to take effect.
 
   </TabItem>
 </Tabs>
@@ -40,7 +53,7 @@ test
 The trace log level provides deeper insights, but be aware that using trace logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using trace unless absolutely necessary.
 :::
 
-To enable `trace` logging, [todo]
+To enable `trace` logging, follow the instructions below depending on your outpost deployment method:
 
 <Tabs
 groupId="outpost-type"
@@ -52,12 +65,32 @@ values={[
 <TabItem value="admin">
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Outposts** and click
+2. Navigate to **Applications** > **Outposts** and click the **Edit** icon of the outpost that you're troubleshooting.
+3. Under **Advanced settings** > **Configuration**, set `log_level` to `trace`.
+4. Click **Update**.
+
+The outpost will be redeployed with the `trace` log level.
+
+:::danger
+To avoid potentially exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+:::
 
   </TabItem>
   <TabItem value="manual">
 
-test
+Outpost can be manually deployed via [Docker Compose](../add-secure-apps/outposts/manual-deploy-docker-compose.md) or [Kubernetes](../add-secure-apps/outposts/manual-deploy-kubernetes.md).
+
+In each case, you need to add the following environment variable to the outpost container:
+
+```yaml
+log_level: trace
+```
+
+Then redeploy the outpost container for the change to take effect.
+
+:::danger
+To avoid potentially exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+:::
 
   </TabItem>
 </Tabs>
@@ -72,7 +105,7 @@ For more details, see the [`docker logs` documentation](https://docs.docker.com/
 groupId="platform"
 defaultValue="docker"
 values={[
-{label: 'docker', value: 'docker'},
+{label: 'Docker', value: 'docker'},
 {label: 'Kubernetes', value: 'kubernetes'},
 ]}>
 <TabItem value="docker">
@@ -103,7 +136,7 @@ To continuously monitor logs, use the `--follow` (`-f`) option. This will stream
 groupId="platform"
 defaultValue="docker"
 values={[
-{label: 'docker', value: 'docker'},
+{label: 'Docker', value: 'docker'},
 {label: 'Kubernetes', value: 'kubernetes'},
 ]}>
 <TabItem value="docker">

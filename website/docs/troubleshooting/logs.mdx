@@ -1,5 +1,5 @@
 ---
-title: Capturing logs in authentik
+title: Capturing authentik logs
 ---
 
 When troubleshooting issues in authentik, reviewing the [event logs](../sys-mgmt/events/index.md) can be invaluable. These logs provide continuous output, helping to diagnose problems effectively.
@@ -72,6 +72,10 @@ To enable `trace` logging, follow the platform-specific steps below:
 
 2. Recreate your containers to apply the changes.
 
+:::danger
+To avoid potentially exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+:::
+
   </TabItem>
   <TabItem value="kubernetes">
 
@@ -83,6 +87,10 @@ To enable `trace` logging, follow the platform-specific steps below:
     ```
 
 2. Recreate your containers to apply the changes.
+
+:::danger
+To avoid potentially exposing sensitive information, remember to reduce the log level from `trace` once you finish troubleshooting.
+:::
 
   </TabItem>
 </Tabs>
@@ -97,7 +105,7 @@ For more details, see the [`docker logs` documentation](https://docs.docker.com/
   groupId="platform"
   defaultValue="docker"
   values={[
-    {label: 'docker', value: 'docker'},
+    {label: 'Docker', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
   <TabItem value="docker">
@@ -128,7 +136,7 @@ To continuously monitor logs, use the `--follow` (`-f`) option. This will stream
   groupId="platform"
   defaultValue="docker"
   values={[
-    {label: 'docker', value: 'docker'},
+    {label: 'Docker', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
   <TabItem value="docker">
