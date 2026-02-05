@@ -67,7 +67,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Property Mapping(s)")}
+            object-label=${msg("Property Mapping(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: PropertyMapping) => {
                 return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllUsedByList({

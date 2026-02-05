@@ -7966,7 +7966,9 @@
                         "content_left",
                         "content_right",
                         "sidebar_left",
-                        "sidebar_right"
+                        "sidebar_right",
+                        "sidebar_left_frame_background",
+                        "sidebar_right_frame_background"
                     ],
                     "title": "Layout"
                 },
