@@ -112,6 +112,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                     await new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
                         ordering: "name",
                         search: query,
+                        superuserFullList: true,
                     })
                 ).results;
             case ContentTypeEnum.AuthentikCoreGroup:
