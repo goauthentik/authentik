@@ -47,6 +47,10 @@
 /policies/*                                                 /customize/policies/:splat 301!
 #endregion
 
+#region Endpoint Devices
+/endpoint-devices/device-authentication/*                                          /endpoint-devices/authentik-agent/device-authentication/:splat 301!
+#endregion
+
 #region System Management
 /core/certificates                                          /sys-mgmt/certificates/ 301!
 /core/settings                                              /sys-mgmt/settings/ 301!
