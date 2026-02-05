@@ -22,7 +22,7 @@ def apply_lifecycle_rule(rule_id: str):
         rule.apply()
 
 
-@actor(description=_("Send notification."))
+@actor(description=_("Send lifecycle rule notification."))
 def send_notification(transport_pk: int, event_pk: str, user_pk: int, severity: str):
     event = Event.objects.filter(pk=event_pk).first()
     if not event:
