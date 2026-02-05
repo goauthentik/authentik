@@ -156,14 +156,17 @@ class UserAccountLockdownMixin:
         if not flow:
             return None
 
+        plan_context = {
+            PLAN_CONTEXT_LOCKDOWN_TARGET: user,
+            PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
+            # Keep policy evaluation and audit attribution on the actor, not the target.
+            PLAN_CONTEXT_PENDING_USER: request.user,
+        }
+
         return self._create_flow_url_from_plan(
             request,
             flow=flow,
-            plan_context={
-                PLAN_CONTEXT_LOCKDOWN_TARGET: user,
-                PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
-                PLAN_CONTEXT_PENDING_USER: user,
-            },
+            plan_context=plan_context,
             identifier=slugify(f"ak-lockdown-{user.uid}"),
         )
 
@@ -187,6 +190,8 @@ class UserAccountLockdownMixin:
             plan_context={
                 PLAN_CONTEXT_LOCKDOWN_TARGETS: users,
                 PLAN_CONTEXT_LOCKDOWN_SELF_SERVICE: self_service,
+                # Keep policy evaluation and audit attribution on the actor.
+                PLAN_CONTEXT_PENDING_USER: request.user,
             },
             identifier=slugify(f"ak-lockdown-bulk-{digest}"),
         )
