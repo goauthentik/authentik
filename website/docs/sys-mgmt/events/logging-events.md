@@ -72,8 +72,6 @@ You can export your authentik instance's events to a CSV file. To generate a dat
 6. In the notification, click **Download**.
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
-<<<<<<< HEAD:website/docs/sys-mgmt/events/logging-events.md
-=======
 
 ## Advanced queries for event logs:ak-enterprise {#tell-me-more}
 
@@ -128,7 +126,7 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 The following keyboard shortcuts can be used in the advanced query search:
 
 <KeyBindingsTable
-    aria-label="Keyboard shortcuts for the Query Language (QL) search"
+aria-label="Keyboard shortcuts for the Query Language (QL) search"
 
     bindings={[
         [
@@ -150,4 +148,3 @@ The following keyboard shortcuts can be used in the advanced query search:
     ]}
 
 />
->>>>>>> b01833c14 (website/docs: capturing outpost logs (#20045)):website/docs/sys-mgmt/events/logging-events.mdx
