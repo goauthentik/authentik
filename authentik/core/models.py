@@ -8,7 +8,7 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, identify_hasher
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
@@ -552,9 +552,38 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
             if not sender:
                 sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
+            password_changed.send(
+                sender=sender,
+                user=self,
+                password=raw_password,
+                request=request,
+            )
         self.password_change_date = now()
         return super().set_password(raw_password)
+
+    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
+        """Set password directly from a pre-hashed value.
+
+        Unlike set_password(), this does not hash the input - it sets it directly.
+        The hash format is validated before setting.
+
+        Raises ValueError if the hash format is not recognized.
+        """
+        identify_hasher(password_hash)  # Raises ValueError if invalid
+        if self.pk and signal:
+            from authentik.core.signals import password_changed
+
+            if not sender:
+                sender = self
+            password_changed.send(
+                sender=sender,
+                user=self,
+                password=None,
+                password_source="hash",
+                request=request,
+            )
+        self.password = password_hash
+        self.password_change_date = now()
 
     def check_password(self, raw_password: str) -> bool:
         """

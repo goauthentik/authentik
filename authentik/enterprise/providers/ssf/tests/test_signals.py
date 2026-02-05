@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -88,6 +89,48 @@ class TestSignals(APITestCase):
             "https://schemas.openid.net/secevent/caep/event-type/credential-change"
         ]
         self.assertEqual(event_payload["change_type"], "update")
+        self.assertEqual(event_payload["credential_type"], "password")
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
+
+    def test_signal_password_change_from_hash(self):
+        """Test user password change from a pre-hashed password."""
+        user = create_test_user()
+        self.client.force_login(user)
+        user.set_password_from_hash(make_password(generate_id()))
+        user.save()
+
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        event = StreamEvent.objects.filter(stream=stream).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
+        event_payload = event.payload["events"][
+            "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+        ]
+        self.assertEqual(event_payload["change_type"], "update")
+        self.assertEqual(event_payload["credential_type"], "password")
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
+
+    def test_signal_password_revoke(self):
+        """Test explicit password revoke."""
+        user = create_test_user()
+        self.client.force_login(user)
+        user.set_password(None)
+        user.save()
+
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        event = StreamEvent.objects.filter(stream=stream).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
+        event_payload = event.payload["events"][
+            "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+        ]
+        self.assertEqual(event_payload["change_type"], "revoke")
         self.assertEqual(event_payload["credential_type"], "password")
         self.assertEqual(event.payload["sub_id"]["format"], "complex")
         self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")

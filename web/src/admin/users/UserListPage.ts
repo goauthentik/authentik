@@ -5,6 +5,7 @@ import "#admin/users/UserBulkRevokeSessionsForm";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserPasswordHashForm";
 import "#admin/users/UserResetEmailForm";
 import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
@@ -26,6 +27,7 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { getUserDisplayName } from "#elements/user/utils";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -47,9 +49,7 @@ export const renderRecoveryButtons = ({
 }) =>
     html` <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
             <span slot="submit">${msg("Update password")}</span>
-            <span slot="header">
-                ${msg(str`Update ${user.name || user.username}'s password`)}
-            </span>
+            <span slot="header"> ${msg(str`Update ${getUserDisplayName(user)}'s password`)} </span>
             <ak-user-password-form
                 username=${user.username}
                 email=${ifDefined(user.email)}
@@ -58,6 +58,15 @@ export const renderRecoveryButtons = ({
             ></ak-user-password-form>
             <button slot="trigger" class="pf-c-button pf-m-secondary">
                 ${msg("Set password")}
+            </button>
+        </ak-forms-modal>
+        <ak-forms-modal size=${PFSize.Medium} id="update-password-hash-request">
+            <span slot="submit">${msg("Update password")}</span>
+            <span slot="header"> ${msg(str`Update ${getUserDisplayName(user)}'s password`)} </span>
+            <ak-user-password-hash-form slot="form" .instancePk=${user.pk}>
+            </ak-user-password-hash-form>
+            <button slot="trigger" class="pf-c-button pf-m-secondary">
+                ${msg("Set password hash")}
             </button>
         </ak-forms-modal>
         ${brandHasRecoveryFlow
@@ -97,7 +106,8 @@ const recoveryButtonStyles = css`
         gap: 0.375rem;
     }
     #recovery-request-buttons > *,
-    #update-password-request .pf-c-button {
+    #update-password-request .pf-c-button,
+    #update-password-hash-request .pf-c-button {
         margin: 0;
     }
 `;

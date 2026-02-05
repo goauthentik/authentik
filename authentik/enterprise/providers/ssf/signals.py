@@ -85,13 +85,20 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
 
 
 @receiver(password_changed)
-def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+def ssf_password_changed_cred_change(
+    sender, user: User, password: str | None, password_source: str | None = None, **_
+):
     """Credential change trigger (password changed)"""
+    # set_password_from_hash() has no raw password but still represents an update.
+    if password_source == "hash":
+        change_type = "update"
+    else:
+        change_type = "revoke" if password is None else "update"
     send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
-            "change_type": "revoke" if password is None else "update",
+            "change_type": change_type,
         },
         sub_id={
             "format": "complex",

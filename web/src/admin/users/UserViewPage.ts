@@ -105,6 +105,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
             }
 
             #update-password-request .pf-c-button,
+            #update-password-hash-request .pf-c-button,
             #ak-email-recovery-request .pf-c-button,
             #ak-link-recovery-request .pf-c-button {
                 width: 100%;
