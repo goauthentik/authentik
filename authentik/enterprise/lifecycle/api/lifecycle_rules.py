@@ -55,7 +55,7 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
             return None
         return value
 
-    def validate(self, attrs: dict):
+    def validate(self, attrs: dict) -> dict:
         if (
             attrs.get("object_id") is not None
             and not attrs["content_type"]
