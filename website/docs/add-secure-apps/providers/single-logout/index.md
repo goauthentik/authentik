@@ -19,7 +19,7 @@ Single Logout behavior depends on where the user initiates logout:
 
 - **Logout from an application**: When users log out from an OIDC or SAML application, the `default-provider-invalidation-flow` runs. By default, this flow does **not** include a User Logout stage, so only that application's session is ended while the authentik session and other application sessions remain active.
 
-To enable full Single Logout when users log out from an application, see [Enable full Single Logout for RP-initiated logout](#enable-full-single-logout-for-rp-initiated-logout) below.
+For instructions on how to enable full Single Logout when a user logs out from an application, see [Enable full Single Logout for RP-initiated logout](#enable-full-single-logout-for-rp-initiated-logout) below.
 
 ## How Single Logout works in authentik
 
