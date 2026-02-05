@@ -6,7 +6,7 @@
     flex-flow: column nowrap;
 }
 
-.inspector-toggle {
+ak-flow-inspector-button {
     position: absolute;
     inset-inline-end: var(--pf-global--spacer--md);
     inset-block-start: var(--pf-global--spacer--md);
