@@ -26,7 +26,6 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent } from "#flow/events";
-import { FlowInspectorButton } from "#flow/FlowInspectorButton";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
 
 import { ConsoleLogger } from "#logger/browser";
@@ -45,7 +44,7 @@ import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
@@ -108,9 +107,6 @@ export class FlowExecutor
     #logger = ConsoleLogger.prefix("flow-executor");
 
     #api: FlowsApi;
-
-    @query("ak-flow-inspector-button")
-    inspector?: FlowInspectorButton;
 
     //#endregion
 
@@ -330,7 +326,6 @@ export class FlowExecutor
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .with("inspect", () => ({ ...challengeProps, "?promptUser": this.inspector?.open }))
                 .exhaustive(),
         );
 
