@@ -10,8 +10,10 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { Invitation, StagesApi, TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
@@ -22,21 +24,23 @@ interface InvitationSendEmailRequestWithTemplate {
 
 @customElement("ak-invitation-send-email-form")
 export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWithTemplate> {
+    static get styles(): CSSResult[] {
+        return [...super.styles, PFGrid];
+    }
+
     @property({ attribute: false })
     invitation?: Invitation;
 
     @state()
     availableTemplates: TypeCreate[] = [];
 
+    @state()
+    selectedTemplate = "email/invitation.html";
+
     fetchAvailableTemplates = async (): Promise<void> => {
         try {
-            const templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
-            this.availableTemplates = templates.sort((a) => {
-                if (a.name.toLowerCase().indexOf("invitation") !== -1) {
-                    return -1;
-                }
-                return 0;
-            });
+            this.availableTemplates =
+                await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
         } catch (error) {
             console.error("Failed to fetch email templates:", error);
         }
@@ -155,7 +159,10 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             <ak-form-element-horizontal label=${msg("Template")} required name="template">
                 <select class="pf-c-form-control">
                     ${this.availableTemplates?.map((template) => {
-                        return html`<option value=${template.name}>
+                        return html`<option
+                            value=${template.name}
+                            ?selected=${template.name === this.selectedTemplate}
+                        >
                             ${template.description}
                         </option>`;
                     })}
