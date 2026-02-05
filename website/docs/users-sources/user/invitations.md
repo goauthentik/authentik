@@ -147,7 +147,7 @@ You can send invitation emails directly from authentik without copying the link 
 The emails are queued and sent asynchronously by the background worker. Each recipient receives an email containing the invitation link.
 
 :::info
-To use this feature, you must have email configured in authentik. See [Email configuration](../../../sys-mgmt/settings.md#email-settings) for details.
+To use this feature, you must have email configured in authentik. See [Email configuration](../../install-config/email.mdx) for details.
 :::
 
 ## Manual setup (without blueprints)
