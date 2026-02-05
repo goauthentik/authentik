@@ -21,6 +21,7 @@ class TestLifecycleRuleAPI(APITestCase):
 
     def test_list_rules(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -34,6 +35,7 @@ class TestLifecycleRuleAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:lifecyclerule-list"),
             {
+                "name": generate_id(),
                 "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                 "object_id": str(self.app.pk),
                 "interval": "days=30",
@@ -52,6 +54,7 @@ class TestLifecycleRuleAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:lifecyclerule-list"),
             {
+                "name": generate_id(),
                 "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                 "object_id": str(self.app.pk),
                 "interval": "days=60",
@@ -68,6 +71,7 @@ class TestLifecycleRuleAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:lifecyclerule-list"),
             {
+                "name": generate_id(),
                 "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                 "object_id": None,
                 "interval": "days=90",
@@ -84,6 +88,7 @@ class TestLifecycleRuleAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:lifecyclerule-list"),
             {
+                "name": generate_id(),
                 "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                 "object_id": str(self.app.pk),
                 "interval": "days=30",
@@ -99,6 +104,7 @@ class TestLifecycleRuleAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:lifecyclerule-list"),
             {
+                "name": generate_id(),
                 "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                 "object_id": str(self.app.pk),
                 "interval": "days=10",
@@ -115,6 +121,7 @@ class TestLifecycleRuleAPI(APITestCase):
         response = self.client.post(
             reverse("authentik_api:lifecyclerule-list"),
             {
+                "name": generate_id(),
                 "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                 "object_id": "00000000-0000-0000-0000-000000000000",
                 "interval": "days=30",
@@ -129,6 +136,7 @@ class TestLifecycleRuleAPI(APITestCase):
 
     def test_retrieve_rule(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -142,6 +150,7 @@ class TestLifecycleRuleAPI(APITestCase):
 
     def test_update_rule(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             interval="days=30",
@@ -157,6 +166,7 @@ class TestLifecycleRuleAPI(APITestCase):
 
     def test_delete_rule(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -182,6 +192,7 @@ class TestReviewAPI(APITestCase):
 
     def test_open_reviews(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -196,6 +207,7 @@ class TestReviewAPI(APITestCase):
 
     def test_open_reviews_filter_user_is_reviewer(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -210,6 +222,7 @@ class TestReviewAPI(APITestCase):
 
     def test_latest_review(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -241,6 +254,7 @@ class TestReviewAPI(APITestCase):
 
     def test_review_includes_user_can_attest(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
         )
@@ -266,6 +280,7 @@ class TestAttestationAPI(APITestCase):
 
     def test_create_attestation(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             min_reviewers=1,
@@ -291,6 +306,7 @@ class TestAttestationAPI(APITestCase):
 
     def test_create_attestation_completes_review(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             min_reviewers=1,
@@ -315,6 +331,7 @@ class TestAttestationAPI(APITestCase):
 
     def test_create_attestation_sets_reviewer_from_request(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             min_reviewers=1,
@@ -341,6 +358,7 @@ class TestAttestationAPI(APITestCase):
         other_group.users.add(other_user)
 
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             min_reviewers=1,
@@ -360,6 +378,7 @@ class TestAttestationAPI(APITestCase):
         other_group.users.add(other_user)
 
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             min_reviewers=1,
@@ -379,6 +398,7 @@ class TestAttestationAPI(APITestCase):
 
     def test_duplicate_attestation_via_api_rejected(self):
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=self.content_type,
             object_id=str(self.app.pk),
             min_reviewers=2,

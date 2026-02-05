@@ -38,6 +38,7 @@ class TestLifecycleModels(TestCase):
     def _create_rule_for_object(self, obj, **kwargs) -> LifecycleRule:
         content_type = ContentType.objects.get_for_model(obj)
         return LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(obj.pk),
             **kwargs,
@@ -46,6 +47,7 @@ class TestLifecycleModels(TestCase):
     def _create_rule_for_type(self, model, **kwargs) -> LifecycleRule:
         content_type = ContentType.objects.get_for_model(model)
         return LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=None,
             **kwargs,
@@ -288,6 +290,7 @@ class TestLifecycleModels(TestCase):
         content_type = ContentType.objects.get_for_model(Application)
 
         rule_overdue = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(app_one.pk),
             interval="days=365",
@@ -312,6 +315,7 @@ class TestLifecycleModels(TestCase):
         )
 
         LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(app_two.pk),
             interval="days=30",
@@ -333,6 +337,7 @@ class TestLifecycleModels(TestCase):
         overdue_before = Event.objects.filter(action=EventAction.REVIEW_OVERDUE).count()
 
         rule_due = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(app_due.pk),
             interval="days=30",
@@ -344,6 +349,7 @@ class TestLifecycleModels(TestCase):
         rule_due.notification_transports.add(transport)
 
         rule_overdue = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(app_overdue.pk),
             interval="days=365",
@@ -395,6 +401,7 @@ class TestLifecycleModels(TestCase):
         content_type = ContentType.objects.get_for_model(Application)
 
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=None,
             interval="days=30",
@@ -412,6 +419,7 @@ class TestLifecycleModels(TestCase):
 
         # Create a specific rule for app_with_rule
         LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(app_with_rule.pk),
             interval="days=30",
@@ -419,6 +427,7 @@ class TestLifecycleModels(TestCase):
 
         # Create a type-level rule
         type_rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=None,
             interval="days=60",
@@ -434,6 +443,7 @@ class TestLifecycleModels(TestCase):
         content_type = ContentType.objects.get_for_model(Application)
 
         LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=None,
             interval="days=30",
@@ -487,6 +497,7 @@ class TestLifecycleModels(TestCase):
         content_type = ContentType.objects.get_for_model(Application)
 
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=content_type,
             object_id=str(app_one.pk),
             interval="days=30",
@@ -512,6 +523,7 @@ class TestLifecycleModels(TestCase):
 
         # Creating rule triggers automatic apply() which creates a review for app
         rule = LifecycleRule.objects.create(
+            name=generate_id(),
             content_type=app_content_type,
             object_id=str(app.pk),
             interval="days=30",

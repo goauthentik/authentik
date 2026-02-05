@@ -30,6 +30,7 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
+import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -141,6 +142,14 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
 
     renderForm(): TemplateResult {
         return html`
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
+            </ak-form-element-horizontal>
             ${this.#renderTargetSelection()}
             <ak-form-element-horizontal label=${msg("Interval")} name="interval" required>
                 <input

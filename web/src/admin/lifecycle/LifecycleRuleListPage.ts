@@ -50,6 +50,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     }
 
     protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
         [msg("Target"), "content_type__model"],
         [msg("Interval"), "interval"],
         [msg("Grace period"), "grace_period"],
@@ -79,6 +80,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     row(item: LifecycleRule): SlottedTemplateResult[] {
         return [
+            html`${item.name}`,
             html`${item.targetVerbose}`,
             html`${item.interval}`,
             html`${item.gracePeriod}`,
