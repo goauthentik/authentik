@@ -21,10 +21,4 @@ When using a standalone outpost, the logs output to that specific container. Ref
 
 Everything under `/outpost.goauthentik.io` should be publicly accessible, as URLs under this path are used for authentication.
 
-To check this, run `curl -v https://app.company/outpost.goauthentik.io/ping`. A correct setup should contain output looking like this:
-
-```
-[...]
-< HTTP/2 204
-[...]
-```
+To check this, run `curl -v https://app.company/outpost.goauthentik.io/ping`. A correct setup should return a `HTTP/2 204` status code.
