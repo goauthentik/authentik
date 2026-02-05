@@ -4,9 +4,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q, QuerySet
+from django.db.models.fields import Field
 from django.db.models.functions import Cast
-from django.db.models.signals import post_save, pre_delete
-from django.dispatch import receiver
 from django.http import HttpRequest
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -70,7 +69,7 @@ class LifecycleRule(SerializerModel):
 
         return LifecycleRuleSerializer
 
-    def _get_pk_field(self) -> type[Model]:
+    def _get_pk_field(self) -> Field:
         model = self.content_type.model_class()
         pk = model._meta.pk
         while hasattr(pk, "target_field"):
@@ -168,23 +167,6 @@ class LifecycleRule(SerializerModel):
                 )
                 if transport.send_once:
                     break
-
-
-@receiver(post_save, sender=LifecycleRule)
-def post_rule_save(sender, instance: LifecycleRule, created: bool, **_):
-    from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
-
-    apply_lifecycle_rule.send_with_options(
-        args=(instance.id,),
-        rel_obj=instance,
-    )
-
-
-@receiver(pre_delete, sender=LifecycleRule)
-def pre_rule_delete(sender, instance: LifecycleRule, **_):
-    instance.review_set.filter(Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)).update(
-        state=ReviewState.CANCELED
-    )
 
 
 class ReviewState(models.TextChoices):

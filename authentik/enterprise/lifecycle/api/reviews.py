@@ -5,7 +5,7 @@ from django.db.models import Case, Q, Value, When
 from django_filters.rest_framework import BooleanFilter, FilterSet
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, DateField, IntegerField, SerializerMethodField
+from rest_framework.fields import DateField, IntegerField, SerializerMethodField
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
