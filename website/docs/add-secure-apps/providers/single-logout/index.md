@@ -74,7 +74,7 @@ Back-channel logout sends logout requests directly from the authentik server to 
 **For SAML**: Requires POST SLS binding.
 **For OIDC**: Requires a `logout_uri` configured for back-channel that accepts logout tokens.
 
-## Enable full Single Logout for RP-initiated logout
+## Enable RP-initiated Single Logout
 
 By default, when users log out from an application (RP-initiated logout), only that application's session is ended. To enable full Single Logout that also ends the authentik session and logs users out of all applications, add a User Logout stage to the `default-provider-invalidation-flow`:
 
