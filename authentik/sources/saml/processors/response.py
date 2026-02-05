@@ -14,6 +14,20 @@ from lxml import etree  # nosec
 from lxml.etree import _Element  # nosec
 from structlog.stdlib import get_logger
 
+<<<<<<< HEAD
+=======
+from authentik.common.saml.constants import (
+    NS_MAP,
+    NS_SAML_ASSERTION,
+    NS_SAML_PROTOCOL,
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
+    SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_WINDOWS,
+    SAML_NAME_ID_FORMAT_X509,
+    SAML_STATUS_SUCCESS,
+)
+>>>>>>> 8610ec2d5 (sources/saml: update handling statusmessage (#19739))
 from authentik.core.models import (
     USER_ATTRIBUTE_DELETE_ON_LOGOUT,
     USER_ATTRIBUTE_EXPIRES,
@@ -186,9 +200,19 @@ class ResponseProcessor:
         status = self._root.find(f"{{{NS_SAML_PROTOCOL}}}Status")
         if status is None:
             return
+        status_code = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
         message = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusMessage")
-        if message is not None:
-            raise ValueError(message.text)
+        message_text = message.text if message is not None else None
+        detail = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusDetail")
+        detail_text = etree.tostring(detail, encoding="unicode") if detail is not None else None
+        if status_code.attrib.get("Value") != SAML_STATUS_SUCCESS:
+            if detail_text and message_text:
+                raise ValueError(f"{message_text}: {detail_text}")
+            raise ValueError(
+                detail_text or message_text or f"SAML Status: {status_code.attrib.get('Value')}"
+            )
+        if message_text or detail_text:
+            LOGGER.debug("SAML Status message", message=message_text, detail=detail_text)
 
     def _handle_name_id_transient(self) -> SourceFlowManager:
         """Handle a NameID with the Format of Transient. This is a bit more complex than other
