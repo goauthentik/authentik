@@ -15,7 +15,7 @@ Check with your service provider to see if they support SAML Single Logout or OI
 
 Single Logout behavior depends on where the user initiates logout:
 
-- **Logout from authentik**: When users log out directly from authentik, the `default-invalidation-flow` runs. This flow includes a [User Logout stage](../../flows-stages/stages/user_logout.md) that ends the authentik session and triggers Single Logout for all connected applications.
+- **Logout from authentik**: When a user logs out directly from authentik, the `default-invalidation-flow` runs. This flow includes a [User Logout stage](../../flows-stages/stages/user_logout.md) that ends the user's authentik session and triggers Single Logout for all connected applications.
 
 - **Logout from an application**: When users log out from an OIDC or SAML application, the `default-provider-invalidation-flow` runs. By default, this flow does **not** include a User Logout stage, so only that application's session is ended while the authentik session and other application sessions remain active.
 
