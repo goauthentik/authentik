@@ -1,7 +1,7 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#admin/lifecycle/ObjectAccessReviewPage";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -159,7 +159,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed
-                    ? html` <ak-object-access-review-page
+                    ? html` <ak-object-lifecycle-page
                           role="tabpanel"
                           tabindex="0"
                           slot="page-access-review"
@@ -167,7 +167,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                           aria-label="${msg("Lifecycle")}"
                           model=${ContentTypeEnum.AuthentikRbacRole}
                           objectPk=${this.targetRole.pk}
-                      ></ak-object-access-review-page>`
+                      ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
         </main>`;

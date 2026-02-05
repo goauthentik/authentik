@@ -123,8 +123,8 @@ export class AccessReviewAttestations extends Table<Attestation> {
     }
 }
 
-@customElement("ak-object-access-review-page")
-export class ObjectPermissionPage extends AKElement {
+@customElement("ak-object-lifecycle-page")
+export class ObjectLifecyclePage extends AKElement {
     @property()
     public model?: ContentTypeEnum;
 
@@ -313,6 +313,6 @@ export class ObjectPermissionPage extends AKElement {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-object-access-review-page": ObjectPermissionPage;
+        "ak-object-lifecycle-page": ObjectLifecyclePage;
     }
 }

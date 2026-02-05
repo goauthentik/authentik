@@ -1,6 +1,6 @@
 import { AKElement } from "#elements/Base";
 
-import { ObjectPermissionPage } from "#admin/lifecycle/ObjectAccessReviewPage";
+import { ObjectLifecyclePage } from "#admin/lifecycle/ObjectLifecyclePage";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -22,6 +22,6 @@ export class LifecyclePreviewBanner extends AKElement {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-lifecycle-preview-banner": ObjectPermissionPage;
+        "ak-lifecycle-preview-banner": ObjectLifecyclePage;
     }
 }
