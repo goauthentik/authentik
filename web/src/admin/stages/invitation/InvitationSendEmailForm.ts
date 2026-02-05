@@ -98,7 +98,40 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
     }
 
     protected override renderForm(): TemplateResult {
-        return html`<ak-textarea-input
+        const expiresDisplay = this.invitation?.expires
+            ? this.invitation.expires.toLocaleString()
+            : msg("Never");
+
+        return html`<div class="pf-l-grid pf-m-gutter">
+                <div class="pf-l-grid__item pf-m-6-col">
+                    <ak-form-element-horizontal label=${msg("Name")}>
+                        <span class="pf-c-form-control-static"
+                            >${this.invitation?.name ?? "-"}</span
+                        >
+                    </ak-form-element-horizontal>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col">
+                    <ak-form-element-horizontal label=${msg("Expires")}>
+                        <span class="pf-c-form-control-static">${expiresDisplay}</span>
+                    </ak-form-element-horizontal>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col">
+                    <ak-form-element-horizontal label=${msg("Flow")}>
+                        <span class="pf-c-form-control-static"
+                            >${this.invitation?.flowObj?.slug ?? msg("No flow set")}</span
+                        >
+                    </ak-form-element-horizontal>
+                </div>
+                <div class="pf-l-grid__item pf-m-6-col">
+                    <ak-form-element-horizontal label=${msg("Single use")}>
+                        <span class="pf-c-form-control-static"
+                            >${this.invitation?.singleUse ? msg("Yes") : msg("No")}</span
+                        >
+                    </ak-form-element-horizontal>
+                </div>
+            </div>
+            <hr class="pf-c-divider" />
+            <ak-textarea-input
                 label=${msg("To")}
                 name="emailAddresses"
                 required
