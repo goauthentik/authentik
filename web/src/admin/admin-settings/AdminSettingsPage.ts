@@ -51,26 +51,15 @@ export class AdminSettingsPage extends AKElement {
     @state()
     protected settings?: Settings;
 
-    constructor() {
-        super();
-
+    public override connectedCallback(): void {
+        super.connectedCallback();
         this.#refresh();
-
-        this.addEventListener("ak-admin-setting-changed", this.#refresh);
     }
 
     #refresh = () => {
         return new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
             this.settings = settings;
         });
-    };
-
-    #save = () => {
-        return this.form?.submit(new SubmitEvent("submit")).then(this.#refresh);
-    };
-
-    #reset = () => {
-        return this.form?.reset();
     };
 
     render() {
@@ -80,16 +69,13 @@ export class AdminSettingsPage extends AKElement {
             <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
-                        <ak-admin-settings-form id="form" .settings=${this.settings}>
+                        <ak-admin-settings-form
+                            id="form"
+                            .settings=${this.settings}
+                            action-label=${msg("Update settings")}
+                            @ak-form-submitted=${{ handleEvent: this.#refresh, passive: true }}
+                        >
                         </ak-admin-settings-form>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-spinner-button .callAction=${this.#save} class="pf-m-primary"
-                            >${msg("Save")}</ak-spinner-button
-                        >
-                        <ak-spinner-button .callAction=${this.#reset} class="pf-m-secondary"
-                            >${msg("Cancel")}</ak-spinner-button
-                        >
                     </div>
                 </div>
             </section>

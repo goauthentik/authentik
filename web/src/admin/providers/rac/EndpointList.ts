@@ -57,7 +57,7 @@ export class EndpointListPage extends Table<Endpoint> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Endpoint(s)")}
+            object-label=${msg("Endpoint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Endpoint) => {
                 return [

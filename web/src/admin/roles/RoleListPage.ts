@@ -52,7 +52,7 @@ export class RoleListPage extends TablePage<Role> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Role(s)")}
+            object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Role) => {
                 return new RbacApi(DEFAULT_CONFIG).rbacRolesUsedByList({

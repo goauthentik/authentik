@@ -1,9 +1,9 @@
 ---
-title: Reverse-proxy
+title: Reverse proxy
 ---
 
 :::info
-Since authentik uses WebSockets to communicate with Outposts, it does not support HTTP/1.0 reverse-proxies. The HTTP/1.0 specification does not officially support WebSockets or protocol upgrades, though some clients may allow it.
+Since authentik uses WebSockets to communicate with Outposts, it does not support HTTP/1.0 reverse proxies. The HTTP/1.0 specification does not officially support WebSockets or protocol upgrades, though some clients may allow it.
 :::
 
 If you want to access authentik behind a reverse proxy, there are a few headers that must be passed upstream for authentik to be able to correctly identify a connection.

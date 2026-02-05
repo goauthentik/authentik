@@ -41,7 +41,6 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.endpoints.models import Connector
-from authentik.enterprise.license import LicenseKey
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import Stage
@@ -140,10 +139,19 @@ class Importer:
 
     def default_context(self):
         """Default context"""
-        return {
-            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().status().is_valid,
+        context = {
             "goauthentik.io/rbac/models": rbac_models(),
+            "goauthentik.io/enterprise/licensed": False,
         }
+        try:
+            from authentik.enterprise.license import LicenseKey
+
+            context["goauthentik.io/enterprise/licensed"] = (
+                LicenseKey.get_total().status().is_valid,
+            )
+        except ModuleNotFoundError:
+            pass
+        return context
 
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> Importer:

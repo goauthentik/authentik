@@ -4306,14 +4306,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Expiring</source>
   <target>Ablaufend</target>
 </trans-unit>
-<trans-unit id="sdc5690be4a342985">
-  <source>The token has been copied to your clipboard</source>
-  <target>Das Token wurde in deine Zwischenablage kopiert.</target>
-</trans-unit>
-<trans-unit id="s7f3edfee24690c9f">
-  <source>The token was displayed because authentik does not have permission to write to the clipboard</source>
-  <target>Das Token wurde angezeigt, da authentik keine Berechtigung zum Schreiben in die Zwischenablage hat.</target>
-</trans-unit>
 <trans-unit id="sf71dba2c30283a54">
   <source>Expires?</source>
   <target>Läuft ab?</target>
@@ -5584,10 +5576,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
   <source>Successfully updated password.</source>
   <target>Passwort erfolgreich aktualisiert.</target>
 </trans-unit>
-<trans-unit id="se5498954255620b4">
-  <source>Successfully sent email.</source>
-  <target>E-Mail erfolgreich gesendet.</target>
-</trans-unit>
 <trans-unit id="s44ea4e9a81ce730d">
   <source>Email stage</source>
   <target>E-Mail-Stage</target>
@@ -5652,20 +5640,12 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
   <target>Passwort ändern</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+  <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
   <target><x id="0" equiv-text="${item.name || item.username}"/> - Passwort ändern.</target>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
   <target>Passwort festlegen</target>
-</trans-unit>
-<trans-unit id="s0ae3395d8f48e624">
-  <source>Successfully generated recovery link</source>
-  <target>Erfolgreich generierter Wiederherstellungslink</target>
-</trans-unit>
-<trans-unit id="sb69119c9f0547bed">
-  <source>Copy recovery link</source>
-  <target>Wiederherstellungslink kopieren</target>
 </trans-unit>
 <trans-unit id="s7fa236d26b798301">
   <source>Send link</source>
@@ -5678,14 +5658,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
 <trans-unit id="s03fd2c252ad7972a">
   <source>Email recovery link</source>
   <target>E-Mail-Wiederherstellungslink</target>
-</trans-unit>
-<trans-unit id="sd7fa99e4d82b374a">
-  <source>Recovery link cannot be emailed, user has no email address saved.</source>
-  <target>Der Wiederherstellungslink kann nicht per E-Mail gesendet werden, der Benutzer hat keine E-Mail-Adresse gespeichert.</target>
-</trans-unit>
-<trans-unit id="sa9d13ce9e83aac17">
-  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
-  <target>Um einem Benutzer das direkte Zurücksetzen seines Passworts zu ermöglichen, konfiguriere einen Recovery-Flow für die aktuell aktive Brand.</target>
 </trans-unit>
 <trans-unit id="sac6c67e92bd30229">
   <source>Assign Additional Users</source>
@@ -5759,10 +5731,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
   <source>Root</source>
   <target>Root</target>
 </trans-unit>
-<trans-unit id="saf6097bfa25205b8">
-  <source>A copy of this recovery link has been placed in your clipboard</source>
-  <target>Eine Kopie des Wiederherstellungslinks wurde in deine Zwischenablage eingefügt.</target>
-</trans-unit>
 <trans-unit id="s3ef09dfdd0568b6e">
   <source>Search by username, email, etc...</source>
 </trans-unit>
@@ -5784,10 +5752,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
   <target>Wiederherstellungslink erstellen</target>
-</trans-unit>
-<trans-unit id="sb53d0b77abef2316">
-  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
-  <target>Um einem Benutzer das direkte Zurücksetzen seines Passworts zu ermöglichen, konfiguriere einen Wiederherstellungs-Flow für die aktuell aktive Brand.</target>
 </trans-unit>
 <trans-unit id="s94055b4eb957dc8f">
   <source>User folders</source>
@@ -5956,18 +5920,6 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
 <trans-unit id="sd2122c514f0778b5">
   <source>Allow the user to log in and use this system</source>
   <target>Dem Benutzer erlauben, sich anzumelden und dieses System zu benutzen</target>
-</trans-unit>
-<trans-unit id="se28b5f3fcadaeeb1">
-  <source>Enter a new password for this user</source>
-  <target>Geben Sie ein neues Passwort für diesen Benutzer ein</target>
-</trans-unit>
-<trans-unit id="s6f5bb31e2733ecd5">
-  <source>Create a link for this user to reset their password</source>
-  <target>Erstellen Sie einen Link für diesen Benutzer, um sein Passwort zurückzusetzen</target>
-</trans-unit>
-<trans-unit id="se5c795faf2c07514">
-  <source>Create Recovery Link</source>
-  <target>Wiederherstellungslink erstellen</target>
 </trans-unit>
 <trans-unit id="s5c18cae48b93138c">
   <source>Sessions</source>
@@ -8948,10 +8900,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s6db67c7681b8be6e">
   <source>Copy time-based one-time password configuration</source>
 </trans-unit>
-<trans-unit id="sdc323c6af4ae9f01">
-  <source>Successfully copied TOTP Config.</source>
-  <target>TOTP Config erfolgreich kopiert</target>
-</trans-unit>
 <trans-unit id="s43e859bf711e3599">
   <source>Copy TOTP Config</source>
 </trans-unit>
@@ -9317,10 +9265,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
   <target>Gerät bearbeiten</target>
-</trans-unit>
-<trans-unit id="s3a135682bd30bdbb">
-  <source>Create App password</source>
-  <target>App Passwort erstellen</target>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
@@ -10149,6 +10093,90 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="s217a96c47caaf73d">
   <source>Could not find a suitable CAPTCHA provider.</source>
+</trans-unit>
+<trans-unit id="sdf2794b96386c868">
+  <source>Copy time-based one-time password secret</source>
+</trans-unit>
+<trans-unit id="sc78d16417878afd0">
+  <source>Copy Secret</source>
+</trans-unit>
+<trans-unit id="s7886195e5cfb6d41">
+  <source>Update settings</source>
+</trans-unit>
+<trans-unit id="s2df814c26d5c5e56">
+  <source>ED25519</source>
+</trans-unit>
+<trans-unit id="sa31350da8b357fa4">
+  <source>ED448</source>
+</trans-unit>
+<trans-unit id="s088efc814570fa2c">
+  <source>Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s0ce6e3aa4e7c81a0">
+  <source>New Token</source>
+</trans-unit>
+<trans-unit id="s1bb47213a314465b">
+  <source>Create link</source>
+</trans-unit>
+<trans-unit id="s776c1b64a71fba39">
+  <source>To email a recovery link, set an email address for this user.</source>
+</trans-unit>
+<trans-unit id="s8899399356b8ed1a">
+  <source>To create a recovery link, set a recovery flow for the current brand.</source>
+</trans-unit>
+<trans-unit id="s68be8f284274370a">
+  <source>Recovery link</source>
+</trans-unit>
+<trans-unit id="s2e318e4a2934eef9">
+  <source>Successfully queued email.</source>
+</trans-unit>
+<trans-unit id="s9121335709cfac7a">
+  <source>Token duration</source>
+</trans-unit>
+<trans-unit id="s4530f2951a6633e2">
+  <source>If a recovery token already exists, its duration is updated.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.success.message.entity">
+  <source><x id="0" equiv-text="${entityLabel}"/> copied to clipboard.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.success.generic">
+  <source>Copied to clipboard.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.failure.description">
+  <source>Clipboard not available. Please copy the value manually.</source>
+</trans-unit>
+<trans-unit id="se7385f882e2b8b7d">
+  <source>An unknown error occurred while retrieving the token.</source>
+</trans-unit>
+<trans-unit id="totp.config">
+  <source>TOTP Config</source>
+</trans-unit>
+<trans-unit id="totp.config.clipboard.description">
+  <source>Paste this URL into your authenticator app to set up a time-based one-time password.</source>
+</trans-unit>
+<trans-unit id="totp.secret">
+  <source>TOTP Secret</source>
+</trans-unit>
+<trans-unit id="totp.secret.clipboard.description">
+  <source>Paste this secret into your authenticator app to set up a time-based one-time password.</source>
+</trans-unit>
+<trans-unit id="s2157b29f47940266">
+  <source>Type a unique identifier for this token...</source>
+</trans-unit>
+<trans-unit id="s0950c703759a8746">
+  <source>Type a description for this token...</source>
+</trans-unit>
+<trans-unit id="sd02d96c6930f31db">
+  <source>Create App Password</source>
+</trans-unit>
+<trans-unit id="scf325f1039d7c82f">
+  <source>New App Password</source>
+</trans-unit>
+<trans-unit id="saa02cc40143c291e">
+  <source>Sidebar left (frame background)</source>
+</trans-unit>
+<trans-unit id="s7606cffc63e1b0a1">
+  <source>Sidebar right (frame background)</source>
 </trans-unit>
 </body>
 </file>

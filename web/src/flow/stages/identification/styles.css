@@ -1,5 +1,5 @@
 fieldset[name="login-sources"] {
-    --ak-login-sources-padding-inline: var(--pf-global--spacer--xl);
+    --ak-c-login-sources-padding-inline: var(--pf-global--spacer--xl);
 
     /* compatibility-mode-fix */
 
@@ -10,7 +10,7 @@ fieldset[name="login-sources"] {
         justify-content: center;
         gap: var(--pf-global--spacer--sm);
 
-        padding-inline: var(--ak-login-sources-padding-inline) !important;
+        padding-inline: var(--ak-c-login-sources-padding-inline) !important;
         padding-block-start: var(--pf-global--spacer--md) !important;
     }
 
@@ -46,7 +46,7 @@ fieldset[name="login-sources"] {
     }
 
     @media (min-width: 768px) {
-        --ak-login-sources-padding-inline: var(--pf-global--spacer--2xl);
+        --ak-c-login-sources-padding-inline: var(--pf-global--spacer--2xl);
     }
 }
 

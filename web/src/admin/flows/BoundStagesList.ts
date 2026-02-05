@@ -56,7 +56,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Stage binding(s)")}
+            object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
