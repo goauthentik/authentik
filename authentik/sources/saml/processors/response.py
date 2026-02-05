@@ -200,7 +200,7 @@ class ResponseProcessor:
         username = name_id.text
         # trim username to ensure it is max 150 chars
         if len(username) > 150:  # noqa: PLR2004
-            username = f"ak-{name_id.text[:150-14]}-transient"
+            username = f"ak-{username[:150-14]}-transient"
         expiry = mktime(
             (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
         )
