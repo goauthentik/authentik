@@ -90,7 +90,7 @@ class OAuthAuthorizationParams:
     response_type: str
     response_mode: str | None
     scope: set[str]
-    state: str
+    state: str | None
     nonce: str | None
     prompt: set[str]
     grant_type: str
@@ -117,7 +117,6 @@ class OAuthAuthorizationParams:
         # Because in this endpoint we handle both GET
         # and POST request.
         query_dict = request.POST if request.method == "POST" else request.GET
-        state = query_dict.get("state")
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
@@ -134,7 +133,7 @@ class OAuthAuthorizationParams:
             response_mode=response_mode,
             grant_type="",
             scope=set(query_dict.get("scope", "").split()),
-            state=state,
+            state=query_dict.get("state"),
             nonce=query_dict.get("nonce"),
             prompt=ALLOWED_PROMPT_PARAMS.intersection(set(query_dict.get("prompt", "").split())),
             request=query_dict.get("request", None),
@@ -615,7 +614,8 @@ class OAuthFulfillmentStage(StageView):
             if self.params.response_mode == ResponseMode.QUERY:
                 query_params = parse_qs(uri.query)
                 query_params["code"] = code.code
-                query_params["state"] = [str(self.params.state) if self.params.state else ""]
+                if self.params.state != None:
+                    query_params["state"] = str(self.params.state)
 
                 uri = uri._replace(query=urlencode(query_params, doseq=True))
                 return urlunsplit(uri)
@@ -624,7 +624,8 @@ class OAuthFulfillmentStage(StageView):
                 query_fragment = {}
                 if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
-                    query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
+                    if self.params.state != None:
+                        query_fragment["state"] = str(self.params.state)
                 else:
                     query_fragment = self.create_implicit_response(code)
 
