@@ -8,7 +8,7 @@ Event logging in authentik is highly configurable. You can set the [retention pe
 
 ## Troubleshooting with event logs
 
-For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing logs in authentik](../../troubleshooting/logs.mdx).
+For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing authentik logs](../../troubleshooting/logs/logs.mdx).
 
 ## Enhanced audit logging :ak-enterprise
 
@@ -22,9 +22,9 @@ In the enterprise version, two enhancements make reading the logs even easier:
 
 You can view audit details in the following areas of the authentik Admin interface:
 
-- **Admin interface > Dashboards > Overview**: In the **Recent events** section click an event name to view its details.
+- **Admin interface** > **Dashboards** > **Overview**: In the **Recent events** section click an event name to view its details.
 
-- **Admin interface > Events > Logs**: In the event list, click the arrow toggle next to the event you want to view.
+- **Admin interface** > **Events** > **Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
 ## Viewing events in maps and charts :ak-enterprise
 
@@ -64,7 +64,7 @@ For more examples, refer to the list of [Event actions](./event-actions.md) and 
 
 You can export your authentik instance's events to a CSV file. To generate a data export, follow these steps:
 
-1. Log in to authentik as an administrator and navigate to **Events > Logs**.
+1. Log in to authentik as an administrator and navigate to **Events** > **Logs**.
 2. Set a [search query](#tell-me-more) as well as the ordering, as needed. The data export will honor these settings.
 3. Click **Export** above the event list.
 4. Confirm the export parameters in the confirmation dialog.
@@ -72,3 +72,82 @@ You can export your authentik instance's events to a CSV file. To generate a dat
 6. In the notification, click **Download**.
 
 To review, download, or delete past data exports, navigate to **Events** > **Data Exports** in the Admin interface.
+<<<<<<< HEAD:website/docs/sys-mgmt/events/logging-events.md
+=======
+
+## Advanced queries for event logs:ak-enterprise {#tell-me-more}
+
+You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events** > **Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+
+- **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
+- **Values**: `True`, `False`, `None`, and more
+
+### Examples
+
+The following are examples of advanced queries:
+
+```sh Search event by application name
+app startswith "N"
+```
+
+```sh Search event by action
+action = "login"
+```
+
+```sh Search event by authorized application context
+authorized_application.name = "My app"
+```
+
+```sh Search event by country
+context.geo.country = "Germany"
+```
+
+```sh Search event by IP address
+client_ip = "10.0.0.1"
+```
+
+```sh Search event by brand
+brand.name = "my brand"
+```
+
+```sh Search event by user
+user.username in ["ana", "akadmin"]
+```
+
+For more examples, refer to the list of [Event actions](./event-actions.md) and the related examples for each type of event.
+
+:::info
+
+1. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+2. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
+   :::
+
+### Keyboard shortcuts for advanced queries
+
+The following keyboard shortcuts can be used in the advanced query search:
+
+<KeyBindingsTable
+    aria-label="Keyboard shortcuts for the Query Language (QL) search"
+
+    bindings={[
+        [
+            "Autocomplete",
+            [
+                ["Select next suggestion", <kbd aria-label="Down arrow">↓</kbd>],
+                ["Select previous suggestion", <kbd aria-label="Up arrow">↑</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Dismiss suggestions", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+        [
+            "Search",
+            [
+                ["Submit the current query", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Clear the current query", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+    ]}
+
+/>
+>>>>>>> b01833c14 (website/docs: capturing outpost logs (#20045)):website/docs/sys-mgmt/events/logging-events.mdx
