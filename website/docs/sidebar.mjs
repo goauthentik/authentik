@@ -720,6 +720,54 @@ const items = [
                             "endpoint-devices/authentik-agent/agent-deployment/windows",
                         ],
                     },
+                    {
+                        //#endregion
+
+                        //#region Device Authentication
+                        type: "category",
+                        label: "Device authentication",
+                        collapsed: true,
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/authentik-agent/device-authentication/index",
+                        },
+                        items: [
+                            "endpoint-devices/authentik-agent/device-authentication/device-access-groups",
+                            {
+                                //#endregion
+
+                                //#region local device login
+                                type: "category",
+                                label: "Local device login",
+                                collapsed: true,
+                                link: {
+                                    type: "doc",
+                                    id: "endpoint-devices/authentik-agent/device-authentication/local-device-login/index",
+                                },
+                                items: [
+                                    "endpoint-devices/authentik-agent/device-authentication/local-device-login/linux",
+                                    "endpoint-devices/authentik-agent/device-authentication/local-device-login/windows",
+                                ],
+                            },
+                            "endpoint-devices/authentik-agent/device-authentication/ssh-authentication",
+                            {
+                                //#endregion
+
+                                //#region cli app authentication
+                                type: "category",
+                                label: "CLI application authentication",
+                                collapsed: true,
+                                link: {
+                                    type: "doc",
+                                    id: "endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/index",
+                                },
+                                items: [
+                                    "endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/aws",
+                                    "endpoint-devices/authentik-agent/device-authentication/cli-app-authentication/k8s",
+                                ],
+                            },
+                        ],
+                    },
                     "endpoint-devices/authentik-agent/authentik-cli",
                     "endpoint-devices/authentik-agent/development",
                     {
@@ -739,54 +787,6 @@ const items = [
                 ],
             },
             "endpoint-devices/manage-devices",
-            {
-                //#endregion
-
-                //#region Device Authentication
-                type: "category",
-                label: "Device authentication",
-                collapsed: true,
-                link: {
-                    type: "doc",
-                    id: "endpoint-devices/device-authentication/index",
-                },
-                items: [
-                    "endpoint-devices/device-authentication/device-access-groups",
-                    {
-                        //#endregion
-
-                        //#region local device login
-                        type: "category",
-                        label: "Local device login",
-                        collapsed: true,
-                        link: {
-                            type: "doc",
-                            id: "endpoint-devices/device-authentication/local-device-login/index",
-                        },
-                        items: [
-                            "endpoint-devices/device-authentication/local-device-login/linux",
-                            "endpoint-devices/device-authentication/local-device-login/windows",
-                        ],
-                    },
-                    "endpoint-devices/device-authentication/ssh-authentication",
-                    {
-                        //#endregion
-
-                        //#region cli app authentication
-                        type: "category",
-                        label: "CLI application authentication",
-                        collapsed: true,
-                        link: {
-                            type: "doc",
-                            id: "endpoint-devices/device-authentication/cli-app-authentication/index",
-                        },
-                        items: [
-                            "endpoint-devices/device-authentication/cli-app-authentication/aws",
-                            "endpoint-devices/device-authentication/cli-app-authentication/k8s",
-                        ],
-                    },
-                ],
-            },
             {
                 //#endregion
 
