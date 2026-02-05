@@ -103,7 +103,6 @@ class LifecycleRule(SerializerModel):
         )
 
     def _get_newly_due_objects(self) -> QuerySet:
-
         recent_review_ids = Review.objects.filter(
             content_type=self.content_type,
             object_id__isnull=False,
