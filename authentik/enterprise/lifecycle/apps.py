@@ -16,6 +16,7 @@ class ReportsConfig(EnterpriseConfig):
         return [
             ScheduleSpec(
                 actor=apply_lifecycle_rules,
-                crontab=f"{fqdn_rand('lifecycle_apply_lifecycle_rules')} 0 * * *",
+                crontab=f"{fqdn_rand('lifecycle_apply_lifecycle_rules')} "
+                f"{fqdn_rand('lifecycle_apply_lifecycle_rules', 24)} * * *",
             )
         ]
