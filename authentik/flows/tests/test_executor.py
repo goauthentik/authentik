@@ -9,8 +9,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 from rest_framework.exceptions import ParseError
 
-from authentik.core.models import Group, User
-from authentik.core.models import default_token_duration
+from authentik.core.models import Group, User, default_token_duration
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
@@ -26,8 +25,8 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageVie
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import (
     NEXT_ARG_NAME,
-    QS_QUERY,
     QS_KEY_TOKEN,
+    QS_QUERY,
     SESSION_KEY_PLAN,
     FlowExecutorView,
 )
