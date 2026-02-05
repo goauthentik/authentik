@@ -8,7 +8,7 @@ authentik enterprise allows you to export user and event data in CSV format for 
 
 The content included in a data export matches that returned by the API endpoints for the respective object types.
 
-For detailed instructions on exporting users and events, see [Export users](../users-sources/user/user_basic_operations.md#export-users-) and [Export events](events/logging-events.md#export-events-) respectively.
+For detailed instructions on exporting users and events, see [Export users](../users-sources/user/user_basic_operations.md#export-users-) and [Export events](events/logging-events.mdx#export-events-) respectively.
 
 You can access past data exports from the **Events** > **Data Exports** page. On this page you can view the query used for a specific export, search exports by data type and user, download completed exports and delete exports that you no longer need.
 
