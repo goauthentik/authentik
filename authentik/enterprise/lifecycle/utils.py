@@ -1,3 +1,5 @@
+from urllib import parse
+
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from django.urls import reverse
@@ -23,13 +25,14 @@ def model_choices() -> list[tuple[str, str]]:
 
 def admin_link_for_model(model: Model) -> str:
     if isinstance(model, Application):
-        return f"/core/applications/{model.slug}"
+        url = f"/core/applications/{model.slug}"
     elif isinstance(model, Group):
-        return f"/identity/groups/{model.pk}"
+        url = f"/identity/groups/{model.pk}"
     elif isinstance(model, Role):
-        return f"/identity/roles/{model.pk}"
+        url = f"/identity/roles/{model.pk}"
     else:
         raise TypeError("Unsupported model")
+    return url + ";" + parse.quote('{"page":"page-lifecycle"}')
 
 
 def link_for_model(model: Model) -> str:
