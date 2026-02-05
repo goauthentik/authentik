@@ -17,7 +17,7 @@ class AttestationSerializer(EnterpriseRequiredMixin, ModelSerializer):
         fields = ["id", "review", "reviewer", "timestamp", "note"]
         read_only_fields = ["id", "timestamp", "reviewer"]
 
-    def validate_review(self, review):
+    def validate_review(self, review: Attestation) -> Attestation:
         user = self.context["request"].user
         if not review.user_can_attest(user):
             raise ValidationError(_("You are not allowed to attest on this review."))
