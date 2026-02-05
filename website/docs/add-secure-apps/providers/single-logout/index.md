@@ -76,7 +76,7 @@ Back-channel logout sends logout requests directly from the authentik server to 
 
 ## Enable RP-initiated Single Logout
 
-By default, when users log out from an application (RP-initiated logout), only that application's session is ended. To enable full Single Logout that also ends the authentik session and logs users out of all applications, add a User Logout stage to the `default-provider-invalidation-flow`:
+By default, when a user logs out from an application (RP-initiated logout), only that application's session is ended. To enable full Single Logout that also ends the user's authentik session and logs them out of all applications, add a User Logout stage to the `default-provider-invalidation-flow`:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
