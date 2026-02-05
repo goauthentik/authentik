@@ -6,6 +6,7 @@ import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import { Invitation, StagesApi, TypeCreate } from "@goauthentik/api";
 
@@ -13,7 +14,7 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 interface InvitationSendEmailRequestWithTemplate {
     emailAddresses: string;
@@ -25,7 +26,7 @@ interface InvitationSendEmailRequestWithTemplate {
 @customElement("ak-invitation-send-email-form")
 export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWithTemplate> {
     static get styles(): CSSResult[] {
-        return [...super.styles, PFGrid];
+        return [...super.styles, PFDescriptionList];
     }
 
     @property({ attribute: false })
@@ -90,7 +91,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
 
             showMessage({
                 message: msg(
-                    str`Invitation emails queued for sending to ${addresses.length} recipient(s)`,
+                    str`Invitation emails queued for sending to ${addresses.length} recipient(s). Check the System Tasks for more information.`,
                 ),
                 level: MessageLevel.success,
             });
@@ -107,41 +108,25 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             ? this.invitation.expires.toLocaleString()
             : msg("Never");
 
-        return html`<div class="pf-l-grid pf-m-gutter">
-                <div class="pf-l-grid__item pf-m-6-col">
-                    <ak-form-element-horizontal label=${msg("Name")}>
-                        <span class="pf-c-form-control-static"
-                            >${this.invitation?.name ?? "-"}</span
-                        >
-                    </ak-form-element-horizontal>
-                </div>
-                <div class="pf-l-grid__item pf-m-6-col">
-                    <ak-form-element-horizontal label=${msg("Expires")}>
-                        <span class="pf-c-form-control-static">${expiresDisplay}</span>
-                    </ak-form-element-horizontal>
-                </div>
-                <div class="pf-l-grid__item pf-m-6-col">
-                    <ak-form-element-horizontal label=${msg("Flow")}>
-                        <span class="pf-c-form-control-static"
-                            >${this.invitation?.flowObj?.slug ?? msg("No flow set")}</span
-                        >
-                    </ak-form-element-horizontal>
-                </div>
-                <div class="pf-l-grid__item pf-m-6-col">
-                    <ak-form-element-horizontal label=${msg("Single use")}>
-                        <span class="pf-c-form-control-static"
-                            >${this.invitation?.singleUse ? msg("Yes") : msg("No")}</span
-                        >
-                    </ak-form-element-horizontal>
-                </div>
+        const invitationInfo: DescriptionPair[] = [
+            [msg("Name"), this.invitation?.name ?? "-"],
+            [msg("Expires"), expiresDisplay],
+            [msg("Flow"), this.invitation?.flowObj?.slug ?? msg("No flow set")],
+            [msg("Single use"), this.invitation?.singleUse ? msg("Yes") : msg("No")],
+        ];
+
+        return html` <ak-form-group open label="${msg("Invitation details")}">
+            <div class="pf-c-card__body">
+            ${renderDescriptionList(invitationInfo, { twocolumn: true })}
             </div>
-            <hr class="pf-c-divider" />
+            </ak-form-group>
+            <ak-form-group open label="${msg("Send Email")}">
             <ak-textarea-input
                 label=${msg("To")}
                 name="emailAddresses"
                 required
                 help=${msg(
-                    "One per line, or comma/semicolon separated. Each recipient will receive an invitation link.",
+                    "One per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.",
                 )}
             >
             </ak-textarea-input>
@@ -171,7 +156,8 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                 <p class="pf-c-form__helper-text">
                     ${msg("Select the email template to use for sending invitations.")}
                 </p>
-            </ak-form-element-horizontal>`;
+            </ak-form-element-horizontal>
+            </ak-form-group>`;
     }
 }
 
