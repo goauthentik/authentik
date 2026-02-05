@@ -1,9 +1,12 @@
 import "#elements/EmptyState";
 
-import { EVENT_REFRESH } from "#common/constants";
+import { AKRefreshEvent } from "#common/events";
 
+import { listen } from "#elements/decorators/listen";
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { ConsoleLogger } from "#logger/browser";
 
 import { html } from "lit";
 import { property } from "lit/decorators.js";
@@ -22,6 +25,8 @@ export abstract class ModelForm<
     T extends object = object,
     PKT extends string | number = string | number,
 > extends Form<T> {
+    protected logger = ConsoleLogger.prefix(`model-form/${this.tagName.toLowerCase()}`);
+
     /**
      * An overridable method for loading an instance.
      *
@@ -84,16 +89,25 @@ export abstract class ModelForm<
         return undefined;
     }
 
-    constructor() {
-        super();
+    @listen(AKRefreshEvent, {
+        target: null,
+    })
+    protected refresh = async () => {
+        await new Promise((resolve) => requestAnimationFrame(resolve));
 
-        this.addEventListener(EVENT_REFRESH, () => {
-            if (!this.#instancePk) return;
-            this.loadInstance(this.#instancePk).then((instance) => {
-                this.instance = instance;
-            });
+        if (!this.#instancePk) return;
+
+        const viewportVisible = this.isInViewport || !this.viewportCheck;
+
+        if (!viewportVisible) {
+            this.logger.debug(`Instance not in viewport, skipping refresh`);
+            return;
+        }
+
+        this.loadInstance(this.#instancePk).then((instance) => {
+            this.instance = instance;
         });
-    }
+    };
 
     public override reset(): void {
         super.reset();

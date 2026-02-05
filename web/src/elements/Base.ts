@@ -145,6 +145,13 @@ export class AKElement extends LitElement implements AKElementProps {
 
     /**
      * A custom CSS style sheet to apply to the element.
+     *
+     * @deprecated Use CSS parts and custom properties instead.
+     *
+     * @remarks
+     * The use of injected style sheets may result in brittle styles that are hard to
+     * maintain across authentik versions.
+     *
      */
     readonly #customCSSStyleSheet: CSSStyleSheet | null;
 
@@ -156,6 +163,13 @@ export class AKElement extends LitElement implements AKElementProps {
      * The style root to which the theme is applied.
      */
     #styleRoot?: StyleRoot;
+
+    /**
+     * The style root to which the theme is applied.
+     */
+    protected get styleRoot(): StyleRoot | undefined {
+        return this.#styleRoot;
+    }
 
     protected set styleRoot(nextStyleRoot: StyleRoot | undefined) {
         this.#themeAbortController?.abort();
@@ -177,10 +191,10 @@ export class AKElement extends LitElement implements AKElementProps {
                 signal: this.#themeAbortController.signal,
             },
         );
-    }
 
-    protected get styleRoot(): StyleRoot | undefined {
-        return this.#styleRoot;
+        if (this.#customCSSStyleSheet) {
+            applyUITheme(nextStyleRoot, this.#customCSSStyleSheet);
+        }
     }
 
     protected hasSlotted(name: string | null) {

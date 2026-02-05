@@ -23,28 +23,34 @@ During this early preview stage, short trial licenses are available for testers.
 
 Endpoint devices are end-user devices or servers that are registered with authentik.
 
-There are two purposes for registration: [Device authentication](./device-authentication/index.mdx) and [Device compliance](./device-compliance/index.mdx).
+There are two purposes for registration: [Device authentication](./authentik-agent/device-authentication/index.mdx) and [Device compliance](./device-compliance/index.mdx).
 
 Devices can be registered by installing the [authentik Agent](./authentik-agent/index.mdx) which supports:
 
 - [Device compliance](./device-compliance/index.mdx) by reporting information about endpoint devices to authentik.
-- [Local device login](./device-authentication/local-device-login/index.mdx) with authentik credentials.
-- [Connecting via SSH to endpoint devices](./device-authentication/ssh-authentication.mdx) with authentik credentials.
-- [Authenticating to CLI applications](./device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials.
+- [Local device login](./authentik-agent/device-authentication/local-device-login/index.mdx) with authentik credentials.
+- [Connecting via SSH to endpoint devices](./authentik-agent/device-authentication/ssh-authentication.mdx) with authentik credentials.
+- [Authenticating to CLI applications](./authentik-agent/device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials.
 
 Alternatively, [Connectors](./device-compliance/connectors.md) allow authentik to be integrated with third party services such as Fleet. This allows for device information to be reported to authentik for [Device compliance](./device-compliance/index.mdx) purposes.
 
+## Why use endpoint devices?
+
+Endpoint devices offers administrators an alternative to traditional device authentication systems like LDAP for Linux or Active Directory for Windows, while supporting modern MFA methods like FIDO2. This feature set allows authentik to act as a unified authentication platform for devices, servers, and applications.
+
+Meanwhile, Device Compliance allows administrators to make informed decisions about access to applications by verifying device security requirements, like operating system and application versions, before granting access to applications.
+
 ## Features overview
 
-| Feature                                                   | Linux          | Windows        | macOS          | Status                                                        |
-| --------------------------------------------------------- | -------------- | -------------- | -------------- | ------------------------------------------------------------- |
-| **Local device login**                                    | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview on Windows and Linux.             |
-| **SSH authentication**                                    | Open source    | Open source    | Open source    | Available for early preview. Only supports Linux SSH targets. |
-| **Device compliance**                                     | Open source    | Open source    | Open source    | Available for early preview.                                  |
-| **Advanced device compliance**                            | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
-| **authentik Agent**                                       | Open source    | Open source    | Open source    | Available for early preview.                                  |
-| **Fleet Connectors**                                      | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview.                                  |
-| **Other Connectors** (Entra, Intune, Cloudflare WARP etc) | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
+| Feature                                                                                        | Linux          | Windows        | macOS          | Status                                                        |
+| ---------------------------------------------------------------------------------------------- | -------------- | -------------- | -------------- | ------------------------------------------------------------- |
+| [**Local device login**](./authentik-agent/device-authentication/local-device-login/index.mdx) | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview on Windows and Linux.             |
+| [**SSH authentication**](./authentik-agent/device-authentication/ssh-authentication.mdx)       | Open source    | Open source    | Open source    | Available for early preview. Only supports Linux SSH targets. |
+| [**Device compliance**](./device-compliance/index.mdx)                                         | Open source    | Open source    | Open source    | Available for early preview.                                  |
+| **Advanced device compliance**                                                                 | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
+| [**authentik Agent**](./authentik-agent/index.mdx)                                             | Open source    | Open source    | Open source    | Available for early preview.                                  |
+| [**Fleet Connector** ](./device-compliance/connectors/)                                        | :ak-enterprise | :ak-enterprise | :ak-enterprise | Available for early preview.                                  |
+| **Other Connectors** (Entra, Intune, Cloudflare WARP etc)                                      | :ak-enterprise | :ak-enterprise | :ak-enterprise | In development.                                               |
 
 ## How to provide feedback and report bugs
 

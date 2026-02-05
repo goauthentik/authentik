@@ -1,6 +1,6 @@
 """Custom SCIM schemas"""
 
-from enum import Enum
+from enum import StrEnum
 from typing import Self
 
 from django.core.exceptions import ValidationError
@@ -192,7 +192,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         )
 
 
-class PatchOp(str, Enum):
+class PatchOp(StrEnum):
     replace = "replace"
     remove = "remove"
     add = "add"
