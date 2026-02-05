@@ -1,7 +1,9 @@
 // Shared utilities and types
 import { type GlossaryItem, isGlossaryItem, isGlossaryPath } from "../utils/glossaryUtils";
+import { isLearningCenterItem, isLearningCenterPath } from "../utils/learningCenterUtils";
 import ErrorBoundary from "./ErrorBoundary";
 import GlossaryDocCardList from "./GlossaryDocCardList";
+import LearningCenterDocCardList from "./LearningCenterDocCardList";
 import styles from "./styles.module.css";
 
 // Docusaurus core imports
@@ -58,13 +60,14 @@ function DocCardListItem({ item }: { item: React.ComponentProps<typeof DocCard>[
 
 /**
  * Enhanced DocCardList component that delegates to specialized components based on content type.
- * Provides both standard documentation card rendering and specialized glossary functionality.
+ * Provides both standard documentation card rendering and specialized glossary/learning center functionality.
  */
 export default function DocCardList(props: Props): ReactNode {
     const { items, className } = props;
 
     const pathname = useLocation()?.pathname ?? "";
     const isGlossary = isGlossaryPath(pathname);
+    const isLearningCenter = isLearningCenterPath(pathname);
 
     const sidebarSiblings = useCurrentSidebarSiblings();
     const siblings = sidebarSiblings ?? EMPTY_SIDEBAR_ITEMS;
@@ -86,7 +89,34 @@ export default function DocCardList(props: Props): ReactNode {
         return terms;
     }, [siblings]);
 
-    // Standard documentation card items (always computed, but only used for non-glossary pages)
+    // Extract learning center resources from sidebar structure
+    const resourcePool = useMemo<SidebarDocLike[]>(() => {
+        const resources: SidebarDocLike[] = [];
+
+        // Recursively process sidebar items to find learning center resources
+        const processItem = (item: PropSidebarItem) => {
+            if (item.type === "link") {
+                if (isLearningCenterItem(item)) {
+                    resources.push(item as SidebarDocLike);
+                }
+            } else if (item.type === "category" && item.items) {
+                item.items.forEach(processItem);
+            }
+        };
+
+        // Process both passed items and sidebar siblings
+        const allItems = items ?? siblings;
+        allItems.forEach(processItem);
+
+        // Also process siblings if items were passed separately
+        if (items && siblings.length > 0) {
+            siblings.forEach(processItem);
+        }
+
+        return resources;
+    }, [items, siblings]);
+
+    // Standard documentation card items (always computed, but only used for non-specialized pages)
     const baseItems = useMemo(() => filterDocCardListItems(items ?? siblings), [items, siblings]);
 
     // For glossary pages, delegate to specialized GlossaryDocCardList component
@@ -98,7 +128,16 @@ export default function DocCardList(props: Props): ReactNode {
         );
     }
 
-    // Standard documentation card rendering for non-glossary pages
+    // For learning center pages, delegate to specialized LearningCenterDocCardList component
+    if (isLearningCenter) {
+        return (
+            <ErrorBoundary>
+                <LearningCenterDocCardList resourcePool={resourcePool} className={className} />
+            </ErrorBoundary>
+        );
+    }
+
+    // Standard documentation card rendering for non-specialized pages
     return (
         <section className={clsx("row", className)}>
             {baseItems.map((item, idx) => (
