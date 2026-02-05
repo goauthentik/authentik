@@ -25,7 +25,7 @@ dependencies = [
   "django-postgres-extra==2.0.9",
   "django-prometheus==2.4.1",
   "django-storages[s3]==1.14.6",
-  "django-tenants==3.9.0",
+  "django-tenants==3.10.0",
   "django==5.2.11",
   "djangoql==0.19.1",
   "djangorestframework==3.16.1",
