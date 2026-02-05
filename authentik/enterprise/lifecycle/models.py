@@ -215,7 +215,7 @@ class Review(SerializerModel, ManagedModel):
 
         return ReviewSerializer
 
-    def _get_model_name(self):
+    def _get_model_name(self) -> str:
         return self.content_type.name.lower()
 
     def _get_event_args(self):
