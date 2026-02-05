@@ -992,21 +992,6 @@ const items = [
             {
                 //#endregion
 
-                //#region Forward auth
-                type: "category",
-                label: "Forward auth",
-                items: ["troubleshooting/forward_auth/general"],
-                link: {
-                    type: "generated-index",
-                    title: "Forward auth troubleshooting",
-                    slug: "troubleshooting/forward_auth",
-                    description:
-                        "Steps to help debug forward auth setups with various reverse proxies.",
-                },
-            },
-            {
-                //#endregion
-
                 //#region PostgreSQL
                 type: "category",
                 label: "PostgreSQL",
@@ -1023,6 +1008,7 @@ const items = [
             "troubleshooting/csrf",
             "troubleshooting/emails",
             "troubleshooting/ldap_source",
+            "troubleshooting/forward_auth",
         ],
     },
     {

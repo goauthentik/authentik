@@ -1,0 +1,30 @@
+---
+title: Troubleshooting Forward auth
+description: Steps to help debug forward auth setups with various reverse proxies
+---
+
+## Set the log level to `trace`
+
+Setting the log level to trace configures the outpost to trace-log all the headers given in forward auth requests.
+
+This is helpful to confirm that certain required Headers are correctly forwarded from the reverse proxy.
+
+### When using the embedded outpost
+
+When using the [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx), the logs output identically to all other authenik logs. Refer to the [Capturing authentik logs](./logs/logs.mdx) documentation for instructions on how to enable `trace` logging.
+
+### When using a standalone outpost
+
+When using a standalone outpost, the logs output to that specific container. Refer to the [Capturing outpost logs](./logs/outpost_logs.mdx) documentation for instructions on how to enable `trace` logging.
+
+## Ensure `/outpost.goauthentik.io` is accessible
+
+Everything under `/outpost.goauthentik.io` should be publicly accessible, as URLs under this path are used for authentication.
+
+To check this, run `curl -v https://app.company/outpost.goauthentik.io/ping`. A correct setup should contain output looking like this:
+
+```
+[...]
+< HTTP/2 204
+[...]
+```

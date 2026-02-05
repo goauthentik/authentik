@@ -77,8 +77,8 @@
 #endregion
 
 #region Troubleshooting
-/troublshooting/logs                                        /troubleshooting/logs/logs 301!
-/troublshooting/forward_auth/general                        /troubleshooting/forward_auth 301!
+/troubleshooting/logs                                        /troubleshooting/logs/logs 301!
+/troubleshooting/forward_auth/general                        /troubleshooting/forward_auth 301!
 #endregion
 
 #region Integrations
