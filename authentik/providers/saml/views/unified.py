@@ -2,7 +2,7 @@
 
 from base64 import b64decode
 
-from defusedxml import ElementTree
+from defusedxml.lxml import fromstring
 from django.http import HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -10,6 +10,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.constants import NS_MAP
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.providers.saml.views.flows import (
@@ -40,12 +41,12 @@ def detect_saml_message_type(saml_request: str, is_post_binding: bool) -> str | 
         else:
             decoded_xml = decode_base64_and_inflate(saml_request)
 
-        root = ElementTree.fromstring(decoded_xml)
-        # Get local name without namespace
-        tag = root.tag
-        if "}" in tag:
-            tag = tag.split("}")[1]
-        return tag
+        root = fromstring(decoded_xml)
+        if len(root.xpath("//samlp:AuthnRequest", namespaces=NS_MAP)):
+            return SAML_MESSAGE_TYPE_AUTHN_REQUEST
+        if len(root.xpath("//samlp:LogoutRequest", namespaces=NS_MAP)):
+            return SAML_MESSAGE_TYPE_LOGOUT_REQUEST
+        return None
     except Exception:  # noqa: BLE001
         return None
 
