@@ -218,7 +218,7 @@ class Review(SerializerModel, ManagedModel):
     def _get_model_name(self) -> str:
         return self.content_type.name.lower()
 
-    def _get_event_args(self):
+    def _get_event_args(self) -> dict:
         return {
             "target": self.object,
             "hyperlink": link_for_model(self.object),
