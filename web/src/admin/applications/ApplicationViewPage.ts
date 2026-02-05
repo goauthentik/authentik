@@ -4,7 +4,7 @@ import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#admin/lifecycle/ObjectAccessReviewPage";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
@@ -414,7 +414,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed
-                    ? html` <ak-object-access-review-page
+                    ? html` <ak-object-lifecycle-page
                           role="tabpanel"
                           tabindex="0"
                           slot="page-access-review"
@@ -422,7 +422,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                           aria-label="${msg("Lifecycle")}"
                           model=${ContentTypeEnum.AuthentikCoreApplication}
                           objectPk=${this.application.pk}
-                      ></ak-object-access-review-page>`
+                      ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
         </main>`;

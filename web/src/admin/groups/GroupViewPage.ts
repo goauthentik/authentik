@@ -3,7 +3,7 @@ import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RelatedRoleList";
 import "#components/ak-object-attributes-card";
-import "#admin/lifecycle/ObjectAccessReviewPage";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -265,7 +265,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed
-                    ? html` <ak-object-access-review-page
+                    ? html` <ak-object-lifecycle-page
                           role="tabpanel"
                           tabindex="0"
                           slot="page-access-review"
@@ -273,7 +273,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                           aria-label="${msg("Lifecycle")}"
                           model=${ContentTypeEnum.AuthentikCoreGroup}
                           objectPk=${this.group.pk}
-                      ></ak-object-access-review-page>`
+                      ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
         </main>`;
