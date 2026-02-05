@@ -10337,6 +10337,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="scf325f1039d7c82f">
   <source>New App Password</source>
 </trans-unit>
+<trans-unit id="saa02cc40143c291e">
+  <source>Sidebar left (frame background)</source>
+</trans-unit>
+<trans-unit id="s7606cffc63e1b0a1">
+  <source>Sidebar right (frame background)</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
