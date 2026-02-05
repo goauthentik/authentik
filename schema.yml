@@ -42167,6 +42167,8 @@ components:
           type: string
           format: uuid
           readOnly: true
+        name:
+          type: string
         content_type:
           $ref: '#/components/schemas/ContentTypeEnum'
         object_id:
@@ -42216,6 +42218,7 @@ components:
       required:
       - content_type
       - id
+      - name
       - reviewer_groups_obj
       - reviewers
       - reviewers_obj
@@ -42226,6 +42229,9 @@ components:
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
       properties:
+        name:
+          type: string
+          minLength: 1
         content_type:
           $ref: '#/components/schemas/ContentTypeEnum'
         object_id:
@@ -42264,6 +42270,7 @@ components:
             UI.
       required:
       - content_type
+      - name
       - reviewers
     Link:
       type: object
@@ -48686,6 +48693,9 @@ components:
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
       properties:
+        name:
+          type: string
+          minLength: 1
         content_type:
           $ref: '#/components/schemas/ContentTypeEnum'
         object_id:

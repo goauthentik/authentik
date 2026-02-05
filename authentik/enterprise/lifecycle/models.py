@@ -21,6 +21,7 @@ from authentik.lib.utils.time import timedelta_from_string, timedelta_string_val
 
 class LifecycleRule(SerializerModel):
     id = models.UUIDField(primary_key=True, default=uuid4)
+    name = models.TextField(unique=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(null=True, default=None)
     object = GenericForeignKey("content_type", "object_id")

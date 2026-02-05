@@ -6818,6 +6818,11 @@
         "model_authentik_lifecycle.lifecyclerule": {
             "type": "object",
             "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
                 "content_type": {
                     "type": "string",
                     "enum": [

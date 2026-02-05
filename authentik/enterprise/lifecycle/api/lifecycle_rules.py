@@ -29,6 +29,7 @@ class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
         model = LifecycleRule
         fields = [
             "id",
+            "name",
             "content_type",
             "object_id",
             "interval",
@@ -107,6 +108,6 @@ class LifecycleRuleViewSet(ModelViewSet):
     queryset = LifecycleRule.objects.all()
     serializer_class = LifecycleRuleSerializer
     search_fields = ["content_type__model", "reviewer_groups__name", "reviewers__username"]
-    ordering = ["content_type__model"]
-    ordering_fields = ["content_type__model"]
+    ordering = ["name"]
+    ordering_fields = ["name", "content_type__model"]
     filterset_fields = ["content_type__model"]
