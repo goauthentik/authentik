@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db.models import BooleanField as ModelBooleanField
 from django.db.models import Case, Q, Value, When
 from django_filters.rest_framework import BooleanFilter, FilterSet
@@ -66,7 +68,7 @@ class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
         return admin_link_for_model(review.object)
 
     @extend_schema_field(DateField())
-    def get_grace_period_end(self, review: Review):
+    def get_grace_period_end(self, review: Review) -> date:
         return review.opened_on + timedelta_from_string(review.rule.grace_period)
 
     @extend_schema_field(DateField())
