@@ -2,6 +2,9 @@
 title: Capturing outpost logs
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 This guide only applies to standalone [outposts](../../add-secure-apps/outposts/index.mdx), the [embedded outpost](../../add-secure-apps/outposts/embedded/embedded.mdx) outputs logs to the usual [authentik logs](./logs.mdx).
 
 Standalone outposts continually output logs that can be helpful when troubleshooting issues. Just like when capturing authentik logs, the log level can be adjusted.
@@ -11,9 +14,6 @@ Standalone outposts continually output logs that can be helpful when troubleshoo
 Outpost containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
 
 To modify the log level, follow the instructions below depending on your outpost deployment method:
-
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
 
 <Tabs
 groupId="outpost-type"
@@ -38,8 +38,14 @@ Outpost can be manually deployed via [Docker Compose](../../add-secure-apps/outp
 
 In each case, you need to add the following environment variable to the outpost container:
 
-```bash
+```yaml title="Docker Compose"
 AUTHENTIK_LOG_LEVEL=debug
+```
+
+```yaml title="Kubernetes"
+env:
+- name: AUTHENTIK_LOG_LEVEL
+    value: "debug"
 ```
 
 Then, redeploy the outpost container for the change to take effect.
@@ -57,12 +63,12 @@ To enable `trace` logging, follow the instructions below depending on your outpo
 
 <Tabs
 groupId="outpost-type"
-defaultValue="admin"
+defaultValue="managed"
 values={[
-{label: 'admin Interface', value: 'admin'},
+{label: 'authentik Managed Outpost', value: 'managed'},
 {label: 'Manually Deployed Outposts', value: 'manual'},
 ]}>
-<TabItem value="admin">
+<TabItem value="managed">
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Outposts** and click the **Edit** icon of the outpost that you're troubleshooting.
@@ -82,8 +88,14 @@ Outpost can be manually deployed via [Docker Compose](../../add-secure-apps/outp
 
 In each case, you need to add the following environment variable to the outpost container:
 
-```bash
+```yaml title="Docker Compose"
 AUTHENTIK_LOG_LEVEL=trace
+```
+
+```yaml title="Kubernetes"
+env:
+- name: AUTHENTIK_LOG_LEVEL
+    value: "trace"
 ```
 
 Then redeploy the outpost container for the change to take effect.
