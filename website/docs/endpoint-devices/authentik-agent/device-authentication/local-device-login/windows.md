@@ -22,7 +22,7 @@ Currently, only local login is supported; RDP login is not yet available and is 
 
 ## Prerequisites
 
-You need to have deployed the authentik Agent including the WCP component on the Windows device, see [Deploy the authentik Agent on Windows](../../authentik-agent/agent-deployment/windows.md) for more details.
+You need to have deployed the authentik Agent including the WCP component on the Windows device, see [Deploy the authentik Agent on Windows](../../agent-deployment/windows.md) for more details.
 
 ## How it works
 
