@@ -235,7 +235,6 @@ dependencies = [
     { name = "django" },
     { name = "django-channels-postgres" },
     { name = "django-countries" },
-    { name = "django-cte" },
     { name = "django-dramatiq-postgres" },
     { name = "django-filter" },
     { name = "django-model-utils" },
@@ -345,7 +344,6 @@ requires-dist = [
     { name = "django", specifier = "==5.2.11" },
     { name = "django-channels-postgres", editable = "packages/django-channels-postgres" },
     { name = "django-countries", specifier = "==7.6.1" },
-    { name = "django-cte", specifier = "==3.0.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
     { name = "django-filter", specifier = "==25.2" },
     { name = "django-model-utils", specifier = "==5.0.0" },
@@ -1132,18 +1130,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/0b/c3/ddb94bb50455ae80ff90ddb5affcc28f7e7a48f9c9852cf8bb8fe712fec0/django-countries-7.6.1.tar.gz", hash = "sha256:c772d4e3e54afcc5f97a018544e96f246c6d9f1db51898ab0c15cd57e19437cf", size = 675623, upload-time = "2024-04-01T21:01:09.414Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/46/b6931858e5161e5d9166bfcfde3af0b7d60ba89e4f7dd8f033e591c68794/django_countries-7.6.1-py3-none-any.whl", hash = "sha256:1ed20842fe0f6194f91faca21076649513846a8787c9eb5aeec3cbe1656b8acc", size = 864507, upload-time = "2024-04-01T21:01:05.702Z" },
-]
-
-[[package]]
-name = "django-cte"
-version = "3.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "django" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/db/c0/64cda7c7b3e5641160a4c9dd1030b3a567592ba2b6c64f5303678a780084/django_cte-3.0.0.tar.gz", hash = "sha256:888710bb7109559621a34ab890f0f87d54188c9678f874e61e82112b59bbccb4", size = 11422, upload-time = "2026-02-05T13:08:53.427Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/8a/5fdf282b8496e485b007d48ac211a0e2b203b8623e67c32ed2cf65faedc4/django_cte-3.0.0-py3-none-any.whl", hash = "sha256:3eabb89b68d328a6a97c695a21f45ed6ee7a6602193670db74e70c2e17bf2cd5", size = 13211, upload-time = "2026-02-05T13:08:51.908Z" },
 ]
 
 [[package]]
