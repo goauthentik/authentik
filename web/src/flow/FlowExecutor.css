@@ -6,7 +6,8 @@
     flex-flow: column nowrap;
 }
 
-.inspector-toggle {
+.inspector-toggle,
+.inspector-toggle.style-scope {
     position: absolute;
     inset-inline-end: var(--pf-global--spacer--md);
     inset-block-start: var(--pf-global--spacer--md);
