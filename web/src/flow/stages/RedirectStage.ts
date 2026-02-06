@@ -118,6 +118,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     }
 }
 
+export default RedirectStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-redirect": RedirectStage;

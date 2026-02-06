@@ -41,6 +41,8 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
     }
 }
 
+export default FlowFrameStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "xak-flow-frame": FlowFrameStage;

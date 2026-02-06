@@ -25,6 +25,8 @@ export class DeviceCodeFinish extends BaseStage<
     }
 }
 
+export default DeviceCodeFinish;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-flow-provider-oauth2-code-finish": DeviceCodeFinish;
