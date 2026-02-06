@@ -10,7 +10,7 @@ from dramatiq.results.middleware import Results
 from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
 
 from authentik.tasks.broker import PostgresBroker
-from authentik.tasks.middleware import MetricsMiddleware
+from authentik.tasks.middleware import MetricsMiddleware, WorkerStatusMiddleware
 
 
 class TestWorker(Worker):
@@ -69,6 +69,8 @@ def use_test_broker():
         middleware: Middleware = import_string(middleware_class)(
             **middleware_kwargs,
         )
+        if isinstance(middleware, WorkerStatusMiddleware):
+            continue
         if isinstance(middleware, MetricsMiddleware):
             continue
         if isinstance(middleware, Retries):
