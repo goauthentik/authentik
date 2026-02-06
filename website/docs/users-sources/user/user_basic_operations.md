@@ -97,8 +97,6 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 2. Click the name of the user to display the full user details page.
 3. Click the **Roles** tab, and then click either **Add to existing role** (or **Add new role** first).
 
-<<<<<<< HEAD
-=======
 :::info
 Users also inherit roles from the groups they belong to. The **Roles** tab has two sub-tabs: **Assigned Roles** shows roles directly assigned to the user, while **All Roles** shows all roles including those inherited from groups. Inherited roles are marked with an "Inherited" label.
 :::
@@ -109,7 +107,6 @@ These bindings control which users can access an application, and whether or not
 
 For instructions refer to [Manage applications](../../add-secure-apps/applications/manage_apps.mdx#bind-a-user-or-group-to-an-application).
 
->>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 ## User credentials recovery
 
 If a user has lost their credentials and needs to recover their account, there are two available options:

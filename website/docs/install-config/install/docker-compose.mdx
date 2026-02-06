@@ -7,12 +7,7 @@ This installation method is for test setups and small-scale production setups.
 ## Requirements
 
 - A host with at least 2 CPU cores and 2 GB of RAM
-<<<<<<< HEAD
-- Docker
-- Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
-=======
 - Podman or Docker Compose (Compose v2, see [instructions for upgrade](https://docs.docker.com/compose/migrate/))
->>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 
 ## Video
 
@@ -30,12 +25,7 @@ View our video about installing authentik on Docker.
 
 ## Download the Compose file
 
-<<<<<<< HEAD
-To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
-Run the following command:
-=======
 To download the latest `compose.yml` open your terminal, navigate to the directory of your choice, and then run the following command:
->>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -76,7 +66,6 @@ To enable error reporting, run the following command:
 echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
 
-<<<<<<< HEAD
 ## Email configuration (optional but recommended)
 
 It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
@@ -107,9 +96,6 @@ You will get a `Not Found` error if initial setup URL doesn't include the traili
 There you are prompted to set a password for the `akadmin` user (the default user).
 
 For an explanation about what each service in the docker compose file does, see [Architecture](../../core/architecture.md).
-=======
-For an explanation about what each service in the Docker Compose file does, see [Architecture](../../core/architecture.md).
->>>>>>> 3fd278e16 (website/docs: add a new page to help people get started after install is complete  (#19217))
 
 ## Configure custom ports
 
