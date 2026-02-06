@@ -310,9 +310,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                     selected-label="${msg("Selected Transports")}"
                 ></ak-dual-select-dynamic-selected>
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Select which transports should be used to notify the user.",
-                    )}
+                    ${msg("Select which transports should be used to notify the user.")}
                 </p>
             </ak-form-element-horizontal>
         `;
