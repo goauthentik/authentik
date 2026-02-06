@@ -98,7 +98,7 @@
         "@floating-ui/dom": "^1.7.5",
         "@formatjs/intl-listformat": "^8.2.1",
         "@fortawesome/fontawesome-free": "^7.1.0",
-        "@goauthentik/api": "^2026.2.0-rc1-1770223158",
+        "@goauthentik/api": "^2026.2.0-rc1-1770333267",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.4.0",
         "@goauthentik/eslint-config": "^1.2.0",
