@@ -9,6 +9,7 @@ import "#flow/sources/telegram/TelegramLogin";
 import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
+import "#flow/tabs/broadcast";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
@@ -30,6 +31,7 @@ import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
 
 import {
     CapabilitiesEnum,
@@ -165,6 +167,28 @@ export class FlowExecutor
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
+
+        window.addEventListener("ak-multitab-continue", () => {
+            document.title = "continued";
+            if (
+                this.#challenge?.component === "ak-stage-identification" &&
+                this.#challenge.applicationPreLaunch
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(this.#challenge.applicationPreLaunch);
+                return;
+            }
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                // TODO: use correct base path
+                if (!url.pathname.startsWith("/if/flow")) {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(qs.get("next")!);
+            }
+        });
     }
 
     //#region Listeners
@@ -176,7 +200,7 @@ export class FlowExecutor
         }
 
         console.debug("authentik/ws: Reloading after session authenticated event");
-        window.location.reload();
+        // window.location.reload();
     };
 
     public disconnectedCallback(): void {
