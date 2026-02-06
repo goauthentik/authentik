@@ -5,7 +5,6 @@ import "#components/ak-status-label";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
@@ -55,7 +54,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application entitlement(s)")}
+            object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ApplicationEntitlement) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUsedByList({

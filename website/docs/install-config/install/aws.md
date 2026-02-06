@@ -24,9 +24,19 @@ This stack will create the following resources:
     - One for the authentik server
     - One for the authentik worker
 - An ALB (Application Load Balancer) pointing to the authentik server ECS task with the configured certificate
-- An EFS filesystem mounted on both ECS tasks for media file storage
+- An EFS filesystem mounted on both ECS tasks for file storage
 
 The stack will output the endpoint of the ALB that to which you can point your DNS records.
+
+## Access authentik from AWS CloudFormation
+
+To launch authentik, in your browser go to:
+
+`http://<domain_you_configured>/if/flow/initial-setup/`
+
+:::info Initial setup in browser
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Also verify that the authentik server, worker, and PostgreSQL database are running and healthy. Review additional tips in our [troubleshooting docs](../../troubleshooting/login.md#cant-access-initial-setup-flow-during-installation-steps).
+:::
 
 ### Further customization
 

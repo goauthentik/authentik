@@ -172,6 +172,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
@@ -455,7 +456,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     }
                                     return input.replaceAll(
                                         "<application slug>",
-                                        this.provider.assignedApplicationSlug,
+                                        this.provider.assignedApplicationSlug ??
+                                            "<application slug>",
                                     );
                                 },
                             ]}

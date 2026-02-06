@@ -7,8 +7,8 @@ tags: [authentik Agent, windows]
 ## What it can do
 
 - Retrieves information about the host for use in authentik, see [Device Compliance](../../device-compliance/index.mdx).
-- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../device-authentication/ssh-authentication.mdx).
-- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx).
+- SSH to Linux hosts using authentik credentials, see [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
+- Authenticate CLI applications using authentik credentials, see [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
 :::warning Supported Windows Versions
 The authentik Agent is currently only tested on Windows 11 and Windows Server 2022. Other versions may work but are untested.
@@ -64,7 +64,8 @@ The Agent requires a serial number be presented by Windows. Some hypervisors don
 5. Once the download is complete, install the MSI file.
 6. _(Optional)_ During installation, select [Windows Credential Provider](#windows-credential-provider) if you want to log in to the Windows device using authentik credentials.
 7. Confirm that the authentik Agent is installed by opening a PowerShell or Terminal window and entering the following command: `ak`
-   You should see a response that starts with: `authentik CLI v<version_number>`
+
+    You should see a response that starts with: `authentik CLI v<version_number>`
 
 ## Enable device compliance and local device login
 
@@ -84,7 +85,7 @@ ak-sysd domains join <deployment_name> --authentik-url https://authentik.company
 
 ## Enable SSH client authentication and CLI application authentication
 
-To enable [initiating SSH connections](../../device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
+To enable [initiating SSH connections](../../authentik-agent/device-authentication/ssh-authentication.mdx) and [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx), the device must be connected to an authentik deployment. To do so, follow these steps:
 
 1. Open a Terminal session and run the following command:
 
@@ -94,6 +95,18 @@ ak config setup --authentik-url https://authentik.company
 
 2. Your default browser will open and direct you to the authentik login page. Once authenticated, the authentik Agent will be configured.
 
+## Check version of installed components
+
+You can check the version of all installed authentik components by running the following command:
+
+```bash
+ak version
+```
+
 ## Logging
 
 All components of the authentik Agent output logs to the "authentik" log in the Windows Event Viewer.
+
+## Reporting issues
+
+Please report issues and bugs via the [authentik Platform GitHub repository](https://github.com/goauthentik/platform).

@@ -2,6 +2,7 @@ import "#admin/groups/GroupForm";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RelatedRoleList";
+import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -214,6 +215,11 @@ export class GroupViewPage extends AKElement {
                                 </ak-object-changelog>
                             </div>
                         </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <ak-object-attributes-card
+                                .objectAttributes=${this.group.attributes}
+                            ></ak-object-attributes-card>
+                        </div>
                     </div>
                 </section>
                 <section
@@ -241,6 +247,7 @@ export class GroupViewPage extends AKElement {
                     ${this.renderTabRoles(this.group)}
                 </section>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

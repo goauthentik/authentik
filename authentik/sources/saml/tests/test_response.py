@@ -221,3 +221,76 @@ class TestResponseProcessor(TestCase):
 
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
+
+    def test_verification_incorrect_response(self):
+        """Test verifying signature inside response"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_incorrect_signed_response.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaisesMessage(InvalidSignature, ""):
+            parser.parse()
+
+    def test_signed_encrypted_response(self):
+        """Test signed & encrypted response"""
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=verification_key,
+        )
+
+        encrypted_key = load_fixture("fixtures/encrypted-key2.pem")
+        ekp = CertificateKeyPair.objects.create(name=generate_id(), key_data=encrypted_key)
+
+        self.source.verification_kp = vkp
+        self.source.encryption_kp = ekp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_encrypted.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+
+    def test_transient(self):
+        """Test SAML transient NameID"""
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=verification_key,
+        )
+        self.source.verification_kp = vkp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_transient.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        parser.prepare_flow_manager()

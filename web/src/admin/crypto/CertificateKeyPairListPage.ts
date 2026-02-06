@@ -61,7 +61,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         const disabled = this.selectedElements.length < 1;
         const count = this.selectedElements.length;
         return html`<ak-forms-delete-bulk
-            objectLabel=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
+            object-label=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
             .objects=${this.selectedElements}
             .metadata=${(item: CertificateKeyPair) => {
                 return [

@@ -33,12 +33,12 @@ jobs:
         with:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Compress images
         id: compress
-        uses: calibreapp/image-actions@420075c115b26f8785e293c5bd5bef0911c506e5 # main
+        uses: calibreapp/image-actions@d9c8ee5c3dc52ae4622c82ead88d658f4b16b65f # main
         with:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}

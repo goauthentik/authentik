@@ -55,12 +55,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         if (binding?.userObj) {
             this.policyGroupUser = PolicyBindingCheckTarget.User;
         }
-        this.defaultOrder = await this.getOrder();
         return binding as T;
     }
 
-    @property()
-    public targetPk?: string;
+    @property({ type: String })
+    public targetPk = "";
 
     @state()
     protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
@@ -96,6 +95,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         // Overwrite the default for policyGroupUser with the first allowed type,
         // as this function is called when the correct parameters are set
         this.policyGroupUser = this.allowedTypes[0];
+        this.defaultOrder = await this.getOrder();
     }
 
     send(data: PolicyBinding): Promise<unknown> {
@@ -149,10 +149,10 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 this.policyGroupUser = ev.detail.value;
             }}
         >
-            ${Object.keys(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct as PolicyBindingCheckTarget)) {
+            ${Object.values(PolicyBindingCheckTarget).map((ct) => {
+                if (this.allowedTypes.includes(ct)) {
                     return html`<option value=${ct}>
-                        ${PolicyBindingCheckTargetToLabel(ct as PolicyBindingCheckTarget)}
+                        ${PolicyBindingCheckTargetToLabel(ct)}
                     </option>`;
                 }
                 return nothing;
@@ -160,7 +160,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         </ak-toggle-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">

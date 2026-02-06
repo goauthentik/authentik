@@ -14,7 +14,6 @@ import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
 import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "#admin/property-mappings/PropertyMappingSourceTelegramForm";
 import "#admin/property-mappings/PropertyMappingTestForm";
-import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
@@ -22,6 +21,7 @@ import "#elements/wizard/Wizard";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 import type { Wizard } from "#elements/wizard/Wizard";
 
 import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
@@ -75,7 +75,7 @@ export class PropertyMappingWizard extends AKElement {
                             slot=${`type-${type.component}-${type.modelName}`}
                             label=${msg(str`Create ${type.name}`)}
                         >
-                            <ak-proxy-form type=${type.component}></ak-proxy-form>
+                            ${StrictUnsafe(type.component)}
                         </ak-wizard-page-form>
                     `;
                 })}

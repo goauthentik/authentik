@@ -53,7 +53,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Microsoft Entra User(s)")}
+            object-label=${msg("Microsoft Entra User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderUser) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersDestroy({

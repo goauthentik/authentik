@@ -1,6 +1,5 @@
 """WebAuthn stage"""
 
-from json import loads
 from uuid import UUID
 
 from django.http import HttpRequest, HttpResponse
@@ -9,9 +8,9 @@ from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
-from webauthn import options_to_json
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import WebAuthnException
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import (
     AttestationConveyancePreference,
     AuthenticatorAttachment,
@@ -145,7 +144,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
             data={
-                "registration": loads(options_to_json(registration_options)),
+                "registration": options_to_json_dict(registration_options),
             }
         )
 
