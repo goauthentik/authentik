@@ -127,7 +127,7 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
                     name="emailAddresses"
                     required
                     help=${msg(
-                        "One per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.",
+                        "One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.",
                     )}
                 >
                 </ak-textarea-input>
