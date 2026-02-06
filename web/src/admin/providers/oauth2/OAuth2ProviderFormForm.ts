@@ -467,6 +467,22 @@ export function renderForm({
                         )}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Cross-Provider Token Auth")}
+                    name="allowedProviderTokens"
+                >
+                    <ak-dual-select-dynamic-selected
+                        .provider=${oauth2ProvidersProvider}
+                        .selector=${oauth2ProvidersSelector(provider.allowedProviderTokens)}
+                        available-label=${msg("Available Providers")}
+                        selected-label=${msg("Selected Providers")}
+                    ></ak-dual-select-dynamic-selected>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Access tokens created by the selected providers can be used at the token introspection endpoint.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>`;
 }
