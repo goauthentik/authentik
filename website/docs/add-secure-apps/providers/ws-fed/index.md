@@ -6,11 +6,11 @@ The WS-Fed provider is used to integrate with applications and service providers
 
 There are similarities between WS-Fed and SAML protocols, but there are also key differences. Some to be aware of include:
 
-| WS-Fed                                              | SAML                                         |
-| --------------------------------------------------- | -------------------------------------------- |
-| Request Security Token (RST)                        | SAML request                                 |
-| Request Security Token Response (RSTR)              | SAML response with an assertion              |
-| RP (relying party) and STS (Security Token Service) | RP (relying party) and SP (Service Provider) |
+| WS-Fed                                                                                                               | SAML                                         |
+| -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Request Security Token (RST) acts as the secure token sent by the Identity Provider (IdP) to the Relying Party (SP). | SAML request                                 |
+| Request Security Token Response (RSTR)                                                                               | SAML response with an assertion              |
+| RP (relying party) and STS (Security Token Service)                                                                  | RP (relying party) and SP (Service Provider) |
 
 - WS-Fed uses a _Request Security Token (RST)_ whereas SAML uses a _SAML request_.
 - With WS-Fed, the identity provider returns a Request Security Token Response (RSTR), whereas SAML returns a SAML response that contains an assertion.
@@ -19,7 +19,7 @@ There are similarities between WS-Fed and SAML protocols, but there are also key
 
 ## Supported URL request parameters
 
-... only one shows in UI (the reply one) wa, wtrealm (a trust realm, which instance of what app is talking to it)), wreply, simpilar to reply URL, this is the url the SP gives us.. authentik compares this to the one that the Admin who created the provider gave and is now in DB), and wctxt which is same as “relay state” in SAML. We give this back and they validate that it is same.
+... only one shows in UI (the reply one) `wa`, `wtrealm` (a trust realm, which instance of what app is talking to it), `wreply`, simpilar to reply URL, this is the url the SP gives us.. authentik compares this to the one that the Admin who created the provider gave and is now in DB), and `wctxt` which is same as “relay state” in SAML. We give this back and they validate that it is same.
 
 - **wa**: The action being requested, typically wsignin1.0 for sign-in.
 - **wtrealm**: The identifier (realm) of the Relying Party (RP) or application receiving the token, e.g., urn:my-app:rp.
@@ -55,3 +55,11 @@ You can export WS-Fed metadata from an authentik WS-Fed provider to an STS to au
 
 +++
 Reply URL: Enter the Application Callback URL (the applications's Assertion Consumer Service URL) where the token should be sent.
+
+## Certificates
+
+The certificates used with WS-Fed to sign Request Security Token Response (RSTR), which contains the assertion, are the same certificates that are used by SAML.
+
+For details, refer to our [SAML provider documentation](../saml/index.md#certificates).
+
+## Ws_Fed property mappings
