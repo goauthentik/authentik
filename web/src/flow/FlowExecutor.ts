@@ -195,7 +195,7 @@ export class FlowExecutor
         WebsocketClient.close();
     }
 
-    private setFlowErrorChallenge(error: APIError) {
+    protected setFlowErrorChallenge(error: APIError) {
         this.challenge = {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
