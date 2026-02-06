@@ -411,7 +411,7 @@ export class FlowExecutor
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {
-        return guard([this.layout, this.#challenge], () => {
+        return guard([this.layout, this.challenge], () => {
             if (
                 this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
                 this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
@@ -419,7 +419,7 @@ export class FlowExecutor
                 return nothing;
             }
 
-            const src = this.#challenge?.flowInfo?.background;
+            const src = this.challenge?.flowInfo?.background;
 
             if (!src) return nothing;
 
