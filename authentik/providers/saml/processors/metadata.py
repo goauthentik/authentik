@@ -40,6 +40,19 @@ class MetadataProcessor:
         self.force_binding = None
         self.xml_id = "_" + sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
+    def _get_issuer_value(self) -> str:
+        """Get issuer value, with fallback to generated URL if empty"""
+        # If user has set an override issuer, use it
+        if self.provider.issuer:
+            return self.provider.issuer
+
+        return self.http_request.build_absolute_uri(
+            reverse(
+                "authentik_providers_saml:base",
+                kwargs={"application_slug": self.provider.application.slug},
+            )
+        )
+
     # Using type unions doesn't work with cython types (which is what lxml is)
     def get_signing_key_descriptor(self) -> Element | None:
         """Get Signing KeyDescriptor, if enabled for the provider"""
@@ -189,7 +202,7 @@ class MetadataProcessor:
         """Build full EntityDescriptor"""
         entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
         entity_descriptor.attrib["ID"] = self.xml_id
-        entity_descriptor.attrib["entityID"] = self.provider.issuer
+        entity_descriptor.attrib["entityID"] = self._get_issuer_value()
 
         if self.provider.signing_kp:
             self._prepare_signature(entity_descriptor)

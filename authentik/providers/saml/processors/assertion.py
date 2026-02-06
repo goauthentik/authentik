@@ -6,6 +6,7 @@ from types import GeneratorType
 
 import xmlsec
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement, _Element  # nosec
@@ -63,6 +64,7 @@ class AssertionProcessor:
     session_index: str
     name_id: str
     name_id_format: str
+    issuer: str
     session_not_on_or_after_datetime: datetime
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
@@ -137,10 +139,24 @@ class AssertionProcessor:
                 continue
         return attribute_statement
 
+    def _get_issuer_value(self) -> str:
+        """Get issuer value, with fallback to generated URL if empty"""
+        # If user has set an override issuer, use it
+        if self.provider.issuer:
+            return self.provider.issuer
+
+        return self.http_request.build_absolute_uri(
+            reverse(
+                "authentik_providers_saml:base",
+                kwargs={"application_slug": self.provider.application.slug},
+            )
+        )
+
     def get_issuer(self) -> Element:
         """Get Issuer Element"""
         issuer = Element(f"{{{NS_SAML_ASSERTION}}}Issuer", nsmap=NS_MAP)
-        issuer.text = self.provider.issuer
+        self.issuer = self._get_issuer_value()
+        issuer.text = self.issuer
         return issuer
 
     def get_assertion_auth_n_statement(self) -> Element:

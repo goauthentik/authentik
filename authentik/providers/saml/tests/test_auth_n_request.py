@@ -15,6 +15,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.core.models import Application
 from authentik.core.tests.utils import (
     RequestFactory,
     create_test_admin_user,
@@ -97,6 +98,11 @@ class TestAuthNRequest(TestCase):
         )
         self.provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         self.provider.save()
+        Application.objects.create(
+            name="test-app",
+            slug="test-app",
+            provider=self.provider,
+        )
         self.source = SAMLSource.objects.create(
             slug="provider",
             issuer="authentik",

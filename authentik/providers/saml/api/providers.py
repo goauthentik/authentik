@@ -55,6 +55,7 @@ class SAMLProviderSerializer(ProviderSerializer):
     """SAMLProvider Serializer"""
 
     url_download_metadata = SerializerMethodField()
+    url_issuer = SerializerMethodField()
 
     url_sso_post = SerializerMethodField()
     url_sso_redirect = SerializerMethodField()
@@ -84,6 +85,23 @@ class SAMLProviderSerializer(ProviderSerializer):
                 )
                 + "?download"
             )
+
+    def get_url_issuer(self, instance: SAMLProvider) -> str:
+        """Get Issuer/EntityID URL"""
+        if instance.issuer:
+            return instance.issuer
+        if "request" not in self._context:
+            return "authentik"
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:base",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return "authentik"
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
@@ -219,6 +237,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",
+            "url_issuer",
             "url_sso_post",
             "url_sso_redirect",
             "url_sso_init",
