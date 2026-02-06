@@ -16,6 +16,7 @@ from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
+from authentik.lib.utils.task import run_task
 from authentik.rbac.decorators import permission_required
 
 
@@ -39,7 +40,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
         """Ensure the path (if set) specified is retrievable"""
         if path == "" or path.startswith(OCI_PREFIX):
             return path
-        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
+        files = run_task(blueprints_find_dict)
         if path not in [file["path"] for file in files]:
             raise ValidationError(_("Blueprint file does not exist"))
         return path
