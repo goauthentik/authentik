@@ -37,6 +37,11 @@ class ServiceProviderMetadata:
     name_id_policy: SAMLNameIDPolicy
 
     signing_keypair: CertificateKeyPair | None = None
+    encryption_keypair: CertificateKeyPair | None = None
+
+    # Single Logout Service (optional)
+    sls_binding: str | None = None
+    sls_location: str | None = None
 
     def to_provider(
         self, name: str, authorization_flow: Flow, invalidation_flow: Flow
@@ -50,10 +55,19 @@ class ServiceProviderMetadata:
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
         provider.default_name_id_policy = self.name_id_policy
+        # Single Logout Service
+        if self.sls_location:
+            provider.sls_url = self.sls_location
+        if self.sls_binding:
+            provider.sls_binding = self.sls_binding
         if self.signing_keypair and self.auth_n_request_signed:
             self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
             self.signing_keypair.save()
             provider.verification_kp = self.signing_keypair
+        if self.encryption_keypair:
+            self.encryption_keypair.name = f"Provider {name} - SAML Encryption Certificate"
+            self.encryption_keypair.save()
+            provider.encryption_kp = self.encryption_keypair
         if self.assertion_signed:
             provider.signing_kp = CertificateKeyPair.objects.exclude(key_data__iexact="").first()
         # Set all auto-generated Property-mappings as defaults
@@ -67,7 +81,7 @@ class ServiceProviderMetadataParser:
     """Service-Provider Metadata Parser"""
 
     def get_signing_cert(self, root: etree.Element) -> CertificateKeyPair | None:
-        """Extract X509Certificate from metadata, when given."""
+        """Extract signing X509Certificate from metadata, when given."""
         signing_certs = root.xpath(
             '//md:SPSSODescriptor/md:KeyDescriptor[@use="signing"]//ds:X509Certificate/text()',
             namespaces=NS_MAP,
@@ -75,6 +89,21 @@ class ServiceProviderMetadataParser:
         if len(signing_certs) < 1:
             return None
         raw_cert = format_cert(signing_certs[0])
+        # sanity check, make sure the certificate is valid.
+        load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
+        return CertificateKeyPair(
+            certificate_data=raw_cert,
+        )
+
+    def get_encryption_cert(self, root: etree.Element) -> CertificateKeyPair | None:
+        """Extract encryption X509Certificate from metadata, when given."""
+        encryption_certs = root.xpath(
+            '//md:SPSSODescriptor/md:KeyDescriptor[@use="encryption"]//ds:X509Certificate/text()',
+            namespaces=NS_MAP,
+        )
+        if len(encryption_certs) < 1:
+            return None
+        raw_cert = format_cert(encryption_certs[0])
         # sanity check, make sure the certificate is valid.
         load_pem_x509_certificate(raw_cert.encode("utf-8"), default_backend())
         return CertificateKeyPair(
@@ -137,11 +166,24 @@ class ServiceProviderMetadataParser:
         signing_keypair = self.get_signing_cert(root)
         if signing_keypair:
             self.check_signature(root, signing_keypair)
+        encryption_keypair = self.get_encryption_cert(root)
 
         name_id_format = descriptor.findall(f"{{{NS_SAML_METADATA}}}NameIDFormat")
         name_id_policy = SAMLNameIDPolicy.UNSPECIFIED
         if len(name_id_format) > 0:
             name_id_policy = SAMLNameIDPolicy(name_id_format[0].text)
+
+        # Parse SingleLogoutService (optional)
+        sls_binding = None
+        sls_location = None
+        sls_services = descriptor.findall(f"{{{NS_SAML_METADATA}}}SingleLogoutService")
+        if len(sls_services) > 0:
+            sls_service = sls_services[0]
+            sls_binding = {
+                SAML_BINDING_REDIRECT: SAMLBindings.REDIRECT,
+                SAML_BINDING_POST: SAMLBindings.POST,
+            }.get(sls_service.attrib.get("Binding"))
+            sls_location = sls_service.attrib.get("Location")
 
         return ServiceProviderMetadata(
             entity_id=entity_id,
@@ -150,5 +192,8 @@ class ServiceProviderMetadataParser:
             auth_n_request_signed=auth_n_request_signed,
             assertion_signed=assertion_signed,
             signing_keypair=signing_keypair,
+            encryption_keypair=encryption_keypair,
             name_id_policy=name_id_policy,
+            sls_binding=sls_binding,
+            sls_location=sls_location,
         )
