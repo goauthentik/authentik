@@ -36211,7 +36211,6 @@ components:
       - CO
       - KM
       - CG
-      - CD
       - CK
       - CR
       - CI
@@ -36220,6 +36219,7 @@ components:
       - CW
       - CY
       - CZ
+      - CD
       - DK
       - DJ
       - DM
@@ -36258,7 +36258,6 @@ components:
       - GY
       - HT
       - HM
-      - VA
       - HN
       - HK
       - HU
@@ -36400,6 +36399,7 @@ components:
       - UY
       - UZ
       - VU
+      - VA
       - VE
       - VN
       - VG
@@ -36589,16 +36589,6 @@ components:
       required:
       - name
     DetailedCountry:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/CountryCodeEnum'
-        name:
-          type: string
-      required:
-      - code
-      - name
-    DetailedCountryField:
       type: object
       properties:
         code:
@@ -39114,7 +39104,17 @@ components:
         countries_obj:
           type: array
           items:
-            $ref: '#/components/schemas/DetailedCountryField'
+            type: object
+            properties:
+              code:
+                type: string
+                minLength: 2
+                maxLength: 2
+              name:
+                type: string
+            required:
+            - code
+            - name
           readOnly: true
         check_history_distance:
           type: boolean
