@@ -8,7 +8,7 @@ import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 import { stages } from "./FlowExecutorSelections";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
@@ -195,6 +195,14 @@ export class FlowExecutor
         WebsocketClient.close();
     }
 
+    protected setFlowErrorChallenge(error: APIError) {
+        this.challenge = {
+            component: "ak-stage-flow-error",
+            error: pluckErrorDetail(error),
+            requestId: "",
+        } satisfies FlowErrorChallenge as ChallengeTypes;
+    }
+
     protected refresh = async () => {
         if (!this.flowSlug) {
             this.#logger.debug("Skipping refresh, no flow slug provided");
@@ -210,19 +218,13 @@ export class FlowExecutor
             })
             .then((challenge) => {
                 this.challenge = challenge;
+                return !!this.challenge;
             })
             .catch(async (error) => {
                 const parsedError = await parseAPIResponseError(error);
-
-                const challenge: FlowErrorChallenge = {
-                    component: "ak-stage-flow-error",
-                    error: pluckErrorDetail(parsedError),
-                    requestId: "",
-                };
-
                 showAPIErrorMessage(parsedError);
-
-                this.challenge = challenge as ChallengeTypes;
+                this.setFlowErrorChallenge(parsedError);
+                return false;
             })
             .finally(() => {
                 this.loading = false;
@@ -314,14 +316,8 @@ export class FlowExecutor
                 this.challenge = challenge;
                 return !this.challenge.responseErrors;
             })
-            .catch((error: unknown) => {
-                const challenge: FlowErrorChallenge = {
-                    component: "ak-stage-flow-error",
-                    error: pluckErrorDetail(error),
-                    requestId: "",
-                };
-
-                this.challenge = challenge as ChallengeTypes;
+            .catch((error: APIError) => {
+                this.setFlowErrorChallenge(error);
                 return false;
             })
             .finally(() => {
