@@ -2,13 +2,23 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 import { bound } from "#elements/decorators/bound";
 
-import { kebabCase } from "change-case";
-
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
+const slugify = (input: string): string => {
+    // Normalize to NFKD (compatibility decomposition) so accented characters become
+    // base letter + combining mark (e.g. "é" -> "e\u0301"), then strip the other marks.
+    // This approximates Django's `slugify(..., allow_unicode=False)` behavior of removing accents
+    const normalized = input.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+    const lower = normalized.toLowerCase();
+    const cleaned = lower.replace(/[^a-z0-9_\s-]/g, "");
+
+    return cleaned
+        .replace(/[-\s]+/g, "-")
+        .replace(/^[-_]+/g, "")
+        .replace(/[-_]+$/g, "");
+};
 
 /**
  * @element ak-slug-input
@@ -95,8 +105,14 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
         const newSlug = slugify(ev.target.value);
         const oldSlug = this.input.value;
+        // Slugification may insert or remove dashes (like when spaces or punctuation are added/removed)
+        // Would otherwise break the prefix-based sync and stop slug updates mid-typing.
+        const normalizedNewSlug = newSlug.replaceAll("-", "");
+        const normalizedOldSlug = oldSlug.replaceAll("-", "");
         const [shorter, longer] =
-            newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
+            normalizedNewSlug.length < normalizedOldSlug.length
+                ? [normalizedNewSlug, normalizedOldSlug]
+                : [normalizedOldSlug, normalizedNewSlug];
 
         if (longer.substring(0, shorter.length) !== shorter) {
             return;
