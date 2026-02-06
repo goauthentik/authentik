@@ -374,7 +374,7 @@ requires-dist = [
     { name = "kubernetes", specifier = "==35.0.0" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.0.2" },
-    { name = "msgraph-sdk", specifier = "==1.53.0" },
+    { name = "msgraph-sdk", specifier = "==1.54.0" },
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "packaging", specifier = "==26.0" },
     { name = "paramiko", specifier = "==4.0.0" },
@@ -2428,7 +2428,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.53.0"
+version = "1.54.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2438,9 +2438,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/17/5a/04d0f6338b9c102187a2e84d6fde29778572ddbb1243c9c4ef8844802e20/msgraph_sdk-1.53.0.tar.gz", hash = "sha256:bc27e9aa2ebf0de1375b309ae7ae7116bfc39c24085ec20b372e3a23b72da672", size = 6266772, upload-time = "2026-01-22T20:30:05.604Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ac/56/0c2fba87b6eee19e4589bf21c3141de290afc51d654445fc3e2908244d7b/msgraph_sdk-1.54.0.tar.gz", hash = "sha256:4dc294fc7f8a173f5bee30ccfc396b81fa1a16d7dcc95debe76fdf706920e5b3", size = 6283861, upload-time = "2026-02-06T01:29:26.975Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f0/a0/56f76ca7ce632ded3cf4bb840c3499676036c42f551dc2db2e2e4b2ec55c/msgraph_sdk-1.53.0-py3-none-any.whl", hash = "sha256:15fbb35ce7df6b1b54896589059a85abf0aeb499ffe3361dfb6766cdaa7224bb", size = 25661692, upload-time = "2026-01-22T20:30:02.738Z" },
+    { url = "https://files.pythonhosted.org/packages/3f/7a/d9eed36c7f309eb6c81c5b72b5b8bad40203487414ad2b9e371febc79885/msgraph_sdk-1.54.0-py3-none-any.whl", hash = "sha256:2b9894fd9f21ed9a71188e3d68bd1a9a58b2d1077e96ee4cb10a9f3d9d59a58e", size = 25707515, upload-time = "2026-02-06T01:29:23.344Z" },
 ]
 
 [[package]]
