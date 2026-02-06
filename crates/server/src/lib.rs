@@ -10,12 +10,15 @@ use std::{
 
 use argh::FromArgs;
 use authentik_axum::{
-    accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor},
+    accept::{
+        proxy_protocol::ProxyProtocolAcceptor,
+        tls::{TlsAcceptor, TlsState},
+    },
     extract::{ClientIP, Host, Scheme},
 };
 use authentik_config::get_config;
 use axum::{
-    Router,
+    Extension, Router,
     body::Body,
     extract::{Request, State},
     http::{
@@ -187,6 +190,7 @@ async fn forward_request(
     Host(host): Host,
     Scheme(scheme): Scheme,
     State(state): State<CoreRouterState>,
+    tls_state: Option<Extension<TlsState>>,
     req: Request,
 ) -> Response {
     if !state.gunicorn_ready.load(Ordering::Relaxed) {
