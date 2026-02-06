@@ -72,6 +72,7 @@ from authentik.core.middleware import (
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
+    USERNAME_MAX_LENGTH,
     Group,
     Session,
     Token,
@@ -144,7 +145,7 @@ class UserSerializer(ModelSerializer):
     roles_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
-        max_length=150,
+        max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
 
