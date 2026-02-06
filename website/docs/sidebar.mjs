@@ -979,17 +979,10 @@ const items = [
             {
                 //#endregion
 
-                //#region Forward auth
+                //#region Logs
                 type: "category",
-                label: "Forward auth",
-                items: ["troubleshooting/forward_auth/general"],
-                link: {
-                    type: "generated-index",
-                    title: "Forward auth troubleshooting",
-                    slug: "troubleshooting/forward_auth",
-                    description:
-                        "Steps to help debug forward auth setups with various reverse proxies.",
-                },
+                label: "Logs",
+                items: ["troubleshooting/logs/logs", "troubleshooting/logs/outpost_logs"],
             },
             {
                 //#endregion
@@ -1004,13 +997,13 @@ const items = [
             },
             "troubleshooting/access",
             "troubleshooting/login",
-            "troubleshooting/logs",
             "troubleshooting/image_upload",
             "troubleshooting/missing_permission",
             "troubleshooting/missing_admin_group",
             "troubleshooting/csrf",
             "troubleshooting/emails",
             "troubleshooting/ldap_source",
+            "troubleshooting/forward_auth",
         ],
     },
     {
