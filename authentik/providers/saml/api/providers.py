@@ -193,7 +193,7 @@ class SAMLProviderSerializer(ProviderSerializer):
 
         if attrs.get("sp_binding") == SAMLBindings.REDIRECT:
             Event.new(
-                EventAction.CONFIGURATION_ERROR,
+                EventAction.CONFIGURATION_WARNING,
                 message=(
                     "SAML SP Binding 'Redirect' is deprecated and will be removed in a "
                     "future version. Use 'Post' binding instead."
