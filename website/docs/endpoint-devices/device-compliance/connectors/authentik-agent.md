@@ -1,0 +1,36 @@
+---
+title: authentik Agent connector
+sidebar_label: authentik Agent connector
+tags: [device compliance, compliance, connectors, authentik Agent]
+---
+
+The authentik Agent connector allows device information to be reported by the [authentik Agent](../../authentik-agent/index.mdx).
+
+Unlike other connectors, the agent connector is used by the agent directly compared to other connectors talking to separate systems and APIs to integrate with other agents. Hence the functionality of the agent connector behaves differently than other connectors.
+
+The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform specific protocols like Apple's Platform SSO.
+
+## Configure the authentik Agent connector
+
+Follow these instructions to configure the authentik Agent connector:
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+3. Select **Agent Connector** as the connector type, click **Next**, and configure the following required settings:
+    - **Connector name**: provide a descriptive name for the connector.
+    - **Refresh interval**: select how often the agent will attempt to update its configuration.
+    - **Enabled**: enable or disable the connector.
+4. Click **Finish**.
+
+## Configure Challenge Key
+
+The Agent connector requires a **Challenge Key** (certificate keypair) to be configured when using the [Endpoint Stage](../../../add-secure-apps/flows-stages/stages/endpoint/index.md). This keypair is used to sign challenges sent to the [browser extension](../browser-extension.mdx) for device verification.
+
+Without a **Challenge Key** configured, the Endpoint Stage will silently skip device verification.
+
+To configure a **Challenge Key**:
+
+1. Navigate to **System** > **Certificates** and create a new certificate keypair, or select an existing one.
+2. Navigate to **Endpoint Devices** > **Connectors** and edit your Agent connector.
+3. Set the **Challenge Key** field to your certificate keypair.
+4. Click **Update**.
