@@ -31,7 +31,7 @@ export class NativeLogoutStage extends BaseStage<
 
     public static styles: CSSResult[] = [PFLogin, PFForm, PFButton, PFFormControl, PFTitle];
 
-    public override firstUpdated(changedProperties: PropertyValues): void {
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
 
         if (!this.challenge) {
@@ -120,6 +120,8 @@ export class NativeLogoutStage extends BaseStage<
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 }
+
+export default NativeLogoutStage;
 
 declare global {
     interface HTMLElementTagNameMap {

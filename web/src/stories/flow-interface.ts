@@ -5,7 +5,7 @@ import { DeepPartial } from "#common/types";
 
 import { AKElement } from "#elements/Base";
 
-import { FlowChallengeLike } from "#flow/components/types";
+import { FlowChallengeLike } from "#flow/types";
 
 import { ChallengeTypes, ContextualFlowInfoLayoutEnum, UiThemeEnum } from "@goauthentik/api";
 

@@ -69,6 +69,8 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
     }
 }
 
+export default SessionEnd;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-session-end": SessionEnd;

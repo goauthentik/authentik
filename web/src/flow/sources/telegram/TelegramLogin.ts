@@ -72,6 +72,8 @@ export class TelegramLogin extends BaseStage<
     }
 }
 
+export default TelegramLogin;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-flow-source-telegram": TelegramLogin;

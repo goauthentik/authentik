@@ -5,7 +5,6 @@ import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
-import { stages } from "./FlowExecutorSelections";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -25,7 +24,9 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { readStageModuleTag, StageMappings } from "#flow/FlowExecutorSelections";
+import { BaseStage } from "#flow/stages/base";
+import type { FlowChallengeComponentName, StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -354,21 +355,22 @@ export class FlowExecutor
     //#region Render Challenge
 
     protected async renderChallenge(
-        component: ChallengeTypes["component"],
+        component: FlowChallengeComponentName,
     ): Promise<TemplateResult> {
         const { challenge, inspectorOpen } = this;
 
-        const stage = stages.get(component);
+        const stage = StageMappings.get(component);
 
         // The special cases!
         if (!stage) {
             if (component === "xak-flow-shell") {
                 return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
             }
+
             return html`Invalid native challenge element`;
         }
 
-        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> =
+        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
             { ".challenge": challenge!, ".host": this };
 
         const litParts = {
@@ -376,13 +378,10 @@ export class FlowExecutor
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const { tag, variant, importfn } = stage;
-        if (importfn) {
-            await importfn();
-        }
+        const tag = await readStageModuleTag(stage);
 
         const props = spread(
-            match(variant)
+            match(stage.variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))

@@ -142,6 +142,8 @@ export class AuthenticatorEmailStage extends BaseStage<
     }
 }
 
+export default AuthenticatorEmailStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-authenticator-email": AuthenticatorEmailStage;
