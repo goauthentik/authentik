@@ -15,7 +15,7 @@ dependencies = [
   "defusedxml==0.7.1",
   "django-channels-postgres",
   "django-countries==7.6.1",
-  "django-cte==2.0.0",
+  "django-cte==3.0.0",
   "django-dramatiq-postgres",
   "django-filter==25.2",
   "django-model-utils==5.0.0",
