@@ -3,6 +3,8 @@
 from datetime import datetime, timedelta
 from hashlib import sha256
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
@@ -13,11 +15,14 @@ from rest_framework.fields import BooleanField, CharField
 
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.events.middleware import audit_ignore
+from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
+from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.flows.stage import ChallengeStageView
+from authentik.flows.stage import ChallengeStageView, StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.root.ws.consumer import build_device_group
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_AUTHENTICATION_BACKEND,
@@ -180,6 +185,29 @@ class UserLoginStageView(ChallengeStageView):
             Session.objects.filter(
                 authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
+        if RefreshOtherFlowsAfterAuthentication.get():
+            self.executor.plan.append_stage(
+                in_memory_stage(
+                    PostLoginRefreshStage,
+                    current_device_cookie=request.COOKIES.get(COOKIE_NAME_KNOWN_DEVICE),
+                )
+            )
         if remember is None:
             return self.set_known_device_cookie(user)
+        return self.executor.stage_ok()
+
+
+class PostLoginRefreshStage(StageView):
+    """Dynamically injected stage when `flows_refresh_others` flag is enabled, defers
+    sending the refresh signal until the flow is finished"""
+
+    def dispatch(self, request, *args, **kwargs):
+        device_cookie: str | None = self.executor.current_stage.current_device_cookie
+        if device_cookie:
+            layer = get_channel_layer()
+            self.logger.debug("Sending refresh broadcast")
+            async_to_sync(layer.group_send)(
+                build_device_group(device_cookie),
+                {"type": "event.session.authenticated"},
+            )
         return self.executor.stage_ok()
