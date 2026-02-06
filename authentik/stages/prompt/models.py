@@ -87,6 +87,11 @@ class FieldTypes(models.TextChoices):
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
     STATIC = "static", _("Static: Static value, displayed as-is.")
 
+    # Alert box types for displaying styled messages
+    ALERT_INFO = "alert_info", _("Alert (Info): Static alert box with info styling")
+    ALERT_WARNING = "alert_warning", _("Alert (Warning): Static alert box with warning styling")
+    ALERT_DANGER = "alert_danger", _("Alert (Danger): Static alert box with danger styling")
+
     AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
 
 
@@ -300,6 +305,10 @@ class Prompt(SerializerModel):
                 kwargs["required"] = False
                 kwargs["default"] = self.placeholder
             case FieldTypes.STATIC:
+                kwargs["default"] = self.placeholder
+                kwargs["required"] = False
+                kwargs["label"] = ""
+            case FieldTypes.ALERT_INFO | FieldTypes.ALERT_WARNING | FieldTypes.ALERT_DANGER:
                 kwargs["default"] = self.placeholder
                 kwargs["required"] = False
                 kwargs["label"] = ""

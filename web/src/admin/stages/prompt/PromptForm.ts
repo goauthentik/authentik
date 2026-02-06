@@ -146,6 +146,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
             [PromptTypeEnum.Separator, msg("Separator: Static Separator Line")],
             [PromptTypeEnum.Hidden, msg("Hidden: Hidden field, can be used to insert data into form.")],
             [PromptTypeEnum.Static, msg("Static: Static value, displayed as-is.")],
+            [PromptTypeEnum.AlertInfo, msg("Alert (Info): Static alert box with info styling")],
+            [PromptTypeEnum.AlertWarning, msg("Alert (Warning): Static alert box with warning styling")],
+            [PromptTypeEnum.AlertDanger, msg("Alert (Danger): Static alert box with danger styling")],
             [PromptTypeEnum.AkLocale, msg("authentik: Locale: Displays a list of locales authentik supports.")],
         ];
         const currentType = this.instance?.type;
