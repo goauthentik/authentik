@@ -118,6 +118,14 @@ class SAMLFlowFinalView(ChallengeStageView):
                 },
             )
         if provider.sp_binding == SAMLBindings.REDIRECT:
+            Event.new(
+                EventAction.CONFIGURATION_WARNING,
+                message=(
+                    "SAML SP Binding 'Redirect' is deprecated and will be removed in a "
+                    "future version. Use 'Post' binding instead."
+                ),
+                provider=provider,
+            ).from_http(request)
             url_args = {
                 REQUEST_KEY_SAML_RESPONSE: deflate_and_base64_encode(response),
             }

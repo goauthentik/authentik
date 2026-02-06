@@ -30,9 +30,8 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.crypto.models import KeyType
-from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLProvider
+from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
@@ -190,15 +189,6 @@ class SAMLProviderSerializer(ProviderSerializer):
         ):
             # Auto-correct to frontchannel_iframe
             attrs["logout_method"] = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
-
-        if attrs.get("sp_binding") == SAMLBindings.REDIRECT:
-            Event.new(
-                EventAction.CONFIGURATION_WARNING,
-                message=(
-                    "SAML SP Binding 'Redirect' is deprecated and will be removed in a "
-                    "future version. Use 'Post' binding instead."
-                ),
-            ).save()
 
         return super().validate(attrs)
 
