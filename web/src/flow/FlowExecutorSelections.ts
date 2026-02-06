@@ -5,111 +5,148 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
-import { isMatching, match, P } from "ts-pattern";
+import type { UnwrapSet } from "#common/sets";
 
-export const propVariants = ["standard", "challenge", "inspect"] as const;
-type PropVariant = (typeof propVariants)[number];
+import type { FlowChallengeComponentName, StageModuleCallback } from "#flow/types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ComponentImport = () => Promise<any>;
+export const propVariants = new Set(["standard", "challenge", "inspect"] as const);
+type PropVariant = UnwrapSet<typeof propVariants>;
 
-// Any of these are valid variations, so you don't have to specify that this stage takes the
-// "standard" set of props, or if the server-side stage token and the client-side component tag are
-// the same you only need to specify one. Although the PropVariants and TagName are both strings on
-// the wire, custom element tags always contain a dash and the PropVariants don't, making them
-// easy to distinguish.
-//
-type BaseStage =
-    | [token: string, tag: string, variant: PropVariant]
-    | [token: string, variant: PropVariant]
-    | [token: string, tag: string]
-    | [token: string];
-
-type RawStage =
-    | BaseStage
-    | [token: string, tag: string, variant: PropVariant, import: ComponentImport]
-    | [token: string, variant: PropVariant, import: ComponentImport]
-    | [token: string, tag: string, import: ComponentImport]
-    | [token: string, import: ComponentImport];
-
-type Stage = {
-    tag: string;
-    variant: PropVariant;
-    importfn?: ComponentImport;
-};
+/**
+ * @remarks
+ * Any of these are valid variations, so you don't have to specify that this stage takes the
+ * "standard" set of props, or if the server-side stage token and the client-side component tag are
+ * the same you only need to specify one. Although the PropVariants and TagName are both strings on
+ * the wire, custom element tags always contain a dash and the PropVariants don't, making them
+ * easy to distinguish.
+ */
+type StageEntry =
+    | StageModuleCallback
+    | [PropVariant?, tagName?: string]
+    | [PropVariant, StageModuleCallback]
+    | null;
 
 // Tables are allowed to go wide, just for readability. Sorting them alphabetically helps, too.
-//
 // prettier-ignore
-const rawStages: RawStage[] = [
-    ["ak-provider-iframe-logout", async () => await import("#flow/providers/IFrameLogoutStage")],
-    ["ak-provider-oauth2-device-code", "ak-flow-provider-oauth2-code", async () => await import("#flow/providers/oauth2/DeviceCode")],
-    ["ak-provider-oauth2-device-code-finish", "ak-flow-provider-oauth2-code-finish", async () => await import("#flow/providers/oauth2/DeviceCodeFinish")],
-    ["ak-provider-saml-native-logout", async () => await import("#flow/providers/saml/NativeLogoutStage")],
-    ["ak-source-oauth-apple", "ak-flow-source-oauth-apple"],
-    ["ak-source-plex", "ak-flow-source-plex"],
-    ["ak-source-telegram", "ak-flow-source-telegram"],
-    ["ak-stage-access-denied", async () => await import("#flow/stages/access_denied/AccessDeniedStage")],
-    ["ak-stage-authenticator-duo", async () => await import("#flow/stages/authenticator_duo/AuthenticatorDuoStage")],
-    ["ak-stage-authenticator-email", async () => await import("#flow/stages/authenticator_email/AuthenticatorEmailStage")],
-    ["ak-stage-authenticator-sms", async () => await import("#flow/stages/authenticator_sms/AuthenticatorSMSStage")],
-    ["ak-stage-authenticator-static", async () => await import("#flow/stages/authenticator_static/AuthenticatorStaticStage")],
-    ["ak-stage-authenticator-totp", async () => await import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage")],
-    ["ak-stage-authenticator-validate", async () => await import("#flow/stages/authenticator_validate/AuthenticatorValidateStage")],
-    ["ak-stage-authenticator-webauthn"],
-    ["ak-stage-autosubmit", async () => await import("#flow/stages/autosubmit/AutosubmitStage")],
-    ["ak-stage-captcha", async () => await import("#flow/stages/captcha/CaptchaStage")],
-    ["ak-stage-consent", async () => await import("#flow/stages/consent/ConsentStage")],
-    ["ak-stage-dummy", async () => await import("#flow/stages/dummy/DummyStage")],
-    ["ak-stage-email", async () => await import("#flow/stages/email/EmailStage")],
-    ["ak-stage-endpoint-agent", "challenge", async () => await import("#flow/stages/endpoint/agent/EndpointAgentStage")],
-    ["ak-stage-flow-error"],
-    ["ak-stage-identification", async () => await import("#flow/stages/identification/IdentificationStage")],
-    ["ak-stage-password", async () => await import("#flow/stages/password/PasswordStage")],
-    ["ak-stage-prompt", async () => await import("#flow/stages/prompt/PromptStage")],
-    ["ak-stage-session-end", async () => await import("#flow/providers/SessionEnd")],
-    ["ak-stage-user-login", "challenge", async () => await import("#flow/stages/user_login/UserLoginStage")],
-    ["xak-flow-redirect", "ak-stage-redirect", "inspect"],
-    ["xak-flow-frame", "challenge"],
-];
+const StageModuleRecord: Record<FlowChallengeComponentName, StageEntry> = {
+    "ak-provider-iframe-logout": () => import("#flow/providers/IFrameLogoutStage"),
+    "ak-provider-oauth2-device-code-finish": () => import("#flow/providers/oauth2/DeviceCodeFinish"),
+    "ak-provider-oauth2-device-code": () => import("#flow/providers/oauth2/DeviceCode"),
+    "ak-provider-saml-native-logout": () => import("#flow/providers/saml/NativeLogoutStage"),
 
-const isImport = isMatching(P.when((x): x is ComponentImport => typeof x === "function"));
+    "ak-stage-access-denied": () => import("#flow/stages/access_denied/AccessDeniedStage"),
+    "ak-stage-authenticator-duo": () => import("#flow/stages/authenticator_duo/AuthenticatorDuoStage"),
+    "ak-stage-authenticator-email": () => import("#flow/stages/authenticator_email/AuthenticatorEmailStage"),
+    "ak-stage-authenticator-sms": () => import("#flow/stages/authenticator_sms/AuthenticatorSMSStage"),
+    "ak-stage-authenticator-static": () => import("#flow/stages/authenticator_static/AuthenticatorStaticStage"),
+    "ak-stage-authenticator-totp": () => import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage"),
+    "ak-stage-authenticator-validate": () => import("#flow/stages/authenticator_validate/AuthenticatorValidateStage"),
+    "ak-stage-autosubmit": () => import("#flow/stages/autosubmit/AutosubmitStage"),
+    "ak-stage-captcha": () => import("#flow/stages/captcha/CaptchaStage"),
+    "ak-stage-consent": () => import("#flow/stages/consent/ConsentStage"),
+    "ak-stage-dummy": () => import("#flow/stages/dummy/DummyStage"),
+    "ak-stage-email": () => import("#flow/stages/email/EmailStage"),
+    "ak-stage-identification": () => import("#flow/stages/identification/IdentificationStage"),
+    "ak-stage-password": () => import("#flow/stages/password/PasswordStage"),
+    "ak-stage-prompt": () => import("#flow/stages/prompt/PromptStage"),
+    "ak-stage-session-end": () => import("#flow/providers/SessionEnd"),
 
-const PVariant = P.when(
-    (x): x is PropVariant => typeof x === "string" && propVariants.includes(x as PropVariant),
+    "ak-stage-endpoint-agent": ["challenge", () => import("#flow/stages/endpoint/agent/EndpointAgentStage")],
+    "ak-stage-user-login": ["challenge", () => import("#flow/stages/user_login/UserLoginStage")],
+
+    "ak-source-oauth-apple": ["standard", "ak-flow-source-oauth-apple"],
+    "ak-stage-authenticator-webauthn": [],
+    "ak-stage-flow-error": [],
+
+    "ak-source-plex": ["standard", "ak-flow-source-plex"],
+    "ak-source-telegram": ["standard", "ak-flow-source-telegram"],
+
+    "xak-flow-frame": ["challenge"],
+    "xak-flow-redirect": ["inspect", "ak-stage-redirect"],
+    "xak-flow-shell": null,
+}
+
+type StageMapping =
+    | {
+          variant: PropVariant;
+          tag: string;
+          importCallback: null;
+      }
+    | {
+          variant: PropVariant;
+          tag: null;
+          importCallback: StageModuleCallback;
+      };
+
+/**
+ * A mapping of server-side stage tokens to client-side custom element tags, along with the variant of props they consume and an optional import callback for lazy-loading.
+ *
+ * @remarks
+ * This is the actual table of stages consumed by the FlowExecutor.
+ * It is generated from the more concise `StageModuleRecord` above, which is easier to read and maintain.
+ * The `StageModuleRecord` allows for specifying just the token, or the token and variant,
+ * or the token and tag, or all three, and it can also include an import callback if the stage should be lazy-loaded.
+ * The code below normalizes all of these possibilities into a consistent format that the FlowExecutor can use.
+ */
+export const StageMappings: ReadonlyMap<FlowChallengeComponentName, StageMapping | null> = new Map(
+    Object.entries(StageModuleRecord).map(
+        (foo): [FlowChallengeComponentName, StageMapping | null] => {
+            const [token, entry] = foo as [FlowChallengeComponentName, StageEntry | null];
+
+            if (entry === null) {
+                return [token, null];
+            }
+
+            if (typeof entry === "function") {
+                return [token, { tag: null, variant: "standard", importCallback: entry }];
+            }
+
+            const [variant = "standard", maybeTagOrImport = token] = entry;
+
+            if (typeof maybeTagOrImport === "function") {
+                return [token, { tag: null, variant, importCallback: maybeTagOrImport }];
+            }
+
+            return [token, { tag: maybeTagOrImport, variant, importCallback: null }];
+        },
+    ),
 );
 
-// Don't have to type-check what you get from the tap.
-const STANDARD = propVariants[0];
+/**
+ * A cache for storing the resolved custom element tag names for stage mappings that require lazy-loading.
+ */
+const StageMappingTagNameCache = new WeakMap<StageMapping, string>();
 
-type InStage = [token: string, tag: string, variant: PropVariant];
+/**
+ * Given a stage mapping, returns the custom element tag name for that stage, loading the module if necessary.
+ *
+ * @param stageMapping The mapping for the stage, which may include a direct tag name or an import callback for lazy-loading.
+ * @returns The custom element tag name for the stage.
+ * @throws {TypeError} If the module fails to load or does not define a custom element.
+ */
+export async function readStageModuleTag(stageMapping: StageMapping): Promise<string> {
+    if (stageMapping.importCallback === null) {
+        return stageMapping.tag;
+    }
 
-export const stages: Map<string, Stage> = new Map(
-    rawStages.map((rawstage: RawStage) => {
-        // The RawStages table above is clear and lacks the repetition of the original, but it does
-        // mean that doing all the pattern matching to normalize this to the format consumed by the
-        // FlowExecutor looks a little hairy. Repetition, defaults, and optional values can be
-        // ignored, making the table small and elegant, and this runs exactly once at start-time, so
-        // its run-time cost is well worth the savings. The use of `.exhaustive()` at the bottom
-        // guarantees that every variant specified in the `RawStage` type is handled.
-        //
-        // P.optional(PImport) does not work with tuples, but since it *is* optional and it *is* the
-        // last thing when it's present, we lop it off for the purpose of checking the rest, so the
-        // actual comparison table is for all the other variants, then put it back when we assemble
-        // the map.  This eliminates half the variant checks.
-        //
-        const last = rawstage.at(-1);
-        const importfn = isImport(last) ? last : undefined;
-        const rest: BaseStage = (importfn ? rawstage.slice(0, -1) : rawstage) as BaseStage;
+    if (StageMappingTagNameCache.has(stageMapping)) {
+        return StageMappingTagNameCache.get(stageMapping)!;
+    }
 
-        // prettier-ignore
-        const [token, tag, variant] = match<BaseStage, InStage>(rest)
-            .with([P.string, P.string, PVariant], ([token, tag, variant]) => [token, tag, variant])
-            .with([P.string, PVariant], ([token, variant]) => [token, token, variant])
-            .with([P.string, P.string], ([token, tag]) => [token, tag, STANDARD])
-            .with([P.string], ([token])=> [token, token, STANDARD])
-            .exhaustive();
+    const module = await stageMapping.importCallback();
+    const StageConstructor = module.default;
+    const tag = window.customElements.getName(StageConstructor);
 
-        return [token, { tag, variant, importfn }];
-    }),
-);
+    if (!tag) {
+        // eslint-disable-next-line no-console
+        console.trace(
+            `Failed to load stage module: no custom element found in module`,
+            stageMapping,
+        );
+        throw new TypeError("Failed to load stage module: no custom element found");
+    }
+
+    StageMappingTagNameCache.set(stageMapping, tag);
+
+    return tag;
+}

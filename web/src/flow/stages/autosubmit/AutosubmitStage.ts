@@ -51,6 +51,8 @@ export class AutosubmitStage extends BaseStage<
     }
 }
 
+export default AutosubmitStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-autosubmit": AutosubmitStage;

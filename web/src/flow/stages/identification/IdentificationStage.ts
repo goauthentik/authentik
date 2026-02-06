@@ -548,6 +548,8 @@ export class IdentificationStage extends BaseStage<
     //#endregion
 }
 
+export default IdentificationStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-identification": IdentificationStage;

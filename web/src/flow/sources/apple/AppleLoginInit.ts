@@ -74,6 +74,8 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
     }
 }
 
+export default AppleLoginInit;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-flow-source-oauth-apple": AppleLoginInit;
