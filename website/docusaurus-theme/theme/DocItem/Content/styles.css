@@ -1,0 +1,24 @@
+.docusaurus-mermaid-container {
+    .architecture-service {
+        svg {
+            color: var(--mm-service-icon-color, var(--ifm-color-content));
+        }
+
+        .text-inner-tspan {
+            font-weight: var(--ifm-font-weight-bold);
+        }
+    }
+
+    .architecture-edges {
+        .edge {
+            stroke: var(--mm-edge-color, var(--ifm-color-emphasis-800)) !important;
+        }
+        .arrow {
+            fill: var(--mm-arrow-color, var(--ifm-color-emphasis-800)) !important;
+        }
+    }
+
+    .architecture-groups .node-bkg {
+        stroke: var(--mm-group-border-color, transparent) !important;
+    }
+}

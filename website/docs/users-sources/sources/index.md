@@ -4,7 +4,7 @@ title: Sources
 
 Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, Twitter, or GitHub.
 
-### Find your source
+## Find your source
 
 Sources are in the following general categories:
 
@@ -15,7 +15,7 @@ Sources are in the following general categories:
 
 For instructions to add a specific source, refer to the documentation links in the left navigation pane.
 
-### Add sources to default login page
+## Add sources to default login page
 
 To have sources show on the default login screen you will need to add them to the flow. The process below assumes that you have not created or renamed the default stages and flows.
 
@@ -25,3 +25,9 @@ To have sources show on the default login screen you will need to add them to th
 4. Click the **Stage Bindings** tab.
 5. Click **Edit Stage** on the **default-authentication-identification** stage.
 6. Under **Source settings**, add sources to **Selected sources** to have them displayed on the authentik login page.
+
+## Bind a policy to a source
+
+You can bind a policy to a source to control whether or not the users from the source can access an application.
+
+For instructions, refer to [Bind a policy to a source](../../customize/policies/working_with_policies.md#bind-a-policy-to-a-source).

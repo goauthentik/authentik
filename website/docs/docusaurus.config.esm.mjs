@@ -58,7 +58,7 @@ export default createDocusaurusConfig(
         future: {
             experimental_faster: true,
         },
-
+        clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
         url: "https://docs.goauthentik.io",
         //#region Preset
 
