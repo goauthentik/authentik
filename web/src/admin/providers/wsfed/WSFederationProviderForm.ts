@@ -107,6 +107,14 @@ export class WSFederationProviderForm extends BaseProviderForm<WSFederationProvi
                         value="${ifDefined(this.instance?.replyUrl)}"
                         required
                     ></ak-text-input>
+                    <ak-text-input
+                        name="wtrealm"
+                        label=${msg("Realm")}
+                        placeholder=${msg("")}
+                        input-hint="code"
+                        value="${ifDefined(this.instance?.wtrealm)}"
+                        required
+                    ></ak-text-input>
                 </div>
             </ak-form-group>
 

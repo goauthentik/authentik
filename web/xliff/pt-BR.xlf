@@ -10327,6 +10327,9 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="s7606cffc63e1b0a1">
   <source>Sidebar right (frame background)</source>
 </trans-unit>
+<trans-unit id="s92e22f9319fdb85d">
+  <source>Configuration warning</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
