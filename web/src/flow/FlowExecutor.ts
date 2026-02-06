@@ -243,9 +243,10 @@ export class FlowExecutor
             this.#synchronizeFlowInfo();
         }
 
-        Array.from(this.children)
-            .find((el) => el.matches('[slot="slotted-dialog"]') as Element | undefined)
-            ?.remove();
+        const previous = Array.from(this.children).find((el) =>
+            el.matches('[slot="slotted-dialog"]'),
+        );
+        (previous as Element | undefined)?.remove();
 
         if (this.challenge) {
             this.renderChallenge(this.challenge);
@@ -258,7 +259,7 @@ export class FlowExecutor
 
     public submit = async (
         payload?: FlowChallengeResponseRequest,
-        options?: SubmitOptions
+        options?: SubmitOptions,
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
@@ -315,7 +316,10 @@ export class FlowExecutor
         }
 
         const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> =
-            { ".challenge": challenge!, ".host": this };
+            {
+                ".challenge": challenge!,
+                ".host": this,
+            };
 
         const litParts = {
             part: "challenge",
@@ -331,13 +335,12 @@ export class FlowExecutor
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .exhaustive()
+                .exhaustive(),
         );
 
-        console.log(`Rendered ${tag}`);
         render(
             staticHTML`<${unsafeStatic(tag)} ${props} slot="slotted-dialog"></${unsafeStatic(tag)}>`,
-            this
+            this,
         );
     }
 
@@ -376,7 +379,9 @@ export class FlowExecutor
                     ? html`<ak-loading-overlay></ak-loading-overlay>`
                     : nothing}
                 ${component
-                    ? html`<slot name="slotted-dialog" value=${component}></slot>`
+                    ? html`<div part="slotted-dialog">
+                          <slot name="slotted-dialog" value=${component}></slot>
+                      </div>`
                     : html`<slot class="slotted-content" name="placeholder"></slot>`}
             </main>
             <slot name="footer"></slot>`;
