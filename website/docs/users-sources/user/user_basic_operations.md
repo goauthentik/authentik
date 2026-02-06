@@ -2,7 +2,7 @@
 title: Manage users
 ---
 
-The following topics are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
+The following topics are for the basic management of users, including how to create, modify, delete or deactivate users, and using a recovery email.
 
 [Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/expression/unique_email.md).
 
