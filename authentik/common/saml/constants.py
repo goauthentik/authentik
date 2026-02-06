@@ -28,6 +28,8 @@ SAML_ATTRIBUTES_GROUP = "http://schemas.xmlsoap.org/claims/Group"
 SAML_BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 SAML_BINDING_REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
 
+SAML_STATUS_SUCCESS = "urn:oasis:names:tc:SAML:2.0:status:Success"
+
 DSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
 RSA_SHA1 = "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
 # https://datatracker.ietf.org/doc/html/rfc4051#section-2.3.2

@@ -100,13 +100,7 @@ export function StrictUnsafe<T extends string>(
 
             if (observedAttributes.has(key) || key in ElementConstructor.prototype) {
                 filteredProps[key] = String(value);
-
-                continue;
             }
-
-            throw new TypeError(
-                `Property or attribute \`${key}\` is not defined on custom element ${tagName}`,
-            );
         }
 
         return staticHTML`<${unsafeStatic(tagName)} ${spread(filteredProps)}></${unsafeStatic(tagName)}>`;
