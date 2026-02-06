@@ -1,6 +1,7 @@
 import "#flow/components/ak-flow-card";
 
 import { BaseStage } from "#flow/stages/base";
+import { multiTabOrchestrateResume } from "#flow/tabs/orchestrator";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
@@ -58,12 +59,25 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    redirect() {
+    isForeignURL() {
+        try {
+            const destination = new URL(this.challenge!.to, window.origin);
+            return destination.origin === window.origin;
+        } catch {
+            return true;
+        }
+    }
+
+    async redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,
         );
-        window.location.assign(this.challenge.to);
+
+        if (this.isForeignURL()) {
+            await multiTabOrchestrateResume();
+        }
+        window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }
 

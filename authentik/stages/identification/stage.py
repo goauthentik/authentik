@@ -76,6 +76,7 @@ class IdentificationChallenge(Challenge):
     password_fields = BooleanField()
     allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
+    application_pre_launch = CharField(required=False)
     flow_designation = ChoiceField(FlowDesignation.choices)
     captcha_stage = CaptchaChallenge(required=False, allow_null=True)
 
@@ -247,6 +248,20 @@ class IdentificationStageView(ChallengeStageView):
         if SESSION_KEY_APPLICATION_PRE in self.request.session:
             challenge.initial_data["application_pre"] = self.request.session.get(
                 SESSION_KEY_APPLICATION_PRE, Application()
+        # application, PLAN_CONTEXT_APPLICATION is set in the flow plan
+        if PLAN_CONTEXT_APPLICATION in self.executor.plan.context:
+            app: Application = self.executor.plan.context.get(
+                PLAN_CONTEXT_APPLICATION, Application()
+            )
+            challenge.initial_data["application_pre"] = app.name
+            if launch_url := app.get_launch_url():
+                challenge.initial_data["application_pre_launch"] = launch_url
+        if (
+            PLAN_CONTEXT_DEVICE in self.executor.plan.context
+            and PLAN_CONTEXT_DEVICE_AUTH_TOKEN in self.executor.plan.context
+        ):
+            challenge.initial_data["application_pre"] = self.executor.plan.context.get(
+                PLAN_CONTEXT_DEVICE, Device()
             ).name
         get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
         # Check for related enrollment and recovery flow, add URL to view
