@@ -72,6 +72,13 @@ function renderHasSigningKp(provider: Partial<SAMLProvider>) {
             ?checked=${provider?.signLogoutRequest ?? false}
             help=${msg("When enabled, SAML logout requests will be signed.")}
         >
+        </ak-switch-input>
+        <ak-switch-input
+            name="signLogoutResponse"
+            label=${msg("Sign logout response")}
+            ?checked=${provider?.signLogoutResponse ?? false}
+            help=${msg("When enabled, SAML logout responses will be signed.")}
+        >
         </ak-switch-input>`;
 }
 

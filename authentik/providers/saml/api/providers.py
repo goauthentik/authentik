@@ -213,6 +213,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "sign_assertion",
             "sign_response",
             "sign_logout_request",
+            "sign_logout_response",
             "sp_binding",
             "sls_binding",
             "logout_method",
