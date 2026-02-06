@@ -20,7 +20,7 @@ import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { LitPropertyRecord } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -161,9 +161,10 @@ export class FlowExecutor
      * Synchronize flow info such as background image with the current state.
      */
     #synchronizeFlowInfo() {
-        if (!this.flowInfo) {
-            return;
-        }
+        if (!this.flowInfo) return;
+
+        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
+        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
 
         const background =
             this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
@@ -257,10 +258,7 @@ export class FlowExecutor
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (
-            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
-            this.flowInfo
-        ) {
+        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
 
@@ -408,11 +406,37 @@ export class FlowExecutor
 
     //#region Render
 
-    protected renderLoading(): TemplateResult {
+    protected renderLoading(): SlottedTemplateResult {
         return html`<slot class="slotted-content" name="placeholder"></slot>`;
     }
 
-    protected override render(): TemplateResult {
+    protected renderFrameBackground(): SlottedTemplateResult {
+        return guard([this.layout, this.#challenge], () => {
+            if (
+                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
+                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
+            ) {
+                return nothing;
+            }
+
+            const src = this.#challenge?.flowInfo?.background;
+
+            if (!src) return nothing;
+
+            return html`
+                <div class="ak-c-login__content" part="content">
+                    <iframe
+                        class="ak-c-login__content-iframe"
+                        part="content-iframe"
+                        name="flow-content-frame"
+                        src=${src}
+                    ></iframe>
+                </div>
+            `;
+        });
+    }
+
+    protected override render(): SlottedTemplateResult {
         const { component } = this.challenge || {};
 
         return html`<ak-locale-select
@@ -420,7 +444,7 @@ export class FlowExecutor
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
             <main
                 data-layout=${this.layout}
