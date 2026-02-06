@@ -14,7 +14,7 @@ from rest_framework.fields import BooleanField, CharField, ChoiceField, DictFiel
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, PassiveSerializer, ThemedUrlsSerializer
 from authentik.core.models import Application, Source, User
 from authentik.endpoints.connectors.agent.stage import PLAN_CONTEXT_DEVICE_AUTH_TOKEN
 from authentik.endpoints.models import Device
@@ -85,6 +85,7 @@ class LoginSourceSerializer(PassiveSerializer):
 
     name = CharField()
     icon_url = CharField(required=False, allow_null=True)
+    icon_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     promoted = BooleanField(default=False)
 
     challenge = ChallengeDictWrapper()

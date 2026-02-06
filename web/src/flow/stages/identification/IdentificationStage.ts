@@ -322,7 +322,7 @@ export class IdentificationStage extends BaseStage<
     //#region Render
 
     renderSource(source: LoginSource): TemplateResult {
-        const icon = renderSourceIcon(source.name, source.iconUrl);
+        const icon = renderSourceIcon(source.name, source.iconUrl, source.iconThemedUrls, this.activeTheme);
         const isPromoted = source.promoted ?? false;
 
         // Promoted source

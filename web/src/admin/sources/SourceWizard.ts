@@ -63,14 +63,17 @@ export class SourceWizard extends AKElement {
                 >
                 </ak-wizard-page-type-create>
                 ${this.sourceTypes.map((type) => {
+                    // modelName is only used by OAuthSourceForm to resolve the provider type
+                    const props =
+                        type.component === "ak-source-oauth-form"
+                            ? { modelName: type.modelName }
+                            : {};
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
                             label=${msg(str`Create ${type.name}`)}
                         >
-                            ${StrictUnsafe<CustomFormElementTagName>(type.component, {
-                                modelName: type.modelName,
-                            })}
+                            ${StrictUnsafe<CustomFormElementTagName>(type.component, props)}
                         </ak-wizard-page-form>
                     `;
                 })}

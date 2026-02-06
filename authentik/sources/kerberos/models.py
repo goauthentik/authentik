@@ -11,7 +11,6 @@ import pglock
 from django.db import connection, models
 from django.http import HttpRequest
 from django.shortcuts import reverse
-from django.templatetags.static import static
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from kadmin import KAdm5Variant, KAdmin, KAdminApiVersion
@@ -129,12 +128,7 @@ class KerberosSource(IncomingSyncSource):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return KerberosSourcePropertyMapping
 
-    @property
-    def icon_url(self) -> str:
-        icon = super().icon_url
-        if not icon:
-            return static("authentik/sources/kerberos.png")
-        return icon
+    default_icon_name = "kerberos"
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
@@ -169,6 +163,7 @@ class KerberosSource(IncomingSyncSource):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            icon_themed_urls=self.icon_themed_urls,
             promoted=self.promoted,
         )
 
@@ -182,6 +177,7 @@ class KerberosSource(IncomingSyncSource):
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 

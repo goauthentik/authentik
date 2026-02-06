@@ -9,7 +9,7 @@ from rest_framework.fields import (
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import PassiveSerializer, ThemedUrlsSerializer
 from authentik.lib.models import DeprecatedMixin
 from authentik.lib.utils.reflection import all_subclasses
 
@@ -22,7 +22,8 @@ class TypeCreateSerializer(PassiveSerializer):
     component = CharField(required=True)
     model_name = CharField(required=True)
 
-    icon_url = CharField(required=False)
+    icon_url = CharField(required=False, allow_null=True)
+    icon_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     requires_enterprise = BooleanField(default=False)
     deprecated = BooleanField(default=False)
 
@@ -66,6 +67,7 @@ class TypesMixin:
                     "component": instance.component,
                     "model_name": subclass._meta.model_name,
                     "icon_url": getattr(instance, "icon_url", None),
+                    "icon_themed_urls": getattr(instance, "icon_themed_urls", None),
                     "requires_enterprise": False,
                     "deprecated": isinstance(instance, DeprecatedMixin),
                 }

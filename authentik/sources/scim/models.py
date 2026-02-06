@@ -4,7 +4,6 @@ from typing import Any
 from uuid import uuid4
 
 from django.db import models
-from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer, Serializer
 
@@ -27,9 +26,7 @@ class SCIMSource(Source):
         """Return component used to edit this object"""
         return "ak-source-scim-form"
 
-    @property
-    def icon_url(self) -> str:
-        return static("authentik/sources/scim.png")
+    default_icon_name = "scim"
 
     @property
     def serializer(self) -> BaseSerializer:

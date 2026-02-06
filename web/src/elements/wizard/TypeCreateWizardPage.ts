@@ -1,7 +1,9 @@
 import "#admin/common/ak-license-notice";
 import "#elements/Alert";
 
+import { ResolvedUITheme } from "#common/theme";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { FontAwesomeProtocol } from "#elements/utils/images";
 import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { TypeCreate } from "@goauthentik/api";
@@ -12,6 +14,7 @@ import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
+import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -39,6 +42,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#endregion
 
     static styles: CSSResult[] = [
+        PFFAIcons,
         PFForm,
         PFGrid,
         PFRadio,
@@ -49,7 +53,11 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 max-height: 2em;
                 min-height: 2em;
             }
-            :host([theme="dark"]) .pf-c-card__header-main img {
+            .pf-c-card__header-main .font-awesome {
+                font-size: 2em;
+                line-height: 1;
+            }
+            :host([theme="dark"]) .pf-c-card__header-main .font-awesome {
                 filter: invert(1);
             }
             .pf-c-page__main-section {
@@ -93,6 +101,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         );
     };
 
+    #resolveTypeIcon(type: TypeCreate, theme: ResolvedUITheme): string | undefined {
+        if (theme && type.iconThemedUrls?.[theme]) {
+            return type.iconThemedUrls[theme];
+        }
+        return type.iconUrl ?? undefined;
+    }
+
     protected renderGrid(): TemplateResult {
         return html`${this.hasSlotted("above-form")
                 ? html`<div class="pf-c-page__main-section"><slot name="above-form"></slot></div>`
@@ -105,6 +120,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
             >
                 ${this.types.map((type, idx) => {
                     const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
+                    const resolvedIcon = this.#resolveTypeIcon(type, this.activeTheme);
 
                     const selected = this.selectedType === type;
 
@@ -131,14 +147,21 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                             this.selectedType = type;
                         }}
                     >
-                        ${type.iconUrl
+                        ${resolvedIcon
                             ? html`<div role="presentation" class="pf-c-card__header">
                                   <div role="presentation" class="pf-c-card__header-main">
-                                      <img
-                                          aria-hidden="true"
-                                          src=${type.iconUrl}
-                                          alt=${msg(str`${type.name} Icon`)}
-                                      />
+                                      ${resolvedIcon.startsWith(FontAwesomeProtocol)
+                                          ? html`<i
+                                                aria-hidden="true"
+                                                class="font-awesome fas ${resolvedIcon.slice(
+                                                    FontAwesomeProtocol.length,
+                                                )}"
+                                            ></i>`
+                                          : html`<img
+                                                aria-hidden="true"
+                                                src=${resolvedIcon}
+                                                alt=${msg(str`${type.name} Icon`)}
+                                            />`}
                                   </div>
                               </div>`
                             : nothing}

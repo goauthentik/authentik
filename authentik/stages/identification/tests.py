@@ -206,7 +206,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -242,7 +243,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -317,7 +319,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -373,7 +376,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -436,7 +440,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -481,7 +486,8 @@ class TestIdentificationStage(FlowTestCase):
             primary_action="Log in",
             sources=[
                 {
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "challenge": {
                         "component": "xak-flow-redirect",
@@ -523,7 +529,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }
@@ -551,7 +558,8 @@ class TestIdentificationStage(FlowTestCase):
                         "component": "xak-flow-redirect",
                         "to": f"/source/oauth/login/{self.source.slug}/",
                     },
-                    "icon_url": "/static/authentik/sources/default.svg",
+                    "icon_url": None,
+                    "icon_themed_urls": None,
                     "name": self.source.name,
                     "promoted": False,
                 }

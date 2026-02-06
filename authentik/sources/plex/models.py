@@ -5,7 +5,6 @@ from typing import Any
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.http.request import HttpRequest
-from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -100,12 +99,7 @@ class PlexSource(ScheduledModel, Source):
             "name": group_id,
         }
 
-    @property
-    def icon_url(self) -> str:
-        icon = super().icon_url
-        if not icon:
-            icon = static("authentik/sources/plex.svg")
-        return icon
+    default_icon_name = "plex"
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
@@ -117,6 +111,7 @@ class PlexSource(ScheduledModel, Source):
                 }
             ),
             icon_url=self.icon_url,
+            icon_themed_urls=self.icon_themed_urls,
             name=self.name,
             promoted=self.promoted,
         )
@@ -128,6 +123,7 @@ class PlexSource(ScheduledModel, Source):
                 "component": "ak-user-settings-source-plex",
                 "configure_url": self.client_id,
                 "icon_url": self.icon_url,
+                "icon_themed_urls": self.icon_themed_urls,
             }
         )
 

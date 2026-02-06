@@ -40688,6 +40688,9 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -41378,6 +41381,9 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -41873,6 +41879,10 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
           nullable: true
         promoted:
           type: boolean
@@ -43242,6 +43252,8 @@ components:
         icon_url:
           type: string
           nullable: true
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -50454,6 +50466,9 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -53029,6 +53044,9 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -54638,7 +54656,8 @@ components:
         icon_url:
           type: string
           nullable: true
-          description: Get the URL to the source icon
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -55320,6 +55339,8 @@ components:
         icon_url:
           type: string
           nullable: true
+          description: Get the URL to the source icon. Only returns user-configured
+            icons.
           readOnly: true
         icon_themed_urls:
           allOf:
@@ -55775,6 +55796,11 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
         requires_enterprise:
           type: boolean
           default: false
@@ -56795,6 +56821,11 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          nullable: true
       required:
       - component
       - object_uid

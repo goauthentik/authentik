@@ -143,7 +143,6 @@ export class UserSourceSettingsPage extends AKElement {
         const connection = this.sourceToConnection.get(source);
         const connectionPk = connection?.pk ?? -1;
         const connectionUserPk = connection?.user ?? -1;
-
         return html`<li
             class="pf-c-data-list__item"
             part="list-item"
@@ -160,7 +159,13 @@ export class UserSourceSettingsPage extends AKElement {
             <div class="pf-c-data-list__item-row">
                 <div class="pf-c-data-list__item-content">
                     <div class="pf-c-data-list__cell">
-                        ${renderSourceIcon(source.title, source.iconUrl)} ${source.title}
+                        ${renderSourceIcon(
+                            source.title,
+                            source.iconUrl,
+                            source.iconThemedUrls,
+                            this.activeTheme,
+                        )}
+                        ${source.title}
                     </div>
                     <div class="pf-c-data-list__cell">${this.renderSourceSettings(source)}</div>
                 </div>

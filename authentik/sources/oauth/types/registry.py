@@ -5,7 +5,6 @@ from enum import Enum
 from typing import Any
 
 from django.http.request import HttpRequest
-from django.templatetags.static import static
 from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
@@ -45,10 +44,6 @@ class SourceType:
     authorization_code_auth_method: AuthorizationCodeAuthMethod = (
         AuthorizationCodeAuthMethod.BASIC_AUTH
     )
-
-    def icon_url(self) -> str:
-        """Get Icon URL for login"""
-        return static(f"authentik/sources/{self.name}.svg")
 
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""

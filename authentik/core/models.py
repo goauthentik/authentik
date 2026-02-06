@@ -17,6 +17,7 @@ from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -965,21 +966,38 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     objects = InheritanceManager()
 
+    default_icon_name: str | None = None
+    """Source type name used to resolve built-in themed icons (e.g. "discord")."""
+
     @property
     def icon_url(self) -> str | None:
-        """Get the URL to the source icon"""
-        if not self.icon:
+        """Get the URL to the source icon. Only returns user-configured icons."""
+        manager = get_file_manager(FileUsage.MEDIA)
+        try:
+            if self.icon:
+                return manager.file_url(self.icon)
+        except AttributeError:
+            # Abstract type instances (created via __new__) don't have field state.
             return None
-
-        return get_file_manager(FileUsage.MEDIA).file_url(self.icon)
+        return None
 
     @property
     def icon_themed_urls(self) -> dict[str, str] | None:
-        """Get themed URLs for icon if it contains %(theme)s"""
-        if not self.icon:
-            return None
-
-        return get_file_manager(FileUsage.MEDIA).themed_urls(self.icon)
+        """Get themed URLs for source icon."""
+        manager = get_file_manager(FileUsage.MEDIA)
+        # If the user set a custom icon, check if it supports themes.
+        try:
+            if self.icon:
+                return manager.themed_urls(self.icon)
+        except AttributeError:
+            pass
+        # Fall back to built-in default icons.
+        if self.default_icon_name:
+            return {
+                "light": static(f"authentik/sources/{self.default_icon_name}/light.svg"),
+                "dark": static(f"authentik/sources/{self.default_icon_name}/dark.svg"),
+            }
+        return None
 
     def get_user_path(self) -> str:
         """Get user path, fallback to default for formatting errors"""

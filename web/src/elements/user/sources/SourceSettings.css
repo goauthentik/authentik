@@ -24,7 +24,7 @@
     padding-inline-start: 0;
     border-top-color: var(--ak-dark-background-lighter);
 
-    .pf-c-data-list__cell img {
+    .pf-c-data-list__cell i[part="source-icon"] {
         filter: invert(1);
     }
 
