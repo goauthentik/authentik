@@ -6,28 +6,28 @@
     flex-flow: column nowrap;
 }
 
-.inspector-toggle {
+.inspector-toggle,
+.inspector-toggle.style-scope {
     position: absolute;
     inset-inline-end: var(--pf-global--spacer--md);
     inset-block-start: var(--pf-global--spacer--md);
     z-index: 100;
 }
 
-[part="locale-select"] {
+[part="locale-select"],
+[part="locale-select"].style-scope {
     --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
     --ak-c-flow-executor__locale-select--Padding: var(--pf-global--spacer--md);
     --ak-c-flow-executor__locale-select--Color: var(--pf-global--Color--100);
     --ak-c-locale-select--label--Color: var(--ak-c-flow-executor__locale-select--Color);
 
     /* Compatibility mode */
-    & {
-        color: var(--ak-c-flow-executor__locale-select--Color);
-        position: absolute;
-        inset-block-start: var(--ak-c-flow-executor__locale-select--Padding);
-        inset-inline-start: var(--ak-c-flow-executor__locale-select--Padding);
-        font-weight: 500;
-        z-index: 100;
-    }
+    color: var(--ak-c-flow-executor__locale-select--Color);
+    position: absolute;
+    inset-block-start: var(--ak-c-flow-executor__locale-select--Padding);
+    inset-inline-start: var(--ak-c-flow-executor__locale-select--Padding);
+    font-weight: 500;
+    z-index: 100;
 
     /* Slight differences in browser hover states. */
     &:has(select:hover),
