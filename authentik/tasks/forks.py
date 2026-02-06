@@ -17,6 +17,11 @@ def worker_healthcheck():
         port = int(port)
     except ValueError:
         LOGGER.error(f"Invalid port entered: {port}")
+        return
+
+    if CONFIG.get_bool("debug"):
+        port += 1
+        LOGGER.debug("Debug mode: offsetting worker healthcheck port", port=port)
 
     WorkerHealthcheckMiddleware.run(host, port)
     pause()
