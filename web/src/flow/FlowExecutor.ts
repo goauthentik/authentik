@@ -24,7 +24,7 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
-import { readStageModuleTag, StageMappings } from "#flow/FlowExecutorSelections";
+import { StageMappings } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
 import type { FlowChallengeComponentName, StageHost, SubmitOptions } from "#flow/types";
 
@@ -343,14 +343,17 @@ export class FlowExecutor
         }
 
         const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
-            { ".challenge": challenge!, ".host": this };
+            {
+                ".challenge": challenge!,
+                ".host": this,
+            };
 
         const litParts = {
             part: "challenge",
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const tag = await readStageModuleTag(stage);
+        const tag = await stage.tag;
 
         const props = spread(
             match(stage.variant)
