@@ -9,7 +9,7 @@ authentik_enterprise: true
 
 ## Prerequisites
 
-You need to have deployed the authentik Agent on the Linux device, see [Deploy the authentik Agent on Linux](../../authentik-agent/agent-deployment/linux.mdx) for more details.
+You need to have deployed the authentik Agent on the Linux device, see [Deploy the authentik Agent on Linux](../../agent-deployment/linux.mdx) for more details.
 
 ## How it works
 
@@ -29,4 +29,4 @@ When configured correctly, when logging in you should see a prompt for **authent
 ## Known issues
 
 - Only Webauthn MFA is supported.
-- On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../authentik-agent/agent-deployment/linux.mdx#local-device-login-on-debian-based-systems).
+- On non-Debian Linux distributions, you currently need to [manually configure NSS and PAM](../../agent-deployment/linux.mdx#local-device-login-on-non-debian-systems).

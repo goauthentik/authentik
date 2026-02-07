@@ -29,7 +29,7 @@ from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 
@@ -104,6 +104,7 @@ class TestAuthNRequest(TestCase):
             signing_kp=self.cert,
             verification_kp=self.cert,
             signed_assertion=True,
+            binding_type=SAMLBindingTypes.POST,
         )
 
     def test_signed_valid(self):
@@ -193,6 +194,213 @@ class TestAuthNRequest(TestCase):
 
         response_parser = ResponseProcessor(self.source, http_request)
         response_parser.parse()
+
+    def test_request_sign_response_and_encrypt(self):
+        """Test SAML with sign_response enabled AND encryption.
+
+        This tests the fix for signature invalidation when encryption is enabled.
+        The response must be signed AFTER encryption, not before, because encryption
+        replaces the Assertion with EncryptedAssertion which changes the response content.
+        """
+        self.provider.sign_response = True
+        self.provider.sign_assertion = False
+        self.provider.encryption_kp = self.cert
+        self.provider.save()
+        self.source.encryption_kp = self.cert
+        self.source.signed_response = True
+        self.source.signed_assertion = False  # Only response is signed, not assertion
+        self.source.save()
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Verify the response contains EncryptedAssertion and a signature
+        response_xml = fromstring(response)
+        self.assertEqual(len(response_xml.xpath("//saml:EncryptedAssertion", namespaces=NS_MAP)), 1)
+        self.assertEqual(
+            len(response_xml.xpath("//samlp:Response/ds:Signature", namespaces=NS_MAP)), 1
+        )
+
+        # Now parse the response (source) - this will verify the signature and decrypt
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
+
+    def test_request_sign_assertion_and_encrypt(self):
+        """Test SAML with sign_assertion enabled AND encryption.
+
+        The assertion signature should be inside the encrypted content and
+        remain valid after decryption.
+        """
+        self.provider.sign_response = False
+        self.provider.sign_assertion = True
+        self.provider.encryption_kp = self.cert
+        self.provider.save()
+        self.source.encryption_kp = self.cert
+        self.source.signed_assertion = True
+        self.source.save()
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Verify the response contains EncryptedAssertion
+        response_xml = fromstring(response)
+        self.assertEqual(len(response_xml.xpath("//saml:EncryptedAssertion", namespaces=NS_MAP)), 1)
+
+        # Now parse the response (source) - this will decrypt and verify assertion signature
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
+
+    def test_request_sign_both_and_encrypt(self):
+        """Test SAML with both sign_assertion and sign_response enabled AND encryption.
+
+        This is the most complex scenario: assertion is signed, then encrypted,
+        then the response is signed. Both signatures should be valid.
+        """
+        self.provider.sign_response = True
+        self.provider.sign_assertion = True
+        self.provider.encryption_kp = self.cert
+        self.provider.save()
+        self.source.encryption_kp = self.cert
+        self.source.signed_assertion = True
+        self.source.signed_response = True
+        self.source.save()
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Verify the response contains EncryptedAssertion and response signature
+        response_xml = fromstring(response)
+        self.assertEqual(len(response_xml.xpath("//saml:EncryptedAssertion", namespaces=NS_MAP)), 1)
+        self.assertEqual(
+            len(response_xml.xpath("//samlp:Response/ds:Signature", namespaces=NS_MAP)), 1
+        )
+
+        # Now parse the response (source) - this will verify response signature,
+        # decrypt, then verify assertion signature
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
+
+    def test_encrypted_assertion_namespace_preservation(self):
+        """Test that encrypted assertions include namespace declarations.
+
+        When an assertion is encrypted, the resulting decrypted XML must include
+        the necessary namespace declarations (xmlns:saml) since it's now a standalone
+        document fragment, no longer inheriting namespaces from the parent Response.
+        """
+        self.provider.encryption_kp = self.cert
+        self.provider.save()
+        self.source.encryption_kp = self.cert
+        self.source.save()
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Parse the encrypted response
+        response_xml = fromstring(response)
+        encrypted_assertion = response_xml.xpath("//saml:EncryptedAssertion", namespaces=NS_MAP)[0]
+        encrypted_data = encrypted_assertion.xpath("//xenc:EncryptedData", namespaces=NS_MAP)[0]
+
+        # Decrypt the assertion manually to verify namespace is present
+        import xmlsec
+
+        manager = xmlsec.KeysManager()
+        key = xmlsec.Key.from_memory(self.cert.key_data, xmlsec.constants.KeyDataFormatPem, None)
+        manager.add_key(key)
+        enc_ctx = xmlsec.EncryptionContext(manager)
+        decrypted = enc_ctx.decrypt(encrypted_data)
+
+        # The decrypted assertion should have xmlns:saml namespace declaration
+        decrypted_str = etree.tostring(decrypted).decode()
+        self.assertIn("xmlns:saml", decrypted_str)
+
+        # Also verify full round-trip works (source can parse it)
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
+
+    def test_encrypted_response_schema_validation(self):
+        """Test that encrypted SAML responses validate against the SAML schema.
+
+        The response with EncryptedAssertion must be valid per saml-schema-protocol-2.0.xsd.
+        This ensures we don't have invalid elements like EncryptedData inside Assertion.
+        """
+        self.provider.encryption_kp = self.cert
+        self.provider.save()
+        http_request = self.request_factory.get("/", user=get_anonymous_user())
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Validate against SAML schema
+        schema = etree.XMLSchema(
+            etree.parse("schemas/saml-schema-protocol-2.0.xsd", parser=etree.XMLParser())  # nosec
+        )
+        self.assertTrue(schema.validate(lxml_from_string(response)))
+
+        # Verify structure: should have EncryptedAssertion, not Assertion with EncryptedData inside
+        response_xml = fromstring(response)
+        self.assertEqual(len(response_xml.xpath("//saml:EncryptedAssertion", namespaces=NS_MAP)), 1)
+        self.assertEqual(len(response_xml.xpath("//saml:Assertion", namespaces=NS_MAP)), 0)
 
     def test_request_signed(self):
         """Test full SAML Request/Response flow, fully signed"""
