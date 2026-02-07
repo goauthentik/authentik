@@ -397,13 +397,21 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """
 
         def setter(raw_password):
+            from authentik.core.signals import password_hash_updated
+            from authentik.events.middleware import audit_ignore
+
             old_password_hash = self.password
             self.set_password(raw_password, signal=False)
             # Password hash upgrades shouldn't be considered password changes.
             self._password = None
-            self.password_hash_changed = self.password != old_password_hash
 
-            self.save(update_fields=["password"])
+            # Prevent MODEL_UPDATED audit event from being emitted
+            # if the password hash changes
+            with audit_ignore():
+                self.save(update_fields=["password"])
+
+            if self.password != old_password_hash:
+                password_hash_updated.send(sender=self, user=self)
 
         return check_password(raw_password, self.password, setter)
 

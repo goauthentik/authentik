@@ -4,8 +4,8 @@ from django.contrib.auth.hashers import PBKDF2PasswordHasher
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.core.signals import PASSWORD_HASH_UPGRADE_REASON
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.events.constants import PASSWORD_HASH_UPGRADE_REASON
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
@@ -39,7 +39,7 @@ class TestAudit(APITestCase):
         """
         When Django is updated, it's possible that the password hash is also updated.
 
-        Due to an increase in the password hash rounds.
+        This can happen due to an increase in the password hash rounds.
         When this happens, we should log a MODEL_UPDATED event with a reason
         explaining the password hash upgrade.
         """
@@ -65,7 +65,34 @@ class TestAudit(APITestCase):
         )
         self.assertTrue(events.exists())
 
-    def test_set_password_no_password_upgrade_reason(self):
+        # Only 1 MODEL_UPDATED event should be created.
+        self.assertEqual(events.count(), 1)
+
+    def test_password_hash_updated_no_request(self):
+        """
+        Tests password hash update outside the request/response cycle.
+        """
+        with patch.object(
+            PBKDF2PasswordHasher,
+            "iterations",
+            new_callable=PropertyMock,
+            return_value=PBKDF2PasswordHasher.iterations + 100_000,
+        ):
+            self.client.login(username=self.user.username, password=self.user.username)
+
+        events = Event.objects.filter(
+            action=EventAction.MODEL_UPDATED,
+            context__model__app="authentik_core",
+            context__model__model_name="user",
+            context__model__pk=self.user.pk,
+            context__reason=PASSWORD_HASH_UPGRADE_REASON,
+        )
+        self.assertTrue(events.exists())
+
+        # Only 1 MODEL_UPDATED event should be created.
+        self.assertEqual(events.count(), 1)
+
+    def test_set_password_no_password_hash_updated_event(self):
         """Ensure that setting a password is not detected as a password hash upgrade."""
         self.client.login(username=self.user.username, password=self.user.username)
         response = self.client.post(

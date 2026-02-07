@@ -20,9 +20,11 @@ from authentik.core.models import (
 
 # Arguments: user: User, password: str
 password_changed = Signal()
+password_hash_updated = Signal()
 # Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
 login_failed = Signal()
 
+PASSWORD_HASH_UPGRADE_REASON = "Password hash upgraded"  # noqa # nosec
 LOGGER = get_logger()
 
 

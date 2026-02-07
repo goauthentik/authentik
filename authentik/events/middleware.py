@@ -202,15 +202,8 @@ class AuditMiddleware:
             return
         user = self.get_user(request)
 
-        context = {}
-        if isinstance(instance, User) and instance.password_hash_changed:
-            context["reason"] = _("Password hash upgraded")
-            instance.password_hash_changed = False
-
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
-        thread = EventNewThread(
-            action, request, user=user, model=model_to_dict(instance), **context
-        )
+        thread = EventNewThread(action, request, user=user, model=model_to_dict(instance))
         thread.kwargs.update(thread_kwargs or {})
         thread.run()
 

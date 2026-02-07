@@ -11,8 +11,14 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.core.signals import login_failed, password_changed
+from authentik.core.signals import (
+    PASSWORD_HASH_UPGRADE_REASON,
+    login_failed,
+    password_changed,
+    password_hash_updated,
+)
 from authentik.events.models import Event, EventAction
+from authentik.events.utils import model_to_dict
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -106,6 +112,32 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
 def on_password_changed(sender, user: User, password: str, request: HttpRequest | None, **_):
     """Log password change"""
     Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
+
+
+@receiver(password_hash_updated)
+def on_password_hash_updated(sender, user: User, **_):
+    """
+    Log password hash change.
+
+    This change can happen automatically due to a new Django version update
+    or due to a manual change of the `iterations/rounds` setting of the password hasher.
+
+    A MODEL_UPDATED event with a reason to distinguish password hash upgrades
+    from regular user model updates is created.
+    """
+    from authentik.events.middleware import _CTX_REQUEST
+
+    request = _CTX_REQUEST.get()
+    event = Event.new(
+        EventAction.MODEL_UPDATED,
+        model=model_to_dict(user),
+        reason=PASSWORD_HASH_UPGRADE_REASON,
+    )
+
+    if request:
+        event.from_http(request, user=user)
+    else:
+        event.set_user(user).save()
 
 
 @receiver(post_save, sender=Event)
