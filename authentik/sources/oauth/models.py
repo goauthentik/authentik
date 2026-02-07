@@ -85,7 +85,7 @@ class OAuthSource(NonCreatableType, Source):
     )
 
     @property
-    def source_type(self) -> type["SourceType"]:
+    def source_type(self) -> type[SourceType]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 
@@ -137,6 +137,7 @@ class OAuthSource(NonCreatableType, Source):
             name=self.name,
             challenge=provider.login_challenge(self, request),
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -223,6 +224,15 @@ class DiscordOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Discord OAuth Sources")
 
 
+class SlackOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Slack."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Slack OAuth Source")
+        verbose_name_plural = _("Slack OAuth Sources")
+
+
 class PatreonOAuthSource(CreatableType, OAuthSource):
     """Social Login using Patreon."""
 
@@ -297,6 +307,15 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Reddit OAuth Sources")
 
 
+class WeChatOAuthSource(CreatableType, OAuthSource):
+    """Social Login using WeChat."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("WeChat OAuth Source")
+        verbose_name_plural = _("WeChat OAuth Sources")
+
+
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 
@@ -321,6 +340,7 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
+    refresh_token = models.TextField(blank=True, null=True, default=None)
     expires = models.DateTimeField(default=now)
 
     @property
@@ -334,10 +354,6 @@ class UserOAuthSourceConnection(UserSourceConnection):
         )
 
         return UserOAuthSourceConnectionSerializer
-
-    def save(self, *args, **kwargs):
-        self.access_token = self.access_token or None
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("User OAuth Source Connection")

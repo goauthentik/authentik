@@ -47,7 +47,7 @@ entries:
       # as normal. Otherwise, the entry is skipped as if not defined at all.
       # Each condition will be evaluated in Python to its boolean representation
       # bool(<condition>). Furthermore, complex conditions can be built using
-      # a special !Condition tag. See the documentattion for custom tags for more
+      # a special !Condition tag. See the documentation for custom tags for more
       # information.
       conditions:
           - true

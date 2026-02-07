@@ -14,11 +14,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik import authentik_build_hash
+from authentik.admin.api.system import fips_enabled
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
-from authentik.enterprise.license import LicenseKey
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -47,7 +47,9 @@ class OutpostSerializer(ModelSerializer):
     )
     providers_obj = ProviderSerializer(source="providers", many=True, read_only=True)
     service_connection_obj = ServiceConnectionSerializer(
-        source="service_connection", read_only=True
+        source="service_connection",
+        read_only=True,
+        allow_null=True,
     )
     refresh_interval_s = SerializerMethodField()
 
@@ -139,7 +141,7 @@ class OutpostHealthSerializer(PassiveSerializer):
 
     def get_fips_enabled(self, obj: dict) -> bool | None:
         """Get FIPS enabled"""
-        if not LicenseKey.get_total().status().is_valid:
+        if not fips_enabled():
             return None
         return obj["fips_enabled"]
 

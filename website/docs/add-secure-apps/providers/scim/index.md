@@ -62,6 +62,36 @@ Attribute mapping from authentik to SCIM users is done via property mappings as 
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
 
+### Compatibility modes
+
+By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider.
+
+#### User Filtering
+
+Users can be filtered using application policies.
+
+Only users who can view the scim provider's application are synced by the scim provider.
+
+#### Group Filters
+
+Group Filters allow you to define the group syncing scope of a SCIM provider.
+
+In its default configuration, with no group filters selected, the SCIM provider will sync all groups.
+
+If group filters are selected, only selected groups will be synced.
+
+Currently, changes to filter groups do _not_ remove previously synchronized groups and members.
+
+Available compatibility modes:
+
+- **Default**: Standard SCIM 2.0 implementation
+- **AWS**: Disables PATCH operations for AWS Identity Center compatibility
+- **Slack**: Enables filtering support for Slack's SCIM implementation
+- **Salesforce**: Uses the non-standard `/ServiceProviderConfigs` endpoint
+- **vCenter**: Skips the `ServiceProviderConfig` endpoint which is not implemented in VMware vCenter
+
+To configure a compatibility mode, select the appropriate option in the **SCIM Compatibility Mode** field when creating or editing a SCIM provider.
+
 ### Filtering users
 
 By default service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
@@ -69,6 +99,10 @@ By default service accounts are excluded from being synchronized. This can be co
 ### Supported options
 
 SCIM defines several optional settings that allow clients to discover a service provider's supported features. In authentik, the [`ServiceProviderConfig`](https://datatracker.ietf.org/doc/html/rfc7644#section-4) endpoint provides support for the following options (if the option is supported by the service provider).
+
+:::note
+The `ServiceProviderConfig` is cached for 1 hour after it is fetched. The cache is automatically cleared when the SCIM provider is updated (such as when changing the compatibility mode).
+:::
 
 - Filtering
 

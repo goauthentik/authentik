@@ -12,7 +12,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import {
     PoliciesApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     Reputation,
 } from "@goauthentik/api";
 
@@ -58,7 +58,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Reputation")}
+            object-label=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({
@@ -88,7 +88,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             Timestamp(item.updated),
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikPoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

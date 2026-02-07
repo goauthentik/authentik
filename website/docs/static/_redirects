@@ -22,6 +22,12 @@
 /add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/ 301!
 /core/applications                                          /add-secure-apps/applications/ 301!
 /applications/*                                             /add-secure-apps/applications/:splat 301!
+/add-secure-apps/providers/gws/add-gws-provider/            /add-secure-apps/providers/gws/create-gws-provider/ 301!
+/add-secure-apps/providers/gws/setup-gws/                   /add-secure-apps/providers/gws/configure-gws/ 301!
+/add-secure-apps/providers/oauth2/client_credentials        /add-secure-apps/providers/oauth2/machine_to_machine 301!
+/add-secure-apps/providers/entra/setup-entra/               /add-secure-apps/providers/entra/configure-entra/ 301!
+/add-secure-apps/providers/entra/add-entra-provider/        /add-secure-apps/providers/entra/create-entra-provider/ 301!
+/add-secure-apps/providers/ldap/generic_setup/              /add-secure-apps/providers/ldap/create-ldap-provider/ 301!
 #endregion
 
 #region Core
@@ -39,6 +45,10 @@
 /customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
 /interfaces/*                                               /customize/interfaces/:splat 301!
 /policies/*                                                 /customize/policies/:splat 301!
+#endregion
+
+#region Endpoint Devices
+/endpoint-devices/device-authentication/*                                          /endpoint-devices/authentik-agent/device-authentication/:splat 301!
 #endregion
 
 #region System Management
@@ -68,6 +78,11 @@
 /security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53 301!
 /security/CVE-*                                             /security/cves/CVE-:splat 301!
 /security/GHSA-*                                            /security/cves/GHSA-:splat 301!
+#endregion
+
+#region Troubleshooting
+/troubleshooting/logs                                        /troubleshooting/logs/logs 301!
+/troubleshooting/forward_auth/general                        /troubleshooting/forward_auth 301!
 #endregion
 
 #region Integrations

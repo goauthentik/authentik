@@ -6,7 +6,7 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
-from django.http import response as http_response
+from django.utils import http as utils_http
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -82,8 +82,10 @@ TENANT_APPS = [
     "authentik.api",
     "authentik.core",
     "authentik.crypto",
-    "authentik.enterprise",
+    "authentik.endpoints",
+    "authentik.endpoints.connectors.agent",
     "authentik.events",
+    "authentik.admin.files",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -145,7 +147,8 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH_USER = False
+GUARDIAN_GROUP_MODEL = "authentik_core.Group"
+GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -185,6 +188,9 @@ SPECTACULAR_SETTINGS = {
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
+        "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
+        "StageModeEnum": "authentik.endpoints.models.StageMode",
+        "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -202,7 +208,6 @@ SPECTACULAR_SETTINGS = {
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
-    "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
         "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -249,13 +254,13 @@ SESSION_COOKIE_AGE = timedelta_from_string(
 ).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
+MESSAGE_STORAGE = "authentik.root.ws.storage.ChannelsStorage"
 
 MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
 ]
 MIDDLEWARE = [
-    "django_tenants.middleware.default.DefaultTenantMiddleware",
+    "authentik.tenants.middleware.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
@@ -474,47 +479,7 @@ STORAGES = {
 # as the maximum for a URL to redirect to, mostly for running on Windows.
 # However, our URLs can easily exceed that with OAuth/SAML Query parameters or hash values.
 # 8192 should cover most cases.
-http_response.MAX_URL_LENGTH = http_response.MAX_URL_LENGTH * 4
-
-
-# Media files
-if CONFIG.get("storage.media.backend", "file") == "s3":
-    STORAGES["default"] = {
-        "BACKEND": "authentik.root.storages.S3Storage",
-        "OPTIONS": {
-            # How to talk to S3
-            "session_profile": CONFIG.get("storage.media.s3.session_profile", None),
-            "access_key": CONFIG.get("storage.media.s3.access_key", None),
-            "secret_key": CONFIG.get("storage.media.s3.secret_key", None),
-            "security_token": CONFIG.get("storage.media.s3.security_token", None),
-            "region_name": CONFIG.get("storage.media.s3.region", None),
-            "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
-            "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
-            "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
-            "default_acl": "private",
-            "querystring_auth": True,
-            "signature_version": "s3v4",
-            "file_overwrite": False,
-            "location": "media",
-            "url_protocol": (
-                "https:" if CONFIG.get("storage.media.s3.secure_urls", True) else "http:"
-            ),
-            "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
-        },
-    }
-# Fallback on file storage backend
-else:
-    STORAGES["default"] = {
-        "BACKEND": "authentik.root.storages.FileStorage",
-        "OPTIONS": {
-            "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": CONFIG.get("web.path", "/") + "media/",
-        },
-    }
-    # Compatibility for apps not supporting top-level STORAGES
-    # such as django-tenants
-    MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
-    MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
+utils_http.MAX_URL_LENGTH = utils_http.MAX_URL_LENGTH * 4
 
 structlog_configure()
 LOGGING = get_logger_config()
@@ -578,6 +543,15 @@ def _update_settings(app_path: str) -> None:
                 globals()[_attr] = getattr(settings_module, _attr)
     except ImportError:
         pass
+
+
+# Attempt to load enterprise app, if available
+try:
+    importlib.import_module("authentik.enterprise.apps")
+    CONFIG.log("info", "Enabled authentik enterprise")
+    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+except ImportError:
+    pass
 
 
 if DEBUG:

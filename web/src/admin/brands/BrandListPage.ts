@@ -12,7 +12,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { Brand, CoreApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -50,7 +50,7 @@ export class BrandListPage extends TablePage<Brand> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Brand(s)")}
+            object-label=${msg("Brand(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Brand) => {
                 return [{ key: msg("Domain"), value: item.domain }];
@@ -90,7 +90,7 @@ export class BrandListPage extends TablePage<Brand> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBrandsBrand}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
                 </ak-rbac-object-permission-modal>

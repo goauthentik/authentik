@@ -2,7 +2,7 @@
 
 from base64 import b64decode
 from time import mktime
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import xmlsec
 from defusedxml.lxml import fromstring
@@ -11,13 +11,26 @@ from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
 from django.utils.timezone import now
 from lxml import etree  # nosec
+from lxml.etree import _Element  # nosec
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.constants import (
+    NS_MAP,
+    NS_SAML_ASSERTION,
+    NS_SAML_PROTOCOL,
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
+    SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_WINDOWS,
+    SAML_NAME_ID_FORMAT_X509,
+    SAML_STATUS_SUCCESS,
+)
 from authentik.core.models import (
     USER_ATTRIBUTE_DELETE_ON_LOGOUT,
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
     USER_ATTRIBUTE_SOURCES,
+    USERNAME_MAX_LENGTH,
     User,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
@@ -34,16 +47,6 @@ from authentik.sources.saml.models import (
     SAMLSource,
     UserSAMLSourceConnection,
 )
-from authentik.sources.saml.processors.constants import (
-    NS_MAP,
-    NS_SAML_ASSERTION,
-    NS_SAML_PROTOCOL,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PERSISTENT,
-    SAML_NAME_ID_FORMAT_TRANSIENT,
-    SAML_NAME_ID_FORMAT_WINDOWS,
-    SAML_NAME_ID_FORMAT_X509,
-)
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
 
 LOGGER = get_logger()
@@ -58,7 +61,7 @@ class ResponseProcessor:
 
     _source: SAMLSource
 
-    _root: Any
+    _root: _Element
     _root_xml: bytes
 
     _http_request: HttpRequest
@@ -77,11 +80,17 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
+        # Verify response signature BEFORE decryption (signature covers encrypted content)
+        if self._source.verification_kp and self._source.signed_response:
+            self._verify_response_signature()
+
         if self._source.encryption_kp:
             self._decrypt_response()
 
-        if self._source.verification_kp:
-            self._verify_signed()
+        # Verify assertion signature AFTER decryption (signature is inside encrypted content)
+        if self._source.verification_kp and self._source.signed_assertion:
+            self._verify_assertion_signature()
+
         self._verify_request_id()
         self._verify_status()
 
@@ -114,45 +123,45 @@ class ResponseProcessor:
             decrypted_assertion,
         )
 
-    def _verify_signed(self):
-        """Verify SAML Response's Signature"""
-        signatures = []
+    def _verify_signature(self, signature_node: _Element):
+        """Verify a single signature node"""
+        xmlsec.tree.add_ids(self._root, ["ID"])
 
-        if self._source.signed_response:
-            signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
+        ctx = xmlsec.SignatureContext()
+        key = xmlsec.Key.from_memory(
+            self._source.verification_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+        )
+        ctx.key = key
 
-            if len(signature_nodes) != 1:
-                raise InvalidSignature("No Signature exists in the Response element.")
-            signatures.extend(signature_nodes)
+        ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
+        try:
+            ctx.verify(signature_node)
+        except xmlsec.Error as exc:
+            raise InvalidSignature(
+                "The signature of the SAML object is either missing or invalid."
+            ) from exc
+        LOGGER.debug("Successfully verified signature")
 
-        if self._source.signed_assertion:
-            signature_nodes = self._root.xpath(
-                "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
-            )
+    def _verify_response_signature(self):
+        """Verify SAML Response's Signature (before decryption)"""
+        signature_nodes = self._root.xpath("/samlp:Response/ds:Signature", namespaces=NS_MAP)
 
-            if len(signature_nodes) != 1:
-                raise InvalidSignature("No Signature exists in the Assertion element.")
-            signatures.extend(signature_nodes)
+        if len(signature_nodes) != 1:
+            raise InvalidSignature("No Signature exists in the Response element.")
 
-        if len(signatures) == 0:
-            raise InvalidSignature()
+        self._verify_signature(signature_nodes[0])
 
-        for signature_node in signatures:
-            xmlsec.tree.add_ids(self._root, ["ID"])
+    def _verify_assertion_signature(self):
+        """Verify SAML Assertion's Signature (after decryption)"""
+        signature_nodes = self._root.xpath(
+            "/samlp:Response/saml:Assertion/ds:Signature", namespaces=NS_MAP
+        )
 
-            ctx = xmlsec.SignatureContext()
-            key = xmlsec.Key.from_memory(
-                self._source.verification_kp.certificate_data,
-                xmlsec.constants.KeyDataFormatCertPem,
-            )
-            ctx.key = key
+        if len(signature_nodes) != 1:
+            raise InvalidSignature("No Signature exists in the Assertion element.")
 
-            ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
-            try:
-                ctx.verify(signature_node)
-            except xmlsec.Error as exc:
-                raise InvalidSignature() from exc
-            LOGGER.debug("Successfully verified signature")
+        self._verify_signature(signature_nodes[0])
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
@@ -179,9 +188,19 @@ class ResponseProcessor:
         status = self._root.find(f"{{{NS_SAML_PROTOCOL}}}Status")
         if status is None:
             return
+        status_code = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
         message = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusMessage")
-        if message is not None:
-            raise ValueError(message.text)
+        message_text = message.text if message is not None else None
+        detail = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusDetail")
+        detail_text = etree.tostring(detail, encoding="unicode") if detail is not None else None
+        if status_code.attrib.get("Value") != SAML_STATUS_SUCCESS:
+            if detail_text and message_text:
+                raise ValueError(f"{message_text}: {detail_text}")
+            raise ValueError(
+                detail_text or message_text or f"SAML Status: {status_code.attrib.get('Value')}"
+            )
+        if message_text or detail_text:
+            LOGGER.debug("SAML Status message", message=message_text, detail=detail_text)
 
     def _handle_name_id_transient(self) -> SourceFlowManager:
         """Handle a NameID with the Format of Transient. This is a bit more complex than other
@@ -190,11 +209,14 @@ class ResponseProcessor:
         on logout and periodically."""
         # Create a temporary User
         name_id = self._get_name_id()
+        username = name_id.text
+        # trim username to ensure it is max 150 chars
+        username = f"ak-{username[: USERNAME_MAX_LENGTH - 14]}-transient"
         expiry = mktime(
             (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
         )
         user: User = User.objects.create(
-            username=name_id.text,
+            username=username,
             attributes={
                 USER_ATTRIBUTE_GENERATED: True,
                 USER_ATTRIBUTE_SOURCES: [
@@ -222,7 +244,7 @@ class ResponseProcessor:
             policy_context={},
         )
 
-    def _get_name_id(self) -> "Element":
+    def _get_name_id(self) -> Element:
         """Get NameID Element"""
         assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:

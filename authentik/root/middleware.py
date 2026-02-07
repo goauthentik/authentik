@@ -22,6 +22,7 @@ from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User, UserTypes
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
@@ -57,9 +58,25 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         try:
             session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
             session_key = session_payload["sid"]
-        except (KeyError, PyJWTError):
+        except KeyError, PyJWTError:
             pass
         return session_key
+
+    @staticmethod
+    def encode_session(session_key: str, user: User):
+        payload = {
+            "sid": session_key,
+            "iss": "authentik",
+            "sub": "anonymous",
+            "authenticated": user.is_authenticated,
+            "acr": ACR_AUTHENTIK_SESSION,
+        }
+        if user.is_authenticated:
+            payload["sub"] = user.uid
+        value = encode(payload=payload, key=SIGNING_HASH)
+        if settings.TEST:
+            value = session_key
+        return value
 
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
@@ -117,21 +134,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
                         ) from None
-                    payload = {
-                        "sid": request.session.session_key,
-                        "iss": "authentik",
-                        "sub": "anonymous",
-                        "authenticated": request.user.is_authenticated,
-                        "acr": ACR_AUTHENTIK_SESSION,
-                    }
-                    if request.user.is_authenticated:
-                        payload["sub"] = request.user.uid
-                    value = encode(payload=payload, key=SIGNING_HASH)
-                    if settings.TEST:
-                        value = request.session.session_key
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
-                        value,
+                        SessionMiddleware.encode_session(request.session.session_key, request.user),
                         max_age=max_age,
                         expires=expires,
                         domain=settings.SESSION_COOKIE_DOMAIN,
@@ -316,6 +321,10 @@ class LoggingMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        headers = CONFIG.get("log.http_headers", [])
+        if isinstance(headers, str):
+            headers = headers.split(",")
+        self.headers_to_log = headers
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         start = perf_counter()
@@ -330,6 +339,11 @@ class LoggingMiddleware:
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
+        for header in self.headers_to_log:
+            header_value = request.headers.get(header)
+            if not header_value:
+                continue
+            kwargs[header.lower().replace("-", "_")] = header_value
         LOGGER.info(
             request.get_full_path(),
             remote=ClientIPMiddleware.get_client_ip(request),
@@ -337,6 +351,5 @@ class LoggingMiddleware:
             scheme=request.scheme,
             status=status_code,
             runtime=runtime,
-            user_agent=request.META.get("HTTP_USER_AGENT", ""),
             **kwargs,
         )

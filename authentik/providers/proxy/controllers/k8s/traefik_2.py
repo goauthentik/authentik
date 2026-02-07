@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class Traefik2MiddlewareReconciler(Traefik3MiddlewareReconciler):
     """Kubernetes Traefik Middleware Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.crd_name = "middlewares.traefik.containo.us"
         self.crd_group = "traefik.containo.us"

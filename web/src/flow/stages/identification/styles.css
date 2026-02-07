@@ -1,16 +1,17 @@
 fieldset[name="login-sources"] {
-    --ak-login-sources-padding-inline: var(--pf-global--spacer--xl);
-
-    flex: 1 1 auto;
-    display: flex;
-    flex-flow: row wrap;
-    gap: var(--pf-global--spacer--sm);
+    --ak-c-login-sources-padding-inline: var(--pf-global--spacer--xl);
 
     /* compatibility-mode-fix */
 
     & {
-        padding-inline: var(--ak-login-sources-padding-inline) !important;
-        padding-block-start: var(--pf-global--spacer--lg) !important;
+        flex: 1 1 auto;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        gap: var(--pf-global--spacer--sm);
+
+        padding-inline: var(--ak-c-login-sources-padding-inline) !important;
+        padding-block-start: var(--pf-global--spacer--md) !important;
     }
 
     .source-button {
@@ -18,13 +19,24 @@ fieldset[name="login-sources"] {
         align-items: center;
         justify-content: center;
         gap: var(--pf-global--spacer--sm);
+        flex: 0 1 auto;
 
-        &:hover {
+        &:not(.pf-m-primary):hover {
             background-color: var(--pf-c-button--m-plain--hover--BackgroundColor);
         }
 
         .pf-c-button__icon {
             line-height: 1;
+        }
+    }
+
+    .source-button-promoted {
+        flex: 1 1 100%;
+        width: 100%;
+        margin-block-end: var(--pf-global--spacer--sm);
+
+        &:last-of-type {
+            margin-block-end: var(--pf-global--spacer--lg);
         }
     }
 
@@ -34,7 +46,7 @@ fieldset[name="login-sources"] {
     }
 
     @media (min-width: 768px) {
-        --ak-login-sources-padding-inline: var(--pf-global--spacer--2xl);
+        --ak-c-login-sources-padding-inline: var(--pf-global--spacer--2xl);
     }
 }
 

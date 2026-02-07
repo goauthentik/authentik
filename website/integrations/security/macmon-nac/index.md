@@ -71,4 +71,4 @@ macmon NAC provisions new users automatically when they authenticate through SSO
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with macmon NAC, log out of Amazon Business. On the macmon NAC portal select **Single Sign-On**. You should be redirected to authentik to login, and if successful, you should then be redirected to the macmon NAC interface.
+To confirm that authentik is properly configured with macmon NAC, log out of macmon NAC. On the macmon NAC portal select **Single Sign-On**. You should be redirected to authentik to login, and if successful, you should then be redirected to the macmon NAC interface.

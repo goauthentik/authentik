@@ -1,3 +1,7 @@
+import "#flow/components/ak-flow-card";
+
+import { loadTelegramWidget, TelegramUserResponse } from "./utils";
+
 import { BaseStage } from "#flow/stages/base";
 
 import { TelegramChallengeResponseRequest, TelegramLoginChallenge } from "@goauthentik/api";
@@ -13,41 +17,34 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-type TelegramUserResponse = {
-    id: number;
-    first_name?: string;
-    last_name?: string;
-    username?: string;
-    photo_url?: string;
-    auth_date: number;
-    hash: string;
-};
 
 @customElement("ak-flow-source-telegram")
 export class TelegramLogin extends BaseStage<
     TelegramLoginChallenge,
     TelegramChallengeResponseRequest
 > {
+    static styles: CSSResult[] = [
+        // ---
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+        PFDivider,
+    ];
+
     btnRef = createRef();
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
-    }
-
     firstUpdated(): void {
-        const widgetScript = document.createElement("script");
-        widgetScript.src = "https://telegram.org/js/telegram-widget.js?22";
-        widgetScript.type = "text/javascript";
-        widgetScript.setAttribute("data-radius", "0");
-        widgetScript.setAttribute("data-telegram-login", this.challenge.botUsername);
-        if (this.challenge.requestMessageAccess) {
-            widgetScript.setAttribute("data-request-access", "write");
+        if (!this.challenge) {
+            console.warn("No challenge present for Telegram Login");
+            return;
         }
-        const callbackName =
-            "__ak_telegram_login_callback_" + (Math.random() + 1).toString(36).substring(7);
-        (window as unknown as Record<string, (user: TelegramUserResponse) => void>)[callbackName] =
+
+        loadTelegramWidget(
+            this.btnRef.value,
+            this.challenge.botUsername,
+            this.challenge.requestMessageAccess,
             (user: TelegramUserResponse) => {
                 this.host.submit({
                     id: user.id,
@@ -58,15 +55,8 @@ export class TelegramLogin extends BaseStage<
                     username: user.username,
                     photoUrl: user.photo_url,
                 });
-            };
-        widgetScript.setAttribute("data-onauth", callbackName + "(user)");
-        this.btnRef.value?.appendChild(widgetScript);
-        widgetScript.onload = () => {
-            if (widgetScript.previousSibling) {
-                this.btnRef.value?.appendChild(widgetScript.previousSibling);
-            }
-        };
-        document.body.append(widgetScript);
+            },
+        );
     }
 
     render(): TemplateResult {

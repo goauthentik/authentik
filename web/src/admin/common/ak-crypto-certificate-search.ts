@@ -3,7 +3,7 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { ifPresent } from "#elements/utils/attributes";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
@@ -20,7 +20,7 @@ import { customElement, property, query } from "lit/decorators.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
 
-const renderValue = (item: CertificateKeyPair | undefined): string | undefined => item?.pk;
+const renderValue = (item: CertificateKeyPair | null) => item?.pk;
 
 /**
  * Cryptographic Certificate Search
@@ -36,10 +36,10 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
 @customElement("ak-crypto-certificate-search")
 export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
-    certificate?: string;
+    certificate?: string | null;
 
     @query("ak-search-select")
-    search!: SearchSelect<CertificateKeyPair>;
+    search!: ISearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
     public name?: string | null;
@@ -68,23 +68,8 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public singleton = false;
 
     /**
-     * Set to `true` to include certificate details (fingerprints, expiry, certificate subject, key type)
-     * in the API response.
-     * Each returned certificate's PEM data must be parsed using cryptography library,
-     * public keys extracted, and hashes computed. With large result sets, this can add a lot of time
-     * to responses.
-     * Only enable when you actually need the detailed fields displayed in the UI.
-     * For simple certificate selection dropdowns, leave this as `false` (default).
-     * @attr
-     */
-    @property({ type: Boolean, attribute: "include-details" })
-    public includeDetails = false;
-
-    /**
      * When allowedKeyTypes is set, only certificates or keypairs with matching
-     * key algorithms will be shown. Since certificates must be parsed to
-     * extract algorithm details, an instance with many certificates may experience
-     * long delays and server performance slowdowns. Avoid setting this field whenever possible.
+     * key algorithms will be shown.
      * @attr
      * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
      */
@@ -123,7 +108,6 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
-            includeDetails: this.includeDetails,
         };
         if (query !== undefined) {
             args.search = query;

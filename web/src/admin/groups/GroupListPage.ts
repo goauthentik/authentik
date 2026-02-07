@@ -43,7 +43,6 @@ export class GroupListPage extends TablePage<Group> {
 
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
-        [msg("Parent"), "parent"],
         [msg("Members")],
         [msg("Superuser privileges?")],
         [msg("Actions"), null, msg("Row Actions")],
@@ -52,7 +51,7 @@ export class GroupListPage extends TablePage<Group> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Group(s)")}
+            object-label=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
@@ -78,7 +77,6 @@ export class GroupListPage extends TablePage<Group> {
                 aria-label=${msg(str`View details of group "${item.name}"`)}
                 >${item.name}</a
             >`,
-            html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<div>

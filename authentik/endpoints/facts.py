@@ -1,0 +1,129 @@
+from django.db.models import TextChoices
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
+from drf_spectacular.plumbing import build_basic_type
+from drf_spectacular.types import OpenApiTypes
+from rest_framework.serializers import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    IntegerField,
+    ListField,
+    Serializer,
+)
+
+from authentik.core.api.utils import JSONDictField
+
+
+class BigIntegerFieldFix(OpenApiSerializerFieldExtension):
+    target_class = "authentik.endpoints.facts.BigIntegerField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        return build_basic_type(OpenApiTypes.INT64)
+
+
+class BigIntegerField(IntegerField): ...
+
+
+class OSFamily(TextChoices):
+    linux = "linux"
+    unix = "unix"
+    bsd = "bsd"
+    windows = "windows"
+    macOS = "mac_os"
+    android = "android"
+    iOS = "i_os"
+    other = "other"
+
+
+class DiskSerializer(Serializer):
+    name = CharField(required=True)
+    mountpoint = CharField(required=True)
+    label = CharField(required=False, allow_blank=True)
+    capacity_total_bytes = BigIntegerField(required=False)
+    capacity_used_bytes = BigIntegerField(required=False)
+    encryption_enabled = BooleanField(default=False, required=False)
+
+
+class OperatingSystemSerializer(Serializer):
+    """For example:
+    {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
+    {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+    {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+    {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}
+    """
+
+    family = ChoiceField(OSFamily.choices, required=True)
+    name = CharField(
+        required=False, help_text=_("Operating System name, such as 'Server 2022' or 'Ubuntu'")
+    )
+    version = CharField(
+        required=False,
+        help_text=_(
+            "Operating System version, must always be the version number but may contain build name"
+        ),
+    )
+    arch = CharField(required=True)
+
+
+class NetworkInterfaceSerializer(Serializer):
+    name = CharField(required=True)
+    hardware_address = CharField(required=True)
+    ip_addresses = ListField(child=CharField(), required=False)
+    dns_servers = ListField(child=CharField(), required=False, allow_empty=True)
+
+
+class NetworkSerializer(Serializer):
+    hostname = CharField()
+    firewall_enabled = BooleanField(required=False)
+    interfaces = ListField(child=NetworkInterfaceSerializer(), allow_empty=True)
+    gateway = CharField(required=False)
+
+
+class HardwareSerializer(Serializer):
+    model = CharField(required=False)
+    manufacturer = CharField(required=False)
+    serial = CharField()
+
+    cpu_name = CharField(required=False)
+    cpu_count = IntegerField(required=False)
+
+    memory_bytes = BigIntegerField(required=False)
+
+
+class SoftwareSerializer(Serializer):
+    name = CharField(required=True)
+    version = CharField(required=False, allow_blank=True)
+    # Package manager/source for this software installation
+    source = CharField(required=True)
+    path = CharField(required=False)
+
+
+class ProcessSerializer(Serializer):
+    id = IntegerField(required=True)
+    name = CharField()
+    user = CharField(required=False)
+
+
+class DeviceUserSerializer(Serializer):
+    id = CharField(required=True)
+    username = CharField(required=False)
+    name = CharField(required=False)
+    home = CharField(required=False)
+
+
+class DeviceGroupSerializer(Serializer):
+    id = CharField(required=True)
+    name = CharField(required=False)
+
+
+class DeviceFacts(Serializer):
+    os = OperatingSystemSerializer(required=False, allow_null=True)
+    disks = ListField(child=DiskSerializer(), required=False, allow_null=True)
+    network = NetworkSerializer(required=False, allow_null=True)
+    hardware = HardwareSerializer(required=False, allow_null=True)
+    software = ListField(child=SoftwareSerializer(), required=False, allow_null=True)
+    processes = ListField(child=ProcessSerializer(), required=False, allow_null=True)
+    users = ListField(child=DeviceUserSerializer(), required=False, allow_null=True)
+    groups = ListField(child=DeviceGroupSerializer(), required=False, allow_null=True)
+    vendor = JSONDictField(required=False)

@@ -8,11 +8,10 @@ import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { RadioOption } from "#elements/forms/Radio";
 
-import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
+import { CoreApi, Group, RbacApi, Role, User, UserTypeEnum } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -46,7 +45,10 @@ const UserTypeOptions: readonly RadioOption<UserTypeEnum>[] = [
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
-    group?: Group;
+    public targetGroup: Group | null = null;
+
+    @property({ attribute: false })
+    public targetRole: Role | null = null;
 
     @property()
     defaultPath: string = "users";
@@ -75,12 +77,15 @@ export class UserForm extends ModelForm<User, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return msg("Successfully updated user.");
+            return msg("User updated.");
         }
-        if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        if (this.targetGroup) {
+            return msg(str`User created and added to group ${this.targetGroup.name}`);
         }
-        return msg("Successfully created user.");
+        if (this.targetRole) {
+            return msg(str`User created and added to role ${this.targetRole.name}`);
+        }
+        return msg("User created.");
     }
 
     async send(data: User): Promise<User> {
@@ -95,14 +100,23 @@ export class UserForm extends ModelForm<User, number> {
             });
         } else {
             data.groups = [];
+            data.roles = [];
             user = await new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
                 userRequest: data,
             });
         }
-        if (this.group) {
+        if (this.targetGroup) {
             await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
-                groupUuid: this.group.pk,
+                groupUuid: this.targetGroup.pk,
                 userAccountRequest: {
+                    pk: user.pk,
+                },
+            });
+        }
+        if (this.targetRole) {
+            await new RbacApi(DEFAULT_CONFIG).rbacRolesAddUserCreate({
+                uuid: this.targetRole.pk,
+                userAccountSerializerForRoleRequest: {
                     pk: user.pk,
                 },
             });
@@ -110,7 +124,7 @@ export class UserForm extends ModelForm<User, number> {
         return user;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="username"
                 label=${msg("Username")}
@@ -198,7 +212,7 @@ export class UserForm extends ModelForm<User, number> {
 
             <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
+                    mode="yaml"
                     value="${YAML.stringify(
                         this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"

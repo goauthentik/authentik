@@ -23,13 +23,13 @@ export function renderSourceIcon(name: string, iconUrl: string | undefined | nul
 export function sourceBindingTypeNotices() {
     return [
         {
-            type: PolicyBindingCheckTarget.group,
+            type: PolicyBindingCheckTarget.Group,
             notice: msg(
                 "Group mappings can only be checked if a user is already logged in when trying to access this source.",
             ),
         },
         {
-            type: PolicyBindingCheckTarget.user,
+            type: PolicyBindingCheckTarget.User,
             notice: msg(
                 "User mappings can only be checked if a user is already logged in when trying to access this source.",
             ),

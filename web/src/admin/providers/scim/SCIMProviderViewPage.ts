@@ -22,7 +22,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     ModelEnum,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SCIMProvider,
 } from "@goauthentik/api";
 
@@ -43,7 +43,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -54,7 +53,6 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFBanner,
         PFForm,
@@ -150,12 +148,13 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersScimScimprovider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersScimScimprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -229,6 +228,18 @@ export class SCIMProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         ${this.provider.url}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">
+                                        ${msg("Service Provider Config cache timeout")}
+                                    </span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.serviceProviderConfigCacheTimeout}
                                     </div>
                                 </dd>
                             </div>

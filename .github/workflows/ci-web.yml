@@ -31,8 +31,8 @@ jobs:
           - command: lit-analyse
             project: web
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: ${{ matrix.project }}/package.json
           cache: "npm"
@@ -48,8 +48,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
@@ -76,8 +76,8 @@ jobs:
       - ci-web-mark
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: web/package.json
           cache: "npm"

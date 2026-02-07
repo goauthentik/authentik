@@ -3,14 +3,13 @@
 from base64 import b64encode
 
 from defusedxml.lxml import fromstring
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 
-from authentik.core.tests.utils import create_test_flow
+from authentik.common.saml.constants import NS_SAML_ASSERTION
+from authentik.core.tests.utils import RequestFactory, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import dummy_get_response, load_fixture
+from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource, SAMLSourcePropertyMapping
-from authentik.sources.saml.processors.constants import NS_SAML_ASSERTION
 from authentik.sources.saml.processors.response import ResponseProcessor
 
 ROOT = fromstring(load_fixture("fixtures/response_success.xml").encode())
@@ -73,10 +72,6 @@ class TestPropertyMappings(TestCase):
             },
         )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
-
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
@@ -109,10 +104,6 @@ class TestPropertyMappings(TestCase):
                 ).decode()
             },
         )
-
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()

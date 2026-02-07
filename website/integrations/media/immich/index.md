@@ -36,6 +36,7 @@ To support the integration of Immich with authentik, you need to create an appli
         - Add three `Strict` redirect URIs and set them to `app.immich:///oauth-callback`, `https://immich.company/auth/login`, and `https://immich.company/user-settings`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Launch URL** _(optional)_: set the [Launch URL](/docs/add-secure-apps/applications/#appearance) to `https://immich.company/auth/login?autoLaunch=1` to allow automatic login to Immich when clicking on the application from within authentik.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -49,3 +50,4 @@ Immich documentation can be found here: https://immich.app/docs/administration/o
     - **Client ID**: Enter your Client ID from authentik
     - **Client Secret**: Enter your Client Secret from authentik
     - **Scope**: `openid email profile`
+    - **ID_TOKEN_SIGNED_RESPONSE_ALG**: If you are not using the default RS256, set the desired signing response algorithm (e.g `HS256`)

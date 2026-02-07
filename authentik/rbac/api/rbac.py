@@ -19,7 +19,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.core.models import User
 from authentik.lib.validators import RequiredTogetherValidator
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.models import Role
@@ -72,11 +71,10 @@ class PermissionFilter(FilterSet):
     """Filter permissions"""
 
     role = ModelChoiceFilter(queryset=Role.objects.all(), method="filter_role")
-    user = ModelChoiceFilter(queryset=User.objects.all())
 
     def filter_role(self, queryset: QuerySet, name, value: Role) -> QuerySet:
         """Filter permissions based on role"""
-        return queryset.filter(group__role=value)
+        return queryset.filter(rolemodelpermission__role=value)
 
     class Meta:
         model = Permission
@@ -85,7 +83,6 @@ class PermissionFilter(FilterSet):
             "content_type__model",
             "content_type__app_label",
             "role",
-            "user",
         ]
 
 

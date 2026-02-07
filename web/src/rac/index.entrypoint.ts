@@ -13,7 +13,6 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 enum GuacClientState {
     IDLE = 0,
@@ -49,7 +48,7 @@ const RECONNECT_ATTEMPTS = 5;
 export class RacInterface extends WithBrandConfig(Interface) {
     static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFPage,
         PFContent,
         Styles,
@@ -250,12 +249,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
             this.client.sendMouseState(mouseState);
         };
-        // @ts-ignore
+        // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
             this.container?.focus();
             handler(ev.state);
         });
-        // @ts-ignore
+        // @ts-expect-error Event type is not properly defined in guacamole-common-js
         mouse.on("mousemove", (ev: Guacamole.Mouse.Event) => {
             handler(ev.state, true);
         });

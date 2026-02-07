@@ -52,12 +52,12 @@ func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *
 
 func (ms *MemorySearcher) fetch() {
 	// Error is not handled here, we get an empty/truncated list and the error is logged
-	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
+	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ms.log,
 	})
 	ms.users = users
-	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true), ak.PaginatorOptions{
+	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreAPI.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ms.log,
 	})
@@ -165,15 +165,8 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
 						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.PartialUser{u}, []api.Role{}, []api.GroupChild{})
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, []api.RelatedGroup{}, []api.PartialUser{u}, []api.Role{}, nil, []string{}, []api.RelatedGroup{})
 						fg.SetUsers([]int32{flag.UserPk})
-						if g.Parent.IsSet() {
-							if p := g.Parent.Get(); p != nil {
-								fg.SetParent(*p)
-							} else {
-								fg.SetParentNil()
-							}
-						}
 						fg.SetAttributes(g.Attributes)
 						fg.SetIsSuperuser(*g.IsSuperuser)
 						groups = append(groups, group.FromAPIGroup(*fg, ms.si))

@@ -15,6 +15,7 @@ type Config struct {
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
 	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
+	Log    LogConfig    `yaml:"log" env:", prefix=AUTHENTIK_LOG__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -27,7 +28,7 @@ type Config struct {
 
 type PostgreSQLConfig struct {
 	Host     string `yaml:"host" env:"HOST, overwrite"`
-	Port     int    `yaml:"port" env:"PORT, overwrite"`
+	Port     string `yaml:"port" env:"PORT, overwrite"`
 	User     string `yaml:"user" env:"USER, overwrite"`
 	Password string `yaml:"password" env:"PASSWORD, overwrite"`
 	Name     string `yaml:"name" env:"NAME, overwrite"`
@@ -60,16 +61,32 @@ type ListenConfig struct {
 }
 
 type StorageConfig struct {
-	Media StorageMediaConfig `yaml:"media"`
-}
-
-type StorageMediaConfig struct {
-	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE__MEDIA__BACKEND"`
-	File    StorageFileConfig `yaml:"file"`
+	Backend string               `yaml:"backend" env:"AUTHENTIK_STORAGE__BACKEND"`
+	File    StorageFileConfig    `yaml:"file"`
+	Media   StorageMediaConfig   `yaml:"media"`
+	Reports StorageReportsConfig `yaml:"reports"`
 }
 
 type StorageFileConfig struct {
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__FILE__PATH"`
+}
+
+type StorageMediaConfig struct {
+	Backend string                 `yaml:"backend" env:"AUTHENTIK_STORAGE__MEDIA__BACKEND"`
+	File    StorageMediaFileConfig `yaml:"file"`
+}
+
+type StorageMediaFileConfig struct {
 	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
+}
+
+type StorageReportsConfig struct {
+	Backend string                   `yaml:"backend" env:"AUTHENTIK_STORAGE__REPORTS__BACKEND"`
+	File    StorageReportsFileConfig `yaml:"file"`
+}
+
+type StorageReportsFileConfig struct {
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__REPORTS__FILE__PATH"`
 }
 
 type ErrorReportingConfig struct {
@@ -88,4 +105,8 @@ type OutpostConfig struct {
 
 type WebConfig struct {
 	Path string `yaml:"path" env:"PATH, overwrite"`
+}
+
+type LogConfig struct {
+	HttpHeaders []string `yaml:"http_headers" env:"HTTP_HEADERS, overwrite"`
 }

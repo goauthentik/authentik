@@ -2,11 +2,12 @@ import "#elements/EmptyState";
 import "#elements/Expand";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { listen } from "#elements/decorators/listen";
 
+import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import Styles from "#flow/FlowInspector.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
@@ -14,6 +15,7 @@ import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -21,7 +23,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function stringify(obj: unknown): string {
     return JSON.stringify(obj, null, 4);
@@ -29,17 +30,7 @@ function stringify(obj: unknown): string {
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
-    @property({ type: String, attribute: "slug", useDefault: true })
-    public flowSlug: string = window.location.pathname.split("/")[3];
-
-    @property({ attribute: false })
-    state?: FlowInspection;
-
-    @property({ attribute: false })
-    error?: APIError;
-
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFStack,
         PFCard,
@@ -49,17 +40,21 @@ export class FlowInspector extends AKElement {
         Styles,
     ];
 
-    constructor() {
-        super();
-        window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
-    }
+    //#region Properties
 
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.removeEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
-    }
+    @property({ type: String, attribute: "slug", useDefault: true })
+    public flowSlug: string = window.location.pathname.split("/")[3];
 
-    advanceHandler = (): void => {
+    @property({ attribute: false })
+    public state?: FlowInspection;
+
+    @property({ attribute: false })
+    public error?: APIError;
+
+    //#endregion
+
+    @listen(AKFlowAdvanceEvent)
+    protected advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
                 flowSlug: this.flowSlug || "",
@@ -80,35 +75,33 @@ export class FlowInspector extends AKElement {
         if (!stage) {
             return stage;
         }
-        delete stage.flowSet;
-        return stage;
+        const conciseStage = { ...stage };
+        conciseStage.flowSet = [];
+        return conciseStage;
     }
 
+    //#region Rendering
+
     protected renderHeader() {
-        return html`<div class="pf-c-notification-drawer__header">
-            <div class="text">
-                <h1 class="pf-c-notification-drawer__header-title">${msg("Flow inspector")}</h1>
-            </div>
-            <div class="pf-c-notification-drawer__header-action">
-                <div class="pf-c-notification-drawer__header-action-close">
-                    <button
-                        @click=${() => {
-                            window.dispatchEvent(
-                                new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
-                                    bubbles: true,
-                                    composed: true,
-                                }),
-                            );
-                        }}
-                        class="pf-c-button pf-m-plain"
-                        type="button"
-                        aria-label=${msg("Close flow inspector")}
-                    >
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </button>
+        return guard([], () => {
+            return html`<div class="pf-c-notification-drawer__header">
+                <div class="text">
+                    <h1 class="pf-c-notification-drawer__header-title">${msg("Flow inspector")}</h1>
                 </div>
-            </div>
-        </div>`;
+                <div class="pf-c-notification-drawer__header-action">
+                    <div class="pf-c-notification-drawer__header-action-close">
+                        <button
+                            @click=${AKFlowInspectorChangeEvent.dispatchClose}
+                            class="pf-c-button pf-m-plain"
+                            type="button"
+                            aria-label=${msg("Close flow inspector")}
+                        >
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        });
     }
 
     protected renderAccessDenied(): TemplateResult {
@@ -310,6 +303,8 @@ ${stringify(this.getStage(currentPlan?.nextPlannedStage?.stageObj))}</pre
             </div>
         </aside>`;
     }
+
+    //#endregion
 }
 
 declare global {

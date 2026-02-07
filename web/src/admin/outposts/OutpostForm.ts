@@ -3,15 +3,17 @@ import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
-import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
 import { PaginatedResponse } from "#elements/table/Table";
+
+import { AKLabel } from "#components/ak-label";
 
 import {
     Outpost,
@@ -34,8 +36,8 @@ import { map } from "lit/directives/map.js";
 interface ProviderBase {
     pk: number;
     name: string;
-    assignedBackchannelApplicationName?: string;
-    assignedApplicationName?: string;
+    assignedBackchannelApplicationName?: string | null;
+    assignedApplicationName?: string | null;
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
@@ -104,6 +106,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     defaultConfig?: OutpostDefaultConfig;
 
+    public override reset(): void {
+        super.reset();
+
+        this.type = OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(this.type);
+    }
+
     async loadInstance(pk: string): Promise<Outpost> {
         const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
             uuid: pk,
@@ -138,7 +147,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const typeOptions = [
             [OutpostTypeEnum.Proxy, msg("Proxy")],
             [OutpostTypeEnum.Ldap, msg("LDAP")],
@@ -146,14 +155,16 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             [OutpostTypeEnum.Rac, msg("RAC")],
         ];
 
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+        return html`<ak-text-input
+                name="name"
+                autocomplete="off"
+                placeholder=${msg("Type an outpost name...")}
+                value=${ifDefined(this.instance?.name)}
+                label=${msg("Outpost Name")}
+                spellcheck="false"
+                required
+            ></ak-text-input>
+
             <ak-form-element-horizontal label=${msg("Type")} required name="type">
                 <select
                     class="pf-c-form-control"
@@ -175,8 +186,20 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     )}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Integration")} name="serviceConnection">
+            <ak-form-element-horizontal name="serviceConnection">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "serviceConnection",
+                    },
+                    msg("Integration"),
+                )}
+
                 <ak-search-select
+                    id="serviceConnection"
+                    name="serviceConnection"
+                    aria-describedby="service-connection-help"
                     .fetchObjects=${async (query?: string): Promise<ServiceConnection[]> => {
                         const args: OutpostsServiceConnectionsAllListRequest = {
                             ordering: "name",
@@ -192,9 +215,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     .renderElement=${(item: ServiceConnection): string => {
                         return item.name;
                     }}
-                    .value=${(item: ServiceConnection | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
+                    .value=${(item: ServiceConnection | null) => item?.pk}
                     .groupBy=${(items: ServiceConnection[]) => {
                         return groupBy(items, (item) => item.verboseName);
                     }}
@@ -208,19 +229,22 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     blankable
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Selecting an integration enables the management of the outpost by authentik.",
-                    )}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href=${docLink("/add-secure-apps/outposts")}
-                        >${msg("See documentation")}</a
-                    >.
-                </p>
+                <div id="service-connection-help">
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Selecting an integration enables the management of the outpost by authentik.",
+                        )}
+                    </p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Read more about")}&nbsp;
+                        <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href=${docLink("/add-secure-apps/outposts")}
+                            >${msg("Outpost configuration")}</a
+                        >.
+                    </p>
+                </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Applications")}
@@ -236,25 +260,39 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             </ak-form-element-horizontal>
             <ak-form-group label=${msg("Advanced settings")}>
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Configuration")} name="config">
+                    <ak-form-element-horizontal name="config">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configuration",
+                            },
+                            msg("Configuration"),
+                        )}
+
                         <ak-codemirror
-                            mode=${CodeMirrorMode.YAML}
+                            id="configuration"
+                            name="config"
+                            mode="yaml"
                             value="${YAML.stringify(
                                 this.instance ? this.instance.config : this.defaultConfig?.config,
                             )}"
+                            aria-describedby="config-help"
                         ></ak-codemirror>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Set custom attributes using YAML or JSON.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("See more here:")}&nbsp;
-                            <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href=${docLink("/add-secure-apps/outposts#configuration")}
-                                >${msg("Documentation")}</a
-                            >
-                        </p>
+                        <div id="config-help">
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Set custom attributes using YAML or JSON.")}
+                            </p>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Read more about")}&nbsp;
+                                <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href=${docLink("/add-secure-apps/outposts#configuration")}
+                                    >${msg("Outpost configuration")}</a
+                                >.
+                            </p>
+                        </div>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;

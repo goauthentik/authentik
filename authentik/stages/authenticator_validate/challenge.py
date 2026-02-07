@@ -1,6 +1,5 @@
 """Validation stage challenge checking"""
 
-from json import loads
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
@@ -12,12 +11,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField, ChoiceField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
-from webauthn import options_to_json
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
+from webauthn.helpers.options_to_json_dict import options_to_json_dict
 from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
@@ -25,8 +24,8 @@ from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.email import mask_email
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
@@ -55,7 +54,7 @@ class DeviceChallenge(PassiveSerializer):
 
 
 def get_challenge_for_device(
-    stage_view: "AuthenticatorValidateStageView", stage: AuthenticatorValidateStage, device: Device
+    stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage, device: Device
 ) -> dict:
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
@@ -67,7 +66,7 @@ def get_challenge_for_device(
 
 
 def get_webauthn_challenge_without_user(
-    stage_view: "AuthenticatorValidateStageView", stage: AuthenticatorValidateStage
+    stage_view: AuthenticatorValidateStageView, stage: AuthenticatorValidateStage
 ) -> dict:
     """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
     who the device belongs to."""
@@ -81,11 +80,11 @@ def get_webauthn_challenge_without_user(
         authentication_options.challenge
     )
 
-    return loads(options_to_json(authentication_options))
+    return options_to_json_dict(authentication_options)
 
 
 def get_webauthn_challenge(
-    stage_view: "AuthenticatorValidateStageView",
+    stage_view: AuthenticatorValidateStageView,
     stage: AuthenticatorValidateStage,
     device: WebAuthnDevice | None = None,
 ) -> dict:
@@ -110,7 +109,7 @@ def get_webauthn_challenge(
         authentication_options.challenge
     )
 
-    return loads(options_to_json(authentication_options))
+    return options_to_json_dict(authentication_options)
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -152,11 +151,17 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
     return device
 
 
-def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -> Device:
+def validate_challenge_webauthn(
+    data: dict,
+    stage_view: StageView,
+    user: User,
+    stage: AuthenticatorValidateStage | None = None,
+) -> Device:
     """Validate WebAuthn Challenge"""
     request = stage_view.request
     challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
-    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+    stage = stage or stage_view.executor.current_stage
+
     if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
         # Workaround for Android sign-in, when signing into Google Workspace on android while
         # adding the account to the system (not in Chrome), for some reason `type` is not set
@@ -233,9 +238,9 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
     pushinfo = {
         __("Domain"): stage_view.request.get_host(),
     }
-    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
-        pushinfo[__("Application")] = stage_view.request.session.get(
-            SESSION_KEY_APPLICATION_PRE, Application()
+    if PLAN_CONTEXT_APPLICATION in stage_view.executor.plan.context:
+        pushinfo[__("Application")] = stage_view.executor.plan.context.get(
+            PLAN_CONTEXT_APPLICATION, Application()
         ).name
 
     try:

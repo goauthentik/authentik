@@ -5,8 +5,7 @@ from uuid import uuid4
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
-from django.contrib.auth.views import redirect_to_login
-from django.http import HttpRequest, HttpResponse, QueryDict
+from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.http import urlencode
@@ -15,17 +14,24 @@ from django.views.generic.base import TemplateView, View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
+from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.flows.planner import FlowPlan
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_POST,
+    FlowPlan,
+    FlowPlanner,
+)
 from authentik.flows.views.executor import (
-    SESSION_KEY_APPLICATION_PRE,
     SESSION_KEY_PLAN,
     SESSION_KEY_POST,
+    ToDefaultFlow,
 )
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.models import PolicyBindingModel
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
@@ -55,8 +61,8 @@ class PolicyAccessView(AccessMixin, View):
     """Mixin class for usage in Authorization views.
     Provider functions to check application access, etc"""
 
-    provider: Provider
-    application: Application
+    provider: Provider | None = None
+    application: Application | None = None
 
     def pre_permission_check(self):
         """Optionally hook in before permission check to check if a request is valid.
@@ -96,17 +102,29 @@ class PolicyAccessView(AccessMixin, View):
         """User has no access and is not authenticated, so we remember the application
         they try to access and redirect to the login URL. The application is saved to show
         a hint on the Identification Stage what the user should login for."""
+        flow_context = {}
+        authn_flow = None
         if self.application:
-            self.request.session[SESSION_KEY_APPLICATION_PRE] = self.application
+            flow_context[PLAN_CONTEXT_APPLICATION] = self.application
+            if self.provider and self.provider.authentication_flow:
+                authn_flow = self.provider.authentication_flow
         # Because this view might get hit with a POST request, we need to preserve that data
         # since later views might need it (mostly SAML)
         if self.request.method.lower() == "post":
             self.request.session[SESSION_KEY_POST] = self.request.POST
-        return redirect_to_login(
-            self.request.get_full_path(),
-            self.get_login_url(),
-            self.get_redirect_field_name(),
-        )
+            flow_context[PLAN_CONTEXT_POST] = self.request.POST
+
+        if not authn_flow:
+            authn_flow = ToDefaultFlow.get_flow(self.request, FlowDesignation.AUTHENTICATION)
+            if not authn_flow:
+                raise Http404
+        planner = FlowPlanner(authn_flow)
+        try:
+            plan = planner.plan(self.request, self.modify_flow_context(authn_flow, flow_context))
+        except (FlowNonApplicableException, EmptyFlowException) as exc:
+            LOGGER.warning("Non-applicable authentication flow", exc=exc)
+            raise Http404 from None
+        return plan.to_redirect(self.request, authn_flow, next=self.request.get_full_path())
 
     def handle_no_permission_authenticated(
         self, result: PolicyResult | None = None
@@ -121,19 +139,29 @@ class PolicyAccessView(AccessMixin, View):
         """optionally modify the policy request"""
         return request
 
-    def user_has_access(self, user: User | None = None) -> PolicyResult:
+    def modify_flow_context(self, flow: Flow, context: dict[str, Any]) -> dict[str, Any]:
+        """optionally modify the flow context which is used for the authentication flow"""
+        return context
+
+    def user_has_access(
+        self, user: User | None = None, pbm: PolicyBindingModel | None = None
+    ) -> PolicyResult:
         """Check if user has access to application."""
         user = user or self.request.user
-        policy_engine = PolicyEngine(self.application, user or self.request.user, self.request)
+        policy_engine = PolicyEngine(
+            pbm or self.application, user or self.request.user, self.request
+        )
         policy_engine.use_cache = False
         policy_engine.request = self.modify_policy_request(policy_engine.request)
         policy_engine.build()
         result = policy_engine.result
+        log_kwargs = {}
+        if pbm:
+            log_kwargs["pbm"] = pbm.pk
+        else:
+            log_kwargs["app"] = self.application.slug
         LOGGER.debug(
-            "PolicyAccessView user_has_access",
-            user=user.username,
-            app=self.application.slug,
-            result=result,
+            "PolicyAccessView user_has_access", user=user.username, result=result, **log_kwargs
         )
         if not result.passing:
             for message in result.messages:
@@ -181,7 +209,7 @@ class BufferedPolicyAccessView(PolicyAccessView):
         if not plan:
             LOGGER.debug("Not buffering request, no flow plan active")
             return super().handle_no_permission()
-        if not BufferedPolicyAccessViewFlag().get():
+        if not BufferedPolicyAccessViewFlag.get():
             return super().handle_no_permission()
         if self.request.GET.get(QS_SKIP_BUFFER):
             LOGGER.debug("Not buffering request, explicit skip")

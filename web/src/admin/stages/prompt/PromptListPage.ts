@@ -13,7 +13,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Prompt, RbacPermissionsAssignedByUsersListModelEnum, StagesApi } from "@goauthentik/api";
+import { Prompt, RbacPermissionsAssignedByRolesListModelEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -50,7 +50,7 @@ export class PromptListPage extends TablePage<Prompt> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Prompt(s)")}
+            object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Prompt) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
@@ -89,7 +89,7 @@ export class PromptListPage extends TablePage<Prompt> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikStagesPromptPrompt}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikStagesPromptPrompt}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal> `,

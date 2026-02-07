@@ -1,6 +1,7 @@
 """Telegram source"""
 
 from typing import Any
+from urllib.parse import urlencode
 
 from django.db import models
 from django.http import HttpRequest
@@ -66,6 +67,7 @@ class TelegramSource(Source):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
@@ -74,11 +76,17 @@ class TelegramSource(Source):
                 "title": self.name,
                 "component": "ak-user-settings-source-telegram",
                 "icon_url": self.icon_url,
+                "configure_url": urlencode(
+                    {
+                        "bot_username": self.bot_username,
+                        "request_message_access": str(self.request_message_access),
+                    }
+                ),
             }
         )
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         return TelegramSourcePropertyMapping
 
     def get_base_user_properties(

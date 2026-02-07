@@ -2,7 +2,7 @@
  * @file Docusaurus Documentation config.
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
  * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
@@ -34,7 +34,7 @@ const releaseEnvironment = prepareReleaseEnvironment();
 
 const files = [
     // ---
-    resolve(authentikModulePath, "docker-compose.yml"),
+    resolve(authentikModulePath, "lifecycle/container/compose.yml"),
 ];
 
 await Promise.all(
@@ -58,7 +58,7 @@ export default createDocusaurusConfig(
         future: {
             experimental_faster: true,
         },
-
+        clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
         url: "https://docs.goauthentik.io",
         //#region Preset
 

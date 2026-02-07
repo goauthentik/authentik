@@ -12,7 +12,7 @@ class AKQLSchemaSerializer(DjangoQLSchemaSerializer):
             for _, field in fields.items():
                 if not isinstance(field, JSONSearchField):
                     continue
-                serialization["models"].update(field.get_nested_options())
+                serialization["models"].update(field.get_nested_options(self))
         return serialization
 
     def serialize_field(self, field):

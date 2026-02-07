@@ -2,36 +2,36 @@
 
 /* compatibility-mode-fix */
 .pf-c-login.pf-c-login {
-    --ak-login--PaddingMax: 8dvw;
-    --ak-login--padding: clamp(
+    --ak-c-login--PaddingMax: 8dvw;
+    --ak-c-login--padding: clamp(
         var(--pf-global--spacer--md),
         var(--pf-global--spacer--2xl),
-        var(--ak-login--PaddingMax)
+        var(--ak-c-login--PaddingMax)
     );
 
-    --ak-login__main--brand-PaddingMin: var(--pf-global--spacer--xs);
-    --ak-login__main--brand-PaddingIdeal: 5rem;
-    --ak-login__main--brand-PaddingMax: 15dvh;
+    --ak-c-login__main--brand-PaddingMin: var(--pf-global--spacer--xs);
+    --ak-c-login__main--brand-PaddingIdeal: 5rem;
+    --ak-c-login__main--brand-PaddingMax: 15dvh;
 
-    --ak-login__footer--PaddingBlock: var(--pf-global--spacer--md);
+    --ak-c-login__footer--PaddingBlock: var(--pf-global--spacer--md);
 
-    --ak-login--MaxWidth: 35rem;
+    --ak-c-login--MaxWidth: 35rem;
 
-    --ak-login__main-ColumnWidth: minmax(
-        min(100dvw, var(--ak-login--MaxWidth)),
-        var(--ak-login--MaxWidth)
+    --ak-c-login__main-ColumnWidth: minmax(
+        min(100%, var(--ak-c-login--MaxWidth)),
+        var(--ak-c-login--MaxWidth)
     );
 
     --pf-c-login__main-body--PaddingBottom: 0;
 
-    --ak-login__main--footer-PaddingMin: var(--pf-global--spacer--xs);
-    --ak-login__main--footer-PaddingIdeal: 3rem;
-    --ak-login__main--footer-PaddingMax: 9dvh;
+    --ak-c-login__main--footer-PaddingMin: var(--pf-global--spacer--xs);
+    --ak-c-login__main--footer-PaddingIdeal: 3rem;
+    --ak-c-login__main--footer-PaddingMax: 9dvh;
 
     --pf-c-login__main-footer--PaddingBottom: clamp(
-        var(--ak-login__main--footer-PaddingMin),
-        var(--ak-login__main--footer-PaddingIdeal),
-        var(--ak-login__main--footer-PaddingMax)
+        var(--ak-c-login__main--footer-PaddingMin),
+        var(--ak-c-login__main--footer-PaddingIdeal),
+        var(--ak-c-login__main--footer-PaddingMax)
     );
 
     --pf-c-login__main-footer-band--BackgroundColor: transparent;
@@ -52,7 +52,7 @@
 
     grid-template-columns:
         1fr
-        [main] var(--ak-login__main-ColumnWidth)
+        [main] var(--ak-c-login__main-ColumnWidth)
         1fr;
 
     grid-template-areas:
@@ -63,14 +63,10 @@
     &::before {
         display: block;
         content: "";
-        background-color: var(--ak-login--background-color-overlay, transparent);
+        background-color: var(--ak-c-login--BackgroundColorOverlay, transparent);
         z-index: -1;
         height: 100%;
         pointer-events: none;
-    }
-
-    &::before,
-    .pf-c-login__overlay {
         grid-row: header / footer;
         grid-column: header;
     }
@@ -85,8 +81,12 @@
     }
 
     @media (max-width: 35rem) or (max-height: 17.5rem) {
-        --ak-login--background-color-overlay: var(--pf-c-login__main--BackgroundColor);
+        --ak-c-login--BackgroundColorOverlay: var(--pf-c-login__main--BackgroundColor);
     }
+}
+
+.ak-c-placeholder {
+    grid-area: main;
 }
 
 [data-theme="dark"] .pf-c-login,
@@ -98,7 +98,7 @@
 
 .pf-c-login__header {
     grid-area: header;
-    padding-inline: calc(var(--ak-login--padding) / 2);
+    padding-inline: calc(var(--ak-c-login--padding) / 2);
     align-self: start;
 
     display: grid;
@@ -127,13 +127,16 @@
 .pf-c-login__main {
     --pf-c-login__container--PaddingLeft: 0 !important;
     --pf-c-login__container--PaddingRight: 0 !important;
+    --ak-c-login__main--BoxShadow: var(--pf-global--BoxShadow--md);
+
+    box-shadow: var(--ak-c-login__main--BoxShadow) !important;
 
     grid-area: main;
     margin: 0;
 
     position: relative;
-    max-width: var(--ak-login--MaxWidth);
-    min-height: calc(var(--ak-login--MaxWidth) * 0.8);
+    max-width: var(--ak-c-login--MaxWidth);
+    min-height: calc(var(--ak-c-login--MaxWidth) * 0.8);
 
     display: flex;
     flex-flow: column;
@@ -143,8 +146,9 @@
         position: relative;
         flex: 1 1 auto;
     }
-    @media (min-width: 35rem) and (min-height: 17.5rem) {
-        box-shadow: var(--pf-global--BoxShadow--md);
+
+    @media (max-width: 35rem) or (max-height: 17.5rem) {
+        --ak-c-login__main--BoxShadow: none;
     }
 }
 
@@ -153,7 +157,7 @@
 /* #region Main Header */
 
 .pf-c-login__main-header {
-    padding-inline: var(--ak-login--padding);
+    padding-inline: var(--ak-c-login--padding);
     padding-block: clamp(var(--pf-global--spacer--xs), 6dvw, var(--pf-global--spacer--lg));
 
     .pf-c-title {
@@ -162,46 +166,107 @@
 }
 
 .pf-c-login__main-header.pf-c-brand {
-    --ak-login__main-padding-block-start: clamp(
-        var(--ak-login__main--brand-PaddingMin),
-        var(--ak-login__main--brand-PaddingIdeal),
-        var(--ak-login__main--brand-PaddingMax)
+    --ak-c-login__main-padding-block-start: clamp(
+        var(--ak-c-login__main--brand-PaddingMin),
+        var(--ak-c-login__main--brand-PaddingIdeal),
+        var(--ak-c-login__main--brand-PaddingMax)
     );
 
-    padding-inline: calc(var(--ak-login--padding) / 4);
+    padding-inline: calc(var(--ak-c-login--padding) / 4);
     padding-block-start: calc(
-        var(--ak-login__main-padding-block-start) - var(--ak-login__footer--PaddingBlock)
+        var(--ak-c-login__main-padding-block-start) - var(--ak-c-login__footer--PaddingBlock)
     );
     padding-bottom: var(--pf-global--spacer--xs);
 
-    padding-block-end: calc(var(--ak-login--padding) / 2);
+    padding-block-end: calc(var(--ak-c-login--padding) / 2);
 
     display: flex;
     justify-content: center;
 
     .branding-logo {
         display: block;
-        width: clamp(75%, calc(var(--ak-login--MaxWidth) / 2), 90%);
-        min-height: 4rem;
+        max-width: clamp(75%, calc(var(--ak-c-login--MaxWidth) / 2), 90%);
+    }
+
+    /* Ensure Font Awesome logos scale similarly to image logos */
+    .branding-logo.font-awesome,
+    .branding-logo.fas,
+    .branding-logo.far,
+    .branding-logo.fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(3rem, 8vw, 5rem);
+        line-height: 1;
     }
 }
 
 .pf-c-login__main-body {
     flex: 1 1 auto;
-    padding-inline: var(--ak-login--padding);
+    padding-inline: var(--ak-c-login--padding);
+}
+
+/* #endregion */
+
+/* #region Frame */
+
+.ak-c-login__content {
+    width: 100%;
+    height: 100%;
+    display: block;
+    grid-column: content;
+    grid-row: content;
+    display: none;
+    position: relative;
+    isolation: isolate;
+
+    &::after {
+        content: "";
+        display: block;
+        position: absolute;
+        inset: 0;
+        box-shadow: var(--ak-c-login__content-BoxShadow, none);
+        pointer-events: none;
+    }
+}
+
+.ak-c-login__content-iframe {
+    display: block;
+    border: none;
+    width: 100%;
+    height: 100%;
 }
 
 /* #endregion */
 
 /* #region Layout variations */
 
+.pf-c-login[data-layout$="frame_background"] {
+    --ak-c-login--BackgroundColorOverlay: var(--pf-c-login__main--BackgroundColor);
+}
+
+.pf-c-login[data-layout^="sidebar_left"] {
+    --ak-c-login__content-BoxShadow: inset var(--pf-global--BoxShadow--md-right);
+}
+
+.pf-c-login[data-layout^="sidebar_right"] {
+    --ak-c-login__content-BoxShadow: inset var(--pf-global--BoxShadow--md-left);
+}
+
+.pf-c-login__main[data-layout$="frame_background"] {
+    --ak-c-login__main--BoxShadow: none;
+}
+
 @media (min-width: 70rem) and (min-height: 17.5rem) {
     .pf-c-login__main[data-layout^="sidebar"] {
-        box-shadow: none;
+        --ak-c-login__main--BoxShadow: none;
     }
 
-    .pf-c-login[data-layout="content_left"],
-    .pf-c-login[data-layout="content_right"] {
+    .ak-c-login__content {
+        display: block;
+    }
+
+    .pf-c-login[data-layout^="content"] {
         display: flex;
         flex-flow: row wrap;
 
@@ -220,12 +285,14 @@
 
     .pf-c-login[data-layout="sidebar_left"],
     .pf-c-login[data-layout="sidebar_right"] {
-        --ak-login--MaxWidth: 36rem;
-        --ak-login--background-color-overlay: var(--pf-c-login__main--BackgroundColor);
-
         &::before {
             box-shadow: var(--pf-global--BoxShadow--md);
         }
+    }
+
+    .pf-c-login[data-layout^="sidebar"] {
+        --ak-c-login--MaxWidth: 36rem;
+        --ak-c-login--BackgroundColorOverlay: var(--pf-c-login__main--BackgroundColor);
 
         .pf-c-login__main {
             height: 100%;
@@ -240,22 +307,22 @@
         }
     }
 
-    .pf-c-login[data-layout="sidebar_left"] {
-        grid-template-columns: [main footer] var(--ak-login__main-ColumnWidth) repeat(2, 1fr);
+    .pf-c-login[data-layout^="sidebar_left"] {
+        grid-template-columns: [main footer] var(--ak-c-login__main-ColumnWidth) repeat(2, 1fr);
 
         grid-template-areas:
-            "header . ."
-            "main   . ."
-            "footer . .";
+            "header content content"
+            "main   content content"
+            "footer content content";
     }
 
-    .pf-c-login[data-layout="sidebar_right"] {
-        grid-template-columns: repeat(2, 1fr) var(--ak-login__main-ColumnWidth) [main footer];
+    .pf-c-login[data-layout^="sidebar_right"] {
+        grid-template-columns: repeat(2, 1fr) var(--ak-c-login__main-ColumnWidth) [main footer];
 
         grid-template-areas:
-            ". . header"
-            ". . main  "
-            ". . footer";
+            "content content header"
+            "content content main  "
+            "content content footer";
     }
 }
 
@@ -269,16 +336,20 @@
     flex-direction: column;
     align-self: end;
     justify-content: center;
-    padding-inline: var(--pf-global--spacer--2xl);
-    padding-block: var(--ak-login__footer--PaddingBlock) !important;
-    min-height: calc((var(--ak-login__footer--PaddingBlock) * 2) + 1rem);
+    padding-inline: var(--pf-global--spacer--xl) !important;
+    padding-block: var(--ak-c-login__footer--PaddingBlock) !important;
+    min-height: calc((var(--ak-c-login__footer--PaddingBlock) * 2) + 1rem);
     line-height: var(--pf-global--LineHeight--md);
     min-height: calc(
-        (var(--ak-login__footer--PaddingBlock) * 2) + (var(--pf-global--LineHeight--md) * 1rem)
+        (var(--ak-c-login__footer--PaddingBlock) * 2) + (var(--pf-global--LineHeight--md) * 1rem)
     );
 
     @media (max-width: 35rem) {
         color: var(--pf-global--Color--200);
+    }
+
+    @media (min-width: 35rem) and (min-height: 17.5rem) {
+        filter: var(--ak-global--background-contrast-Filter);
     }
 }
 

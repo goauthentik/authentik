@@ -15,9 +15,7 @@ from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from django_channels_postgres.models import GroupChannel, Message
-from guardian.models import UserObjectPermission
-from guardian.shortcuts import assign_perm
+from guardian.models import RoleObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -42,46 +40,16 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
-from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import LicenseUsage
-from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceProviderGroup,
-    GoogleWorkspaceProviderUser,
-)
-from authentik.enterprise.providers.microsoft_entra.models import (
-    MicrosoftEntraProviderGroup,
-    MicrosoftEntraProviderUser,
-)
-from authentik.enterprise.providers.ssf.models import StreamEvent
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
-    EndpointDevice,
-    EndpointDeviceConnection,
-)
+from authentik.endpoints.models import Connector
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
-from authentik.flows.models import FlowToken, Stage
-from authentik.lib.models import SerializerModel
+from authentik.flows.models import Stage
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
-from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import (
-    AccessToken,
-    AuthorizationCode,
-    DeviceToken,
-    RefreshToken,
-)
-from authentik.providers.proxy.models import ProxySession
-from authentik.providers.rac.models import ConnectionToken
-from authentik.providers.saml.models import SAMLSession
-from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
-from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
-from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
-from authentik.stages.consent.models import UserConsent
-from authentik.tasks.models import Task, TaskLog
-from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
 # Update website/docs/customize/blueprints/v1/models.md when used
@@ -101,7 +69,7 @@ def excluded_models() -> list[type[Model]]:
         DjangoGroup,
         ContentType,
         Permission,
-        UserObjectPermission,
+        RoleObjectPermission,
         # Base classes
         Provider,
         Source,
@@ -112,45 +80,20 @@ def excluded_models() -> list[type[Model]]:
         OutpostServiceConnection,
         Policy,
         PolicyBindingModel,
+        Connector,
         # Classes that have other dependencies
         Session,
         AuthenticatedSession,
-        # Classes which are only internally managed
-        # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
-        FlowToken,
-        LicenseUsage,
-        SCIMProviderGroup,
-        SCIMProviderUser,
-        Tenant,
-        Task,
-        TaskLog,
-        ConnectionToken,
-        AuthorizationCode,
-        AccessToken,
-        RefreshToken,
-        ProxySession,
-        Reputation,
-        WebAuthnDeviceType,
-        SCIMSourceUser,
-        SCIMSourceGroup,
-        GoogleWorkspaceProviderUser,
-        GoogleWorkspaceProviderGroup,
-        MicrosoftEntraProviderUser,
-        MicrosoftEntraProviderGroup,
-        EndpointDevice,
-        EndpointDeviceConnection,
-        DeviceToken,
-        StreamEvent,
-        UserConsent,
-        SAMLSession,
-        Message,
-        GroupChannel,
     )
 
 
 def is_model_allowed(model: type[Model]) -> bool:
     """Check if model is allowed"""
-    return model not in excluded_models() and issubclass(model, SerializerModel | BaseMetaModel)
+    return (
+        model not in excluded_models()
+        and issubclass(model, SerializerModel | BaseMetaModel)
+        and not issubclass(model, InternallyManagedMixin)
+    )
 
 
 class DoRollback(SentryIgnoredException):
@@ -196,13 +139,22 @@ class Importer:
 
     def default_context(self):
         """Default context"""
-        return {
-            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().status().is_valid,
+        context = {
             "goauthentik.io/rbac/models": rbac_models(),
+            "goauthentik.io/enterprise/licensed": False,
         }
+        try:
+            from authentik.enterprise.license import LicenseKey
+
+            context["goauthentik.io/enterprise/licensed"] = (
+                LicenseKey.get_total().status().is_valid,
+            )
+        except ModuleNotFoundError:
+            pass
+        return context
 
     @staticmethod
-    def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
+    def from_string(yaml_input: str, context: dict | None = None) -> Importer:
         """Parse YAML string and create blueprint importer from it"""
         import_dict = load(yaml_input, BlueprintLoader)
         try:
@@ -377,10 +329,12 @@ class Importer:
         """Apply object-level permissions for an entry"""
         for perm in entry.get_permissions(self._import):
             if perm.user is not None:
-                assign_perm(perm.permission, User.objects.get(pk=perm.user), instance)
+                User.objects.get(pk=perm.user).assign_perms_to_managed_role(
+                    perm.permission, instance
+                )
             if perm.role is not None:
                 role = Role.objects.get(pk=perm.role)
-                role.assign_permission(perm.permission, obj=instance)
+                role.assign_perms(perm.permission, obj=instance)
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""

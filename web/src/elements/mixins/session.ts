@@ -1,25 +1,45 @@
 import { APIResult, isAPIResultReady } from "#common/api/responses";
 import { createUIConfig, DefaultUIConfig, UIConfig } from "#common/ui/config";
 
+import { ContextControllerRegistry } from "#elements/controllers/ContextControllerRegistry";
+import { AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
+import { kAKLocale, LocaleContext, LocaleContextValue } from "#elements/mixins/locale";
 import { createMixin } from "#elements/types";
 
-import type { SessionUser, UserSelf } from "@goauthentik/api";
+import { ConsoleLogger } from "#logger/browser";
+
+import { type Config, type SessionUser, type UserSelf } from "@goauthentik/api";
 
 import { consume, createContext } from "@lit/context";
 import { property } from "lit/decorators.js";
 
+export const kAKSessionContext = Symbol("kAKSessionContext");
+
 /**
- * The Lit context for the application configuration.
+ * The Lit context for the session information.
  *
  * @category Context
  * @see {@linkcode SessionMixin}
  * @see {@linkcode WithSession}
  */
 export const SessionContext = createContext<APIResult<SessionUser>>(
-    Symbol.for("authentik-session-context"),
+    Symbol("authentik-session-context"),
 );
 
 export type SessionContext = typeof SessionContext;
+
+/**
+ * The Lit context for the user interface configuration.
+ *
+ * @category Context
+ * @see {@linkcode WithSession}
+ */
+export const UIConfigContext = createContext<Readonly<UIConfig>>(
+    Symbol("authentik-ui-config-context"),
+);
+
+export type UIConfigContext = typeof UIConfigContext;
+
 /**
  * A consumer that provides session information to the element.
  *
@@ -58,6 +78,11 @@ export interface SessionMixin {
      * Whether the current session is impersonating another user.
      */
     readonly impersonating: boolean;
+
+    /**
+     * Refresh the current session information.
+     */
+    refreshSession(): Promise<SessionUser | null>;
 }
 
 /**
@@ -72,8 +97,6 @@ export function canAccessAdmin(user?: UserSelf | null) {
     );
 }
 
-// uiConfig.enabledFeatures.applicationEdit && currentUser?.isSuperuser
-
 /**
  * A mixin that provides the session information to the element.
  *
@@ -86,46 +109,76 @@ export const WithSession = createMixin<SessionMixin>(
         subscribe = true,
     }) => {
         abstract class SessionProvider extends SuperClass implements SessionMixin {
-            #data: APIResult<Readonly<SessionUser>> = {
-                loading: true,
-                error: null,
-            };
+            #logger = ConsoleLogger.prefix("session");
+            #contextController = ContextControllerRegistry.get(SessionContext);
 
-            #uiConfig: Readonly<UIConfig> = DefaultUIConfig;
+            //#region Context Consumers
+
+            @consume({
+                context: AuthentikConfigContext,
+                subscribe,
+            })
+            public readonly [kAKConfig]!: Readonly<Config>;
+
+            @consume({
+                context: LocaleContext,
+                subscribe,
+            })
+            public [kAKLocale]!: LocaleContextValue;
+
+            @consume({
+                context: UIConfigContext,
+                subscribe,
+            })
+            @property({ attribute: false, useDefault: true })
+            public uiConfig: Readonly<UIConfig> = {
+                // Debugging symbol to identify default config in the element lifecycle.
+                [Symbol.for("ak-default-brand")]: true,
+                ...DefaultUIConfig,
+            };
 
             @consume({
                 context: SessionContext,
-                subscribe,
             })
             @property({ attribute: false })
-            public set session(nextResult: APIResult<SessionUser>) {
-                this.#data = nextResult;
-                if (isAPIResultReady(nextResult)) {
-                    const { settings = {} } = nextResult.user || {};
+            public session!: APIResult<Readonly<SessionUser>>;
 
-                    this.#uiConfig = createUIConfig(settings);
-                }
-            }
+            //#endregion
 
-            public get session(): APIResult<Readonly<SessionUser>> {
-                return this.#data;
-            }
-
-            public get uiConfig(): Readonly<UIConfig> {
-                return this.#uiConfig;
-            }
+            //#region Properties
 
             public get currentUser(): Readonly<UserSelf> | null {
-                return (isAPIResultReady(this.#data) && this.#data.user) || null;
+                return (isAPIResultReady(this.session) && this.session.user) || null;
             }
 
             public get originalUser(): Readonly<UserSelf> | null {
-                return (isAPIResultReady(this.#data) && this.#data.original) || null;
+                return (isAPIResultReady(this.session) && this.session.original) || null;
             }
 
             public get impersonating(): boolean {
                 return !!this.originalUser;
             }
+
+            //#endregion
+
+            //#region Methods
+
+            public async refreshSession(): Promise<SessionUser | null> {
+                this.#logger.debug("Fetching session...");
+                const nextResult = await this.#contextController?.refresh();
+
+                if (!isAPIResultReady(nextResult)) {
+                    return null;
+                }
+
+                const { settings = {} } = nextResult.user || {};
+
+                this.uiConfig = createUIConfig(settings);
+
+                return nextResult;
+            }
+
+            //#endregion
         }
 
         return SessionProvider;

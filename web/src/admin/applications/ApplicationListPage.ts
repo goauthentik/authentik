@@ -1,3 +1,4 @@
+import "#elements/forms/ConfirmationForm";
 import "#admin/applications/ApplicationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
@@ -93,7 +94,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application(s)")}
+            object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
@@ -117,7 +118,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
                 name=${item.name}
-                icon=${ifPresent(item.metaIcon)}
+                icon=${ifPresent(item.metaIconUrl)}
+                .iconThemedUrls=${item.metaIconThemedUrls}
             ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>

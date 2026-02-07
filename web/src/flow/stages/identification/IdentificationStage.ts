@@ -4,6 +4,12 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
+import {
+    isConditionalMediationAvailable,
+    transformAssertionForServer,
+    transformCredentialRequestOptions,
+} from "#common/helpers/webauthn";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -36,7 +42,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export const PasswordManagerPrefill: {
     password?: string;
@@ -54,7 +59,6 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFAlert,
         PFInputGroup,
         PFLogin,
@@ -103,6 +107,9 @@ export class IdentificationStage extends BaseStage<
         this.captchaLoaded = true;
     };
 
+    // AbortController for conditional WebAuthn request
+    #passkeyAbortController: AbortController | null = null;
+
     //#endregion
 
     //#region Lifecycle
@@ -110,10 +117,18 @@ export class IdentificationStage extends BaseStage<
     public updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             this.#autoRedirect();
             this.#createHelperForm();
+            this.#startConditionalWebAuthn();
         }
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        // Abort any pending conditional WebAuthn request when component is removed
+        this.#passkeyAbortController?.abort();
+        this.#passkeyAbortController = null;
     }
 
     //#endregion
@@ -133,6 +148,70 @@ export class IdentificationStage extends BaseStage<
 
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
+    }
+
+    /**
+     * Start a conditional WebAuthn request for passkey autofill.
+     * This allows users to select a passkey from the browser's autofill dropdown.
+     */
+    async #startConditionalWebAuthn(): Promise<void> {
+        // Check if passkey challenge is provided
+        // Note: passkeyChallenge is added dynamically and may not be in the generated types yet
+        const passkeyChallenge = (
+            this.challenge as IdentificationChallenge & {
+                passkeyChallenge?: PublicKeyCredentialRequestOptions;
+            }
+        )?.passkeyChallenge;
+
+        if (!passkeyChallenge) {
+            return;
+        }
+
+        // Check if browser supports conditional mediation
+        const isAvailable = await isConditionalMediationAvailable();
+        if (!isAvailable) {
+            console.debug("authentik/identification: Conditional mediation not available");
+            return;
+        }
+
+        // Abort any existing request
+        this.#passkeyAbortController?.abort();
+        this.#passkeyAbortController = new AbortController();
+
+        try {
+            const publicKeyOptions = transformCredentialRequestOptions(passkeyChallenge);
+
+            // Start the conditional WebAuthn request
+            const credential = (await navigator.credentials.get({
+                publicKey: publicKeyOptions,
+                mediation: "conditional",
+                signal: this.#passkeyAbortController.signal,
+            })) as PublicKeyCredential | null;
+
+            if (!credential) {
+                console.debug("authentik/identification: No credential returned");
+                return;
+            }
+
+            // Transform and submit the passkey response
+            const transformedCredential = transformAssertionForServer(credential);
+
+            await this.host?.submit(
+                {
+                    passkey: transformedCredential,
+                },
+                {
+                    invisible: true,
+                },
+            );
+        } catch (error) {
+            if (error instanceof Error && error.name === "AbortError") {
+                // Request was aborted, this is expected when navigating away
+                console.debug("authentik/identification: Conditional WebAuthn aborted");
+                return;
+            }
+            console.warn("authentik/identification: Conditional WebAuthn failed", error);
+        }
     }
 
     //#region Helper Form
@@ -164,7 +243,7 @@ export class IdentificationStage extends BaseStage<
             this.#form.appendChild(username);
         }
         // Only add the password field when we don't already show a password field
-        if (!compatMode && !this.challenge.passwordFields) {
+        if (!compatMode && !this.challenge?.passwordFields) {
             const password = document.createElement("input");
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
@@ -226,11 +305,11 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
-    onSubmitSuccess(): void {
+    protected override onSubmitSuccess(): void {
         this.#form?.remove();
     }
 
-    onSubmitFailure(): void {
+    protected override onSubmitFailure(): void {
         const captchaInput = this.#captchaInputRef.value;
 
         if (captchaInput) {
@@ -244,7 +323,26 @@ export class IdentificationStage extends BaseStage<
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
+        const isPromoted = source.promoted ?? false;
 
+        // Promoted source
+        if (isPromoted) {
+            return html`<button
+                type="button"
+                @click=${() => {
+                    if (!this.host) return;
+                    this.host.challenge = source.challenge;
+                }}
+                part="source-item source-item-promoted"
+                name=${`source-${kebabCase(source.name)}`}
+                class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
+                aria-label=${msg(str`Continue with ${source.name}`)}
+            >
+                ${msg(str`Continue with ${source.name}`)}
+            </button>`;
+        }
+
+        // Non-promoted sources (the default one)
         return html`<button
             type="button"
             @click=${() => {
@@ -253,11 +351,11 @@ export class IdentificationStage extends BaseStage<
             }}
             part="source-item"
             name=${`source-${kebabCase(source.name)}`}
-            class="pf-c-button pf-m-block source-button"
+            class="pf-c-button source-button"
             aria-label=${msg(str`Continue with ${source.name}`)}
         >
             <span class="pf-c-button__icon pf-m-start">${icon}</span>
-            ${this.challenge.showSourceLabels ? source.name : ""}
+            ${this.challenge?.showSourceLabels ? source.name : ""}
         </button>`;
     }
 
@@ -310,6 +408,15 @@ export class IdentificationStage extends BaseStage<
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
 
+        // Check if passkey login is enabled to add webauthn to autocomplete
+        const passkeyChallenge = (
+            this.challenge as IdentificationChallenge & {
+                passkeyChallenge?: PublicKeyCredentialRequestOptions;
+            }
+        )?.passkeyChallenge;
+        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
+
         return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
                 ? html`
                       <p>
@@ -326,11 +433,13 @@ export class IdentificationStage extends BaseStage<
                     type=${type}
                     name="uidField"
                     placeholder=${label}
-                    autofocus=""
-                    autocomplete="username"
+                    autofocus
+                    autocomplete=${autocomplete}
                     spellcheck="false"
                     class="pf-c-form-control"
-                    value=${this.#rememberMe?.username ?? ""}
+                    value=${this.#rememberMe?.username ??
+                    this.challenge.pendingUserIdentifier ??
+                    ""}
                     required
                 />
                 ${this.#rememberMe.render()}
@@ -393,13 +502,13 @@ export class IdentificationStage extends BaseStage<
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge} part="flow-card">
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${this.challenge.applicationPre
+                ${this.challenge?.applicationPre
                     ? html`<p>
                           ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
                       </p>`
                     : nothing}
                 ${this.renderInput()}
-                ${this.challenge.passwordlessUrl
+                ${this.challenge?.passwordlessUrl
                     ? html`<a
                           name="passwordless"
                           href=${this.challenge.passwordlessUrl}
@@ -409,7 +518,7 @@ export class IdentificationStage extends BaseStage<
                       </a> `
                     : nothing}
             </form>
-            ${this.challenge.sources?.length
+            ${this.challenge?.sources?.length
                 ? html`<fieldset
                       slot="footer"
                       part="source-list"
@@ -419,7 +528,14 @@ export class IdentificationStage extends BaseStage<
                   >
                       <legend class="sr-only">${msg("Login sources")}</legend>
                       ${repeat(
-                          this.challenge.sources,
+                          [...this.challenge.sources].sort((a, b) => {
+                              // Sort promoted sources first
+                              const aPromoted = a.promoted ?? false;
+                              const bPromoted = b.promoted ?? false;
+                              if (aPromoted && !bPromoted) return -1;
+                              if (!aPromoted && bPromoted) return 1;
+                              return 0;
+                          }),
                           (source, idx) => source.name + idx,
                           (source) => this.renderSource(source),
                       )}

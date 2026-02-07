@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
@@ -19,7 +20,41 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, f
 	state, err := a.createState(r, rw, fwd)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to create state")
-		return
+		if !strings.HasPrefix(err.Error(), "failed to get session") {
+			rw.WriteHeader(400)
+			return
+		}
+
+		// Client has a cookie but we're unable to load the session from
+		// storage (TMPDIR=/dev/shm). This can happen if the session file
+		// was deleted due to container restart or session invalidation
+		// (e.g., logout on auth server).
+		//
+		// Re-save an empty session and try again.
+
+		session, err := a.sessions.Get(r, a.SessionName())
+		if err != nil && !strings.HasSuffix(err.Error(), "no such file or directory") {
+			a.log.WithError(err).Warning("failed to get session")
+			rw.WriteHeader(400)
+			return
+		}
+		err = a.sessions.Save(r, rw, session)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session")
+			rw.WriteHeader(400)
+			return
+		}
+
+		// The registry caches the previous attempt to open the session so it
+		// needs to be cleared in order to get the session in createState().
+		*r = *r.WithContext(context.Background())
+
+		state, err = a.createState(r, rw, fwd)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to create state on retry")
+			rw.WriteHeader(400)
+			return
+		}
 	}
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }

@@ -46,11 +46,13 @@ export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.SystemTaskException, msg("System task exception")],
     [EventActions.SystemException, msg("General system exception")],
     [EventActions.ConfigurationError, msg("Configuration error")],
+    [EventActions.ConfigurationWarning, msg("Configuration warning")],
     [EventActions.ModelCreated, msg("Model created")],
     [EventActions.ModelUpdated, msg("Model updated")],
     [EventActions.ModelDeleted, msg("Model deleted")],
     [EventActions.EmailSent, msg("Email sent")],
     [EventActions.UpdateAvailable, msg("Update available")],
+    [EventActions.ExportReady, msg("Data export ready")],
 ]);
 
 export const actionToLabel = (action?: EventActions): string =>

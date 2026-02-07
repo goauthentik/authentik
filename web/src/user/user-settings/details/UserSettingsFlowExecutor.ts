@@ -1,15 +1,14 @@
 import "#user/user-settings/details/stages/prompt/PromptStage";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
-import { refreshMe } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { StageHost } from "#flow/stages/base";
@@ -35,22 +34,25 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
-    extends WithBrandConfig(AKElement, true)
+    extends WithBrandConfig(WithSession(AKElement), true)
     implements StageHost
 {
     @property()
     flowSlug = this.brand?.flowUserSettings;
 
-    private _challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
-        this.requestUpdate();
+    set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+
+        this.#challenge = value;
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
+    get challenge(): ChallengeTypes | null {
+        return this.#challenge;
     }
 
     @property({ type: Boolean })
@@ -61,7 +63,7 @@ export class UserSettingsFlowExecutor
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
-        // @ts-ignore
+        // @ts-expect-error Component is too generic for Typescript here.
         payload.component = this.challenge.component;
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG)
@@ -103,19 +105,23 @@ export class UserSettingsFlowExecutor
 
     async nextChallenge(): Promise<void> {
         this.loading = true;
-        try {
-            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
+
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsExecutorGet({
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
+            })
+            .then((challenge) => {
+                delete challenge.flowInfo;
+                this.challenge = challenge;
+            })
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+                this.errorMessage(parsedError);
+            })
+            .finally(() => {
+                this.loading = false;
             });
-            delete challenge.flowInfo;
-            this.challenge = challenge;
-        } catch (e: unknown) {
-            // Catch JSON or Update errors
-            this.errorMessage(e as Error | Response);
-        } finally {
-            this.loading = false;
-        }
     }
 
     async errorMessage(error: APIError): Promise<void> {
@@ -128,23 +134,18 @@ export class UserSettingsFlowExecutor
         this.challenge = challenge as ChallengeTypes;
     }
 
-    globalRefresh(): void {
-        refreshMe().then(() => {
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            try {
-                document.querySelectorAll("ak-interface-user").forEach((int) => {
-                    (int as AKElement).requestUpdate();
-                });
-            } catch {
-                console.debug("authentik/user/flows: failed to find interface to refresh");
-            }
+    #performSessionChallenge = () => {
+        console.debug("authentik/user/flows: redirect to '/', restarting flow.");
+
+        return this.nextChallenge().then(() => {
+            showMessage({
+                level: MessageLevel.success,
+                message: msg("Successfully updated details"),
+            });
+
+            this.refreshSession();
         });
-    }
+    };
 
     renderChallenge(): SlottedTemplateResult {
         if (!this.challenge) {
@@ -166,15 +167,9 @@ export class UserSettingsFlowExecutor
                         >${"Edit settings"}</a
                     >`;
                 }
+
                 // Flow has finished, so let's load while in the background we can restart the flow
-                this.loading = true;
-                console.debug("authentik/user/flows: redirect to '/', restarting flow.");
-                this.nextChallenge();
-                this.globalRefresh();
-                showMessage({
-                    level: MessageLevel.success,
-                    message: msg("Successfully updated details"),
-                });
+                this.#performSessionChallenge();
                 return html`<ak-empty-state default-label></ak-empty-state>`;
             default:
                 console.debug(

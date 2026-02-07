@@ -20,7 +20,12 @@ from authentik.core.signals import (
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 from authentik.flows.models import Stage
-from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
+from authentik.flows.planner import (
+    PLAN_CONTEXT_DEVICE,
+    PLAN_CONTEXT_OUTPOST,
+    PLAN_CONTEXT_SOURCE,
+    FlowPlan,
+)
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
@@ -48,6 +53,9 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
         if PLAN_CONTEXT_OUTPOST in flow_plan.context:
             # Save outpost context
             kwargs[PLAN_CONTEXT_OUTPOST] = flow_plan.context[PLAN_CONTEXT_OUTPOST]
+        if PLAN_CONTEXT_DEVICE in flow_plan.context:
+            # Save device
+            kwargs[PLAN_CONTEXT_DEVICE] = flow_plan.context[PLAN_CONTEXT_DEVICE]
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
     request.session.save()

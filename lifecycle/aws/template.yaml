@@ -18,7 +18,7 @@ Parameters:
     Description: authentik Docker image
   AuthentikVersion:
     Type: String
-    Default: 2025.12.0-rc1
+    Default: 2026.2.0-rc1
     Description: authentik Docker image tag
   AuthentikServerCPU:
     Type: Number
@@ -444,6 +444,93 @@ Resources:
     DeletionPolicy: Snapshot
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikDB/Resource
+  AuthentikDataEFSSecurityGroupF1438EBE:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for authentik data EFS
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      VpcId:
+        Ref: AuthentikVpcA1ABE6C2
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikDataEFSSecurityGroup/Resource
+  AuthentikDataEFSSecurityGroupfromAuthentikStackAuthentikSG23C19B282049BC1DBBFA:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: from AuthentikStackAuthentikSG23C19B28:2049
+      FromPort: 2049
+      GroupId:
+        Fn::GetAtt:
+          - AuthentikDataEFSSecurityGroupF1438EBE
+          - GroupId
+      IpProtocol: tcp
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - AuthentikSG3040E46F
+          - GroupId
+      ToPort: 2049
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikDataEFSSecurityGroup/from AuthentikStackAuthentikSG23C19B28:2049
+  AuthentikDataEFS3D4C1E48:
+    Type: AWS::EFS::FileSystem
+    Properties:
+      Encrypted: true
+      FileSystemTags:
+        - Key: Name
+          Value: AuthentikStack/AuthentikDataEFS
+      PerformanceMode: generalPurpose
+      ThroughputMode: bursting
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikDataEFS/Resource
+  AuthentikDataEFSEfsMountTarget11E1521A2:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId:
+        Ref: AuthentikDataEFS3D4C1E48
+      SecurityGroups:
+        - Fn::GetAtt:
+            - AuthentikDataEFSSecurityGroupF1438EBE
+            - GroupId
+      SubnetId:
+        Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikDataEFS/EfsMountTarget1
+  AuthentikDataEFSEfsMountTarget2C31FB4A2:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId:
+        Ref: AuthentikDataEFS3D4C1E48
+      SecurityGroups:
+        - Fn::GetAtt:
+            - AuthentikDataEFSSecurityGroupF1438EBE
+            - GroupId
+      SubnetId:
+        Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikDataEFS/EfsMountTarget2
+  AuthentikDataEFSAuthentikDataAccessPoint4357C748:
+    Type: AWS::EFS::AccessPoint
+    Properties:
+      AccessPointTags:
+        - Key: Name
+          Value: AuthentikStack/AuthentikDataEFS/AuthentikDataAccessPoint
+      FileSystemId:
+        Ref: AuthentikDataEFS3D4C1E48
+      PosixUser:
+        Gid: "1000"
+        Uid: "1000"
+      RootDirectory:
+        CreationInfo:
+          OwnerGid: "1000"
+          OwnerUid: "1000"
+          Permissions: "755"
+        Path: /data
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikDataEFS/AuthentikDataAccessPoint/Resource
   AuthentikMediaEFSSecurityGroup1840BA29:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -613,7 +700,10 @@ Resources:
               awslogs-region:
                 Ref: AWS::Region
           MountPoints:
-            - ContainerPath: /media
+            - ContainerPath: /data
+              ReadOnly: false
+              SourceVolume: data
+            - ContainerPath: /data/media
               ReadOnly: false
               SourceVolume: media
           Name: AuthentikServerContainer
@@ -649,6 +739,15 @@ Resources:
           - AuthentikServerTaskTaskRole5BB06A73
           - Arn
       Volumes:
+        - EFSVolumeConfiguration:
+            AuthorizationConfig:
+              AccessPointId:
+                Ref: AuthentikDataEFSAuthentikDataAccessPoint4357C748
+              IAM: ENABLED
+            FilesystemId:
+              Ref: AuthentikDataEFS3D4C1E48
+            TransitEncryption: ENABLED
+          Name: data
         - EFSVolumeConfiguration:
             AuthorizationConfig:
               AccessPointId:
@@ -829,7 +928,10 @@ Resources:
               awslogs-region:
                 Ref: AWS::Region
           MountPoints:
-            - ContainerPath: /media
+            - ContainerPath: /data
+              ReadOnly: false
+              SourceVolume: data
+            - ContainerPath: /data/media
               ReadOnly: false
               SourceVolume: media
           Name: AuthentikWorkerContainer
@@ -862,6 +964,15 @@ Resources:
           - AuthentikWorkerTaskTaskRole87C41589
           - Arn
       Volumes:
+        - EFSVolumeConfiguration:
+            AuthorizationConfig:
+              AccessPointId:
+                Ref: AuthentikDataEFSAuthentikDataAccessPoint4357C748
+              IAM: ENABLED
+            FilesystemId:
+              Ref: AuthentikDataEFS3D4C1E48
+            TransitEncryption: ENABLED
+          Name: data
         - EFSVolumeConfiguration:
             AuthorizationConfig:
               AccessPointId:

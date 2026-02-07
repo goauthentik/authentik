@@ -1,12 +1,16 @@
 """Group client"""
 
 from itertools import batched
+from typing import Any
 
 from django.db import transaction
+from django.utils.http import urlencode
+from orjson import dumps
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 
 from authentik.core.models import Group
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
@@ -27,6 +31,7 @@ from authentik.providers.scim.clients.schema import (
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
     SCIMMapping,
     SCIMProvider,
     SCIMProviderGroup,
@@ -82,41 +87,69 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             del scim_group.members
         return scim_group
 
-    def delete(self, obj: Group):
+    def delete(self, identifier: str):
         """Delete group"""
-        scim_group = SCIMProviderGroup.objects.filter(provider=self.provider, group=obj).first()
-        if not scim_group:
-            self.logger.debug("Group does not exist in SCIM, skipping")
-            return None
-        response = self._request("DELETE", f"/Groups/{scim_group.scim_id}")
-        scim_group.delete()
-        return response
+        SCIMProviderGroup.objects.filter(provider=self.provider, scim_id=identifier).delete()
+        return self._request("DELETE", f"/Groups/{identifier}")
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
         scim_group = self.to_schema(group, None)
-        response = self._request(
-            "POST",
-            "/Groups",
-            json=scim_group.model_dump(
-                mode="json",
-                exclude_unset=True,
-            ),
-        )
-        scim_id = response.get("id")
-        if not scim_id or scim_id == "":
-            raise StopSync("SCIM Response with missing or invalid `id`")
-        connection = SCIMProviderGroup.objects.create(
-            provider=self.provider, group=group, scim_id=scim_id, attributes=response
-        )
+        connection = None
+        with transaction.atomic():
+            try:
+                response = self._request(
+                    "POST",
+                    "/Groups",
+                    json=scim_group.model_dump(
+                        mode="json",
+                        exclude_unset=True,
+                    ),
+                )
+            except ObjectExistsSyncException as exc:
+                if not self._config.filter.supported:
+                    raise exc
+                groups = self._request(
+                    "GET",
+                    f"/Groups?{urlencode({'filter': f'displayName eq \"{group.name}\"'})}",
+                )
+                groups_res = groups.get("Resources", [])
+                if len(groups_res) < 1:
+                    raise exc
+                connection = SCIMProviderGroup.objects.create(
+                    provider=self.provider,
+                    group=group,
+                    scim_id=groups_res[0]["id"],
+                    attributes=groups_res[0],
+                )
+            else:
+                scim_id = response.get("id")
+                if not scim_id or scim_id == "":
+                    raise StopSync("SCIM Response with missing or invalid `id`")
+                connection = SCIMProviderGroup.objects.create(
+                    provider=self.provider, group=group, scim_id=scim_id, attributes=response
+                )
         users = list(group.users.order_by("id").values_list("id", flat=True))
         self._patch_add_users(connection, users)
         return connection
+
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+        """Check if a group is different than what we last wrote to the remote system.
+        Returns true if there is a difference in data."""
+        local_known = connection.attributes
+        local_updated = {}
+        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        MERGE_LIST_UNIQUE.merge(local_updated, local_created)
+        return dumps(local_updated) != dumps(local_known)
 
     def update(self, group: Group, connection: SCIMProviderGroup):
         """Update existing group"""
         scim_group = self.to_schema(group, connection)
         scim_group.id = connection.scim_id
+        payload = scim_group.model_dump(mode="json", exclude_unset=True)
+        if not self.diff(payload, connection):
+            self.logger.debug("Skipping group write as data has not changed")
+            return self.patch_compare_users(group)
         try:
             if self._config.patch.supported:
                 return self._update_patch(group, scim_group, connection)
@@ -126,6 +159,34 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             raise
 
     def _update_patch(
+        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
+    ):
+        """Apply provider-specific PATCH requests"""
+        match connection.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                self._update_patch_aws(group, scim_group, connection)
+            case _:
+                self._update_patch_general(group, scim_group, connection)
+        return self.patch_compare_users(group)
+
+    def _update_patch_aws(
+        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
+    ):
+        """Run PATCH requests for supported attributes"""
+        group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
+        self._patch_chunked(
+            connection.scim_id,
+            *[
+                PatchOperation(
+                    op=PatchOp.replace,
+                    path=attr,
+                    value=group_dict[attr],
+                )
+                for attr in ("displayName", "externalId")
+            ],
+        )
+
+    def _update_patch_general(
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
     ):
         """Update a group via PATCH request"""
@@ -147,7 +208,6 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_none=True,
             ),
         )
-        return self.patch_compare_users(group)
 
     def _update_put(self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup):
         """Update a group via PUT request"""
@@ -161,7 +221,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 ),
             )
             return self.patch_compare_users(group)
-        except (SCIMRequestException, ObjectExistsSyncException):
+        except SCIMRequestException, ObjectExistsSyncException:
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
             # sync, send patch add requests for all the users the group currently has
             return self._update_patch(group, scim_group, connection)

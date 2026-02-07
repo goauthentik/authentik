@@ -1,20 +1,20 @@
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/forms/Radio.css";
+import { SlottedTemplateResult } from "#elements/types";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface RadioOption<T> {
     label: string;
-    description?: TemplateResult;
+    description?: SlottedTemplateResult;
     className?: string;
     default?: boolean;
     value: T;
@@ -22,31 +22,39 @@ export interface RadioOption<T> {
 }
 
 @customElement("ak-radio")
-export class Radio<T> extends CustomEmitterElement(AKElement) {
-    @property({ attribute: false })
-    public options: RadioOption<T>[] = [];
-
-    @property()
-    public name = "";
-
-    @property({ attribute: false })
-    public value?: T;
-
-    #fieldID: string = this.name || IDGenerator.randomID();
-
+export class Radio<T = never> extends CustomEmitterElement(AKElement) {
     static styles: CSSResult[] = [
         // ---
-        PFBase,
         PFRadio,
         PFForm,
         Styles,
     ];
 
+    /**
+     * Options to display in the radio group.
+     *
+     * Can be either an array of RadioOption<T> or a function returning such an array.
+     */
+    @property({ attribute: false })
+    public options!: RadioOption<T>[] | (() => RadioOption<T>[]);
+
+    @property()
+    public name = "";
+
+    @property({ attribute: false })
+    public value?: T | unknown;
+
+    #fieldID: string = this.name || IDGenerator.randomID();
+
+    #optionsArray(): RadioOption<T>[] {
+        return typeof this.options === "function" ? this.options() : this.options;
+    }
+
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
     // not trigger an element update.
     willUpdate() {
         if (!this.value) {
-            const maybeDefault = this.options.filter((opt) => opt.default);
+            const maybeDefault = this.#optionsArray().filter((opt) => opt.default);
             if (maybeDefault.length > 0) {
                 this.value = maybeDefault[0].value;
             }
@@ -90,7 +98,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
                 aria-label=${option.label}
                 id=${id}
                 .checked=${option.value === this.value}
-                .disabled=${option.disabled}
+                .disabled=${!!option.disabled}
             />
             <label class="pf-c-radio__label ${option.className ?? ""}" for=${id}
                 >${option.label}</label
@@ -103,14 +111,14 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     render() {
         return html`<div class="pf-c-form__group-control pf-m-stack">
-            ${map(this.options, this.#renderRadio)}
+            ${map(this.#optionsArray(), this.#renderRadio)}
         </div>`;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-radio": Radio<unknown>;
+        "ak-radio": Radio<never>;
     }
 }
 

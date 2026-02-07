@@ -21,16 +21,32 @@ export class DeleteForm extends ModalButton {
     static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
-    obj?: Record<string, unknown>;
+    public obj?: Record<string, unknown>;
 
-    @property()
-    objectLabel?: string;
-
-    @property({ attribute: false })
-    usedBy?: () => Promise<UsedBy[]>;
+    @property({ type: String, attribute: "object-label" })
+    public objectLabel?: string;
 
     @property({ attribute: false })
-    delete!: () => Promise<unknown>;
+    public usedBy?: () => Promise<UsedBy[]>;
+
+    @property({ attribute: false })
+    public delete!: () => Promise<unknown>;
+
+    /**
+     * Get the display name for the object being deleted/updated.
+     */
+    protected getObjectDisplayName(): string | undefined {
+        return this.obj?.name as string | undefined;
+    }
+
+    /**
+     * Get the formatted object name for display in messages.
+     * Returns ` "displayName"` with quotes if display name exists, empty string otherwise.
+     */
+    protected getFormattedObjectName(): string {
+        const displayName = this.getObjectDisplayName();
+        return displayName ? ` "${displayName}"` : "";
+    }
 
     confirm(): Promise<void> {
         return this.delete()
@@ -54,7 +70,9 @@ export class DeleteForm extends ModalButton {
 
     onSuccess(): void {
         showMessage({
-            message: msg(str`Successfully deleted ${this.objectLabel} ${this.obj?.name}`),
+            message: msg(
+                str`Successfully deleted ${this.objectLabel} ${this.getObjectDisplayName()}`,
+            ),
             level: MessageLevel.success,
         });
     }
@@ -71,12 +89,7 @@ export class DeleteForm extends ModalButton {
     }
 
     renderModalInner(): TemplateResult {
-        let objName = this.obj?.name;
-        if (objName) {
-            objName = ` "${objName}"`;
-        } else {
-            objName = "";
-        }
+        const objName = this.getFormattedObjectName();
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg(str`Delete ${this.objectLabel}`)}</h1>
@@ -85,7 +98,7 @@ export class DeleteForm extends ModalButton {
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
                     <p>
-                        ${msg(str`Are you sure you want to delete ${this.objectLabel} ${objName}?`)}
+                        ${msg(str`Are you sure you want to delete ${this.objectLabel}${objName}?`)}
                     </p>
                 </form>
             </section>

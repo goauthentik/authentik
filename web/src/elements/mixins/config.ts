@@ -13,7 +13,7 @@ export const kAKConfig = Symbol("kAKConfig");
  * @see {@linkcode AKConfigMixin}
  * @see {@linkcode WithAuthentikConfig}
  */
-export const AuthentikConfigContext = createContext<Config>(Symbol.for("authentik-config-context"));
+export const AuthentikConfigContext = createContext<Config>(Symbol("authentik-config-context"));
 
 export type AuthentikConfigContext = Context<symbol, Config>;
 

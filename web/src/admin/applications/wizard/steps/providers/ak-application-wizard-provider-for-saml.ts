@@ -6,7 +6,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
 
-import { SAMLBindingsEnum, SAMLProvider, SAMLProviderLogoutMethodEnum } from "@goauthentik/api";
+import { KeyTypeEnum, SAMLBindingsEnum, SAMLLogoutMethods, SAMLProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -26,18 +26,22 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     protected hasPostBinding = false;
 
     @state()
-    protected logoutMethod: string = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+    protected logoutMethod: string = SAMLLogoutMethods.FrontchannelIframe;
+
+    @state()
+    protected signingKeyType: KeyTypeEnum | null = null;
 
     get formValues() {
         const values = super.formValues;
+
         // If SLS binding is redirect, ensure logout method is not backchannel
         if (
             values.slsBinding === SAMLBindingsEnum.Redirect &&
-            values.logoutMethod === SAMLProviderLogoutMethodEnum.Backchannel
+            values.logoutMethod === SAMLLogoutMethods.Backchannel
         ) {
             return {
                 ...values,
-                logoutMethod: SAMLProviderLogoutMethodEnum.FrontchannelIframe,
+                logoutMethod: SAMLLogoutMethods.FrontchannelIframe,
             };
         }
         return values;
@@ -48,6 +52,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
         };
 
         const setHasSlsUrl = (ev: Event) => {
@@ -65,9 +70,9 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             // If switching to redirect binding, change logout method from backchannel if needed
             if (
                 target.value === SAMLBindingsEnum.Redirect &&
-                this.logoutMethod === SAMLProviderLogoutMethodEnum.Backchannel
+                this.logoutMethod === SAMLLogoutMethods.Backchannel
             ) {
-                this.logoutMethod = SAMLProviderLogoutMethodEnum.FrontchannelIframe;
+                this.logoutMethod = SAMLLogoutMethods.FrontchannelIframe;
             }
         };
 
@@ -83,6 +88,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                     errors: this.wizard.errors?.provider,
                     setHasSigningKp,
                     hasSigningKp: this.hasSigningKp,
+                    signingKeyType: this.signingKeyType,
                     setHasSlsUrl,
                     hasSlsUrl: this.hasSlsUrl,
                     setSlsBinding,

@@ -9,11 +9,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { InitialPermissionsModeToLabel } from "#admin/rbac/utils";
-
 import {
     InitialPermissions,
-    InitialPermissionsModeEnum,
     Permission,
     RbacApi,
     RbacRolesListRequest,
@@ -55,7 +52,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -94,27 +91,6 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
-                <select class="pf-c-form-control">
-                    <option
-                        value=${InitialPermissionsModeEnum.User}
-                        ?selected=${this.instance?.mode === InitialPermissionsModeEnum.User}
-                    >
-                        ${InitialPermissionsModeToLabel(InitialPermissionsModeEnum.User)}
-                    </option>
-                    <option
-                        value=${InitialPermissionsModeEnum.Role}
-                        ?selected=${this.instance?.mode === InitialPermissionsModeEnum.Role}
-                    >
-                        ${InitialPermissionsModeToLabel(InitialPermissionsModeEnum.Role)}
-                    </option>
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.",
                     )}
                 </p>
             </ak-form-element-horizontal>

@@ -1,47 +1,22 @@
+import "#admin/stages/register";
 import "#admin/rbac/ObjectPermissionModal";
-import "#admin/stages/StageWizard";
-import "#admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
-import "#admin/stages/authenticator_duo/DuoDeviceImportForm";
-import "#admin/stages/authenticator_email/AuthenticatorEmailStageForm";
-import "#admin/stages/authenticator_endpoint_gdtc/AuthenticatorEndpointGDTCStageForm";
-import "#admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
-import "#admin/stages/authenticator_static/AuthenticatorStaticStageForm";
-import "#admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
-import "#admin/stages/authenticator_validate/AuthenticatorValidateStageForm";
-import "#admin/stages/authenticator_webauthn/AuthenticatorWebAuthnStageForm";
-import "#admin/stages/captcha/CaptchaStageForm";
-import "#admin/stages/consent/ConsentStageForm";
-import "#admin/stages/deny/DenyStageForm";
-import "#admin/stages/dummy/DummyStageForm";
-import "#admin/stages/email/EmailStageForm";
-import "#admin/stages/identification/IdentificationStageForm";
-import "#admin/stages/invitation/InvitationStageForm";
-import "#admin/stages/mtls/MTLSStageForm";
-import "#admin/stages/password/PasswordStageForm";
-import "#admin/stages/prompt/PromptStageForm";
-import "#admin/stages/redirect/RedirectStageForm";
-import "#admin/stages/source/SourceStageForm";
-import "#admin/stages/user_delete/UserDeleteStageForm";
-import "#admin/stages/user_login/UserLoginStageForm";
-import "#admin/stages/user_logout/UserLogoutStageForm";
-import "#admin/stages/user_write/UserWriteStageForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Stage, StagesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
@@ -72,7 +47,7 @@ export class StageListPage extends TablePage<Stage> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Stage(s)")}
+            object-label=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
@@ -125,16 +100,14 @@ export class StageListPage extends TablePage<Stage> {
             </ul>`,
             html`<div>
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>

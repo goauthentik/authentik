@@ -17,7 +17,7 @@ import { setPageDetails } from "#components/ak-page-navbar";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
-import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { Flow, FlowsApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues } from "lit";
@@ -29,7 +29,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
@@ -40,7 +39,6 @@ export class FlowViewPage extends AKElement {
     flow!: Flow;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFDescriptionList,
         PFButton,
@@ -300,12 +298,13 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

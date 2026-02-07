@@ -3,19 +3,19 @@
 /* #region Monochrome */
 
 :root {
-    --pf-global--palette--black-100: #fafafa;
-    --pf-global--palette--black-150: #f5f5f5;
-    --pf-global--palette--black-200: #f0f0f0;
-    --pf-global--palette--black-300: #d2d2d2;
-    --pf-global--palette--black-400: #b8bbbe;
-    --pf-global--palette--black-500: #8a8d90;
-    --pf-global--palette--black-600: #6a6e73;
-    --pf-global--palette--black-700: #4f5255;
-    --pf-global--palette--black-800: #3c3f42;
-    --pf-global--palette--black-850: #212427;
-    --pf-global--palette--black-900: #151515;
-    --pf-global--palette--black-1000: #030303;
-    --pf-global--palette--white: #fff;
+    --pf-global--palette--black-100: oklab(0.9851 -0 0);
+    --pf-global--palette--black-150: oklab(0.9702 -0 0);
+    --pf-global--palette--black-200: oklab(0.9551 -0 0);
+    --pf-global--palette--black-300: oklab(0.8638 -0 0);
+    --pf-global--palette--black-400: oklab(0.7906 -0.002 -0.005);
+    --pf-global--palette--black-500: oklab(0.6418 -0.0021 -0.0053);
+    --pf-global--palette--black-600: oklab(0.5364 -0.0026 -0.0089);
+    --pf-global--palette--black-700: oklab(0.4369 -0.0024 -0.0058);
+    --pf-global--palette--black-800: oklab(0.3659 -0.0025 -0.0061);
+    --pf-global--palette--black-850: oklab(0.2585 -0.0027 -0.0066);
+    --pf-global--palette--black-900: oklab(0.1957 -0 0);
+    --pf-global--palette--black-1000: oklab(0.0969 -0 0);
+    --pf-global--palette--white: oklab(1 -0 0);
 }
 
 /* #endregion */
@@ -23,28 +23,28 @@
 /* #region Blue */
 
 :root {
-    --pf-global--palette--blue-50: #e7f1fa;
-    --pf-global--palette--blue-100: #bee1f4;
-    --pf-global--palette--blue-200: #73bcf7;
-    --pf-global--palette--blue-300: #2b9af3;
-    --pf-global--palette--blue-400: #06c;
-    --pf-global--palette--blue-500: #004080;
-    --pf-global--palette--blue-600: #002952;
-    --pf-global--palette--blue-700: #001223;
+    --pf-global--palette--blue-50: oklab(0.9533 -0.0068 -0.0147);
+    --pf-global--palette--blue-100: oklab(0.8906 -0.028 -0.0354);
+    --pf-global--palette--blue-200: oklab(0.7706 -0.0485 -0.1012);
+    --pf-global--palette--blue-300: oklab(0.6689 -0.0608 -0.1513);
+    --pf-global--palette--blue-400: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--palette--blue-500: oklab(0.3763 -0.0324 -0.1182);
+    --pf-global--palette--blue-600: oklab(0.2811 -0.0254 -0.0827);
+    --pf-global--palette--blue-700: oklab(0.1764 -0.0186 -0.0409);
 }
 /* #endregion */
 
 /* #region Cyan */
 
 :root {
-    --pf-global--palette--cyan-50: #f2f9f9;
-    --pf-global--palette--cyan-100: #a2d9d9;
-    --pf-global--palette--cyan-200: #73c5c5;
-    --pf-global--palette--cyan-300: #009596;
-    --pf-global--palette--cyan-400: #005f60;
-    --pf-global--palette--cyan-500: #003737;
-    --pf-global--palette--cyan-600: #002323;
-    --pf-global--palette--cyan-700: #000f0f;
+    --pf-global--palette--cyan-50: oklab(0.9769 -0.0071 -0.0022);
+    --pf-global--palette--cyan-100: oklab(0.8475 -0.0542 -0.0157);
+    --pf-global--palette--cyan-200: oklab(0.7714 -0.0774 -0.0216);
+    --pf-global--palette--cyan-300: oklab(0.6068 -0.0996 -0.0278);
+    --pf-global--palette--cyan-400: oklab(0.44 -0.0721 -0.0207);
+    --pf-global--palette--cyan-500: oklab(0.3049 -0.0503 -0.0133);
+    --pf-global--palette--cyan-600: oklab(0.2319 -0.0383 -0.0101);
+    --pf-global--palette--cyan-700: oklab(0.1525 -0.0252 -0.0066);
 }
 
 /* #endregion */
@@ -52,14 +52,14 @@
 /* #region Gold */
 
 :root {
-    --pf-global--palette--gold-50: #fdf7e7;
-    --pf-global--palette--gold-100: #f9e0a2;
-    --pf-global--palette--gold-200: #f6d173;
-    --pf-global--palette--gold-300: #f4c145;
-    --pf-global--palette--gold-400: #f0ab00;
-    --pf-global--palette--gold-500: #c58c00;
-    --pf-global--palette--gold-600: #795600;
-    --pf-global--palette--gold-700: #3d2c00;
+    --pf-global--palette--gold-50: oklab(0.9765 0.0001 0.022);
+    --pf-global--palette--gold-100: oklab(0.9129 0.0021 0.0835);
+    --pf-global--palette--gold-200: oklab(0.8733 0.0035 0.1206);
+    --pf-global--palette--gold-300: oklab(0.8354 0.0112 0.1471);
+    --pf-global--palette--gold-400: oklab(0.7864 0.0298 0.1604);
+    --pf-global--palette--gold-500: oklab(0.6786 0.0252 0.1384);
+    --pf-global--palette--gold-600: oklab(0.4779 0.0151 0.0975);
+    --pf-global--palette--gold-700: oklab(0.3046 0.0048 0.0622);
 }
 
 /* #endregion */
@@ -67,14 +67,14 @@
 /* #region Green */
 
 :root {
-    --pf-global--palette--green-50: #f3faf2;
-    --pf-global--palette--green-100: #bde5b8;
-    --pf-global--palette--green-200: #95d58e;
-    --pf-global--palette--green-300: #6ec664;
-    --pf-global--palette--green-400: #5ba352;
-    --pf-global--palette--green-500: #3e8635;
-    --pf-global--palette--green-600: #1e4f18;
-    --pf-global--palette--green-700: #0f280d;
+    --pf-global--palette--green-50: oklab(0.9776 -0.0101 0.0079);
+    --pf-global--palette--green-100: oklab(0.8816 -0.0582 0.0455);
+    --pf-global--palette--green-200: oklab(0.812 -0.0926 0.0722);
+    --pf-global--palette--green-300: oklab(0.7485 -0.1249 0.0984);
+    --pf-global--palette--green-400: oklab(0.6488 -0.1066 0.0846);
+    --pf-global--palette--green-500: oklab(0.5549 -0.1071 0.0852);
+    --pf-global--palette--green-600: oklab(0.3804 -0.0784 0.0623);
+    --pf-global--palette--green-700: oklab(0.2488 -0.0454 0.0352);
 }
 
 /* #endregion */
@@ -82,13 +82,13 @@
 /* #region Light */
 
 :root {
-    --pf-global--palette--light-blue-100: #beedf9;
-    --pf-global--palette--light-blue-200: #7cdbf3;
-    --pf-global--palette--light-blue-300: #35caed;
-    --pf-global--palette--light-blue-400: #00b9e4;
-    --pf-global--palette--light-blue-500: #008bad;
-    --pf-global--palette--light-blue-600: #005c73;
-    --pf-global--palette--light-blue-700: #002d39;
+    --pf-global--palette--light-blue-100: oklab(0.9171 -0.0417 -0.0292);
+    --pf-global--palette--light-blue-200: oklab(0.8414 -0.0776 -0.0565);
+    --pf-global--palette--light-blue-300: oklab(0.7783 -0.1012 -0.0789);
+    --pf-global--palette--light-blue-400: oklab(0.7287 -0.0998 -0.091);
+    --pf-global--palette--light-blue-500: oklab(0.591 -0.0805 -0.0751);
+    --pf-global--palette--light-blue-600: oklab(0.4403 -0.0602 -0.0551);
+    --pf-global--palette--light-blue-700: oklab(0.2752 -0.0381 -0.0331);
 }
 
 /* #endregion */
@@ -96,13 +96,13 @@
 /* #region Light */
 
 :root {
-    --pf-global--palette--light-green-100: #e4f5bc;
-    --pf-global--palette--light-green-200: #c8eb79;
-    --pf-global--palette--light-green-300: #ace12e;
-    --pf-global--palette--light-green-400: #92d400;
-    --pf-global--palette--light-green-500: #6ca100;
-    --pf-global--palette--light-green-600: #486b00;
-    --pf-global--palette--light-green-700: #253600;
+    --pf-global--palette--light-green-100: oklab(0.9435 -0.0397 0.0651);
+    --pf-global--palette--light-green-200: oklab(0.8907 -0.0806 0.1222);
+    --pf-global--palette--light-green-300: oklab(0.8428 -0.1168 0.1629);
+    --pf-global--palette--light-green-400: oklab(0.7951 -0.1313 0.1639);
+    --pf-global--palette--light-green-500: oklab(0.6468 -0.1089 0.1333);
+    --pf-global--palette--light-green-600: oklab(0.4826 -0.0793 0.0995);
+    --pf-global--palette--light-green-700: oklab(0.3064 -0.0468 0.0631);
 }
 
 /* #endregion */
@@ -110,14 +110,14 @@
 /* #region Orange */
 
 :root {
-    --pf-global--palette--orange-50: #fff6ec;
-    --pf-global--palette--orange-100: #f4b678;
-    --pf-global--palette--orange-200: #ef9234;
-    --pf-global--palette--orange-300: #ec7a08;
-    --pf-global--palette--orange-400: #c46100;
-    --pf-global--palette--orange-500: #8f4700;
-    --pf-global--palette--orange-600: #773d00;
-    --pf-global--palette--orange-700: #3b1f00;
+    --pf-global--palette--orange-50: oklab(0.9774 0.0055 0.0155);
+    --pf-global--palette--orange-100: oklab(0.8203 0.0444 0.097);
+    --pf-global--palette--orange-200: oklab(0.742 0.0735 0.1332);
+    --pf-global--palette--orange-300: oklab(0.6966 0.1001 0.1398);
+    --pf-global--palette--orange-400: oklab(0.6006 0.0915 0.1218);
+    --pf-global--palette--orange-500: oklab(0.4794 0.0692 0.0972);
+    --pf-global--palette--orange-600: oklab(0.4252 0.0555 0.0863);
+    --pf-global--palette--orange-700: oklab(0.2713 0.0269 0.0552);
 }
 
 /* #endregion */
@@ -125,14 +125,14 @@
 /* #region Purple */
 
 :root {
-    --pf-global--palette--purple-50: #f2f0fc;
-    --pf-global--palette--purple-100: #cbc1ff;
-    --pf-global--palette--purple-200: #b2a3ff;
-    --pf-global--palette--purple-300: #a18fff;
-    --pf-global--palette--purple-400: #8476d1;
-    --pf-global--palette--purple-500: #6753ac;
-    --pf-global--palette--purple-600: #40199a;
-    --pf-global--palette--purple-700: #1f0066;
+    --pf-global--palette--purple-50: oklab(0.9601 0.0065 -0.0147);
+    --pf-global--palette--purple-100: oklab(0.8403 0.0321 -0.0801);
+    --pf-global--palette--purple-200: oklab(0.7639 0.0455 -0.1221);
+    --pf-global--palette--purple-300: oklab(0.7137 0.0522 -0.151);
+    --pf-global--palette--purple-400: oklab(0.6185 0.0436 -0.1274);
+    --pf-global--palette--purple-500: oklab(0.5061 0.0492 -0.1277);
+    --pf-global--palette--purple-600: oklab(0.3679 0.0535 -0.1797);
+    --pf-global--palette--purple-700: oklab(0.2518 0.0303 -0.1475);
 }
 
 /* #endregion */
@@ -140,12 +140,12 @@
 /* #region Red */
 
 :root {
-    --pf-global--palette--red-50: #faeae8;
-    --pf-global--palette--red-100: #c9190b;
-    --pf-global--palette--red-200: #a30000;
-    --pf-global--palette--red-300: #7d1007;
-    --pf-global--palette--red-400: #470000;
-    --pf-global--palette--red-500: #2c0000;
+    --pf-global--palette--red-50: oklab(0.9492 0.0159 0.0078);
+    --pf-global--palette--red-100: oklab(0.5331 0.1798 0.1034);
+    --pf-global--palette--red-200: oklab(0.4493 0.1609 0.09);
+    --pf-global--palette--red-300: oklab(0.3791 0.1243 0.0716);
+    --pf-global--palette--red-400: oklab(0.2499 0.0895 0.0501);
+    --pf-global--palette--red-500: oklab(0.1841 0.0659 0.0369);
 }
 
 /* #endregion */
@@ -155,18 +155,18 @@
 /* #region Background */
 
 :root {
-    --pf-global--BackgroundColor--100: #fff;
-    --pf-global--BackgroundColor--150: #fafafa;
-    --pf-global--BackgroundColor--200: #f0f0f0;
-    --pf-global--BackgroundColor--light-100: #fff;
-    --pf-global--BackgroundColor--light-200: #fafafa;
-    --pf-global--BackgroundColor--light-300: #f0f0f0;
-    --pf-global--BackgroundColor--dark-100: #151515;
-    --pf-global--BackgroundColor--dark-200: #3c3f42;
-    --pf-global--BackgroundColor--dark-300: #212427;
-    --pf-global--BackgroundColor--dark-400: #4f5255;
-    --pf-global--BackgroundColor--dark-transparent-100: rgba(3, 3, 3, 0.62);
-    --pf-global--BackgroundColor--dark-transparent-200: rgba(3, 3, 3, 0.32);
+    --pf-global--BackgroundColor--100: oklab(1 -0 0);
+    --pf-global--BackgroundColor--150: oklab(0.9851 -0 0);
+    --pf-global--BackgroundColor--200: oklab(0.9551 -0 0);
+    --pf-global--BackgroundColor--light-100: oklab(1 -0 0);
+    --pf-global--BackgroundColor--light-200: oklab(0.9851 -0 0);
+    --pf-global--BackgroundColor--light-300: oklab(0.9551 -0 0);
+    --pf-global--BackgroundColor--dark-100: oklab(0.1957 -0 0);
+    --pf-global--BackgroundColor--dark-200: oklab(0.3659 -0.0025 -0.0061);
+    --pf-global--BackgroundColor--dark-300: oklab(0.2585 -0.0027 -0.0066);
+    --pf-global--BackgroundColor--dark-400: oklab(0.4369 -0.0024 -0.0058);
+    --pf-global--BackgroundColor--dark-transparent-100: oklab(9.693% 0 -0.00001 / 0.62);
+    --pf-global--BackgroundColor--dark-transparent-200: oklab(9.693% 0 -0.00001 / 0.32);
 }
 
 /* #endregion */
@@ -174,15 +174,15 @@
 /* #region Base */
 
 :root {
-    --pf-global--Color--100: #151515;
-    --pf-global--Color--200: #6a6e73;
-    --pf-global--Color--300: #3c3f42;
-    --pf-global--Color--400: #8a8d90;
-    --pf-global--Color--light-100: #fff;
-    --pf-global--Color--light-200: #f0f0f0;
-    --pf-global--Color--light-300: #d2d2d2;
-    --pf-global--Color--dark-100: #151515;
-    --pf-global--Color--dark-200: #6a6e73;
+    --pf-global--Color--100: oklab(0.1957 -0 0);
+    --pf-global--Color--200: oklab(0.5364 -0.0026 -0.0089);
+    --pf-global--Color--300: oklab(0.3659 -0.0025 -0.0061);
+    --pf-global--Color--400: oklab(0.6418 -0.0021 -0.0053);
+    --pf-global--Color--light-100: oklab(1 -0 0);
+    --pf-global--Color--light-200: oklab(0.9551 -0 0);
+    --pf-global--Color--light-300: oklab(0.8638 -0 0);
+    --pf-global--Color--dark-100: oklab(0.1957 -0 0);
+    --pf-global--Color--dark-200: oklab(0.5364 -0.0026 -0.0089);
 }
 
 /* #endregion */
@@ -190,10 +190,10 @@
 /* #region Active */
 
 :root {
-    --pf-global--active-color--100: #06c;
-    --pf-global--active-color--200: #bee1f4;
-    --pf-global--active-color--300: #2b9af3;
-    --pf-global--active-color--400: #73bcf7;
+    --pf-global--active-color--100: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--active-color--200: oklab(0.8906 -0.028 -0.0354);
+    --pf-global--active-color--300: oklab(0.6689 -0.0608 -0.1513);
+    --pf-global--active-color--400: oklab(0.7706 -0.0485 -0.1012);
 }
 
 /* #endregion */
@@ -201,9 +201,9 @@
 /* #region Disabled */
 
 :root {
-    --pf-global--disabled-color--100: #6a6e73;
-    --pf-global--disabled-color--200: #d2d2d2;
-    --pf-global--disabled-color--300: #f0f0f0;
+    --pf-global--disabled-color--100: oklab(0.5364 -0.0026 -0.0089);
+    --pf-global--disabled-color--200: oklab(0.8638 -0 0);
+    --pf-global--disabled-color--300: oklab(0.9551 -0 0);
 }
 
 /* #endregion */
@@ -211,10 +211,11 @@
 /* #region Primary */
 
 :root {
-    --pf-global--primary-color--100: #06c;
-    --pf-global--primary-color--200: #004080;
-    --pf-global--primary-color--light-100: #73bcf7;
-    --pf-global--primary-color--dark-100: #06c;
+    --pf-global--primary-color--100: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--primary-color--200: oklab(0.3763 -0.0324 -0.1182);
+    --pf-global--primary-color--light-100: oklab(0.7706 -0.0485 -0.1012);
+    --pf-global--primary-color--dark-100: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--primary-color--300: oklab(0.522 -0.0434 -0.1717);
 }
 
 /* #endregion */
@@ -222,7 +223,7 @@
 /* #region Secondary */
 
 :root {
-    --pf-global--secondary-color--100: #6a6e73;
+    --pf-global--secondary-color--100: oklab(0.5364 -0.0026 -0.0089);
 }
 
 /* #endregion */
@@ -230,9 +231,9 @@
 /* #region Default */
 
 :root {
-    --pf-global--default-color--100: #73c5c5;
-    --pf-global--default-color--200: #009596;
-    --pf-global--default-color--300: #003737;
+    --pf-global--default-color--100: oklab(0.7714 -0.0774 -0.0216);
+    --pf-global--default-color--200: oklab(0.6068 -0.0996 -0.0278);
+    --pf-global--default-color--300: oklab(0.3049 -0.0503 -0.0133);
 }
 
 /* #endregion */
@@ -240,8 +241,8 @@
 /* #region Success */
 
 :root {
-    --pf-global--success-color--100: #3e8635;
-    --pf-global--success-color--200: #1e4f18;
+    --pf-global--success-color--100: oklab(0.5549 -0.1071 0.0852);
+    --pf-global--success-color--200: oklab(0.3804 -0.0784 0.0623);
 }
 
 /* #endregion */
@@ -249,8 +250,8 @@
 /* #region Info */
 
 :root {
-    --pf-global--info-color--100: #2b9af3;
-    --pf-global--info-color--200: #002952;
+    --pf-global--info-color--100: oklab(0.6689 -0.0608 -0.1513);
+    --pf-global--info-color--200: oklab(0.2811 -0.0254 -0.0827);
 }
 
 /* #endregion */
@@ -258,8 +259,8 @@
 /* #region Warning */
 
 :root {
-    --pf-global--warning-color--100: #f0ab00;
-    --pf-global--warning-color--200: #795600;
+    --pf-global--warning-color--100: oklab(0.7864 0.0298 0.1604);
+    --pf-global--warning-color--200: oklab(0.4779 0.0151 0.0975);
 }
 
 /* #endregion */
@@ -267,9 +268,9 @@
 /* #region Danger */
 
 :root {
-    --pf-global--danger-color--100: #c9190b;
-    --pf-global--danger-color--200: #a30000;
-    --pf-global--danger-color--300: #470000;
+    --pf-global--danger-color--100: oklab(0.5331 0.1798 0.1034);
+    --pf-global--danger-color--200: oklab(0.4493 0.1609 0.09);
+    --pf-global--danger-color--300: oklab(0.2499 0.0895 0.0501);
 }
 
 /* #endregion */
@@ -277,13 +278,13 @@
 /* #region Link */
 
 :root {
-    --pf-global--link--Color: #06c;
-    --pf-global--link--Color--hover: #004080;
-    --pf-global--link--Color--light: #2b9af3;
-    --pf-global--link--Color--light--hover: #73bcf7;
-    --pf-global--link--Color--dark: #06c;
-    --pf-global--link--Color--dark--hover: #004080;
-    --pf-global--link--Color--visited: #40199a;
+    --pf-global--link--Color: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--link--Color--hover: oklab(0.3763 -0.0324 -0.1182);
+    --pf-global--link--Color--light: oklab(0.6689 -0.0608 -0.1513);
+    --pf-global--link--Color--light--hover: oklab(0.7706 -0.0485 -0.1012);
+    --pf-global--link--Color--dark: oklab(0.522 -0.0434 -0.1717);
+    --pf-global--link--Color--dark--hover: oklab(0.3763 -0.0324 -0.1182);
+    --pf-global--link--Color--visited: oklab(0.3679 0.0535 -0.1797);
     --pf-global--link--TextDecoration: none;
     --pf-global--link--TextDecoration--hover: underline;
 }
@@ -293,7 +294,7 @@
 /* #region Icon */
 
 :root {
-    --pf-global--icon--Color--light: #6a6e73;
-    --pf-global--icon--Color--dark: #151515;
+    --pf-global--icon--Color--light: oklab(0.5364 -0.0026 -0.0089);
+    --pf-global--icon--Color--dark: oklab(0.1957 -0 0);
 }
 /* #endregion */

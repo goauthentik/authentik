@@ -1,0 +1,51 @@
+---
+title: authentik browser extension
+sidebar_label: Browser extension
+tags: [device compliance, compliance, browser extension, extension, Endpoint SSO]
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+The authentik Endpoint SSO browser extension is required for device compliance functionality, and is currently available via the Chrome Web Store, the Firefox Add-ons site, and the Edge Add-ons site.
+
+The browser extension connects to the [authentik Agent](../authentik-agent/index.mdx). It supplies [device facts](./device-reporting.md#device-facts) that [stages](../../add-secure-apps/flows-stages/stages/index.md) and [policies](../../customize/policies/index.md) can use during execution of authentik [flows](../../add-secure-apps/flows-stages/flow/index.md). This enables device compliance functionality such as limiting access to applications based on operating system, see [device compliance policy](./device-compliance-policy.md) for more details.
+
+## Deploy the authentik browser extension
+
+<Tabs
+  defaultValue="chrome"
+  values={[
+    {label: 'Chrome Web Store', value: 'chrome'},
+    {label: 'Firefox Add-ons', value: 'firefox'},
+    {label: 'Edge Add-ons', value: 'ms-edge'},
+  ]}>
+  <TabItem value="chrome">
+
+1. Open your Chromium-based browser.
+2. Go to the [authentik Endpoint SSO browser extension page](https://chromewebstore.google.com/detail/authentik-endpoint-sso/dklfpnaeklldfpmhkbfjbmbnmkfafdma) in the Chrome Web Store.
+3. Click **Add to Chrome**.
+4. Review the permissions and click **Add extension**.
+
+  </TabItem>
+  <TabItem value="firefox">
+
+1. Open your Firefox-based browser.
+2. Go to the [authentik Endpoint SSO browser extension page](https://addons.mozilla.org/en-US/firefox/addon/authentik-platform-sso/) on the Firefox Add-ons site.
+3. Click **Add to Firefox**.
+4. Review the permissions and click **Add** (or **Install**).
+
+  </TabItem>
+  <TabItem value="ms-edge">
+
+1. Open Microsoft Edge.
+2. Go to the [authentik Endpoint SSO browser extension page](https://microsoftedge.microsoft.com/addons/detail/authentik-endpoint-sso/mcmjmlcifgadhpeggocghbiainhedbgn) in the Microsoft Edge Web Store.
+3. Click **Add to Edge**.
+4. Review the permissions and click **Add** (or **Install**).
+
+  </TabItem>
+</Tabs>
+
+## Configuration verification
+
+Verify that the extension shows as installed in your extensions list.

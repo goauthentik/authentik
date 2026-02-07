@@ -4,6 +4,8 @@ import "./sb-host-provider.js";
 
 import { AkDualSelectSelectedPane } from "../components/ak-dual-select-selected-pane.js";
 
+import { DualSelectPair } from "#elements/ak-dual-select/types";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 import { kebabCase } from "change-case";
 
@@ -20,7 +22,9 @@ const metadata: Meta<AkDualSelectSelectedPane> = {
         },
     },
     argTypes: {
-        // @ts-ignore
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         options: {
             type: "string",
             description: "An array of [key, label] pairs of what to show",
@@ -85,7 +89,7 @@ const goodForYou = [
     "Cauliflower",
 ];
 
-const goodForYouPairs = goodForYou.map((key) => [kebabCase(key), key]);
+const goodForYouPairs = goodForYou.map((key): DualSelectPair => [kebabCase(key), key]);
 
 export const Default: Story = {
     render: () =>

@@ -5,6 +5,8 @@
 }
 
 .pf-c-table {
+    --pf-global--primary-color--100: var(--pf-global--primary-color--300);
+
     .presentational {
         --pf-c-table--cell--MinWidth: 0;
     }
@@ -35,8 +37,7 @@ td:has(ak-rbac-object-permission-modal) {
     }
 
     button[slot="trigger"]:has(i) {
-        padding-inline-start: 0 !important;
-        padding-inline-end: 0.25em !important;
+        padding-inline: 0.5em !important;
     }
 
     *::part(spinner-button) {
@@ -45,6 +46,10 @@ td:has(ak-rbac-object-permission-modal) {
 
     button.pf-m-tertiary {
         margin-inline-start: 0.25em;
+    }
+
+    pf-tooltip {
+        color: inherit;
     }
 
     & > * {
@@ -65,6 +70,10 @@ td:has(ak-rbac-object-permission-modal) {
 
 .pf-c-table tbody .pf-c-table__check input {
     margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+}
+
+.selected-chips::part(chip-group) {
+    margin-block-end: var(--pf-global--spacer--sm);
 }
 
 .pf-c-toolbar {
@@ -140,6 +149,7 @@ time {
 }
 
 :host {
+    display: block;
     container-type: inline-size;
 }
 

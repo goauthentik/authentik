@@ -1,0 +1,10 @@
+---
+title: Dynamic in-memory stage
+sidebar_custom_props:
+    termName: Dynamic in-memory stage
+    tags:
+        - Flows
+    shortDescription: Ephemeral stage appended at runtime; exists only in memory.
+    authentikSpecific: true
+    longDescription: Special stage added by authentik in specific contexts to alter control flow without persisting configuration. For example, the Source stage appends a dynamic in-memory stage to the source's flow to suspend the current flow, run the source's authentication or enrollment, and then resume. If a User login stage is bound in the source's flow, it will directly authenticate the pending user instead of resuming the original flow. Not configurable by administrators.
+---

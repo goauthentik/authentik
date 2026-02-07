@@ -9,20 +9,24 @@ import { groupBy } from "#common/utils";
 
 import { AkControlElement } from "#elements/AkControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
-import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import type {
+    GroupedOptions,
+    SelectGroup,
+    SelectOption,
+    SlottedTemplateResult,
+} from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
     blankable?: boolean;
+    readOnly?: boolean;
     query?: string;
     objects?: T[];
     selectedObject: T | null;
@@ -35,7 +39,7 @@ export abstract class SearchSelectBase<T>
     extends AkControlElement<string>
     implements ISearchSelectBase<T>
 {
-    static styles = [PFBase];
+    static styles = [];
 
     //#region Properties
 
@@ -54,13 +58,13 @@ export abstract class SearchSelectBase<T>
     /**
      * Render a string description representation of items of the collection under search.
      */
-    public abstract renderDescription?: (element: T) => string | TemplateResult;
+    public abstract renderDescription?: (element: T) => SlottedTemplateResult;
 
     /**
      * A function which returns the currently selected object's primary key, used for serialization
      * into forms.
      */
-    public abstract value: (element: T | null) => string;
+    public abstract value: (element: T | null) => string | number | undefined;
 
     /**
      * A function passed to this object that determines an object in the collection under search
@@ -84,6 +88,22 @@ export abstract class SearchSelectBase<T>
      */
     @property({ type: Boolean })
     public blankable?: boolean;
+
+    /**
+     * Whether or not the component allows creating custom values not in the list
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean })
+    public creatable?: boolean;
+
+    /**
+     * Prevent user interaction while still rendering the current value.
+     * @property
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "readonly" })
+    public readOnly = false;
 
     /**
      * An initial string to filter the search contents,
@@ -163,7 +183,28 @@ export abstract class SearchSelectBase<T>
 
             throw new PreventFormSubmit("SearchSelect has not yet loaded data", this);
         }
-        return this.value(this.selectedObject) || "";
+
+        // When the user types a value and submits the form without explicitly selecting
+        // an option (e.g., typing "fa://fa-shield-alt" and clicking Update without pressing Enter),
+        // the selectedObject may not be synced with the current input value.
+        // So, on form submission, check if the current input value differs from selectedObject
+        // and if so, create a synthetic object with the current value.
+        if (this.creatable) {
+            const view = this.renderRoot.querySelector("ak-search-select-view") as SearchSelectView;
+            const currentValue = view?.rawValue;
+
+            if (currentValue) {
+                // Check if the current input value matches what we have selected
+                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+
+                if (selectedValue !== currentValue) {
+                    // Input has changed but hasn't been committed yet so create synthetic object
+                    this.selectedObject = { name: currentValue } as T;
+                }
+            }
+        }
+
+        return String(this.value(this.selectedObject ?? null) ?? "");
     }
 
     public json() {
@@ -225,20 +266,35 @@ export abstract class SearchSelectBase<T>
     }
 
     #searchListener = (event: InputEvent) => {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).rawValue;
 
         if (!value) {
             this.selectedObject = null;
+            this.query = undefined;
+            this.updateData();
             return;
         }
 
         this.query = value;
         this.updateData()?.then(() => {
+            // If creatable, check if selectedObject's value matches the typed value exactly
+            if (this.creatable) {
+                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+                if (selectedValue !== value) {
+                    // No exact match so create a synthetic object with the raw value
+                    // "synthetic" isn't an official term or anything, it's just called like that here
+                    this.selectedObject = { name: value } as T;
+                }
+            }
             this.dispatchChangeEvent(this.selectedObject);
         });
     };
 
     private onSelect(event: InputEvent) {
+        if (this.readOnly) return;
+
         const value = (event.target as SearchSelectView).value;
 
         if (!value) {
@@ -256,12 +312,18 @@ export abstract class SearchSelectBase<T>
                 // We fix this by forcing a string cast here.
                 // Remove this after migrating to Lit JSX.
 
-                const serialized = `${this.value(obj)}`;
+                const serialized = String(this.value(obj));
 
                 return serialized && serialized === value;
             }) || null;
 
         if (!selected) {
+            if (this.creatable) {
+                // Create a synthetic object with the user's custom value
+                this.selectedObject = { name: value } as T;
+                this.dispatchChangeEvent(this.selectedObject);
+                return;
+            }
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
 
@@ -276,7 +338,7 @@ export abstract class SearchSelectBase<T>
             items.map((item) => [
                 `${this.value(item)}`,
                 this.renderElement(item),
-                this.renderDescription ? this.renderDescription(item) : undefined,
+                this.renderDescription ? this.renderDescription(item) : null,
             ]);
 
         const makeSearchGroups = (items: Group<T>[]): SelectGroup[] =>
@@ -337,6 +399,7 @@ export abstract class SearchSelectBase<T>
             .options=${options}
             value=${ifPresent(value)}
             ?blankable=${this.blankable}
+            ?readonly=${this.readOnly}
             label=${ifPresent(this.label)}
             name=${ifPresent(this.name)}
             placeholder=${ifPresent(this.placeholder)}

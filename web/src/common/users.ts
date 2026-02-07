@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { isResponseErrorLike } from "#common/errors/network";
 import { UIConfig, UserDisplay } from "#common/ui/config";
 
@@ -15,15 +14,15 @@ export interface ClientSessionPermissions {
 /**
  * The display name of the current user, according to their UI config settings.
  */
-export function formatUserDisplayName(user: UserSelf | null, uiConfig: UIConfig): string {
+export function formatUserDisplayName(user: UserSelf | null, uiConfig?: UIConfig): string {
     if (!user) return "";
 
-    const label = match(uiConfig.navbar.userDisplay)
+    const label = match(uiConfig?.navbar.userDisplay)
         .with(UserDisplay.username, () => user.username)
         .with(UserDisplay.name, () => user.name)
         .with(UserDisplay.email, () => user.email)
         .with(UserDisplay.none, () => null)
-        .otherwise(() => user.username);
+        .otherwise(() => user.name || user.username);
 
     return label || "";
 }
@@ -47,6 +46,7 @@ function createGuestSession(): SessionUser {
             isSuperuser: false,
             isActive: true,
             groups: [],
+            roles: [],
             avatar: "",
             uid: "",
             username: "",
@@ -59,14 +59,32 @@ function createGuestSession(): SessionUser {
     return guest;
 }
 
-let memoizedSession: SessionUser | null = null;
+let pendingRedirect = false;
 
 /**
- * Refresh the current user session.
+ * Redirect to the default authentication flow, preserving the current URL as "next" parameter.
+ *
+ * @category Session
  */
-export function refreshMe(): Promise<SessionUser> {
-    memoizedSession = null;
-    return me();
+export function redirectToAuthFlow(nextPathname = "/flows/-/default/authentication/"): void {
+    if (pendingRedirect) {
+        console.debug("authentik/users: Redirect already pending, ");
+        return;
+    }
+
+    const { pathname, search, hash } = window.location;
+
+    const authFlowRedirectURL = new URL(nextPathname, window.location.origin);
+
+    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
+
+    pendingRedirect = true;
+
+    console.debug(
+        `authentik/users: Redirecting to authentication flow at ${authFlowRedirectURL.href}`,
+    );
+
+    window.location.assign(authFlowRedirectURL);
 }
 
 /**
@@ -75,53 +93,23 @@ export function refreshMe(): Promise<SessionUser> {
  * This is a memoized function, so it will only make one request per page load.
  *
  * @see {@linkcode refreshMe} to force a refresh.
+ *
+ * @category Session
  */
 export async function me(requestInit?: RequestInit): Promise<SessionUser> {
-    if (memoizedSession) return memoizedSession;
-
     return new CoreApi(DEFAULT_CONFIG)
         .coreUsersMeRetrieve(requestInit)
-        .then((nextSession) => {
-            const locale: string | undefined = nextSession.user.settings.locale;
-
-            if (locale) {
-                console.debug(`authentik/locale: Activating user's configured locale '${locale}'`);
-
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_LOCALE_REQUEST, {
-                        composed: true,
-                        bubbles: true,
-                        detail: { locale },
-                    }),
-                );
-            }
-
-            return nextSession;
-        })
         .catch(async (error: unknown) => {
             if (isResponseErrorLike(error)) {
                 const { response } = error;
 
                 if (response.status === 401 || response.status === 403) {
-                    const { pathname, search, hash } = window.location;
-
-                    const authFlowRedirectURL = new URL(
-                        `/flows/-/default/authentication/`,
-                        window.location.origin,
-                    );
-
-                    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
-
-                    window.location.assign(authFlowRedirectURL);
+                    redirectToAuthFlow();
                 }
             }
 
             console.debug("authentik/users: Failed to retrieve user session", error);
 
             return createGuestSession();
-        })
-        .then((nextSession) => {
-            memoizedSession = nextSession;
-            return nextSession;
         });
 }

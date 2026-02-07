@@ -1,6 +1,8 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#components/ak-secret-text-input";
 import "#components/ak-slug-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -9,6 +11,8 @@ import "#elements/forms/SearchSelect/index";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RadioOption } from "#elements/forms/Radio";
 
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -20,6 +24,7 @@ import {
     LDAPSource,
     LDAPSourceRequest,
     SourcesApi,
+    SyncOutgoingTriggerModeEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -27,6 +32,30 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTriggerModeEnum>[] {
+    return [
+        {
+            label: msg("None"),
+            value: SyncOutgoingTriggerModeEnum.None,
+            description: html`${msg("Outgoing syncs will not be triggered.")}`,
+        },
+        {
+            label: msg("Immediate"),
+            value: SyncOutgoingTriggerModeEnum.Immediate,
+            description: html`${msg(
+                "Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended",
+            )}`,
+        },
+        {
+            label: msg("Deferred until end"),
+            value: SyncOutgoingTriggerModeEnum.DeferredEnd,
+            default: true,
+            description: html`${msg(
+                "Outgoing syncs will be triggered at the end of the source synchronization.",
+            )}`,
+        },
+    ];
+}
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     loadInstance(pk: string): Promise<LDAPSource> {
@@ -48,7 +77,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -66,113 +95,45 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 input-hint="code"
             ></ak-slug-input>
 
-            <ak-form-element-horizontal name="enabled">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="passwordLoginUpdateInternalPassword">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label"
-                        >${msg("Update internal password on login")}</span
-                    >
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "When the user logs in to authentik using this source password backend, update their credentials in authentik.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="syncUsers">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.syncUsers ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Sync users")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="syncUsersPassword">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.syncUsersPassword ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("User password writeback")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="syncGroups">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.syncGroups ?? true}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Sync groups")}</span>
-                </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="deleteNotFoundObjects">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.deleteNotFoundObjects ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Delete Not Found Objects")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Delete authentik users and groups which were previously supplied by this source, but are now missing from it.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="passwordLoginUpdateInternalPassword"
+                label=${msg("Update internal password on login")}
+                ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
+                help=${msg(
+                    "When the user logs in to authentik using this source password backend, update their credentials in authentik.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="syncUsers"
+                label=${msg("Sync users")}
+                ?checked=${this.instance?.syncUsers ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="syncUsersPassword"
+                label=${msg("User password writeback")}
+                ?checked=${this.instance?.syncUsersPassword ?? true}
+                help=${msg(
+                    "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.",
+                )}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="syncGroups"
+                label=${msg("Sync groups")}
+                ?checked=${this.instance?.syncGroups ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="deleteNotFoundObjects"
+                label=${msg("Delete Not Found Objects")}
+                ?checked=${this.instance?.deleteNotFoundObjects ?? false}
+                help=${msg(
+                    "Delete authentik users and groups which were previously supplied by this source, but are now missing from it.",
+                )}
+            ></ak-switch-input>
             <ak-form-group open label="${msg("Connection settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -191,44 +152,18 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             ${msg("Specify multiple server URIs by separating them with a comma.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="startTls">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.startTls ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Enable StartTLS")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("To use SSL instead, use 'ldaps://' and disable this option.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="sni">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.sni ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Use Server URI for SNI verification")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Required for servers using TLS 1.3+")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="startTls"
+                        label=${msg("Enable StartTLS")}
+                        ?checked=${this.instance?.startTls ?? true}
+                        help=${msg("To use SSL instead, use 'ldaps://' and disable this option.")}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="sni"
+                        label=${msg("Use Server URI for SNI verification")}
+                        ?checked=${this.instance?.sni ?? false}
+                        help=${msg("Required for servers using TLS 1.3+")}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
@@ -444,28 +379,14 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             ${msg("Attribute which matches the value of Group membership field.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="lookupGroupsFromUser">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.lookupGroupsFromUser ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Lookup using user attribute")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="lookupGroupsFromUser"
+                        label=${msg("Lookup using user attribute")}
+                        ?checked=${this.instance?.lookupGroupsFromUser ?? false}
+                        help=${msg(
+                            "Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.",
+                        )}
+                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Object uniqueness field")}
                         required
@@ -481,6 +402,14 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             ${msg("Field which contains a unique Identifier.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-radio-input
+                        label=${msg("Outgoing sync trigger mode")}
+                        required
+                        name="syncOutgoingTriggerMode"
+                        .value=${this.instance?.syncOutgoingTriggerMode}
+                        .options=${createSyncOutgoingTriggerModeOptions}
+                    >
+                    </ak-radio-input>
                 </div>
             </ak-form-group>`;
     }

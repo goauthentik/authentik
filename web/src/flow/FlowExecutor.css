@@ -6,9 +6,83 @@
     flex-flow: column nowrap;
 }
 
-.inspector-toggle {
+.inspector-toggle,
+.inspector-toggle.style-scope {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    inset-inline-end: var(--pf-global--spacer--md);
+    inset-block-start: var(--pf-global--spacer--md);
     z-index: 100;
+}
+
+[part="locale-select"],
+[part="locale-select"].style-scope {
+    --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
+    --ak-c-flow-executor__locale-select--Padding: var(--pf-global--spacer--md);
+    --ak-c-flow-executor__locale-select--Color: var(--pf-global--Color--100);
+    --ak-c-locale-select--label--Color: var(--ak-c-flow-executor__locale-select--Color);
+
+    /* Compatibility mode */
+    color: var(--ak-c-flow-executor__locale-select--Color);
+    position: absolute;
+    inset-block-start: var(--ak-c-flow-executor__locale-select--Padding);
+    inset-inline-start: var(--ak-c-flow-executor__locale-select--Padding);
+    font-weight: 500;
+    z-index: 100;
+
+    /* Slight differences in browser hover states. */
+    &:has(select:hover),
+    &:hover {
+        --ak-c-locale-select--label--Color: var(
+            --ak-c-flow-executor__locale-select--Color--hover,
+            var(--ak-c-flow-executor__locale-select--Color)
+        );
+        --ak-c-locale-select--BackgroundColor: var(
+            --ak-c-flow-executor__locale-select--BackgroundColor--hover
+        );
+        --ak-c-locale-select--TextDecorationColor: var(--ak-c-locale-select--label--Color);
+        --ak-c-locale-select__after--Opacity: 1;
+
+        --ak-c-locale-select--Color: var(--ak-c-flow-executor__locale-select--Color--hover);
+
+        @media (prefers-contrast: more) {
+            --ak-c-locale--select--OutlineColor: var(--pf-global--primary-color--dark-100);
+        }
+    }
+
+    filter: var(--ak-global--background-contrast-Filter);
+
+    grid-area: header;
+
+    /* At least a third of the card cut-off is available. */
+    @media (width <= 61.25rem) and (height <= 61.25rem) {
+        --ak-global--background-contrast-Filter: none;
+        --ak-c-flow-executor__locale-select--Color: var(--ak-global--background-contrast);
+
+        grid-area: main;
+    }
+
+    @media (width <= 61.25rem) and (height <= 61.25rem) and (not (prefers-contrast: more)) {
+        --ak-c-locale-select--Opacity: 0;
+
+        &:hover {
+            --ak-c-locale-select--Opacity: 1;
+            --ak-c-locale-select__after--Opacity: 1;
+        }
+    }
+
+    /* Card is fully masked to mobile background. */
+    @media (width <= 35rem) {
+        grid-row: header;
+    }
+}
+
+@media (min-width: 70rem) and (min-height: 17.5rem) {
+    :host([data-layout^="sidebar"]),
+    [data-layout^="sidebar"] /* Compatibility mode */ {
+        --ak-global--background-contrast-Filter: none !important;
+
+        [part="locale-select"] {
+            --ak-c-flow-executor__locale-select--Color: inherit !important;
+        }
+    }
 }
