@@ -233,7 +233,7 @@ class SAMLProvider(Provider):
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
             return reverse(
-                "authentik_providers_saml:sso-init",
+                "authentik_providers_saml:init",
                 kwargs={"application_slug": self.application.slug},
             )
         except Provider.application.RelatedObjectDoesNotExist:
