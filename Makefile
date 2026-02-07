@@ -144,12 +144,7 @@ gen-clean-ts:  ## Remove generated API client for TypeScript
 	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
 gen-clean-go:  ## Remove generated API client for Go
-	mkdir -p ${PWD}/${GEN_API_GO}
-ifneq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
-	make -C ${PWD}/${GEN_API_GO} clean
-else
 	rm -rf ${PWD}/${GEN_API_GO}
-endif
 
 gen-clean-py:  ## Remove generated API client for Python
 	rm -rf ${PWD}/${GEN_API_PY}/
@@ -187,13 +182,9 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
-ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
-else
-	cd ${PWD}/${GEN_API_GO} && git pull
-endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
-	make -C ${PWD}/${GEN_API_GO} build
+	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 
 gen-dev-config:  ## Generate a local development config file

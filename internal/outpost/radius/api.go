@@ -31,7 +31,7 @@ func parseCIDRs(raw string) []*net.IPNet {
 }
 
 func (rs *RadiusServer) Refresh() error {
-	apiProviders, err := ak.Paginator(rs.ac.Client.OutpostsApi.OutpostsRadiusList(context.Background()), ak.PaginatorOptions{
+	apiProviders, err := ak.Paginator(rs.ac.Client.OutpostsAPI.OutpostsRadiusList(context.Background()), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   rs.log,
 	})

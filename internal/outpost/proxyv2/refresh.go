@@ -15,7 +15,7 @@ import (
 )
 
 func (ps *ProxyServer) Refresh() error {
-	providers, err := ak.Paginator(ps.akAPI.Client.OutpostsApi.OutpostsProxyList(context.Background()), ak.PaginatorOptions{
+	providers, err := ak.Paginator(ps.akAPI.Client.OutpostsAPI.OutpostsProxyList(context.Background()), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ps.log,
 	})
