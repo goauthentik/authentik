@@ -52219,7 +52219,7 @@ components:
         redirect_uri_type:
           allOf:
           - $ref: '#/components/schemas/RedirectUriTypeEnum'
-          default: authentication
+          default: authorization
       required:
       - matching_mode
       - url
@@ -52235,14 +52235,14 @@ components:
         redirect_uri_type:
           allOf:
           - $ref: '#/components/schemas/RedirectUriTypeEnum'
-          default: authentication
+          default: authorization
       required:
       - matching_mode
       - url
     RedirectUriTypeEnum:
       enum:
-      - authentication
-      - post_logout
+      - authorization
+      - logout
       type: string
     RelatedGroup:
       type: object

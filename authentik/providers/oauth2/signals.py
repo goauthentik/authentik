@@ -64,8 +64,7 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
                     "provider_name": token.provider.name,
                     "binding": OAUTH2_BINDING,
                     "provider_type": (
-                        f"{token.provider._meta.app_label}"
-                        f".{token.provider._meta.model_name}"
+                        f"{token.provider._meta.app_label}" f".{token.provider._meta.model_name}"
                     ),
                 }
             )

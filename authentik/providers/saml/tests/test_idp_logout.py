@@ -296,14 +296,19 @@ class TestIframeLogoutStageView(TestCase):
             },
         ]
         # OIDC sessions (pre-processed)
-        from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
+        from authentik.common.oauth.constants import (
+            OAUTH2_BINDING,
+            PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+        )
 
         plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
             {
                 "url": "https://oidc.example.com/logout?iss=authentik&sid=abc123",
                 "provider_name": "oidc-provider",
-                "binding": "redirect",
-                "provider_type": f"{OAuth2Provider._meta.app_label}.{OAuth2Provider._meta.model_name}",
+                "binding": OAUTH2_BINDING,
+                "provider_type": (
+                    f"{OAuth2Provider._meta.app_label}" f".{OAuth2Provider._meta.model_name}"
+                ),
             },
         ]
         stage_view = IframeLogoutStageView(

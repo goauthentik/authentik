@@ -225,7 +225,7 @@ export function renderForm({
                         .newItem=${() => ({
                             matchingMode: MatchingModeEnum.Strict,
                             url: "",
-                            redirectUriType: RedirectUriTypeEnum.Authentication,
+                            redirectUriType: RedirectUriTypeEnum.Authorization,
                         })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri

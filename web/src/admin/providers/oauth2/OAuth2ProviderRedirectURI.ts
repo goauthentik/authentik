@@ -37,7 +37,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     public redirectURI: RedirectURI = {
         matchingMode: MatchingModeEnum.Strict,
         url: "",
-        redirectUriType: RedirectUriTypeEnum.Authentication,
+        redirectUriType: RedirectUriTypeEnum.Authorization,
     };
 
     @property({ type: String, useDefault: true })
@@ -89,15 +89,15 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
                 @change=${onChange}
             >
                 <option
-                    value="${RedirectUriTypeEnum.Authentication}"
+                    value="${RedirectUriTypeEnum.Authorization}"
                     ?selected=${(this.redirectURI.redirectUriType ??
-                        RedirectUriTypeEnum.Authentication) === RedirectUriTypeEnum.Authentication}
+                        RedirectUriTypeEnum.Authorization) === RedirectUriTypeEnum.Authorization}
                 >
-                    ${msg("Authentication")}
+                    ${msg("Authorization")}
                 </option>
                 <option
-                    value="${RedirectUriTypeEnum.PostLogout}"
-                    ?selected=${this.redirectURI.redirectUriType === RedirectUriTypeEnum.PostLogout}
+                    value="${RedirectUriTypeEnum.Logout}"
+                    ?selected=${this.redirectURI.redirectUriType === RedirectUriTypeEnum.Logout}
                 >
                     ${msg("Post Logout")}
                 </option>

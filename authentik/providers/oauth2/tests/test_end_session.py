@@ -30,17 +30,17 @@ class TestEndSessionView(OAuthTestCase):
                 RedirectURI(
                     RedirectURIMatchingMode.STRICT,
                     "http://testserver/callback",
-                    RedirectURIType.AUTHENTICATION,
+                    RedirectURIType.AUTHORIZATION,
                 ),
                 RedirectURI(
                     RedirectURIMatchingMode.STRICT,
                     "http://testserver/logout",
-                    RedirectURIType.POST_LOGOUT,
+                    RedirectURIType.LOGOUT,
                 ),
                 RedirectURI(
                     RedirectURIMatchingMode.REGEX,
                     r"https://.*\.example\.com/logout",
-                    RedirectURIType.POST_LOGOUT,
+                    RedirectURIType.LOGOUT,
                 ),
             ],
         )
@@ -233,7 +233,7 @@ class TestEndSessionAPI(OAuthTestCase):
                 RedirectURI(
                     RedirectURIMatchingMode.STRICT,
                     "http://testserver/callback",
-                    RedirectURIType.AUTHENTICATION,
+                    RedirectURIType.AUTHORIZATION,
                 ),
             ],
         )

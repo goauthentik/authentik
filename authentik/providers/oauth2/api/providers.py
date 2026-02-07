@@ -39,7 +39,7 @@ class RedirectURISerializer(PassiveSerializer):
     matching_mode = ChoiceField(choices=RedirectURIMatchingMode.choices)
     url = CharField()
     redirect_uri_type = ChoiceField(
-        choices=RedirectURIType.choices, default=RedirectURIType.AUTHENTICATION, required=False
+        choices=RedirectURIType.choices, default=RedirectURIType.AUTHORIZATION, required=False
     )
 
 

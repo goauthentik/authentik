@@ -150,8 +150,7 @@ class EndSessionView(PolicyAccessView):
                     "provider_name": self.provider.name,
                     "binding": OAUTH2_BINDING,
                     "provider_type": (
-                        f"{self.provider._meta.app_label}"
-                        f".{self.provider._meta.model_name}"
+                        f"{self.provider._meta.app_label}" f".{self.provider._meta.model_name}"
                     ),
                 }
             ]

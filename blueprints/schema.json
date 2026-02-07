@@ -9575,8 +9575,8 @@
                             "redirect_uri_type": {
                                 "type": "string",
                                 "enum": [
-                                    "authentication",
-                                    "post_logout"
+                                    "authorization",
+                                    "logout"
                                 ],
                                 "title": "Redirect uri type"
                             }

@@ -98,8 +98,8 @@ class RedirectURIMatchingMode(models.TextChoices):
 
 
 class RedirectURIType(models.TextChoices):
-    AUTHENTICATION = "authentication", _("Authentication")
-    POST_LOGOUT = "post_logout", _("Post Logout")
+    AUTHORIZATION = "authorization", _("Authorization")
+    LOGOUT = "logout", _("Logout")
 
 
 class OAuth2LogoutMethod(models.TextChoices):
@@ -115,7 +115,7 @@ class RedirectURI:
 
     matching_mode: RedirectURIMatchingMode
     url: str
-    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHENTICATION
+    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHORIZATION
 
 
 class ResponseTypes(models.TextChoices):
@@ -366,25 +366,23 @@ class OAuth2Provider(WebfingerProvider, Provider):
         self._redirect_uris = cleansed
 
     @property
-    def authentication_redirect_uris(self) -> list[RedirectURI]:
+    def authorization_redirect_uris(self) -> list[RedirectURI]:
         return [
             uri
             for uri in self.redirect_uris
-            if uri.redirect_uri_type == RedirectURIType.AUTHENTICATION
+            if uri.redirect_uri_type == RedirectURIType.AUTHORIZATION
         ]
 
     @property
     def post_logout_redirect_uris(self) -> list[RedirectURI]:
         return [
-            uri
-            for uri in self.redirect_uris
-            if uri.redirect_uri_type == RedirectURIType.POST_LOGOUT
+            uri for uri in self.redirect_uris if uri.redirect_uri_type == RedirectURIType.LOGOUT
         ]
 
     @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        redirects = self.authentication_redirect_uris
+        redirects = self.authorization_redirect_uris
         if len(redirects) < 1:
             return None
         main_url = redirects[0].url

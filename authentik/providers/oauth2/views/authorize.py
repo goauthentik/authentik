@@ -192,7 +192,7 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
-        allowed_redirect_urls = self.provider.authentication_redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
@@ -203,11 +203,11 @@ class OAuthAuthorizationParams:
                 RedirectURI(
                     RedirectURIMatchingMode.STRICT,
                     self.redirect_uri,
-                    RedirectURIType.AUTHENTICATION,
+                    RedirectURIType.AUTHORIZATION,
                 )
             ]
             self.provider.save()
-            allowed_redirect_urls = self.provider.authentication_redirect_uris
+            allowed_redirect_urls = self.provider.authorization_redirect_uris
 
         match_found = False
         for allowed in allowed_redirect_urls:
