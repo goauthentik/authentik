@@ -62,9 +62,11 @@ class TestTypeOpenID(TestCase):
 
     @Mocker()
     def test_userinfo_jwt(self, mock: Mocker):
-        """Test userinfo API call"""
+        """Test userinfo API call including audience validation"""
         jwks_cert = create_test_cert()
+        client_id = generate_id()
         self.source.profile_url = ""
+        self.source.consumer_key = client_id
         self.source.oidc_jwks = {"keys": [JWKSView.get_jwk_for_key(jwks_cert, "sig")]}
         self.source.save()
         token = generate_id()
@@ -78,6 +80,7 @@ class TestTypeOpenID(TestCase):
                     "id_token": encode(
                         {
                             "foo": "bar",
+                            "aud": client_id,
                         },
                         key=jwks_cert.private_key,
                         algorithm="RS256",
@@ -90,5 +93,6 @@ class TestTypeOpenID(TestCase):
             profile,
             {
                 "foo": "bar",
+                "aud": client_id,
             },
         )
