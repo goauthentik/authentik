@@ -161,7 +161,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                             .fetchObjects=${async (query?: string): Promise<Application[]> => {
                                 const args: CoreApplicationsListRequest = {
                                     ordering: "name",
-                                    superuserFullList: true,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
