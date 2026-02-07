@@ -26,7 +26,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage 2: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
