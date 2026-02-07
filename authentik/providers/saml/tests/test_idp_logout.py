@@ -5,6 +5,10 @@ from unittest.mock import Mock
 
 from django.test import RequestFactory, TestCase
 
+from authentik.common.oauth.constants import (
+    OAUTH2_BINDING,
+    PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+)
 from authentik.common.saml.constants import (
     RSA_SHA256,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -296,11 +300,6 @@ class TestIframeLogoutStageView(TestCase):
             },
         ]
         # OIDC sessions (pre-processed)
-        from authentik.common.oauth.constants import (
-            OAUTH2_BINDING,
-            PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
-        )
-
         plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
             {
                 "url": "https://oidc.example.com/logout?iss=authentik&sid=abc123",

@@ -1,5 +1,6 @@
 """Test OAuth2 End Session (RP-Initiated Logout) implementation"""
 
+from django.test import RequestFactory
 from django.urls import reverse
 
 from authentik.core.models import Application
@@ -12,6 +13,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIType,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.views.end_session import EndSessionView
 
 
 class TestEndSessionView(OAuthTestCase):
@@ -115,10 +117,6 @@ class TestEndSessionView(OAuthTestCase):
 
     def test_state_parameter_appended_to_uri(self):
         """Test state parameter is appended to validated redirect URI"""
-        from django.test import RequestFactory
-
-        from authentik.providers.oauth2.views.end_session import EndSessionView
-
         factory = RequestFactory()
         request = factory.get(
             "/end-session/",
@@ -174,17 +172,17 @@ class TestEndSessionAPI(OAuthTestCase):
                     {
                         "matching_mode": "strict",
                         "url": "http://testserver/callback",
-                        "redirect_uri_type": "authentication",
+                        "redirect_uri_type": "authorization",
                     },
                     {
                         "matching_mode": "strict",
                         "url": "http://testserver/logout",
-                        "redirect_uri_type": "post_logout",
+                        "redirect_uri_type": "logout",
                     },
                     {
                         "matching_mode": "regex",
                         "url": "https://.*\\.example\\.com/logout",
-                        "redirect_uri_type": "post_logout",
+                        "redirect_uri_type": "logout",
                     },
                 ],
             },
@@ -193,7 +191,7 @@ class TestEndSessionAPI(OAuthTestCase):
         self.assertEqual(response.status_code, 201)
         provider_data = response.json()
         post_logout_uris = [
-            u for u in provider_data["redirect_uris"] if u["redirect_uri_type"] == "post_logout"
+            u for u in provider_data["redirect_uris"] if u["redirect_uri_type"] == "logout"
         ]
         self.assertEqual(len(post_logout_uris), 2)
 
@@ -209,12 +207,12 @@ class TestEndSessionAPI(OAuthTestCase):
                     {
                         "matching_mode": "strict",
                         "url": "http://testserver/callback",
-                        "redirect_uri_type": "authentication",
+                        "redirect_uri_type": "authorization",
                     },
                     {
                         "matching_mode": "regex",
                         "url": "**invalid**",
-                        "redirect_uri_type": "post_logout",
+                        "redirect_uri_type": "logout",
                     },
                 ],
             },
@@ -224,7 +222,7 @@ class TestEndSessionAPI(OAuthTestCase):
         self.assertIn("redirect_uris", response.json())
 
     def test_post_logout_redirect_uris_update(self):
-        """Test updating redirect_uris with post_logout type"""
+        """Test updating redirect_uris with logout type"""
         # First create a provider
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
@@ -246,12 +244,12 @@ class TestEndSessionAPI(OAuthTestCase):
                     {
                         "matching_mode": "strict",
                         "url": "http://testserver/callback",
-                        "redirect_uri_type": "authentication",
+                        "redirect_uri_type": "authorization",
                     },
                     {
                         "matching_mode": "strict",
                         "url": "http://testserver/logout",
-                        "redirect_uri_type": "post_logout",
+                        "redirect_uri_type": "logout",
                     },
                 ],
             },
