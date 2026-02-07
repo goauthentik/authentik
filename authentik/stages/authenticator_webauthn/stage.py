@@ -1,7 +1,11 @@
 """WebAuthn stage"""
 
+from dataclasses import dataclass
 from uuid import UUID
 
+from cryptography.hazmat.primitives.serialization import Encoding
+from cryptography.x509 import load_der_x509_certificate
+from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext as __
@@ -11,6 +15,7 @@ from rest_framework.serializers import ValidationError
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import WebAuthnException
 from webauthn.helpers.options_to_json_dict import options_to_json_dict
+from webauthn.helpers.parse_attestation_object import parse_attestation_object
 from webauthn.helpers.structs import (
     AttestationConveyancePreference,
     AuthenticatorAttachment,
@@ -27,6 +32,7 @@ from webauthn.registration.verify_registration_response import (
 
 from authentik.core.api.utils import JSONDictField
 from authentik.core.models import User
+from authentik.crypto.models import fingerprint_sha256
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -45,6 +51,14 @@ PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
 
 
+@dataclass
+class VerifiedRegistrationData:
+    registration: VerifiedRegistration
+    exists_query: Q
+    attest_cert: str | None = None
+    attest_cert_fingerprint: str | None = None
+
+
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
     """WebAuthn Challenge"""
 
@@ -61,7 +75,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
     request: HttpRequest
     user: User
 
-    def validate_response(self, response: dict) -> dict:
+    def validate_response(self, response: dict) -> VerifiedRegistrationData:
         """Validate webauthn challenge response"""
         challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
 
@@ -76,9 +90,23 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             self.stage.logger.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}") from None
 
-        credential_id_exists = WebAuthnDevice.objects.filter(
-            credential_id=bytes_to_base64url(registration.credential_id)
-        ).first()
+        registration_data = VerifiedRegistrationData(
+            registration,
+            exists_query=Q(credential_id=bytes_to_base64url(registration.credential_id)),
+        )
+
+        att_stmt = parse_attestation_object(registration.attestation_object).att_stmt
+        if att_stmt.x5c and len(att_stmt.x5c) > 0:
+            cert = load_der_x509_certificate(att_stmt.x5c[0])
+            registration_data.attest_cert = cert.public_bytes(
+                encoding=Encoding.PEM,
+            ).decode("utf-8")
+            registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
+            registration_data.exists_query |= Q(
+                attestation_certificate_fingerprint=registration_data.attest_cert_fingerprint
+            )
+
+        credential_id_exists = WebAuthnDevice.objects.filter(registration_data.exists_query).first()
         if credential_id_exists:
             raise ValidationError("Credential ID already exists.")
 
@@ -102,11 +130,11 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
                 UUID(UNKNOWN_DEVICE_TYPE_AAGUID) in allowed_aaguids
                 and not WebAuthnDeviceType.objects.filter(aaguid=aaguid).exists()
             ):
-                return registration
+                return registration_data
             # Otherwise just check if the given aaguid is in the allowed aaguids
             if UUID(aaguid) not in allowed_aaguids:
                 raise invalid_error
-        return registration
+        return registration_data
 
 
 class AuthenticatorWebAuthnStageView(ChallengeStageView):
@@ -174,26 +202,28 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
-        webauthn_credential: VerifiedRegistration = response.validated_data["response"]
-        existing_device = WebAuthnDevice.objects.filter(
-            credential_id=bytes_to_base64url(webauthn_credential.credential_id)
-        ).first()
+        webauthn_credential: VerifiedRegistrationData = response.validated_data["response"]
+        existing_device = WebAuthnDevice.objects.filter(webauthn_credential.exists_query).first()
         if not existing_device:
             name = "WebAuthn Device"
             device_type = WebAuthnDeviceType.objects.filter(
-                aaguid=webauthn_credential.aaguid
+                aaguid=webauthn_credential.registration.aaguid
             ).first()
             if device_type and device_type.description:
                 name = device_type.description
             WebAuthnDevice.objects.create(
                 name=name,
                 user=self.get_pending_user(),
-                public_key=bytes_to_base64url(webauthn_credential.credential_public_key),
-                credential_id=bytes_to_base64url(webauthn_credential.credential_id),
-                sign_count=webauthn_credential.sign_count,
+                public_key=bytes_to_base64url(
+                    webauthn_credential.registration.credential_public_key
+                ),
+                credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
+                sign_count=webauthn_credential.registration.sign_count,
                 rp_id=get_rp_id(self.request),
                 device_type=device_type,
-                aaguid=webauthn_credential.aaguid,
+                aaguid=webauthn_credential.registration.aaguid,
+                attestation_certificate_pem=webauthn_credential.attest_cert,
+                attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
