@@ -374,9 +374,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     objects = UserManager()
 
-    # Used to track password hash changes outside the user changing their passwords
-    password_hash_changed = False
-
     class Meta:
         verbose_name = _("User")
         verbose_name_plural = _("Users")
