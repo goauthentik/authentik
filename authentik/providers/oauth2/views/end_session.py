@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 
 from authentik.common.oauth.constants import (
     FORBIDDEN_URI_SCHEMES,
+    OAUTH2_BINDING,
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
 )
 from authentik.core.models import Application, AuthenticatedSession
@@ -147,8 +148,11 @@ class EndSessionView(PolicyAccessView):
                 {
                     "url": frontchannel_logout_url,
                     "provider_name": self.provider.name,
-                    "binding": "redirect",
-                    "provider_type": "oidc",
+                    "binding": OAUTH2_BINDING,
+                    "provider_type": (
+                        f"{self.provider._meta.app_label}"
+                        f".{self.provider._meta.model_name}"
+                    ),
                 }
             ]
 

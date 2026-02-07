@@ -17,6 +17,7 @@ from authentik.providers.iframe_logout import (
     IframeLogoutChallenge,
     IframeLogoutStageView,
 )
+from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.native_logout import (
     NativeLogoutChallenge,
@@ -302,7 +303,7 @@ class TestIframeLogoutStageView(TestCase):
                 "url": "https://oidc.example.com/logout?iss=authentik&sid=abc123",
                 "provider_name": "oidc-provider",
                 "binding": "redirect",
-                "provider_type": "oidc",
+                "provider_type": f"{OAuth2Provider._meta.app_label}.{OAuth2Provider._meta.model_name}",
             },
         ]
         stage_view = IframeLogoutStageView(

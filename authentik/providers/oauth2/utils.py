@@ -290,13 +290,5 @@ def build_frontchannel_logout_url(
             if key not in query_params:
                 query_params[key] = value[0] if len(value) == 1 else value
 
-    return urlunparse(
-        (
-            parsed_url.scheme,
-            parsed_url.netloc,
-            parsed_url.path,
-            parsed_url.params,
-            urlencode(query_params),
-            parsed_url.fragment,
-        )
-    )
+    parsed_url = parsed_url._replace(query=urlencode(query_params))
+    return urlunparse(parsed_url)
