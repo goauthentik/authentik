@@ -9,6 +9,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    RedirectURIType,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
@@ -26,11 +27,21 @@ class TestEndSessionView(OAuthTestCase):
             authorization_flow=create_test_flow(),
             invalidation_flow=self.invalidation_flow,
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback"),
-            ],
-            post_logout_redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/logout"),
-                RedirectURI(RedirectURIMatchingMode.REGEX, r"https://.*\.example\.com/logout"),
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://testserver/callback",
+                    RedirectURIType.AUTHENTICATION,
+                ),
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://testserver/logout",
+                    RedirectURIType.POST_LOGOUT,
+                ),
+                RedirectURI(
+                    RedirectURIMatchingMode.REGEX,
+                    r"https://.*\.example\.com/logout",
+                    RedirectURIType.POST_LOGOUT,
+                ),
             ],
         )
         self.app.provider = self.provider
@@ -152,7 +163,7 @@ class TestEndSessionAPI(OAuthTestCase):
         self.client.force_login(self.user)
 
     def test_post_logout_redirect_uris_create(self):
-        """Test creating provider with post_logout_redirect_uris"""
+        """Test creating provider with post_logout redirect_uris"""
         response = self.client.post(
             reverse("authentik_api:oauth2provider-list"),
             data={
@@ -160,18 +171,31 @@ class TestEndSessionAPI(OAuthTestCase):
                 "authorization_flow": create_test_flow().pk,
                 "invalidation_flow": create_test_flow().pk,
                 "redirect_uris": [
-                    {"matching_mode": "strict", "url": "http://testserver/callback"},
-                ],
-                "post_logout_redirect_uris": [
-                    {"matching_mode": "strict", "url": "http://testserver/logout"},
-                    {"matching_mode": "regex", "url": "https://.*\\.example\\.com/logout"},
+                    {
+                        "matching_mode": "strict",
+                        "url": "http://testserver/callback",
+                        "redirect_uri_type": "authentication",
+                    },
+                    {
+                        "matching_mode": "strict",
+                        "url": "http://testserver/logout",
+                        "redirect_uri_type": "post_logout",
+                    },
+                    {
+                        "matching_mode": "regex",
+                        "url": "https://.*\\.example\\.com/logout",
+                        "redirect_uri_type": "post_logout",
+                    },
                 ],
             },
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
         provider_data = response.json()
-        self.assertEqual(len(provider_data["post_logout_redirect_uris"]), 2)
+        post_logout_uris = [
+            u for u in provider_data["redirect_uris"] if u["redirect_uri_type"] == "post_logout"
+        ]
+        self.assertEqual(len(post_logout_uris), 2)
 
     def test_post_logout_redirect_uris_invalid_regex(self):
         """Test that invalid regex patterns are rejected"""
@@ -182,34 +206,53 @@ class TestEndSessionAPI(OAuthTestCase):
                 "authorization_flow": create_test_flow().pk,
                 "invalidation_flow": create_test_flow().pk,
                 "redirect_uris": [
-                    {"matching_mode": "strict", "url": "http://testserver/callback"},
-                ],
-                "post_logout_redirect_uris": [
-                    {"matching_mode": "regex", "url": "**invalid**"},
+                    {
+                        "matching_mode": "strict",
+                        "url": "http://testserver/callback",
+                        "redirect_uri_type": "authentication",
+                    },
+                    {
+                        "matching_mode": "regex",
+                        "url": "**invalid**",
+                        "redirect_uri_type": "post_logout",
+                    },
                 ],
             },
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn("post_logout_redirect_uris", response.json())
+        self.assertIn("redirect_uris", response.json())
 
     def test_post_logout_redirect_uris_update(self):
-        """Test updating post_logout_redirect_uris"""
+        """Test updating redirect_uris with post_logout type"""
         # First create a provider
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
             redirect_uris=[
-                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback"),
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    "http://testserver/callback",
+                    RedirectURIType.AUTHENTICATION,
+                ),
             ],
         )
 
-        # Update with post_logout_redirect_uris
+        # Update with post_logout redirect URIs
         response = self.client.patch(
             reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider.pk}),
             data={
-                "post_logout_redirect_uris": [
-                    {"matching_mode": "strict", "url": "http://testserver/logout"},
+                "redirect_uris": [
+                    {
+                        "matching_mode": "strict",
+                        "url": "http://testserver/callback",
+                        "redirect_uri_type": "authentication",
+                    },
+                    {
+                        "matching_mode": "strict",
+                        "url": "http://testserver/logout",
+                        "redirect_uri_type": "post_logout",
+                    },
                 ],
             },
             content_type="application/json",

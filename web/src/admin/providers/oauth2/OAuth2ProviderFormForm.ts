@@ -34,6 +34,7 @@ import {
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     RedirectURI,
+    RedirectUriTypeEnum,
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
@@ -120,10 +121,10 @@ export const issuerModeOptions: RadioOption<IssuerModeEnum>[] = [
 
 const redirectUriHelpMessages: string[] = [
     msg(
-        "Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.",
+        "Valid redirect URIs after a successful authorization or invalidation flow. Also specify any origins here for Implicit flows. Use the type dropdown to designate URIs for authentication or post-logout redirection.",
     ),
     msg(
-        "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
+        "If no explicit authentication redirect URIs are specified, the first successfully used authentication redirect URI will be saved.",
     ),
     msg(
         'To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.',
@@ -221,7 +222,11 @@ export function renderForm({
                 >
                     <ak-array-input
                         .items=${provider.redirectUris ?? []}
-                        .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
+                        .newItem=${() => ({
+                            matchingMode: MatchingModeEnum.Strict,
+                            url: "",
+                            redirectUriType: RedirectUriTypeEnum.Authentication,
+                        })}
                         .row=${(redirectURI: RedirectURI, idx: number) => {
                             return html`<ak-provider-oauth2-redirect-uri
                                 .redirectURI=${redirectURI}
@@ -266,30 +271,6 @@ export function renderForm({
                           )}
                       ></ak-radio-input>`
                     : html``}
-
-                <ak-form-element-horizontal
-                    label=${msg("Post Logout Redirect URIs")}
-                    name="postLogoutRedirectUris"
-                >
-                    <ak-array-input
-                        .items=${provider.postLogoutRedirectUris ?? []}
-                        .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
-                        .row=${(redirectURI: RedirectURI, idx: number) => {
-                            return html`<ak-provider-oauth2-redirect-uri
-                                .redirectURI=${redirectURI}
-                                name="post-logout-redirect-uri"
-                                style="width: 100%"
-                                input-id="post-logout-redirect-uri-${idx}"
-                            ></ak-provider-oauth2-redirect-uri>`;
-                        }}
-                    >
-                    </ak-array-input>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Valid URIs to redirect to after logout. When a client provides post_logout_redirect_uri in the logout request and it matches one of these URIs, the user will be redirected there.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->

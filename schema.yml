@@ -42913,10 +42913,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
-        post_logout_redirect_uris:
-          type: array
-          items:
-            $ref: '#/components/schemas/RedirectURI'
         logout_uri:
           type: string
           format: uri
@@ -43040,10 +43036,6 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: array
-          items:
-            $ref: '#/components/schemas/RedirectURIRequest'
-        post_logout_redirect_uris:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
@@ -48454,10 +48446,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
-        post_logout_redirect_uris:
-          type: array
-          items:
-            $ref: '#/components/schemas/RedirectURIRequest'
         logout_uri:
           type: string
           format: uri
@@ -52228,6 +52216,10 @@ components:
           $ref: '#/components/schemas/MatchingModeEnum'
         url:
           type: string
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authentication
       required:
       - matching_mode
       - url
@@ -52240,9 +52232,18 @@ components:
         url:
           type: string
           minLength: 1
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authentication
       required:
       - matching_mode
       - url
+    RedirectUriTypeEnum:
+      enum:
+      - authentication
+      - post_logout
+      type: string
     RelatedGroup:
       type: object
       description: Stripped down group serializer to show relevant children/parents

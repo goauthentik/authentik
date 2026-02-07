@@ -9571,6 +9571,14 @@
                                 "type": "string",
                                 "minLength": 1,
                                 "title": "Url"
+                            },
+                            "redirect_uri_type": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "post_logout"
+                                ],
+                                "title": "Redirect uri type"
                             }
                         },
                         "required": [
@@ -9579,32 +9587,6 @@
                         ]
                     },
                     "title": "Redirect uris"
-                },
-                "post_logout_redirect_uris": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "matching_mode": {
-                                "type": "string",
-                                "enum": [
-                                    "strict",
-                                    "regex"
-                                ],
-                                "title": "Matching mode"
-                            },
-                            "url": {
-                                "type": "string",
-                                "minLength": 1,
-                                "title": "Url"
-                            }
-                        },
-                        "required": [
-                            "matching_mode",
-                            "url"
-                        ]
-                    },
-                    "title": "Post logout redirect uris"
                 },
                 "logout_uri": {
                     "type": "string",

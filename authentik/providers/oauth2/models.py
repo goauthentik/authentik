@@ -97,6 +97,11 @@ class RedirectURIMatchingMode(models.TextChoices):
     REGEX = "regex", _("Regular Expression URL matching")
 
 
+class RedirectURIType(models.TextChoices):
+    AUTHENTICATION = "authentication", _("Authentication")
+    POST_LOGOUT = "post_logout", _("Post Logout")
+
+
 class OAuth2LogoutMethod(models.TextChoices):
     """OAuth2/OIDC Logout methods"""
 
@@ -110,6 +115,7 @@ class RedirectURI:
 
     matching_mode: RedirectURIMatchingMode
     url: str
+    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHENTICATION
 
 
 class ResponseTypes(models.TextChoices):
@@ -220,16 +226,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Frontchannel uses iframes in your browser"
         ),
     )
-    _post_logout_redirect_uris = models.JSONField(
-        default=list,
-        verbose_name=_("Post Logout Redirect URIs"),
-        help_text=_(
-            "Valid URIs to redirect to after logout. "
-            "If post_logout_redirect_uri is provided in the logout request "
-            "and matches one of these URIs, the user will be redirected there."
-        ),
-    )
-
     include_claims_in_id_token = models.BooleanField(
         default=True,
         verbose_name=_("Include claims in id_token"),
@@ -352,7 +348,12 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 from_dict(
                     RedirectURI,
                     entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                    config=Config(
+                        type_hooks={
+                            RedirectURIMatchingMode: RedirectURIMatchingMode,
+                            RedirectURIType: RedirectURIType,
+                        }
+                    ),
                 )
             )
         return uris
@@ -365,29 +366,25 @@ class OAuth2Provider(WebfingerProvider, Provider):
         self._redirect_uris = cleansed
 
     @property
-    def post_logout_redirect_uris(self) -> list[RedirectURI]:
-        uris = []
-        for entry in self._post_logout_redirect_uris:
-            uris.append(
-                from_dict(
-                    RedirectURI,
-                    entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
-                )
-            )
-        return uris
+    def authentication_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri
+            for uri in self.redirect_uris
+            if uri.redirect_uri_type == RedirectURIType.AUTHENTICATION
+        ]
 
-    @post_logout_redirect_uris.setter
-    def post_logout_redirect_uris(self, value: list[RedirectURI]):
-        cleansed = []
-        for entry in value:
-            cleansed.append(asdict(entry))
-        self._post_logout_redirect_uris = cleansed
+    @property
+    def post_logout_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri
+            for uri in self.redirect_uris
+            if uri.redirect_uri_type == RedirectURIType.POST_LOGOUT
+        ]
 
     @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        redirects = self.redirect_uris
+        redirects = self.authentication_redirect_uris
         if len(redirects) < 1:
             return None
         main_url = redirects[0].url

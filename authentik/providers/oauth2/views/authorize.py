@@ -61,6 +61,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    RedirectURIType,
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
@@ -191,7 +192,7 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authentication_redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
@@ -199,10 +200,14 @@ class OAuthAuthorizationParams:
         if len(allowed_redirect_urls) < 1:
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
             self.provider.redirect_uris = [
-                RedirectURI(RedirectURIMatchingMode.STRICT, self.redirect_uri)
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    self.redirect_uri,
+                    RedirectURIType.AUTHENTICATION,
+                )
             ]
             self.provider.save()
-            allowed_redirect_urls = self.provider.redirect_uris
+            allowed_redirect_urls = self.provider.authentication_redirect_uris
 
         match_found = False
         for allowed in allowed_redirect_urls:
