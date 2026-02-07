@@ -46,7 +46,6 @@ class ServiceProviderMetadata:
         provider = SAMLProvider.objects.create(
             name=name, authorization_flow=authorization_flow, invalidation_flow=invalidation_flow
         )
-        provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
         provider.default_name_id_policy = self.name_id_policy
