@@ -123,6 +123,11 @@ class EventAction(models.TextChoices):
 
     EXPORT_READY = "export_ready"
 
+    REVIEW_INITIATED = "review_initiated"
+    REVIEW_OVERDUE = "review_overdue"
+    REVIEW_ATTESTED = "review_attested"
+    REVIEW_COMPLETED = "review_completed"
+
     CUSTOM_PREFIX = "custom_"
 
 
