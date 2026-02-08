@@ -19,7 +19,6 @@ import { renderDescriptionList } from "#components/DescriptionList";
 
 import {
     ContentTypeEnum,
-    LicenseStatusEnum,
     RbacApi,
     RbacPermissionsAssignedByRolesListModelEnum,
     Role,
@@ -158,7 +157,7 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
-                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed
+                ${this.hasEnterpriseLicense
                     ? html` <ak-object-lifecycle-page
                           role="tabpanel"
                           tabindex="0"

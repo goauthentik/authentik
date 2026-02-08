@@ -26,7 +26,6 @@ import {
     ContentTypeEnum,
     CoreApi,
     Group,
-    LicenseStatusEnum,
     RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
@@ -264,7 +263,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
-                ${this.licenseSummary?.status !== LicenseStatusEnum.Unlicensed
+                ${this.hasEnterpriseLicense
                     ? html` <ak-object-lifecycle-page
                           role="tabpanel"
                           tabindex="0"
