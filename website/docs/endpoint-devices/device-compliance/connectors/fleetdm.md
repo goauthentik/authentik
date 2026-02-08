@@ -25,7 +25,7 @@ Follow these instructions to configure the Fleet connector:
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
 3. Select **Fleet Connector** as the connector type, click **Next**, and configure the following settings:
     - **Connector name**: provide a descriptive name for the connector.
-    - **Fleet Server URL**: enter your `Fleet web address` URL.
+    - **Fleet Server URL**: enter your **Fleet web address** URL.
     - **Fleet API Token**: enter the API key of an API-only user.
     - **Map users**: enable if you want users associated with the device in Fleet to be automatically [given access to the device via the authentik Agent](../../authentik-agent/device-authentication/index.mdx).
     - **Map teams to device access group**: enable if you want groups associated with the device in Fleet to be automatically mapped to a [device access group](../../authentik-agent/device-authentication/device-access-groups.mdx) and [given access to the device via the authentik Agent](../../authentik-agent/device-authentication/index.mdx).
