@@ -230,7 +230,7 @@ async fn forward_request(
     Host(host): Host,
     Scheme(scheme): Scheme,
     State(state): State<CoreRouterState>,
-    _tls_state: Option<Extension<TlsState>>,
+    tls_state: Option<Extension<TlsState>>,
     req: Request,
 ) -> Response {
     let accept = req
