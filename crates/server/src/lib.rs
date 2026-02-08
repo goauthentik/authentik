@@ -120,6 +120,11 @@ impl ServerState {
 #[argh(subcommand, name = "server")]
 pub struct Cli {}
 
+async fn gunicorn_socket_ready() -> bool {
+    let socket_path = std::env::temp_dir().join("authentik-core.sock");
+    tokio::net::UnixStream::connect(socket_path).await.is_ok()
+}
+
 async fn watch_gunicorn(
     state_lock: Arc<RwLock<ServerState>>,
     stop: CancellationToken,
@@ -153,6 +158,14 @@ async fn watch_gunicorn(
                     }
                 }
             },
+            _ = tokio::time::sleep(Duration::from_secs(1)), if !gunicorn_ready.load(Ordering::Relaxed) => {
+                // On some platforms the SIGUSR1 readiness signal can be missed.
+                // Fall back to probing the gunicorn unix socket and mark ready once it accepts connections.
+                if gunicorn_socket_ready().await {
+                    info!("gunicorn socket is accepting connections, marking ready");
+                    gunicorn_ready.store(true, Ordering::Relaxed);
+                }
+            },
             _ = tokio::time::sleep(Duration::from_secs(15)) => {
                 let mut state = state_lock.write().await;
                 let try_wait = state.gunicorn.try_wait();
@@ -181,8 +194,35 @@ async fn watch_gunicorn(
 
 #[derive(Clone, Debug)]
 struct CoreRouterState {
-    client: Client<UnixSocketConnector<&'static str>, Body>,
+    client: Client<UnixSocketConnector<std::path::PathBuf>, Body>,
     gunicorn_ready: Arc<AtomicBool>,
+}
+
+fn startup_response(accept: &str) -> Response {
+    let mut response = Response::builder();
+    response = response.status(StatusCode::SERVICE_UNAVAILABLE);
+
+    if accept.contains("application/json") {
+        response = response.header(RETRY_AFTER, "5");
+        response = response.header(CONTENT_TYPE, "application/json");
+        response
+            .body(
+                json!({
+                    "error": "authentik starting",
+                })
+                .to_string()
+                .into(),
+            )
+            .unwrap()
+    } else if accept.contains("text/html") {
+        response = response.header(CONTENT_TYPE, "text/html");
+        response
+            .body(include_str!("../../../web/dist/standalone/loading/startup.html").into())
+            .unwrap()
+    } else {
+        response = response.header(CONTENT_TYPE, "text/plain");
+        response.body("authentik starting".into()).unwrap()
+    }
 }
 
 async fn forward_request(
@@ -193,36 +233,15 @@ async fn forward_request(
     tls_state: Option<Extension<TlsState>>,
     req: Request,
 ) -> Response {
-    if !state.gunicorn_ready.load(Ordering::Relaxed) {
-        let accept = req
-            .headers()
-            .get("accept")
-            .map(|v| v.to_str().unwrap_or(""))
-            .unwrap_or("");
-        let mut response = Response::builder();
-        response = response.status(StatusCode::SERVICE_UNAVAILABLE);
+    let accept = req
+        .headers()
+        .get("accept")
+        .map(|v| v.to_str().unwrap_or(""))
+        .unwrap_or("")
+        .to_string();
 
-        if accept.contains("application/json") {
-            response = response.header(RETRY_AFTER, "5");
-            response = response.header(CONTENT_TYPE, "application/json");
-            return response
-                .body(
-                    json!({
-                        "error": "authentik starting",
-                    })
-                    .to_string()
-                    .into(),
-                )
-                .unwrap();
-        } else if accept.contains("text/html") {
-            response = response.header(CONTENT_TYPE, "text/html");
-            return response
-                .body(include_str!("../../../web/dist/standalone/loading/startup.html").into())
-                .unwrap();
-        } else {
-            response = response.header(CONTENT_TYPE, "text/plain");
-            return response.body("authentik starting".into()).unwrap();
-        }
+    if !state.gunicorn_ready.load(Ordering::Relaxed) {
+        return startup_response(&accept);
     }
 
     let path_q = req.uri().path_and_query().map(|x| x.as_str()).unwrap_or("");
@@ -272,6 +291,14 @@ async fn forward_request(
             response
         }
         Err(e) => {
+            if e.is_connect()
+                || matches!(
+                    e.to_string().as_str(),
+                    "client error (SendRequest)" | "client error (ChannelClosed)"
+                )
+            {
+                return startup_response(&accept);
+            }
             let error_msg = e.to_string();
             Response::builder()
                 .status(StatusCode::BAD_GATEWAY)
@@ -282,7 +309,7 @@ async fn forward_request(
 }
 
 async fn build_core_proxy_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
-    let connector = UnixSocketConnector::new("/tmp/authentik-core.sock");
+    let connector = UnixSocketConnector::new(std::env::temp_dir().join("authentik-core.sock"));
     let client = Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
         .pool_max_idle_per_host(get_config().await.web.workers * get_config().await.web.threads)

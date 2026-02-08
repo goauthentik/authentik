@@ -1,6 +1,7 @@
 """Gunicorn config"""
 
 import os
+import platform
 import signal
 from hashlib import sha512
 from pathlib import Path
@@ -50,6 +51,11 @@ logconfig_dict = get_logger_config()
 
 workers = CONFIG.get_int("web.workers", 2)
 threads = CONFIG.get_int("web.threads", 4)
+
+# libpq can try Kerberos/GSS on macOS, which is not fork-safe in our Gunicorn worker model.
+# Disable GSS negotiation for local/dev PostgreSQL connections on Darwin.
+if platform.system() == "Darwin":
+    os.environ.setdefault("PGGSSENCMODE", "disable")
 
 
 def when_ready(server: "Arbiter"):  # noqa: UP037
