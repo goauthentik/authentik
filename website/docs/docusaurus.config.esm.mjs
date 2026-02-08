@@ -64,11 +64,12 @@ export function generateCVESidebar(args) {
     args.docs
         .filter((item) => item.sourceDirName === "security/cves")
         .forEach((item) => {
-            const cveId = item.title;
-            const year = cveId.match(/-(\d+)-/)[1];
-            if (!year) {
+            const matches = item.title.match(/CVE-(\d+)-/);
+            if (!matches) {
                 console.warn(`Could not extract year from CVE title: ${item.title}`);
+                return;
             }
+            const year = matches[1] || "";
             if (!Object.hasOwn(yearCategories, year)) {
                 yearCategories[year] = {
                     type: "category",
