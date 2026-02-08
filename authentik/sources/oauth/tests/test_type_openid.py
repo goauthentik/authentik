@@ -1,5 +1,7 @@
 """OpenID Type tests"""
 
+import time
+
 from django.test import RequestFactory, TestCase
 from jwt import encode
 from requests_mock import Mocker
@@ -70,7 +72,7 @@ class TestTypeOpenID(TestCase):
         self.source.oidc_jwks = {"keys": [JWKSView.get_jwk_for_key(jwks_cert, "sig")]}
         self.source.save()
         token = generate_id()
-        now = 12345
+        now = int(time.time())
         id_token_payload = {
             "iss": "https://example.com",
             "sub": OPENID_USER["sub"],
