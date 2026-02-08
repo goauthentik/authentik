@@ -12,6 +12,8 @@ pub struct Config {
     pub http_timeout: u32,
 
     pub debug: bool,
+    #[serde(default)]
+    pub secret_key: String,
 
     pub log_level: String,
     pub log: LogConfig,

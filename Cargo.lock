@@ -291,10 +291,14 @@ dependencies = [
  "http-body-util",
  "hyper-unix-socket",
  "hyper-util",
+ "jsonwebtoken",
  "nix 0.31.1",
+ "percent-encoding",
  "rcgen",
  "rustls",
+ "serde",
  "serde_json",
+ "sha2",
  "sqlx",
  "time",
  "tokio",
@@ -1742,6 +1746,21 @@ checksum = "8c942ebf8e95485ca0d52d97da7c5a2c387d0e7f0ba4c35e93bfcaee045955b3"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "jsonwebtoken"
+version = "10.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0529410abe238729a60b108898784df8984c87f6054c9c4fcacc47e4803c1ce1"
+dependencies = [
+ "aws-lc-rs",
+ "base64 0.22.1",
+ "getrandom 0.2.17",
+ "js-sys",
+ "serde",
+ "serde_json",
+ "signature",
 ]
 
 [[package]]
