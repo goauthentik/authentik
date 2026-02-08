@@ -62,7 +62,7 @@ class TestTypeOpenID(TestCase):
 
     @Mocker()
     def test_userinfo_jwt(self, mock: Mocker):
-        """Test userinfo API call including audience validation"""
+        """Test id_token fallback when profile_url is empty"""
         jwks_cert = create_test_cert()
         client_id = generate_id()
         self.source.profile_url = ""
@@ -70,18 +70,26 @@ class TestTypeOpenID(TestCase):
         self.source.oidc_jwks = {"keys": [JWKSView.get_jwk_for_key(jwks_cert, "sig")]}
         self.source.save()
         token = generate_id()
+        now = 12345
+        id_token_payload = {
+            "iss": "https://example.com",
+            "sub": OPENID_USER["sub"],
+            "aud": client_id,
+            "exp": now + 3600,
+            "iat": now,
+            "name": OPENID_USER["name"],
+            "email": OPENID_USER["email"],
+            "nickname": OPENID_USER["nickname"],
+        }
         profile = (
             OpenIDConnectOAuth2Callback(request=self.factory.get("/"))
             .get_client(self.source)
             .get_profile_info(
                 {
-                    "token_type": "foo",
+                    "token_type": "Bearer",
                     "access_token": token,
                     "id_token": encode(
-                        {
-                            "foo": "bar",
-                            "aud": client_id,
-                        },
+                        id_token_payload,
                         key=jwks_cert.private_key,
                         algorithm="RS256",
                         headers={"kid": self.source.oidc_jwks["keys"][0]["kid"]},
@@ -89,10 +97,8 @@ class TestTypeOpenID(TestCase):
                 }
             )
         )
-        self.assertEqual(
-            profile,
-            {
-                "foo": "bar",
-                "aud": client_id,
-            },
-        )
+        self.assertEqual(profile["sub"], OPENID_USER["sub"])
+        self.assertEqual(profile["name"], OPENID_USER["name"])
+        self.assertEqual(profile["email"], OPENID_USER["email"])
+        self.assertEqual(profile["aud"], client_id)
+        self.assertEqual(profile["iss"], "https://example.com")
