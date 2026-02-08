@@ -5,6 +5,7 @@
  * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
  * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
+ * @import { NormalizedSidebar, NormalizedSidebarItemCategory, SidebarItemsGeneratorArgs } from "@docusaurus/plugin-content-docs/src/sidebars/types.ts";
  */
 
 import { cp } from "node:fs/promises";
@@ -51,6 +52,44 @@ const redirectsIndex = new RewriteIndex(redirects);
 
 //#endregion
 
+/**
+ * Generate Sidebar structure for CVEs. Items are grouped by year and sorted newest to old.
+ *
+ * @param {SidebarItemsGeneratorArgs} args
+ * @returns {NormalizedSidebar}
+ */
+export function generateCVESidebar(args) {
+    /** @type {{ [key: string]: NormalizedSidebarItemCategory}} */
+    const yearCategories = {};
+    args.docs
+        .filter((item) => item.sourceDirName === "security/cves")
+        .forEach((item) => {
+            const matches = item.title.match(/CVE-(\d+)-/);
+            if (!matches) {
+                console.warn(`Could not extract year from CVE title: ${item.title}`);
+                return;
+            }
+            const year = matches[1] || "";
+            if (!Object.hasOwn(yearCategories, year)) {
+                yearCategories[year] = {
+                    type: "category",
+                    label: year,
+                    items: [],
+                };
+            }
+            yearCategories[year].items.push({
+                type: "doc",
+                id: item.id,
+            });
+        });
+    const categories = Object.values(yearCategories);
+    categories.forEach((item) => {
+        item.items.reverse();
+    });
+    categories.reverse();
+    return categories;
+}
+
 //#region Configuration
 
 export default createDocusaurusConfig(
@@ -66,6 +105,13 @@ export default createDocusaurusConfig(
             createClassicPreset({
                 pages: false,
                 docs: {
+                    sidebarItemsGenerator: async ({ defaultSidebarItemsGenerator, ...args }) => {
+                        const sidebarItems = await defaultSidebarItemsGenerator(args);
+                        if (args.item.dirName === "security/cves") {
+                            return generateCVESidebar(args);
+                        }
+                        return sidebarItems;
+                    },
                     exclude: [
                         /**
                          * Exclude previously generated API docs.
