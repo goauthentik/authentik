@@ -125,6 +125,8 @@ export class AccessReviewAttestations extends Table<Attestation> {
 
 @customElement("ak-object-lifecycle-page")
 export class ObjectLifecyclePage extends AKElement {
+    static styles = [PFBase, PFGrid, PFPage, PFBanner, PFCard, PFFlex, PFDescriptionList];
+
     @property()
     public model?: ContentTypeEnum;
 
@@ -177,8 +179,6 @@ export class ObjectLifecyclePage extends AKElement {
             this.fetchReview();
         }
     }
-
-    static styles = [PFBase, PFGrid, PFPage, PFBanner, PFCard, PFFlex, PFDescriptionList];
 
     protected renderReviewers() {
         if (!this.review) return;
