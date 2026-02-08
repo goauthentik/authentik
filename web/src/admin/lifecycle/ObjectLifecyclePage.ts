@@ -19,6 +19,8 @@ import {
     ReviewStateEnum,
 } from "@goauthentik/api";
 
+import { match } from "ts-pattern";
+
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -191,11 +193,78 @@ export class ObjectLifecyclePage extends AKElement {
         )}`;
     }
 
+    protected renderOpenedOn() {
+        return html` <div class="pf-c-description-list__group">
+            <dt class="pf-c-description-list__term">
+                <span class="pf-c-description-list__text">${msg("Review opened on")}</span>
+            </dt>
+            <dd class="pf-c-description-list__description">
+                <div class="pf-c-description-list__text">
+                    <ak-timestamp
+                        .timestamp=${this.review?.openedOn}
+                        .elapsed=${false}
+                        dateonly
+                        datetime
+                    ></ak-timestamp>
+                </div>
+            </dd>
+        </div>`;
+    }
+
+    protected renderGracePeriodTill() {
+        return html` <div class="pf-c-description-list__group">
+            <dt class="pf-c-description-list__term">
+                <span class="pf-c-description-list__text">${msg("Grace period till")}</span>
+            </dt>
+            <dd class="pf-c-description-list__description">
+                <div class="pf-c-description-list__text">
+                    <ak-timestamp
+                        .timestamp=${this.review?.gracePeriodEnd}
+                        .elapsed=${false}
+                        dateonly
+                        datetime
+                    ></ak-timestamp>
+                </div>
+            </dd>
+        </div>`;
+    }
+
+    protected renderNextReviewDate() {
+        return html` <div class="pf-c-description-list__group">
+            <dt class="pf-c-description-list__term">
+                <span class="pf-c-description-list__text">${msg("Next review date")}</span>
+            </dt>
+            <dd class="pf-c-description-list__description">
+                <div class="pf-c-description-list__text">
+                    <ak-timestamp
+                        .timestamp=${this.review?.nextReviewDate}
+                        .elapsed=${false}
+                        dateonly
+                        datetime
+                    ></ak-timestamp>
+                </div>
+            </dd>
+        </div>`;
+    }
+
+    protected renderReviewDates() {
+        return match(this.review?.state)
+            .with(undefined, ReviewStateEnum.UnknownDefaultOpenApi, () => nothing)
+            .with(
+                ReviewStateEnum.Pending,
+                () => html`${this.renderOpenedOn()}${this.renderGracePeriodTill()}`,
+            )
+            .with(ReviewStateEnum.Reviewed, () => this.renderNextReviewDate())
+            .with(ReviewStateEnum.Overdue, () => this.renderOpenedOn())
+            .with(ReviewStateEnum.Canceled, () => this.renderOpenedOn())
+            .exhaustive();
+    }
+
     render() {
         if (this.review === undefined)
             return html` <ak-empty-state ?loading=${!this.review}
-                >${msg("Loading...")}</ak-empty-state
-            >`;
+                >${msg("Loading...")}
+            </ak-empty-state>`;
         if (!this.review)
             return html` <ak-empty-state>
                 <div>${msg("This object does not have an access review yet.")}</div>
@@ -241,60 +310,7 @@ export class ObjectLifecyclePage extends AKElement {
                                         </div>
                                     </dd>
                                 </div>
-                                ${this.review.state !== ReviewStateEnum.Reviewed
-                                    ? html` <div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
-                                                  >${msg("Review opened on")}</span
-                                              >
-                                          </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
-                                                  <ak-timestamp
-                                                      .timestamp=${this.review?.openedOn}
-                                                      .elapsed=${false}
-                                                      dateonly
-                                                      datetime
-                                                  ></ak-timestamp>
-                                              </div>
-                                          </dd>
-                                      </div>`
-                                    : html` <div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
-                                                  >${msg("Next review date")}</span
-                                              >
-                                          </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
-                                                  <ak-timestamp
-                                                      .timestamp=${this.review?.nextReviewDate}
-                                                      .elapsed=${false}
-                                                      dateonly
-                                                      datetime
-                                                  ></ak-timestamp>
-                                              </div>
-                                          </dd>
-                                      </div>`}
-                                ${this.review.state === ReviewStateEnum.Pending
-                                    ? html` <div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
-                                                  >${msg("Grace period till")}</span
-                                              >
-                                          </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
-                                                  <ak-timestamp
-                                                      .timestamp=${this.review?.gracePeriodEnd}
-                                                      .elapsed=${false}
-                                                      dateonly
-                                                      datetime
-                                                  ></ak-timestamp>
-                                              </div>
-                                          </dd>
-                                      </div>`
-                                    : nothing}
+                                ${this.renderReviewDates()}
                             </dl>
                         </div>
                     </div>
