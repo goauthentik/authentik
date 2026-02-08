@@ -53,6 +53,7 @@ const redirectsIndex = new RewriteIndex(redirects);
 //#endregion
 
 /**
+ * Generate Sidebar structure for CVEs. Items are grouped by year and sorted newest to old.
  *
  * @param {SidebarItemsGeneratorArgs} args
  * @returns {NormalizedSidebar}
