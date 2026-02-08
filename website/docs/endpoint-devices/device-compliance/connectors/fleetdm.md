@@ -13,7 +13,7 @@ The Fleet connector allows device information to be reported from your Fleet dep
 - Take note of your Fleet Server URL by logging in to the Fleet admin panel and navigating to **Settings** > **Organization settings** > **Fleet web address**.
 - Follow the [Fleet documentation for creating an API-only user](https://fleetdm.com/guides/fleetctl#using-fleetctl-with-an-api-only-user) and take note of its API key.
 
-:::warning API key
+:::warning No user API keys
 Do not use an API key from a normal user because these keys expire.
 :::
 
