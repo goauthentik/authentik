@@ -6,7 +6,7 @@ tags: [device compliance, compliance, connectors, authentik Agent]
 
 The authentik Agent connector allows device information to be reported by the [authentik Agent](../../authentik-agent/index.mdx).
 
-Unlike other connectors, the agent connector is used by the agent directly compared to other connectors talking to separate systems and APIs to integrate with other agents. Hence the functionality of the agent connector behaves differently than other connectors.
+Unlike other connectors, the agent connector is used directly by the agent itself, rather than communicating with external systems or APIs. As a result, its behavior and functionality differ from those of other connectors.
 
 The agent connector mainly holds configuration for the agent itself, as well as implementing certain platform specific protocols like Apple's Platform SSO.
 
