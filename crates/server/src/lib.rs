@@ -230,7 +230,7 @@ async fn forward_request(
     Host(host): Host,
     Scheme(scheme): Scheme,
     State(state): State<CoreRouterState>,
-    tls_state: Option<Extension<TlsState>>,
+    _tls_state: Option<Extension<TlsState>>,
     req: Request,
 ) -> Response {
     let accept = req
@@ -291,13 +291,17 @@ async fn forward_request(
             response
         }
         Err(e) => {
-            if e.is_connect()
+            let backend_transport_error = e.is_connect()
                 || matches!(
                     e.to_string().as_str(),
                     "client error (SendRequest)" | "client error (ChannelClosed)"
-                )
-            {
-                return startup_response(&accept);
+                );
+
+            if backend_transport_error {
+                // Treat transport errors as "starting" only if gunicorn is actually unreachable.
+                if !gunicorn_socket_ready().await {
+                    return startup_response(&accept);
+                }
             }
             let error_msg = e.to_string();
             Response::builder()

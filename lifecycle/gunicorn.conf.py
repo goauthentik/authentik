@@ -56,6 +56,10 @@ threads = CONFIG.get_int("web.threads", 4)
 # Disable GSS negotiation for local/dev PostgreSQL connections on Darwin.
 if platform.system() == "Darwin":
     os.environ.setdefault("PGGSSENCMODE", "disable")
+    # Avoid macOS SystemConfiguration proxy lookups (_scproxy) in forked workers.
+    # urllib/requests may consult these APIs and can crash in child workers.
+    os.environ.setdefault("NO_PROXY", "*")
+    os.environ.setdefault("no_proxy", "*")
 
 
 def when_ready(server: "Arbiter"):  # noqa: UP037
