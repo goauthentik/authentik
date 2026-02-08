@@ -51,8 +51,12 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     #reviewerGroupsSelectRef = createRef<SearchSelect<Group>>();
     #reviewerUsersSelectRef = createRef<SearchSelect<Group>>();
 
+    #coreApi = new CoreApi(DEFAULT_CONFIG);
+    #lifecycleApi = new LifecycleApi(DEFAULT_CONFIG);
+    #rbacApi = new RbacApi(DEFAULT_CONFIG);
+
     async loadInstance(pk: string): Promise<LifecycleRule> {
-        const rule = await new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesRetrieve({
+        const rule = await this.#lifecycleApi.lifecycleLifecycleRulesRetrieve({
             id: pk,
         });
         this.#selectedContentType = rule.contentType;
@@ -60,7 +64,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     }
 
     #fetchGroups = (page: number, search?: string): Promise<DataProvision> => {
-        return new CoreApi(DEFAULT_CONFIG)
+        return this.#coreApi
             .coreGroupsList({
                 page: page,
                 search: search,
@@ -74,7 +78,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     };
 
     #fetchUsers = (page: number, search?: string): Promise<DataProvision> => {
-        return new CoreApi(DEFAULT_CONFIG)
+        return this.#coreApi
             .coreUsersList({
                 page: page,
                 search: search,
@@ -89,12 +93,12 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
 
     async send(data: LifecycleRule): Promise<LifecycleRule> {
         if (this.instance) {
-            return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesUpdate({
+            return this.#lifecycleApi.lifecycleLifecycleRulesUpdate({
                 id: this.instance.id || "",
                 lifecycleRuleRequest: data,
             });
         }
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesCreate({
+        return this.#lifecycleApi.lifecycleLifecycleRulesCreate({
             lifecycleRuleRequest: data,
         });
     }
@@ -110,7 +114,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
         switch (this.#selectedContentType) {
             case ContentTypeEnum.AuthentikCoreApplication:
                 return (
-                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+                    await this.#coreApi.coreApplicationsList({
                         ordering: "name",
                         search: query,
                         superuserFullList: true,
@@ -118,14 +122,14 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
                 ).results;
             case ContentTypeEnum.AuthentikCoreGroup:
                 return (
-                    await new CoreApi(DEFAULT_CONFIG).coreGroupsList({
+                    await this.#coreApi.coreGroupsList({
                         ordering: "name",
                         search: query,
                     })
                 ).results;
             case ContentTypeEnum.AuthentikRbacRole:
                 return (
-                    await new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+                    await this.#rbacApi.rbacRolesList({
                         ordering: "name",
                         search: query,
                     })
