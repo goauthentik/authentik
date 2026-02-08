@@ -2,6 +2,7 @@
 title: Fleet connector
 sidebar_label: Fleet connector
 tags: [device compliance, compliance, connectors, fleet, fleetdm]
+authentik_enterprise: true
 ---
 
 [Fleet](https://fleetdm.com/) is an open-source device management platform designed to monitor, manage, and secure large fleets of devices.
@@ -10,7 +11,7 @@ The Fleet connector allows device information to be reported from your Fleet dep
 
 ## Preparation
 
-- Take note of your Fleet Server URL by logging in to the Fleet admin panel and navigating to **Settings** > **Organization settings** > **Fleet web address**.
+- Take note of your Fleet Server URL which is typically the URL used to access your Fleet instance. Alternatively, you can obtain it by logging in to the Fleet admin panel and navigating to **Settings** > **Organization settings** > **Fleet web address**.
 - Follow the [Fleet documentation for creating an API-only user](https://fleetdm.com/guides/fleetctl#using-fleetctl-with-an-api-only-user) and take note of its API key.
 
 :::warning No user API keys
