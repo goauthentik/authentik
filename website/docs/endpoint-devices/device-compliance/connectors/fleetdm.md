@@ -11,7 +11,7 @@ The Fleet connector reports device information from your Fleet deployment, and o
 
 ## Preparation
 
-- Take note of your Fleet Server URL which is typically the URL used to access your Fleet instance. Alternatively, you can obtain it by logging in to the Fleet admin panel and navigating to **Settings** > **Organization settings** > **Fleet web address**.
+- Take note of your Fleet Server URL, which is typically the URL used to access your Fleet instance. Alternatively, you can find the URL by logging in to the Fleet admin panel and navigating to **Settings** > **Organization settings** > **Fleet web address**.
 - Follow the [Fleet documentation for creating an API-only user](https://fleetdm.com/guides/fleetctl#using-fleetctl-with-an-api-only-user) and take note of its API key.
 
 :::warning No user API keys
@@ -33,5 +33,5 @@ Follow these instructions to configure the Fleet connector in authentik:
 4. Click **Finish**.
 
 :::note
-The **Map teams to device access group** will not detect changes to a device's groups membership in Fleet. If the device's groups change, you will need to manually configure a [device access group](../../authentik-agent/device-authentication/device-access-groups.mdx).
+The **Map teams to device access group** setting will not detect changes to a device's groups membership in Fleet. If the device's groups change, you will need to manually configure a [device access group](../../authentik-agent/device-authentication/device-access-groups.mdx).
 :::
