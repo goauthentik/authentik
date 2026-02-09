@@ -30,6 +30,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
     USER_ATTRIBUTE_SOURCES,
+    USERNAME_MAX_LENGTH,
     User,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
@@ -208,11 +209,14 @@ class ResponseProcessor:
         on logout and periodically."""
         # Create a temporary User
         name_id = self._get_name_id()
+        username = name_id.text
+        # trim username to ensure it is max 150 chars
+        username = f"ak-{username[: USERNAME_MAX_LENGTH - 14]}-transient"
         expiry = mktime(
             (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
         )
         user: User = User.objects.create(
-            username=name_id.text,
+            username=username,
             attributes={
                 USER_ATTRIBUTE_GENERATED: True,
                 USER_ATTRIBUTE_SOURCES: [
