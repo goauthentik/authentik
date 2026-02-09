@@ -45,6 +45,7 @@ import { match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
@@ -65,12 +66,24 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interface)) implements StageHost {
-    public static readonly DefaultLayout: FlowLayoutEnum = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+export class FlowExecutor
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    implements StageHost
+{
+    public static readonly DefaultLayout: FlowLayoutEnum =
+        globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
     //#region Styles
 
-    static styles: CSSResult[] = [PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage, Styles];
+    static styles: CSSResult[] = [
+        PFLogin,
+        PFDrawer,
+        PFButton,
+        PFTitle,
+        PFList,
+        PFBackgroundImage,
+        Styles,
+    ];
 
     //#endregion
 
@@ -140,7 +153,8 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
         if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
         if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
 
-        const background = this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+        const background =
+            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
@@ -238,7 +252,10 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
 
     //#region Public Methods
 
-    public submit = async (payload?: FlowChallengeResponseRequest, options?: SubmitOptions): Promise<boolean> => {
+    public submit = async (
+        payload?: FlowChallengeResponseRequest,
+        options?: SubmitOptions,
+    ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
 
@@ -280,7 +297,9 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
 
     //#region Render Challenge
 
-    protected async renderChallenge(component: ChallengeTypes["component"]): Promise<TemplateResult> {
+    protected async renderChallenge(
+        component: ChallengeTypes["component"],
+    ): Promise<TemplateResult> {
         const { challenge } = this;
 
         const stage = stages.get(component);
@@ -293,10 +312,11 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
             return html`Invalid native challenge element`;
         }
 
-        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
-            ".challenge": challenge!,
-            ".host": this,
-        };
+        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> =
+            {
+                ".challenge": challenge!,
+                ".host": this,
+            };
 
         const litParts = {
             part: "challenge",
@@ -312,7 +332,7 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
             match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
-                .exhaustive()
+                .exhaustive(),
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
@@ -379,7 +399,9 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
                         themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${this.loading && this.challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${this.loading && this.challenge
+                    ? html`<ak-loading-overlay></ak-loading-overlay>`
+                    : nothing}
                 ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
             </main>
             <slot name="footer"></slot>`;
