@@ -238,7 +238,7 @@ const items = [
                     "add-secure-apps/providers/radius/index",
                     {
                         type: "category",
-                        label: "SAMLLLL Provider",
+                        label: "SAML Provider",
                         link: {
                             type: "doc",
                             id: "add-secure-apps/providers/saml/index",
@@ -265,7 +265,7 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/ws-fed/index",
                         },
-                        items: ["add-secure-apps/providers/saml/create-wsfed-provider"],
+                        items: ["add-secure-apps/providers/ws-fed/create-wsfed-provider"],
                     },
                 ],
             },

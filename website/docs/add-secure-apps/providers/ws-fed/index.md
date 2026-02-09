@@ -33,12 +33,12 @@ In authentik, you can select one of two WS-Fed bindings: `HTTP Redirect` or `HTT
 
 _Endpoint URLs_ specify where and how the messages are sent according to that binding. The table below shows the supported endpoints for each binding:
 
-| Endpoint | URL |
-| ------------------------- | ------------------------------------------------------- |
-| SSO (POST binding) | `/application/ws-fed/<application_slug>/sso/binding/post/` |
+| Endpoint                  | URL                                                        |
+| ------------------------- | ---------------------------------------------------------- |
+| SSO (POST binding)        | `/application/ws-fed/<application_slug>/sso/binding/post/` |
 | SSO (IdP-initiated login) | `/application/ws-fed/<application_slug>/sso/binding/init/` |
-| SLO (POST binding) | `/application/ws-fed/<application_slug>/slo/binding/post/` |
-| Metadata Download | `/application/ws-fed/<application_slug>/metadata/` |
+| SLO (POST binding)        | `/application/ws-fed/<application_slug>/slo/binding/post/` |
+| Metadata Download         | `/application/ws-fed/<application_slug>/metadata/`         |
 
 ## WS-Fed metadata
 
@@ -47,7 +47,6 @@ Using metadata ensures that WS-Fed single sign-on works reliably by exchanging a
 - You can [import WS-Fed metadata to automatically configure a WS-Fed provider](./create-wsfed-provider.md#create-a-ws-fed-provider-from-sp-metadata-import-sp-metadata) based on the requirements of an STS.
 
 - You can [export WS-Fed metadata](./create-wsfed-provider.md#export-authentik-ws-fed-provider-metadata) from an authentik WS-Fed provider to an STS to automatically provide important endpoint and certificate information to the SP.
-
 
 ## Certificates
 
