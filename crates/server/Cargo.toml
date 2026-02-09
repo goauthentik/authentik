@@ -21,6 +21,7 @@ hyper-util.workspace = true
 jsonwebtoken.workspace = true
 nix.workspace = true
 percent-encoding.workspace = true
+pyo3.workspace = true
 rcgen.workspace = true
 rustls.workspace = true
 serde.workspace = true
@@ -36,6 +37,7 @@ tracing.workspace = true
 authentik-axum.workspace = true
 authentik-config.workspace = true
 authentik-db.workspace = true
+authentik-lib.workspace = true
 authentik-proxy.workspace = true
 
 [lints]

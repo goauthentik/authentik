@@ -33,7 +33,8 @@ use axum_server::{
     accept::DefaultAcceptor,
     tls_rustls::{RustlsAcceptor, RustlsConfig},
 };
-use eyre::{Result, eyre};
+use eyre::Result;
+use eyre::eyre;
 use http_body_util::BodyExt;
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -67,6 +68,7 @@ use tower::ServiceExt;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::{Level, info, warn};
 
+mod metrics;
 mod r#static;
 
 struct ServerState {
@@ -173,7 +175,7 @@ async fn watch_gunicorn(
                     // Gunicorn has exited. stop as soon as possible
                     Ok(Some(code)) => {
                         state.fast_shutdown().await?;
-                        return Err(eyre!("gunicorn has exited unexpectedly with status {code}"));
+                        return Err(eyre!("gunicorn has exited unexpectedly with status {code}").into());
                     }
                     // Gunicorn is still running, or we failed to check the status
                     Ok(None) => continue,
@@ -464,6 +466,8 @@ pub async fn run(
     let router = build_router(Arc::clone(&gunicorn_ready)).await;
     let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
 
+    let metrics_router = metrics::build_router();
+
     let mut handles = Vec::with_capacity(
         config.listen.http.len() + config.listen.https.len() + config.listen.metrics.len(),
     );
@@ -480,6 +484,16 @@ pub async fn run(
             router.clone(),
             *addr,
             tls_config.clone(),
+            handle.clone(),
+        ));
+        handles.push(handle);
+    });
+
+    config.listen.metrics.iter().for_each(|addr| {
+        let handle = Handle::new();
+        tasks.spawn(metrics::start_server(
+            metrics_router.clone(),
+            *addr,
             handle.clone(),
         ));
         handles.push(handle);

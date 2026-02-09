@@ -30,6 +30,7 @@ tracing-subscriber.workspace = true
 
 authentik-config.workspace = true
 authentik-db = { workspace = true, optional = true }
+authentik-lib.workspace = true
 authentik-server = { workspace = true, optional = true }
 authentik-worker = { workspace = true, optional = true }
 

@@ -1,8 +1,11 @@
+use eyre::Report;
 use std::str::FromStr;
+use tokio::fs;
 
 use argh::FromArgs;
 use authentik_config::{ConfigManager, get_config};
-use eyre::{Report, Result, eyre};
+use eyre::Result;
+use eyre::eyre;
 use pyo3::Python;
 use tokio::{
     signal::unix::{Signal, SignalKind, signal},
@@ -192,6 +195,7 @@ async fn main() -> Result<()> {
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
+            fs::create_dir_all(&dir).await?;
             // SAFETY: there is only one thread at this point, so this is safe.
             unsafe {
                 std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);

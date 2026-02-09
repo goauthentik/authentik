@@ -193,6 +193,7 @@ dependencies = [
  "argh",
  "authentik-config",
  "authentik-db",
+ "authentik-lib",
  "authentik-server",
  "authentik-worker",
  "color-eyre",
@@ -255,6 +256,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "authentik-lib"
+version = "0.0.0"
+dependencies = [
+ "axum",
+ "eyre",
+ "tracing",
+]
+
+[[package]]
 name = "authentik-proxy"
 version = "0.0.0"
 dependencies = [
@@ -285,6 +295,7 @@ dependencies = [
  "authentik-axum",
  "authentik-config",
  "authentik-db",
+ "authentik-lib",
  "authentik-proxy",
  "aws-lc-rs",
  "axum",
@@ -296,6 +307,7 @@ dependencies = [
  "jsonwebtoken",
  "nix 0.31.1",
  "percent-encoding",
+ "pyo3",
  "rcgen",
  "rustls",
  "serde",
