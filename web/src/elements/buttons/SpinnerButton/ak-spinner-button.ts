@@ -1,5 +1,10 @@
 import { BaseTaskButton } from "./BaseTaskButton.js";
 
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+
 import { customElement, property } from "lit/decorators.js";
 
 /**
@@ -17,7 +22,7 @@ import { customElement, property } from "lit/decorators.js";
  */
 
 @customElement("ak-spinner-button")
-export class SpinnerButton extends BaseTaskButton {
+export class SpinnerButton extends BaseTaskButton<unknown> {
     /**
      * The command to run when the button is pressed. Must return a promise. We don't do anything
      * with that promise other than check if it's a resolve or reject, and rethrow the event after.
@@ -25,7 +30,18 @@ export class SpinnerButton extends BaseTaskButton {
      * @attr
      */
     @property({ type: Object, attribute: false })
-    callAction!: () => Promise<unknown>;
+    public callAction?: () => Promise<unknown>;
+
+    public override async onError(error: unknown): Promise<void> {
+        super.onError(error);
+
+        const parsedError = await parseAPIResponseError(error);
+
+        showMessage({
+            level: MessageLevel.error,
+            message: pluckErrorDetail(parsedError),
+        });
+    }
 }
 
 export default SpinnerButton;

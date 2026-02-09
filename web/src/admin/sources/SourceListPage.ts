@@ -19,7 +19,7 @@ import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -55,7 +55,7 @@ export class SourceListPage extends TablePage<Source> {
             this.selectedElements.some((item) => item.component === "");
         const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Source(s)")}
+            object-label=${msg("Source(s)")}
             .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
@@ -75,9 +75,10 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     row(item: Source): SlottedTemplateResult[] {
-        if (item.component === "") {
+        if (!item.component) {
             return this.rowInbuilt(item);
         }
+
         return [
             html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
@@ -90,8 +91,14 @@ export class SourceListPage extends TablePage<Source> {
             html`${item.verboseName}`,
             html` <ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                    slot: "form",
                     instancePk: item.slug,
+                    actionLabel: msg("Update"),
+                    headline: msg(str`Update ${item.verboseName}`, {
+                        id: "form.headline.update",
+                    }),
                 })}
+                <span slot="submit">${msg("Update")}</span>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
                         <i class="fas fa-edit" aria-hidden="true"></i>

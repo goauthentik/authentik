@@ -55,6 +55,8 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: "version-${{ needs.check-inputs.outputs.major_version }}"
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - run: make test-docker
   bump-authentik:
     name: Bump authentik version

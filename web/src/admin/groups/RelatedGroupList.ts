@@ -113,12 +113,12 @@ export class RelatedGroupList extends Table<Group> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Group(s)")}
-            actionLabel=${msg("Remove from Group(s)")}
-            actionSubtext=${msg(
+            object-label=${msg("Group(s)")}
+            action-label=${msg("Remove from Group(s)")}
+            action-subtext=${msg(
                 str`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`,
             )}
-            buttonLabel=${msg("Remove")}
+            button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
                 if (!this.targetUser) return;

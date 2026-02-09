@@ -61,7 +61,7 @@ export class FlowListPage extends TablePage<Flow> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Flow(s)")}
+            object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({

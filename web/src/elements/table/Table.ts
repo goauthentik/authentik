@@ -90,7 +90,13 @@ export abstract class Table<T extends object>
 
     //#region Abstract members
 
+    /**
+     * The API endpoint to fetch data from.
+     *
+     * @abstract
+     */
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+
     /**
      * The columns to display in the table.
      *
@@ -365,7 +371,7 @@ export abstract class Table<T extends object>
     /**
      * Fetch data from the API endpoint.
      *
-     * @see {@linkcode Table.apiEndpoint}
+     * @see {@linkcode apiEndpoint}
      * @todo Make this protected.
      */
     public async fetch(): Promise<void> {

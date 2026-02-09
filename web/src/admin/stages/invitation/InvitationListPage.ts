@@ -88,7 +88,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Invitation(s)")}
+            object-label=${msg("Invitation(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Invitation) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUsedByList({

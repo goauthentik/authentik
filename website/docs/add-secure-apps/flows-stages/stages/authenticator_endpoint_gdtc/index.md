@@ -13,7 +13,7 @@ With this stage, authentik can validate users' Chrome browsers and ensure that u
 
 Support for the Chrome Enterprise Device Trust connector allows organizations to integrate Chrome browsers and ChromeOS devices with authentik as the Identity Provider (IdP), to strengthen their overall security posture.
 
-Device Trust is particularly important in environments with many different device types that are used by a large, remote workforce that might have a BYOD (Bring Your Own Device) policy, or have large teams of of contractors, temporary workers, or volunteers.
+Device Trust is particularly important in environments with many different device types that are used by a large, remote workforce that might have a BYOD (Bring Your Own Device) policy, or have large teams of contractors, temporary workers, or volunteers.
 
 With Device Trust you can enable "context-aware" access policies; for example a policy might require that a device has all security patches installed.
 
