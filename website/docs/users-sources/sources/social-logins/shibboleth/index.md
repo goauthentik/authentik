@@ -18,6 +18,8 @@ The following placeholders are used in this guide:
 
 ## authentik configuration
 
+To integrate Shibboleth with authentik you will need to create a SAML source in authentik.
+
 ### Create a SAML source in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
