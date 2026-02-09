@@ -20,7 +20,7 @@ import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { LitPropertyRecord } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -66,24 +66,12 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
-    implements StageHost
-{
-    public static readonly DefaultLayout: FlowLayoutEnum =
-        globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interface)) implements StageHost {
+    public static readonly DefaultLayout: FlowLayoutEnum = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
     //#region Styles
 
-    static styles: CSSResult[] = [
-        PFLogin,
-        PFDrawer,
-        PFButton,
-        PFTitle,
-        PFList,
-        PFBackgroundImage,
-        Styles,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage, Styles];
 
     //#endregion
 
@@ -109,7 +97,7 @@ export class FlowExecutor
 
     //#endregion
 
-    //#region State
+    //#region Internal State
 
     #inspectorLoaded = false;
 
@@ -165,12 +153,12 @@ export class FlowExecutor
      * Synchronize flow info such as background image with the current state.
      */
     #synchronizeFlowInfo() {
-        if (!this.flowInfo) {
-            return;
-        }
+        if (!this.flowInfo) return;
 
-        const background =
-            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
+        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
+
+        const background = this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
@@ -257,22 +245,19 @@ export class FlowExecutor
             .with(P.nullish, () => this.brandingTitle)
             .otherwise((title) => `${title} - ${this.brandingTitle}`);
 
+        document.title = match(this.challenge?.flowInfo?.title)
+            .with(P.nullish, () => this.brandingTitle)
+            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (
-            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
-            this.flowInfo
-        ) {
+        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
 
-        if (
-            changedProperties.has("inspectorOpen") &&
-            this.inspectorOpen &&
-            !this.#inspectorLoaded
-        ) {
+        if (changedProperties.has("inspectorOpen") && this.inspectorOpen && !this.#inspectorLoaded) {
             import("#flow/FlowInspector").then(() => {
                 this.#inspectorLoaded = true;
             });
@@ -283,10 +268,7 @@ export class FlowExecutor
 
     //#region Public Methods
 
-    public submit = async (
-        payload?: FlowChallengeResponseRequest,
-        options?: SubmitOptions,
-    ): Promise<boolean> => {
+    public submit = async (payload?: FlowChallengeResponseRequest, options?: SubmitOptions): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
 
@@ -331,9 +313,7 @@ export class FlowExecutor
 
     //#region Render Challenge
 
-    protected async renderChallenge(
-        component: ChallengeTypes["component"],
-    ): Promise<TemplateResult> {
+    protected async renderChallenge(component: ChallengeTypes["component"]): Promise<TemplateResult> {
         const { challenge, inspectorOpen } = this;
 
         const stage = stages.get(component);
@@ -346,8 +326,10 @@ export class FlowExecutor
             return html`Invalid native challenge element`;
         }
 
-        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> =
-            { ".challenge": challenge!, ".host": this };
+        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
+            ".challenge": challenge!,
+            ".host": this,
+        };
 
         const litParts = {
             part: "challenge",
@@ -364,7 +346,7 @@ export class FlowExecutor
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))
-                .exhaustive(),
+                .exhaustive()
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
@@ -395,9 +377,7 @@ export class FlowExecutor
             }
 
             return html`<button
-                aria-label=${this.inspectorOpen
-                    ? msg("Close flow inspector")
-                    : msg("Open flow inspector")}
+                aria-label=${this.inspectorOpen ? msg("Close flow inspector") : msg("Open flow inspector")}
                 aria-expanded=${this.inspectorOpen ? "true" : "false"}
                 class="inspector-toggle pf-c-button pf-m-primary"
                 aria-controls="flow-inspector"
@@ -412,11 +392,37 @@ export class FlowExecutor
 
     //#region Render
 
-    protected renderLoading(): TemplateResult {
+    protected renderLoading(): SlottedTemplateResult {
         return html`<slot class="slotted-content" name="placeholder"></slot>`;
     }
 
-    protected override render(): TemplateResult {
+    protected renderFrameBackground(): SlottedTemplateResult {
+        return guard([this.layout, this.challenge], () => {
+            if (
+                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
+                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
+            ) {
+                return nothing;
+            }
+
+            const src = this.challenge?.flowInfo?.background;
+
+            if (!src) return nothing;
+
+            return html`
+                <div class="ak-c-login__content" part="content">
+                    <iframe
+                        class="ak-c-login__content-iframe"
+                        part="content-iframe"
+                        name="flow-content-frame"
+                        src=${src}
+                    ></iframe>
+                </div>
+            `;
+        });
+    }
+
+    protected override render(): SlottedTemplateResult {
         const { component } = this.challenge || {};
 
         return html`<ak-locale-select
@@ -424,7 +430,7 @@ export class FlowExecutor
                 exportparts="label:locale-select-label,select:locale-select-select"
                 class="pf-m-dark"
             ></ak-locale-select>
-
+            ${this.renderFrameBackground()}
             <header class="pf-c-login__header">${this.renderInspectorButton()}</header>
             <main
                 data-layout=${this.layout}
@@ -441,9 +447,7 @@ export class FlowExecutor
                         themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${this.loading && this.challenge
-                    ? html`<ak-loading-overlay></ak-loading-overlay>`
-                    : nothing}
+                ${this.loading && this.challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
                 ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
             </main>
             <slot name="footer"></slot>`;
