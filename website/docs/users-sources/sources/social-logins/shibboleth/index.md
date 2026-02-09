@@ -64,6 +64,9 @@ To integrate Shibboleth with authentik you will need to add authentik as a servi
 
 3. Restart the Shibboleth IdP to apply the changes.
 
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
 ## Resources
 
 - [Shibboleth IdP Documentation](https://shibboleth.atlassian.net/wiki/spaces/IDP5/overview)
