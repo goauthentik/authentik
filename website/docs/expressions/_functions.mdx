@@ -157,7 +157,7 @@ Example:
 jwt = ak_create_jwt_raw("my-oauth2-provider-name", my_claim="my_value")
 ```
 
-### `ak_send_email(address: str | list[str], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None) -> bool`:ak-version[2025.10]
+### `ak_send_email(address: str | list[str], subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None, cc: str | list[str] = None, bcc: str | list[str] = None) -> bool`:ak-version[2025.10]
 
 Send an email using authentik's email system.
 
@@ -167,7 +167,7 @@ The `address` parameter specifies the recipient email address(es). It can be:
 - A list of email addresses: `["user1@example.com", "user2@example.com"]`
 
 :::info
-When using multiple recipients, all email addresses will be visible in the "To:" field of the email. If you need to send to multiple recipients without revealing all addresses to each other, send individual emails instead.
+When using multiple recipients in the `address` or `cc` fields, all email addresses will be visible to all recipients. Use `bcc` to send to multiple recipients without revealing addresses to each other.
 :::
 
 The `subject` parameter sets the email subject line.
@@ -177,6 +177,10 @@ You must provide either `body` (for plain text/HTML content) or `template` (for 
 The `stage` parameter can be an `EmailStage` instance for custom email settings. If `None`, global email settings are used.
 
 The `template` parameter specifies a template name to render. When using templates, you can pass additional context variables via the `context` parameter.
+
+The `cc` parameter specifies email address(es) to carbon copy. Same format as `address`.
+
+The `bcc` parameter specifies email address(es) to blind carbon copy. Same format as `address`. Recipients in `bcc` will not be visible to other recipients.
 
 If the email is queued successfully, the function returns `True`; otherwise, it returns `False`.
 
@@ -210,6 +214,23 @@ ak_send_email(
 
 # Send email with custom email stage
 ak_send_email("admin@example.com", "Report", body="Daily report", stage=my_custom_stage)
+
+# Send email with CC
+ak_send_email(
+    "user@example.com",
+    "Important Update",
+    body="Please review this update.",
+    cc="manager@example.com"
+)
+
+# Send email with multiple CC and BCC recipients
+ak_send_email(
+    "user@example.com",
+    "Confidential Report",
+    body="Attached is the quarterly report.",
+    cc=["manager@example.com", "lead@example.com"],
+    bcc=["audit@example.com", "compliance@example.com"]
+)
 ```
 
 ## Comparing IP Addresses

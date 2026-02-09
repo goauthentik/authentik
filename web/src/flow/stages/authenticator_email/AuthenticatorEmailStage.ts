@@ -1,6 +1,8 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -13,7 +15,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -23,7 +25,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-email")
 export class AuthenticatorEmailStage extends BaseStage<
@@ -31,7 +32,6 @@ export class AuthenticatorEmailStage extends BaseStage<
     AuthenticatorEmailChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFAlert,
         PFLogin,
         PFForm,
@@ -61,7 +61,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         class="pf-c-form-control"
                         required
                     />
-                    ${AKFormErrors({ errors: this.challenge.responseErrors?.email })}
+                    ${AKFormErrors({ errors: this.challenge?.responseErrors?.email })}
                 </div>
                 ${this.renderNonFieldErrors()}
                 <fieldset class="pf-c-form__group pf-m-action">
@@ -78,7 +78,11 @@ export class AuthenticatorEmailStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    renderEmailOTPInput(): TemplateResult {
+    protected renderEmailOTPInput(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         const { email } = this.challenge;
 
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -130,8 +134,8 @@ export class AuthenticatorEmailStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    render(): TemplateResult {
-        if (this.challenge.emailRequired) {
+    protected render(): SlottedTemplateResult {
+        if (this.challenge?.emailRequired) {
             return this.renderEmailInput();
         }
         return this.renderEmailOTPInput();

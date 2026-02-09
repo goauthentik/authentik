@@ -63,6 +63,9 @@ debug: false
 debugger: false
 
 log_level: info
+log:
+  http_headers:
+    - User-Agent
 
 sessions:
   unauthenticated_age: days=1

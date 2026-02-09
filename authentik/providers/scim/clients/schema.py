@@ -1,8 +1,11 @@
 """Custom SCIM schemas"""
 
-from enum import Enum
+from enum import StrEnum
+from typing import Self
 
-from pydantic import AnyUrl, BaseModel, ConfigDict, Field
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from pydantic import AnyUrl, BaseModel, ConfigDict, Field, model_validator
 from pydanticscim.group import Group as BaseGroup
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
@@ -12,7 +15,7 @@ from pydanticscim.service_provider import ChangePassword, Filter, Patch, Sort
 from pydanticscim.service_provider import (
     ServiceProviderConfiguration as BaseServiceProviderConfiguration,
 )
-from pydanticscim.user import AddressKind
+from pydanticscim.user import AddressKind, EmailKind
 from pydanticscim.user import User as BaseUser
 
 SCIM_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
@@ -80,6 +83,43 @@ class EnterpriseUser(BaseModel):
     )
 
 
+class Email(BaseModel):
+    value: str | None = Field(
+        None,
+        description=(
+            "Email addresses for the user.  The value SHOULD be canonicalized by the "
+            "service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. "
+            "Canonical type values of 'work', 'home', and 'other'."
+        ),
+    )
+    display: str | None = Field(
+        None,
+        description="A human-readable name, primarily used for display purposes.  READ-ONLY.",
+    )
+    type: EmailKind | None = Field(
+        None,
+        description="A label indicating the attribute's function, e.g., 'work' or 'home'.",
+    )
+    primary: bool | None = Field(
+        None,
+        description=(
+            "A Boolean value indicating the 'primary' or preferred attribute value for "
+            "this attribute, e.g., the preferred mailing address or primary email address. "
+            "The primary attribute value 'true' MUST appear no more than once."
+        ),
+    )
+
+    @model_validator(mode="after")
+    def validate_email_django(self) -> Self:
+        """Check that the given email address validates according to django's validation rules.
+        If we used pydantic's built in EmailStr, the rules would be slightly different."""
+        try:
+            validate_email(self.value)
+        except ValidationError as exc:
+            raise ValueError(exc) from exc
+        return self
+
+
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
@@ -101,6 +141,14 @@ class User(BaseUser):
         alias="urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
         serialization_alias="urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
     )
+    emails: list[Email] | None = Field(
+        None,
+        description=(
+            "Email addresses for the user.  The value SHOULD be canonicalized by the "
+            "service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. "
+            "Canonical type values of 'work', 'home', and 'other'."
+        ),
+    )
 
 
 class Group(BaseGroup):
@@ -115,7 +163,6 @@ class Group(BaseGroup):
 
 
 class Bulk(BaseBulk):
-
     maxOperations: int = Field()
 
 
@@ -145,8 +192,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         )
 
 
-class PatchOp(str, Enum):
-
+class PatchOp(StrEnum):
     replace = "replace"
     remove = "remove"
     add = "add"

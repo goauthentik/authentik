@@ -5,7 +5,6 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
@@ -50,6 +49,14 @@ ifeq ($(UNAME_S),Darwin)
 	endif
 endif
 
+NPM_VERSION :=
+UV_EXISTS := $(shell command -v uv 2> /dev/null)
+ifdef UV_EXISTS
+	NPM_VERSION := $(shell $(UV) run python -m scripts.generate_semver)
+else
+	NPM_VERSION = $(shell python -m scripts.generate_semver)
+endif
+
 all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
@@ -77,7 +84,7 @@ lint-fix: lint-codespell  ## Lint and automatically fix errors in the python sou
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
 
-lint: ci-bandit ## Lint the python and golang sources
+lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -206,24 +213,15 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	mkdir -p ${PWD}/${GEN_API_PY}
-ifeq ($(wildcard ${PWD}/${GEN_API_PY}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-python.git ${PWD}/${GEN_API_PY}
-else
-	cd ${PWD}/${GEN_API_PY} && git pull
-endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_PY}
 	make -C ${PWD}/${GEN_API_PY} build version=${NPM_VERSION}
 
-gen-client-go:  ## Build and install the authentik API for Golang
+gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
-ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
-else
-	cd ${PWD}/${GEN_API_GO} && git reset --hard
-	cd ${PWD}/${GEN_API_GO} && git pull
-endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
-	make -C ${PWD}/${GEN_API_GO} build
+	make -C ${PWD}/${GEN_API_GO} build version=${NPM_VERSION}
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 
 gen-dev-config:  ## Generate a local development config file
@@ -323,7 +321,7 @@ test-docker:
 # which makes the YAML File a lot smaller
 
 ci--meta-debug:
-	python -V
+	$(UV) run python -V
 	node --version
 
 ci-mypy: ci--meta-debug

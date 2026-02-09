@@ -24,7 +24,6 @@ import { createRef, ref } from "lit/directives/ref.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-endpoints-connector-agent-setup")
 export class AgentConnectorSetup extends AKElement {
@@ -37,7 +36,6 @@ export class AgentConnectorSetup extends AKElement {
     #tokenSelectRef = createRef<SearchSelect<EnrollmentToken>>();
 
     static styles: CSSResult[] = [
-        PFBase,
         PFGrid,
         PFButton,
         PFList,
@@ -135,7 +133,7 @@ export class AgentConnectorSetup extends AKElement {
                         .renderDescription=${(token: EnrollmentToken) => {
                             return html`${token.name}`;
                         }}
-                        .value=${(token: EnrollmentToken | undefined): string | undefined => {
+                        .value=${(token: EnrollmentToken | null) => {
                             return token?.tokenUuid;
                         }}
                         @ak-change=${(ev: CustomEvent) => {

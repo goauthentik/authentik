@@ -9,7 +9,11 @@ import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
+import {
+    createPassFailOptions,
+    PolicyBindingCheckTarget,
+    PolicyBindingCheckTargetToLabel,
+} from "#admin/policies/utils";
 
 import {
     CoreApi,
@@ -36,41 +40,49 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
     T,
     string
 > {
+    static styles: CSSResult[] = [...super.styles, PFContent];
+
     async loadInstance(pk: string): Promise<T> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
         if (binding?.policyObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.policy;
+            this.policyGroupUser = PolicyBindingCheckTarget.Policy;
         }
         if (binding?.groupObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.group;
+            this.policyGroupUser = PolicyBindingCheckTarget.Group;
         }
         if (binding?.userObj) {
-            this.policyGroupUser = PolicyBindingCheckTarget.user;
+            this.policyGroupUser = PolicyBindingCheckTarget.User;
         }
-        this.defaultOrder = await this.getOrder();
         return binding as T;
     }
 
-    @property()
-    targetPk?: string;
+    @property({ type: String })
+    public targetPk = "";
 
     @state()
-    policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.policy;
+    protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.Policy;
 
     @property({ type: Array })
-    allowedTypes: PolicyBindingCheckTarget[] = [
-        PolicyBindingCheckTarget.policy,
-        PolicyBindingCheckTarget.group,
-        PolicyBindingCheckTarget.user,
+    public allowedTypes: PolicyBindingCheckTarget[] = [
+        PolicyBindingCheckTarget.Policy,
+        PolicyBindingCheckTarget.Group,
+        PolicyBindingCheckTarget.User,
     ];
 
     @property({ type: Array })
-    typeNotices: PolicyBindingNotice[] = [];
+    public typeNotices: PolicyBindingNotice[] = [];
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
+
+    public override reset(): void {
+        super.reset();
+
+        this.policyGroupUser = PolicyBindingCheckTarget.Policy;
+        this.defaultOrder = 0;
+    }
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {
@@ -79,12 +91,11 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         return msg("Successfully created binding.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFContent];
-
     async load(): Promise<void> {
         // Overwrite the default for policyGroupUser with the first allowed type,
         // as this function is called when the correct parameters are set
         this.policyGroupUser = this.allowedTypes[0];
+        this.defaultOrder = await this.getOrder();
     }
 
     send(data: PolicyBinding): Promise<unknown> {
@@ -92,15 +103,15 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
             data.target = this.targetPk;
         }
         switch (this.policyGroupUser) {
-            case PolicyBindingCheckTarget.policy:
+            case PolicyBindingCheckTarget.Policy:
                 data.user = null;
                 data.group = null;
                 break;
-            case PolicyBindingCheckTarget.group:
+            case PolicyBindingCheckTarget.Group:
                 data.policy = null;
                 data.user = null;
                 break;
-            case PolicyBindingCheckTarget.user:
+            case PolicyBindingCheckTarget.User:
                 data.policy = null;
                 data.group = null;
                 break;
@@ -138,10 +149,10 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 this.policyGroupUser = ev.detail.value;
             }}
         >
-            ${Object.keys(PolicyBindingCheckTarget).map((ct) => {
-                if (this.allowedTypes.includes(ct as PolicyBindingCheckTarget)) {
+            ${Object.values(PolicyBindingCheckTarget).map((ct) => {
+                if (this.allowedTypes.includes(ct)) {
                     return html`<option value=${ct}>
-                        ${PolicyBindingCheckTargetToLabel(ct as PolicyBindingCheckTarget)}
+                        ${PolicyBindingCheckTargetToLabel(ct)}
                     </option>`;
                 }
                 return nothing;
@@ -149,14 +160,14 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
         </ak-toggle-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">
                     <ak-form-element-horizontal
                         label=${msg("Policy")}
                         name="policy"
-                        ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.policy}
+                        ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Policy}
                     >
                         <ak-search-select
                             .groupBy=${(items: Policy[]) => {
@@ -174,20 +185,14 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                                 ).policiesAllList(args);
                                 return policies.results;
                             }}
-                            .renderElement=${(policy: Policy): string => {
-                                return policy.name;
-                            }}
-                            .value=${(policy: Policy | undefined): string | undefined => {
-                                return policy?.pk;
-                            }}
-                            .selected=${(policy: Policy): boolean => {
-                                return policy.pk === this.instance?.policy;
-                            }}
+                            .renderElement=${(policy: Policy) => policy.name}
+                            .value=${(policy: Policy | null) => policy?.pk}
+                            .selected=${(policy: Policy) => policy.pk === this.instance?.policy}
                             blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
-                            .filter(({ type }) => type === PolicyBindingCheckTarget.policy)
+                            .filter(({ type }) => type === PolicyBindingCheckTarget.Policy)
                             .map((msg) => {
                                 return html`<p class="pf-c-form__helper-text">${msg.notice}</p>`;
                             })}
@@ -195,7 +200,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     <ak-form-element-horizontal
                         label=${msg("Group")}
                         name="group"
-                        ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.group}
+                        ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.Group}
                     >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
@@ -214,17 +219,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             .renderElement=${(group: Group): string => {
                                 return group.name;
                             }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group?.pk;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.group;
-                            }}
+                            .value=${(group: Group | null) => String(group?.pk ?? "")}
+                            .selected=${(group: Group) => group.pk === this.instance?.group}
                             blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
-                            .filter(({ type }) => type === PolicyBindingCheckTarget.group)
+                            .filter(({ type }) => type === PolicyBindingCheckTarget.Group)
                             .map((msg) => {
                                 return html`<p class="pf-c-form__helper-text">${msg.notice}</p>`;
                             })}
@@ -232,7 +233,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     <ak-form-element-horizontal
                         label=${msg("User")}
                         name="user"
-                        ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.user}
+                        ?hidden=${this.policyGroupUser !== PolicyBindingCheckTarget.User}
                     >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -245,23 +246,15 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                                 const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
                                 return users.results;
                             }}
-                            .renderElement=${(user: User): string => {
-                                return user.username;
-                            }}
-                            .renderDescription=${(user: User): TemplateResult => {
-                                return html`${user.name}`;
-                            }}
-                            .value=${(user: User | undefined): number | undefined => {
-                                return user?.pk;
-                            }}
-                            .selected=${(user: User): boolean => {
-                                return user.pk === this.instance?.user;
-                            }}
+                            .renderElement=${(user: User) => user.username}
+                            .renderDescription=${(user: User) => html`${user.name}`}
+                            .value=${(user: User | null) => user?.pk}
+                            .selected=${(user: User) => user.pk === this.instance?.user}
                             blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
-                            .filter(({ type }) => type === PolicyBindingCheckTarget.user)
+                            .filter(({ type }) => type === PolicyBindingCheckTarget.User)
                             .map((msg) => {
                                 return html`<p class="pf-c-form__helper-text">${msg.notice}</p>`;
                             })}
@@ -298,20 +291,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="failureResult" label=${msg("Failure result")}>
-                <ak-radio
-                    .options=${[
-                        {
-                            label: msg("Pass"),
-                            value: true,
-                        },
-                        {
-                            label: msg("Don't pass"),
-                            value: false,
-                            default: true,
-                        },
-                    ]}
-                    .value=${this.instance?.failureResult}
-                >
+                <ak-radio .options=${createPassFailOptions} .value=${this.instance?.failureResult}>
                 </ak-radio>
                 <p class="pf-c-form__helper-text">
                     ${msg("Result used when policy execution fails.")}

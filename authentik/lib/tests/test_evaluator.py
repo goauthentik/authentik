@@ -259,3 +259,97 @@ class TestEvaluator(TestCase):
         with self.assertRaises(ValueError) as cm:
             evaluator.evaluate("return ak_send_email(123, 'Test', body='Body')")
         self.assertIn("Address must be a string or list of strings", str(cm.exception))
+
+    @patch("authentik.stages.email.tasks.send_mails")
+    def test_expr_send_email_with_cc(self, mock_send_mails):
+        """Test ak_send_email with CC parameter"""
+        user = create_test_user()
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {"user": user}
+
+        # Test sending email with single CC address
+        result = evaluator.evaluate(
+            "return ak_send_email('to@example.com', 'Test Subject', "
+            "body='Test Body', cc='cc@example.com')"
+        )
+
+        self.assertTrue(result)
+        mock_send_mails.assert_called_once()
+
+        args, kwargs = mock_send_mails.call_args
+        stage, message = args
+
+        self.assertEqual(message.to, ["to@example.com"])
+        self.assertEqual(message.cc, ["cc@example.com"])
+        self.assertEqual(message.bcc, [])
+
+    @patch("authentik.stages.email.tasks.send_mails")
+    def test_expr_send_email_with_bcc(self, mock_send_mails):
+        """Test ak_send_email with BCC parameter"""
+        user = create_test_user()
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {"user": user}
+
+        # Test sending email with single BCC address
+        result = evaluator.evaluate(
+            "return ak_send_email('to@example.com', 'Test Subject', "
+            "body='Test Body', bcc='bcc@example.com')"
+        )
+
+        self.assertTrue(result)
+        mock_send_mails.assert_called_once()
+
+        args, kwargs = mock_send_mails.call_args
+        stage, message = args
+
+        self.assertEqual(message.to, ["to@example.com"])
+        self.assertEqual(message.cc, [])
+        self.assertEqual(message.bcc, ["bcc@example.com"])
+
+    @patch("authentik.stages.email.tasks.send_mails")
+    def test_expr_send_email_with_cc_and_bcc(self, mock_send_mails):
+        """Test ak_send_email with both CC and BCC parameters"""
+        user = create_test_user()
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {"user": user}
+
+        # Test sending email with both CC and BCC
+        result = evaluator.evaluate(
+            "return ak_send_email('to@example.com', 'Test Subject', "
+            "body='Test Body', cc='cc@example.com', bcc='bcc@example.com')"
+        )
+
+        self.assertTrue(result)
+        mock_send_mails.assert_called_once()
+
+        args, kwargs = mock_send_mails.call_args
+        stage, message = args
+
+        self.assertEqual(message.to, ["to@example.com"])
+        self.assertEqual(message.cc, ["cc@example.com"])
+        self.assertEqual(message.bcc, ["bcc@example.com"])
+
+    @patch("authentik.stages.email.tasks.send_mails")
+    def test_expr_send_email_with_multiple_cc_bcc(self, mock_send_mails):
+        """Test ak_send_email with multiple CC and BCC addresses"""
+        user = create_test_user()
+        evaluator = BaseEvaluator(generate_id())
+        evaluator._context = {"user": user}
+
+        # Test sending email with multiple CC and BCC addresses
+        result = evaluator.evaluate(
+            "return ak_send_email('to@example.com', 'Test Subject', "
+            "body='Test Body', "
+            "cc=['cc1@example.com', 'cc2@example.com'], "
+            "bcc=['bcc1@example.com', 'bcc2@example.com'])"
+        )
+
+        self.assertTrue(result)
+        mock_send_mails.assert_called_once()
+
+        args, kwargs = mock_send_mails.call_args
+        stage, message = args
+
+        self.assertEqual(message.to, ["to@example.com"])
+        self.assertEqual(message.cc, ["cc1@example.com", "cc2@example.com"])
+        self.assertEqual(message.bcc, ["bcc1@example.com", "bcc2@example.com"])

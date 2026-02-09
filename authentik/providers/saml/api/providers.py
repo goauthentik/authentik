@@ -24,10 +24,12 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.validation import validate
+from authentik.common.saml.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.models import KeyType
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -35,7 +37,6 @@ from authentik.providers.saml.processors.authn_request_parser import AuthNReques
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 from authentik.rbac.decorators import permission_required
-from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
 
@@ -160,13 +161,25 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "-"
 
     def validate(self, attrs: dict):
-        if attrs.get("signing_kp"):
+        signing_kp = attrs.get("signing_kp")
+        if signing_kp:
             if not attrs.get("sign_assertion") and not attrs.get("sign_response"):
                 raise ValidationError(
                     _(
                         "With a signing keypair selected, at least one of 'Sign assertion' "
                         "and 'Sign Response' must be selected."
                     )
+                )
+
+            key_type = signing_kp.key_type
+
+            if key_type and key_type not in [KeyType.RSA, KeyType.EC, KeyType.DSA]:
+                raise ValidationError(
+                    {
+                        "signing_kp": _(
+                            "Only RSA, EC, and DSA key types are supported for SAML signing."
+                        )
+                    }
                 )
 
         # Validate logout_method - backchannel is only available with POST SLS binding
@@ -244,6 +257,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
     search_fields = ["name"]
 
+    metadata_generator_class = MetadataProcessor
+
     @extend_schema(
         responses={
             200: SAMLMetadataSerializer(many=False),
@@ -288,7 +303,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError:
             raise Http404 from None
         try:
-            proc = MetadataProcessor(provider, request)
+            proc = self.metadata_generator_class(provider, request)
             proc.force_binding = request.query_params.get("force_binding", None)
             metadata = proc.build_entity_descriptor()
             if "download" in request.query_params:

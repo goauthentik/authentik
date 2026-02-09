@@ -112,6 +112,7 @@ class EventAction(models.TextChoices):
     SYSTEM_EXCEPTION = "system_exception"
 
     CONFIGURATION_ERROR = "configuration_error"
+    CONFIGURATION_WARNING = "configuration_warning"
 
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"

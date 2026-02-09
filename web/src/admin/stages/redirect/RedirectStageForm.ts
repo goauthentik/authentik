@@ -48,7 +48,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg("Redirect the user to another flow, potentially with all gathered context")}
             </span>

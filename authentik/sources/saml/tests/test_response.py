@@ -72,6 +72,39 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+    def test_success_with_status_message_and_detail(self):
+        """Test success with StatusMessage and StatusDetail present (should not raise error)"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success_with_message.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
+
+    def test_error_with_message_and_detail(self):
+        """Test error status with StatusMessage and StatusDetail includes both in error"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_error_with_detail.xml").encode()
+                ).decode()
+            },
+        )
+
+        with self.assertRaises(ValueError) as ctx:
+            ResponseProcessor(self.source, request).parse()
+        # Should contain both detail and message
+        self.assertIn("User account is disabled", str(ctx.exception))
+        self.assertIn("Authentication failed", str(ctx.exception))
+
     def test_encrypted_correct(self):
         """Test encrypted"""
         key = load_fixture("fixtures/encrypted-key.pem")
@@ -221,3 +254,76 @@ class TestResponseProcessor(TestCase):
 
         with self.assertRaisesMessage(InvalidSignature, ""):
             parser.parse()
+
+    def test_verification_incorrect_response(self):
+        """Test verifying signature inside response"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_incorrect_signed_response.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaisesMessage(InvalidSignature, ""):
+            parser.parse()
+
+    def test_signed_encrypted_response(self):
+        """Test signed & encrypted response"""
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=verification_key,
+        )
+
+        encrypted_key = load_fixture("fixtures/encrypted-key2.pem")
+        ekp = CertificateKeyPair.objects.create(name=generate_id(), key_data=encrypted_key)
+
+        self.source.verification_kp = vkp
+        self.source.encryption_kp = ekp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_encrypted.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+
+    def test_transient(self):
+        """Test SAML transient NameID"""
+        verification_key = load_fixture("fixtures/signature_cert2.pem")
+        vkp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=verification_key,
+        )
+        self.source.verification_kp = vkp
+        self.source.signed_response = True
+        self.source.signed_assertion = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_transient.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        parser.prepare_flow_manager()

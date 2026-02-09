@@ -1,3 +1,4 @@
+import mimetypes
 from collections.abc import Callable, Generator, Iterator
 from typing import cast
 
@@ -9,6 +10,32 @@ from authentik.admin.files.usage import FileUsage
 
 CACHE_PREFIX = "goauthentik.io/admin/files"
 LOGGER = get_logger()
+
+# Theme variable placeholder for theme-specific files like logo-%(theme)s.png
+THEME_VARIABLE = "%(theme)s"
+
+
+def get_content_type(name: str) -> str:
+    """Get MIME type for a file based on its extension."""
+    content_type, _ = mimetypes.guess_type(name)
+    return content_type or "application/octet-stream"
+
+
+def get_valid_themes() -> list[str]:
+    """Get valid themes that can be substituted for %(theme)s."""
+    from authentik.brands.api import Themes
+
+    return [t.value for t in Themes if t != Themes.AUTOMATIC]
+
+
+def has_theme_variable(name: str) -> bool:
+    """Check if filename contains %(theme)s variable."""
+    return THEME_VARIABLE in name
+
+
+def substitute_theme(name: str, theme: str) -> str:
+    """Replace %(theme)s with the given theme."""
+    return name.replace(THEME_VARIABLE, theme)
 
 
 class Backend:
@@ -74,6 +101,29 @@ class Backend:
             URL to access the file (may be relative or absolute depending on backend)
         """
         raise NotImplementedError
+
+    def themed_urls(
+        self,
+        name: str,
+        request: HttpRequest | None = None,
+    ) -> dict[str, str] | None:
+        """
+        Get URLs for each theme variant when filename contains %(theme)s.
+
+        Args:
+            name: File path potentially containing %(theme)s
+            request: Optional Django HttpRequest for URL building
+
+        Returns:
+            Dict mapping theme to URL if %(theme)s present, None otherwise
+        """
+        if not has_theme_variable(name):
+            return None
+
+        return {
+            theme: self.file_url(substitute_theme(name, theme), request, use_cache=True)
+            for theme in get_valid_themes()
+        }
 
 
 class ManageableBackend(Backend):

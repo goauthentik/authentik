@@ -90,8 +90,6 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        this.addEventListener("click", this.show);
-
         window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
             once: true,
             passive: true,
@@ -157,7 +155,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
                     part="select"
                     id="locale-selector"
                     @change=${this.#localeChangeListener}
-                    class="pf-c-form-control ak-m-capitalize"
+                    class="ak-m-capitalize"
                     name="locale"
                 >
                     ${LocaleOptions({ entries, activeLocaleTag })}

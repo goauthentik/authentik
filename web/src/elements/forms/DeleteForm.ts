@@ -21,16 +21,16 @@ export class DeleteForm extends ModalButton {
     static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
-    obj?: Record<string, unknown>;
+    public obj?: Record<string, unknown>;
 
-    @property()
-    objectLabel?: string;
-
-    @property({ attribute: false })
-    usedBy?: () => Promise<UsedBy[]>;
+    @property({ type: String, attribute: "object-label" })
+    public objectLabel?: string;
 
     @property({ attribute: false })
-    delete!: () => Promise<unknown>;
+    public usedBy?: () => Promise<UsedBy[]>;
+
+    @property({ attribute: false })
+    public delete!: () => Promise<unknown>;
 
     /**
      * Get the display name for the object being deleted/updated.

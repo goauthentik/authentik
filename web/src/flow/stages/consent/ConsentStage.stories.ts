@@ -1,47 +1,13 @@
 import "@patternfly/patternfly/components/Login/login.css";
-import "../../../stories/flow-interface.js";
 import "./ConsentStage.js";
 
-import { ConsentChallenge, ContextualFlowInfoLayoutEnum, UiThemeEnum } from "@goauthentik/api";
-
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
+import { flowFactory } from "#stories/flow-interface";
 
 export default {
     title: "Flow / Stages / <ak-stage-consent>",
 };
 
-function consentFactory(challenge: ConsentChallenge): StoryObj {
-    return {
-        render: ({ theme, challenge }) => {
-            return html`<ak-storybook-interface-flow theme=${theme}>
-                <ak-stage-consent .challenge=${challenge}></ak-stage-consent>
-            </ak-storybook-interface-flow>`;
-        },
-        args: {
-            theme: "automatic",
-            challenge: challenge,
-        },
-        argTypes: {
-            theme: {
-                options: [UiThemeEnum.Automatic, UiThemeEnum.Light, UiThemeEnum.Dark],
-                control: {
-                    type: "select",
-                },
-            },
-        },
-    };
-}
-
-export const NewConsent = consentFactory({
-    pendingUser: "foo",
-    pendingUserAvatar: "https://picsum.photos/64",
-    flowInfo: {
-        title: "<ak-stage-consent>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
-    },
+export const NewConsent = flowFactory("ak-stage-consent", {
     headerText: "lorem ipsum",
     token: "",
     permissions: [
@@ -52,14 +18,7 @@ export const NewConsent = consentFactory({
     additionalPermissions: [],
 });
 
-export const ExistingConsentNewPermissions = consentFactory({
-    pendingUser: "foo",
-    pendingUserAvatar: "https://picsum.photos/64",
-    flowInfo: {
-        title: "<ak-stage-consent>",
-        layout: ContextualFlowInfoLayoutEnum.Stacked,
-        cancelUrl: "",
-    },
+export const ExistingConsentNewPermissions = flowFactory("ak-stage-consent", {
     headerText: "lorem ipsum",
     token: "",
     permissions: [

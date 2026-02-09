@@ -3,10 +3,12 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
+import { styleMap } from "lit/directives/style-map.js";
 
 @customElement("ak-secret-text-input")
 export class AkSecretTextInput extends HorizontalLightComponent<string> {
@@ -25,17 +27,36 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: Number, attribute: "minlength" })
     public minLength?: number;
 
-    #onReveal() {
+    public reveal = () => {
         this.revealed = true;
-    }
+    };
 
     #inputListener = (ev: InputEvent) => {
         this.value = (ev.target as HTMLInputElement).value;
     };
 
+    #ref = createRef<HTMLInputElement>();
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("revealed") && this.revealed) {
+            this.#ref.value?.focus();
+        }
+    }
+
     #renderSecretInput() {
-        return html`<div class="pf-c-form__horizontal-group" @click=${() => this.#onReveal()}>
+        return html`<div
+            class="pf-c-form__horizontal-group"
+            style=${styleMap({
+                display: "flex",
+                gap: "var(--pf-global--spacer--sm)",
+            })}
+        >
             <input
+                @click=${this.reveal}
+                id=${this.fieldID}
+                aria-describedby=${this.helpID}
                 class="pf-c-form-control"
                 type="password"
                 disabled
@@ -49,7 +70,17 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
                 name=${ifDefined(this.name)}
                 hidden
             />
-            <p class="pf-c-form__helper-text" aria-live="polite">${msg("Click to change value")}</p>
+            <button
+                id=${this.helpID}
+                class="pf-c-button pf-m-tertiary pf-m-inline"
+                type="button"
+                @click=${this.reveal}
+            >
+                ${msg("Modify", {
+                    id: "ak-secret-text-input.actions.modify",
+                    desc: "Help text for secret input field to indicate that clicking will allow changing the value.",
+                })}
+            </button>
         </div>`;
     }
 
@@ -60,8 +91,11 @@ export class AkSecretTextInput extends HorizontalLightComponent<string> {
             "pf-m-monospace": code,
         };
 
-        return html` <input
+        return html`<input
+            ${ref(this.#ref)}
             type="text"
+            id=${this.fieldID}
+            aria-describedby=${this.helpID}
             @input=${this.#inputListener}
             name=${ifDefined(this.name)}
             value=${ifDefined(this.value)}

@@ -190,7 +190,31 @@ class CurrentTask(Middleware):
         self.after_process_message(broker, message)
 
 
+class _MetricsHandler(BaseHTTPRequestHandler):
+    def do_GET(self) -> None:
+        from prometheus_client import (
+            CONTENT_TYPE_LATEST,
+            CollectorRegistry,
+            generate_latest,
+            multiprocess,
+        )
+
+        registry = CollectorRegistry()
+        multiprocess.MultiProcessCollector(registry)  # type: ignore[no-untyped-call]
+        output = generate_latest(registry)
+        self.send_response(200)
+        self.send_header("Content-Type", CONTENT_TYPE_LATEST)
+        self.end_headers()
+        self.wfile.write(output)
+
+    def log_message(self, format: str, *args: Any) -> None:
+        logger = get_logger(__name__, type(self))
+        logger.debug(format, *args)
+
+
 class MetricsMiddleware(Middleware):
+    handler_class: type[BaseHTTPRequestHandler] = _MetricsHandler
+
     def __init__(
         self,
         prefix: str,
@@ -325,34 +349,12 @@ class MetricsMiddleware(Middleware):
 
     after_skip_message = after_process_message
 
-    @staticmethod
-    def run(addr: str, port: int) -> None:
+    @classmethod
+    def run(cls, addr: str, port: int) -> None:
         try:
-            server = HTTPServer((addr, port), _MetricsHandler)
+            server = HTTPServer((addr, port), cls.handler_class)
             server.serve_forever()
         except OSError:
             get_logger(__name__, type(MetricsMiddleware)).warning(
                 "Port is already in use, not starting metrics server"
             )
-
-
-class _MetricsHandler(BaseHTTPRequestHandler):
-    def do_GET(self) -> None:
-        from prometheus_client import (
-            CONTENT_TYPE_LATEST,
-            CollectorRegistry,
-            generate_latest,
-            multiprocess,
-        )
-
-        registry = CollectorRegistry()
-        multiprocess.MultiProcessCollector(registry)  # type: ignore[no-untyped-call]
-        output = generate_latest(registry)
-        self.send_response(200)
-        self.send_header("Content-Type", CONTENT_TYPE_LATEST)
-        self.end_headers()
-        self.wfile.write(output)
-
-    def log_message(self, format: str, *args: Any) -> None:
-        logger = get_logger(__name__, type(self))
-        logger.debug(format, *args)

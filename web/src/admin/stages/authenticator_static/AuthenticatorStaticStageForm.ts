@@ -39,7 +39,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",

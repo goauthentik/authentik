@@ -113,7 +113,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		errs.Go(func() error {
 			if flags.CanSearch {
 				uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
-				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()).IncludeGroups(true), parsedFilter, false)
+				searchReq, skip := utils.ParseFilterForUser(c.CoreAPI.CoreUsersList(uapisp.Context()).IncludeGroups(true), parsedFilter, false)
 
 				if skip {
 					req.Log().Trace("Skip backend request")
@@ -132,7 +132,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			} else {
 				if flags.UserInfo == nil {
 					uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
-					u, _, err := c.CoreApi.CoreUsersRetrieve(uapisp.Context(), flags.UserPk).Execute()
+					u, _, err := c.CoreAPI.CoreUsersRetrieve(uapisp.Context(), flags.UserPk).Execute()
 					uapisp.Finish()
 
 					if err != nil {
@@ -155,7 +155,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if needGroups {
 		errs.Go(func() error {
 			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
-			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), parsedFilter, false)
+			searchReq, skip := utils.ParseFilterForGroup(c.CoreAPI.CoreGroupsList(gapisp.Context()).IncludeUsers(true).IncludeChildren(true).IncludeParents(true), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
 				return nil
@@ -194,7 +194,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	}
 
 	err = errs.Wait()
-
 	if err != nil {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
 	}

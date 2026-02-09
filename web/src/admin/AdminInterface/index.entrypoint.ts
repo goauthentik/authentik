@@ -56,14 +56,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 ) {
     //#region Styles
 
-    public static readonly styles: CSSResult[] = [
-        // ---
-        PFPage,
-        PFButton,
-        PFDrawer,
-        PFNav,
-        Styles,
-    ];
+    public static readonly styles: CSSResult[] = [PFPage, PFButton, PFDrawer, PFNav, Styles];
 
     //#endregion
 
@@ -165,7 +158,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
         };
 
         return html`<div class="pf-c-page">
-            <ak-page-navbar ?open=${this.sidebarOpen}>
+            <ak-page-navbar>
                 <button
                     slot="toggle"
                     aria-controls="global-nav"
@@ -200,7 +193,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                                     class="pf-c-page__main"
                                     tabindex="-1"
                                     id="main-content"
-                                    defaultUrl="/administration/overview"
+                                    default-url="/administration/overview"
                                     .routes=${ROUTES}
                                     @ak-route-change=${this.routeChangeListener}
                                 >

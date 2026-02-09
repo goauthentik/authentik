@@ -196,6 +196,15 @@ class Flow(SerializerModel, PolicyBindingModel):
 
         return get_file_manager(FileUsage.MEDIA).file_url(self.background, request)
 
+    def background_themed_urls(self, request: HttpRequest | None = None) -> dict[str, str] | None:
+        """Get themed URLs for background if it contains %(theme)s"""
+        if not self.background:
+            if request:
+                return request.brand.branding_default_flow_background_themed_urls()
+            return None
+
+        return get_file_manager(FileUsage.MEDIA).themed_urls(self.background, request)
+
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
 
     @property

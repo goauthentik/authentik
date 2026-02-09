@@ -5,13 +5,14 @@ import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#admin/sources/scim/SCIMSourceForm";
 import "#admin/sources/telegram/TelegramSourceForm";
-import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/Wizard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 import type { Wizard } from "#elements/wizard/Wizard";
 
@@ -23,11 +24,10 @@ import { CSSResult, html, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-wizard")
 export class SourceWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    static styles: CSSResult[] = [PFButton];
 
     @property({ attribute: false })
     sourceTypes: TypeCreate[] = [];
@@ -68,12 +68,9 @@ export class SourceWizard extends AKElement {
                             slot=${`type-${type.component}-${type.modelName}`}
                             label=${msg(str`Create ${type.name}`)}
                         >
-                            <ak-proxy-form
-                                .args=${{
-                                    modelName: type.modelName,
-                                }}
-                                type=${type.component}
-                            ></ak-proxy-form>
+                            ${StrictUnsafe<CustomFormElementTagName>(type.component, {
+                                modelName: type.modelName,
+                            })}
                         </ak-wizard-page-form>
                     `;
                 })}

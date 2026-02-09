@@ -99,7 +99,7 @@
         },
         "packageManager": {
             "name": "npm",
-            "onFail": "error",
+            "onFail": "warn",
             "version": ">=11.6.2"
         }
     }

@@ -5,8 +5,6 @@ import "#elements/messages/MessageContainer";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
-import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
@@ -35,7 +33,7 @@ import { ConsoleLogger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -67,8 +65,8 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
 
     #logger = ConsoleLogger.prefix("user-interface");
 
-    @state()
-    protected drawer: DrawerState = readDrawerParams();
+    @property({ attribute: false, useDefault: true })
+    public drawer: DrawerState = readDrawerParams();
 
     @listen(AKDrawerChangeEvent)
     protected drawerListener = (event: AKDrawerChangeEvent) => {
@@ -155,6 +153,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                                 alt: this.brandingTitle,
                                 className: "pf-c-brand",
                                 theme: this.activeTheme,
+                                themedUrls: this.brandingLogoThemedUrls,
                             })}
                         </a>
                     </div>
@@ -173,7 +172,7 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                                         class="pf-l-bullseye__item pf-c-page__main"
                                         tabindex="-1"
                                         id="main-content"
-                                        defaultUrl="/library"
+                                        default-url="/library"
                                         .routes=${ROUTES}
                                     >
                                     </ak-router-outlet>

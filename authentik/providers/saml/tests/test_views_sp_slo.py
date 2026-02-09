@@ -6,6 +6,7 @@ from django.http import Http404
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
+from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_brand, create_test_flow
 from authentik.flows.planner import FlowPlan
@@ -18,7 +19,6 @@ from authentik.providers.saml.views.sp_slo import (
     SPInitiatedSLOBindingPOSTView,
     SPInitiatedSLOBindingRedirectView,
 )
-from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
 
 
 class TestSPInitiatedSLOViews(TestCase):

@@ -7,10 +7,7 @@ from typing import TYPE_CHECKING, Any
 from django.http import HttpRequest
 from django.utils import timezone
 
-from authentik.core.models import default_token_duration
-from authentik.events.signals import get_login_event
-from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
     AMR_PASSWORD,
@@ -18,6 +15,9 @@ from authentik.providers.oauth2.constants import (
     AMR_WEBAUTHN,
     SubModes,
 )
+from authentik.core.models import default_token_duration
+from authentik.events.signals import get_login_event
+from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:

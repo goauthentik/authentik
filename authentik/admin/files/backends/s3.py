@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 from django.db import connection
 from django.http.request import HttpRequest
 
-from authentik.admin.files.backends.base import ManageableBackend
+from authentik.admin.files.backends.base import ManageableBackend, get_content_type
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
@@ -204,6 +204,7 @@ class S3Backend(ManageableBackend):
             Key=f"{self.base_path}/{name}",
             Body=content,
             ACL="private",
+            ContentType=get_content_type(name),
         )
 
     @contextmanager
@@ -219,6 +220,7 @@ class S3Backend(ManageableBackend):
                 Key=f"{self.base_path}/{name}",
                 ExtraArgs={
                     "ACL": "private",
+                    "ContentType": get_content_type(name),
                 },
             )
 

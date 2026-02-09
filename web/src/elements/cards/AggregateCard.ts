@@ -9,7 +9,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IAggregateCard {
     icon?: string | null;
@@ -69,7 +68,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: String })
     public subtext: string | null = null;
 
-    public static styles: CSSResult[] = [PFBase, PFCard, PFFlex, Styles];
+    public static styles: CSSResult[] = [PFCard, PFFlex, Styles];
 
     renderInner(): SlottedTemplateResult {
         if (this.role === "status") {

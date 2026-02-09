@@ -14,8 +14,7 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-// Theme variable placeholder that can be used in file paths
-// This allows for theme-specific files like logo-%(theme)s.png
+// Theme variable placeholder for theme-specific files like logo-%(theme)s.png
 const THEME_VARIABLE = "%(theme)s";
 
 // Same regex is used in the backend as well (after replacing %(theme)s)
@@ -28,12 +27,12 @@ const VALID_FILE_NAME_PATTERN_STRING = "^[a-zA-Z0-9._\\/\\-%()+]+$";
 
 function assertValidFileName(fileName: string): void {
     // Allow %(theme)s placeholder for theme-specific files
-    // We temporarily replace it for validation, then check the result
+    // Replace with placeholder for validation, then check the result
     const nameForValidation = fileName.replaceAll(THEME_VARIABLE, "theme");
     if (!VALID_FILE_NAME_PATTERN.test(nameForValidation)) {
         throw new Error(
             msg(
-                "Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the special placeholder %(theme)s",
+                "Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s",
             ),
         );
     }
@@ -45,12 +44,6 @@ function getFileExtension(fileName: string): string {
     return fileName.slice(lastDot);
 }
 
-function hasBasenameExtension(fileName: string): boolean {
-    const baseName = fileName.split("/").pop() ?? fileName;
-    const lastDot = baseName.lastIndexOf(".");
-    return lastDot > 0;
-}
-
 @customElement("ak-file-upload-form")
 export class FileUploadForm extends Form<Record<string, unknown>> {
     @property({ type: String, useDefault: true })
@@ -60,6 +53,12 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
     protected selectedFile: File | null = null;
 
     #formRef = createRef<HTMLFormElement>();
+
+    public override reset(): void {
+        super.reset();
+
+        this.selectedFile = null;
+    }
 
     #fileChangeListener = (e: Event) => {
         const input = e.target as HTMLInputElement;
@@ -83,17 +82,10 @@ export class FileUploadForm extends Form<Record<string, unknown>> {
         const api = new AdminApi(DEFAULT_CONFIG);
         const customName = typeof data.name === "string" ? data.name.trim() : "";
 
-        // If custom name provided, validate and append original extension
-        // Only validate the original filename if no custom name is provided
-        let finalName = this.selectedFile.name;
-        if (customName) {
-            assertValidFileName(customName);
-            const ext = getFileExtension(this.selectedFile.name);
-            finalName =
-                ext && !hasBasenameExtension(customName) ? `${customName}${ext}` : customName;
-        } else {
-            assertValidFileName(this.selectedFile.name);
-        }
+        // If custom name provided, append original file extension; otherwise use original filename
+        const finalName = customName
+            ? `${customName}${getFileExtension(this.selectedFile.name)}`
+            : this.selectedFile.name;
 
         assertValidFileName(finalName);
 

@@ -9,7 +9,6 @@ import { map } from "lit/directives/map.js";
 
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type CheckboxKv = { name: string; label: string | TemplateResult };
 type CheckboxPr = [string, string | TemplateResult];
@@ -80,7 +79,6 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
     static styles = [
-        PFBase,
         PFForm,
         PFCheck,
         css`

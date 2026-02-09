@@ -145,3 +145,71 @@ class TestS3Backend(FileTestS3BackendMixin, TestCase):
             f"Bucket name '{bucket_name}' appears {bucket_occurrences} times in URL, expected 1. "
             f"URL: {url}",
         )
+
+    def test_themed_urls_without_theme_variable(self):
+        """Test themed_urls returns None when filename has no %(theme)s"""
+        result = self.media_s3_backend.themed_urls("logo.png")
+        self.assertIsNone(result)
+
+    def test_themed_urls_with_theme_variable(self):
+        """Test themed_urls returns dict of presigned URLs for each theme"""
+        result = self.media_s3_backend.themed_urls("logo-%(theme)s.png")
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("light", result)
+        self.assertIn("dark", result)
+
+        # Check URLs are valid presigned URLs with correct file paths
+        self.assertIn("logo-light.png", result["light"])
+        self.assertIn("logo-dark.png", result["dark"])
+        self.assertIn("X-Amz-Signature=", result["light"])
+        self.assertIn("X-Amz-Signature=", result["dark"])
+
+    def test_themed_urls_multiple_theme_variables(self):
+        """Test themed_urls with multiple %(theme)s in path"""
+        result = self.media_s3_backend.themed_urls("%(theme)s/logo-%(theme)s.svg")
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("light/logo-light.svg", result["light"])
+        self.assertIn("dark/logo-dark.svg", result["dark"])
+
+    def test_save_file_sets_content_type_svg(self):
+        """Test save_file sets correct ContentType for SVG files"""
+        self.media_s3_backend.save_file("test.svg", b"<svg></svg>")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.svg",
+        )
+        self.assertEqual(response["ContentType"], "image/svg+xml")
+
+    def test_save_file_sets_content_type_png(self):
+        """Test save_file sets correct ContentType for PNG files"""
+        self.media_s3_backend.save_file("test.png", b"\x89PNG\r\n\x1a\n")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.png",
+        )
+        self.assertEqual(response["ContentType"], "image/png")
+
+    def test_save_file_stream_sets_content_type(self):
+        """Test save_file_stream sets correct ContentType"""
+        with self.media_s3_backend.save_file_stream("test.css") as f:
+            f.write(b"body { color: red; }")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.css",
+        )
+        self.assertEqual(response["ContentType"], "text/css")
+
+    def test_save_file_unknown_extension_octet_stream(self):
+        """Test save_file sets octet-stream for unknown extensions"""
+        self.media_s3_backend.save_file("test.unknownext123", b"data")
+
+        response = self.media_s3_backend.client.head_object(
+            Bucket=self.media_s3_bucket_name,
+            Key="media/public/test.unknownext123",
+        )
+        self.assertEqual(response["ContentType"], "application/octet-stream")
