@@ -198,6 +198,7 @@ dependencies = [
  "color-eyre",
  "console-subscriber",
  "eyre",
+ "pyo3",
  "rustls",
  "sentry",
  "tokio",

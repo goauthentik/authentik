@@ -11,14 +11,15 @@ publish.workspace = true
 
 [features]
 default = ["server", "worker"]
-server = ["dep:authentik-server", "dep:authentik-db"]
-worker = ["dep:authentik-worker", "dep:authentik-db"]
+server = ["dep:authentik-server", "dep:authentik-db", "dep:pyo3"]
+worker = ["dep:authentik-worker", "dep:authentik-db", "dep:pyo3"]
 
 [dependencies]
 argh.workspace = true
 eyre.workspace = true
 color-eyre.workspace = true
 console-subscriber.workspace = true
+pyo3 = { workspace = true, optional = true }
 rustls.workspace = true
 sentry.workspace = true
 tokio.workspace = true

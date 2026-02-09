@@ -328,8 +328,6 @@ pub async fn run(_cli: Cli) -> Result<()> {
     let processes = 1;
     let threads = 1;
 
-    unsafe { env::set_var("PROMETHEUS_MULTIPROC_DIR", "/tmp/authentik_prometheus_tmp") };
-    Python::initialize();
     migrate()?;
 
     let mut tasks = JoinSet::new();
@@ -529,7 +527,8 @@ mod worker_status {
 struct AppError(eyre::Error);
 
 impl<E> From<E> for AppError
-where E: Into<eyre::Error>
+where
+    E: Into<eyre::Error>,
 {
     fn from(err: E) -> Self {
         Self(err.into())

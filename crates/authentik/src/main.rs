@@ -3,6 +3,7 @@ use std::str::FromStr;
 use argh::FromArgs;
 use authentik_config::{ConfigManager, get_config};
 use eyre::{Report, Result, eyre};
+use pyo3::Python;
 use tokio::{
     signal::unix::{Signal, SignalKind, signal},
     sync::broadcast,
@@ -186,6 +187,8 @@ async fn main() -> Result<()> {
 
     #[cfg(any(feature = "server", feature = "worker"))]
     {
+        Python::initialize();
+
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
