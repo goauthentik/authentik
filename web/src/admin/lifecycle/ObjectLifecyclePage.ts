@@ -184,13 +184,19 @@ export class ObjectLifecyclePage extends AKElement {
 
     protected renderReviewers() {
         if (!this.iteration) return;
+        const ret: TemplateResult[] = [];
         if (this.iteration.reviewers.length > 0) {
-            return html`${this.iteration.reviewers.map((u) => u.name).join(", ")}`;
+            ret.push(html`<div>${this.iteration.reviewers.map((u) => u.name).join(", ")}</div>`);
         }
         const groupList = this.iteration.reviewerGroups.map((g) => g.name).join(", ");
-        return html`${msg(
-            str`At least ${this.iteration.minReviewers} user(s) from these groups: ${groupList}.`,
-        )}`;
+        ret.push(
+            html`<div>
+                ${msg(
+                    str`At least ${this.iteration.minReviewers} user(s) from these groups: ${groupList}.`,
+                )}
+            </div>`,
+        );
+        return ret;
     }
 
     protected renderOpenedOn() {
@@ -318,7 +324,7 @@ export class ObjectLifecyclePage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">${msg("Reviews")}</div>
                         <div class="pf-c-card__body">
-                            <ak-object-reviews .iteration=${this.iteration}> </ak-object-reviews>
+                            <ak-object-reviews .iteration=${this.iteration}></ak-object-reviews>
                         </div>
                     </div>
                 </div>
