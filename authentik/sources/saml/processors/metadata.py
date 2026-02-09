@@ -8,9 +8,10 @@ from authentik.common.saml.constants import (
     NS_SAML_METADATA,
     NS_SIGNATURE,
     SAML_BINDING_POST,
+    SAML_BINDING_REDIRECT,
 )
 from authentik.providers.saml.utils.encoding import strip_pem_header
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLSLOBindingTypes, SAMLSource
 
 
 class MetadataProcessor:
@@ -74,6 +75,18 @@ class MetadataProcessor:
         encryption_descriptor = self.get_encryption_key_descriptor()
         if encryption_descriptor is not None:
             sp_sso_descriptor.append(encryption_descriptor)
+
+        if self.source.slo_url:
+            slo_service = SubElement(
+                sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}SingleLogoutService"
+            )
+            if self.source.slo_binding == SAMLSLOBindingTypes.POST:
+                slo_service.attrib["Binding"] = SAML_BINDING_POST
+            else:
+                slo_service.attrib["Binding"] = SAML_BINDING_REDIRECT
+            slo_service.attrib["Location"] = self.source.build_full_url(
+                self.http_request, view="slo"
+            )
 
         sp_sso_descriptor.append(self.get_name_id_format())
 

@@ -5856,18 +5856,22 @@
                             "authentik_sources_saml.add_groupsamlsourceconnection",
                             "authentik_sources_saml.add_samlsource",
                             "authentik_sources_saml.add_samlsourcepropertymapping",
+                            "authentik_sources_saml.add_samlsourcesession",
                             "authentik_sources_saml.add_usersamlsourceconnection",
                             "authentik_sources_saml.change_groupsamlsourceconnection",
                             "authentik_sources_saml.change_samlsource",
                             "authentik_sources_saml.change_samlsourcepropertymapping",
+                            "authentik_sources_saml.change_samlsourcesession",
                             "authentik_sources_saml.change_usersamlsourceconnection",
                             "authentik_sources_saml.delete_groupsamlsourceconnection",
                             "authentik_sources_saml.delete_samlsource",
                             "authentik_sources_saml.delete_samlsourcepropertymapping",
+                            "authentik_sources_saml.delete_samlsourcesession",
                             "authentik_sources_saml.delete_usersamlsourceconnection",
                             "authentik_sources_saml.view_groupsamlsourceconnection",
                             "authentik_sources_saml.view_samlsource",
                             "authentik_sources_saml.view_samlsourcepropertymapping",
+                            "authentik_sources_saml.view_samlsourcesession",
                             "authentik_sources_saml.view_usersamlsourceconnection",
                             "authentik_sources_scim.add_scimsource",
                             "authentik_sources_scim.add_scimsourcegroup",
@@ -11230,18 +11234,22 @@
                             "authentik_sources_saml.add_groupsamlsourceconnection",
                             "authentik_sources_saml.add_samlsource",
                             "authentik_sources_saml.add_samlsourcepropertymapping",
+                            "authentik_sources_saml.add_samlsourcesession",
                             "authentik_sources_saml.add_usersamlsourceconnection",
                             "authentik_sources_saml.change_groupsamlsourceconnection",
                             "authentik_sources_saml.change_samlsource",
                             "authentik_sources_saml.change_samlsourcepropertymapping",
+                            "authentik_sources_saml.change_samlsourcesession",
                             "authentik_sources_saml.change_usersamlsourceconnection",
                             "authentik_sources_saml.delete_groupsamlsourceconnection",
                             "authentik_sources_saml.delete_samlsource",
                             "authentik_sources_saml.delete_samlsourcepropertymapping",
+                            "authentik_sources_saml.delete_samlsourcesession",
                             "authentik_sources_saml.delete_usersamlsourceconnection",
                             "authentik_sources_saml.view_groupsamlsourceconnection",
                             "authentik_sources_saml.view_samlsource",
                             "authentik_sources_saml.view_samlsourcepropertymapping",
+                            "authentik_sources_saml.view_samlsourcesession",
                             "authentik_sources_saml.view_usersamlsourceconnection",
                             "authentik_sources_scim.add_scimsource",
                             "authentik_sources_scim.add_scimsourcegroup",
@@ -13057,6 +13065,15 @@
                     ],
                     "title": "Binding type"
                 },
+                "slo_binding": {
+                    "type": "string",
+                    "enum": [
+                        "REDIRECT",
+                        "POST"
+                    ],
+                    "title": "SLO Binding",
+                    "description": "Binding type for Single Logout requests to the IdP."
+                },
                 "verification_kp": {
                     "type": "string",
                     "format": "uuid",
@@ -13113,6 +13130,16 @@
                 "signed_response": {
                     "type": "boolean",
                     "title": "Signed response"
+                },
+                "sign_authn_request": {
+                    "type": "boolean",
+                    "title": "Sign AuthnRequest",
+                    "description": "Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set."
+                },
+                "sign_logout_request": {
+                    "type": "boolean",
+                    "title": "Sign LogoutRequest",
+                    "description": "Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set."
                 }
             },
             "required": []

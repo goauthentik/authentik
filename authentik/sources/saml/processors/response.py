@@ -8,7 +8,7 @@ import xmlsec
 from defusedxml.lxml import fromstring
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from lxml import etree  # nosec
 from lxml.etree import _Element  # nosec
@@ -31,9 +31,13 @@ from authentik.core.models import (
     USER_ATTRIBUTE_GENERATED,
     USER_ATTRIBUTE_SOURCES,
     USERNAME_MAX_LENGTH,
+    AuthenticatedSession,
     User,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
+from authentik.flows.models import Flow, Stage, in_memory_stage
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
+from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
@@ -45,6 +49,7 @@ from authentik.sources.saml.exceptions import (
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,
+    SAMLSourceSession,
     UserSAMLSourceConnection,
 )
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
@@ -54,6 +59,7 @@ if TYPE_CHECKING:
     from xml.etree.ElementTree import Element  # nosec
 
 CACHE_SEEN_REQUEST_ID = "authentik_saml_seen_ids_%s"
+SESSION_KEY_SAML_SESSION_DATA = "authentik/sources/saml/session_data"
 
 
 class ResponseProcessor:
@@ -233,6 +239,13 @@ class ResponseProcessor:
         UserSAMLSourceConnection.objects.create(
             source=self._source, user=user, identifier=name_id.text
         )
+        session_index = self._get_session_index()
+        self._http_request.session[SESSION_KEY_SAML_SESSION_DATA] = {
+            "source_pk": str(self._source.pk),
+            "session_index": session_index or "",
+            "name_id": name_id.text,
+            "name_id_format": name_id.attrib.get("Format", ""),
+        }
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
@@ -243,6 +256,16 @@ class ResponseProcessor:
             },
             policy_context={},
         )
+
+    def _get_session_index(self) -> str | None:
+        """Get SessionIndex from AuthnStatement element"""
+        assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+        if assertion is None:
+            return None
+        authn_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
+        if authn_statement is None:
+            return None
+        return authn_statement.attrib.get("SessionIndex")
 
     def _get_name_id(self) -> Element:
         """Get NameID Element"""
@@ -293,6 +316,13 @@ class ResponseProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
+        session_index = self._get_session_index()
+        self._http_request.session[SESSION_KEY_SAML_SESSION_DATA] = {
+            "source_pk": str(self._source.pk),
+            "session_index": session_index or "",
+            "name_id": name_id.text,
+            "name_id_format": name_id.attrib.get("Format", ""),
+        }
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
@@ -307,8 +337,52 @@ class ResponseProcessor:
         )
 
 
+class SAMLSourceSessionStage(StageView):
+    """Dynamically injected stage which creates SAMLSourceSession after the user
+    has been authenticated via a SAML source."""
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        session_data = request.session.pop(SESSION_KEY_SAML_SESSION_DATA, None)
+        if not session_data:
+            return self.executor.stage_ok()
+
+        user: User = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        if not user or not user.pk:
+            return self.executor.stage_ok()
+
+        auth_session = AuthenticatedSession.from_request(request, user)
+        if not auth_session:
+            return self.executor.stage_ok()
+
+        try:
+            source = SAMLSource.objects.get(pk=session_data["source_pk"])
+        except SAMLSource.DoesNotExist:
+            return self.executor.stage_ok()
+
+        SAMLSourceSession.objects.create(
+            source=source,
+            user=user,
+            session=auth_session,
+            session_index=session_data.get("session_index", ""),
+            name_id=session_data.get("name_id", ""),
+            name_id_format=session_data.get("name_id_format", ""),
+        )
+        LOGGER.debug(
+            "Created SAMLSourceSession",
+            source=source.name,
+            user=user,
+            session_index=session_data.get("session_index", ""),
+        )
+        return self.executor.stage_ok()
+
+
 class SAMLSourceFlowManager(SourceFlowManager):
     """Source flow manager for SAML Sources"""
 
     user_connection_type = UserSAMLSourceConnection
     group_connection_type = GroupSAMLSourceConnection
+
+    def get_stages_to_append(self, flow: Flow) -> list[Stage]:
+        stages = super().get_stages_to_append(flow)
+        stages.append(in_memory_stage(SAMLSourceSessionStage))
+        return stages

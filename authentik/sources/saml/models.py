@@ -1,6 +1,7 @@
 """saml sp models"""
 
 from typing import Any
+from uuid import uuid4
 
 from django.db import models
 from django.http import HttpRequest
@@ -35,9 +36,11 @@ from authentik.common.saml.constants import (
     SHA512,
 )
 from authentik.core.models import (
+    AuthenticatedSession,
     GroupSourceConnection,
     PropertyMapping,
     Source,
+    User,
     UserSourceConnection,
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -75,6 +78,13 @@ class SAMLNameIDPolicy(models.TextChoices):
     WINDOWS = SAML_NAME_ID_FORMAT_WINDOWS
     TRANSIENT = SAML_NAME_ID_FORMAT_TRANSIENT
     UNSPECIFIED = SAML_NAME_ID_FORMAT_UNSPECIFIED
+
+
+class SAMLSLOBindingTypes(models.TextChoices):
+    """SAML SLO Binding types"""
+
+    REDIRECT = "REDIRECT", _("Redirect Binding")
+    POST = "POST", _("POST Binding")
 
 
 class SAMLSource(Source):
@@ -126,6 +136,26 @@ class SAMLSource(Source):
         max_length=100,
         choices=SAMLBindingTypes.choices,
         default=SAMLBindingTypes.REDIRECT,
+    )
+    slo_binding = models.CharField(
+        max_length=100,
+        choices=SAMLSLOBindingTypes.choices,
+        default=SAMLSLOBindingTypes.REDIRECT,
+        verbose_name=_("SLO Binding"),
+        help_text=_("Binding type for Single Logout requests to the IdP."),
+    )
+
+    sign_authn_request = models.BooleanField(
+        default=False,
+        verbose_name=_("Sign AuthnRequest"),
+        help_text=_("Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set."),
+    )
+    sign_logout_request = models.BooleanField(
+        default=False,
+        verbose_name=_("Sign LogoutRequest"),
+        help_text=_(
+            "Whether to sign outgoing LogoutRequests. Requires a Signing Keypair to be set."
+        ),
     )
 
     temporary_user_delete_after = models.TextField(
@@ -349,3 +379,39 @@ class GroupSAMLSourceConnection(GroupSourceConnection):
     class Meta:
         verbose_name = _("Group SAML Source Connection")
         verbose_name_plural = _("Group SAML Source Connections")
+
+
+class SAMLSourceSession(models.Model):
+    """Track active SAML source sessions for Single Logout support"""
+
+    saml_session_id = models.UUIDField(default=uuid4, primary_key=True)
+    source = models.ForeignKey(SAMLSource, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    session = models.ForeignKey(
+        AuthenticatedSession,
+        on_delete=models.CASCADE,
+        help_text=_("Link to the user's authenticated session"),
+    )
+    session_index = models.TextField(
+        default="",
+        blank=True,
+        help_text=_("SAML SessionIndex from the IdP's AuthnStatement"),
+    )
+    name_id = models.TextField(help_text=_("SAML NameID value for this session"))
+    name_id_format = models.TextField(
+        default="",
+        blank=True,
+        help_text=_("SAML NameID format"),
+    )
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"SAML Source Session for source {self.source_id} and user {self.user_id}"
+
+    class Meta:
+        verbose_name = _("SAML Source Session")
+        verbose_name_plural = _("SAML Source Sessions")
+        indexes = [
+            models.Index(fields=["source", "user"]),
+            models.Index(fields=["session"]),
+        ]
