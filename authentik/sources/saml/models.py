@@ -148,7 +148,9 @@ class SAMLSource(Source):
     sign_authn_request = models.BooleanField(
         default=False,
         verbose_name=_("Sign AuthnRequest"),
-        help_text=_("Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set."),
+        help_text=_(
+            "Whether to sign outgoing AuthnRequests. Requires a Signing Keypair to be set."
+        ),
     )
     sign_logout_request = models.BooleanField(
         default=False,
@@ -405,9 +407,6 @@ class SAMLSourceSession(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"SAML Source Session for source {self.source_id} and user {self.user_id}"
-
     class Meta:
         verbose_name = _("SAML Source Session")
         verbose_name_plural = _("SAML Source Sessions")
@@ -415,3 +414,6 @@ class SAMLSourceSession(models.Model):
             models.Index(fields=["source", "user"]),
             models.Index(fields=["session"]),
         ]
+
+    def __str__(self):
+        return f"SAML Source Session for source {self.source_id} and user {self.user_id}"

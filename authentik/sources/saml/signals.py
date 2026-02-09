@@ -46,13 +46,10 @@ def handle_saml_source_pre_user_logout(
         return
 
     # Find SAMLSourceSessions for this user's current session
-    saml_source_sessions = (
-        SAMLSourceSession.objects.filter(
-            session=auth_session,
-            user=user,
-        )
-        .select_related("source")
-    )
+    saml_source_sessions = SAMLSourceSession.objects.filter(
+        session=auth_session,
+        user=user,
+    ).select_related("source")
 
     for saml_session in saml_source_sessions:
         source = saml_session.source
@@ -79,9 +76,7 @@ def handle_saml_source_pre_user_logout(
             else:
                 # POST binding
                 form_data = processor.get_post_form_data()
-                executor.plan.context[PLAN_CONTEXT_TITLE] = (
-                    f"Logging out of {source.name}..."
-                )
+                executor.plan.context[PLAN_CONTEXT_TITLE] = f"Logging out of {source.name}..."
                 executor.plan.context[PLAN_CONTEXT_URL] = source.slo_url
                 executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
 

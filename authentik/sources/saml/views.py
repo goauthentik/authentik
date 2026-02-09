@@ -219,14 +219,11 @@ class SLOView(View):
         if request.user.is_authenticated:
             auth_session = AuthenticatedSession.from_request(request, request.user)
             if auth_session:
-                saml_session = (
-                    SAMLSourceSession.objects.filter(
-                        source=source,
-                        user=request.user,
-                        session=auth_session,
-                    )
-                    .first()
-                )
+                saml_session = SAMLSourceSession.objects.filter(
+                    source=source,
+                    user=request.user,
+                    session=auth_session,
+                ).first()
 
         if not saml_session:
             # No session data, log out locally and redirect to IdP SLO URL
@@ -234,9 +231,7 @@ class SLOView(View):
             return redirect(source.slo_url)
 
         # Build LogoutRequest
-        relay_state = request.build_absolute_uri(
-            source.build_full_url(request, view="slo")
-        )
+        relay_state = request.build_absolute_uri(source.build_full_url(request, view="slo"))
         processor = LogoutRequestProcessor(
             source=source,
             http_request=request,
@@ -259,12 +254,12 @@ class SLOView(View):
         # POST binding - return autosubmit form
         form_data = processor.get_post_form_data()
         autosubmit_html = (
-            "<html><body onload=\"document.forms[0].submit()\">"
-            f"<form method=\"post\" action=\"{source.slo_url}\">"
+            '<html><body onload="document.forms[0].submit()">'
+            f'<form method="post" action="{source.slo_url}">'
         )
         for key, value in form_data.items():
             autosubmit_html += f'<input type="hidden" name="{key}" value="{value}"/>'
-        autosubmit_html += "<noscript><input type=\"submit\" value=\"Continue\"/></noscript>"
+        autosubmit_html += '<noscript><input type="submit" value="Continue"/></noscript>'
         autosubmit_html += "</form></body></html>"
         return HttpResponse(autosubmit_html)
 
