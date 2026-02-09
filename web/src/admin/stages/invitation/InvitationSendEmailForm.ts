@@ -116,49 +116,43 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             [msg("Single use"), this.invitation?.singleUse ? msg("Yes") : msg("No")],
         ];
 
-        return html` <ak-form-group open label="${msg("Invitation details")}">
-                <div class="pf-c-card__body">
-                    ${renderDescriptionList(invitationInfo, { twocolumn: true })}
-                </div>
-            </ak-form-group>
-            <ak-form-group open label="${msg("Send Email")}">
-                <ak-textarea-input
-                    label=${msg("To")}
-                    name="emailAddresses"
-                    required
-                    help=${msg(
-                        "One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.",
-                    )}
-                >
-                </ak-textarea-input>
-                <ak-textarea-input
-                    label=${msg("CC")}
-                    name="ccAddresses"
-                    help=${msg("Optional. Carbon copy recipients.")}
-                >
-                </ak-textarea-input>
-                <ak-textarea-input
-                    label=${msg("BCC")}
-                    name="bccAddresses"
-                    help=${msg("Optional. Blind carbon copy recipients.")}
-                >
-                </ak-textarea-input>
-                <ak-form-element-horizontal label=${msg("Template")} required name="template">
-                    <select class="pf-c-form-control">
-                        ${this.availableTemplates?.map((template) => {
-                            return html`<option
-                                value=${template.name}
-                                ?selected=${template.name === this.selectedTemplate}
-                            >
-                                ${template.description}
-                            </option>`;
-                        })}
-                    </select>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Select the email template to use for sending invitations.")}
-                    </p>
-                </ak-form-element-horizontal>
-            </ak-form-group>`;
+        return html`${renderDescriptionList(invitationInfo, { horizontal: true, twocolumn: true })}
+            <ak-textarea-input
+                label=${msg("To")}
+                name="emailAddresses"
+                required
+                help=${msg(
+                    "One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.",
+                )}
+            >
+            </ak-textarea-input>
+            <ak-textarea-input
+                label=${msg("CC")}
+                name="ccAddresses"
+                help=${msg("Optional. Carbon copy recipients.")}
+            >
+            </ak-textarea-input>
+            <ak-textarea-input
+                label=${msg("BCC")}
+                name="bccAddresses"
+                help=${msg("Optional. Blind carbon copy recipients.")}
+            >
+            </ak-textarea-input>
+            <ak-form-element-horizontal label=${msg("Template")} required name="template">
+                <select class="pf-c-form-control">
+                    ${this.availableTemplates?.map((template) => {
+                        return html`<option
+                            value=${template.name}
+                            ?selected=${template.name === this.selectedTemplate}
+                        >
+                            ${template.description}
+                        </option>`;
+                    })}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Select the email template to use for sending invitations.")}
+                </p>
+            </ak-form-element-horizontal>`;
     }
 }
 
