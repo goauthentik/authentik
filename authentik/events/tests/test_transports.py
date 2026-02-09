@@ -28,13 +28,17 @@ class TestEventTransports(TestCase):
 
     def setUp(self) -> None:
         self.user = create_test_admin_user()
-        self.event = Event.new("foo", "testing", foo="bar,").set_user(self.user)
+        self.event = Event.new(
+            "foo", "testing", foo="bar,", hyperlink="/test/", hyperlink_label="Test Link"
+        ).set_user(self.user)
         self.event.save()
         self.notification = Notification.objects.create(
             severity=NotificationSeverity.ALERT,
             body="foo",
             event=self.event,
             user=self.user,
+            hyperlink=self.event.hyperlink,
+            hyperlink_label=self.event.hyperlink_label,
         )
 
     def test_transport_webhook(self):
@@ -120,6 +124,8 @@ class TestEventTransports(TestCase):
                                 },
                                 {"short": True, "title": "Event user", "value": self.user.username},
                                 {"title": "foo", "value": "bar,"},
+                                {"title": "hyperlink", "value": "/test/"},
+                                {"title": "hyperlink_label", "value": "Test Link"},
                             ],
                             "footer": f"authentik {authentik_full_version()}",
                         }
@@ -132,6 +138,7 @@ class TestEventTransports(TestCase):
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.EMAIL,
+            hyperlink_base_url="https://example.com/",
         )
         with patch(
             "authentik.stages.email.models.EmailStage.backend_class",
@@ -141,6 +148,7 @@ class TestEventTransports(TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik Notification: custom_foo")
             self.assertIn(self.notification.body, mail.outbox[0].alternatives[0][0])
+            self.assertIn("https://example.com/test", mail.outbox[0].alternatives[0][0])
 
     def test_transport_email_custom_template(self):
         """Test email transport with custom template"""

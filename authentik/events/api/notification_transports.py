@@ -68,6 +68,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "email_subject_prefix",
             "email_template",
             "send_once",
+            "hyperlink_base_url",
         ]
 
 

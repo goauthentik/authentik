@@ -62,6 +62,35 @@ entries:
     name: initial-setup-field-password-repeat
   model: authentik_stages_prompt.prompt
 - attrs:
+    order: 100
+    initial_value:
+      Please enter a base URL of your authentik installation. This will
+      be used to construct links in the notifications authentik sends out (e.g. via
+      email).
+    placeholder_expression: false
+    required: true
+    type: static
+    field_key: oobe-base-url-header-text
+    label: oobe-base-url-header-text
+  id: base-url-prompt-field-header
+  identifiers:
+    name: initial-setup-base-url-field-header
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 300
+    initial_value: return request.http_request.build_absolute_uri("/")
+    initial_value_expression: true
+    placeholder: https://example.com/
+    placeholder_expression: false
+    required: true
+    type: text
+    field_key: base_url
+    label: Base URL
+  id: prompt-field-base-url
+  identifiers:
+    name: initial-setup-field-base-url
+  model: authentik_stages_prompt.prompt
+- attrs:
     expression: |
       # This policy sets the user for the currently running flow
       # by injecting "pending_user"
@@ -96,6 +125,25 @@ entries:
     name: default-oobe-flow-set-authentication
   model: authentik_policies_expression.expressionpolicy
 - attrs:
+    expression: |
+      # This policy validates and saves the base URL
+      from urllib import parse
+      from authentik.events.models import NotificationTransport
+      base_url = request.context['prompt_data'].get("base_url")
+      parsed = parse.urlsplit(base_url)
+      if not parsed.netloc:
+          ak_message("Please enter an absolute URL.")
+          return False
+      if parsed.scheme not in ('http', 'https'):
+          ak_message("Base URL must use https or http scheme.")
+          return False
+      NotificationTransport.objects.all().update(hyperlink_base_url=base_url)
+      return True
+  id: policy-default-oobe-flow-set-base-url
+  identifiers:
+    name: default-oobe-flow-set-base-url
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
     fields:
     - !KeyOf prompt-field-header
     - !KeyOf prompt-field-email
@@ -116,6 +164,16 @@ entries:
   attrs:
     user_creation_mode: never_create
 - attrs:
+    fields:
+    - !KeyOf base-url-prompt-field-header
+    - !KeyOf prompt-field-base-url
+    validation_policies:
+    - !KeyOf policy-default-oobe-flow-set-base-url
+  id: stage-default-oobe-base-url
+  identifiers:
+    name: stage-default-oobe-base-url
+  model: authentik_stages_prompt.promptstage
+- attrs:
     evaluate_on_plan: true
     invalid_response_action: retry
     re_evaluate_policies: false
@@ -132,6 +190,15 @@ entries:
   identifiers:
     order: 20
     stage: !KeyOf stage-default-password-change-write
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    re_evaluate_policies: false
+  identifiers:
+    order: 30
+    stage: !KeyOf stage-default-oobe-base-url
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - attrs:
