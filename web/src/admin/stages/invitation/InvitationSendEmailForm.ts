@@ -129,13 +129,17 @@ export class InvitationSendEmailForm extends Form<InvitationSendEmailRequestWith
             <ak-textarea-input
                 label=${msg("CC")}
                 name="ccAddresses"
-                help=${msg("Optional. Carbon copy recipients.")}
+                help=${msg(
+                    "A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.",
+                )}
             >
             </ak-textarea-input>
             <ak-textarea-input
                 label=${msg("BCC")}
                 name="bccAddresses"
-                help=${msg("Optional. Blind carbon copy recipients.")}
+                help=${msg(
+                    "A comma-separated list of addresses to receive copies of the invitation. Recipients will not receive the addresses of other recipients.",
+                )}
             >
             </ak-textarea-input>
             <ak-form-element-horizontal label=${msg("Template")} required name="template">

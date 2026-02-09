@@ -3,10 +3,9 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { MessageLevel } from "#common/messages";
+import { writeToClipboard } from "#common/clipboard";
 
 import { AKElement } from "#elements/Base";
-import { showMessage } from "#elements/messages/MessageContainer";
 
 import { Invitation, StagesApi } from "@goauthentik/api";
 
@@ -118,12 +117,7 @@ export class InvitationListLink extends AKElement {
                         <button
                             class="pf-c-button pf-m-secondary"
                             @click=${() => {
-                                navigator.clipboard.writeText(this.renderLink()).then(() => {
-                                    showMessage({
-                                        level: MessageLevel.info,
-                                        message: msg("Copied link to clipboard."),
-                                    });
-                                });
+                                writeToClipboard(this.renderLink());
                             }}
                         >
                             ${msg("Copy Link")}
