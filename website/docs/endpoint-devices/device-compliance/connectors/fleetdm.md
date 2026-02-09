@@ -20,7 +20,7 @@ Do not use an API key from a normal user because these keys expire.
 
 ## Configure the Fleet connector
 
-Follow these instructions to configure the Fleet connector:
+Follow these instructions to configure the Fleet connector in authentik:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
