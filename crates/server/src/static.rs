@@ -1,8 +1,12 @@
 use authentik_config::get_config;
+use aws_lc_rs::digest;
 use axum::{
     Router,
     extract::{Query, Request, State},
-    http::{StatusCode, header},
+    http::{
+        StatusCode,
+        header::{self, CONTENT_SECURITY_POLICY},
+    },
     middleware::{self, Next},
     response::Response,
     routing::any,
@@ -10,7 +14,6 @@ use axum::{
 use jsonwebtoken::{Algorithm, DecodingKey, Validation, decode, decode_header};
 use percent_encoding::percent_decode_str;
 use serde::Deserialize;
-use sha2::{Digest, Sha256};
 use time::OffsetDateTime;
 use tower_http::{
     compression::{CompressionLayer, predicate::SizeAbove},
@@ -24,19 +27,12 @@ struct StorageClaims {
     path: Option<String>,
 }
 
-#[derive(Clone)]
-struct StorageTokenState {
-    usage: &'static str,
-    secret_key: String,
-    set_csp_header: bool,
-}
-
 #[derive(Debug, Deserialize)]
 struct StorageTokenQuery {
     token: Option<String>,
 }
 
-fn storage_token_is_valid(usage: &str, secret_key: &str, request: &Request) -> bool {
+fn is_storage_token_valid(usage: &str, secret_key: &str, request: &Request) -> bool {
     // Use typed query parsing so `token` is percent-decoded before JWT parsing.
     let token_string = match Query::<StorageTokenQuery>::try_from_uri(request.uri()) {
         Ok(query) => match query.0.token {
@@ -50,17 +46,20 @@ fn storage_token_is_valid(usage: &str, secret_key: &str, request: &Request) -> b
         Ok(header) => header,
         Err(_) => return false,
     };
-    // go accepts all, if you want we can make this stricter.
-    if !matches!(
-        token_header.alg,
-        Algorithm::HS256 | Algorithm::HS384 | Algorithm::HS512
-    ) {
+
+    // Must match what we use in authentik/admin/files/backends/file.py
+    if token_header.alg != Algorithm::HS256 {
         return false;
     }
 
     // Derive a per-usage key so media and reports tokens are not interchangeable.
     let key = format!("{secret_key}:{usage}");
-    let hex_digest = format!("{:x}", Sha256::digest(key.as_bytes()));
+    let key_digest = digest::digest(&digest::SHA256, key.as_bytes());
+    let key_hex_digest = key_digest
+        .as_ref()
+        .iter()
+        .map(|b| format!("{:02x}", b))
+        .collect::<String>();
 
     let mut validation = Validation::new(token_header.alg);
     validation.validate_exp = false;
@@ -70,7 +69,7 @@ fn storage_token_is_valid(usage: &str, secret_key: &str, request: &Request) -> b
 
     let claims = match decode::<StorageClaims>(
         &token_string,
-        &DecodingKey::from_secret(hex_digest.as_bytes()),
+        &DecodingKey::from_secret(key_hex_digest.as_bytes()),
         &validation,
     ) {
         Ok(token) => token.claims,
@@ -78,14 +77,10 @@ fn storage_token_is_valid(usage: &str, secret_key: &str, request: &Request) -> b
     };
 
     let now = OffsetDateTime::now_utc().unix_timestamp();
-    if let Some(exp) = claims.exp
-        && exp < now
-    {
+    if claims.exp.unwrap_or(0) < now {
         return false;
     }
-    if let Some(nbf) = claims.nbf
-        && nbf > now
-    {
+    if claims.nbf.unwrap_or(now + 1) > now {
         return false;
     }
 
@@ -107,12 +102,18 @@ fn storage_token_is_valid(usage: &str, secret_key: &str, request: &Request) -> b
     true
 }
 
-async fn storage_token_middleware(
-    State(state): State<StorageTokenState>,
+#[derive(Clone)]
+struct StorageMiddlewareConfig {
+    usage: &'static str,
+    set_csp_header: bool,
+}
+
+async fn storage_middleware(
+    State(config): State<StorageMiddlewareConfig>,
     request: Request,
     next: Next,
 ) -> Response {
-    if !storage_token_is_valid(state.usage, &state.secret_key, &request) {
+    if !is_storage_token_valid(config.usage, &get_config().await.secret_key, &request) {
         return Response::builder()
             .status(StatusCode::NOT_FOUND)
             .body("404 page not found\n".into())
@@ -121,10 +122,10 @@ async fn storage_token_middleware(
 
     let mut response = next.run(request).await;
 
-    if state.set_csp_header {
+    if config.set_csp_header {
         // Since media is user-controlled, better be safe
         response.headers_mut().insert(
-            "Content-Security-Policy",
+            CONTENT_SECURITY_POLICY,
             "default-src 'none'; style-src 'unsafe-inline'; sandbox"
                 .parse()
                 .unwrap(),
@@ -156,7 +157,6 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
 
 pub(crate) async fn build_router() -> Router {
     let config = get_config().await;
-    let secret_key = config.secret_key.clone();
 
     let mut router = Router::new().layer(middleware::from_fn(static_header_middleware));
 
@@ -201,18 +201,16 @@ pub(crate) async fn build_router() -> Router {
             .unwrap_or(default_path.clone());
         media_path.push("media");
 
-        // TODO: handle perms
         let media_fs = ServeDir::new(media_path).append_index_html_on_directories(false);
         let media_router =
             Router::new()
                 .fallback_service(media_fs)
                 .layer(middleware::from_fn_with_state(
-                    StorageTokenState {
+                    StorageMiddlewareConfig {
                         usage: "media",
-                        secret_key: secret_key.clone(),
                         set_csp_header: true,
                     },
-                    storage_token_middleware,
+                    storage_middleware,
                 ));
         router = router.nest("/files/media/", media_router);
     }
@@ -229,18 +227,16 @@ pub(crate) async fn build_router() -> Router {
             .unwrap_or(default_path.clone());
         reports_path.push("reports");
 
-        // TODO: handle perms
         let reports_fs = ServeDir::new(reports_path).append_index_html_on_directories(false);
         let reports_router =
             Router::new()
                 .fallback_service(reports_fs)
                 .layer(middleware::from_fn_with_state(
-                    StorageTokenState {
+                    StorageMiddlewareConfig {
                         usage: "reports",
-                        secret_key: secret_key.clone(),
                         set_csp_header: false,
                     },
-                    storage_token_middleware,
+                    storage_middleware,
                 ));
         router = router.nest("/files/reports/", reports_router);
     }

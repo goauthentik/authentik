@@ -11,6 +11,7 @@ publish.workspace = true
 
 [dependencies]
 argh.workspace = true
+aws-lc-rs.workspace = true
 axum.workspace = true
 axum-server.workspace = true
 eyre.workspace = true
@@ -23,7 +24,6 @@ percent-encoding.workspace = true
 rcgen.workspace = true
 rustls.workspace = true
 serde.workspace = true
-sha2.workspace = true
 sqlx.workspace = true
 serde_json.workspace = true
 time.workspace = true
