@@ -57,7 +57,8 @@ def monitoring_set_workers(sender, **kwargs):
 @receiver(monitoring_set)
 def monitoring_set_queued_tasks(sender, **kwargs):
     """Set number of queued tasks"""
-    GAUGE_TASKS_QUEUED.clear()
+    for stats in Task.objects.values("queue_name", "actor_name").distinct():
+        GAUGE_TASKS_QUEUED.labels(stats["queue_name"], stats["actor_name"]).set(0)
     for stats in (
         Task.objects.filter(state=TaskState.QUEUED)
         .values("queue_name", "actor_name")
