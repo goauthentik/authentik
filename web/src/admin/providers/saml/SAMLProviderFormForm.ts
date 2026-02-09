@@ -185,16 +185,6 @@ export function renderForm({
                     required
                     .errorMessages=${errors.acsUrl}
                 ></ak-text-input>
-                <ak-radio-input
-                    label=${msg("Service Provider Binding")}
-                    name="spBinding"
-                    required
-                    .options=${serviceProviderBindingOptions}
-                    .value=${provider.spBinding ?? SAMLBindingsEnum.Post}
-                    help=${msg(
-                        "Determines how authentik sends the response back to the Service Provider.",
-                    )}
-                ></ak-radio-input>
                 <ak-text-input
                     label=${msg("Issuer")}
                     input-hint="code"
@@ -435,6 +425,15 @@ export function renderForm({
                         "When using IDP-initiated logins, the relay state will be set to this value.",
                     )}
                 ></ak-text-input>
+                <ak-radio-input
+                    label=${msg("Service Provider Binding")}
+                    name="spBinding"
+                    .options=${serviceProviderBindingOptions}
+                    .value=${provider.spBinding ?? SAMLBindingsEnum.Post}
+                    help=${msg(
+                        "Determines how authentik sends the response back to the Service Provider.",
+                    )}
+                ></ak-radio-input>
                 <ak-form-element-horizontal
                     label=${msg("Default NameID Policy")}
                     required

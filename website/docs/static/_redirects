@@ -48,7 +48,8 @@
 #endregion
 
 #region Endpoint Devices
-/endpoint-devices/device-authentication/*                                          /endpoint-devices/authentik-agent/device-authentication/:splat 301!
+/endpoint-devices/device-authentication/*                   /endpoint-devices/authentik-agent/device-authentication/:splat 301!
+/endpoint-devices/device-compliance/connectors              /endpoint-devices/device-compliance/connectors/index/ 301!
 #endregion
 
 #region System Management
