@@ -88,7 +88,7 @@ class DomainlessURLValidator(URLValidator):
 
     def __call__(self, value: str):
         # Check if the scheme is valid.
-        scheme = value.split("://")[0].lower()
+        scheme = value.split("://", maxsplit=1)[0].lower()
         if scheme not in self.schemes:
             value = "default" + value
         super().__call__(value)
