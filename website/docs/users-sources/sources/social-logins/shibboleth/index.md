@@ -30,7 +30,7 @@ The following placeholders are used in this guide:
     - Set **Issuer** to `https://authentik.company/source/saml/<shibboleth-slug>/metadata/`.
     - Set **NameID Policy** to `Transient`.
       :::warning NameID Policy
-      Shibboleth supports the `Transient` NameID by default. You will need to reconfigure shibboleth to use other NameIDs.
+      Shibboleth supports the `Transient` NameID by default. You will need to reconfigure Shibboleth to use other NameIDs.
       :::
     - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Encryption Certificate** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
