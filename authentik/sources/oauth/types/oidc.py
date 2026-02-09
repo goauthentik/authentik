@@ -49,8 +49,20 @@ class OpenIDConnectClient(UserprofileHeaderAuthClient):
             raw = get_unverified_header(id_token)
             jwk = PyJWKSet.from_dict(self.source.oidc_jwks)
             key = [key for key in jwk.keys if key.key_id == raw["kid"]][0]
+<<<<<<< HEAD
             return decode(id_token, key=key, algorithms=raw["alg"])
         except (PyJWTError, IndexError, ValueError):
+=======
+            return decode(
+                id_token,
+                key=key,
+                algorithms=[raw["alg"]],
+                audience=self.get_client_id(),
+                options={"verify_iss": False},
+            )
+        except (PyJWTError, IndexError, ValueError) as exc:
+            self.logger.warning("Failed to decode id_token", exc=exc)
+>>>>>>> 2664ea7d2 (sources/oauth: Fix InvalidAudienceError in id_token fallback (#20096))
             return None
 
 
