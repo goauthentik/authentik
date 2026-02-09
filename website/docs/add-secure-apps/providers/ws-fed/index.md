@@ -12,7 +12,7 @@ There are similarities between WS-Fed and SAML protocols, but there are also key
 | **Request Security Token Response (RSTR)**                                                                               | **SAML response** with an assertion                  |
 | **RP (relying party)** and **STS (Security Token Service)**                                                              | **RP (relying party)** and **SP (Service Provider)** |
 
-::: SAML2 token support
+:::info SAML2 token support
 Note that we only support the SAML2 token type within WS-Federation providers, and that using the WS-Fed provider with Entra ID is not supported because Entra ID requires a SAML 1.0 token.
 :::
 
@@ -27,14 +27,14 @@ The following URL request parameters are supported in the authentik WS-Fed provi
 
 ## WS-Fed bindings and endpoints
 
-_Bindings_ define how an Identity Provider (IdP) and a Service Provider (SP) communicate; how messages are transported over network protocols, specifying transport (like HTTP), encoding, and security detail that allow WS-Fed to facilitate secure identity sharing across systems. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific WS-Fed binding.
+_Bindings_ define how an Identity Provider (IdP) and a the WS-Fed STS (Security Token Service), or SP in SML terms, communicate; how messages are transported over network protocols, specifying transport (like HTTP), encoding, and security detail that allow WS-Fed to facilitate secure identity sharing across systems. Both the IdP and STS define various endpoints in their metadata, each associated with a specific WS-Fed binding.
 
 In authentik, you can select one of two WS-Fed bindings: `HTTP Redirect` or `HTTP POST`.
 
 _Endpoint URLs_ specify where and how the messages are sent according to that binding. The table below shows the supported endpoints for each binding:
 
 | Endpoint | URL |
-| ------------------------- | ------------------------------------------------------------ | |
+| ------------------------- | ------------------------------------------------------- |
 | SSO (POST binding) | `/application/ws-fed/<application_slug>/sso/binding/post/` |
 | SSO (IdP-initiated login) | `/application/ws-fed/<application_slug>/sso/binding/init/` |
 | SLO (POST binding) | `/application/ws-fed/<application_slug>/slo/binding/post/` |
@@ -44,16 +44,10 @@ _Endpoint URLs_ specify where and how the messages are sent according to that bi
 
 Using metadata ensures that WS-Fed single sign-on works reliably by exchanging and maintaining identity and connection information. WS-Fed metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers. The metadata is what you provide the application (the STS, in WS-Fed terms) in order to configure it for authenticating with authentik.
 
-### Importing SP WS-Fed metadata
+- You can [import WS-Fed metadata to automatically configure a WS-Fed provider](./create-wsfed-provider.md#create-a-ws-fed-provider-from-sp-metadata-import-sp-metadata) based on the requirements of an STS.
 
-You can import WS-Fed metadata to automatically configure a WS-Fed provider based on the requirements of an STS.
+- You can [export WS-Fed metadata](./create-wsfed-provider.md#export-authentik-ws-fed-provider-metadata) from an authentik WS-Fed provider to an STS to automatically provide important endpoint and certificate information to the SP.
 
-### Exporting authentik WS-Fed metadata
-
-You can export WS-Fed metadata from an authentik WS-Fed provider to an STS to automatically provide important endpoint and certificate information to the SP.
-
-+++
-Reply URL: Enter the Application Callback URL (the applications's Assertion Consumer Service URL) where the token should be sent.
 
 ## Certificates
 
