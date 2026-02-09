@@ -9,6 +9,11 @@ repository.workspace = true
 license-file.workspace = true
 publish.workspace = true
 
+[features]
+default = ["server", "worker"]
+server = ["dep:authentik-server", "dep:authentik-db"]
+worker = ["dep:authentik-worker", "dep:authentik-db"]
+
 [dependencies]
 argh.workspace = true
 eyre.workspace = true
@@ -23,9 +28,9 @@ tracing-error.workspace = true
 tracing-subscriber.workspace = true
 
 authentik-config.workspace = true
-authentik-db.workspace = true
-authentik-server.workspace = true
-authentik-worker.workspace = true
+authentik-db = { workspace = true, optional = true }
+authentik-server = { workspace = true, optional = true }
+authentik-worker = { workspace = true, optional = true }
 
 [lints]
 workspace = true

@@ -68,7 +68,9 @@ struct Cli {
 #[derive(Debug, FromArgs, PartialEq)]
 #[argh(subcommand)]
 enum Command {
+    #[cfg(feature = "server")]
     Server(authentik_server::Cli),
+    #[cfg(feature = "worker")]
     Worker(authentik_worker::Cli),
 }
 
@@ -175,29 +177,33 @@ async fn main() -> Result<()> {
     install_tracing().await?;
     let cli: Cli = argh::from_env();
 
-    if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
-        let mut dir = std::env::temp_dir();
-        dir.push("authentik_prometheus_tmp");
-        // SAFETY: there is only one thread at this point, so this is safe.
-        unsafe {
-            std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
-        }
-    }
-
     let (signals_tx, _signals_rx) = broadcast::channel(10);
-
     tasks.spawn(watch_signals(
         SignalStreams::new()?,
         stop.clone(),
         signals_tx.clone(),
     ));
 
-    authentik_db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
+    #[cfg(any(feature = "server", feature = "worker"))]
+    {
+        if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
+            let mut dir = std::env::temp_dir();
+            dir.push("authentik_prometheus_tmp");
+            // SAFETY: there is only one thread at this point, so this is safe.
+            unsafe {
+                std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
+            }
+        }
+
+        authentik_db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
+    }
 
     match cli.command {
+        #[cfg(feature = "server")]
         Command::Server(args) => {
             authentik_server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
         }
+        #[cfg(feature = "worker")]
         Command::Worker(_args) => todo!(),
     };
 
