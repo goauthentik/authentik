@@ -57,16 +57,16 @@ Then the review requires approval from: Alice, Bob, at least 2 members of the Se
 
 Each object governed by a lifecycle rule has a review state. You can view all objects with pending or overdue review states on the **Events** > **Reviews** page. You can also view an individual object's current review state on the **Lifecycle** tab of the object's detail page.
 
-| State        | Description                                                                                              |
-| ------------ | -------------------------------------------------------------------------------------------------------- |
-| **Pending**  | A review has been initiated and is waiting for reviewers.                                                |
-| **Overdue**  | The grace period has passed without the review being completed. Reviewers receive an alert notification. |
-| **Reviewed** | All required reviews have been received and the review is complete.                                      |
-| **Canceled** | The review was canceled, typically because the lifecycle rule was deleted or modified.                   |
+| State        | Description                                                                            |
+| ------------ | -------------------------------------------------------------------------------------- |
+| **Pending**  | A review has been initiated and is waiting for reviewers.                              |
+| **Overdue**  | The grace period has passed without the review being completed.                        |
+| **Reviewed** | All required reviews have been received and the review is complete.                    |
+| **Canceled** | The review was canceled, typically because the lifecycle rule was deleted or modified. |
 
 ### Review lifecycle
 
-An object matched by a lifecycle rule goes through the following review stages:
+An object's review state cycles through these values according to the following rules:
 
 1. When a lifecycle rule is created or when the interval since the last completed review has elapsed, the object enters the **Pending** review state and reviewers are notified.
 2. Reviewers submit their reviews (with an optional note).
@@ -74,18 +74,33 @@ An object matched by a lifecycle rule goes through the following review stages:
 4. If the grace period passes without all requirements being met, the object becomes **Overdue** and reviewers receive an alert.
 5. After the interval passes, a new review cycle begins and the object returns to the **Pending** state.
 
-## Submitting reviews
+## Reviewer workflow
+
+For a reviewer (either a user set as an explicit reviewer or a member of a configured reviewer group), the review workflow is as follows:
+
+1. Once a new review cycle starts for an object, you receive a notification that a review is due (via the configured notification transports).
+2. Click on the link in the notification to navigate to the object's detail page.
+
+    Alternatively, you can navigate to the **Events** > **Reviews** page and enable "Only show reviews where I am a reviewer" filter to see objects awaiting your review.
+    Here, you can click on the object to navigate to its detail page.
+
+    In both cases, you will be taken to the **Lifecycle** tab of the object's detail page.
+
+3. Review the object's current configuration
+4. Go back to the **Lifecycle** tab
+5. Click **Review** to submit your review, optionally including a note.
+6. Once all reviewer requirements are met, the object automatically transitions to the **Reviewed** state.
+
+### Submitting reviews
 
 When an object is in the **Pending** or **Overdue** review state, authorized reviewers can submit reviews for it. Each reviewer can only submit one review per review cycle. When submitting a review, reviewers can optionally include a note explaining their decision.
-
-You can view and submit reviews on the **Lifecycle** tab of the object's detail page.
 
 Only authorized reviewers can submit reviews:
 
 - Members of the configured reviewer groups
 - Users listed as explicit reviewers
 
-## Notifications
+### Notifications
 
 Reviewers are notified at the following events:
 
