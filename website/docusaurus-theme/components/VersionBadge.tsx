@@ -37,12 +37,6 @@ export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver, docID })
 
             return null;
         }
-
-        const versionError = new Error(message, {
-            cause: error,
-        });
-
-        throw versionError;
     }
 
     return (

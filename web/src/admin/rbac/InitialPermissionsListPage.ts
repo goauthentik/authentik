@@ -45,7 +45,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Initial Permissions")}
+            object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}
             .usedBy=${(item: InitialPermissions) => {
                 return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsUsedByList({

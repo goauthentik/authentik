@@ -42,7 +42,7 @@ export class UserConsentList extends Table<UserConsent> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Consent(s)")}
+            object-label=${msg("Consent(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: UserConsent) => {
                 return [

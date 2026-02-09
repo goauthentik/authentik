@@ -72,7 +72,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
     renderToolbarSelected() {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Connector(s)")}
+            object-label=${msg("Connector(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Connector) => {
                 return [{ key: msg("Name"), value: item.name }];
