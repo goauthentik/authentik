@@ -19,7 +19,7 @@ import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -75,9 +75,10 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     row(item: Source): SlottedTemplateResult[] {
-        if (item.component === "") {
+        if (!item.component) {
             return this.rowInbuilt(item);
         }
+
         return [
             html`<a href="#/core/sources/${item.slug}">
                 <div>${item.name}</div>
@@ -91,6 +92,11 @@ export class SourceListPage extends TablePage<Source> {
             html` <ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.component, {
                     instancePk: item.slug,
+                    slot: "form",
+                    actionLabel: msg("Update"),
+                    headline: msg(str`Update ${item.verboseName}`, {
+                        id: "form.headline.update",
+                    }),
                 })}
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
