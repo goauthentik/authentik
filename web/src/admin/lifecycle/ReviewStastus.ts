@@ -1,7 +1,7 @@
 import { AKElement } from "#elements/Base";
 import { PFColor } from "#elements/Label";
 
-import { ReviewStateEnum } from "@goauthentik/api";
+import { LifecycleIterationStateEnum } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -11,38 +11,38 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
-@customElement("ak-access-review-status")
-export class AccessReviewStatus extends AKElement {
+@customElement("ak-lifecycle-review-status")
+export class ReviewStatus extends AKElement {
     public static styles: CSSResult[] = [PFButton];
 
     @property()
-    status: ReviewStateEnum = ReviewStateEnum.UnknownDefaultOpenApi;
+    status: LifecycleIterationStateEnum = LifecycleIterationStateEnum.UnknownDefaultOpenApi;
 
     render() {
         return match(this.status)
             .with(
-                ReviewStateEnum.Pending,
+                LifecycleIterationStateEnum.Pending,
                 () => html` <ak-label color=${PFColor.Orange}>${msg("Pending review")}</ak-label>`,
             )
             .with(
-                ReviewStateEnum.Reviewed,
+                LifecycleIterationStateEnum.Reviewed,
                 () => html`<ak-label color=${PFColor.Green}>${msg("Reviewed")}</ak-label>`,
             )
             .with(
-                ReviewStateEnum.Overdue,
+                LifecycleIterationStateEnum.Overdue,
                 () => html`<ak-label color=${PFColor.Red}>${msg("Overdue")}</ak-label>`,
             )
             .with(
-                ReviewStateEnum.Canceled,
+                LifecycleIterationStateEnum.Canceled,
                 () => html`<ak-label color=${PFColor.Grey}>${msg("Canceled")}</ak-label>`,
             )
-            .with(ReviewStateEnum.UnknownDefaultOpenApi, () => nothing)
+            .with(LifecycleIterationStateEnum.UnknownDefaultOpenApi, () => nothing)
             .exhaustive();
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-access-review-status": AccessReviewStatus;
+        "ak-lifecycle-review-status": ReviewStatus;
     }
 }

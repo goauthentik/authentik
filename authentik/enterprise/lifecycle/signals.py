@@ -17,6 +17,6 @@ def post_rule_save(sender, instance: LifecycleRule, created: bool, **_):
 
 @receiver(pre_delete, sender=LifecycleRule)
 def pre_rule_delete(sender, instance: LifecycleRule, **_):
-    instance.review_set.filter(Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)).update(
-        state=ReviewState.CANCELED
-    )
+    instance.lifecycleiteration_set.filter(
+        Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)
+    ).update(state=ReviewState.CANCELED)

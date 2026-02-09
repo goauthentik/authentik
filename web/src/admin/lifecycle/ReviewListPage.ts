@@ -6,7 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "#admin/lifecycle/AccessReviewStastus";
+import "#admin/lifecycle/ReviewStastus";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
 
@@ -16,21 +16,21 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { LifecycleApi, Review } from "@goauthentik/api";
+import { LifecycleApi, LifecycleIteration } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-review-list")
-export class ReviewListPage extends TablePage<Review> {
+export class ReviewListPage extends TablePage<LifecycleIteration> {
     expandable = false;
     checkbox = false;
     clearOnRefresh = true;
 
     protected override searchEnabled = false;
-    public pageTitle = msg("Open Access Reviews");
-    public pageDescription = msg("See all currently open access reviews.");
+    public pageTitle = msg("Open Reviews");
+    public pageDescription = msg("See all currently open reviews.");
     public pageIcon = "pf-icon pf-icon-history";
 
     @property()
@@ -39,8 +39,8 @@ export class ReviewListPage extends TablePage<Review> {
     @state()
     showOnlyMine = false;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Review>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsListOpen({
+    async apiEndpoint(): Promise<PaginatedResponse<LifecycleIteration>> {
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleIterationsListOpen({
             ...(await this.defaultEndpointConfig()),
             userIsReviewer: this.showOnlyMine || undefined,
         });
@@ -73,9 +73,9 @@ export class ReviewListPage extends TablePage<Review> {
         [msg("Grace period ends")],
     ];
 
-    row(item: Review): SlottedTemplateResult[] {
+    row(item: LifecycleIteration): SlottedTemplateResult[] {
         return [
-            html`<ak-access-review-status status=${item.state}></ak-access-review-status>`,
+            html`<ak-lifecycle-review-status status=${item.state}></ak-lifecycle-review-status>`,
             html`<a href="#${item.objectAdminUrl}">${item.objectVerbose}</a>`,
             html`<ak-timestamp .timestamp=${item.openedOn} datetime dateonly></ak-timestamp>`,
             html`<ak-timestamp .timestamp=${item.gracePeriodEnd} datetime dateonly></ak-timestamp>`,

@@ -704,7 +704,7 @@
                     ],
                     "properties": {
                         "model": {
-                            "const": "authentik_lifecycle.attestation"
+                            "const": "authentik_lifecycle.lifecycleiteration"
                         },
                         "id": {
                             "type": "string"
@@ -726,13 +726,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.attestation_permissions"
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.attestation"
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.attestation"
+                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration"
                         }
                     }
                 },
@@ -5682,16 +5682,16 @@
                             "authentik_flows.view_flowstagebinding",
                             "authentik_flows.view_flowtoken",
                             "authentik_flows.view_stage",
-                            "authentik_lifecycle.add_attestation",
+                            "authentik_lifecycle.add_lifecycleiteration",
                             "authentik_lifecycle.add_lifecyclerule",
                             "authentik_lifecycle.add_review",
-                            "authentik_lifecycle.change_attestation",
+                            "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_review",
-                            "authentik_lifecycle.delete_attestation",
+                            "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_review",
-                            "authentik_lifecycle.view_attestation",
+                            "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_review",
                             "authentik_outposts.add_dockerserviceconnection",
@@ -6770,26 +6770,22 @@
                 }
             }
         },
-        "model_authentik_lifecycle.attestation": {
+        "model_authentik_lifecycle.lifecycleiteration": {
             "type": "object",
             "properties": {
-                "review": {
+                "content_type": {
                     "type": "string",
-                    "format": "uuid",
-                    "title": "Review"
-                },
-                "note": {
-                    "type": [
-                        "string",
-                        "null"
+                    "enum": [
+                        "authentik_core.application",
+                        "authentik_core.group",
+                        "authentik_rbac.role"
                     ],
-                    "minLength": 1,
-                    "title": "Note"
+                    "title": "Content type"
                 }
             },
             "required": []
         },
-        "model_authentik_lifecycle.attestation_permissions": {
+        "model_authentik_lifecycle.lifecycleiteration_permissions": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -6800,10 +6796,10 @@
                     "permission": {
                         "type": "string",
                         "enum": [
-                            "add_attestation",
-                            "change_attestation",
-                            "delete_attestation",
-                            "view_attestation"
+                            "add_lifecycleiteration",
+                            "change_lifecycleiteration",
+                            "delete_lifecycleiteration",
+                            "view_lifecycleiteration"
                         ]
                     },
                     "user": {
@@ -6918,14 +6914,18 @@
         "model_authentik_lifecycle.review": {
             "type": "object",
             "properties": {
-                "content_type": {
+                "iteration": {
                     "type": "string",
-                    "enum": [
-                        "authentik_core.application",
-                        "authentik_core.group",
-                        "authentik_rbac.role"
+                    "format": "uuid",
+                    "title": "Iteration"
+                },
+                "note": {
+                    "type": [
+                        "string",
+                        "null"
                     ],
-                    "title": "Content type"
+                    "minLength": 1,
+                    "title": "Note"
                 }
             },
             "required": []
@@ -8950,8 +8950,8 @@
                         "authentik_blueprints.blueprintinstance",
                         "authentik_endpoints_connectors_fleet.fleetconnector",
                         "authentik_lifecycle.lifecyclerule",
+                        "authentik_lifecycle.lifecycleiteration",
                         "authentik_lifecycle.review",
-                        "authentik_lifecycle.attestation",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
@@ -11270,16 +11270,16 @@
                             "authentik_flows.view_flowstagebinding",
                             "authentik_flows.view_flowtoken",
                             "authentik_flows.view_stage",
-                            "authentik_lifecycle.add_attestation",
+                            "authentik_lifecycle.add_lifecycleiteration",
                             "authentik_lifecycle.add_lifecyclerule",
                             "authentik_lifecycle.add_review",
-                            "authentik_lifecycle.change_attestation",
+                            "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_review",
-                            "authentik_lifecycle.delete_attestation",
+                            "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_review",
-                            "authentik_lifecycle.view_attestation",
+                            "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_review",
                             "authentik_outposts.add_dockerserviceconnection",

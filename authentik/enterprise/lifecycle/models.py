@@ -89,41 +89,41 @@ class LifecycleRule(SerializerModel):
             )
         return qs
 
-    def _get_stale_reviews(self) -> QuerySet[Review]:
+    def _get_stale_iterations(self) -> QuerySet[LifecycleIteration]:
         filter = ~Q(content_type=self.content_type)
         if self.object_id:
             filter = filter | ~Q(object_id=self.object_id)
         filter = Q(state__in=(ReviewState.PENDING, ReviewState.OVERDUE)) & filter
-        return self.review_set.filter(filter)
+        return self.lifecycleiteration_set.filter(filter)
 
-    def _get_newly_overdue_reviews(self) -> QuerySet[Review]:
-        return self.review_set.filter(
+    def _get_newly_overdue_iterations(self) -> QuerySet[LifecycleIteration]:
+        return self.lifecycleiteration_set.filter(
             opened_on__lte=timezone.now() - timedelta_from_string(self.grace_period),
             state=ReviewState.PENDING,
         )
 
     def _get_newly_due_objects(self) -> QuerySet:
-        recent_review_ids = Review.objects.filter(
+        recent_iteration_ids = LifecycleIteration.objects.filter(
             content_type=self.content_type,
             object_id__isnull=False,
             opened_on__gte=timezone.now() - timedelta_from_string(self.interval),
         ).values_list(Cast("object_id", output_field=self._get_pk_field()), flat=True)
 
-        return self.get_objects().exclude(pk__in=recent_review_ids)
+        return self.get_objects().exclude(pk__in=recent_iteration_ids)
 
     def apply(self):
-        self._get_stale_reviews().update(state=ReviewState.CANCELED)
+        self._get_stale_iterations().update(state=ReviewState.CANCELED)
 
-        for review in self._get_newly_overdue_reviews():
-            review.make_overdue()
+        for iteration in self._get_newly_overdue_iterations():
+            iteration.make_overdue()
 
         for obj in self._get_newly_due_objects():
-            Review.start(content_type=self.content_type, object_id=obj.pk, rule=self)
+            LifecycleIteration.start(content_type=self.content_type, object_id=obj.pk, rule=self)
 
-    def is_satisfied_for_review(self, review: Review) -> bool:
+    def is_satisfied_for_iteration(self, iteration: LifecycleIteration) -> bool:
         reviewers = self.reviewers.all()
         if (
-            review.attestation_set.filter(reviewer__in=reviewers).distinct("reviewer").count()
+            iteration.review_set.filter(reviewer__in=reviewers).distinct("reviewer").count()
             < reviewers.count()
         ):
             return False
@@ -132,7 +132,7 @@ class LifecycleRule(SerializerModel):
         if self.min_reviewers_is_per_group:
             for g in self.reviewer_groups.all():
                 if (
-                    review.attestation_set.filter(
+                    iteration.review_set.filter(
                         reviewer__groups__in=Group.objects.filter(pk=g.pk).with_descendants()
                     )
                     .distinct()
@@ -143,7 +143,7 @@ class LifecycleRule(SerializerModel):
             return True
         else:
             return (
-                review.attestation_set.filter(
+                iteration.review_set.filter(
                     reviewer__groups__in=self.reviewer_groups.all().with_descendants()
                 )
                 .distinct()
@@ -177,7 +177,7 @@ class ReviewState(models.TextChoices):
     CANCELED = "CANCELED", _("Canceled")
 
 
-class Review(SerializerModel, ManagedModel):
+class LifecycleIteration(SerializerModel, ManagedModel):
     id = models.UUIDField(primary_key=True, default=uuid4, null=False)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(null=False)
@@ -193,9 +193,9 @@ class Review(SerializerModel, ManagedModel):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
+        from authentik.enterprise.lifecycle.api.iterations import LifecycleIterationSerializer
 
-        return ReviewSerializer
+        return LifecycleIterationSerializer
 
     def _get_model_name(self) -> str:
         return self.content_type.name.lower()
@@ -205,7 +205,7 @@ class Review(SerializerModel, ManagedModel):
             "target": self.object,
             "hyperlink": link_for_model(self.object),
             "hyperlink_label": _(f"Go to {self._get_model_name()}"),
-            "review": self.id,
+            "lifecycle_iteration": self.id,
         }
 
     def initialize(self):
@@ -230,10 +230,12 @@ class Review(SerializerModel, ManagedModel):
         self.save()
 
     @staticmethod
-    def start(content_type: ContentType, object_id: str, rule: LifecycleRule) -> Review:
-        review = Review.objects.create(content_type=content_type, object_id=object_id, rule=rule)
-        review.initialize()
-        return review
+    def start(content_type: ContentType, object_id: str, rule: LifecycleRule) -> LifecycleIteration:
+        iteration = LifecycleIteration.objects.create(
+            content_type=content_type, object_id=object_id, rule=rule
+        )
+        iteration.initialize()
+        return iteration
 
     def make_reviewed(self, request: HttpRequest):
         self.state = ReviewState.REVIEWED
@@ -246,16 +248,16 @@ class Review(SerializerModel, ManagedModel):
         self.rule.notify_reviewers(event, NotificationSeverity.NOTICE)
         self.save()
 
-    def on_attestation(self, request: HttpRequest):
+    def on_review(self, request: HttpRequest):
         if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
             raise AssertionError("Review is not pending or overdue")
-        if self.rule.is_satisfied_for_review(self):
+        if self.rule.is_satisfied_for_iteration(self):
             self.make_reviewed(request)
 
-    def user_can_attest(self, user: User) -> bool:
+    def user_can_review(self, user: User) -> bool:
         if self.state not in (ReviewState.PENDING, ReviewState.OVERDUE):
             return False
-        if self.attestation_set.filter(reviewer=user).exists():
+        if self.review_set.filter(reviewer=user).exists():
             return False
         groups = self.rule.reviewer_groups.all()
         if groups:
@@ -267,16 +269,19 @@ class Review(SerializerModel, ManagedModel):
             return user in self.rule.get_reviewers()
 
 
-class Attestation(SerializerModel):
+class Review(SerializerModel):
     id = models.UUIDField(primary_key=True, default=uuid4)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    iteration = models.ForeignKey(LifecycleIteration, on_delete=models.CASCADE)
 
     reviewer = models.ForeignKey("authentik_core.User", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     note = models.TextField(null=True)
 
+    class Meta:
+        unique_together = [["iteration", "reviewer"]]
+
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.lifecycle.api.attestations import AttestationSerializer
+        from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
 
-        return AttestationSerializer
+        return ReviewSerializer

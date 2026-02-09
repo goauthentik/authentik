@@ -161,7 +161,7 @@ export const ROUTES: Route[] = [
         await import("#admin/lifecycle/LifecycleRuleListPage");
         return html`<ak-lifecycle-rule-list></ak-lifecycle-rule-list>`;
     }),
-    new Route(new RegExp("^/events/access-reviews"), async () => {
+    new Route(new RegExp("^/events/lifecycle-reviews"), async () => {
         await import("#admin/lifecycle/ReviewListPage");
         return html`<ak-review-list></ak-review-list>`;
     }),

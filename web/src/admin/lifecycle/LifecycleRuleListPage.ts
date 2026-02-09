@@ -33,7 +33,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
 
     protected override searchEnabled = true;
     public pageTitle = msg("Object Lifecycle Rules");
-    public pageDescription = msg("Schedule periodic access reviews for objects in authentik.");
+    public pageDescription = msg("Schedule periodic reviews for objects in authentik.");
     public pageIcon = "pf-icon pf-icon-history";
 
     @property()

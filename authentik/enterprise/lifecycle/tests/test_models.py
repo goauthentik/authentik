@@ -7,7 +7,12 @@ from django.utils import timezone
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_user
-from authentik.enterprise.lifecycle.models import Attestation, LifecycleRule, Review, ReviewState
+from authentik.enterprise.lifecycle.models import (
+    LifecycleIteration,
+    LifecycleRule,
+    Review,
+    ReviewState,
+)
 from authentik.events.models import (
     Event,
     EventAction,
@@ -53,8 +58,8 @@ class TestLifecycleModels(TestCase):
             **kwargs,
         )
 
-    def test_review_start_supported_objects(self):
-        """Ensure reviews are automatically started for applications, roles, and groups."""
+    def test_iteration_start_supported_objects(self):
+        """Ensure iterations are automatically started for applications, roles, and groups."""
         for model in (Application, Role, Group):
             with self.subTest(model=model.__name__):
                 obj = self._create_object(model)
@@ -64,19 +69,19 @@ class TestLifecycleModels(TestCase):
 
                 rule = self._create_rule_for_object(obj)
 
-                # Verify review was created automatically
-                review = Review.objects.get(
+                # Verify iteration was created automatically
+                iteration = LifecycleIteration.objects.get(
                     content_type=content_type, object_id=str(obj.pk), rule=rule
                 )
-                self.assertEqual(review.state, ReviewState.PENDING)
-                self.assertEqual(review.object, obj)
-                self.assertEqual(review.rule, rule)
+                self.assertEqual(iteration.state, ReviewState.PENDING)
+                self.assertEqual(iteration.object, obj)
+                self.assertEqual(iteration.rule, rule)
                 self.assertEqual(
                     Event.objects.filter(action=EventAction.REVIEW_INITIATED).count(),
                     before_events + 1,
                 )
 
-    def test_attestation_requires_all_explicit_reviewers(self):
+    def test_review_requires_all_explicit_reviewers(self):
         obj = Group.objects.create(name=generate_id())
         rule = self._create_rule_for_object(obj)
         reviewer_one = create_test_user()
@@ -85,22 +90,24 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
         request = self._get_request()
 
-        Attestation.objects.create(review=review, reviewer=reviewer_one)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.PENDING)
+        Review.objects.create(iteration=iteration, reviewer=reviewer_one)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        Attestation.objects.create(review=review, reviewer=reviewer_two)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.REVIEWED)
+        Review.objects.create(iteration=iteration, reviewer=reviewer_two)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.REVIEWED)
         self.assertTrue(Event.objects.filter(action=EventAction.REVIEW_COMPLETED).exists())
 
-    def test_attestation_min_reviewers_from_groups(self):
-        """Group-based reviews complete once the minimum number of reviewers attest."""
+    def test_review_min_reviewers_from_groups(self):
+        """Group-based reviews complete once the minimum number of reviewers review."""
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj, min_reviewers=2)
 
@@ -112,20 +119,22 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
         request = self._get_request()
 
-        Attestation.objects.create(review=review, reviewer=reviewer_one)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.PENDING)
+        Review.objects.create(iteration=iteration, reviewer=reviewer_one)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        Attestation.objects.create(review=review, reviewer=reviewer_two)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.REVIEWED)
+        Review.objects.create(iteration=iteration, reviewer=reviewer_two)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
-    def test_attestation_explicit_and_group_reviewers(self):
+    def test_review_explicit_and_group_reviewers(self):
         """Reviews require both explicit reviewers AND min_reviewers from groups."""
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj, min_reviewers=1)
@@ -140,22 +149,24 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
         request = self._get_request()
 
-        # Only group member attests - not satisfied (explicit reviewer missing)
-        Attestation.objects.create(review=review, reviewer=group_member)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.PENDING)
+        # Only group member reviews - not satisfied (explicit reviewer missing)
+        Review.objects.create(iteration=iteration, reviewer=group_member)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        # Explicit reviewer attests - now satisfied
-        Attestation.objects.create(review=review, reviewer=explicit_reviewer)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.REVIEWED)
+        # Explicit reviewer reviews - now satisfied
+        Review.objects.create(iteration=iteration, reviewer=explicit_reviewer)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
-    def test_attestation_min_reviewers_per_group(self):
+    def test_review_min_reviewers_per_group(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj, min_reviewers=1, min_reviewers_is_per_group=True)
 
@@ -169,22 +180,24 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
         request = self._get_request()
 
-        # Only member from group_one attests - not satisfied (need member from each group)
-        Attestation.objects.create(review=review, reviewer=member_group_one)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.PENDING)
+        # Only member from group_one reviews - not satisfied (need member from each group)
+        Review.objects.create(iteration=iteration, reviewer=member_group_one)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        # Member from group_two attests - now satisfied
-        Attestation.objects.create(review=review, reviewer=member_group_two)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.REVIEWED)
+        # Member from group_two reviews - now satisfied
+        Review.objects.create(iteration=iteration, reviewer=member_group_two)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
-    def test_attestation_reviewers_from_child_groups(self):
+    def test_review_reviewers_from_child_groups(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj, min_reviewers=1)
 
@@ -199,18 +212,20 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
         request = self._get_request()
 
-        # Child group member should be able to attest
-        self.assertTrue(review.user_can_attest(child_member))
+        # Child group member should be able to review
+        self.assertTrue(iteration.user_can_review(child_member))
 
-        Attestation.objects.create(review=review, reviewer=child_member)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.REVIEWED)
+        Review.objects.create(iteration=iteration, reviewer=child_member)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
-    def test_attestation_reviewers_from_nested_child_groups(self):
+    def test_review_reviewers_from_nested_child_groups(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj, min_reviewers=2)
 
@@ -229,22 +244,24 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
         request = self._get_request()
 
-        # Both nested members should be able to attest
-        self.assertTrue(review.user_can_attest(parent_member))
-        self.assertTrue(review.user_can_attest(child_member))
+        # Both nested members should be able to review
+        self.assertTrue(iteration.user_can_review(parent_member))
+        self.assertTrue(iteration.user_can_review(child_member))
 
-        Attestation.objects.create(review=review, reviewer=parent_member)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.PENDING)
+        Review.objects.create(iteration=iteration, reviewer=parent_member)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        Attestation.objects.create(review=review, reviewer=child_member)
-        review.on_attestation(request)
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.REVIEWED)
+        Review.objects.create(iteration=iteration, reviewer=child_member)
+        iteration.on_review(request)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.REVIEWED)
 
     def test_notify_reviewers_send_once(self):
         obj = Group.objects.create(name=generate_id())
@@ -297,20 +314,22 @@ class TestLifecycleModels(TestCase):
             grace_period="days=10",
         )
 
-        # Get the automatically created review and backdate it past the grace period
-        review = Review.objects.get(
+        # Get the automatically created iteration and backdate it past the grace period
+        iteration = LifecycleIteration.objects.get(
             content_type=content_type, object_id=str(app_one.pk), rule=rule_overdue
         )
-        Review.objects.filter(pk=review.pk).update(
+        LifecycleIteration.objects.filter(pk=iteration.pk).update(
             opened_on=(timezone.now().date() - timedelta(days=20))
         )
 
         # Apply again to trigger overdue logic
         rule_overdue.apply()
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.OVERDUE)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.OVERDUE)
         self.assertEqual(
-            Review.objects.filter(content_type=content_type, object_id=str(app_one.pk)).count(),
+            LifecycleIteration.objects.filter(
+                content_type=content_type, object_id=str(app_one.pk)
+            ).count(),
             1,
         )
 
@@ -322,11 +341,15 @@ class TestLifecycleModels(TestCase):
             grace_period="days=10",
         )
         self.assertEqual(
-            Review.objects.filter(content_type=content_type, object_id=str(app_two.pk)).count(),
+            LifecycleIteration.objects.filter(
+                content_type=content_type, object_id=str(app_two.pk)
+            ).count(),
             1,
         )
-        new_review = Review.objects.get(content_type=content_type, object_id=str(app_two.pk))
-        self.assertEqual(new_review.state, ReviewState.PENDING)
+        new_iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(app_two.pk)
+        )
+        self.assertEqual(new_iteration.state, ReviewState.PENDING)
 
     def test_apply_idempotent(self):
         app_due = Application.objects.create(name=generate_id(), slug=generate_id())
@@ -356,24 +379,26 @@ class TestLifecycleModels(TestCase):
             grace_period="days=10",
         )
 
-        overdue_review = Review.objects.get(
+        overdue_iteration = LifecycleIteration.objects.get(
             content_type=content_type, object_id=str(app_overdue.pk), rule=rule_overdue
         )
-        Review.objects.filter(pk=overdue_review.pk).update(
+        LifecycleIteration.objects.filter(pk=overdue_iteration.pk).update(
             opened_on=(timezone.now().date() - timedelta(days=20))
         )
 
-        # Apply overdue rule to mark review as overdue
+        # Apply overdue rule to mark iteration as overdue
         rule_overdue.apply()
 
-        due_review = Review.objects.get(content_type=content_type, object_id=str(app_due.pk))
-        overdue_review.refresh_from_db()
-        self.assertEqual(due_review.state, ReviewState.PENDING)
-        self.assertEqual(overdue_review.state, ReviewState.OVERDUE)
+        due_iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(app_due.pk)
+        )
+        overdue_iteration.refresh_from_db()
+        self.assertEqual(due_iteration.state, ReviewState.PENDING)
+        self.assertEqual(overdue_iteration.state, ReviewState.OVERDUE)
 
         initiated_after_first = Event.objects.filter(action=EventAction.REVIEW_INITIATED).count()
         overdue_after_first = Event.objects.filter(action=EventAction.REVIEW_OVERDUE).count()
-        # Both rules created reviews on save
+        # Both rules created iterations on save
         self.assertEqual(initiated_after_first, initiated_before + 2)
         self.assertEqual(overdue_after_first, overdue_before + 1)
 
@@ -381,10 +406,10 @@ class TestLifecycleModels(TestCase):
         rule_due.apply()
         rule_overdue.apply()
 
-        due_review.refresh_from_db()
-        overdue_review.refresh_from_db()
-        self.assertEqual(due_review.state, ReviewState.PENDING)
-        self.assertEqual(overdue_review.state, ReviewState.OVERDUE)
+        due_iteration.refresh_from_db()
+        overdue_iteration.refresh_from_db()
+        self.assertEqual(due_iteration.state, ReviewState.PENDING)
+        self.assertEqual(overdue_iteration.state, ReviewState.OVERDUE)
         self.assertEqual(
             Event.objects.filter(action=EventAction.REVIEW_INITIATED).count(),
             initiated_after_first,
@@ -437,7 +462,7 @@ class TestLifecycleModels(TestCase):
         self.assertNotIn(app_with_rule, objects)
         self.assertIn(app_without_rule, objects)
 
-    def test_rule_type_apply_creates_reviews_for_all_objects(self):
+    def test_rule_type_apply_creates_iterations_for_all_objects(self):
         app_one = Application.objects.create(name=generate_id(), slug=generate_id())
         app_two = Application.objects.create(name=generate_id(), slug=generate_id())
         content_type = ContentType.objects.get_for_model(Application)
@@ -451,30 +476,34 @@ class TestLifecycleModels(TestCase):
         )
 
         self.assertTrue(
-            Review.objects.filter(content_type=content_type, object_id=str(app_one.pk)).exists()
+            LifecycleIteration.objects.filter(
+                content_type=content_type, object_id=str(app_one.pk)
+            ).exists()
         )
         self.assertTrue(
-            Review.objects.filter(content_type=content_type, object_id=str(app_two.pk)).exists()
+            LifecycleIteration.objects.filter(
+                content_type=content_type, object_id=str(app_two.pk)
+            ).exists()
         )
 
-    def test_delete_rule_cancels_open_reviews(self):
+    def test_delete_rule_cancels_open_iterations(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
 
         rule = self._create_rule_for_object(obj)
         content_type = ContentType.objects.get_for_model(obj)
 
-        pending_review = Review.objects.get(
+        pending_iteration = LifecycleIteration.objects.get(
             content_type=content_type, object_id=str(obj.pk), rule=rule
         )
-        self.assertEqual(pending_review.state, ReviewState.PENDING)
+        self.assertEqual(pending_iteration.state, ReviewState.PENDING)
 
-        overdue_review = Review.objects.create(
+        overdue_iteration = LifecycleIteration.objects.create(
             content_type=content_type,
             object_id=str(obj.pk),
             rule=rule,
             state=ReviewState.OVERDUE,
         )
-        reviewed_review = Review.objects.create(
+        reviewed_iteration = LifecycleIteration.objects.create(
             content_type=content_type,
             object_id=str(obj.pk),
             rule=rule,
@@ -483,15 +512,15 @@ class TestLifecycleModels(TestCase):
 
         rule.delete()
 
-        pending_review.refresh_from_db()
-        overdue_review.refresh_from_db()
-        reviewed_review.refresh_from_db()
+        pending_iteration.refresh_from_db()
+        overdue_iteration.refresh_from_db()
+        reviewed_iteration.refresh_from_db()
 
-        self.assertEqual(pending_review.state, ReviewState.CANCELED)
-        self.assertEqual(overdue_review.state, ReviewState.CANCELED)
-        self.assertEqual(reviewed_review.state, ReviewState.REVIEWED)  # Not affected
+        self.assertEqual(pending_iteration.state, ReviewState.CANCELED)
+        self.assertEqual(overdue_iteration.state, ReviewState.CANCELED)
+        self.assertEqual(reviewed_iteration.state, ReviewState.REVIEWED)  # Not affected
 
-    def test_update_rule_target_cancels_stale_reviews(self):
+    def test_update_rule_target_cancels_stale_iterations(self):
         app_one = Application.objects.create(name=generate_id(), slug=generate_id())
         app_two = Application.objects.create(name=generate_id(), slug=generate_id())
         content_type = ContentType.objects.get_for_model(Application)
@@ -503,25 +532,25 @@ class TestLifecycleModels(TestCase):
             interval="days=30",
         )
 
-        review_for_app_one = Review.objects.get(
+        iteration_for_app_one = LifecycleIteration.objects.get(
             content_type=content_type, object_id=str(app_one.pk), rule=rule
         )
-        self.assertEqual(review_for_app_one.state, ReviewState.PENDING)
+        self.assertEqual(iteration_for_app_one.state, ReviewState.PENDING)
 
-        # Change rule target to app_two - save() triggers apply() which cancels stale reviews
+        # Change rule target to app_two - save() triggers apply() which cancels stale iterations
         rule.object_id = str(app_two.pk)
         rule.save()
 
-        review_for_app_one.refresh_from_db()
-        self.assertEqual(review_for_app_one.state, ReviewState.CANCELED)
+        iteration_for_app_one.refresh_from_db()
+        self.assertEqual(iteration_for_app_one.state, ReviewState.CANCELED)
 
-    def test_update_rule_content_type_cancels_stale_reviews(self):
+    def test_update_rule_content_type_cancels_stale_iterations(self):
         app = Application.objects.create(name=generate_id(), slug=generate_id())
         group = Group.objects.create(name=generate_id())
         app_content_type = ContentType.objects.get_for_model(Application)
         group_content_type = ContentType.objects.get_for_model(Group)
 
-        # Creating rule triggers automatic apply() which creates a review for app
+        # Creating rule triggers automatic apply() which creates a iteration for app
         rule = LifecycleRule.objects.create(
             name=generate_id(),
             content_type=app_content_type,
@@ -529,18 +558,20 @@ class TestLifecycleModels(TestCase):
             interval="days=30",
         )
 
-        review = Review.objects.get(content_type=app_content_type, object_id=str(app.pk), rule=rule)
-        self.assertEqual(review.state, ReviewState.PENDING)
+        iteration = LifecycleIteration.objects.get(
+            content_type=app_content_type, object_id=str(app.pk), rule=rule
+        )
+        self.assertEqual(iteration.state, ReviewState.PENDING)
 
-        # Change content type to Group - save() triggers apply() which cancels stale reviews
+        # Change content type to Group - save() triggers apply() which cancels stale iterations
         rule.content_type = group_content_type
         rule.object_id = str(group.pk)
         rule.save()
 
-        review.refresh_from_db()
-        self.assertEqual(review.state, ReviewState.CANCELED)
+        iteration.refresh_from_db()
+        self.assertEqual(iteration.state, ReviewState.CANCELED)
 
-    def test_user_can_attest_checks_group_hierarchy(self):
+    def test_user_can_review_checks_group_hierarchy(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj)
 
@@ -557,30 +588,34 @@ class TestLifecycleModels(TestCase):
         rule.reviewer_groups.add(parent_group)
 
         content_type = ContentType.objects.get_for_model(obj)
-        # Review is created automatically when rule is saved
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        # iteration is created automatically when rule is saved
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
 
-        self.assertTrue(review.user_can_attest(parent_member))
-        self.assertTrue(review.user_can_attest(child_member))
-        self.assertFalse(review.user_can_attest(non_member))
+        self.assertTrue(iteration.user_can_review(parent_member))
+        self.assertTrue(iteration.user_can_review(child_member))
+        self.assertFalse(iteration.user_can_review(non_member))
 
-    def test_user_cannot_attest_twice(self):
+    def test_user_cannot_review_twice(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj)
         reviewer = create_test_user()
         rule.reviewers.add(reviewer)
 
         content_type = ContentType.objects.get_for_model(obj)
-        # Review is created automatically when rule is saved
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        # iteration is created automatically when rule is saved
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
 
-        self.assertTrue(review.user_can_attest(reviewer))
+        self.assertTrue(iteration.user_can_review(reviewer))
 
-        Attestation.objects.create(review=review, reviewer=reviewer)
+        Review.objects.create(iteration=iteration, reviewer=reviewer)
 
-        self.assertFalse(review.user_can_attest(reviewer))
+        self.assertFalse(iteration.user_can_review(reviewer))
 
-    def test_user_cannot_attest_completed_review(self):
+    def test_user_cannot_review_completed_iteration(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())
         rule = self._create_rule_for_object(obj)
         reviewer = create_test_user()
@@ -588,13 +623,15 @@ class TestLifecycleModels(TestCase):
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        # Get the automatically created pending review and test with different states
-        review = Review.objects.get(content_type=content_type, object_id=str(obj.pk), rule=rule)
+        # Get the automatically created pending iteration and test with different states
+        iteration = LifecycleIteration.objects.get(
+            content_type=content_type, object_id=str(obj.pk), rule=rule
+        )
 
         for state in (ReviewState.REVIEWED, ReviewState.CANCELED):
-            review.state = state
-            review.save()
-            self.assertFalse(review.user_can_attest(reviewer))
+            iteration.state = state
+            iteration.save()
+            self.assertFalse(iteration.user_can_review(reviewer))
 
     def test_get_reviewers_includes_child_group_members(self):
         obj = Application.objects.create(name=generate_id(), slug=generate_id())

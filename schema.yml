@@ -8759,9 +8759,9 @@ paths:
           description: ''
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /lifecycle/attestations/:
+  /lifecycle/iterations/:
     post:
-      operationId: lifecycle_attestations_create
+      operationId: lifecycle_iterations_create
       description: |-
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
@@ -8771,7 +8771,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AttestationRequest'
+              $ref: '#/components/schemas/LifecycleIterationRequest'
         required: true
       security:
       - authentik: []
@@ -8780,7 +8780,71 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Attestation'
+                $ref: '#/components/schemas/LifecycleIteration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/iterations/latest/{content_type}/{object_id}/:
+    get:
+      operationId: lifecycle_iterations_latest_retrieve
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      parameters:
+      - in: path
+        name: content_type
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      - in: path
+        name: object_id
+        schema:
+          type: string
+          pattern: ^[^/]+$
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleIteration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/iterations/open/:
+    get:
+      operationId: lifecycle_iterations_list_open
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user_is_reviewer
+        schema:
+          type: boolean
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLifecycleIterationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -8966,70 +9030,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Review'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /lifecycle/reviews/latest/{content_type}/{object_id}/:
-    get:
-      operationId: lifecycle_reviews_latest_retrieve
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      parameters:
-      - in: path
-        name: content_type
-        schema:
-          type: string
-          pattern: ^[^/]+$
-        required: true
-      - in: path
-        name: object_id
-        schema:
-          type: string
-          pattern: ^[^/]+$
-        required: true
-      tags:
-      - lifecycle
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Review'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /lifecycle/reviews/open/:
-    get:
-      operationId: lifecycle_reviews_list_open
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: user_is_reviewer
-        schema:
-          type: boolean
-      tags:
-      - lifecycle
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedReviewList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -20825,7 +20825,7 @@ paths:
           - authentik_events.notificationwebhookmapping
           - authentik_flows.flow
           - authentik_flows.flowstagebinding
-          - authentik_lifecycle.attestation
+          - authentik_lifecycle.lifecycleiteration
           - authentik_lifecycle.lifecyclerule
           - authentik_lifecycle.review
           - authentik_outposts.dockerserviceconnection
@@ -34246,50 +34246,6 @@ components:
       required:
       - name
       - slug
-    Attestation:
-      type: object
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
-        review:
-          type: string
-          format: uuid
-        reviewer:
-          allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
-          readOnly: true
-        timestamp:
-          type: string
-          format: date-time
-          readOnly: true
-        note:
-          type: string
-          nullable: true
-      required:
-      - id
-      - review
-      - reviewer
-      - timestamp
-    AttestationRequest:
-      type: object
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      properties:
-        review:
-          type: string
-          format: uuid
-        note:
-          type: string
-          nullable: true
-          minLength: 1
-      required:
-      - review
     AuthTypeEnum:
       enum:
       - basic
@@ -42161,6 +42117,96 @@ components:
       - limit_exceeded_user
       - read_only
       type: string
+    LifecycleIteration:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        object_id:
+          type: string
+          readOnly: true
+        object_verbose:
+          type: string
+          readOnly: true
+        object_admin_url:
+          type: string
+          readOnly: true
+        state:
+          allOf:
+          - $ref: '#/components/schemas/LifecycleIterationStateEnum'
+          readOnly: true
+        opened_on:
+          type: string
+          format: date
+          readOnly: true
+        grace_period_end:
+          type: string
+          format: date
+          readOnly: true
+        next_review_date:
+          type: string
+          format: date
+          readOnly: true
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+          readOnly: true
+        user_can_review:
+          type: boolean
+          readOnly: true
+        reviewer_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewerGroup'
+          readOnly: true
+        min_reviewers:
+          type: integer
+          readOnly: true
+        reviewers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewerUser'
+          readOnly: true
+      required:
+      - content_type
+      - grace_period_end
+      - id
+      - min_reviewers
+      - next_review_date
+      - object_admin_url
+      - object_id
+      - object_verbose
+      - opened_on
+      - reviewer_groups
+      - reviewers
+      - reviews
+      - state
+      - user_can_review
+    LifecycleIterationRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+      required:
+      - content_type
+    LifecycleIterationStateEnum:
+      enum:
+      - REVIEWED
+      - PENDING
+      - OVERDUE
+      - CANCELED
+      type: string
     LifecycleRule:
       type: object
       description: |-
@@ -42798,8 +42844,8 @@ components:
       - authentik_blueprints.blueprintinstance
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_lifecycle.lifecyclerule
+      - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
-      - authentik_lifecycle.attestation
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -45254,6 +45300,21 @@ components:
       - pagination
       - results
       - autocomplete
+    PaginatedLifecycleIterationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LifecycleIteration'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedLifecycleRuleList:
       type: object
       properties:
@@ -45788,21 +45849,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReputationPolicy'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - pagination
-      - results
-      - autocomplete
-    PaginatedReviewList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Review'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -52926,86 +52972,40 @@ components:
           type: string
           format: uuid
           readOnly: true
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
-        object_id:
+        iteration:
           type: string
-          readOnly: true
-        object_verbose:
-          type: string
-          readOnly: true
-        object_admin_url:
-          type: string
-          readOnly: true
-        state:
+          format: uuid
+        reviewer:
           allOf:
-          - $ref: '#/components/schemas/ReviewStateEnum'
+          - $ref: '#/components/schemas/ReviewerUser'
           readOnly: true
-        opened_on:
+        timestamp:
           type: string
-          format: date
+          format: date-time
           readOnly: true
-        grace_period_end:
+        note:
           type: string
-          format: date
-          readOnly: true
-        next_review_date:
-          type: string
-          format: date
-          readOnly: true
-        attestations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attestation'
-          readOnly: true
-        user_can_attest:
-          type: boolean
-          readOnly: true
-        reviewer_groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewerGroup'
-          readOnly: true
-        min_reviewers:
-          type: integer
-          readOnly: true
-        reviewers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewerUser'
-          readOnly: true
+          nullable: true
       required:
-      - attestations
-      - content_type
-      - grace_period_end
       - id
-      - min_reviewers
-      - next_review_date
-      - object_admin_url
-      - object_id
-      - object_verbose
-      - opened_on
-      - reviewer_groups
-      - reviewers
-      - state
-      - user_can_attest
+      - iteration
+      - reviewer
+      - timestamp
     ReviewRequest:
       type: object
       description: |-
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
       properties:
-        content_type:
-          $ref: '#/components/schemas/ContentTypeEnum'
+        iteration:
+          type: string
+          format: uuid
+        note:
+          type: string
+          nullable: true
+          minLength: 1
       required:
-      - content_type
-    ReviewStateEnum:
-      enum:
-      - REVIEWED
-      - PENDING
-      - OVERDUE
-      - CANCELED
-      type: string
+      - iteration
     ReviewerGroup:
       type: object
       properties:

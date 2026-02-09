@@ -6,7 +6,7 @@ from authentik.tasks.schedules.common import ScheduleSpec
 class ReportsConfig(EnterpriseConfig):
     name = "authentik.enterprise.lifecycle"
     label = "authentik_lifecycle"
-    verbose_name = "authentik Enterprise.Reviews"
+    verbose_name = "authentik Enterprise.Lifecycle"
     default = True
 
     @property

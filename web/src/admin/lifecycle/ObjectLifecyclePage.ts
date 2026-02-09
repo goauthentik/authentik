@@ -1,4 +1,4 @@
-import "#admin/lifecycle/AccessReviewStastus";
+import "#admin/lifecycle/ReviewStastus";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-textarea-input";
 import "#elements/forms/ModalForm";
@@ -12,11 +12,11 @@ import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/tabl
 import { SlottedTemplateResult } from "#elements/types";
 
 import {
-    Attestation,
     ContentTypeEnum,
     LifecycleApi,
+    LifecycleIteration,
+    LifecycleIterationStateEnum,
     Review,
-    ReviewStateEnum,
 } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
@@ -33,26 +33,26 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-object-attestation-form")
-export class ObjectAttestationForm extends ModelForm<Attestation, string> {
+@customElement("ak-object-review-form")
+export class ObjectReviewForm extends ModelForm<Review, string> {
     @property({ attribute: false })
-    review!: Review;
+    iteration!: LifecycleIteration;
 
-    protected loadInstance(_pk: string): Promise<Attestation> {
-        throw new Error("Attestations should not be edited.");
+    protected loadInstance(_pk: string): Promise<Review> {
+        throw new Error("Reviews should not be edited.");
     }
 
-    send(data: Attestation): Promise<unknown> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleAttestationsCreate({
-            attestationRequest: data,
+    send(data: Review): Promise<unknown> {
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleReviewsCreate({
+            reviewRequest: data,
         });
     }
 
-    protected override serialize(): Attestation | undefined {
-        const attestation = super.serialize();
-        if (!attestation) return undefined;
-        attestation.review = this.review.id;
-        return attestation;
+    protected override serialize(): Review | undefined {
+        const review = super.serialize();
+        if (!review) return undefined;
+        review.iteration = this.iteration.id;
+        return review;
     }
 
     renderForm(): TemplateResult {
@@ -60,34 +60,34 @@ export class ObjectAttestationForm extends ModelForm<Attestation, string> {
     }
 }
 
-@customElement("ak-access-review-attestations")
-export class AccessReviewAttestations extends Table<Attestation> {
+@customElement("ak-object-reviews")
+export class ObejctReviews extends Table<Review> {
     @property({ attribute: false })
-    public review?: Review;
+    public iteration?: LifecycleIteration;
 
     public override paginated = false;
 
-    protected emptyStateMessage = msg("No attestations yet.");
+    protected emptyStateMessage = msg("No reviews yet.");
 
-    protected apiEndpoint(): Promise<PaginatedResponse<Attestation>> {
-        const attestations = this?.review?.attestations || [];
+    protected apiEndpoint(): Promise<PaginatedResponse<Review>> {
+        const reviews = this?.iteration?.reviews || [];
         return Promise.resolve({
-            results: attestations,
+            results: reviews,
             pagination: {
                 next: 0,
                 previous: 0,
-                count: attestations.length,
+                count: reviews.length,
                 current: 1,
                 totalPages: 1,
                 startIndex: 0,
-                endIndex: attestations.length - 1,
+                endIndex: reviews.length - 1,
             },
         });
     }
 
     protected override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
-        if (changedProperties.has("review")) this.fetch();
+        if (changedProperties.has("iteration")) this.fetch();
     }
 
     protected columns: TableColumn[] = [
@@ -96,7 +96,7 @@ export class AccessReviewAttestations extends Table<Attestation> {
         [msg("Note"), "note"],
     ];
 
-    protected row(item: Attestation): SlottedTemplateResult[] {
+    protected row(item: Review): SlottedTemplateResult[] {
         return [
             Timestamp(item.timestamp),
             html`<span>${item.reviewer.name}</span>`,
@@ -109,15 +109,15 @@ export class AccessReviewAttestations extends Table<Attestation> {
     }
 
     protected renderObjectCreate(): SlottedTemplateResult {
-        if (this.review?.userCanAttest)
+        if (this.iteration?.userCanReview)
             return html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Attest")}</span>
-                    <span slot="header"> ${msg("Attest this object's access")} </span>
-                    <ak-object-attestation-form slot="form" .review=${this.review}>
-                    </ak-object-attestation-form>
+                    <span slot="submit">${msg("Review")}</span>
+                    <span slot="header"> ${msg("Confirm this object has been reviewed")} </span>
+                    <ak-object-review-form slot="form" .iteration=${this.iteration}>
+                    </ak-object-review-form>
                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                        ${msg("Attest")}
+                        ${msg("Review")}
                     </button>
                 </ak-forms-modal>
             `;
@@ -136,34 +136,34 @@ export class ObjectLifecyclePage extends AKElement {
     objectPk?: string | number;
 
     @state()
-    protected review?: Review | null;
+    protected iteration?: LifecycleIteration | null;
 
     protected loading = false;
 
-    protected fetchReview() {
+    protected fetchIteration() {
         if (!this.model || !this.objectPk || this.loading) {
             return;
         }
         this.loading = true;
         new LifecycleApi(DEFAULT_CONFIG)
-            .lifecycleReviewsLatestRetrieve({
+            .lifecycleIterationsLatestRetrieve({
                 contentType: this.model,
                 objectId: this.objectPk.toString(),
             })
-            .then((review) => {
-                this.review = review;
+            .then((iteration) => {
+                this.iteration = iteration;
                 this.loading = false;
             })
             .catch((error) => {
                 if (error.response.status === 404) {
-                    this.review = null;
+                    this.iteration = null;
                 }
                 this.loading = false;
             });
     }
 
     #refreshListener = () => {
-        return this.fetchReview();
+        return this.fetchIteration();
     };
 
     public override connectedCallback(): void {
@@ -178,18 +178,18 @@ export class ObjectLifecyclePage extends AKElement {
 
     protected override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("objectPk") && this.objectPk && this.checkVisibility()) {
-            this.fetchReview();
+            this.fetchIteration();
         }
     }
 
     protected renderReviewers() {
-        if (!this.review) return;
-        if (this.review.reviewers.length > 0) {
-            return html`${this.review.reviewers.map((u) => u.name).join(", ")}`;
+        if (!this.iteration) return;
+        if (this.iteration.reviewers.length > 0) {
+            return html`${this.iteration.reviewers.map((u) => u.name).join(", ")}`;
         }
-        const groupList = this.review.reviewerGroups.map((g) => g.name).join(", ");
+        const groupList = this.iteration.reviewerGroups.map((g) => g.name).join(", ");
         return html`${msg(
-            str`At least ${this.review.minReviewers} user(s) from these groups: ${groupList}.`,
+            str`At least ${this.iteration.minReviewers} user(s) from these groups: ${groupList}.`,
         )}`;
     }
 
@@ -201,7 +201,7 @@ export class ObjectLifecyclePage extends AKElement {
             <dd class="pf-c-description-list__description">
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
-                        .timestamp=${this.review?.openedOn}
+                        .timestamp=${this.iteration?.openedOn}
                         .elapsed=${false}
                         dateonly
                         datetime
@@ -219,7 +219,7 @@ export class ObjectLifecyclePage extends AKElement {
             <dd class="pf-c-description-list__description">
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
-                        .timestamp=${this.review?.gracePeriodEnd}
+                        .timestamp=${this.iteration?.gracePeriodEnd}
                         .elapsed=${false}
                         dateonly
                         datetime
@@ -237,7 +237,7 @@ export class ObjectLifecyclePage extends AKElement {
             <dd class="pf-c-description-list__description">
                 <div class="pf-c-description-list__text">
                     <ak-timestamp
-                        .timestamp=${this.review?.nextReviewDate}
+                        .timestamp=${this.iteration?.nextReviewDate}
                         .elapsed=${false}
                         dateonly
                         datetime
@@ -248,39 +248,39 @@ export class ObjectLifecyclePage extends AKElement {
     }
 
     protected renderReviewDates() {
-        return match(this.review?.state)
-            .with(undefined, ReviewStateEnum.UnknownDefaultOpenApi, () => nothing)
+        return match(this.iteration?.state)
+            .with(undefined, LifecycleIterationStateEnum.UnknownDefaultOpenApi, () => nothing)
             .with(
-                ReviewStateEnum.Pending,
+                LifecycleIterationStateEnum.Pending,
                 () => html`${this.renderOpenedOn()}${this.renderGracePeriodTill()}`,
             )
-            .with(ReviewStateEnum.Reviewed, () => this.renderNextReviewDate())
-            .with(ReviewStateEnum.Overdue, () => this.renderOpenedOn())
-            .with(ReviewStateEnum.Canceled, () => this.renderOpenedOn())
+            .with(LifecycleIterationStateEnum.Reviewed, () => this.renderNextReviewDate())
+            .with(LifecycleIterationStateEnum.Overdue, () => this.renderOpenedOn())
+            .with(LifecycleIterationStateEnum.Canceled, () => this.renderOpenedOn())
             .exhaustive();
     }
 
     render() {
-        if (this.review === undefined)
-            return html` <ak-empty-state ?loading=${!this.review}
+        if (this.iteration === undefined)
+            return html` <ak-empty-state ?loading=${!this.iteration}
                 >${msg("Loading...")}
             </ak-empty-state>`;
-        if (!this.review)
+        if (!this.iteration)
             return html` <ak-empty-state>
-                <div>${msg("This object does not have an access review yet.")}</div>
+                <div>${msg("This object does not have a review yet.")}</div>
             </ak-empty-state>`;
         return html` <ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>
             <div
                 role="tabpanel"
                 tabindex="0"
-                slot="page-object-access-review"
-                id="page-object-access-review"
-                aria-label="${msg("Access review for this object")}"
+                slot="page-object-lifecycle"
+                id="page-object-lifecycle"
+                aria-label="${msg("Latest review for this object")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Access review for this object")}</div>
+                        <div class="pf-c-card__title">${msg("Latest review for this object")}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list">
                                 <div class="pf-c-description-list__group">
@@ -291,9 +291,9 @@ export class ObjectLifecyclePage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            <ak-access-review-status
-                                                status=${this.review.state}
-                                            ></ak-access-review-status>
+                                            <ak-lifecycle-review-status
+                                                status=${this.iteration.state}
+                                            ></ak-lifecycle-review-status>
                                         </div>
                                     </dd>
                                 </div>
@@ -316,10 +316,9 @@ export class ObjectLifecyclePage extends AKElement {
                     </div>
 
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Attestations")}</div>
+                        <div class="pf-c-card__title">${msg("Reviews")}</div>
                         <div class="pf-c-card__body">
-                            <ak-access-review-attestations .review=${this.review}>
-                            </ak-access-review-attestations>
+                            <ak-object-reviews .iteration=${this.iteration}> </ak-object-reviews>
                         </div>
                     </div>
                 </div>
