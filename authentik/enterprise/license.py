@@ -94,13 +94,6 @@ class LicenseKey:
 
     @staticmethod
     def validate(jwt: str, check_expiry=True) -> LicenseKey:
-        return LicenseKey(
-            aud="",
-            exp=datetime(2030, 1, 1).timestamp(),
-            name="mock",
-            internal_users=100,
-            external_users=100,
-        )
         """Validate the license from a given JWT"""
         try:
             headers = get_unverified_header(jwt)
