@@ -2,11 +2,11 @@
 
 from datetime import timedelta
 
-from django.db.models import Count
-from django_dramatiq_postgres.models import TaskState
 import pglock
+from django.db.models import Count
 from django.dispatch import receiver
 from django.utils.timezone import now
+from django_dramatiq_postgres.models import TaskState
 from packaging.version import parse
 from prometheus_client import Gauge
 
