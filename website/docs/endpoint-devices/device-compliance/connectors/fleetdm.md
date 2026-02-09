@@ -7,7 +7,7 @@ authentik_enterprise: true
 
 [Fleet](https://fleetdm.com/) is an open-source device management platform designed to monitor, manage, and secure large fleets of devices.
 
-The Fleet connector allows device information to be reported from your Fleet deployment and can optionally assign users to devices automatically.
+The Fleet connector reports device information from your Fleet deployment, and optionally auto-assigns users to devices.
 
 ## Preparation
 
