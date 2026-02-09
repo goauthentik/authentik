@@ -293,6 +293,20 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                             >
                                 ${LayoutToLabel(FlowLayoutEnum.SidebarRight)}
                             </option>
+                            <option
+                                value=${FlowLayoutEnum.SidebarLeftFrameBackground}
+                                ?selected=${this.instance?.layout ===
+                                FlowLayoutEnum.SidebarLeftFrameBackground}
+                            >
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarLeftFrameBackground)}
+                            </option>
+                            <option
+                                value=${FlowLayoutEnum.SidebarRightFrameBackground}
+                                ?selected=${this.instance?.layout ===
+                                FlowLayoutEnum.SidebarRightFrameBackground}
+                            >
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarRightFrameBackground)}
+                            </option>
                         </select>
                     </ak-form-element-horizontal>
                     <ak-file-search-input

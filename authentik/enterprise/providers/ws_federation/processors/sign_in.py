@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -37,8 +36,6 @@ class SignInRequest:
     wreply: str
     wctx: str | None
 
-    app_slug: str
-
     @staticmethod
     def parse(request: HttpRequest) -> SignInRequest:
         action = request.GET.get("wa")
@@ -47,26 +44,26 @@ class SignInRequest:
         realm = request.GET.get("wtrealm")
         if not realm:
             raise ValueError("Missing Realm")
-        parsed = urlparse(realm)
 
         req = SignInRequest(
             wa=action,
             wtrealm=realm,
             wreply=request.GET.get("wreply"),
             wctx=request.GET.get("wctx", ""),
-            app_slug=parsed.path[1:],
         )
 
         _, provider = req.get_app_provider()
+        if not req.wreply:
+            req.wreply = provider.acs_url
         if not req.wreply.startswith(provider.acs_url):
             raise ValueError("Invalid wreply")
         return req
 
     def get_app_provider(self):
-        application = get_object_or_404(Application, slug=self.app_slug)
         provider: WSFederationProvider = get_object_or_404(
-            WSFederationProvider, pk=application.provider_id
+            WSFederationProvider, audience=self.wtrealm
         )
+        application = get_object_or_404(Application, provider=provider)
         return application, provider
 
 
