@@ -6,7 +6,7 @@ tags:
     - saml
 ---
 
-Allows users to authenticate using their Shibboleth credentials by configuring Shibboleth as a federated identity provider via SAML.
+Allows users to authenticate using their [Shibboleth](https://www.shibboleth.net/about-us/the-shibboleth-project/) credentials by configuring Shibboleth as a federated identity provider via SAML.
 
 ## Preparation
 
