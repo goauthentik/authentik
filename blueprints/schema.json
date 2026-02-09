@@ -7165,6 +7165,11 @@
                     "minLength": 1,
                     "title": "Reply url"
                 },
+                "wtrealm": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Wtrealm"
+                },
                 "assertion_valid_not_before": {
                     "type": "string",
                     "minLength": 1,
@@ -7966,7 +7971,9 @@
                         "content_left",
                         "content_right",
                         "sidebar_left",
-                        "sidebar_right"
+                        "sidebar_right",
+                        "sidebar_left_frame_background",
+                        "sidebar_right_frame_background"
                     ],
                     "title": "Layout"
                 },

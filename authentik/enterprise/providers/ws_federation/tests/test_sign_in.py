@@ -43,7 +43,6 @@ class TestWSFedSignIn(TestCase):
                 wtrealm="",
                 wreply="",
                 wctx=None,
-                app_slug="",
             ),
         )
         token = proc.response()[WS_FED_POST_KEY_RESULT]
@@ -65,7 +64,6 @@ class TestWSFedSignIn(TestCase):
                 wtrealm="",
                 wreply="",
                 wctx=None,
-                app_slug="",
             ),
         )
         token = proc.response()[WS_FED_POST_KEY_RESULT]

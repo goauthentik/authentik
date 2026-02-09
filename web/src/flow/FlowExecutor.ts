@@ -21,7 +21,7 @@ import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { LitPropertyRecord } from "#elements/types";
+import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -45,6 +45,7 @@ import { match, P } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, render, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
@@ -101,7 +102,7 @@ export class FlowExecutor
 
     //#endregion
 
-    //#region State
+    //#region Internal State
 
     #logger = ConsoleLogger.prefix("flow-executor");
 
@@ -146,9 +147,10 @@ export class FlowExecutor
      * Synchronize flow info such as background image with the current state.
      */
     #synchronizeFlowInfo() {
-        if (!this.flowInfo) {
-            return;
-        }
+        if (!this.flowInfo) return;
+
+        if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
+        if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
 
         const background =
             this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
@@ -232,14 +234,15 @@ export class FlowExecutor
             .with(P.nullish, () => this.brandingTitle)
             .otherwise((title) => `${title} - ${this.brandingTitle}`);
 
+        document.title = match(this.challenge?.flowInfo?.title)
+            .with(P.nullish, () => this.brandingTitle)
+            .otherwise((title) => `${title} - ${this.brandingTitle}`);
+
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
 
-        if (
-            (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) &&
-            this.flowInfo
-        ) {
+        if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
 
@@ -348,7 +351,37 @@ export class FlowExecutor
 
     //#region Render
 
-    protected override render(): TemplateResult {
+    protected renderLoading(): SlottedTemplateResult {
+        return html`<slot class="slotted-content" name="placeholder"></slot>`;
+    }
+
+    protected renderFrameBackground(): SlottedTemplateResult {
+        return guard([this.layout, this.challenge], () => {
+            if (
+                this.layout !== FlowLayoutEnum.SidebarLeftFrameBackground &&
+                this.layout !== FlowLayoutEnum.SidebarRightFrameBackground
+            ) {
+                return nothing;
+            }
+
+            const src = this.challenge?.flowInfo?.background;
+
+            if (!src) return nothing;
+
+            return html`
+                <div class="ak-c-login__content" part="content">
+                    <iframe
+                        class="ak-c-login__content-iframe"
+                        part="content-iframe"
+                        name="flow-content-frame"
+                        src=${src}
+                    ></iframe>
+                </div>
+            `;
+        });
+    }
+
+    protected override render(): SlottedTemplateResult {
         const { component } = this.challenge || {};
 
         return html`<ak-locale-select

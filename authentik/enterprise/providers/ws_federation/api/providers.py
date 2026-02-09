@@ -2,10 +2,9 @@
 
 from django.http import HttpRequest
 from django.urls import reverse
-from rest_framework.fields import SerializerMethodField, URLField
+from rest_framework.fields import CharField, SerializerMethodField, URLField
 
 from authentik.core.api.providers import ProviderSerializer
-from authentik.core.models import Application
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
 from authentik.enterprise.providers.ws_federation.processors.metadata import MetadataProcessor
@@ -16,8 +15,8 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
     """WSFederationProvider Serializer"""
 
     reply_url = URLField(source="acs_url")
+    wtrealm = CharField(source="audience")
     url_wsfed = SerializerMethodField()
-    wtrealm = SerializerMethodField()
 
     def get_url_wsfed(self, instance: WSFederationProvider) -> str:
         """Get WS-Fed url"""
@@ -26,16 +25,11 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
         request: HttpRequest = self._context["request"]._request
         return request.build_absolute_uri(reverse("authentik_providers_ws_federation:wsfed"))
 
-    def get_wtrealm(self, instance: WSFederationProvider) -> str:
-        try:
-            return f"goauthentik.io://app/{instance.application.slug}"
-        except Application.DoesNotExist:
-            return None
-
     class Meta(SAMLProviderSerializer.Meta):
         model = WSFederationProvider
         fields = ProviderSerializer.Meta.fields + [
             "reply_url",
+            "wtrealm",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",
@@ -51,7 +45,6 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "default_name_id_policy",
             "url_download_metadata",
             "url_wsfed",
-            "wtrealm",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
