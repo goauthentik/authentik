@@ -46,6 +46,8 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ## Shibboleth configuration
 
+To integrate Shibboleth with authentik you will need to add authentik as a service provider in your Shibboleth IdP.
+
 ### Add authentik as a Service Provider
 
 1. Edit `/opt/shibboleth-idp/conf/metadata-providers.xml` on the Shibboleth IdP server.
