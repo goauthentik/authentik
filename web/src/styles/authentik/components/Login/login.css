@@ -1,7 +1,7 @@
 /* #region Login Component */
 
-/* compatibility-mode-fix */
-.pf-c-login.pf-c-login {
+.pf-c-login,
+ak-flow-executor.style-scope.pf-c-login {
     --ak-c-login--PaddingMax: 8dvw;
     --ak-c-login--padding: clamp(
         var(--pf-global--spacer--md),
@@ -136,7 +136,7 @@
 
     position: relative;
     max-width: var(--ak-c-login--MaxWidth);
-    min-height: calc(var(--ak-c-login--MaxWidth) * 0.8);
+    min-height: var(--ak-c-login__main--MinHeight, unset);
 
     display: flex;
     flex-flow: column;
@@ -145,6 +145,25 @@
     .slotted-content {
         position: relative;
         flex: 1 1 auto;
+    }
+
+    /**
+     * Note that the use of `slot` as attribute selector is intentional.
+     * We're checking for the presence of an element attempting to slot itself as the placeholder.
+     *
+     * This approach allows us to handle some of the lesser-intuitive combinations
+     * of whether we're in a shadow DOM and how to gracefully transition to a
+     * post-JavaScript state without any awkward repaints.
+
+     * We're also interested in whether the slot itself is within the main element,
+     * as it indicates that the placeholder content is slotted and a shadow DOM is present.
+     *
+     * This ensures the height remains consistent from the initial render,
+     * preventing layout shifts when the placeholder is replaced with the actual content.
+     */
+    &:has([slot="placeholder"]),
+    &:has(slot[name="placeholder"]) {
+        --ak-c-login__main--MinHeight: calc(var(--ak-c-login--MaxWidth) * 0.8);
     }
 
     @media (max-width: 35rem) or (max-height: 17.5rem) {

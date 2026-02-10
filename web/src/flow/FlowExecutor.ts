@@ -593,7 +593,7 @@ export class FlowExecutor
                     })}
                 </div>
                 ${this.loading && this.challenge
-                    ? html`<ak-loading-overlay></ak-loading-overlay>`
+                    ? html`<ak-loading-overlay part="loading-overlay"></ak-loading-overlay>`
                     : nothing}
                 ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
             </main>
