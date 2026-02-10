@@ -141,7 +141,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
             });
         }
 
-        return this.#lifecycleApi.lifecycleLifecycleRulesCreate({
+        return this.#lifecycleApi.lifecycleRulesCreate({
             lifecycleRuleRequest: data,
         });
     }
