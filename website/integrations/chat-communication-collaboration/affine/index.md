@@ -1,12 +1,12 @@
 ---
-title: Integrate with Affine
-sidebar_label: Affine
+title: Integrate with AFFiNE
+sidebar_label: AFFiNE
 support_level: community
 ---
 
-## What is Affine
+## What is AFFiNE
 
-> AFFiNE is a workspace with fully merged docs, whiteboards and databases. Get more things done, your creativity isn’t monotone.
+> AFFiNE is an open-source platform that allows you to bring together documents, whiteboards, and databases. It is a reliable tool designed to create a professional workspace for your work. With AFFiNE, you can focus on practicality and efficiency, making it easier to collaborate on your projects.
 >
 > -- https://affine.pro/
 
@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `affine.company` is the FQDN of the Affine installation.
+- `affine.company` is the FQDN of the AFFiNE installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Affine with authentik, you need to create an application/provider pair in authentik.
+To support the integration of AFFiNE with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -40,12 +40,26 @@ To support the integration of Affine with authentik, you need to create an appli
 
 3. Click **Submit** to save the new application and provider.
 
-## Affine configuration
+## AFFiNE configuration
 
-1. Navigate to the Admin Panel of your instance
-2. Go to `Settings > OAuth`
-3. Fill in the json with your data
+1. Log in to AFFiNE as an Administrator
+2. Navigate to the Admin Panel of your instance by clicking on your profile picture and then in **Admin panel**
+2. Go to **Settings** > **OAuth**
+3. Under **OIDC OAuth provider config**, set the following JSON data:
 ```json
-{"args":{},"issuer":"https://authentik.company/application/o/<application_slug>/","clientId":"<Client ID from authentik>","clientSecret":"<Client Secret from authentik>"}
+{
+    "args":{},
+    "issuer":"https://authentik.company/application/o/<application_slug>/",
+    "clientId":"<Client ID from authentik>",
+    "clientSecret":"<Client Secret from authentik>"
+}
 ```
-4. Save the changes on the check mark
+4. Save the changes.
+
+## References
+- [OAuth 2.0 AFFiNE Docs](https://docs.affine.pro/self-host-affine/administer/oauth-2-0#oidc)
+
+## Configuration verification
+To verify the integration of authentik with AFFiNE, log out of AFFiNE, then on the login page click on **Continue with OIDC**.
+
+
