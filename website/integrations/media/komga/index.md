@@ -27,7 +27,7 @@ To support the integration of Komga with authentik, you need to create an applic
 
 ### Create a Scope Mapping in authentik
 
-komga requires the email scope to return a true value for whether the email address is verified. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for komga to allow authentication.
+Komga requires the email scope to return a true value for whether the email address is verified. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Komga to allow authentication.
 
 :::warning
 This part of the guide does not cover a robust email verification process that ensures email addresses associated to users are theirs. Failure to set one up might be unsafe in a lot of infrastructures.
@@ -36,7 +36,7 @@ This part of the guide does not cover a robust email verification process that e
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
 3. Choose **Scope Mapping** and click **Next**.
-4. Fill out with the following information then click **Finish**.
+4. Fill out with the following information, then click **Finish**.
    - **Name**: OAuth Mapping: OpenID 'email' with "email_verified"
    - **Scope name**: email
    - **Description**: Email address
@@ -65,7 +65,7 @@ return {
 ```
 
 ##### Set the attribute of a user
-If you went with **Option 2**, you need to set the attribute of all user that has a verified email.
+If you went with **Option 2**, you need to set the attribute of all users that has a verified email.
 
 1. Go to **Directory** > **Users** > and click on the edit icon of a user you want to change the attribute of.
    - **Attributes**: `email_verified: true`
@@ -108,8 +108,8 @@ spring:
                 registration:
                     authentik:
                         provider: authentik
-                        client-id: <client id>
-                        client-secret: <client secret>
+                        client-id: <client_id>
+                        client-secret: <client_secret>
                         client-name: authentik
                         scope: openid,email,profile
                         authorization-grant-type: authorization_code
