@@ -34,7 +34,7 @@ _Bindings_ define how an Identity Provider (IdP) and the WS-Federation STS (Secu
 
 Using metadata ensures that WS-Federation single sign-on works reliably by exchanging and maintaining identity and connection information. WS-Federation metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers. The metadata is what you provide the application to configure it for authenticating with authentik.
 
-- You can [export WS-Federation metadata](./create-wsfed-provider.md#export-authentik-ws-federation-provider-metadata) from an authentik WS-Federation provider to an STS to automatically provide important endpoint and certificate information to the SP.
+You can [export WS-Federation metadata](./create-wsfed-provider.md#export-authentik-ws-federation-provider-metadata) from an authentik WS-Federation provider to an STS to automatically provide important endpoint and certificate information to the SP.
 
 ## Certificates
 
