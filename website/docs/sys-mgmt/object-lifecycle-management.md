@@ -58,7 +58,7 @@ For example, if a rule has:
 
 Then the review requires approval from: Alice, Bob, at least 2 members of the Security Team, and at least 2 members of the Compliance Team.
 
-## Review states
+## Review states of an object
 
 Each object governed by a lifecycle rule has a review state. You can view all objects with pending or overdue review states on the **Events** > **Reviews** page. You can also view an individual object's current review state on the **Lifecycle** tab of the object's detail page.
 
