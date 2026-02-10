@@ -183,6 +183,28 @@ This does _not_ apply to special scopes, as those are not configurable in the pr
 - `user:email`: Allows read-only access to `/user`, including email address
 - `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
 
+### Email scope verification
+
+In authentik releases before 2025.10 the `email` scope set the `email_verified` claim to true. As we don't have a single source of whether a users' email is verified or not, and claiming that it is verified could lead to security implications, this claim now defaults to false.
+
+To successfully authenticate users, some applications may require this claim to be true, in which case you can create a custom `email` scope mapping that always returns `email_verified` as true:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": True
+}
+```
+
+For greater security, verify users' email addresses and store email verification status as a user attribute (e.g. `email_verified` (True/False)). Then create this scope mapping to return it dynamically:
+
+```python
+return {
+    "email": request.user.email,
+    "email_verified": request.user.attributes.get("email_verified", False)
+}
+```
+
 ## Signing & Encryption
 
 [JWTs](https://jwt.io/introduction) created by authentik will always be signed.
