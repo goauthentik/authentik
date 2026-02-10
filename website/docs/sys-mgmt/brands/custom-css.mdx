@@ -8,7 +8,7 @@ You can add custom CSS to further customize the look of authentik. Some areas wh
 - The [flow executor](https://api.goauthentik.io/flow-executor/) (login and enrollment pages)
 - The user library and its application cards
 
-:::warning Advanced Topic
+:::warning Advanced topic
 
 Custom CSS is an advanced feature. Improper use may lead to unexpected behavior or visual issues. Test changes in a safe environment before applying them to production.
 
@@ -18,7 +18,7 @@ Custom CSS is an advanced feature. Improper use may lead to unexpected behavior 
 
 authentik's design system is built around several key concepts that help manage and apply styles consistently. Understanding these concepts is essential for working with custom CSS effectively.
 
-### Web Components
+### Web components
 
 authentik's interface is built using [Lit](https://lit.dev/) web components (also known as custom HTML elements). Lit is a lightweight library that serves as the foundation of authentik's front-end architecture. Each component encapsulates its own structure, styles, and behavior, enabling modular and reusable UI elements.
 
@@ -26,21 +26,21 @@ authentik's base stylesheet includes CSS styles and variables that ensure a cons
 
 Despite this encapsulation, many authentik web components are designed with theming in mind, exposing specific CSS parts and variables that you can target for customization.
 
-### CSS Variables
+### CSS variables
 
 CSS variables (also called CSS custom properties) define colors, spacing, typography, and other design elements throughout authentik. By overriding these variables in your custom CSS, you can change the interface's look and feel at a high level without targeting individual elements.
 
 There's no comprehensive documentation of authentik's CSS variables. However, authentik uses [Patternfly 4](https://pf4.patternfly.org/developer-resources/global-css-variables/) and [Patternfly 5](https://v5-archive.patternfly.org/developer-resources/global-css-variables/) as its underlying design systems, which provide extensive documentation on their CSS variables.
 
-### CSS Parts
+### CSS parts
 
 The [`::part` selector](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::part) and [`part` attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/part) allow web components to expose specific elements within their shadow DOM for external styling. This provides a controlled way to customize component appearance without breaking encapsulation.
 
 When customizing authentik, start by modifying CSS variables to achieve broad changes. If you need finer control, use the `::part` selector to target specific component parts.
 
-## Modes of Appearance
+## Modes of appearance
 
-### Color Scheme
+### Color scheme
 
 A [color scheme preference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme) is a user-agent-provided hint indicating **light** or **dark** mode. The browser's color scheme can influence how certain built-in elements render, such as form controls and scrollbars. When no preference is set, authentik typically defaults to light mode.
 
@@ -50,7 +50,7 @@ A theme is a higher-order concept encompassing the overall look and feel of auth
 
 When customizing authentik's appearance, think of the theme as the primary way to define the visual experience rather than targeting individual elements directly.
 
-### Viewport Considerations
+### Viewport considerations
 
 When customizing styles that depend on viewport size, use [responsive design principles](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Responsive_Design). In authentik's design system, this means leveraging CSS variables that automatically adapt to viewport size rather than hardcoding styles for specific breakpoints.
 
@@ -74,7 +74,7 @@ Many interface elements are aware of their container size and adjust their layou
 
 Users may have accessibility preferences set in their operating system or browser, such as high contrast mode or reduced motion. authentik's base theme respects these preferences to ensure a good experience for all users. Keep accessibility in mind so your customizations remain usable regardless of accessibility settings.
 
-### User Agent Hints
+### User agent hints
 
 authentik's interface uses web standards APIs to detect **user agent hints** and determine the preferred visual experience. Where possible, authentik prioritizes system or browser-level preferences.
 
@@ -117,7 +117,7 @@ body {
 
 Here, CSS variables define colors and backgrounds, with values adjusted based on the theme. This approach is more modular and maintainable—theme changes happen in one place without modifying individual element styles throughout the application.
 
-### Contrast Ratios (`prefers-contrast`)
+### Contrast ratios (`prefers-contrast`)
 
 The [Web Content Accessibility Guidelines (WCAG)](https://www.w3.org/WAI/standards-guidelines/wcag/) recommend minimum contrast ratios between text and background colors.
 
@@ -154,7 +154,7 @@ html[lang^="ja-"] {
 
 ## Examples
 
-### Enforce a Specific Color Scheme
+### Enforce a specific color scheme
 
 You can enforce a specific color scheme in the Admin interface by navigating to **System** > **Brands** and clicking **Edit** for a brand. Expand **Other global settings** and modify the **Attributes** field with the following YAML:
 
@@ -172,7 +172,7 @@ settings:
         base: light
 ```
 
-:::warning Accessibility Consideration
+:::warning Accessibility consideration
 
 authentik's base theme prioritizes accessibility and may adjust colors and styles based on user preferences or system settings. The browser or operating system may also override the enforced theme to respect user accessibility settings, such as high contrast mode.
 
@@ -180,7 +180,7 @@ Think carefully before enforcing a specific color scheme, as it may conflict wit
 
 :::
 
-### Hide the Locale Selector
+### Hide the locale selector
 
 ```css
 ak-flow-executor::part(locale-select) {
@@ -199,7 +199,7 @@ Custom CSS can be powerful, but it can also lead to unexpected results if not im
 
 The element you're trying to style may be within a web component's shadow DOM, making it harder to target. Use the `::part` selector to target exposed parts of the component. If the element is nested within another web component, the `part` must be exported by the parent component to be accessible.
 
-### Do I have to use CSS Parts and CSS Variables?
+### Do I have to use CSS parts and CSS variables?
 
 authentik doesn't require CSS parts or CSS variables. You can use standard CSS selectors to target elements directly. However, direct element styling is more prone to breaking with updates, as internal structures may change without notice.
 
