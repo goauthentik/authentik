@@ -27,17 +27,17 @@ When both a type-level rule and an object-specific rule exist, the object-specif
 
 A lifecycle rule has the following settings:
 
-| Setting                            | Description                                                                                                                                   |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Object type**                    | The type of object this rule applies to.                                                                                                      |
-| **Object**                         | _(Optional)_ A specific object to apply this rule to. If left empty, the rule applies to all objects of the selected type.                    |
-| **Interval**                       | How often reviews are scheduled (e.g., every 60 days). After a review is completed, the next review will be scheduled after this interval.    |
-| **Grace period**                   | The time period reviewers have to complete the review before it becomes overdue. Must be shorter than the interval.                           |
-| **Reviewer groups**                | Groups whose members can submit reviews.                                                                                                      |
-| **Minimum reviewers**              | The minimum number of reviews required from members of any reviewing group.                                                                   |
-| **Minimum reviewers is per group** | When enabled, the minimum number of reviewers is required from each reviewer group separately. When disabled, it's a total across all groups. |
-| **Explicit reviewers**             | Individual users who must all submit a review, in addition to the reviewer groups requirement.                                                |
-| **Notification transports**        | How reviewers are notified about pending, overdue, and completed reviews.                                                                     |
+| Setting                        | Description                                                                                                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Object type**                | The type of object this rule applies to.                                                                                                      |
+| **Object**                     | _(Optional)_ A specific object to apply this rule to. If left empty, the rule applies to all objects of the selected type.                    |
+| **Interval**                   | How often reviews are scheduled (e.g., every 60 days). After a review is completed, the next review will be scheduled after this interval.    |
+| **Grace period**               | The time period reviewers have to complete the review before it becomes overdue. Must be shorter than the interval.                           |
+| **Reviewer groups**            | Groups whose members can submit reviews.                                                                                                      |
+| **Min reviewers**              | The minimum number of reviews required from members of any reviewing group.                                                                   |
+| **Min reviewers is per group** | When enabled, the minimum number of reviewers is required from each reviewer group separately. When disabled, it's a total across all groups. |
+| **Explicit reviewers**         | Individual users who must all submit a review, in addition to the reviewer groups requirement.                                                |
+| **Notification transports**    | How reviewers are notified about pending, overdue, and completed reviews.                                                                     |
 
 ### Reviewer requirements
 
@@ -50,7 +50,7 @@ For example, if a rule has:
 
 - Two explicit reviewers (Alice and Bob)
 - Two reviewer groups (Security Team and Compliance Team)
-- **Min** reviewers set to 2
+- **Min reviewers** set to 2
 - **Min reviewers is per-group** enabled
 
 Then the review requires approval from: Alice, Bob, at least 2 members of the Security Team, and at least 2 members of the Compliance Team.
