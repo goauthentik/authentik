@@ -617,6 +617,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/mailcow/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
@@ -801,7 +802,21 @@ const items = [
                 },
                 items: [
                     "endpoint-devices/device-compliance/configuration",
-                    "endpoint-devices/device-compliance/connectors",
+                    {
+                        //#endregion
+
+                        //#region Connectors
+                        type: "category",
+                        label: "Connectors",
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-compliance/connectors/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-compliance/connectors/authentik-agent",
+                            "endpoint-devices/device-compliance/connectors/fleetdm",
+                        ],
+                    },
                     "endpoint-devices/device-compliance/device-reporting",
                     "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/browser-extension",
