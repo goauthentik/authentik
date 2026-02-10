@@ -2,7 +2,7 @@
 title: authentik Agent connector
 sidebar_label: authentik Agent connector
 tags: [device compliance, compliance, connectors, authentik Agent]
-authentik_version: "2025.12.0+"
+authentik_version: "2025.12.0"
 ---
 
 The authentik Agent connector allows device information to be reported by the [authentik Agent](../../authentik-agent/index.mdx).
