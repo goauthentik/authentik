@@ -260,12 +260,12 @@ const items = [
                     },
                     {
                         type: "category",
-                        label: "WS-Fed Provider",
+                        label: "WS-Federation Provider",
                         link: {
                             type: "doc",
-                            id: "add-secure-apps/providers/ws-fed/index",
+                            id: "add-secure-apps/providers/wsfed/index",
                         },
-                        items: ["add-secure-apps/providers/ws-fed/create-wsfed-provider"],
+                        items: ["add-secure-apps/providers/wsfed/create-wsfed-provider"],
                     },
                 ],
             },
