@@ -71,7 +71,7 @@ Each object governed by a lifecycle rule has a review state. You can view all ob
 
 ### Object review workflow
 
-An object's review state cycles through these values according to the following rules:
+The following steps illustrate the workflow for an object lifecycle review process:
 
 1. When a lifecycle rule is created or when the interval since the last completed review has elapsed, the object enters the **Pending** review state and reviewers are notified.
 2. Reviewers submit their reviews (with an optional note).
