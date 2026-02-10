@@ -236,8 +236,8 @@ func NewPostgresStore() (*PostgresStore, error) {
 	}
 
 	// Determine connection pool settings
-	maxIdleConns := 10
-	maxOpenConns := 100
+	maxIdleConns := 4
+	maxOpenConns := 4
 	var connMaxLifetime time.Duration
 	if cfg.ConnMaxAge > 0 {
 		connMaxLifetime = time.Duration(cfg.ConnMaxAge) * time.Second
