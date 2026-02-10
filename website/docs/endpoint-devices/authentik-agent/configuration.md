@@ -2,6 +2,7 @@
 title: Configuration
 sidebar_label: Configuration
 tags: [authentik Agent, connector, configure, configuration]
+authentik_version: "2025.12.0+"
 ---
 
 Before deploying the authentik Agent, configure your authentik deployment. This involves:

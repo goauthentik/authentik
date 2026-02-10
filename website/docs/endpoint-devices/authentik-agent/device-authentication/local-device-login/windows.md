@@ -3,6 +3,7 @@ title: Windows local device login
 sidebar_label: Windows
 tags: [authentik Agent, device login, device authentication, windows credential provider, wcp]
 authentik_enterprise: true
+authentik_version: "2025.12.0+"
 ---
 
 ## Windows Credential Provider
