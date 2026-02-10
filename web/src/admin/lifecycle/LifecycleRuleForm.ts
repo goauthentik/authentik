@@ -96,7 +96,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
     protected selectedContentType: ContentTypeEnum = ContentTypeEnum.AuthentikCoreApplication;
 
     protected async loadInstance(pk: string): Promise<LifecycleRule> {
-        const rule = await this.#lifecycleApi.lifecycleLifecycleRulesRetrieve({
+        const rule = await this.#lifecycleApi.lifecycleRulesRetrieve({
             id: pk,
         });
 
@@ -135,7 +135,7 @@ export class LifecycleRuleForm extends ModelForm<LifecycleRule, string> {
 
     protected override async send(data: LifecycleRule): Promise<LifecycleRule> {
         if (this.instance) {
-            return this.#lifecycleApi.lifecycleLifecycleRulesUpdate({
+            return this.#lifecycleApi.lifecycleRulesUpdate({
                 id: this.instance.id,
                 lifecycleRuleRequest: data,
             });

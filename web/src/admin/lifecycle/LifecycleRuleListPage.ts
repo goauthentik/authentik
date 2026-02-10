@@ -41,7 +41,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
     protected override searchEnabled = true;
 
     protected async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
-        return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesList(
+        return new LifecycleApi(DEFAULT_CONFIG).lifecycleRulesList(
             await this.defaultEndpointConfig(),
         );
     }
@@ -65,7 +65,7 @@ export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
             .objects=${this.selectedElements}
             .delete=${(item: LifecycleRule) => {
                 if (item.id)
-                    return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesDestroy({
+                    return new LifecycleApi(DEFAULT_CONFIG).lifecycleRulesDestroy({
                         id: item.id,
                     });
             }}
