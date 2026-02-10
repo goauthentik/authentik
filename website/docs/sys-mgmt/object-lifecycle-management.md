@@ -1,5 +1,6 @@
 ---
 title: Object Lifecycle Management
+description: "Configure authentik to auto-schedule and track periodic reviews of authentication settings for groups, roles, and applications."
 sidebar_label: Object Lifecycle Management
 authentik_enterprise: true
 authentik_version: "2026.2.0"
