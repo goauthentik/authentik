@@ -29,7 +29,7 @@ A lifecycle rule has the following settings:
 
 | Setting                            | Description                                                                                                                                   |
 | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Object type**                    | The type of object this rule applies to (Application, Group, or Role).                                                                        |
+| **Object type**                    | The type of object this rule applies to.                                                                        |
 | **Object**                         | (Optional) A specific object to apply this rule to. If left empty, the rule applies to all objects of the selected type.                      |
 | **Interval**                       | How often reviews are scheduled (e.g., every 60 days). After a review is completed, the next review will be scheduled after this interval.    |
 | **Grace period**                   | The time period reviewers have to complete the review before it becomes overdue. Must be shorter than the interval.                           |
