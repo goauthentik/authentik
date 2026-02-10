@@ -13,7 +13,7 @@ You can schedule reviews, track progress, and notify reviewers automatically.
 
 ## Lifecycle rules
 
-Lifecycle rules define how often reviews are scheduled, the time before a review becomes overdue, who needs to approve a review, and how reviewers are notified. 
+Lifecycle rules define how often reviews are scheduled, the time before a review becomes overdue, who needs to approve a review, and how reviewers are notified.
 
 You can create and configure Lifecycle rules via the **Events** > **Lifecycle Rules** page.
 
