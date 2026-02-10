@@ -44,16 +44,18 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 
 1. Log in to AFFiNE as an administrator.
 2. Navigate to the Admin Panel of your instance by clicking on your profile picture.
-2. Navigate to **Settings** > **OAuth**.
-3. Under **OIDC OAuth provider config**, set the following JSON data:
+3. Navigate to **Settings** > **OAuth**.
+4. Under **OIDC OAuth provider config**, set the following JSON data:
+
 ```json
 {
-    "args":{},
-    "issuer":"https://authentik.company/application/o/<application_slug>/",
-    "clientId":"<Client ID from authentik>",
-    "clientSecret":"<Client Secret from authentik>"
+    "args": {},
+    "issuer": "https://authentik.company/application/o/<application_slug>/",
+    "clientId": "<Client ID from authentik>",
+    "clientSecret": "<Client Secret from authentik>"
 }
 ```
+
 4. Save the changes.
 
 ## Configuration verification
@@ -63,4 +65,3 @@ To verify the integration of authentik with AFFiNE, log out of AFFiNE, then on t
 ## Resources
 
 - [AFFiNE Docs - OAuth 2.0 ](https://docs.affine.pro/self-host-affine/administer/oauth-2-0#oidc)
-
