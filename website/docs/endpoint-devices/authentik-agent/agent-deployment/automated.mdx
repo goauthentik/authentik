@@ -2,6 +2,7 @@
 title: Automated authentik Agent deployment
 sidebar_label: Automated
 tags: [authentik Agent, mdm, fleet, deploy]
+authentik_version: "2025.12.0"
 ---
 
 authentik Agent can be deployed at scale to multiple devices via Mobile Device Management (MDM) and automation tools.
@@ -9,6 +10,10 @@ authentik Agent can be deployed at scale to multiple devices via Mobile Device M
 ## Prerequisites
 
 You must [configure your authentik deployment](../configuration.md) to support the authentik Agent.
+
+:::info Serial number required
+The Agent requires a serial number be presented by the system. Some hypervisors don't set serial numbers. When deploying on a virtual machine, ensure that it has a serial number set.
+:::
 
 ## Create an enrollment token
 

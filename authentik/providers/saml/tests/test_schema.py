@@ -12,7 +12,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
-from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.request import RequestProcessor
 
 
@@ -35,6 +35,7 @@ class TestSchema(TestCase):
             issuer="authentik",
             signing_kp=cert,
             pre_authentication_flow=create_test_flow(),
+            binding_type=SAMLBindingTypes.POST,
         )
         self.request_factory = RequestFactory()
 
