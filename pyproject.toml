@@ -39,7 +39,7 @@ dependencies = [
   "geopy==2.4.1",
   "google-api-python-client==2.189.0",
   "gssapi==1.11.1",
-  "gunicorn==25.0.1",
+  "gunicorn==25.0.3",
   "jsonpatch==1.33",
   "jwcrypto==1.5.6",
   "kubernetes==35.0.0",
@@ -77,14 +77,14 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.237.1",
+  "aws-cdk-lib==2.238.0",
   "bandit==1.9.3",
   "black==26.1.0",
   "bpython==0.26",
   "codespell==2.4.1",
   "colorama==0.4.6",
   "constructs==10.4.5",
-  "coverage[toml]==7.13.3",
+  "coverage[toml]==7.13.4",
   "daphne==4.2.1",
   "debugpy==1.8.20",
   "django-stubs[compatible-mypy]==5.2.9",
