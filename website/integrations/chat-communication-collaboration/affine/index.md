@@ -42,9 +42,9 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 
 ## AFFiNE configuration
 
-1. Log in to AFFiNE as an Administrator
-2. Navigate to the Admin Panel of your instance by clicking on your profile picture and then in **Admin panel**
-2. Go to **Settings** > **OAuth**
+1. Log in to AFFiNE as an administrator.
+2. Navigate to the Admin Panel of your instance by clicking on your profile picture.
+2. Navigate to **Settings** > **OAuth**.
 3. Under **OIDC OAuth provider config**, set the following JSON data:
 ```json
 {
@@ -56,10 +56,11 @@ To support the integration of AFFiNE with authentik, you need to create an appli
 ```
 4. Save the changes.
 
-## References
-- [OAuth 2.0 AFFiNE Docs](https://docs.affine.pro/self-host-affine/administer/oauth-2-0#oidc)
-
 ## Configuration verification
-To verify the integration of authentik with AFFiNE, log out of AFFiNE, then on the login page click on **Continue with OIDC**.
 
+To verify the integration of authentik with AFFiNE, log out of AFFiNE, then on the login page click on **Continue with OIDC**. You should be redirected to authentik, and once authenticated, logged in to AFFiNE.
+
+## Resources
+
+- [AFFiNE Docs - OAuth 2.0 ](https://docs.affine.pro/self-host-affine/administer/oauth-2-0#oidc)
 
