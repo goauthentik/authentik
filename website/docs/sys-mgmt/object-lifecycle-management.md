@@ -69,7 +69,7 @@ Each object governed by a lifecycle rule has a review state. You can view all ob
 | **Reviewed** | All required reviews have been received and the review is complete.                    |
 | **Canceled** | The review was canceled, typically because the lifecycle rule was deleted or modified. |
 
-### Review lifecycle
+### Object review workflow
 
 An object's review state cycles through these values according to the following rules:
 
