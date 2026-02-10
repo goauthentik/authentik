@@ -21,7 +21,7 @@ Lifecycle rules define how often reviews are scheduled, the time before a review
 A lifecycle rule can be scoped to:
 
 - **A specific object**: The rule applies only to that individual Application, Group, or Role.
-- **An entire object type**: The rule applies to all objects of that type that don't have their own specific rule.
+- **An entire object type**: The rule applies to all objects of that type that don't have their own specific rule, e.g., all applications.
 
 When both a type-level rule and an object-specific rule exist, the object-specific rule takes precedence for that object.
 
