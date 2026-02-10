@@ -112,6 +112,22 @@ class OAuthSourceSerializer(SourceSerializer):
                     raise ValidationError(
                         f"{url} is required for provider {provider_type.verbose_name}"
                     )
+        consumer_secret = attrs.get("consumer_secret")
+        if consumer_secret is None and self.instance:
+            consumer_secret = self.instance.consumer_secret
+        request_token_url = attrs.get("request_token_url")
+        if request_token_url is None and self.instance:
+            request_token_url = self.instance.request_token_url
+        if not request_token_url:
+            request_token_url = source_type.request_token_url
+        if source_type.name == "apple" and not consumer_secret:
+            raise ValidationError(
+                {"consumer_secret": "Consumer secret is required for Apple sources."}
+            )
+        if request_token_url and not consumer_secret:
+            raise ValidationError(
+                {"consumer_secret": "Consumer secret is required for OAuth1 sources."}
+            )
         return attrs
 
     class Meta:
@@ -135,7 +151,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "authorization_code_auth_method",
         ]
         extra_kwargs = {
-            "consumer_secret": {"write_only": True},
+            "consumer_secret": {"write_only": True, "allow_blank": True, "required": False},
             "request_token_url": {"allow_blank": True},
             "authorization_url": {"allow_blank": True},
             "access_token_url": {"allow_blank": True},
