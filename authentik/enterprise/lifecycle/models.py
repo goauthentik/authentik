@@ -66,7 +66,7 @@ class LifecycleRule(SerializerModel):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.enterprise.lifecycle.api.lifecycle_rules import LifecycleRuleSerializer
+        from authentik.enterprise.lifecycle.api.rules import LifecycleRuleSerializer
 
         return LifecycleRuleSerializer
 
@@ -178,7 +178,7 @@ class ReviewState(models.TextChoices):
 
 
 class LifecycleIteration(SerializerModel, ManagedModel):
-    id = models.UUIDField(primary_key=True, default=uuid4, null=False)
+    id = models.UUIDField(primary_key=True, default=uuid4)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.TextField(null=False)
     object = GenericForeignKey("content_type", "object_id")

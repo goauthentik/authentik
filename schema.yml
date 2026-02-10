@@ -8850,9 +8850,36 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /lifecycle/lifecycle_rules/:
+  /lifecycle/reviews/:
+    post:
+      operationId: lifecycle_reviews_create
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/rules/:
     get:
-      operationId: lifecycle_lifecycle_rules_list
+      operationId: lifecycle_rules_list
       parameters:
       - in: query
         name: content_type__model
@@ -8878,7 +8905,7 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     post:
-      operationId: lifecycle_lifecycle_rules_create
+      operationId: lifecycle_rules_create
       tags:
       - lifecycle
       requestBody:
@@ -8900,9 +8927,9 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /lifecycle/lifecycle_rules/{id}/:
+  /lifecycle/rules/{id}/:
     get:
-      operationId: lifecycle_lifecycle_rules_retrieve
+      operationId: lifecycle_rules_retrieve
       parameters:
       - in: path
         name: id
@@ -8927,7 +8954,7 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     put:
-      operationId: lifecycle_lifecycle_rules_update
+      operationId: lifecycle_rules_update
       parameters:
       - in: path
         name: id
@@ -8958,7 +8985,7 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     patch:
-      operationId: lifecycle_lifecycle_rules_partial_update
+      operationId: lifecycle_rules_partial_update
       parameters:
       - in: path
         name: id
@@ -8988,7 +9015,7 @@ paths:
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
     delete:
-      operationId: lifecycle_lifecycle_rules_destroy
+      operationId: lifecycle_rules_destroy
       parameters:
       - in: path
         name: id
@@ -9004,33 +9031,6 @@ paths:
       responses:
         '204':
           description: No response body
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /lifecycle/reviews/:
-    post:
-      operationId: lifecycle_reviews_create
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      tags:
-      - lifecycle
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReviewRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Review'
-          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
