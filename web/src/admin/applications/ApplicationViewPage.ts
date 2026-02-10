@@ -413,14 +413,15 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
-                    ? html` <ak-object-lifecycle-page
+                    ? html`<ak-object-lifecycle-page
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"
                           id="page-lifecycle"
-                          aria-label="${msg("Lifecycle")}"
+                          aria-label=${msg("Lifecycle")}
                           model=${ContentTypeEnum.AuthentikCoreApplication}
-                          objectPk=${this.application.pk}
+                          object-pk=${this.application.pk}
                       ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>

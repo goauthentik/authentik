@@ -6,7 +6,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "#admin/lifecycle/ReviewStastus";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-switch-input";
 
@@ -15,6 +14,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { LifecycleIterationStatus } from "#admin/lifecycle/utils";
 
 import { LifecycleApi, LifecycleIteration } from "@goauthentik/api";
 
@@ -75,7 +76,7 @@ export class ReviewListPage extends TablePage<LifecycleIteration> {
 
     row(item: LifecycleIteration): SlottedTemplateResult[] {
         return [
-            html`<ak-lifecycle-review-status status=${item.state}></ak-lifecycle-review-status>`,
+            LifecycleIterationStatus({ status: item.state }),
             html`<a href="#${item.objectAdminUrl}">${item.objectVerbose}</a>`,
             html`<ak-timestamp .timestamp=${item.openedOn} datetime dateonly></ak-timestamp>`,
             html`<ak-timestamp .timestamp=${item.gracePeriodEnd} datetime dateonly></ak-timestamp>`,

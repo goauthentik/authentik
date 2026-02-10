@@ -264,14 +264,15 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
-                    ? html` <ak-object-lifecycle-page
+                    ? html`<ak-object-lifecycle-page
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
                           role="tabpanel"
                           tabindex="0"
                           slot="page-lifecycle"
                           id="page-lifecycle"
                           aria-label="${msg("Lifecycle")}"
                           model=${ContentTypeEnum.AuthentikCoreGroup}
-                          objectPk=${this.group.pk}
+                          object-pk=${this.group.pk}
                       ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
