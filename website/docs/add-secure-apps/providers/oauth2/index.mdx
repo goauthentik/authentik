@@ -185,9 +185,9 @@ This does _not_ apply to special scopes, as those are not configurable in the pr
 
 ### Email scope verification
 
-In authentik releases before 2025.10 the `email` scope set the `email_verified` claim to true. As we don't have a single source of whether a users' email is verified or not, and claiming that it is verified could lead to security implications, this claim now defaults to false.
+In authentik releases prior to 2025.10, the email scope always set the `email_verified` claim to `true`. Since authentik does not have a single authoritative source to determine whether a user's email is actually verified, asserting this claim could have security implications. As of 2025.10, `email_verified` now defaults to `false`.
 
-To successfully authenticate users, some applications may require this claim to be true, in which case you can create a custom `email` scope mapping that always returns `email_verified` as true:
+Some applications require this claim to be `true` in order to authenticate users. In those cases, you can define a custom email scope mapping that always returns `email_verified` as `true`:
 
 ```python
 return {
@@ -196,7 +196,7 @@ return {
 }
 ```
 
-For greater security, verify users' email addresses and store email verification status as a user attribute (e.g. `email_verified` (True/False)). Then create this scope mapping to return it dynamically:
+For greater security guarantees, verify users' email addresses and store the verification status as a user attribute (for example, `email_verified` set to `true` or `false`). You can then configure the scope mapping to return this value dynamically:
 
 ```python
 return {
