@@ -24,29 +24,29 @@ import {
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-lifecycle-rule-list")
 export class LifecycleRuleListPage extends TablePage<LifecycleRule> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    protected override searchEnabled = true;
     public pageTitle = msg("Object Lifecycle Rules");
     public pageDescription = msg("Schedule periodic reviews for objects in authentik.");
     public pageIcon = "pf-icon pf-icon-history";
 
-    @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
+    protected override searchEnabled = true;
+
+    protected async apiEndpoint(): Promise<PaginatedResponse<LifecycleRule>> {
         return new LifecycleApi(DEFAULT_CONFIG).lifecycleLifecycleRulesList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    protected renderSectionBefore?(): TemplateResult {
+    protected renderSectionBefore(): TemplateResult {
         return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>`;
     }
 
