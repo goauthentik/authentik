@@ -12,9 +12,9 @@ You can schedule reviews, track progress, and notify reviewers automatically.
 
 ## Lifecycle rules
 
-You can configure the behavior of reviews for specific object types (currently Applications, Groups, and Roles) or individual objects on the **Events** > **Lifecycle Rules** page.
+Lifecycle rules define how often reviews are scheduled, the time before a review becomes overdue, who needs to approve a review, and how reviewers are notified. 
 
-Lifecycle rules define how often reviews are scheduled, the time before a review goes overdue, who needs to approve a review, and how they are notified.
+You can create and configure Lifecycle rules via the **Events** > **Lifecycle Rules** page.
 
 ### Rule scope
 
