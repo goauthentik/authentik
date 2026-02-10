@@ -1,6 +1,7 @@
 @import "../styles/authentik/components/Login/login.css";
 
-:host {
+:host,
+ak-flow-executor.style-scope {
     display: flex;
     min-height: 100dvh;
     flex-flow: column nowrap;
