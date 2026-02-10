@@ -96,7 +96,7 @@ To review and approve an object and its associated lifecyle rule, follow the ste
 5. Click **Review** to submit your review, optionally including a note.
 6. Once all reviewer requirements are met, the object automatically transitions to the **Reviewed** state.
 
-### Submitting reviews
+### Submit a review
 
 When an object is in the **Pending** or **Overdue** review state, authorized reviewers can submit reviews for it. Each reviewer can only submit one review per review cycle. When submitting a review, reviewers can optionally include a note explaining their decision.
 
