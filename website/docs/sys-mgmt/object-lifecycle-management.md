@@ -81,7 +81,7 @@ The following steps illustrate the workflow for an object lifecycle review proce
 
 ## Reviewer workflow
 
-To review and approve an object and its associated lifecyle rule, follow the steps below. A reviewer can be either a user set as an explicit reviewer or a member of a configured reviewer group.
+To review and approve an object and its associated lifecycle rule, follow the steps below. A reviewer can be either a user set as an explicit reviewer or a member of a configured reviewer group.
 
 1. Once a new review cycle starts for an object, you receive a notification that a review is due (via the configured notification transports).
 2. Click on the link in the notification to navigate to the object's detail page.
