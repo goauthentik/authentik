@@ -89,7 +89,7 @@ For a reviewer (either a user set as an explicit reviewer or a member of a confi
     In both cases, you will be taken to the **Lifecycle** tab of the object's detail page.
 
 3. Review the object's current configuration
-4. Go back to the **Lifecycle** tab
+4. Go back to the **Lifecycle** tab.
 5. Click **Review** to submit your review, optionally including a note.
 6. Once all reviewer requirements are met, the object automatically transitions to the **Reviewed** state.
 
