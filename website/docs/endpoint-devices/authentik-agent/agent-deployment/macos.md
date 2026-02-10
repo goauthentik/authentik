@@ -2,6 +2,7 @@
 title: Deploy authentik Agent on macOS
 sidebar_label: macOS
 tags: [authentik Agent, mac, macos, deploy]
+authentik_version: "2025.12.0"
 ---
 
 ## What it can do
