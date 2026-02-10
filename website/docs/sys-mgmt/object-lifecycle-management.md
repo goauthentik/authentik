@@ -75,7 +75,7 @@ The following steps illustrate the workflow for an object lifecycle review proce
 
 1. When a lifecycle rule is created or when the interval since the last completed review has elapsed, the object enters the **Pending** review state and reviewers are notified.
 2. Reviewers submit their reviews (with an optional note).
-3. Once all requirements are met, the object transitions to the **Reviewed** state.
+3. After all requirements are met, the object transitions to the **Reviewed** state.
 4. If the grace period passes without all requirements being met, the object becomes **Overdue** and reviewers receive an alert.
 5. After the interval passes, a new review cycle begins and the object returns to the **Pending** state.
 
