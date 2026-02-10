@@ -48,3 +48,18 @@
         line-height: var(--pf-global--spacer--xl);
     }
 }
+
+[name="site-footer"] {
+    [part="list"],
+    &::part(list) {
+        justify-content: center;
+        padding: 0;
+        column-gap: var(--pf-global--spacer--xl);
+        row-gap: var(--pf-global--spacer--md);
+    }
+
+    [part="list-item-link"],
+    &::part(list-item-link) {
+        color: unset;
+    }
+}
