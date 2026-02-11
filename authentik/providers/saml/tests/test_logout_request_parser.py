@@ -51,7 +51,7 @@ class TestLogoutRequest(TestCase):
 
     def test_static_get(self):
         """Test static LogoutRequest"""
-        request = LogoutRequestParser(self.provider).parse_detached(GET_LOGOUT_REQUEST)
+        request = LogoutRequestParser().parse_detached(GET_LOGOUT_REQUEST)
         self.assertEqual(request.id, "id-2ea1b01f69363ac95e3da4a15409b9d8ec525944")
         self.assertEqual(request.issuer, "saml-test-sp")
         # The GET request has an empty NameID element with transient format
@@ -60,7 +60,7 @@ class TestLogoutRequest(TestCase):
 
     def test_static_post(self):
         """Test static LogoutRequest"""
-        request = LogoutRequestParser(self.provider).parse(POST_LOGOUT_REQUEST)
+        request = LogoutRequestParser().parse(POST_LOGOUT_REQUEST)
         self.assertEqual(request.id, "id-b8f4fd51ed4106f1e782b95d51d9ad3f385e5816")
         self.assertEqual(request.issuer, "saml-test-sp")
         # The POST request has an empty NameID element with transient format

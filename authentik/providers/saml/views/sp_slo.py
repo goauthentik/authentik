@@ -119,7 +119,7 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
-            logout_request = LogoutRequestParser(self.provider).parse_detached(
+            logout_request = LogoutRequestParser().parse_detached(
                 self.request.GET[REQUEST_KEY_SAML_REQUEST],
                 relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
@@ -171,7 +171,7 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
             return bad_request_message(self.request, "The SAML request payload is missing.")
 
         try:
-            logout_request = LogoutRequestParser(self.provider).parse(
+            logout_request = LogoutRequestParser().parse(
                 payload[REQUEST_KEY_SAML_REQUEST],
                 relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
