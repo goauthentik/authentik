@@ -26,3 +26,18 @@ class TestSchemaGeneration(APITestCase):
             reverse("authentik_api:schema-browser"),
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_build_schema(self):
+        """Test schema build command"""
+        blueprint_file = Path("blueprints/schema.json")
+        api_file = Path("schema.yml")
+        blueprint_file.unlink()
+        api_file.unlink()
+        with (
+            CONFIG.patch("debug", True),
+            CONFIG.patch("tenants.enabled", True),
+            CONFIG.patch("outposts.disable_embedded_outpost", True),
+        ):
+            call_command("build_schema")
+        self.assertTrue(blueprint_file.exists())
+        self.assertTrue(api_file.exists())
