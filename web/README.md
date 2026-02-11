@@ -111,4 +111,4 @@ settings in JSON files, which do not support comments.
 ### License
 
 This code is licensed under the [MIT License](https://www.tldrlegal.com/license/mit-license).
-[A copy of the license](./LICENSE.txt) is included with this package.
+[A copy of the license](./LICENSE.txt) is included with this project.
