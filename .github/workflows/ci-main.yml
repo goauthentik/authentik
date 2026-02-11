@@ -49,7 +49,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: generate schema
-        run: make gen-build
+        run: make migrate gen-build
       - name: ensure schema is up-to-date
         run: git diff --exit-code -- schema.yml blueprints/schema.json > /dev/null
   test-migrations:
