@@ -169,7 +169,7 @@ This section depends on the operating system hosting Apache Guacamole.
 2. To import the certificate to the `/opt/java/openjdk/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
 
     ```shell
-    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
+    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/lib/security/cacerts -deststorepass <destination_store_password> -noprompt -srcstorepass <password>
     ```
 
 :::tip Older versions of Apache Guacamole (pre v1.6)
