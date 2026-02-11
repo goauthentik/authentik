@@ -617,6 +617,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/mailcow/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
@@ -675,6 +676,7 @@ const items = [
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
             "sys-mgmt/data-exports",
+            "sys-mgmt/object-lifecycle-management",
         ],
     },
     {
