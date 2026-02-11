@@ -50,10 +50,10 @@
 }
 
 [name="site-footer"] {
+    --pf-c-login__footer--c-list--PaddingTop: 0;
     [part="list"],
     &::part(list) {
         justify-content: center;
-        padding: 0;
         column-gap: var(--pf-global--spacer--xl);
         row-gap: var(--pf-global--spacer--md);
     }
