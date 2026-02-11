@@ -2,6 +2,7 @@
 title: Deploy authentik Agent on Windows
 sidebar_label: Windows
 tags: [authentik Agent, windows]
+authentik_version: "2025.12.0"
 ---
 
 ## What it can do
