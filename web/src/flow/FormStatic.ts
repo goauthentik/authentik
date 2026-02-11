@@ -94,7 +94,6 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
         [pendingUserAvatar, pendingUser, flowInfo],
         () =>
             html`<ak-form-static
-                class="pf-c-form__group"
                 avatar=${ifPresent(pendingUserAvatar)}
                 username=${ifPresent(pendingUser)}
             >
