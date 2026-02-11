@@ -67,7 +67,7 @@ OpenProject requires a first and last name for each user. By default authentik o
         - **Scopes**:
             - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
             - Add the scope that you created in the previous section (e.g. `Open Project Profile Scope`) to **Selected Scopes**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

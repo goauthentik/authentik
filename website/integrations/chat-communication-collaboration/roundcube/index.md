@@ -63,7 +63,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
     - Select any available signing key.
     - Under **Advanced protocol settings**:
         - Under **Scopes**, add `dovecotprofile` and `authentik default OAuth Mapping: OpenID 'offline_access'` to the list of selected scopes.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

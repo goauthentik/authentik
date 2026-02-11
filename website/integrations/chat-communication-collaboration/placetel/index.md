@@ -40,7 +40,7 @@ To support the integration of Placetel with authentik, you need to create an app
         - Ensure that **Encryption Certificate** is empty.
         - Remove all **Property Mappings** except for `authentik default SAML Mapping: Email`.
         - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
