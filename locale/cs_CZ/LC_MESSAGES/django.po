@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Marc Schmitt, 2025
+# Václav Nováček <waclaw661@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-10 23:02+0000\n"
+"POT-Creation-Date: 2026-02-10 19:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
-"Last-Translator: Marc Schmitt, 2025\n"
+"Last-Translator: Václav Nováček <waclaw661@gmail.com>, 2026\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/authentik/teams/119923/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,9 +32,11 @@ msgid "File name cannot be empty"
 msgstr ""
 
 #: authentik/admin/files/validation.py
+#, python-format
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
-"hyphens (-), underscores (_), and forward slashes (/)"
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -192,6 +195,36 @@ msgstr "Značka"
 msgid "Brands"
 msgstr "Značky"
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "Na základě otisku uživatelského ID"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "Na základě uživatelského ID"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "Na základě uživatelského UUID"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "Na základě uživatelského jména"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr ""
+"Na základě uživatelova emailu. Toto je doporučeno více než metoda UPN."
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"Na základě uživatelova UPN, funguje pouze pokud má uživatel nastaven atribut"
+" 'upn'. Použijte tuto metodu pouze pokud máte rozdílné UPN a emailové "
+"domény."
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "Uživatel nemá přístup k aplikaci."
@@ -225,6 +258,34 @@ msgid "No empty segments in user path allowed."
 msgstr "Mezery v cestě k uživateli nejsou povoleny."
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr "Uživatel/skupina s těmito detaily již existuje"
 
@@ -235,6 +296,14 @@ msgstr "Nepodařilo se vytvořit uživatele"
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
 msgstr "Došlo k neznámé chybě"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
@@ -301,14 +370,6 @@ msgstr "Obnovit heslo"
 #: authentik/core/models.py
 msgid "Can impersonate other users"
 msgstr "Může se vydávat za jiné uživatele"
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr "Může uživatelům přidělovat oprávnění"
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
-msgstr "Může odebírat oprávnění uživatelů"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
@@ -434,6 +495,8 @@ msgid ""
 "When enabled, this source will be displayed as a prominent button on the "
 "login page, instead of a small icon."
 msgstr ""
+"Pokud je povoleno, bude tento zdroj zobrazen jako výrazné tlačítko na "
+"přihlašovací stránce namísto malé ikony."
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
@@ -548,7 +611,9 @@ msgstr "Přejít domů"
 msgid "Powered by authentik"
 msgstr "Powered by authentik"
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -571,6 +636,14 @@ msgstr "rsa"
 msgid "ecdsa"
 msgstr "ecdsa"
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr ""
@@ -584,14 +657,6 @@ msgid "DSA"
 msgstr ""
 
 #: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed448"
-msgstr ""
-
-#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr "Certifikát v kódování PEM "
 
@@ -602,6 +667,30 @@ msgid ""
 msgstr ""
 "Volitelný privátní klíč. Pokud je nastaven, můžete tento pár klíčů použít "
 "pro šifrování."
+
+#: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr ""
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
@@ -629,11 +718,11 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Token is expired"
-msgstr ""
+msgstr "Token vypršel"
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Invalid token for connector"
-msgstr ""
+msgstr "Neplatný token pro konektor"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connector"
@@ -655,19 +744,19 @@ msgstr "Tokeny zařízení"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Token"
-msgstr ""
+msgstr "Zapisovací token"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Enrollment Tokens"
-msgstr ""
+msgstr "Zapisovací tokeny"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Device authentication token"
-msgstr ""
+msgstr "Token pro ověření zařízení"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Device authentication tokens"
-msgstr ""
+msgstr "Tokeny pro ověření zařízení"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Nonce"
@@ -675,6 +764,16 @@ msgstr ""
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Apple Nonces"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
 msgstr ""
 
 #: authentik/endpoints/models.py
@@ -715,7 +814,7 @@ msgstr ""
 
 #: authentik/endpoints/models.py
 msgid "Device access groups"
-msgstr ""
+msgstr "Přístup skupin zařízení"
 
 #: authentik/endpoints/models.py
 msgid "Endpoint Stage"
@@ -733,6 +832,99 @@ msgstr ""
 msgid "Enterprise is required to create/update this object."
 msgstr ""
 "Pro vytvoření/aktualizaci tohoto objektu je vyžadována Enterprise licence."
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Nastavit odeslání dodatečných hlaviček. Mapování by mělo vrátit slovník párů"
+" klíč-hodnota."
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Only one type-wide rule for each object type is allowed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to validate lifecycle rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License"
@@ -856,6 +1048,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -926,6 +1128,16 @@ msgstr ""
 "Microsoft Entra."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
 msgstr ""
 "Synchronizovat příbuzný objekt (členství) poskytovatele Microsoft Entra."
@@ -990,6 +1202,21 @@ msgstr "Odbavit události SSF."
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
 msgstr "Odeslat událost SSF."
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "Přesměrování na {app}..."
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Export"
@@ -1121,14 +1348,6 @@ msgid ""
 msgstr ""
 "Přizpůsobit tělo požadavku. Mapování by mělo vrátit data serializovatelná do"
 " JSON."
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
-msgstr ""
-"Nastavit odeslání dodatečných hlaviček. Mapování by mělo vrátit slovník párů"
-" klíč-hodnota."
 
 #: authentik/events/models.py
 msgid "Severity"
@@ -1903,36 +2122,6 @@ msgstr "Prohledat celý adresář LDAP"
 msgid "Invalid Regex Pattern: {url}"
 msgstr "Neplatný regulární výraz: {url}"
 
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr "Na základě otisku uživatelského ID"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr "Na základě uživatelského ID"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr "Na základě uživatelského UUID"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr "Na základě uživatelského jména"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr ""
-"Na základě uživatelova emailu. Toto je doporučeno více než metoda UPN."
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-"Na základě uživatelova UPN, funguje pouze pokud má uživatel nastaven atribut"
-" 'upn'. Použijte tuto metodu pouze pokud máte rozdílné UPN a emailové "
-"domény."
-
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
 msgstr "Důvěrné"
@@ -2056,7 +2245,7 @@ msgstr "URI pro přesměrování"
 
 #: authentik/providers/oauth2/models.py
 msgid "Logout URI"
-msgstr "Odhlašovací URI"
+msgstr "URI pro odhlášení"
 
 #: authentik/providers/oauth2/models.py
 msgid "Logout Method"
@@ -2208,12 +2397,6 @@ msgstr ""
 #: authentik/providers/oauth2/tasks.py
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr "Zpracovávat upozornění o back-channel odhlášení odbavené přes signály"
-
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
-msgstr "Přesměrování na {app}..."
 
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
@@ -2414,6 +2597,10 @@ msgid ""
 msgstr ""
 "Pokud je vybrán pár podepisovacích klíčů, musí být vybrána alespoň jedna z "
 "voleb 'Podepsat tvrzení' a 'Podepsat odpoovědi'."
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -2696,6 +2883,10 @@ msgid "Salesforce"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Základní URL na požadavky SCIM obvykle končí /v2"
 
@@ -2758,6 +2949,14 @@ msgstr "Synchronizovat objekt (uživatel, skupina) poskytovatele SCIM přímo."
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr ""
 "Odbavit přímé synchronizace objektů (uživatelé, skupiny) poskytovatelů SCIM."
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
@@ -4239,6 +4438,8 @@ msgstr ""
 #: authentik/stages/identification/models.py
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
+"Pokud je povoleno, pole uživatele se porovnávají bez ohledu na velikost "
+"písmen."
 
 #: authentik/stages/identification/models.py
 msgid ""
@@ -4290,6 +4491,10 @@ msgstr "Krok identifikace"
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
 msgstr "Kroky identifikace"
+
+#: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr ""
 
 #: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
@@ -4376,6 +4581,8 @@ msgid ""
 "When enabled, provides a 'show password' button with the password input "
 "field."
 msgstr ""
+"Pokud je povoleno, zobrazí se tlačítko 'zobrazit heslo' s polem pro zadání "
+"hesla."
 
 #: authentik/stages/password/models.py
 msgid "Password Stage"
@@ -4569,7 +4776,7 @@ msgstr ""
 
 #: authentik/stages/user_write/models.py
 msgid "Optionally add newly created users to this group."
-msgstr ""
+msgstr "Volitelně přidat nově vytvořené uživatele do této skupiny."
 
 #: authentik/stages/user_write/models.py
 msgid "User Write Stage"
@@ -4681,6 +4888,8 @@ msgid ""
 "When enabled, all the events caused by a user will be deleted upon the "
 "user's deletion."
 msgstr ""
+"Pokud je povoleno, budou všechny události způsobené uživatelem smazány po "
+"smazání uživatele."
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
@@ -4697,6 +4906,16 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Default token length"
 msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+"Výchozí velikost stránky pro API odpovědi, pokud nebyla požadována žádná "
+"velikost."
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr "Maximální velikost stránky"
 
 #: authentik/tenants/models.py
 msgid "Tenant"
@@ -4756,11 +4975,11 @@ msgstr ""
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Number of retries"
-msgstr ""
+msgstr "Počet dalších pokusů"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Planned execution time"
-msgstr ""
+msgstr "Plánovaný čas spuštění"
 
 #: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
 msgid "Task result"
