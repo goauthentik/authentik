@@ -44,11 +44,11 @@ const MAX_PORT = 65535;
 async function findDisparatePort() {
     const startPort = Math.floor(Math.random() * (MAX_PORT - MIN_PORT + 1)) + MIN_PORT;
 
-    const wathcherPorts = await findFreePorts(1, {
+    const watcherPorts = await findFreePorts(1, {
         startPort,
     });
 
-    const [port] = wathcherPorts;
+    const [port] = watcherPorts;
 
     if (!port) {
         throw new Error("No free ports available");

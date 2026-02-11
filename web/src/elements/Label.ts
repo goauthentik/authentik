@@ -53,13 +53,13 @@ export class Label extends AKElement implements ILabel {
             ([level, color]) => this.color === level || this.color === color,
         );
 
-        const [illo, icon] = chrome ? chrome.slice(2) : ["pf-m-grey", "fa-info-circle"];
+        const [modifier, icon] = chrome ? chrome.slice(2) : ["pf-m-grey", "fa-info-circle"];
 
         return {
             classes: {
                 "pf-c-label": true,
                 "pf-m-compact": this.compact,
-                ...(illo ? { [illo]: true } : {}),
+                ...(modifier ? { [modifier]: true } : {}),
             },
             icon: this.icon ? this.icon : icon,
         };
