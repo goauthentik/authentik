@@ -7,6 +7,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
@@ -16,7 +17,6 @@ from authentik.flows.stage import SessionEndStage
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
 from authentik.providers.saml.views.flows import (
     PLAN_CONTEXT_SAML_LOGOUT_REQUEST,
