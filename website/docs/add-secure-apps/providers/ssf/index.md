@@ -36,7 +36,7 @@ When an authentik administrator [creates an SSF provider](./create-ssf-provider)
 
 ### The application (the receiver)
 
-Within the application, the administrator creates an SSF stream which lists all the signals that the application wants to subscribe to, and defines the audience (`aud`) which is the URL that identifies the stream. A stream is basically an API request to authentik, which asks for a POST of all events. How that request is sent varies from application to application. An application can also change or delete the stream.
+Within the application, the administrator creates an SSF stream which lists all the signals that the application wants to subscribe to, and defines the audience (`aud`), which is the URL that identifies the stream. A stream is basically an API request to authentik, which asks for a POST of all events. How that request is sent varies from application to application. An application can also change or delete the stream.
 
 authentik does not specify which events to subscribe to; instead the application defines which events they want to listen for.
 
@@ -44,7 +44,7 @@ authentik does not specify which events to subscribe to; instead the application
 
 To configure authentik as a shared signals transmitter, the authentik administrator [creates a new SSF provider](./create-ssf-provider), to serve as the backchannelprovider for the application.
 
-When creating the SSF provider you will need to select a signing key which is used to sign the Security Event Tokens (SET).
+When creating the SSF provider you will need to select a signing key that is used to sign the Security Event Tokens (SET).
 
 Optionally, you can specify a event retention time period, which determines how long events are stored for. If an event could not be sent correctly, and retries occur, the event's expiration is also increased by this duration.
 

@@ -7,7 +7,7 @@ authentik_preview: true
 tags: [Shared Signals Framework, SSF, Apple Business Manager, backchannel]
 ---
 
-The workflow to create and configure an SSF provider for an application:
+Follow this workflow to create and configure an SSF provider for an application:
 
 1. Create the SSF provider (which serves as the [backchannel provider](../../applications/manage_apps.mdx#backchannel-providers)).
 2. Create an OIDC provider (which serves as the protocol provider for the application).
