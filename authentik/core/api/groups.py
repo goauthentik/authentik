@@ -32,6 +32,7 @@ from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.models import Role
 
 PARTIAL_USER_SERIALIZER_MODEL_FIELDS = [
     "pk",
@@ -222,6 +223,10 @@ class GroupFilter(FilterSet):
         field_name="users",
         queryset=User.objects.all(),
     )
+    roles_by_pk = ModelMultipleChoiceFilter(
+        field_name="roles",
+        queryset=Role.objects.all(),
+    )
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -242,7 +247,14 @@ class GroupFilter(FilterSet):
 
     class Meta:
         model = Group
-        fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
+        fields = [
+            "name",
+            "is_superuser",
+            "members_by_pk",
+            "attributes",
+            "members_by_username",
+            "roles_by_pk",
+        ]
 
 
 class GroupViewSet(UsedByMixin, ModelViewSet):

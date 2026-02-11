@@ -13,7 +13,7 @@ import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, Group, User } from "@goauthentik/api";
+import { CoreApi, Group, RbacApi, Role, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
@@ -25,16 +25,30 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @property({ attribute: false })
     user?: User;
 
+    @property({ attribute: false })
+    targetRole?: Role;
+
     @state()
     groupsToAdd: Group[] = [];
 
     getSuccessMessage(): string {
+        if (this.targetRole) {
+            return msg("Successfully added group(s) to role.");
+        }
         return msg("Successfully added user to group(s).");
     }
 
     async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
+                if (this.targetRole) {
+                    return new RbacApi(DEFAULT_CONFIG).rbacRolesAddGroupCreate({
+                        uuid: this.targetRole.pk,
+                        groupAccountRequest: {
+                            pk: group,
+                        },
+                    });
+                }
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
                     groupUuid: group,
                     userAccountRequest: {
@@ -96,10 +110,14 @@ export class RelatedGroupList extends Table<Group> {
     @property({ attribute: false })
     targetUser?: User;
 
+    @property({ attribute: false })
+    targetRole?: Role;
+
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
-            membersByPk: this.targetUser ? [this.targetUser.pk] : [],
+            ...(this.targetUser && { membersByPk: [this.targetUser.pk] }),
+            ...(this.targetRole && { rolesByPk: [this.targetRole.pk] }),
             includeUsers: false,
         });
     }
@@ -112,22 +130,32 @@ export class RelatedGroupList extends Table<Group> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+        const targetLabel = this.targetUser?.username || this.targetRole?.name;
         return html`<ak-forms-delete-bulk
             object-label=${msg("Group(s)")}
             action-label=${msg("Remove from Group(s)")}
-            action-subtext=${msg(
-                str`Are you sure you want to remove user ${this.targetUser?.username} from the following groups?`,
-            )}
+            action-subtext=${targetLabel
+                ? msg(str`Are you sure you want to remove the selected groups from ${targetLabel}?`)
+                : msg("Are you sure you want to remove the selected groups?")}
             button-label=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
-                if (!this.targetUser) return;
-                return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
-                    groupUuid: item.pk,
-                    userAccountRequest: {
-                        pk: this.targetUser?.pk || 0,
-                    },
-                });
+                if (this.targetUser) {
+                    return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
+                        groupUuid: item.pk,
+                        userAccountRequest: {
+                            pk: this.targetUser.pk || 0,
+                        },
+                    });
+                }
+                if (this.targetRole) {
+                    return new RbacApi(DEFAULT_CONFIG).rbacRolesRemoveGroupCreate({
+                        uuid: this.targetRole.pk,
+                        groupAccountRequest: {
+                            pk: item.pk,
+                        },
+                    });
+                }
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
@@ -160,6 +188,17 @@ export class RelatedGroupList extends Table<Group> {
                       <span slot="submit">${msg("Add")}</span>
                       <span slot="header">${msg("Add Group")}</span>
                       <ak-group-related-add .user=${this.targetUser} slot="form">
+                      </ak-group-related-add>
+                      <button slot="trigger" class="pf-c-button pf-m-primary">
+                          ${msg("Add to existing group")}
+                      </button>
+                  </ak-forms-modal>`
+                : nothing}
+            ${this.targetRole
+                ? html`<ak-forms-modal>
+                      <span slot="submit">${msg("Add")}</span>
+                      <span slot="header">${msg("Add Group")}</span>
+                      <ak-group-related-add .targetRole=${this.targetRole} slot="form">
                       </ak-group-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">
                           ${msg("Add to existing group")}

@@ -3454,6 +3454,15 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: roles_by_pk
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - $ref: '#/components/parameters/QuerySearch'
       tags:
       - core
@@ -21229,6 +21238,37 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/roles/{uuid}/add_group/:
+    post:
+      operationId: rbac_roles_add_group_create
+      description: Add group to role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupAccountRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Group added
+        '404':
+          description: Group not found
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /rbac/roles/{uuid}/add_user/:
     post:
       operationId: rbac_roles_add_user_create
@@ -21256,6 +21296,37 @@ paths:
           description: User added
         '404':
           description: User not found
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /rbac/roles/{uuid}/remove_group/:
+    post:
+      operationId: rbac_roles_remove_group_create
+      description: Remove group from role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupAccountRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Group removed
+        '404':
+          description: Group not found
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -39967,6 +40038,15 @@ components:
       - pk
       - roles_obj
       - users_obj
+    GroupAccountRequest:
+      type: object
+      description: Group adding/removing operations
+      properties:
+        pk:
+          type: string
+          format: uuid
+      required:
+      - pk
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection

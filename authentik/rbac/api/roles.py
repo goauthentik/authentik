@@ -12,6 +12,7 @@ from rest_framework.fields import (
     ChoiceField,
     IntegerField,
     ListField,
+    UUIDField,
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
@@ -196,4 +197,69 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
         if not user:
             raise Http404
         role.users.remove(user)
+        return Response(status=204)
+
+    class GroupAccountSerializer(PassiveSerializer):
+        """Group adding/removing operations"""
+
+        pk = UUIDField(required=True)
+
+    @permission_required("authentik_rbac.change_role")
+    @extend_schema(
+        request=GroupAccountSerializer,
+        responses={
+            204: OpenApiResponse(description="Group added"),
+            404: OpenApiResponse(description="Group not found"),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+    )
+    def add_group(self, request: Request, pk: str) -> Response:
+        """Add group to role"""
+        role: Role = self.get_object()
+        group: Group = (
+            get_objects_for_user(request.user, "authentik_core.view_group")
+            .filter(
+                pk=request.data.get("pk"),
+            )
+            .first()
+        )
+        if not group:
+            raise Http404
+        role.groups.add(group)
+        return Response(status=204)
+
+    @permission_required("authentik_rbac.change_role")
+    @extend_schema(
+        request=GroupAccountSerializer,
+        responses={
+            204: OpenApiResponse(description="Group removed"),
+            404: OpenApiResponse(description="Group not found"),
+        },
+    )
+    @action(
+        detail=True,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+        permission_classes=[IsAuthenticated],
+    )
+    def remove_group(self, request: Request, pk: str) -> Response:
+        """Remove group from role"""
+        role: Role = self.get_object()
+        group: Group = (
+            get_objects_for_user(request.user, "authentik_core.view_group")
+            .filter(
+                pk=request.data.get("pk"),
+            )
+            .first()
+        )
+        if not group:
+            raise Http404
+        role.groups.remove(group)
         return Response(status=204)
