@@ -27,9 +27,9 @@ To support the integration of Komga with authentik, you need to create an applic
 
 ### Create a email verifiction sccope mapping in authentik
 
-Komga requires the email scope to return a value of `True` on the `email_verified` scope. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Komga to allow authentication.
+Komga requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](https://docs.goauthentik.io/releases/2025.10/#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Komga to allow authentication.
 
-Refer to [Email scope verfication](../../../docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for more instructions on creating the required custom scope mapping.
+Refer to [Email scope verfication](../../../docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
 
 ### Create an application and provider in authentik
 
