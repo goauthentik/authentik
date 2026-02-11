@@ -8,7 +8,7 @@
 {% block head_before %}
 {{ block.super }}
 <link rel="prefetch" href="{{ flow_background_url }}" />
-{% if flow.compatibility_mode and not inspector %}
+{% comment %} {% if flow.compatibility_mode and not inspector %} {% endcomment %}
 {% comment %}
     @see {@link web/types/webcomponents.d.ts} for type definitions.
 {% endcomment %}
@@ -16,9 +16,9 @@
     "use strict";
 
     window.ShadyDOM = window.ShadyDOM || {}
-    window.ShadyDOM.force = true;
+    window.ShadyDOM.force = window.location.search.includes("shady-dom=true");
 </script>
-{% endif %}
+{% comment %} {% endif %} {% endcomment %}
 {% include "base/header_js.html" %}
 <script data-id="flow-config">
     "use strict";
@@ -57,13 +57,7 @@
                         >
                             {% include "base/placeholder.html" %}
 
-                            <ak-brand-links
-                                slot="footer"
-                                name="site-footer"
-                                role="contentinfo"
-                                aria-label="{% trans 'Site footer' %}"
-                                class="pf-c-login__footer {% if flow.layout == 'stacked' %}pf-m-dark{% endif %}"
-                            ></ak-brand-links>
+                            <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
                         </ak-flow-executor>
                     </div>
                 </div>

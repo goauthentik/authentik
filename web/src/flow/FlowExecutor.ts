@@ -567,6 +567,21 @@ export class FlowExecutor
         });
     }
 
+    protected renderFooter(): SlottedTemplateResult {
+        return guard([this.layout], () => {
+            return html`<footer
+                aria-label=${msg("Site footer")}
+                name="site-footer"
+                part="footer"
+                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
+                    ? "pf-m-dark"
+                    : ""}"
+            >
+                <slot name="footer"></slot>
+            </footer>`;
+        });
+    }
+
     protected override render(): SlottedTemplateResult {
         const { component } = this.challenge || {};
 
@@ -597,7 +612,7 @@ export class FlowExecutor
                     : nothing}
                 ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
             </main>
-            <slot name="footer"></slot>`;
+            ${this.renderFooter()}`;
     }
 
     //#endregion
