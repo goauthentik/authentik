@@ -258,6 +258,15 @@ const items = [
                         },
                         items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
                     },
+                    {
+                        type: "category",
+                        label: "WS-Federation Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/wsfed/index",
+                        },
+                        items: ["add-secure-apps/providers/wsfed/create-wsfed-provider"],
+                    },
                 ],
             },
             {
