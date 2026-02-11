@@ -4,9 +4,9 @@ from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_TRANSIENT
+from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.sources.saml.models import SAMLSource
 
 GET_LOGOUT_REQUEST = (

@@ -8,10 +8,10 @@ from authentik.common.saml.constants import (
     RSA_SHA256,
     SAML_NAME_ID_FORMAT_EMAIL,
 )
+from authentik.common.saml.parsers.logout_request import LogoutRequestParser
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 
 
 class TestLogoutIntegration(TestCase):

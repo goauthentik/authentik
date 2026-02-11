@@ -15,6 +15,7 @@ from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 from xmlsec import InternalError, VerificationError
 
+from authentik.common.saml.parsers.logout_response import LogoutResponseParser
 from authentik.flows.challenge import (
     PLAN_CONTEXT_ATTRS,
     PLAN_CONTEXT_TITLE,
@@ -42,7 +43,6 @@ from authentik.sources.saml.exceptions import (
     UnsupportedNameIDFormat,
 )
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
-from authentik.sources.saml.processors.logout_response import LogoutResponseProcessor
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
@@ -183,7 +183,7 @@ class SLOView(View):
 
         # Check if this is a LogoutResponse from the IdP (redirect binding)
         if "SAMLResponse" in request.GET:
-            return self._handle_logout_response(source, request.GET["SAMLResponse"])
+            return self._handle_logout_response(request.GET["SAMLResponse"])
 
         # Otherwise, initiate SP-initiated SLO
         return self._initiate_logout(request)
@@ -195,7 +195,7 @@ class SLOView(View):
             raise Http404
 
         if "SAMLResponse" in request.POST:
-            return self._handle_logout_response(source, request.POST["SAMLResponse"])
+            return self._handle_logout_response(request.POST["SAMLResponse"])
 
         return bad_request_message(request, "Missing SAMLResponse")
 
@@ -221,9 +221,9 @@ class SLOView(View):
         plan.append_stage(in_memory_stage(SessionEndStage))
         return plan.to_redirect(request, flow)
 
-    def _handle_logout_response(self, source: SAMLSource, raw_response: str) -> HttpResponse:
+    def _handle_logout_response(self, raw_response: str) -> HttpResponse:
         """Parse and handle a LogoutResponse from the IdP."""
-        processor = LogoutResponseProcessor(source, raw_response)
+        processor = LogoutResponseParser(raw_response)
         try:
             processor.parse()
         except (ValueError, etree.XMLSyntaxError) as exc:

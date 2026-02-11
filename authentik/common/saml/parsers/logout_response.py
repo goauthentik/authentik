@@ -1,4 +1,4 @@
-"""SAML Source LogoutResponse Processor"""
+"""Shared SAML LogoutResponse parser"""
 
 from defusedxml.lxml import fromstring
 from lxml.etree import _Element  # nosec
@@ -6,19 +6,16 @@ from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import NS_SAML_PROTOCOL, SAML_STATUS_SUCCESS
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
-from authentik.sources.saml.models import SAMLSource
 
 LOGGER = get_logger()
 
 
-class LogoutResponseProcessor:
-    """Parse and validate SAML LogoutResponse messages from the IdP"""
+class LogoutResponseParser:
+    """Parse and validate SAML LogoutResponse messages"""
 
-    _source: SAMLSource
     _root: _Element
 
-    def __init__(self, source: SAMLSource, raw_response: str):
-        self._source = source
+    def __init__(self, raw_response: str):
         self._raw_response = raw_response
 
     def parse(self):
@@ -41,7 +38,6 @@ class LogoutResponseProcessor:
             LOGGER.warning(
                 "LogoutResponse status is not Success",
                 status=status_value,
-                source=self._source.name,
             )
             return False
         return True
