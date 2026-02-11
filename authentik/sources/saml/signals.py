@@ -8,7 +8,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, AuthenticatedSession, User
 from authentik.flows.challenge import PLAN_CONTEXT_ATTRS, PLAN_CONTEXT_TITLE, PLAN_CONTEXT_URL
 from authentik.flows.models import in_memory_stage
-from authentik.flows.stage import RedirectStage
+from authentik.flows.stage import RedirectStage, SessionEndStage
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.sources.saml.models import SAMLSLOBindingTypes, SAMLSourceSession
 from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
@@ -17,6 +17,19 @@ from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
 
 LOGGER = get_logger()
+
+
+def _insert_before_session_end(plan, stage):
+    """Insert a stage before SessionEndStage in the plan.
+    Falls back to append if SessionEndStage is not found."""
+    for i, binding in enumerate(plan.bindings):
+        try:
+            if binding.stage.view == SessionEndStage:
+                plan.insert_stage(stage, index=i)
+                return
+        except NotImplementedError:
+            continue
+    plan.append_stage(stage)
 
 
 @receiver(user_logged_out)
@@ -69,20 +82,21 @@ def handle_saml_source_pre_user_logout(
                 relay_state=relay_state,
             )
 
-            # Append source SLO stage last so provider logout stages run first
+            # Insert before SessionEndStage so the SLO redirect runs
+            # before the flow ends. Provider logout stages (at index 1/2)
+            # still run first since they're inserted earlier.
             if source.slo_binding == SAMLSLOBindingTypes.REDIRECT:
                 redirect_url = processor.get_redirect_url()
-                redirect_stage = in_memory_stage(RedirectStage, destination=redirect_url)
-                executor.plan.append_stage(redirect_stage)
+                stage = in_memory_stage(RedirectStage, destination=redirect_url)
             else:
                 # POST binding
                 form_data = processor.get_post_form_data()
                 executor.plan.context[PLAN_CONTEXT_TITLE] = f"Logging out of {source.name}..."
                 executor.plan.context[PLAN_CONTEXT_URL] = source.slo_url
                 executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
+                stage = in_memory_stage(AutosubmitStageView)
 
-                autosubmit_stage = in_memory_stage(AutosubmitStageView)
-                executor.plan.append_stage(autosubmit_stage)
+            _insert_before_session_end(executor.plan, stage)
 
             LOGGER.debug(
                 "Injected SAML source SLO into logout flow",
