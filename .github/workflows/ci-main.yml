@@ -51,7 +51,7 @@ jobs:
       - name: generate schema
         run: make migrate gen-build
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json > /dev/null
+        run: git diff --exit-code -- schema.yml blueprints/schema.json
   test-migrations:
     runs-on: ubuntu-latest
     steps:
