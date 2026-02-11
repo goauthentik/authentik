@@ -538,7 +538,7 @@ export class FlowExecutor
     //#region Render
 
     protected renderLoading(): SlottedTemplateResult {
-        return html`<slot class="slotted-content" name="placeholder"></slot>`;
+        return html`<slot name="placeholder"></slot>`;
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {

@@ -142,7 +142,7 @@ ak-flow-executor.style-scope.pf-c-login {
     flex-flow: column;
     justify-content: space-between;
 
-    .slotted-content {
+    slot[name="placeholder"] {
         position: relative;
         flex: 1 1 auto;
     }
