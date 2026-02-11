@@ -68,37 +68,21 @@ use tower::ServiceExt;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::{Level, info, warn};
 
+mod gunicorn;
 mod metrics;
 mod r#static;
 
 struct ServerState {
-    gunicorn: Child,
+    gunicorn: gunicorn::Gunicorn,
     handles: Vec<Handle<SocketAddr>>,
 }
 
 impl ServerState {
     fn new(handles: Vec<Handle<SocketAddr>>) -> Result<Self> {
         Ok(Self {
-            gunicorn: Command::new("gunicorn")
-                .args([
-                    "-c",
-                    "./lifecycle/gunicorn.conf.py",
-                    "authentik.root.asgi:application",
-                ])
-                // TODO: catch those
-                .stdout(Stdio::inherit())
-                .stderr(Stdio::inherit())
-                .spawn()?,
+            gunicorn: gunicorn::Gunicorn::new()?,
             handles,
         })
-    }
-
-    async fn shutdown(&mut self, signal: Signal) -> Result<()> {
-        if let Some(id) = self.gunicorn.id() {
-            kill(Pid::from_raw(id as i32), signal)?;
-        }
-        self.gunicorn.wait().await?;
-        Ok(())
     }
 
     async fn graceful_shutdown(&mut self) -> Result<()> {
@@ -106,14 +90,14 @@ impl ServerState {
             // TODO: make configurable
             handle.graceful_shutdown(Some(Duration::from_secs(30)));
         }
-        self.shutdown(Signal::SIGTERM).await
+        self.gunicorn.graceful_shutdown().await
     }
 
     async fn fast_shutdown(&mut self) -> Result<()> {
         for handle in &self.handles {
             handle.shutdown();
         }
-        self.shutdown(Signal::SIGINT).await
+        self.gunicorn.fast_shutdown().await
     }
 }
 
@@ -170,19 +154,8 @@ async fn watch_gunicorn(
             },
             _ = tokio::time::sleep(Duration::from_secs(15)) => {
                 let mut state = state_lock.write().await;
-                let try_wait = state.gunicorn.try_wait();
-                match try_wait {
-                    // Gunicorn has exited. stop as soon as possible
-                    Ok(Some(code)) => {
-                        state.fast_shutdown().await?;
-                        return Err(eyre!("gunicorn has exited unexpectedly with status {code}").into());
-                    }
-                    // Gunicorn is still running, or we failed to check the status
-                    Ok(None) => continue,
-                    Err(err) => {
-                        warn!("failed to check the status of gunicorn process, ignoring: {err}");
-                        continue;
-                    },
+                if !state.gunicorn.is_alive().await {
+                    return Err(eyre!("gunicorn has exited unexpectedly"));
                 }
             },
             _ = stop.cancelled() => {
