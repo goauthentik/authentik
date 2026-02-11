@@ -15,7 +15,6 @@ from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 from xmlsec import InternalError, VerificationError
 
-from authentik.core.models import AuthenticatedSession
 from authentik.flows.challenge import (
     PLAN_CONTEXT_ATTRS,
     PLAN_CONTEXT_TITLE,
@@ -33,7 +32,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.flows.stage import ChallengeStageView
+from authentik.flows.stage import ChallengeStageView, SessionEndStage
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
@@ -42,13 +41,7 @@ from authentik.sources.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
-from authentik.sources.saml.models import (
-    SAMLBindingTypes,
-    SAMLSLOBindingTypes,
-    SAMLSource,
-    SAMLSourceSession,
-)
-from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
+from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.logout_response import LogoutResponseProcessor
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
@@ -190,10 +183,10 @@ class SLOView(View):
 
         # Check if this is a LogoutResponse from the IdP (redirect binding)
         if "SAMLResponse" in request.GET:
-            return self._handle_logout_response(request, source, request.GET["SAMLResponse"])
+            return self._handle_logout_response(source, request.GET["SAMLResponse"])
 
         # Otherwise, initiate SP-initiated SLO
-        return self._initiate_logout(request, source)
+        return self._initiate_logout(request)
 
     def post(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Handle POST requests: LogoutResponse from the IdP via POST binding."""
@@ -202,69 +195,33 @@ class SLOView(View):
             raise Http404
 
         if "SAMLResponse" in request.POST:
-            return self._handle_logout_response(request, source, request.POST["SAMLResponse"])
+            return self._handle_logout_response(source, request.POST["SAMLResponse"])
 
         return bad_request_message(request, "Missing SAMLResponse")
 
-    def _initiate_logout(self, request: HttpRequest, source: SAMLSource) -> HttpResponse:
-        """Build and send a LogoutRequest to the IdP."""
-        if not source.slo_url:
-            # No SLO URL configured, just log out locally
+    def _initiate_logout(self, request: HttpRequest) -> HttpResponse:
+        """Initiate logout using the brand's invalidation flow.
+
+        The invalidation flow contains a UserLogoutStage which fires the
+        flow_pre_user_logout signal. Our signal handler in signals.py picks that up,
+        finds the SAMLSourceSession, and injects the SLO redirect/POST stage."""
+        # Sources do not have an invalidation flow, use the brand's
+        flow = request.brand.flow_invalidation
+        if not flow:
             logout(request)
             return redirect("authentik_core:root-redirect")
 
-        # Find SAMLSourceSession for the current user
-        saml_session = None
-        if request.user.is_authenticated:
-            auth_session = AuthenticatedSession.from_request(request, request.user)
-            if auth_session:
-                saml_session = SAMLSourceSession.objects.filter(
-                    source=source,
-                    user=request.user,
-                    session=auth_session,
-                ).first()
-
-        if not saml_session:
-            # No session data, log out locally and redirect to IdP SLO URL
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        try:
+            plan = planner.plan(request)
+        except FlowNonApplicableException:
             logout(request)
-            return redirect(source.slo_url)
+            return redirect("authentik_core:root-redirect")
+        plan.append_stage(in_memory_stage(SessionEndStage))
+        return plan.to_redirect(request, flow)
 
-        # Build LogoutRequest
-        relay_state = request.build_absolute_uri(source.build_full_url(request, view="slo"))
-        processor = LogoutRequestProcessor(
-            source=source,
-            http_request=request,
-            destination=source.slo_url,
-            name_id=saml_session.name_id,
-            name_id_format=saml_session.name_id_format,
-            session_index=saml_session.session_index,
-            relay_state=relay_state,
-        )
-
-        # Clean up the session record
-        saml_session.delete()
-
-        # Log out locally
-        logout(request)
-
-        if source.slo_binding == SAMLSLOBindingTypes.REDIRECT:
-            return redirect(processor.get_redirect_url())
-
-        # POST binding - return autosubmit form
-        form_data = processor.get_post_form_data()
-        autosubmit_html = (
-            '<html><body onload="document.forms[0].submit()">'
-            f'<form method="post" action="{source.slo_url}">'
-        )
-        for key, value in form_data.items():
-            autosubmit_html += f'<input type="hidden" name="{key}" value="{value}"/>'
-        autosubmit_html += '<noscript><input type="submit" value="Continue"/></noscript>'
-        autosubmit_html += "</form></body></html>"
-        return HttpResponse(autosubmit_html)
-
-    def _handle_logout_response(
-        self, request: HttpRequest, source: SAMLSource, raw_response: str
-    ) -> HttpResponse:
+    def _handle_logout_response(self, source: SAMLSource, raw_response: str) -> HttpResponse:
         """Parse and handle a LogoutResponse from the IdP."""
         processor = LogoutResponseProcessor(source, raw_response)
         try:

@@ -69,10 +69,11 @@ def handle_saml_source_pre_user_logout(
                 relay_state=relay_state,
             )
 
+            # Append source SLO stage last so provider logout stages run first
             if source.slo_binding == SAMLSLOBindingTypes.REDIRECT:
                 redirect_url = processor.get_redirect_url()
                 redirect_stage = in_memory_stage(RedirectStage, destination=redirect_url)
-                executor.plan.insert_stage(redirect_stage, index=1)
+                executor.plan.append_stage(redirect_stage)
             else:
                 # POST binding
                 form_data = processor.get_post_form_data()
@@ -81,7 +82,7 @@ def handle_saml_source_pre_user_logout(
                 executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
 
                 autosubmit_stage = in_memory_stage(AutosubmitStageView)
-                executor.plan.insert_stage(autosubmit_stage, index=1)
+                executor.plan.append_stage(autosubmit_stage)
 
             LOGGER.debug(
                 "Injected SAML source SLO into logout flow",
