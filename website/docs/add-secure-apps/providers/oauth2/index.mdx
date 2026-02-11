@@ -187,7 +187,7 @@ This does _not_ apply to special scopes, as those are not configurable in the pr
 
 In authentik releases prior to 2025.10, the email scope always set the `email_verified` claim to `true`. Since authentik does not have a single authoritative source to determine whether a user's email is actually verified, asserting this claim could have security implications. As of 2025.10, `email_verified` now defaults to `false`.
 
-Some applications require this claim to be `true` in order to authenticate users. In those cases, you can define a custom email scope mapping that always returns `email_verified` as `true`:
+Some applications require this claim to be `true` in order to authenticate users. In those cases, you can create a custom email scope mapping (**Customization** > **Property Mappings**) that always returns `email_verified` as `true`:
 
 ```python
 return {
