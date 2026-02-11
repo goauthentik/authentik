@@ -9,7 +9,15 @@
 {{ block.super }}
 <link rel="prefetch" href="{{ flow_background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
-<script data-id="shady-dom">ShadyDOM = { force: true };</script>
+{% comment %}
+    @see {@link web/types/webcomponents.d.ts} for type definitions.
+{% endcomment %}
+<script data-id="shady-dom">
+    "use strict";
+
+    window.ShadyDOM = window.ShadyDOM || {}
+    window.ShadyDOM.force = true;
+</script>
 {% endif %}
 {% include "base/header_js.html" %}
 <script data-id="flow-config">
