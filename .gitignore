@@ -15,6 +15,9 @@ media
 
 node_modules
 
+.cspellcache
+cspell-report.*
+
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
 # <django-project-name>/staticfiles/
@@ -213,3 +216,5 @@ source_docs/
 ### Docker ###
 tests/openid_conformance/exports/*.zip
 compose.override.yml
+
+

@@ -6,7 +6,7 @@
         "lint": "run-s lint:spellcheck lint:lockfile",
         "lint:lockfile": "echo 'Skipping lockfile linting'",
         "lint:node": "echo 'Skipping node linting'",
-        "lint:spellcheck": "echo 'Skipping spellcheck linting'"
+        "lint:spellcheck": "cspell . --config cspell.config.jsonc"
     },
     "type": "module",
     "imports": {
@@ -20,6 +20,7 @@
         "@goauthentik/tsconfig": "./packages/tsconfig",
         "@typescript-eslint/eslint-plugin": "^8.56.1",
         "@typescript-eslint/parser": "^8.56.1",
+        "cspell": "^9.6.4",
         "eslint": "^9.39.3",
         "npm-run-all": "^4.1.5",
         "pino": "^10.3.1",
