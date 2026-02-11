@@ -5,10 +5,10 @@ from django.contrib.auth import get_user_model
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.events.models import Event, EventAction
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 
 LOGGER = get_logger()

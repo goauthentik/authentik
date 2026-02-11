@@ -191,7 +191,11 @@ class SLOView(View):
             raise Http404
 
         if "SAMLResponse" in request.GET:
-            return self._handle_logout_response(request.GET["SAMLResponse"])
+            return self._handle_logout_response(
+                request,
+                request.GET["SAMLResponse"],
+                relay_state=request.GET.get("RelayState"),
+            )
 
         if "SAMLRequest" in request.GET:
             return self._handle_logout_request(
@@ -208,7 +212,11 @@ class SLOView(View):
             raise Http404
 
         if "SAMLResponse" in request.POST:
-            return self._handle_logout_response(request.POST["SAMLResponse"])
+            return self._handle_logout_response(
+                request,
+                request.POST["SAMLResponse"],
+                relay_state=request.POST.get("RelayState"),
+            )
 
         if "SAMLRequest" in request.POST:
             return self._handle_logout_request(
@@ -327,7 +335,9 @@ class SLOView(View):
             plan.context[PLAN_CONTEXT_ATTRS] = form_data
             plan.append_stage(in_memory_stage(AutosubmitStageView))
 
-    def _handle_logout_response(self, raw_response: str) -> HttpResponse:
+    def _handle_logout_response(
+        self, request: HttpRequest, raw_response: str, relay_state: str | None = None
+    ) -> HttpResponse:
         """Parse and handle a LogoutResponse from the IdP."""
         processor = LogoutResponseParser(raw_response)
         try:
@@ -338,7 +348,15 @@ class SLOView(View):
 
         processor.verify_status()
 
-        # User is already logged out at this point, redirect to root
+        # If a RelayState was provided (e.g. the flow executor URL), advance
+        # past the current stage (RedirectStage) in the plan so the flow
+        # continues to the next stage instead of looping.
+        if relay_state and SESSION_KEY_PLAN in request.session:
+            plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+            if plan.bindings:
+                plan.pop()
+                request.session[SESSION_KEY_PLAN] = plan
+            return redirect(relay_state)
         return redirect("authentik_core:root-redirect")
 
 

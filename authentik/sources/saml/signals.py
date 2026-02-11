@@ -3,6 +3,7 @@
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.http import HttpRequest
+from django.urls import reverse
 from structlog.stdlib import get_logger
 
 from authentik.core.models import USER_ATTRIBUTE_DELETE_ON_LOGOUT, AuthenticatedSession, User
@@ -10,6 +11,7 @@ from authentik.flows.challenge import PLAN_CONTEXT_ATTRS, PLAN_CONTEXT_TITLE, PL
 from authentik.flows.models import in_memory_stage
 from authentik.flows.stage import RedirectStage, SessionEndStage
 from authentik.flows.views.executor import FlowExecutorView
+from authentik.providers.saml.native_logout import NativeLogoutStageView
 from authentik.sources.saml.models import SAMLSLOBindingTypes, SAMLSourceSession
 from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.sources.saml.views import AutosubmitStageView
@@ -18,13 +20,17 @@ from authentik.stages.user_logout.stage import flow_pre_user_logout
 
 LOGGER = get_logger()
 
+# Stages that redirect the user away from authentik. Source SLO stages must be
+# inserted before these so they have a chance to execute.
+TERMINAL_STAGE_VIEWS = {SessionEndStage, NativeLogoutStageView}
 
-def _insert_before_session_end(plan, stage):
-    """Insert a stage before SessionEndStage in the plan.
-    Falls back to append if SessionEndStage is not found."""
+
+def _insert_before_terminal_stage(plan, stage):
+    """Insert a stage before any terminal stage (SessionEndStage, NativeLogoutStageView)
+    in the plan. Falls back to append if no terminal stage is found."""
     for i, binding in enumerate(plan.bindings):
         try:
-            if binding.stage.view == SessionEndStage:
+            if binding.stage.view in TERMINAL_STAGE_VIEWS:
                 plan.insert_stage(stage, index=i)
                 return
         except NotImplementedError:
@@ -70,7 +76,15 @@ def handle_saml_source_pre_user_logout(
             continue
 
         try:
-            relay_state = request.build_absolute_uri("/")
+            # Use the flow executor URL as relay_state so that after the IdP
+            # processes the LogoutRequest and sends a LogoutResponse, the user
+            # is redirected back to the flow to continue remaining stages.
+            relay_state = request.build_absolute_uri(
+                reverse(
+                    "authentik_core:if-flow",
+                    kwargs={"flow_slug": executor.flow.slug},
+                )
+            )
 
             processor = LogoutRequestProcessor(
                 source=source,
@@ -82,9 +96,10 @@ def handle_saml_source_pre_user_logout(
                 relay_state=relay_state,
             )
 
-            # Insert before SessionEndStage so the SLO redirect runs
-            # before the flow ends. Provider logout stages (at index 1/2)
-            # still run first since they're inserted earlier.
+            # Insert before terminal stages (SessionEndStage, NativeLogoutStageView)
+            # so the SLO redirect runs before the flow ends or the user is
+            # redirected away. Provider logout stages (at index 1/2) still run
+            # first since they're inserted earlier.
             if source.slo_binding == SAMLSLOBindingTypes.REDIRECT:
                 redirect_url = processor.get_redirect_url()
                 stage = in_memory_stage(RedirectStage, destination=redirect_url)
@@ -96,7 +111,7 @@ def handle_saml_source_pre_user_logout(
                 executor.plan.context[PLAN_CONTEXT_ATTRS] = form_data
                 stage = in_memory_stage(AutosubmitStageView)
 
-            _insert_before_session_end(executor.plan, stage)
+            _insert_before_terminal_stage(executor.plan, stage)
 
             LOGGER.debug(
                 "Injected SAML source SLO into logout flow",

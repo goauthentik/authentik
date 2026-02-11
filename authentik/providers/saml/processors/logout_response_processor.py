@@ -14,8 +14,8 @@ from authentik.common.saml.constants import (
     NS_SAML_PROTOCOL,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
-from authentik.providers.saml.models import SAMLProvider
 from authentik.common.saml.parsers.logout_request import LogoutRequest
+from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode
 from authentik.providers.saml.utils.time import get_time_string

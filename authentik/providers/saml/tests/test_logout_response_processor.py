@@ -9,9 +9,9 @@ from authentik.common.saml.constants import (
     NS_SAML_PROTOCOL,
     NS_SIGNATURE,
 )
+from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.common.saml.parsers.logout_request import LogoutRequest
 from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 
 
