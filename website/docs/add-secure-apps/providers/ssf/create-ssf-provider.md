@@ -4,7 +4,7 @@ authentik_version: "2025.2.0"
 description: "How to create and configure an SSF provider in authentik"
 authentik_enterprise: true
 authentik_preview: true
-tags: Shared Signals Framework, SSF, Apple Business Manager, backchannel
+tags: [Shared Signals Framework, SSF, Apple Business Manager, backchannel]
 ---
 
 The workflow to create and configure an SSF provider for an application:
