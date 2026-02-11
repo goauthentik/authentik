@@ -1,6 +1,7 @@
 """Schema generation tests"""
 
 from pathlib import Path
+from tempfile import gettempdir
 from uuid import uuid4
 
 from django.core.management import call_command
@@ -30,13 +31,14 @@ class TestSchemaGeneration(APITestCase):
 
     def test_build_schema(self):
         """Test schema build command"""
-        blueprint_file_name = f"/tmp/{str(uuid4())}.json"
-        api_file_name = f"/tmp/{str(uuid4())}.yml"
+        tmp = Path(gettempdir())
+        blueprint_file = tmp / f"{str(uuid4())}.json"
+        api_file = tmp / f"{str(uuid4())}.yml"
         with (
             CONFIG.patch("debug", True),
             CONFIG.patch("tenants.enabled", True),
             CONFIG.patch("outposts.disable_embedded_outpost", True),
         ):
-            call_command("build_schema", blueprint_file=blueprint_file_name, api_file=api_file_name)
-        self.assertTrue(Path(blueprint_file_name).exists())
-        self.assertTrue(Path(api_file_name).exists())
+            call_command("build_schema", blueprint_file=blueprint_file, api_file=api_file)
+        self.assertTrue(blueprint_file.exists())
+        self.assertTrue(api_file.exists())
