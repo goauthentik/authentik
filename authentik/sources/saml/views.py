@@ -2,7 +2,6 @@
 
 from urllib.parse import parse_qsl, urlparse, urlunparse
 
-from defusedxml.lxml import fromstring
 from django.contrib.auth import logout
 from django.http import Http404, HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
@@ -16,7 +15,6 @@ from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 from xmlsec import InternalError, VerificationError
 
-from authentik.common.saml.constants import NS_SAML_PROTOCOL, SAML_STATUS_SUCCESS
 from authentik.core.models import AuthenticatedSession
 from authentik.flows.challenge import (
     PLAN_CONTEXT_ATTRS,
@@ -38,7 +36,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
-from authentik.providers.saml.utils.encoding import decode_base64_and_inflate, nice64
+from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import (
     InvalidSignature,
     MissingSAMLResponse,
@@ -51,6 +49,7 @@ from authentik.sources.saml.models import (
     SAMLSourceSession,
 )
 from authentik.sources.saml.processors.logout_request import LogoutRequestProcessor
+from authentik.sources.saml.processors.logout_response import LogoutResponseProcessor
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
@@ -267,27 +266,14 @@ class SLOView(View):
         self, request: HttpRequest, source: SAMLSource, raw_response: str
     ) -> HttpResponse:
         """Parse and handle a LogoutResponse from the IdP."""
+        processor = LogoutResponseProcessor(source, raw_response)
         try:
-            # decode_base64_and_inflate handles both deflate-compressed (Redirect binding)
-            # and plain base64 (POST binding) responses
-            response_xml = decode_base64_and_inflate(raw_response)
-            root = fromstring(response_xml.encode())
+            processor.parse()
         except (ValueError, etree.XMLSyntaxError) as exc:
             LOGGER.warning("Failed to parse LogoutResponse", exc=exc)
             return redirect("authentik_core:root-redirect")
 
-        # Check status
-        status = root.find(f"{{{NS_SAML_PROTOCOL}}}Status")
-        if status is not None:
-            status_code = status.find(f"{{{NS_SAML_PROTOCOL}}}StatusCode")
-            if status_code is not None:
-                status_value = status_code.attrib.get("Value", "")
-                if status_value != SAML_STATUS_SUCCESS:
-                    LOGGER.warning(
-                        "LogoutResponse status is not Success",
-                        status=status_value,
-                        source=source.name,
-                    )
+        processor.verify_status()
 
         # User is already logged out at this point, redirect to root
         return redirect("authentik_core:root-redirect")
