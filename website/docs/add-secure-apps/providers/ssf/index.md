@@ -10,7 +10,7 @@ tags: [Shared Signals Framework, SSF, Apple Business Manager]
 
 The Shared Signals Framework (SSF) provider allows you to integrate applications with the Shared Signals Framework protocol.
 
-SSF is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
+SSF is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected and secure webhooks.
 
 The authentik SSF provider allows OIDC applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the application can respond to each event. In this scenario, authentik acts as the _transmitter_ and the application acts as the _receiver_ of the events.
 
