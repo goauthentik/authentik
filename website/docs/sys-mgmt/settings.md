@@ -48,6 +48,10 @@ Configure a lower limit for [Reputation](../../customize/policies/#reputation-po
 
 Configure an upper limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `5`.
 
+### Reputation: reset on login
+
+When enabled, the reputation score for a user is reset to 0 upon successful login instead of being incremented by 1. This is useful when administrators want a clean slate after a user proves their identity. Defaults to `false`.
+
 ### Footer links
 
 This option allows you to add linked text (footer links) on the bottom of flow pages. You can also use this setting to display additional static text to the flow pages, even if no URL is provided.

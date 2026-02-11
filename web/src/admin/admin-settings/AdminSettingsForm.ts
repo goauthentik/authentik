@@ -185,6 +185,15 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
                 help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
             ></ak-number-input>
+            <ak-switch-input
+                name="reputationResetOnLogin"
+                label=${msg("Reputation: reset on login")}
+                ?checked=${settings.reputationResetOnLogin}
+                help=${msg(
+                    "When enabled, the reputation score for a user is reset to 0 upon successful login instead of being incremented.",
+                )}
+            >
+            </ak-switch-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-array-input
                     .items=${settings.footerLinks ?? []}

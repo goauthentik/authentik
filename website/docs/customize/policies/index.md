@@ -74,7 +74,7 @@ This policy prevents users from reusing their previous passwords when setting a 
 
 ### Reputation Policy
 
-authentik keeps track of recent login attempts per [Identifier](../../add-secure-apps/flows-stages/stages/identification/#user-fields) and client IP. These values are saved as scores. Failed logins decrease the score by 1, while successful logins increase the score by 1.
+authentik keeps track of recent login attempts per [Identifier](../../add-secure-apps/flows-stages/stages/identification/#user-fields) and client IP. These values are saved as scores. Failed logins decrease the score by 1, while successful logins increase the score by 1. Optionally, the [Reputation: reset on login](../../sys-mgmt/settings.md#reputation-reset-on-login) setting can be enabled to reset the score to 0 on successful login instead of incrementing it.
 
 This policy can be used, for example, to prompt clients with a low score to pass a CAPTCHA test before they can continue.
 

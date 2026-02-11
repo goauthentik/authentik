@@ -62,4 +62,11 @@ def handle_identification_failed(sender, request, uid_field: str, **_):
 @receiver(user_logged_in)
 def handle_successful_login(sender, request, user, **_):
     """Raise score for successful attempts"""
-    update_score(request, user.username, 1)
+    tenant = getattr(request, "tenant", get_current_tenant())
+    if tenant.reputation_reset_on_login:
+        remote_ip = ClientIPMiddleware.get_client_ip(request)
+        Reputation.objects.filter(identifier=user.username, ip=remote_ip).update(
+            score=0, expires=reputation_expiry()
+        )
+    else:
+        update_score(request, user.username, 1)

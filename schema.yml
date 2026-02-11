@@ -50341,6 +50341,10 @@ components:
           minimum: 0
           description: Reputation cannot increase higher than this value. Zero or
             positive.
+        reputation_reset_on_login:
+          type: boolean
+          description: When enabled, the reputation score for a user is reset to 0
+            upon successful login instead of being incremented.
         footer_links: {}
         gdpr_compliance:
           type: boolean
@@ -55037,6 +55041,10 @@ components:
           minimum: 0
           description: Reputation cannot increase higher than this value. Zero or
             positive.
+        reputation_reset_on_login:
+          type: boolean
+          description: When enabled, the reputation score for a user is reset to 0
+            upon successful login instead of being incremented.
         footer_links: {}
         gdpr_compliance:
           type: boolean
@@ -55114,6 +55122,10 @@ components:
           minimum: 0
           description: Reputation cannot increase higher than this value. Zero or
             positive.
+        reputation_reset_on_login:
+          type: boolean
+          description: When enabled, the reputation score for a user is reset to 0
+            upon successful login instead of being incremented.
         footer_links: {}
         gdpr_compliance:
           type: boolean

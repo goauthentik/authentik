@@ -6,11 +6,12 @@ from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import Reputation, ReputationPolicy
-from authentik.policies.reputation.signals import update_score
+from authentik.policies.reputation.signals import handle_successful_login, update_score
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import authenticate
 from authentik.tenants.models import DEFAULT_REPUTATION_LOWER_LIMIT, DEFAULT_REPUTATION_UPPER_LIMIT
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestReputationPolicy(TestCase):
@@ -69,6 +70,31 @@ class TestReputationPolicy(TestCase):
             name="reputation-test", threshold=0
         )
         self.assertTrue(policy.passes(request).passing)
+
+    def test_reset_on_login(self):
+        """Test reputation reset on successful login"""
+        # Create a negative reputation for the user
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        # Another user's score on the same IP should not be reset
+        Reputation.objects.create(identifier="another-user", ip=self.ip, score=-4)
+        # Enable the reset-on-login flag
+        tenant = get_current_tenant()
+        tenant.reputation_reset_on_login = True
+        tenant.save()
+        try:
+            # Trigger a successful login signal
+            handle_successful_login(
+                sender=self.__class__,
+                request=self.request,
+                user=self.user,
+            )
+            # Score should be reset to 0
+            self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
+            # Other users on the same IP must be unaffected
+            self.assertEqual(Reputation.objects.get(identifier="another-user").score, -4)
+        finally:
+            tenant.reputation_reset_on_login = False
+            tenant.save()
 
     def test_api(self):
         """Test API Validation"""

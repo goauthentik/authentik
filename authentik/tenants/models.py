@@ -84,6 +84,13 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
         default=DEFAULT_REPUTATION_UPPER_LIMIT,
         validators=[MinValueValidator(0)],
     )
+    reputation_reset_on_login = models.BooleanField(
+        help_text=_(
+            "When enabled, the reputation score for a user is reset to 0 upon successful login "
+            "instead of being incremented."
+        ),
+        default=False,
+    )
     footer_links = models.JSONField(
         help_text=_("The option configures the footer links on the flow executor pages."),
         default=list,

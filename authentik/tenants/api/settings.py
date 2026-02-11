@@ -63,6 +63,7 @@ class SettingsSerializer(ModelSerializer):
             "event_retention",
             "reputation_lower_limit",
             "reputation_upper_limit",
+            "reputation_reset_on_login",
             "footer_links",
             "gdpr_compliance",
             "impersonation",
