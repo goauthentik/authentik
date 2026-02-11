@@ -24,7 +24,7 @@ if [[ -v BUILD ]]; then
     make gen-client-go
     touch lifecycle/container/.env
 
-    docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" .
+    docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .
 fi
 
 docker compose -f lifecycle/container/compose.yml up --no-start
