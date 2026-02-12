@@ -43,7 +43,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, render, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
