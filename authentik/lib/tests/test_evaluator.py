@@ -254,4 +254,4 @@ class TestEvaluator(TestCase):
         self.assertEqual(
             res, {"zgetattrgetattr__import__os_popenid_tmptest_read": "bar", "aa": "baz"}
         )
-        self.assertFalse(Path("/tmp/test").exists())
+        self.assertFalse(Path("/tmp/test").exists())  # nosec
