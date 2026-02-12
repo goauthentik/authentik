@@ -210,12 +210,12 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Run test suite in final docker images
         run: |
-          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> .env
-          docker compose pull -q
-          docker compose up --no-start
-          docker compose start postgresql
-          docker compose run -u root server test-all
+          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> lifecycle/container/.env
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> lifecycle/container/.env
+          docker compose -f lifecycle/container/compose.yml pull -q
+          docker compose -f lifecycle/container/compose.yml up --no-start
+          docker compose -f lifecycle/container/compose.yml start postgresql
+          docker compose -f lifecycle/container/compose.yml run -u root server test-all
   sentry-release:
     needs:
       - build-server
