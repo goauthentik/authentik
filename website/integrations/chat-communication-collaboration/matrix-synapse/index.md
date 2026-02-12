@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Matrix Synapse
 
-> Matrix is an open source project that publishes the Matrix open standard for secure, decentralised, real-time communication, and its Apache licensed reference implementations.
+> Matrix is an open source project that publishes the Matrix open standard for secure, decentralized, real-time communication, and its Apache licensed reference implementations.
 >
 > -- https://matrix.org/
 

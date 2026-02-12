@@ -65,5 +65,5 @@ All of the URLs mentioned below can be copied & pasted from authentik (**Applica
 5. You should be able to login with OIDC.
 
 :::info
-The first time a user signs in, Xen Orchesta will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
+The first time a user signs in, Xen Orchestra will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
 :::

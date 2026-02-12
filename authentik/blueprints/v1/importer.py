@@ -272,7 +272,7 @@ class Importer:
             and entry.state != BlueprintEntryDesiredState.MUST_CREATED
         ):
             self.logger.debug(
-                "Initialise serializer with instance",
+                "Initialize serializer with instance",
                 model=model,
                 instance=model_instance,
                 pk=model_instance.pk,
@@ -290,7 +290,7 @@ class Importer:
             )
         else:
             self.logger.debug(
-                "Initialised new serializer instance",
+                "Initialized new serializer instance",
                 model=model,
                 **cleanse_dict(updated_identifiers),
             )
