@@ -193,15 +193,6 @@ wheels = [
 ]
 
 [[package]]
-name = "asn1crypto"
-version = "1.5.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/de/cf/d547feed25b5244fcb9392e288ff9fdc3280b10260362fc45d37a798a6ee/asn1crypto-1.5.1.tar.gz", hash = "sha256:13ae38502be632115abf8a24cbe5f4da52e3b5231990aff31123c805306ccb9c", size = 121080, upload-time = "2022-03-15T14:46:52.889Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/7f/09065fd9e27da0eda08b4d6897f1c13535066174cc023af248fc2a8d5e5a/asn1crypto-1.5.1-py2.py3-none-any.whl", hash = "sha256:db4e40728b728508912cbb3d44f19ce188f218e9eba635821bb4b68564f8fd67", size = 105045, upload-time = "2022-03-15T14:46:51.055Z" },
-]
-
-[[package]]
 name = "async-generator"
 version = "1.10"
 source = { registry = "https://pypi.org/simple" }
@@ -398,7 +389,7 @@ requires-dist = [
     { name = "urllib3", specifier = "<3" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.40.0" },
     { name = "watchdog", specifier = "==6.0.0" },
-    { name = "webauthn", specifier = "==2.7.0" },
+    { name = "webauthn", specifier = "==2.7.1" },
     { name = "wsproto", specifier = "==1.3.2" },
     { name = "xmlsec", specifier = "==1.3.17" },
     { name = "zxcvbn", specifier = "==4.5.0" },
@@ -4003,17 +3994,17 @@ wheels = [
 
 [[package]]
 name = "webauthn"
-version = "2.7.0"
+version = "2.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "asn1crypto" },
     { name = "cbor2" },
     { name = "cryptography" },
+    { name = "pyasn1" },
     { name = "pyopenssl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/f0/e1036df8842782a2947e5f41e76a4accb92e3dba972dba882321ebe15af0/webauthn-2.7.0.tar.gz", hash = "sha256:3c45c25e75a7d7d419220ccd10b8b899984de8012732e10d898f0a8f8c480575", size = 123770, upload-time = "2025-09-04T23:19:21.602Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6c/f4/9529bcf85ef46c76842b84c66ffa8ec31f18e3aacd1330b62f440077b45b/webauthn-2.7.1.tar.gz", hash = "sha256:2a1ebbfffc4a83e31d3db5d69113944bc49d05fae77770c2d4e388386cb9656e", size = 124256, upload-time = "2026-02-11T23:36:02.302Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/73/b1/3f380d02552f1d75d3db789f761a1ee0dafd6181ebc07dd4b9ded61225a4/webauthn-2.7.0-py3-none-any.whl", hash = "sha256:2ecfee7959b09ebeaaffee9f8982ecdbbdc369a11766d20d4bc0637b36e235b7", size = 71311, upload-time = "2025-09-04T23:19:20.269Z" },
+    { url = "https://files.pythonhosted.org/packages/90/5b/f73513367a9d34b199de916b44306acfa4027b57f7e22200421212b1f763/webauthn-2.7.1-py3-none-any.whl", hash = "sha256:d57e9613c65e0c6a4db7ee715fb49ebdf3c4a6eb3979729eeb497c99105e8181", size = 71684, upload-time = "2026-02-11T23:36:00.864Z" },
 ]
 
 [[package]]
