@@ -9776,6 +9776,195 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s92e22f9319fdb85d">
   <source>Configuration warning</source>
 </trans-unit>
+<trans-unit id="s304ca1e922bd3278">
+  <source>Lifecycle Rules</source>
+</trans-unit>
+<trans-unit id="scd223a9aac742fcf">
+  <source>Lifecycle</source>
+</trans-unit>
+<trans-unit id="sa9ebf2b039449d6c">
+  <source>Object Lifecycle Management is in preview.</source>
+</trans-unit>
+<trans-unit id="s2b858c5186f8f2fd">
+  <source>Select a group...</source>
+</trans-unit>
+<trans-unit id="s5e0fb3d421bb57cc">
+  <source>Select a role...</source>
+</trans-unit>
+<trans-unit id="s8e5d1a84bd559a27">
+  <source>Select an object...</source>
+</trans-unit>
+<trans-unit id="s69e44328a5b45aa2">
+  <source>Rule Name</source>
+</trans-unit>
+<trans-unit id="se319064a2f20deba">
+  <source>Type a name for this lifecycle rule...</source>
+</trans-unit>
+<trans-unit id="sb46d3613edb66558">
+  <source>Interval</source>
+</trans-unit>
+<trans-unit id="s19feda58eae87c66">
+  <source>The interval between opening new reviews for matching objects.</source>
+</trans-unit>
+<trans-unit id="s760c656016171d08">
+  <source>Grace period</source>
+</trans-unit>
+<trans-unit id="s48a53c24fbbc8444">
+  <source>The duration of time before an open review is considered overdue.</source>
+</trans-unit>
+<trans-unit id="s1b5d2f91633b74d6">
+  <source>Reviewer groups</source>
+</trans-unit>
+<trans-unit id="s94c5d9fea467cdbb">
+  <source>Min reviewers</source>
+</trans-unit>
+<trans-unit id="s693370c05900a1c6">
+  <source>Number of users from the selected reviewer groups that must approve the review.</source>
+</trans-unit>
+<trans-unit id="s20c950d20c8aec84">
+  <source>Min reviewers is per-group</source>
+</trans-unit>
+<trans-unit id="se4f63fe867f1714a">
+  <source>If checked, approving a review will require at least that many users from _each_ of the selected groups. When disabled, the value is a total across all groups.</source>
+</trans-unit>
+<trans-unit id="s74906f78877111cb">
+  <source>Reviewers</source>
+</trans-unit>
+<trans-unit id="sb42871a38d8b61ee">
+  <source>Object type</source>
+</trans-unit>
+<trans-unit id="sd530d226f68ec351">
+  <source>When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.</source>
+</trans-unit>
+<trans-unit id="sea85769d2d8f3ea8">
+  <source>Available Users</source>
+</trans-unit>
+<trans-unit id="s6251a3b1bbd7b124">
+  <source>Selected Users</source>
+</trans-unit>
+<trans-unit id="s3899116cda378dcb">
+  <source>A review will require approval from each of the users selected here in addition to group members as per above settings.</source>
+</trans-unit>
+<trans-unit id="s56511df6b44ad5cc">
+  <source>Notification transports</source>
+</trans-unit>
+<trans-unit id="s6273aa020677fe75">
+  <source>Select which transports should be used to notify the user.</source>
+</trans-unit>
+<trans-unit id="s78e31a199ca08cd9">
+  <source>Object Lifecycle Rules</source>
+</trans-unit>
+<trans-unit id="s24cc4e5aa6446401">
+  <source>Schedule periodic reviews for objects in authentik.</source>
+</trans-unit>
+<trans-unit id="s468f705986fff045">
+  <source>Lifecycle rule(s)</source>
+</trans-unit>
+<trans-unit id="s73705b0f657e9866">
+  <source>Update Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="safae3d983f6cc576">
+  <source>Create Object Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="s9279704dfc98cdf9">
+  <source>No reviews yet.</source>
+</trans-unit>
+<trans-unit id="s08400d94769ba771">
+  <source>Reviewed on</source>
+</trans-unit>
+<trans-unit id="sb89da38bc0c0b3fa">
+  <source>Reviewer</source>
+</trans-unit>
+<trans-unit id="s6686fcc6d2c8f0bd">
+  <source>Note</source>
+</trans-unit>
+<trans-unit id="s5754eb43287dd6e5">
+  <source>No review iteration found for this object.</source>
+</trans-unit>
+<trans-unit id="s68ea8ed25680242f">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="sd9e03fcf99724085">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="sbbaa87f8826a0756">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="s79ef398b6e3e2c44">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="s33d20c1a2e0bf773">
+  <source>Review opened on</source>
+</trans-unit>
+<trans-unit id="s5e053bb69bf930b7">
+  <source>Grace period till</source>
+</trans-unit>
+<trans-unit id="s310b639f39d731b0">
+  <source>Next review date</source>
+</trans-unit>
+<trans-unit id="s3daaf5e7f16e2c52">
+  <source>Latest review for this object</source>
+</trans-unit>
+<trans-unit id="s3be348f8aeeb6a64">
+  <source>Review state</source>
+</trans-unit>
+<trans-unit id="s30c9ff051aa083b0">
+  <source>Required reviewers</source>
+</trans-unit>
+<trans-unit id="scdef09f44b68b189">
+  <source>Confirm Review</source>
+</trans-unit>
+<trans-unit id="sa89492933e1813ab">
+  <source>Confirm this object has been reviewed</source>
+</trans-unit>
+<trans-unit id="s7f3437809d931336">
+  <source>Reviews</source>
+</trans-unit>
+<trans-unit id="sc33f0df01dc32300">
+  <source>Review Notes</source>
+</trans-unit>
+<trans-unit id="s86316abdd9054708">
+  <source>Type optional notes to include in this review...</source>
+</trans-unit>
+<trans-unit id="s2430fb91fa928ae0">
+  <source>Open Reviews</source>
+</trans-unit>
+<trans-unit id="s35d1f3a355ed1084">
+  <source>See all currently open reviews.</source>
+</trans-unit>
+<trans-unit id="s71230441c759c9b1">
+  <source>Only show reviews where I am a reviewer</source>
+</trans-unit>
+<trans-unit id="sce6a3502c71baa60">
+  <source>Opened</source>
+</trans-unit>
+<trans-unit id="sea8d30456c79058a">
+  <source>Grace period ends</source>
+</trans-unit>
+<trans-unit id="se6203ef69ff63548">
+  <source>Pending review</source>
+</trans-unit>
+<trans-unit id="sb89d8d8bc0c08e98">
+  <source>Reviewed</source>
+</trans-unit>
+<trans-unit id="sc68080ce046320cb">
+  <source>Overdue</source>
+</trans-unit>
+<trans-unit id="sa30c4d3b566b6b1a">
+  <source>Canceled</source>
+</trans-unit>
+<trans-unit id="s804ab712b1add3d3">
+  <source>An unknown error occurred while submitting the form.</source>
+</trans-unit>
+<trans-unit id="s78adb00480380ad9">
+  <source>Sign logout response</source>
+</trans-unit>
+<trans-unit id="s7faa5610b9493a92">
+  <source>When enabled, SAML logout responses will be signed.</source>
+</trans-unit>
+<trans-unit id="saa088a2d0f90d5a9">
+  <source>Posting logout response to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
 </body>
 </file>
 </xliff>

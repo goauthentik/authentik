@@ -5,8 +5,11 @@ from django.contrib.auth import get_user_model
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
+from authentik.providers.saml.processors.logout_request_parser import LogoutRequest
+from authentik.providers.saml.processors.logout_response_processor import LogoutResponseProcessor
 
 LOGGER = get_logger()
 User = get_user_model()
@@ -78,3 +81,86 @@ def send_post_logout_request(provider: SAMLProvider, processor: LogoutRequestPro
     )
 
     return True
+
+
+@actor(description="Send SAML LogoutResponse to a Service Provider (backchannel)")
+def send_saml_logout_response(
+    provider_pk: int,
+    sls_url: str,
+    logout_request_id: str | None = None,
+    relay_state: str | None = None,
+):
+    """Send SAML LogoutResponse to a Service Provider using backchannel (server-to-server)"""
+    provider = SAMLProvider.objects.filter(pk=provider_pk).first()
+    if not provider:
+        LOGGER.error(
+            "Provider not found for SAML logout response",
+            provider_pk=provider_pk,
+        )
+        return False
+
+    LOGGER.debug(
+        "Sending backchannel SAML logout response",
+        provider=provider.name,
+        sls_url=sls_url,
+    )
+
+    # Create a minimal LogoutRequest object for the response processor
+    # We only need the ID and relay_state for building the response
+    logout_request = None
+    if logout_request_id:
+        logout_request = LogoutRequest()
+        logout_request.id = logout_request_id
+        logout_request.relay_state = relay_state
+
+    # Build the logout response
+    processor = LogoutResponseProcessor(
+        provider=provider,
+        logout_request=logout_request,
+        destination=sls_url,
+        relay_state=relay_state,
+    )
+
+    encoded_response = processor.encode_post()
+
+    form_data = {
+        "SAMLResponse": encoded_response,
+    }
+
+    if relay_state:
+        form_data["RelayState"] = relay_state
+
+    # Send the logout response to the SP
+    try:
+        response = requests.post(
+            sls_url,
+            data=form_data,
+            timeout=10,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            allow_redirects=True,
+        )
+        response.raise_for_status()
+
+        LOGGER.info(
+            "Successfully sent backchannel logout response to SP",
+            provider=provider.name,
+            sls_url=sls_url,
+            status_code=response.status_code,
+        )
+        return True
+
+    except requests.exceptions.RequestException as exc:
+        LOGGER.warning(
+            "Failed to send backchannel logout response to SP",
+            provider=provider.name,
+            sls_url=sls_url,
+            error=str(exc),
+        )
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            provider=provider,
+            message=f"Backchannel logout response failed: {str(exc)}",
+        ).save()
+        return False
