@@ -65,7 +65,7 @@ class EnterpriseUser(BaseModel):
     employeeNumber: str | None = Field(
         None,
         description="Numeric or alphanumeric identifier assigned to a person, "
-        "typically based on order of hire or association with anorganization.",
+        "typically based on order of hire or association with an organization.",
     )
     costCenter: str | None = Field(None, description="Identifies the name of a cost center.")
     organization: str | None = Field(None, description="Identifies the name of an organization.")
@@ -73,7 +73,7 @@ class EnterpriseUser(BaseModel):
     department: str | None = Field(
         None,
         description="Numeric or alphanumeric identifier assigned to a person,"
-        " typically based on order of hire or association with anorganization.",
+        " typically based on order of hire or association with an organization.",
     )
     manager: Manager | None = Field(
         None,
