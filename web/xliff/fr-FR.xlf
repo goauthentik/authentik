@@ -10526,6 +10526,15 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s804ab712b1add3d3">
   <source>An unknown error occurred while submitting the form.</source>
 </trans-unit>
+<trans-unit id="s78adb00480380ad9">
+  <source>Sign logout response</source>
+</trans-unit>
+<trans-unit id="s7faa5610b9493a92">
+  <source>When enabled, SAML logout responses will be signed.</source>
+</trans-unit>
+<trans-unit id="saa088a2d0f90d5a9">
+  <source>Posting logout response to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
 </body>
 </file>
 </xliff>
