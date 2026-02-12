@@ -1,0 +1,34 @@
+---
+name: whoops
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  whoopsi:
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: read
+    steps:
+      - name: Login to Docker Hub
+        if: ${{ inputs.registry_dockerhub }}
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKER_CORP_USERNAME }}
+          password: ${{ secrets.DOCKER_CORP_PASSWORD }}
+      - name: Login to GitHub Container Registry
+        if: ${{ inputs.registry_ghcr }}
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          docker buildx imagetools create --tag authentik/proxy:2026.2.0-rc2 ghcr.io/goauthentik/proxy:2026.2.0-rc2
+          docker buildx imagetools create --tag authentik/proxy:2025.12.4 ghcr.io/goauthentik/proxy:2025.12.4
+          docker buildx imagetools create --tag authentik/proxy:2025.12 ghcr.io/goauthentik/proxy:2025.12
+          docker buildx imagetools create --tag authentik/proxy:2025.10.4 ghcr.io/goauthentik/proxy:2025.10.4
+          docker buildx imagetools create --tag authentik/proxy:2025.10 ghcr.io/goauthentik/proxy:2025.10
