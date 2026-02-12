@@ -41,7 +41,7 @@ ARG_SANITIZE = re.compile(r"[:.-]")
 
 
 def sanitize_arg(arg_name: str) -> str:
-    return re.sub(ARG_SANITIZE, "_", arg_name)
+    return re.sub(ARG_SANITIZE, "_", slugify(arg_name))
 
 
 class BaseEvaluator:
@@ -299,7 +299,9 @@ class BaseEvaluator:
 
     def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
-        handler_signature = ",".join(sanitize_arg(x) for x in self._context.keys())
+        handler_signature = ",".join(
+            [x for x in [sanitize_arg(x) for x in self._context.keys()] if x]
+        )
         full_expression = ""
         full_expression += f"def handler({handler_signature}):\n"
         full_expression += indent(expression, "    ")
