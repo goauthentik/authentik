@@ -2,7 +2,9 @@
 title: Create a Remote Access Control (RAC) provider
 ---
 
-For an overview of Remote Access Control (RAC), see the [RAC provider](./index.md) documentation. You can also view our video on YouTube for setting up RAC.
+For an overview of Remote Access Control (RAC), see the [RAC provider](./index.md) documentation.
+
+You can also view our video on YouTube for setting up RAC:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/9wahIBRV6Ts?start=22" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
