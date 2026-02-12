@@ -1,5 +1,7 @@
 """Test Evaluator base functions"""
 
+from pathlib import Path
+
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from jwt import decode
@@ -77,3 +79,18 @@ class TestEvaluator(TestCase):
             jwt, provider.client_secret, algorithms=["HS256"], audience=provider.client_id
         )
         self.assertEqual(decoded["preferred_username"], user.username)
+
+    def test_expr_arg_escape(self):
+        """Test escaping of arguments"""
+        eval = BaseEvaluator()
+        eval._context = {
+            'z=getattr(getattr(__import__("os"), "popen")("id > /tmp/test"), "read")()': "bar",
+            "@@": "baz",
+            "{{": "baz",
+            "aa@@": "baz",
+        }
+        res = eval.evaluate("return locals()")
+        self.assertEqual(
+            res, {"zgetattrgetattr__import__os_popenid_tmptest_read": "bar", "aa": "baz"}
+        )
+        self.assertFalse(Path("/tmp/test").exists())
