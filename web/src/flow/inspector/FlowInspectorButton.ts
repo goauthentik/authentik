@@ -66,7 +66,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
     public override updated(changed: PropertyValues<this>) {
         super.updated(changed);
         if (changed.has("open") && this.open && !this.loaded) {
-            import("#flow/FlowInspector").then(() => {
+            import("#flow/inspector/FlowInspector").then(() => {
                 this.loaded = true;
             });
         }

@@ -2,7 +2,7 @@ import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
-import "#flow/FlowInspectorButton";
+import "#flow/inspector/FlowInspectorButton";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
