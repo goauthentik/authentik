@@ -1,5 +1,6 @@
 import "formdata-polyfill";
 import "weakmap-polyfill";
+import "core-js/actual/object/assign";
 
 import {
     type AccessDeniedChallenge,

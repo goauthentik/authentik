@@ -1,11 +1,9 @@
-import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
-import { stages } from "./FlowExecutorSelections";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -25,7 +23,9 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { StageMappings } from "#flow/FlowExecutorStageFactory";
+import { BaseStage } from "#flow/stages/base";
+import type { FlowChallengeComponentName, StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -66,12 +66,24 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interface)) implements StageHost {
-    public static readonly DefaultLayout: FlowLayoutEnum = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+export class FlowExecutor
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    implements StageHost
+{
+    public static readonly DefaultLayout: FlowLayoutEnum =
+        globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
     //#region Styles
 
-    static styles: CSSResult[] = [PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage, Styles];
+    static styles: CSSResult[] = [
+        PFLogin,
+        PFDrawer,
+        PFButton,
+        PFTitle,
+        PFList,
+        PFBackgroundImage,
+        Styles,
+    ];
 
     //#endregion
 
@@ -158,7 +170,8 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
         if (this.layout === FlowLayoutEnum.SidebarLeftFrameBackground) return;
         if (this.layout === FlowLayoutEnum.SidebarRightFrameBackground) return;
 
-        const background = this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
+        const background =
+            this.flowInfo.backgroundThemedUrls?.[this.activeTheme] || this.flowInfo.background;
 
         // Storybook has a different document structure, so we need to adjust the target accordingly.
         const target =
@@ -245,10 +258,6 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
             .with(P.nullish, () => this.brandingTitle)
             .otherwise((title) => `${title} - ${this.brandingTitle}`);
 
-        document.title = match(this.challenge?.flowInfo?.title)
-            .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
-
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
@@ -257,7 +266,11 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
             this.#synchronizeFlowInfo();
         }
 
-        if (changedProperties.has("inspectorOpen") && this.inspectorOpen && !this.#inspectorLoaded) {
+        if (
+            changedProperties.has("inspectorOpen") &&
+            this.inspectorOpen &&
+            !this.#inspectorLoaded
+        ) {
             import("#flow/FlowInspector").then(() => {
                 this.#inspectorLoaded = true;
             });
@@ -268,7 +281,10 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
 
     //#region Public Methods
 
-    public submit = async (payload?: FlowChallengeResponseRequest, options?: SubmitOptions): Promise<boolean> => {
+    public submit = async (
+        payload?: FlowChallengeResponseRequest,
+        options?: SubmitOptions,
+    ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
         if (!this.challenge) throw new Error("No challenge provided");
 
@@ -313,40 +329,43 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
 
     //#region Render Challenge
 
-    protected async renderChallenge(component: ChallengeTypes["component"]): Promise<TemplateResult> {
+    protected async renderChallenge(
+        component: FlowChallengeComponentName,
+    ): Promise<TemplateResult> {
         const { challenge, inspectorOpen } = this;
 
-        const stage = stages.get(component);
+        const createMapping = StageMappings.get(component);
 
         // The special cases!
-        if (!stage) {
+        if (!createMapping) {
             if (component === "xak-flow-shell") {
                 return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
             }
+
             return html`Invalid native challenge element`;
         }
 
-        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> = {
-            ".challenge": challenge!,
-            ".host": this,
-        };
+        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
+            {
+                ".challenge": challenge!,
+                ".host": this,
+            };
 
         const litParts = {
             part: "challenge",
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const { tag, variant, importfn } = stage;
-        if (importfn) {
-            await importfn();
-        }
+        const mapping = createMapping();
+
+        const tag = await mapping.tag;
 
         const props = spread(
-            match(variant)
+            match(mapping.variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))
-                .exhaustive()
+                .exhaustive(),
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
@@ -377,7 +396,9 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
             }
 
             return html`<button
-                aria-label=${this.inspectorOpen ? msg("Close flow inspector") : msg("Open flow inspector")}
+                aria-label=${this.inspectorOpen
+                    ? msg("Close flow inspector")
+                    : msg("Open flow inspector")}
                 aria-expanded=${this.inspectorOpen ? "true" : "false"}
                 class="inspector-toggle pf-c-button pf-m-primary"
                 aria-controls="flow-inspector"
@@ -447,7 +468,9 @@ export class FlowExecutor extends WithCapabilitiesConfig(WithBrandConfig(Interfa
                         themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${this.loading && this.challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${this.loading && this.challenge
+                    ? html`<ak-loading-overlay></ak-loading-overlay>`
+                    : nothing}
                 ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
             </main>
             <slot name="footer"></slot>`;

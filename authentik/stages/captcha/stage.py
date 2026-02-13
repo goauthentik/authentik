@@ -58,7 +58,7 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str, key: s
                 # [reCAPTCHA](https://developers.google.com/recaptcha/docs/verify#error_code_reference)
                 # [hCaptcha](https://docs.hcaptcha.com/#siteverify-error-codes-table)
                 # [Turnstile](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/#error-codes)
-                retriable_error_codes = [
+                retryable_error_codes = [
                     "missing-input-response",
                     "invalid-input-response",
                     "timeout-or-duplicate",
@@ -66,7 +66,7 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str, key: s
                     "already-seen-response",
                 ]
 
-                if set(error_codes).issubset(set(retriable_error_codes)):
+                if set(error_codes).issubset(set(retryable_error_codes)):
                     error_message = _("Invalid captcha response. Retrying may solve this issue.")
                 else:
                     error_message = _("Invalid captcha response")

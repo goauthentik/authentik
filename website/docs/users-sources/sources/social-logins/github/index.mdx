@@ -81,7 +81,7 @@ access_token = connection.access_token
 # We also access the user info authentik already retrieved, to get the correct username
 github_username = context["oauth_userinfo"]
 
-# Github does not include Organisations in the userinfo endpoint, so we have to call another URL
+# Github does not include Organizations in the userinfo endpoint, so we have to call another URL
 orgs_response = requests.get(
     "https://api.github.com/user/orgs",
     auth=(github_username["login"], access_token),
