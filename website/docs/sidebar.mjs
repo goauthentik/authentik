@@ -258,6 +258,15 @@ const items = [
                         },
                         items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
                     },
+                    {
+                        type: "category",
+                        label: "WS-Federation Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/wsfed/index",
+                        },
+                        items: ["add-secure-apps/providers/wsfed/create-wsfed-provider"],
+                    },
                 ],
             },
             {
@@ -617,6 +626,7 @@ const items = [
                             },
                             "users-sources/sources/social-logins/mailcow/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
@@ -636,7 +646,16 @@ const items = [
         collapsed: true,
         items: [
             "sys-mgmt/background-tasks",
-            "sys-mgmt/brands",
+            {
+                type: "category",
+                label: "Brands",
+                collapsed: true,
+                link: {
+                    id: "sys-mgmt/brands/index",
+                    type: "doc",
+                },
+                items: ["sys-mgmt/brands/index", "sys-mgmt/brands/custom-css"],
+            },
             {
                 //#endregion
 
@@ -675,6 +694,7 @@ const items = [
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
             "sys-mgmt/data-exports",
+            "sys-mgmt/object-lifecycle-management",
         ],
     },
     {
@@ -800,7 +820,21 @@ const items = [
                 },
                 items: [
                     "endpoint-devices/device-compliance/configuration",
-                    "endpoint-devices/device-compliance/connectors",
+                    {
+                        //#endregion
+
+                        //#region Connectors
+                        type: "category",
+                        label: "Connectors",
+                        link: {
+                            type: "doc",
+                            id: "endpoint-devices/device-compliance/connectors/index",
+                        },
+                        items: [
+                            "endpoint-devices/device-compliance/connectors/authentik-agent",
+                            "endpoint-devices/device-compliance/connectors/fleetdm",
+                        ],
+                    },
                     "endpoint-devices/device-compliance/device-reporting",
                     "endpoint-devices/device-compliance/device-compliance-policy",
                     "endpoint-devices/device-compliance/browser-extension",
@@ -918,51 +952,8 @@ const items = [
                 label: "CVEs",
                 items: [
                     {
-                        type: "category",
-                        label: "2025",
-                        items: [
-                            "security/cves/CVE-2025-64708",
-                            "security/cves/CVE-2025-64521",
-                            "security/cves/CVE-2025-53942",
-                            "security/cves/CVE-2025-52553",
-                            "security/cves/CVE-2025-29928",
-                        ],
-                    },
-                    {
-                        type: "category",
-                        label: "2024",
-                        items: [
-                            "security/cves/CVE-2024-52307",
-                            "security/cves/CVE-2024-52289",
-                            "security/cves/CVE-2024-52287",
-                            "security/cves/CVE-2024-47077",
-                            "security/cves/CVE-2024-47070",
-                            "security/cves/CVE-2024-42490",
-                            "security/cves/CVE-2024-38371",
-                            "security/cves/CVE-2024-37905",
-                            "security/cves/CVE-2024-23647",
-                            "security/cves/CVE-2024-21637",
-                        ],
-                    },
-                    {
-                        type: "category",
-                        label: "2023",
-                        items: [
-                            "security/cves/CVE-2023-48228",
-                            "security/cves/GHSA-rjvp-29xq-f62w",
-                            "security/cves/CVE-2023-39522",
-                            "security/cves/CVE-2023-36456",
-                            "security/cves/CVE-2023-26481",
-                        ],
-                    },
-                    {
-                        type: "category",
-                        label: "2022",
-                        items: [
-                            "security/cves/CVE-2022-46172",
-                            "security/cves/CVE-2022-46145",
-                            "security/cves/CVE-2022-23555",
-                        ],
+                        type: "autogenerated",
+                        dirName: "security/cves",
                     },
                 ],
             },

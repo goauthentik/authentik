@@ -77,16 +77,15 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     async refreshPreview(prompt?: Prompt): Promise<void> {
-        if (!prompt) {
-            prompt = this.serialize();
-            if (!prompt) {
-                return;
-            }
+        const promptRequest = prompt || this.serialize();
+
+        if (!promptRequest) {
+            return;
         }
 
         return new StagesApi(DEFAULT_CONFIG)
             .stagesPromptPromptsPreviewCreate({
-                promptRequest: prompt,
+                promptRequest,
             })
             .then((nextPreview) => {
                 this.preview = nextPreview;

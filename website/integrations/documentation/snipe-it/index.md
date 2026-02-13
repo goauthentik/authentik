@@ -73,13 +73,13 @@ Configure Snipe-IT LDAP settings by going to settings (the gear icon), and selec
 
 Change the following fields
 
-- LDAP Integration: **ticked**
-- LDAP Password Sync: **ticked**
-- Active Directory : **unticked**
+- LDAP Integration: **Checked**
+- LDAP Password Sync: **Checked**
+- Active Directory : **Unchecked**
 - LDAP Client-Side TLS Key: (taken from authentik)
 - LDAP Server: `ldap://authentik.company`
-- Use TLS : **unticked**
-- LDAP SSL certificate validation : **ticked**
+- Use TLS : **Unchecked**
+- LDAP SSL certificate validation : **Checked**
 - Bind credentials:
     - LDAP Bind Username: `cn=snipeit-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     - LDAP Bind Password: `<snipeit-user password from step 2>`
@@ -92,7 +92,7 @@ Change the following fields
   :::info
   Setting the Username field to mail is recommended in order to ensure the username is unique. See https://snipe-it.readme.io/docs/ldap-sync-login
   :::
-- Allow unauthenticated bind: **unticked**
+- Allow unauthenticated bind: **Unchecked**
 - Last Name: sn
 - LDAP First Name: givenname
 - LDAP Authentication query: cn=
@@ -144,12 +144,12 @@ Either copy the information under SAML Metadata, or click the Download button un
 
 Configure Snipe-IT SAML settings by going to settings (the gear icon), and selecting `SAML`
 
-- SAML enabled: **ticked**
+- SAML enabled: **Checked**
 - SAML IdP Metadata: (paste information copied in Step 2 above -or-
 - Click `Select File` and select the file you downloaded in Step 2
 - Attribute Mapping - Username: mail
-- SAML Force Login: **ticked**
-- SAML Single Log Out: **ticked**
+- SAML Force Login: **Checked**
+- SAML Single Log Out: **Checked**
 
 All other field can be left blank.
 

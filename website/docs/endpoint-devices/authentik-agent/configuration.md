@@ -2,13 +2,14 @@
 title: Configuration
 sidebar_label: Configuration
 tags: [authentik Agent, connector, configure, configuration]
+authentik_version: "2025.12.0"
 ---
 
 Before deploying the authentik Agent, configure your authentik deployment. This involves:
 
 - Create and apply a OAuth [Device code flow](../../add-secure-apps/providers/oauth2/device_code.md)
 - Creating an OAuth application and provider
-- Creating a [Connector](../device-compliance/connectors.md)
+- Creating a [Connector](../device-compliance/connectors/index.mdx)
 
 ## Create and apply a OAuth device code flow
 
@@ -48,7 +49,7 @@ The authentik agent requires an OAuth application/provider pair to handle authen
 
 ## Create the authentik Agent connector
 
-The authentik Agent [Connector](../device-compliance/connectors.md) allows device information to be reported to authentik.
+The authentik Agent [Connector](../device-compliance/connectors/authentik-agent.md) allows device information to be reported to authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.

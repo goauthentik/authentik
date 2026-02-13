@@ -4,32 +4,40 @@
 <!-- #region Locales -->
 <trans-unit id="en">
   <source>English</source>
+  <target>英语</target>
 </trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
+  <target>日语</target>
 </trans-unit>
 <trans-unit id="ko-KR">
   <source>Korean</source>
+  <target>韩语</target>
 </trans-unit>
 <trans-unit id="zh-Hans">
   <source>Chinese (Simplified)</source>
+  <target>简体中文</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
   <source>Chinese (Traditional)</source>
+  <target>繁体中文</target>
 </trans-unit>
 <!-- #endregion -->
 
 <!-- #region Locale selector  -->
 <trans-unit id="locale-auto-detect-option">
   <source>Auto-detect</source>
+  <target>自动检测</target>
   <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
 </trans-unit>
 <trans-unit id="language-selector-label">
   <source>Select language</source>
+  <target>语言选择</target>
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
   <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <target><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</target>
   <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
@@ -1075,6 +1083,7 @@
 </trans-unit>
 <trans-unit id="s7753c012594cc69e">
   <source>Assigned to role</source>
+  <target>分配到角色</target>
 </trans-unit>
 <trans-unit id="s67e136af8fc1107b">
   <source>Assign permission</source>
@@ -1310,12 +1319,15 @@
 </trans-unit>
 <trans-unit id="s0268ce9f2abb84de">
   <source>Configure the Application</source>
+  <target>配置应用程序</target>
 </trans-unit>
 <trans-unit id="s07b0bf005510fe29">
   <source>Type an application name...</source>
+  <target>输入应用名称....</target>
 </trans-unit>
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
+  <target>应用名称</target>
 </trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
@@ -1355,6 +1367,7 @@
 </trans-unit>
 <trans-unit id="s71e967b36e080e3c">
   <source>https://...</source>
+  <target>https://...</target>
 </trans-unit>
 <trans-unit id="s992f8d1a776e763c">
   <source>If left empty, authentik will try to extract the launch URL based on the selected provider.</source>
@@ -1485,6 +1498,7 @@
 </trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
+  <target>未命名</target>
 </trans-unit>
 <trans-unit id="s74b47e964bb82e5f">
   <source>Wizard content</source>
@@ -1684,6 +1698,7 @@
 </trans-unit>
 <trans-unit id="s96dc816b1d1c3be0">
   <source>Type a provider name...</source>
+  <target>输入提供者名称....</target>
 </trans-unit>
 <trans-unit id="se5973e7c8ba0fc71">
   <source>Bind mode</source>
@@ -1799,6 +1814,7 @@
 </trans-unit>
 <trans-unit id="saa3d821fc889a636">
   <source>Server-to-server logout notifications</source>
+  <target>服务器到服务器注销通知</target>
 </trans-unit>
 <trans-unit id="s9f448d01a0354e8e">
   <source>Front-channel</source>
@@ -1806,6 +1822,7 @@
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
+  <target>浏览器 iframe 注销通知</target>
 </trans-unit>
 <trans-unit id="sccc47f82044453f9">
   <source>Based on the User's hashed ID</source>
@@ -2003,9 +2020,11 @@
 </trans-unit>
 <trans-unit id="sbdab4eb1812adc78">
   <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+  <target>用于加密令牌的密钥。仅当使用此提供程序的应用程序支持 JWE 令牌时启用此功能。</target>
 </trans-unit>
 <trans-unit id="s998fea0fa7bb4188">
   <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+  <target>authentik 仅支持使用 RSA-OAEP-256 用于加密。</target>
 </trans-unit>
 <trans-unit id="s26bf2730430efbea">
   <source>Subject mode</source>
@@ -2133,6 +2152,7 @@
 </trans-unit>
 <trans-unit id="sd144a9315e8f87c1">
   <source>http(s)://...</source>
+  <target>http(s)://...</target>
 </trans-unit>
 <trans-unit id="sf05e384059a0a7c1">
   <source>Upstream host that the requests are forwarded to.</source>
@@ -2323,12 +2343,14 @@
 </trans-unit>
 <trans-unit id="sd1ab93a011b2f1f5">
   <source>Front-channel (Iframe)</source>
+  <target>正向通道（iframe）</target>
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
+  <target>反向通道（POST）</target>
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
@@ -2336,9 +2358,11 @@
 </trans-unit>
 <trans-unit id="s9104cd1063aa6a4a">
   <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+  <target>确定 authentik 如何将注销响应发送回服务提供程序。</target>
 </trans-unit>
 <trans-unit id="sd1fba3c745c016a8">
   <source>Method to use for logout when SLS URL is configured.</source>
+  <target>配置 SLS URL 时用于注销的方法。</target>
 </trans-unit>
 <trans-unit id="s11204eeb1e27ea8f">
   <source>ACS URL</source>
@@ -2358,6 +2382,7 @@
 </trans-unit>
 <trans-unit id="sd4fd64791f73d37b">
   <source>Also known as Entity ID.</source>
+  <target>又称之为 Entity ID</target>
 </trans-unit>
 <trans-unit id="sd5a4b41c6c883b03">
   <source>Audience</source>
@@ -2369,6 +2394,7 @@
 </trans-unit>
 <trans-unit id="s21658078c6fdf964">
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+  <target>可选的单点注销服务 URL，用于发送注销响应。如果未设置，则不会发送注销响应。</target>
 </trans-unit>
 <trans-unit id="sc741d9ebe07ad103">
   <source>Signing Certificate</source>
@@ -2628,18 +2654,23 @@
 </trans-unit>
 <trans-unit id="s25afe36fa73d2e5b">
   <source>Sync settings</source>
+  <target>同步设置</target>
 </trans-unit>
 <trans-unit id="s2c859e13e182be6b">
   <source>Page size</source>
+  <target>页面大小</target>
 </trans-unit>
 <trans-unit id="sb984354bb46c8bed">
   <source>Controls the number of objects synced in a single task.</source>
+  <target>控制单个任务中同步的对象数量</target>
 </trans-unit>
 <trans-unit id="sc24408fbc7ff26b5">
   <source>Page timeout</source>
+  <target>页面超时</target>
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
+  <target>单页同步超时</target>
 </trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
@@ -2952,8 +2983,7 @@
 </trans-unit>
 <trans-unit id="sc9175cb129fdc306">
   <source>Update <x id="0" equiv-text="${this.objectLabel}"/></source>
-  <target>更新
-        <x id="0" equiv-text="${item.verboseName}"/></target>
+  <target>更新 <x id="0" equiv-text="${this.objectLabel}"/></target>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
   <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
@@ -3751,6 +3781,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s3d2a8b86a4f5a810">
   <source>Successfully created user and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+  <target>成功创建用户，并将用户加入到组<x id="0" equiv-text="${this.targetGroup.name}"/></target>
 </trans-unit>
 <trans-unit id="s9c3c272944dcfca3">
   <source>Successfully created user.</source>
@@ -3774,6 +3805,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sc82cf82ad6cb26cc">
   <source>The user's display name.</source>
+  <target>用户的显示名称</target>
 </trans-unit>
 <trans-unit id="s9f9492d30a96b9c6">
   <source>User type</source>
@@ -4105,6 +4137,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
   <source>Warning: Application is not used by any Outpost.</source>
+  <target>警告：应用并没有被任何前哨站使用</target>
 </trans-unit>
 <trans-unit id="sb6cbd4f92ebaf5d8">
   <source>Related</source>
@@ -4140,9 +4173,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="application.entitlements.preview.info">
   <source>Application entitlements are in preview.</source>
+  <target>应用程序授权目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="preview.send-us-feedback">
   <source>Send us feedback!</source>
+  <target>给我们发送反馈</target>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
@@ -4162,15 +4197,19 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s2b8e875dc18e2690">
   <source>Device name...</source>
+  <target>设备名称...</target>
 </trans-unit>
 <trans-unit id="s81f57ffc163f9f82">
   <source>Device name</source>
+  <target>设备名</target>
 </trans-unit>
 <trans-unit id="s0ae9fd7db25fa3e0">
   <source>Device Group</source>
+  <target>设备组</target>
 </trans-unit>
 <trans-unit id="s335acddfb181e9ad">
   <source>Connector setup</source>
+  <target>设置连接器</target>
 </trans-unit>
 <trans-unit id="s3687049d1af562c4">
   <source>Copy</source>
@@ -4178,60 +4217,79 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sd1dc37bdc04758eb">
   <source>Download the latest package from here:</source>
+  <target>从此处下载最新包:</target>
 </trans-unit>
 <trans-unit id="sf96a86df0756bc7b">
   <source>Afterwards, select the enrollment token you want to use:</source>
+  <target>接着, 选择希望使用的注册令牌:</target>
 </trans-unit>
 <trans-unit id="s12f523a52b843ea2">
   <source>macOS</source>
+  <target>macOS</target>
 </trans-unit>
 <trans-unit id="s7845e3b545ffe6bd">
   <source>Linux</source>
+  <target>Linux</target>
 </trans-unit>
 <trans-unit id="s50ad561b4139dc06">
   <source>Configured connector does not support setup.</source>
+  <target>已配置的连接器不支持设置。</target>
 </trans-unit>
 <trans-unit id="s3624e780118ae113">
   <source>No connectors configured. Navigate to connectors in the sidebar and create a connector.</source>
+  <target>没有已配置的连接器。请先导航到侧边栏中的 "连接器" 并创建一个。</target>
 </trans-unit>
 <trans-unit id="s8f26d4f086cc1323">
   <source>Unix</source>
+  <target>Unix</target>
 </trans-unit>
 <trans-unit id="s16125219b0c92b52">
   <source>BSD</source>
+  <target>BSD</target>
 </trans-unit>
 <trans-unit id="sefe707c1bfb1d3cc">
   <source>Android</source>
+  <target>安卓</target>
 </trans-unit>
 <trans-unit id="s2c0fca192c3375e6">
   <source>iOS</source>
+  <target>IOS</target>
 </trans-unit>
 <trans-unit id="scfe39d24bc958960">
   <source>Devices</source>
+  <target>设备</target>
 </trans-unit>
 <trans-unit id="s091d3507b5b2f9d7">
   <source>OS</source>
+  <target>操作系统</target>
 </trans-unit>
 <trans-unit id="s150cf10289852e4a">
   <source>Endpoint Devices are in preview.</source>
+  <target>端点设备功能目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s672b3d1982f585fa">
   <source>Total devices</source>
+  <target>总设备数</target>
 </trans-unit>
 <trans-unit id="sf3a81f931deb9f96">
   <source>Total count of devices across all groups</source>
+  <target>所有组中的设备总数</target>
 </trans-unit>
 <trans-unit id="sd4566519aa4dbd8e">
   <source>Unreachable devices</source>
+  <target>不可及设备数</target>
 </trans-unit>
 <trans-unit id="sf1580fcb88cbcfd8">
   <source>Devices that authentik hasn't received information about in 24h.</source>
+  <target>authentik 在 24 小时内未能收到任何信息的设备总数</target>
 </trans-unit>
 <trans-unit id="s303ef08d87cd21fd">
   <source>Outdated agents</source>
+  <target>过时的 Agent</target>
 </trans-unit>
 <trans-unit id="s0a5821461d41f627">
   <source>Devices running an outdated version of an agent</source>
+  <target>运行旧版 authentik Agent 的设备总数</target>
 </trans-unit>
 <trans-unit id="sabb56f74492e7e96">
   <source>Update Device</source>
@@ -4239,15 +4297,19 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sf655f75d8e14d5fe">
   <source>Endpoint Device(s)</source>
+  <target>端点设备</target>
 </trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
+  <target>设备<x id="0" equiv-text="${this.device?.name}"/></target>
 </trans-unit>
 <trans-unit id="s6d4cc88f2426efaf">
   <source>Loading device...</source>
+  <target>加载设备中...</target>
 </trans-unit>
 <trans-unit id="s2addf9fd0d89ba11">
   <source>Device details</source>
+  <target>设备详情</target>
 </trans-unit>
 <trans-unit id="s1e176e35c828318c">
   <source>Hostname</source>
@@ -4255,45 +4317,59 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s974564539ea1cafa">
   <source>Serial number</source>
+  <target>序列号</target>
 </trans-unit>
 <trans-unit id="s361c13a7f20ea559">
   <source>Operating system</source>
+  <target>操作系统</target>
 </trans-unit>
 <trans-unit id="se990a968b7dfcfd8">
   <source>Firewall enabled</source>
+  <target>防火墙启用状态</target>
 </trans-unit>
 <trans-unit id="sc5e304b166165519">
   <source>Hardware</source>
+  <target>硬件</target>
 </trans-unit>
 <trans-unit id="scb320e45978d3390">
   <source>Manufacturer</source>
+  <target>制造商</target>
 </trans-unit>
 <trans-unit id="s0b453a19aa0f85a9">
   <source>CPU</source>
+  <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
   <source><x id="0" equiv-text="${this.device.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device.facts.data.hardware?.cpuName}"/></source>
+  <target><x id="0" equiv-text="${this.device.facts.data.hardware?.cpuCount}"/>x<x id="1" equiv-text="${this.device.facts.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
+  <target>内存</target>
 </trans-unit>
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
+  <target>硬盘加密</target>
 </trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
+  <target>用户 / 组</target>
 </trans-unit>
 <trans-unit id="sfdd447bcde2c13ba">
   <source>Processes</source>
+  <target>进程</target>
 </trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
+  <target>连接器名称</target>
 </trans-unit>
 <trans-unit id="s44200a04fda1fa29">
   <source>Flow used for users to authorize.</source>
+  <target>用于用户授权的流程</target>
 </trans-unit>
 <trans-unit id="s1d3f07bfba32fc84">
   <source>Certificate used for signing device compliance challenges.</source>
+  <target>用于签署设备合规性挑战的证书。</target>
 </trans-unit>
 <trans-unit id="sb85ffe141d7c229d">
   <source>Session duration</source>
@@ -4301,39 +4377,51 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s5567310faa112bc6">
   <source>Configure how long an authenticated session is valid for.</source>
+  <target>配置已认证会话的有效时长。</target>
 </trans-unit>
 <trans-unit id="sa3b5c0d4b4fd12ff">
   <source>Terminate authenticated sessions on token expiry</source>
+  <target>令牌过期时终止已认证会话</target>
 </trans-unit>
 <trans-unit id="sf4372a571ffb02cd">
   <source>Refresh interval</source>
+  <target>更新频率</target>
 </trans-unit>
 <trans-unit id="s3f009bda38b93134">
   <source>Interval how frequently the agent tries to update its config.</source>
+  <target>authentik Agent 尝试更新自身配置的频率。</target>
 </trans-unit>
 <trans-unit id="seb040746311faa64">
   <source>Unix settings</source>
+  <target>Unix 设置</target>
 </trans-unit>
 <trans-unit id="s5758d1421a791cc6">
   <source>NSS User ID offset</source>
+  <target>NSS 用户 ID 偏移</target>
 </trans-unit>
 <trans-unit id="sfb33118d419cd3c0">
   <source>NSS Group ID offset</source>
+  <target>NSS 组 ID 偏移</target>
 </trans-unit>
 <trans-unit id="sc0c9cffcfb474d4e">
   <source>New connector</source>
+  <target>新连接器</target>
 </trans-unit>
 <trans-unit id="saf861ad08bb37fff">
   <source>Create a new connector.</source>
+  <target>创建一个新的连接器。</target>
 </trans-unit>
 <trans-unit id="sffc7bf978a049970">
   <source>Connectors are required to create devices. Depending on connector type, agents either directly talk to them or they talk to and external API to create devices.</source>
+  <target>连接器是创建设备所必需的。根据连接器类型的不同, authentik Agents 会直接与设备通信, 或者与外部 API 通信来创建设备。</target>
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
+  <target>连接器</target>
 </trans-unit>
 <trans-unit id="s06b8c7e7fb99c1d8">
   <source>Connector(s)</source>
+  <target>连接器</target>
 </trans-unit>
 <trans-unit id="s476ffc07e6d66f18">
   <source>Successfully updated token.</source>
@@ -4349,6 +4437,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
+  <target>令牌名称</target>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
@@ -4364,6 +4453,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
+  <target>注册令牌</target>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -4371,27 +4461,35 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sb16ba96408c22012">
   <source>Create Enrollment Token</source>
+  <target>创建注册令牌</target>
 </trans-unit>
 <trans-unit id="sfbf16ea8fef96f6d">
   <source>Enrollment Tokens</source>
+  <target>注册令牌</target>
 </trans-unit>
 <trans-unit id="s90dc0a58485b27fb">
   <source>Group name...</source>
+  <target>组名...</target>
 </trans-unit>
 <trans-unit id="s030655287e89069f">
   <source>Group name</source>
+  <target>组名</target>
 </trans-unit>
 <trans-unit id="s3a38fceae14534dd">
   <source>Device access groups</source>
+  <target>设备访问权限组</target>
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
+  <target>创建设备组以管理访问权。</target>
 </trans-unit>
 <trans-unit id="s505d8b43d0ead2be">
   <source>Create Device Group</source>
+  <target>创建设备组</target>
 </trans-unit>
 <trans-unit id="s7924cdccf3592aa8">
   <source>Device Group(s)</source>
+  <target>设备组</target>
 </trans-unit>
 <trans-unit id="s24875d5475e82526">
   <source>Successfully updated source.</source>
@@ -4438,6 +4536,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s4a600d70e4348810">
   <source>When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.</source>
+  <target>启用后，此来源将在登录页面上显示为一个醒目的按钮，而不是一个小图标。</target>
 </trans-unit>
 <trans-unit id="s39d6971531a270b6">
   <source>Update internal password on login</source>
@@ -4737,9 +4836,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s139200afa0695967">
   <source>Plain</source>
+  <target>明文</target>
 </trans-unit>
 <trans-unit id="s7a316723c6bb33eb">
   <source>S256</source>
+  <target>S256</target>
 </trans-unit>
 <trans-unit id="sd04376c4216c921f">
   <source>URL settings</source>
@@ -4803,9 +4904,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s311c22ee852736e9">
   <source>PKCE Method</source>
+  <target>PKCE 方法</target>
 </trans-unit>
 <trans-unit id="sa9afb0f84a3c380d">
   <source>Configure Proof Key for Code Exchange for this source.</source>
+  <target>为该源配置代码交换的验证密钥。</target>
 </trans-unit>
 <trans-unit id="s4fca384c634e1a92">
   <source>Authorization code authentication method</source>
@@ -5597,6 +5700,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s648ba5092c27baa3">
   <source>Are you sure you want to delete <x id="0" equiv-text="${this.objectLabel}${objName}"/>?</source>
+  <target>您确定要删除 <x id="0" equiv-text="${this.objectLabel}${objName}"/> 吗？</target>
 </trans-unit>
 <trans-unit id="s4414164d120de61a">
   <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
@@ -5619,6 +5723,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sa8e65d6274f9e2b9">
   <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}${objName}"/>?</source>
+  <target>您确定要更新 <x id="0" equiv-text="${this.objectLabel}${objName}"/> 吗？</target>
 </trans-unit>
 <trans-unit id="s1fd02f07e4fa3312">
   <source>Impersonating user...</source>
@@ -5714,7 +5819,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
-  <target>更新 <x id="0" equiv-text="${item.name || item.username}"/> 的密码</target>
+  <target>更新 <x id="0" equiv-text="${user.name || user.username}"/> 的密码</target>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -5958,6 +6063,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
   <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+  <target>“<x id="0" equiv-text="${source.title}"/>” 源</target>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -5965,6 +6071,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s20b2b040b332bb55">
   <source>Source Settings</source>
+  <target>源设置</target>
 </trans-unit>
 <trans-unit id="sf05c700a1250824e">
   <source>Confirmed</source>
@@ -6124,6 +6231,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
   <source>Role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+  <target>角色 <x id="0" equiv-text="${this.targetRole.name}"/></target>
 </trans-unit>
 <trans-unit id="s7a322c89298dd27c">
   <source>Successfully updated invitation.</source>
@@ -7103,6 +7211,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s69bc087c166b4177">
   <source>Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.</source>
+  <target>经过身份验证的用户用来配置其密码的流程。如果为空，用户将无法配置更改其密码。</target>
 </trans-unit>
 <trans-unit id="s77994108c886b965">
   <source>Failed attempts before cancel</source>
@@ -7581,6 +7690,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s8b0e21adf383c8ba">
   <source>.yaml files, which can be found in the Example Flows documentation</source>
+  <target>请上传 .yaml 文件, 它们可以在 "示例流程" 文档中被找到</target>
 </trans-unit>
 <trans-unit id="sc816360d6f5a1eeb">
   <source>Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.</source>
@@ -8659,6 +8769,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+  <target>端点设备</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -8938,6 +9049,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
   <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+  <target>以 <x id="0" equiv-text="${source.name}"/> 继续</target>
 </trans-unit>
 <trans-unit id="sc4eedb434536bdb4">
   <source>Need an account?</source>
@@ -8953,6 +9065,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s05a941e4b4bfca9f">
   <source>Additional actions</source>
+  <target>更多操作</target>
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
@@ -8977,6 +9090,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s53dddf1733e26c98">
   <source>Login sources</source>
+  <target>登录可用的源</target>
 </trans-unit>
 <trans-unit id="s85366fac18679f28">
   <source>Forgot password?</source>
@@ -8996,7 +9110,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
   <source>Stage name: <x id="0" equiv-text="${this.challenge?.name}"/></source>
-  <target>阶段名称：<x id="0" equiv-text="${this.challenge.name}"/></target>
+  <target>阶段名称：<x id="0" equiv-text="${this.challenge?.name}"/></target>
 </trans-unit>
 <trans-unit id="sbd19064fc3f405c1">
   <source>Check your Inbox for a verification email.</source>
@@ -9196,7 +9310,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
   <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
-  <target>您已成功注销 <x id="0" equiv-text="${this.challenge.applicationName}"/>。现在您可以返回总览页来启动其他应用，或者注销您的 authentik 账户。</target>
+  <target>您已成功注销 <x id="0" equiv-text="${challenge.applicationName}"/>。现在您可以返回总览页来启动其他应用，或者注销您的 authentik 账户。</target>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
@@ -9204,11 +9318,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdb749e793de55478">
   <source>Log out of <x id="0" equiv-text="${challenge.brandName}"/></source>
-  <target>注销 <x id="0" equiv-text="${this.challenge.brandName}"/></target>
+  <target>注销 <x id="0" equiv-text="${challenge.brandName}"/></target>
 </trans-unit>
 <trans-unit id="s521681ed1d5ff814">
   <source>Log back into <x id="0" equiv-text="${challenge.applicationName}"/></source>
-  <target>重新登录 <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
+  <target>重新登录 <x id="0" equiv-text="${challenge.applicationName}"/></target>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
@@ -9216,6 +9330,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sca83a1f9227f74b9">
   <source>SAML logout complete</source>
+  <target>SAML 登出完成</target>
 </trans-unit>
 <trans-unit id="s7b90eab7969ae056">
   <source>Redirecting to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
@@ -9231,9 +9346,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s777e86d562523c85">
   <source>Logging out of providers...</source>
+  <target>正在从提供程序登出...</target>
 </trans-unit>
 <trans-unit id="s4980379bf8461c2d">
   <source>Single Logout</source>
+  <target>单点登出</target>
 </trans-unit>
 <trans-unit id="s3736936aac1adc2e">
   <source>Open flow inspector</source>
@@ -9307,6 +9424,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa00a53efc9c70de5">
   <source>Please wait while the content is loading</source>
+  <target>请稍候，内容正在加载</target>
 </trans-unit>
 <trans-unit id="s31aa94a0b3c7edb2">
   <source>Select endpoint to connect to</source>
@@ -9314,12 +9432,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
+  <target>应用程序</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
   <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
+  <target>“<x id="0" equiv-text="${applicationName}"/>” 的动作</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
+  <target>编辑应用程序...</target>
 </trans-unit>
 <trans-unit id="s3fb39fc45e840f78">
   <source>Refer to documentation</source>
@@ -9335,6 +9456,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
+  <target>未分组</target>
 </trans-unit>
 <trans-unit id="s1cf2298d92c327a6">
   <source>My Applications</source>
@@ -9354,9 +9476,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+  <target>应用程序列表</target>
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
+  <target>拉取应用程序失败。</target>
 </trans-unit>
 <trans-unit id="s06c92148da82be0d">
   <source>Change your password</source>
@@ -9400,6 +9524,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
+  <target>用户设置</target>
 </trans-unit>
 <trans-unit id="s588796ee929a2e4c">
   <source>User details</source>
@@ -9423,283 +9548,376 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="ellipsis">
   <source>...</source>
+  <target>...</target>
   <note from="lit-localize">Truncation ellipsis</note>
 </trans-unit>
 <trans-unit id="s6cd96061d397f7b5">
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
+  <target>通过 <x id="0" equiv-text="${event.context.device.name}"/></target>
 </trans-unit>
 <trans-unit id="sb7ff80582ccd9348">
   <source>reference will be left dangling</source>
+  <target>引用将悬空</target>
 </trans-unit>
 <trans-unit id="s0b7ddc0168e79ea2">
   <source>Failed to fetch files</source>
+  <target>文件拉取失败</target>
 </trans-unit>
 <trans-unit id="sdc4f1cfd587212b4">
   <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
+  <target>您还可以输入网址（https://...）、Font Awesome 图标（fa://fa-icon-name）或上传新文件。</target>
 </trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+  <target>从已上传的文件中选择, 也可以输入一个 Font Awesome 图标 (fa://fa-icon-name) 或 URL。</target>
 </trans-unit>
 <trans-unit id="s87616130c08b117c">
   <source>This type is deprecated.</source>
+  <target>此类型已弃用。</target>
 </trans-unit>
 <trans-unit id="s40f4c2223ce87751">
   <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+  <target>没有已配置的连接器。请先导航到侧边栏中的 "连接器" 并创建一个。</target>
 </trans-unit>
 <trans-unit id="s70c2cd89201ecca9">
   <source>Home directory</source>
+  <target>主目录</target>
 </trans-unit>
 <trans-unit id="sb171d638b8af660d">
   <source>Successfully updated agent connector.</source>
+  <target>已成功更新 Agent 连接器。</target>
 </trans-unit>
 <trans-unit id="s81c9554908463f94">
   <source>Successfully created agent connector.</source>
+  <target>已成功创建 Agent 连接器。</target>
 </trans-unit>
 <trans-unit id="s306dd51d3be07bc7">
   <source>Device compliance settings</source>
+  <target>设备合规性设置</target>
 </trans-unit>
 <trans-unit id="sc2966702517b7af5">
   <source>Challenge certificate</source>
+  <target>挑战证书</target>
 </trans-unit>
 <trans-unit id="s051588c63fedab5f">
   <source>Challenge idle timeout</source>
+  <target>挑战空闲超时</target>
 </trans-unit>
 <trans-unit id="s4c70d7629e29ac2d">
   <source>Duration the flow executor will wait before continuing without a response.</source>
+  <target>流程执行器在未收到响应之前将等待多长时间。</target>
 </trans-unit>
 <trans-unit id="se3c7fb54006d9e98">
   <source>Trigger check-in on device</source>
+  <target>触发设备上的认证</target>
 </trans-unit>
 <trans-unit id="se0a747f4db08e87f">
   <source>Configure how devices connect with authentik and ingest external device data.</source>
+  <target>配置设备将如何连接到 authentik, 以及如何收集外部设备数据。</target>
 </trans-unit>
 <trans-unit id="s114f2b310ef163ff">
   <source>Stage which associates the currently used device with the current session.</source>
+  <target>将当前使用的设备与当前会话关联起来的阶段。</target>
 </trans-unit>
 <trans-unit id="s8290d08ab5a49ed0">
   <source>Connector</source>
+  <target>连接器</target>
 </trans-unit>
 <trans-unit id="s5e8eefcbbeffd4d5">
   <source>Device optional</source>
+  <target>设备可选</target>
 </trans-unit>
 <trans-unit id="s51b09bba5dcc19b0">
   <source>If no device was provided, this stage will succeed and continue to the next stage.</source>
+  <target>如果没有提供设备，则此阶段将成功并继续进入下一阶段。</target>
 </trans-unit>
 <trans-unit id="s5f58e358343a5514">
   <source>Device required</source>
+  <target>需要设备</target>
 </trans-unit>
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
+  <target>如果没有提供设备，此阶段将停止流程执行。</target>
 </trans-unit>
 <trans-unit id="s3a3d5b2575cd32ea">
   <source>File uploaded successfully</source>
+  <target>成功上传文件</target>
 </trans-unit>
 <trans-unit id="sd3775ef947e0de32">
   <source>File Name</source>
+  <target>文件名</target>
 </trans-unit>
 <trans-unit id="s1afc99a84a890514">
   <source>Type an optional custom file name...</source>
+  <target>输入文件名...（可选）</target>
 </trans-unit>
 <trans-unit id="sb40e2763045466ea">
   <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
+  <target>重命名文件（可选，无扩展名）。留空则保留原文件名。</target>
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>文件</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
+  <target>管理已上传的文件。</target>
 </trans-unit>
 <trans-unit id="saad01178f02a6a23">
   <source>file</source>
+  <target>文件</target>
 </trans-unit>
 <trans-unit id="s69f800801812a5f0">
   <source>files</source>
+  <target>文件</target>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
+  <target>上传</target>
 </trans-unit>
 <trans-unit id="sa32e9d0a108ee802">
   <source>Upload File</source>
+  <target>上传文件</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
+  <target>验证设备失败。</target>
 </trans-unit>
 <trans-unit id="se99d25eb70c767ef">
   <source>Verifying your device...</source>
+  <target>正在验证你的设备...</target>
 </trans-unit>
 <trans-unit id="s5c85e53f1d3747d0">
   <source>Service Provider Config cache timeout</source>
+  <target>服务提供程序配置缓存超时</target>
 </trans-unit>
 <trans-unit id="s5fca9f7853a54584">
   <source>Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.</source>
+  <target>ServiceProviderConfig 响应的缓存持续时间。填写 minutes=0 可禁用此设置。</target>
 </trans-unit>
 <trans-unit id="s89a2859207d766fe">
   <source>JWTs signed by the selected providers can be used to authenticate to devices.</source>
+  <target>由已选提供程序签发的 JWT 可以用于设备的身份验证。</target>
 </trans-unit>
 <trans-unit id="s988e1dfd2b962e4f">
   <source>Score Configuration</source>
+  <target>分数配置</target>
 </trans-unit>
 <trans-unit id="s83d396fed4b71e29">
   <source>This CAPTCHA provider does not support scoring. Score thresholds will be ignored.</source>
+  <target>此 CAPTCHA 提供程序不支持评分。分数阈值将被忽略。</target>
 </trans-unit>
 <trans-unit id="s5b29d7a77c92758e">
   <source>Score Minimum Threshold</source>
+  <target>分数最小阈值</target>
 </trans-unit>
 <trans-unit id="sfb4f2529b0b36889">
   <source>Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.</source>
+  <target>允许继续的最小分数。分数越低则行为越可疑。</target>
 </trans-unit>
 <trans-unit id="sf578722c6d349838">
   <source>Score Maximum Threshold</source>
+  <target>分数最大阈值</target>
 </trans-unit>
 <trans-unit id="s66fe9ce730db1f7b">
   <source>Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.</source>
+  <target>允许继续的最小分数。设置为 -1 以禁用上界检查。</target>
 </trans-unit>
 <trans-unit id="s1f412e69817ebb7f">
   <source>Error on Invalid Score</source>
+  <target>分数无效时报错</target>
 </trans-unit>
 <trans-unit id="sbfc0f211f5f7c96f">
   <source>When enabled and the score is outside the threshold, the user will not be able to continue. When disabled, the user can continue and the score can be used in policies.</source>
+  <target>启用时，如果分数在设置的阈值之外，用户将无法继续。禁用时，用户可以继续，并且该分数在策略中使用。</target>
 </trans-unit>
 <trans-unit id="s74982e57a1d8896c">
   <source>Advanced Settings</source>
+  <target>高级设置</target>
 </trans-unit>
 <trans-unit id="s27bfe23deaaf0c2f">
   <source>JavaScript URL</source>
+  <target>JavaScript URL</target>
 </trans-unit>
 <trans-unit id="s22f10cb634a6d1e5">
   <source>URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.</source>
+  <target>获取 CAPTCHA JavaScript 库的 URL。该 URL 会根据选择提供程序自动设置，也可以自定义。</target>
 </trans-unit>
 <trans-unit id="s83c66d5a3edc1b03">
   <source>API Verification URL</source>
+  <target>API 验证 URL</target>
 </trans-unit>
 <trans-unit id="s47028bbf2c2cce0c">
   <source>URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.</source>
+  <target>用于在后端验证 CAPTCHA 响应的 URL。根据选择的提供程序自动设置，也可以自定义。</target>
 </trans-unit>
 <trans-unit id="s7fed8c29d9963f53">
   <source>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</source>
+  <target>此阶段使用 CAPTCHA 服务检查用户的当前会话，以防止自动化滥用。</target>
 </trans-unit>
 <trans-unit id="s9b8e5c6f87ca887e">
   <source>CAPTCHA Provider</source>
+  <target>CAPTCHA 提供程序</target>
 </trans-unit>
 <trans-unit id="sab1ddd059633b9aa">
   <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
+  <target>如果验证码需要用户交互（例如点击复选框、解谜等），请启用。reCAPTCHA v2、hCaptcha 交互模式和 Cloudflare Turnstile 均需要启用。</target>
 </trans-unit>
 <trans-unit id="s8d94e51441d0ce0c">
   <source>Flow Examples</source>
+  <target>示例流程</target>
 </trans-unit>
 <trans-unit id="s49ae82ba527f8e01">
   <source>Type an outpost name...</source>
+  <target>输入前哨名称...</target>
 </trans-unit>
 <trans-unit id="s574ed5d3a52d45c8">
   <source>Outpost Name</source>
+  <target>前哨名称</target>
 </trans-unit>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
+  <target>前哨配置</target>
 </trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
+  <target>删除对象权限</target>
 </trans-unit>
 <trans-unit id="s78aa910bcb26034d">
   <source>Global and object permission</source>
+  <target>全局权限与对象权限</target>
 </trans-unit>
 <trans-unit id="sc8f73affccb6ae4d">
   <source>Global permission</source>
+  <target>全局权限</target>
 </trans-unit>
 <trans-unit id="scf9ebad133d2d561">
   <source>Object permission</source>
+  <target>对象权限</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
+  <target>此对象上的权限</target>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
+  <target>分配给该用户的权限，会影响特定对象实例。</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
+  <target>父级</target>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>可用的组</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>已选的组</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
+  <target>一个组递归地继承其祖先的所有角色。</target>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>用户已更新</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+  <target>已创建用户，并将用户加入到组<x id="0" equiv-text="${this.targetGroup.name}"/></target>
 </trans-unit>
 <trans-unit id="s31dc80daa773a5dc">
   <source>User created and added to role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+  <target>已创建用户，并将用户加入到角色 <x id="0" equiv-text="${this.targetRole.name}"/></target>
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>用户已创建</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
   <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
+  <target>下载 <x id="0" equiv-text="${this.config.filename}"/> 成功！</target>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
+  <target>显示MDM配置</target>
 </trans-unit>
 <trans-unit id="sb4f4c6c72acfa253">
   <source>Hide MDM configuration</source>
+  <target>隐藏MDM配置</target>
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
+  <target>是主用户</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
+  <target>主用户</target>
 </trans-unit>
 <trans-unit id="sc67ff7b2278e81e4">
   <source>Remove User(s)</source>
+  <target>删除用户</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
+  <target>您确定要从 <x id="0" equiv-text="${targetLabel}"/> 中删除选定的用户吗？</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
+  <target>您确定要删除选定的用户吗？</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
+  <target>此用户将会被添加到角色 “<x id="0" equiv-text="${this.targetRole.name}"/>”。</target>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
+  <target>成功添加用户到角色。</target>
 </trans-unit>
 <trans-unit id="s78daaa3ef4325cac">
   <source>Roles to add</source>
+  <target>要添加的角色</target>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
+  <target>添加角色</target>
 </trans-unit>
 <trans-unit id="sd8b8f59ad30971f7">
   <source>Remove from Role(s)</source>
+  <target>从角色中删除</target>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+  <target>您确定要从以下角色中删除用户 <x id="0" equiv-text="${this.targetUser?.username}"/> 吗？</target>
 </trans-unit>
 <trans-unit id="sf4ed596f6b160b84">
   <source>Add Role</source>
+  <target>添加角色</target>
 </trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
+  <target>添加到已有角色</target>
 </trans-unit>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
+  <target>添加新角色</target>
 </trans-unit>
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
+  <target>隐藏管理角色</target>
 </trans-unit>
 <trans-unit id="sb5e95aaacac5d929">
   <source>Bind existing Stage</source>
+  <target>绑定已有阶段</target>
 </trans-unit>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
+  <target>标志允许你提前启用 authentik 的新功能和行为</target>
 </trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
+  <target>启用时，应用程序授权的并行请求将被缓冲，而不会与其他流程发生冲突。</target>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
@@ -9709,51 +9927,65 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
+  <target>数据导出就绪</target>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
+  <target>数据导出</target>
 </trans-unit>
 <trans-unit id="s1d1d961d6f3550e5">
   <source>Manage past data exports.</source>
+  <target>管理过往数据导出。</target>
 </trans-unit>
 <trans-unit id="s8cddef7d8dac7f87">
   <source>Data type</source>
+  <target>数据类型</target>
 </trans-unit>
 <trans-unit id="s3783e647280eb968">
   <source>Requested by</source>
+  <target>发起请求的是</target>
 </trans-unit>
 <trans-unit id="s2d119c0d85bde088">
   <source>Creation date</source>
+  <target>创建日期</target>
 </trans-unit>
 <trans-unit id="s5033dab8c17f05f2">
   <source>Completed</source>
+  <target>已完成</target>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
+  <target>行操作</target>
 </trans-unit>
 <trans-unit id="s97aa774d38013957">
   <source>Data export(s)</source>
+  <target>数据导出</target>
 </trans-unit>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
+  <target>查询参数</target>
 </trans-unit>
 <trans-unit id="s145aca905bbc68a4">
   <source>SAML metadata XML file to import provider settings from.</source>
+  <target>用于导入提供程序设置的 SAML 元数据 XML 文件。</target>
 </trans-unit>
 <trans-unit id="s0d748f6fb237da48">
   <source>Configure SAML Provider from Metadata</source>
+  <target>使用元数据配置 SAML 提供程序</target>
 </trans-unit>
 <trans-unit id="sb541f02499d73b4e">
   <source>Outgoing syncs will not be triggered.</source>
 </trans-unit>
 <trans-unit id="s967b3abf2608649a">
   <source>Immediate</source>
+  <target>立刻</target>
 </trans-unit>
 <trans-unit id="sba0b0ee7c8b8f04a">
   <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
 </trans-unit>
 <trans-unit id="sd3dfc2a1c3647e77">
   <source>Deferred until end</source>
+  <target>推迟到最后</target>
 </trans-unit>
 <trans-unit id="secd492de6e1ae305">
   <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
@@ -9763,227 +9995,302 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4bb6f209647072f4">
   <source>Successfully connected source</source>
+  <target>成功连接到源</target>
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+  <target>连接到源失败：<x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></target>
 </trans-unit>
 <trans-unit id="sed44880a52f72a08">
   <source>Passkey settings</source>
+  <target>Passkey 设置</target>
 </trans-unit>
 <trans-unit id="sf65cb435d6ca1d01">
   <source>WebAuthn Authenticator Validation Stage</source>
+  <target>WebAuthn 身份验证器验证阶段</target>
 </trans-unit>
 <trans-unit id="s05a4cbce470ede73">
   <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+  <target>设置后，允许用户直接从浏览器的自动填充下拉菜单中使用 passkey 进行身份验证，而无需先输入用户名。</target>
 </trans-unit>
 <trans-unit id="s51610dc462a5a034">
   <source>Pagination: default page size</source>
+  <target>分页: 默认每页条数</target>
 </trans-unit>
 <trans-unit id="s05d8a93b0de05ad4">
   <source>Default page size for API requests not specifying a page size.</source>
+  <target>当 API 请求未指定每页条数时, 使用的默认每页条数</target>
 </trans-unit>
 <trans-unit id="s41dac4f4d7caffa7">
   <source>Pagination: maximum page size</source>
+  <target>分页: 最大每页条数</target>
 </trans-unit>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
+  <target>API 请求的最大每页条数</target>
 </trans-unit>
 <trans-unit id="sed1058bca1c065f7">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>启用时，通知不仅会发送给触发事件的用户，还会发送到组中的任何用户。事件用户将总是第一个用户，要只向事件用户发送通知，则需要在通知传输中启用“发送一次”。如果没有选择组，并且“向事件用户发送通知”没有启用，则此规则被禁用。</target>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
+  <target>本地连接</target>
 </trans-unit>
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
+  <target>需要 Docker Socket 或 Kubernetes 集成。</target>
 </trans-unit>
 <trans-unit id="s46a03121a2c260ea">
   <source>Buffer PolicyAccessView requests</source>
+  <target>缓冲 PolicyAccessView 请求</target>
 </trans-unit>
 <trans-unit id="s361e9d929ee925e6">
   <source>Assign Object Permission</source>
+  <target>分配对象权限</target>
 </trans-unit>
 <trans-unit id="s5f6ad947b4824e40">
   <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
+  <target>然后, 下载配置文件以通过 MDM 部署 authentik Agent</target>
 </trans-unit>
 <trans-unit id="s523337424b694d5c">
   <source>Device Access Group</source>
+  <target>设备访问权限组</target>
 </trans-unit>
 <trans-unit id="s7642bf28cf8f476c">
   <source>Select a device access group to be added to upon enrollment.</source>
+  <target>选择一个注册时将加入的设备访问权限组。</target>
 </trans-unit>
 <trans-unit id="h30bbf18fbf87fa57">
   <source>To create a data export, navigate to
                             <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
                             <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+  <target>要创建数据导出, 导航到
+                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/> 目录 &amp;gt; 用户 <x id="1" equiv-text="&lt;/a&gt;"/> 或
+                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/> 事件 &amp;gt; 日志 <x id="3" equiv-text="&lt;/a&gt;"/></target>
 </trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
+  <target>选择您希望所选角色对该对象拥有的对象权限。这些对象权限是对该角色已有的任何全局权限的补充。</target>
 </trans-unit>
 <trans-unit id="sb3be65525dd1f92c">
   <source>Assign object permissions to role</source>
+  <target>为角色分配对象权限</target>
 </trans-unit>
 <trans-unit id="sbcd108b66363075c">
   <source>Device access group</source>
+  <target>设备访问权限组</target>
 </trans-unit>
 <trans-unit id="s325acae04cdcac57">
   <source>Primary disk size</source>
+  <target>主磁盘存储大小</target>
 </trans-unit>
 <trans-unit id="sb4a957846c89fca1">
   <source>Primary disk usage</source>
+  <target>主磁盘存储用量</target>
 </trans-unit>
 <trans-unit id="s7b68229d885a34d3">
   <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+  <target>用户 ID 的起始值，该数字会添加到用户 ID 中，以确保 POSIX 用户使用的 ID 不会太小。默认值为 2000，以防止与本地用户发生冲突。</target>
 </trans-unit>
 <trans-unit id="s284f44964466ef38">
   <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+  <target>组 ID 的起始值，该数字会添加到组 ID 中，以确保 POSIX 组使用的 ID 不会太小。默认值为 4000，以防止与本地组发生冲突。</target>
 </trans-unit>
 <trans-unit id="s01f8cd92a0204da2">
   <source>Data exports are not available as storage for reports is not configured.</source>
+  <target>数据导出不可用, 因为用于报告的存储后端未配置。</target>
 </trans-unit>
 <trans-unit id="s7afef158aada7389">
   <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+  <target><x id="0" equiv-text="${this.brand.brandingTitle}"/> 将收集所有符合指定参数的对象：</target>
 </trans-unit>
 <trans-unit id="sa8d2689c8fdfea22">
   <source>Successfully requested data export</source>
+  <target>已成功请求导出数据</target>
 </trans-unit>
 <trans-unit id="s7e2ef0e26e7f5e6f">
   <source>Failed to export data</source>
+  <target>导出数据失败</target>
 </trans-unit>
 <trans-unit id="sc6991f3e377938fb">
   <source>Start export</source>
+  <target>开始导出</target>
 </trans-unit>
 <trans-unit id="sd69873a0783f8e39">
   <source>Export data</source>
+  <target>导出数据</target>
 </trans-unit>
 <trans-unit id="en-XA">
   <source>English (Pseudo-Accents)</source>
+  <target>英语（伪口音）</target>
 </trans-unit>
 <trans-unit id="sbb99d4ec27fbb263">
   <source>Finished</source>
+  <target>已完成</target>
 </trans-unit>
 <trans-unit id="s3ec4da71c1a62754">
   <source>Queued</source>
+  <target>已排队</target>
 </trans-unit>
 <trans-unit id="sd32298bb7d36024d">
   <source>Configured file backend does not support file management.</source>
+  <target>当前已配置的文件后端不支持文件管理</target>
 </trans-unit>
 <trans-unit id="s4f1e04b9b4cb96ae">
   <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+  <target>请确保数据文件夹已挂载, 或 S3 存储已配置</target>
 </trans-unit>
 <trans-unit id="s3a46b5964b3ecfac">
   <source>View details...</source>
+  <target>显示详情...</target>
 </trans-unit>
 <trans-unit id="s6cbf6cd401ea3336">
   <source>Type a connector name...</source>
+  <target>输入连接器名称...</target>
 </trans-unit>
 <trans-unit id="s04be2edfb0d2218a">
   <source>Type a name for the token...</source>
+  <target>输入令牌名称...</target>
 </trans-unit>
 <trans-unit id="s84e29a714db544e9">
   <source>Update Enrollment Token</source>
+  <target>更新注册令牌</target>
 </trans-unit>
 <trans-unit id="s5a7055a44dc83b1e">
   <source>Type a unique identifier...</source>
+  <target>输入唯一标识符...</target>
 </trans-unit>
 <trans-unit id="sdfe787aeeebbfbf1">
   <source>Type a token description...</source>
+  <target>输入令牌描述...</target>
 </trans-unit>
 <trans-unit id="sd7c52e2ce408c542">
   <source>Integrations synced in the last 12 hours.</source>
+  <target>过去 12 小时内同步的集成。</target>
 </trans-unit>
 <trans-unit id="table-loading-bar-label">
   <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <target>正在加载 <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> 的数据</target>
   <note from="lit-localize">Label for progress bar shown when table data is loading</note>
 </trans-unit>
 <trans-unit id="sb6650552aaaf5da0">
   <source>Assigned Roles</source>
+  <target>已分配角色</target>
 </trans-unit>
 <trans-unit id="s5cbf3cbb4cf38b05">
   <source>All Roles</source>
+  <target>所有角色</target>
 </trans-unit>
 <trans-unit id="s6a850cd00064d6e6">
   <source>Inherited from parent group</source>
+  <target>继承自父组</target>
 </trans-unit>
 <trans-unit id="sd9e3b91f8d62cb04">
   <source>Inherited from group</source>
+  <target>继承自组</target>
 </trans-unit>
 <trans-unit id="s3d8c389ca77b97e1">
   <source>Inherited</source>
+  <target>继承的</target>
 </trans-unit>
 <trans-unit id="s01730bc068a6cf07">
   <source>Select roles to attach to the user</source>
+  <target>选择要附加到用户的角色</target>
 </trans-unit>
 <trans-unit id="drawer-toggle-button-api-requests">
   <source>Toggle API requests drawer</source>
+  <target>打开或关闭 API 请求抽屉</target>
 </trans-unit>
 <trans-unit id="s355e4737a0286070">
   <source>API Drawer</source>
+  <target>API 抽屉</target>
 </trans-unit>
 <trans-unit id="drawer-toggle-button-notifications">
   <source>Toggle notifications drawer</source>
+  <target>打开或关闭通知抽屉</target>
 </trans-unit>
 <trans-unit id="drawer-invoker-tooltip-notifications">
   <source>Notification Drawer</source>
+  <target>通知抽屉</target>
 </trans-unit>
 <trans-unit id="s5fa7f18dcfc98131">
   <source>Failed to fetch notifications.</source>
+  <target>拉取通知失败。</target>
 </trans-unit>
 <trans-unit id="notification-drawer-clear-all">
   <source>Clear all notifications</source>
+  <target>清除所有通知</target>
 </trans-unit>
 <trans-unit id="notification-drawer-close">
   <source>Close notification drawer</source>
+  <target>关闭通知抽屉</target>
 </trans-unit>
 <trans-unit id="s54e4d61fc46a14be">
   <source>No MFA devices enrolled.</source>
+  <target>没有注册 MFA 设备。</target>
 </trans-unit>
 <trans-unit id="s227aacd5a7fc6f50">
   <source>User Tokens</source>
+  <target>用户令牌</target>
 </trans-unit>
 <trans-unit id="sea858aeacf6ae9b0">
   <source>No User Tokens enrolled.</source>
+  <target>没有注册用户令牌。</target>
 </trans-unit>
 <trans-unit id="notification-unread-count">
   <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
+  <target><x id="0" equiv-text="${unreadCount}"/> 条未读</target>
   <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
 </trans-unit>
 <trans-unit id="s42636dae6e29892e">
   <source>Agent version: <x id="0" equiv-text="${vendorData.agent_version ?? &quot;-&quot;}"/></source>
+  <target>Agent 版本：<x id="0" equiv-text="${vendorData.agent_version ?? &quot;-&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s6dd24e14615f1369">
   <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
+  <target>警告：导入的流程是蓝图文件，其中可能包含流程以外的对象（例如用户、策略等）。</target>
 </trans-unit>
 <trans-unit id="sa6cd3315b7c53ab7">
   <source>You should only import files from trusted sources and review blueprints before importing them.</source>
+  <target>您应该只从可信来源导入文件，并在导入前检查蓝图。</target>
 </trans-unit>
 <trans-unit id="sd8309fdcb0478b0f">
   <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+  <target>生成的单个令牌的长度。最大可设置为 100 个字符。</target>
 </trans-unit>
 <trans-unit id="s382600808211cf23">
   <source>Close sidebar</source>
+  <target>关闭侧边栏</target>
 </trans-unit>
 <trans-unit id="sce4fb29c933410a5">
   <source>Open sidebar</source>
+  <target>打开侧边栏</target>
 </trans-unit>
 <trans-unit id="s180feee6454499fa">
   <source>Certificate-Key Pair</source>
+  <target>证书密钥对</target>
 </trans-unit>
 <trans-unit id="avatar.alt-text-for-user">
   <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+  <target><x id="0" equiv-text="${this.username}"/> 的头像</target>
 </trans-unit>
 <trans-unit id="avatar.alt-text">
   <source>User avatar</source>
+  <target>用户头像</target>
 </trans-unit>
 <trans-unit id="flow.navigation.go-back">
   <source>Go back</source>
+  <target>返回</target>
 </trans-unit>
 <trans-unit id="stage.authenticator.email.sent-to-address">
   <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <target>一份验证代码已发送到您配置的电子邮箱地址：<x id="0" equiv-text="${email}"/></target>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
 </trans-unit>
 <trans-unit id="stage.authenticator.email.sent">
   <source>A verification token has been sent to your email address.</source>
+  <target>一份验证代码已发送到您的电子邮箱。</target>
   <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular-with-query">
@@ -9994,55 +10301,71 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="user.library.application-count-singular">
   <source><x id="0" equiv-text="${count}"/> application available</source>
+  <target><x id="0" equiv-text="${count}"/> 应用程序可用</target>
 </trans-unit>
 <trans-unit id="user.library.application-count-plural">
   <source><x id="0" equiv-text="${count}"/> applications available</source>
+  <target><x id="0" equiv-text="${count}"/> 应用程序可用</target>
 </trans-unit>
 <trans-unit id="user.library.search.type-to-filter-hint">
   <source>Type to filter applications</source>
+  <target>输入以过滤应用程序</target>
   <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
 </trans-unit>
 <trans-unit id="user.library.search.enter-to-open-hint">
   <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <target>按下 Enter 打开 <x id="0" equiv-text="${this.selectedApp.name}"/></target>
   <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
 </trans-unit>
 <trans-unit id="user.library.application-count.enter-to-open-hint">
   <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <target>按下 Enter 打开 <x id="0" equiv-text="${this.selectedApp.name}"/></target>
   <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
 </trans-unit>
 <trans-unit id="library.application.card.aria-label">
   <source>Open "<x id="0" equiv-text="${application.name}"/>"</source>
+  <target>打开“<x id="0" equiv-text="${application.name}"/>”</target>
   <note from="lit-localize">Screen reader label for the application card</note>
 </trans-unit>
 <trans-unit id="sc1e9c9bab6765c74">
   <source>Active Sessions</source>
+  <target>活动会话</target>
 </trans-unit>
 <trans-unit id="s83991563e9d607ac">
   <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
+  <target>成功撤销 <x id="1" equiv-text="${this.users.length}"/> 个用户的 <x id="0" equiv-text="${this.revokedCount}"/> 个会话</target>
 </trans-unit>
 <trans-unit id="s4b004192e4d6ab2e">
   <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
+  <target>撤销会话失败：<x id="0" equiv-text="${e.toString()}"/></target>
 </trans-unit>
 <trans-unit id="sb458ffb37cbde768">
   <source>Revoke Sessions</source>
+  <target>撤销会话</target>
 </trans-unit>
 <trans-unit id="s1bd2d0f088b75b92">
   <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
+  <target>您确定要撤销 <x id="0" equiv-text="${this.users.length}"/> 个用户的所有会话吗？</target>
 </trans-unit>
 <trans-unit id="s5c5e74eabcb9eba1">
   <source>This will force the selected users to re-authenticate on all their devices.</source>
+  <target>这将强制选定的用户在其所有设备上重新进行身份验证。</target>
 </trans-unit>
 <trans-unit id="scd909e0bc55fc548">
   <source>Security key</source>
+  <target>安全密钥</target>
 </trans-unit>
 <trans-unit id="sd0de938d9c37ad5f">
   <source>Use a Passkey or security key to prove your identity.</source>
+  <target>使用 passkey 或安全密钥证明您的身份。</target>
 </trans-unit>
 <trans-unit id="s856c15d3387d1ac7">
   <source>Include additional data in Audit logs</source>
+  <target>在审计日志中包含额外数据</target>
 </trans-unit>
 <trans-unit id="sf432a1157155369f">
   <source>When enabled, additional data about objects added/removed is saved in the audit log. May reduce performance in certain requests.</source>
+  <target>启用时，有关添加/删除对象的额外数据将保存在审计日志中。这可能会降低某些请求的性能。</target>
 </trans-unit>
 <trans-unit id="s6173e24ed3ba956e">
   <source>Successfully updated Fleet connector.</source>
@@ -10052,6 +10375,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6a087e34edeadc1f">
   <source>Connector name...</source>
+  <target>连接器名称...</target>
 </trans-unit>
 <trans-unit id="sc8a067f02f4cf520">
   <source>Fleet settings</source>
@@ -10312,6 +10636,209 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s92e22f9319fdb85d">
   <source>Configuration warning</source>
+</trans-unit>
+<trans-unit id="s304ca1e922bd3278">
+  <source>Lifecycle Rules</source>
+</trans-unit>
+<trans-unit id="scd223a9aac742fcf">
+  <source>Lifecycle</source>
+</trans-unit>
+<trans-unit id="sa9ebf2b039449d6c">
+  <source>Object Lifecycle Management is in preview.</source>
+</trans-unit>
+<trans-unit id="s2b858c5186f8f2fd">
+  <source>Select a group...</source>
+</trans-unit>
+<trans-unit id="s5e0fb3d421bb57cc">
+  <source>Select a role...</source>
+</trans-unit>
+<trans-unit id="s8e5d1a84bd559a27">
+  <source>Select an object...</source>
+</trans-unit>
+<trans-unit id="s69e44328a5b45aa2">
+  <source>Rule Name</source>
+</trans-unit>
+<trans-unit id="se319064a2f20deba">
+  <source>Type a name for this lifecycle rule...</source>
+</trans-unit>
+<trans-unit id="sb46d3613edb66558">
+  <source>Interval</source>
+</trans-unit>
+<trans-unit id="s19feda58eae87c66">
+  <source>The interval between opening new reviews for matching objects.</source>
+</trans-unit>
+<trans-unit id="s760c656016171d08">
+  <source>Grace period</source>
+</trans-unit>
+<trans-unit id="s48a53c24fbbc8444">
+  <source>The duration of time before an open review is considered overdue.</source>
+</trans-unit>
+<trans-unit id="s1b5d2f91633b74d6">
+  <source>Reviewer groups</source>
+</trans-unit>
+<trans-unit id="s94c5d9fea467cdbb">
+  <source>Min reviewers</source>
+</trans-unit>
+<trans-unit id="s693370c05900a1c6">
+  <source>Number of users from the selected reviewer groups that must approve the review.</source>
+</trans-unit>
+<trans-unit id="s20c950d20c8aec84">
+  <source>Min reviewers is per-group</source>
+</trans-unit>
+<trans-unit id="s74906f78877111cb">
+  <source>Reviewers</source>
+</trans-unit>
+<trans-unit id="sb42871a38d8b61ee">
+  <source>Object type</source>
+</trans-unit>
+<trans-unit id="sd530d226f68ec351">
+  <source>When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.</source>
+</trans-unit>
+<trans-unit id="sea85769d2d8f3ea8">
+  <source>Available Users</source>
+</trans-unit>
+<trans-unit id="s6251a3b1bbd7b124">
+  <source>Selected Users</source>
+</trans-unit>
+<trans-unit id="s3899116cda378dcb">
+  <source>A review will require approval from each of the users selected here in addition to group members as per above settings.</source>
+</trans-unit>
+<trans-unit id="s56511df6b44ad5cc">
+  <source>Notification transports</source>
+</trans-unit>
+<trans-unit id="s6273aa020677fe75">
+  <source>Select which transports should be used to notify the user.</source>
+</trans-unit>
+<trans-unit id="s78e31a199ca08cd9">
+  <source>Object Lifecycle Rules</source>
+</trans-unit>
+<trans-unit id="s24cc4e5aa6446401">
+  <source>Schedule periodic reviews for objects in authentik.</source>
+</trans-unit>
+<trans-unit id="s468f705986fff045">
+  <source>Lifecycle rule(s)</source>
+</trans-unit>
+<trans-unit id="s73705b0f657e9866">
+  <source>Update Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="safae3d983f6cc576">
+  <source>Create Object Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="s9279704dfc98cdf9">
+  <source>No reviews yet.</source>
+</trans-unit>
+<trans-unit id="s08400d94769ba771">
+  <source>Reviewed on</source>
+</trans-unit>
+<trans-unit id="sb89da38bc0c0b3fa">
+  <source>Reviewer</source>
+</trans-unit>
+<trans-unit id="s6686fcc6d2c8f0bd">
+  <source>Note</source>
+</trans-unit>
+<trans-unit id="s5754eb43287dd6e5">
+  <source>No review iteration found for this object.</source>
+</trans-unit>
+<trans-unit id="s68ea8ed25680242f">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="sd9e03fcf99724085">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="sbbaa87f8826a0756">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="s79ef398b6e3e2c44">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="s33d20c1a2e0bf773">
+  <source>Review opened on</source>
+</trans-unit>
+<trans-unit id="s5e053bb69bf930b7">
+  <source>Grace period till</source>
+</trans-unit>
+<trans-unit id="s310b639f39d731b0">
+  <source>Next review date</source>
+</trans-unit>
+<trans-unit id="s3daaf5e7f16e2c52">
+  <source>Latest review for this object</source>
+</trans-unit>
+<trans-unit id="s3be348f8aeeb6a64">
+  <source>Review state</source>
+</trans-unit>
+<trans-unit id="s30c9ff051aa083b0">
+  <source>Required reviewers</source>
+</trans-unit>
+<trans-unit id="scdef09f44b68b189">
+  <source>Confirm Review</source>
+</trans-unit>
+<trans-unit id="sa89492933e1813ab">
+  <source>Confirm this object has been reviewed</source>
+</trans-unit>
+<trans-unit id="s7f3437809d931336">
+  <source>Reviews</source>
+</trans-unit>
+<trans-unit id="sc33f0df01dc32300">
+  <source>Review Notes</source>
+</trans-unit>
+<trans-unit id="s86316abdd9054708">
+  <source>Type optional notes to include in this review...</source>
+</trans-unit>
+<trans-unit id="s2430fb91fa928ae0">
+  <source>Open Reviews</source>
+</trans-unit>
+<trans-unit id="s35d1f3a355ed1084">
+  <source>See all currently open reviews.</source>
+</trans-unit>
+<trans-unit id="s71230441c759c9b1">
+  <source>Only show reviews where I am a reviewer</source>
+</trans-unit>
+<trans-unit id="sce6a3502c71baa60">
+  <source>Opened</source>
+</trans-unit>
+<trans-unit id="sea8d30456c79058a">
+  <source>Grace period ends</source>
+</trans-unit>
+<trans-unit id="se6203ef69ff63548">
+  <source>Pending review</source>
+</trans-unit>
+<trans-unit id="sb89d8d8bc0c08e98">
+  <source>Reviewed</source>
+</trans-unit>
+<trans-unit id="sc68080ce046320cb">
+  <source>Overdue</source>
+</trans-unit>
+<trans-unit id="sa30c4d3b566b6b1a">
+  <source>Canceled</source>
+</trans-unit>
+<trans-unit id="s804ab712b1add3d3">
+  <source>An unknown error occurred while submitting the form.</source>
+</trans-unit>
+<trans-unit id="s78adb00480380ad9">
+  <source>Sign logout response</source>
+</trans-unit>
+<trans-unit id="s7faa5610b9493a92">
+  <source>When enabled, SAML logout responses will be signed.</source>
+</trans-unit>
+<trans-unit id="saa088a2d0f90d5a9">
+  <source>Posting logout response to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="h903c2b1c21bb9fc7">
+  <source>If checked, approving a review will require at least that many users from
+                        <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the selected groups. When disabled, the value is a total
+                        across all groups.</source>
+</trans-unit>
+<trans-unit id="s776d93092ad9ce90">
+  <source>Review initiated</source>
+</trans-unit>
+<trans-unit id="sad46bcad1a343b51">
+  <source>Review overdue</source>
+</trans-unit>
+<trans-unit id="s59d168d966cecbaf">
+  <source>Review attested</source>
+</trans-unit>
+<trans-unit id="s5158b7f014cecefc">
+  <source>Review completed</source>
 </trans-unit>
 </body>
 </file>

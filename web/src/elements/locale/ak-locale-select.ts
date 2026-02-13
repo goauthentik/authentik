@@ -155,7 +155,7 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
                     part="select"
                     id="locale-selector"
                     @change=${this.#localeChangeListener}
-                    class="pf-c-form-control ak-m-capitalize"
+                    class="ak-m-capitalize"
                     name="locale"
                 >
                     ${LocaleOptions({ entries, activeLocaleTag })}
