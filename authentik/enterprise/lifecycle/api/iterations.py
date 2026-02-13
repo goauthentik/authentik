@@ -5,7 +5,7 @@ from django.db.models import Case, Q, Value, When
 from django_filters.rest_framework import BooleanFilter, FilterSet
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
-from rest_framework.fields import DateField, IntegerField, SerializerMethodField
+from rest_framework.fields import DateTimeField, IntegerField, SerializerMethodField
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -21,6 +21,7 @@ from authentik.enterprise.lifecycle.utils import (
     ReviewerUserSerializer,
     admin_link_for_model,
     parse_content_type,
+    start_of_day,
 )
 from authentik.lib.utils.time import timedelta_from_string
 
@@ -67,13 +68,15 @@ class LifecycleIterationSerializer(EnterpriseRequiredMixin, ModelSerializer):
     def get_object_admin_url(self, iteration: LifecycleIteration) -> str:
         return admin_link_for_model(iteration.object)
 
-    @extend_schema_field(DateField())
+    @extend_schema_field(DateTimeField())
     def get_grace_period_end(self, iteration: LifecycleIteration) -> date:
-        return iteration.opened_on + timedelta_from_string(iteration.rule.grace_period)
+        return start_of_day(
+            iteration.opened_on + timedelta_from_string(iteration.rule.grace_period)
+        )
 
-    @extend_schema_field(DateField())
+    @extend_schema_field(DateTimeField())
     def get_next_review_date(self, iteration: LifecycleIteration):
-        return iteration.opened_on + timedelta_from_string(iteration.rule.interval)
+        return start_of_day(iteration.opened_on + timedelta_from_string(iteration.rule.interval))
 
     def get_user_can_review(self, iteration: LifecycleIteration) -> bool:
         return iteration.user_can_review(self.context["request"].user)

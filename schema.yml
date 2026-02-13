@@ -42151,15 +42151,15 @@ components:
           readOnly: true
         opened_on:
           type: string
-          format: date
+          format: date-time
           readOnly: true
         grace_period_end:
           type: string
-          format: date
+          format: date-time
           readOnly: true
         next_review_date:
           type: string
-          format: date
+          format: date-time
           readOnly: true
         reviews:
           type: array
