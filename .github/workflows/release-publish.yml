@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
         id: push
-        uses: docker/build-push-action@601a80b39c9405e50806ae38af30926f9d957c47 # v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: website/Dockerfile
@@ -119,7 +119,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@601a80b39c9405e50806ae38af30926f9d957c47 # v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         id: push
         with:
           push: true
