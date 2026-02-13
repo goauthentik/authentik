@@ -1,5 +1,7 @@
 """authentik Kerberos Authentication Backend"""
 
+from typing import Any
+
 import gssapi
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
@@ -19,23 +21,33 @@ LOGGER = get_logger()
 class KerberosBackend(InbuiltBackend):
     """Authenticate users against Kerberos realm"""
 
-    def authenticate(self, request: HttpRequest, **kwargs):
+    def authenticate(
+        self,
+        request: HttpRequest | None,
+        **kwargs: Any,
+    ) -> User | None:
         """Try to authenticate a user via kerberos"""
         if "password" not in kwargs or "username" not in kwargs:
             return None
         username = kwargs.pop("username")
+        password = kwargs.pop("password")
         realm = None
         if "@" in username:
             username, realm = username.rsplit("@", 1)
 
-        user, source = self.auth_user(request, username, realm, **kwargs)
+        user, source = self.auth_user(request, username, realm, password, **kwargs)
         if user:
             self.set_method("kerberos", request, source=source)
             return user
         return None
 
     def auth_user(
-        self, request: HttpRequest, username: str, realm: str | None, password: str, **filters
+        self,
+        request: HttpRequest | None,
+        username: str,
+        realm: str | None,
+        password: str,
+        **filters,
     ) -> tuple[User | None, KerberosSource | None]:
         sources = KerberosSource.objects.filter(enabled=True)
         user = User.objects.filter(
@@ -79,7 +91,7 @@ class KerberosBackend(InbuiltBackend):
                         password, sender=user_source_connection.source, request=request
                     )
                     user_source_connection.user.save()
-                return user_source_connection.user, user_source_connection.source
+                return user_source_connection.user, user_source_connection.source.kerberossource
             # Password doesn't match, onto next source
             LOGGER.debug(
                 "failed to kinit, password invalid",
