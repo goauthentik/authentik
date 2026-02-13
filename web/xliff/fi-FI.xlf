@@ -10405,9 +10405,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s20c950d20c8aec84">
   <source>Min reviewers is per-group</source>
 </trans-unit>
-<trans-unit id="se4f63fe867f1714a">
-  <source>If checked, approving a review will require at least that many users from _each_ of the selected groups. When disabled, the value is a total across all groups.</source>
-</trans-unit>
 <trans-unit id="s74906f78877111cb">
   <source>Reviewers</source>
 </trans-unit>
@@ -10545,6 +10542,23 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="saa088a2d0f90d5a9">
   <source>Posting logout response to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+</trans-unit>
+<trans-unit id="h903c2b1c21bb9fc7">
+  <source>If checked, approving a review will require at least that many users from
+                        <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the selected groups. When disabled, the value is a total
+                        across all groups.</source>
+</trans-unit>
+<trans-unit id="s776d93092ad9ce90">
+  <source>Review initiated</source>
+</trans-unit>
+<trans-unit id="sad46bcad1a343b51">
+  <source>Review overdue</source>
+</trans-unit>
+<trans-unit id="s59d168d966cecbaf">
+  <source>Review attested</source>
+</trans-unit>
+<trans-unit id="s5158b7f014cecefc">
+  <source>Review completed</source>
 </trans-unit>
 </body>
 </file>
