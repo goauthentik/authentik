@@ -28,7 +28,7 @@ Using a property mapping, it is possible to customize the SMS message sent via T
 
 ```python
 return {
-    "message": f"This is a custom message for {request.http_request.brand.branding_title} SMS authentication. The code is {token}".
+    "message": f"This is a custom message for {request.http_request.brand.branding_title} SMS authentication. The code is {token}."
 }
 ```
 
@@ -46,7 +46,7 @@ For the generic provider, a POST request will be sent to the URL you have specif
 {
     "From": "<value of the *From number* field>",
     "To": "<the phone number of the user's device>",
-    "Body": "<the token that the user needs to authenticate>,
+    "Body": "<the token that the user needs to authenticate>"
 }
 ```
 
@@ -60,7 +60,7 @@ A custom webhook mapping can be used to customize the SMS message sent to users.
 return {
     "from": stage.from_number,
     "to": device.phone_number,
-    "body": f"foo bar baz {token}".
+    "body": f"foo bar baz {token}"
 }
 ```
 

@@ -1,6 +1,7 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/oauth2/OAuth2ProviderForm";
 import "#components/events/ObjectChangelog";
+import "#admin/rbac/ObjectPermissionsPage";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
@@ -23,10 +24,11 @@ import {
     CoreUsersListRequest,
     ModelEnum,
     OAuth2Provider,
+    OAuth2ProviderLogoutMethodEnum,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
     ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     User,
 } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
@@ -47,7 +49,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";
@@ -87,7 +88,6 @@ export class OAuth2ProviderViewPage extends AKElement {
     previewUser?: User;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFPage,
         PFGrid,
@@ -121,8 +121,8 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <main>
-            <ak-tabs>
+        return html`<main part="main">
+            <ak-tabs part="tabs">
                 <div
                     role="tabpanel"
                     tabindex="0"
@@ -172,12 +172,13 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersOauth2Oauth2provider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -268,12 +269,28 @@ export class OAuth2ProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${msg("Back-Channel Logout URI")}</span
+                                        >${msg("Logout URI")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text pf-m-monospace">
-                                        ${this.provider.backchannelLogoutUri}
+                                        ${this.provider.logoutUri}
+                                    </div>
+                                </dd>
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Logout Method")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        ${this.provider.logoutMethod ===
+                                        OAuth2ProviderLogoutMethodEnum.Backchannel
+                                            ? msg("Back-channel")
+                                            : this.provider.logoutMethod ===
+                                                OAuth2ProviderLogoutMethodEnum.Frontchannel
+                                              ? msg("Front-channel")
+                                              : msg("")}
                                     </div>
                                 </dd>
                             </div>
@@ -439,7 +456,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     }
                                     return input.replaceAll(
                                         "<application slug>",
-                                        this.provider.assignedApplicationSlug,
+                                        this.provider.assignedApplicationSlug ??
+                                            "<application slug>",
                                     );
                                 },
                             ]}

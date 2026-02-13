@@ -27,7 +27,7 @@ class TokenRevocationParams:
     provider: OAuth2Provider
 
     @staticmethod
-    def from_request(request: HttpRequest) -> "TokenRevocationParams":
+    def from_request(request: HttpRequest) -> TokenRevocationParams:
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token")
 

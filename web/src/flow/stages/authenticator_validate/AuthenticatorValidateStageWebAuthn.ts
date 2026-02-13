@@ -75,7 +75,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     }
 
     updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("challenge") && this.challenge) {
             // convert certain members of the PublicKeyCredentialRequestOptions into
             // byte arrays as expected by the spec.
             const credentialRequestOptions = this.deviceChallenge
@@ -115,7 +117,8 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 >
             </ak-empty-state>
             ${!this.authenticating || this.showBackButton
-                ? html`<div class="pf-c-form__group">
+                ? html`<fieldset class="pf-c-form__group pf-m-action">
+                      <legend class="sr-only">${msg("Form actions")}</legend>
                       ${!this.authenticating
                           ? html` <button
                                 class="pf-c-button pf-m-primary pf-m-block"
@@ -128,7 +131,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                             </button>`
                           : nothing}
                       ${this.renderReturnToDevicePicker()}
-                  </div>`
+                  </fieldset>`
                 : nothing}
         </form>`;
     }

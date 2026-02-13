@@ -10,17 +10,19 @@ import "#admin/providers/radius/RadiusProviderForm";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/ssf/SSFProviderFormPage";
+import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -66,7 +68,7 @@ export class ProviderListPage extends TablePage<Provider> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Provider(s)")}
+            object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
@@ -111,27 +113,27 @@ export class ProviderListPage extends TablePage<Provider> {
             html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
             this.#rowApp(item),
             html`${item.verboseName}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
+            html`<div>
+                <ak-forms-modal>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
                         instancePk: item.pk,
-                    }}
-                    type=${item.component}
-                >
-                </ak-proxy-form>
-                <button
-                    aria-label=${msg(str`Edit "${item.name}" provider`)}
-                    slot="trigger"
-                    class="pf-c-button pf-m-plain"
-                >
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i aria-hidden="true" class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
+                    <button
+                        aria-label=${msg(str`Edit "${item.name}" provider`)}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i aria-hidden="true" class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 

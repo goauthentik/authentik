@@ -3,7 +3,7 @@ title: Worker
 slug: /worker
 ---
 
-The authentik worker runs [background tasks](../background-tasks.md). The worker also watches for [blueprints](../../customize/blueprints/index.mdx#storage---file) and [certificates](../certificates.md#external-certificates) that are added to the file system. It runs in a separate container from the server to handle these tasks.
+The authentik worker runs [background tasks](../background-tasks.md). The worker also watches for [blueprints](../../customize/blueprints/index.mdx#as-a-local-file) and [certificates](../certificates.md#external-certificates) that are added to the file system. It runs in a separate container from the server to handle these tasks.
 
 ## How it works
 
@@ -29,7 +29,7 @@ When a task throws an exception, the worker will automatically try to re-run the
 
 ### Time limits
 
-All tasks have a time limit. If running a task takes longer than than limit, the task is cancelled and marked as failed. The default time limit is configurable with [`AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`](../../install-config/configuration/configuration.mdx#authentik_worker__task_default_time_limit). Some tasks override that time limit for specific purposes, like synchronization.
+All tasks have a time limit. If running a task takes longer than that limit, the task is cancelled and marked as failed. The default time limit is configurable with [`AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`](../../install-config/configuration/configuration.mdx#authentik_worker__task_default_time_limit). Some tasks override that time limit for specific purposes, like synchronization.
 
 ## Manage the worker
 
@@ -37,7 +37,7 @@ All tasks have a time limit. If running a task takes longer than than limit, the
 
 How many workers are needed will depend on what tasks are expected to run. The number of tasks that can concurrently run is calculated as follows:
 
-- workers replicas (1 for docker-compose, defaults to 1 for the Helm chart but can be configured) _multiplied_ by [`AUTHENTIK_WORKER__PROCESSES`](../../install-config/configuration/configuration.mdx#authentik_worker__processes) _multiplied_ by [`AUTHENTIK_WORKER__THREADS`](../../install-config/configuration/configuration.mdx#authentik_worker__threads)
+- workers replicas (1 for Docker Compose, defaults to 1 for the Helm chart but can be configured) _multiplied_ by [`AUTHENTIK_WORKER__PROCESSES`](../../install-config/configuration/configuration.mdx#authentik_worker__processes) _multiplied_ by [`AUTHENTIK_WORKER__THREADS`](../../install-config/configuration/configuration.mdx#authentik_worker__threads)
 
 For example, let's say an LDAP source is configured with 1000 users and 200 groups. The LDAP source syncs the users first, then the groups, and finally memberships. All those steps are done by splitting the objects to synchronize into pages, of size [`AUTHENTIK_LDAP__PAGE_SIZE`](../../install-config/configuration/configuration.mdx#authentik_ldap__page_size). Let's say that setting is 50. That means there are `1000 / 50 = 20` pages of users, `200 / 50 = 4` pages of groups. We won't worry about the number of membership pages, because those are usually smaller than the previous ones.
 

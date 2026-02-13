@@ -4,7 +4,7 @@ import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import "#components/ak-page-header";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
@@ -12,17 +12,19 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
-import { ifPresent } from "#elements/utils/attributes";
+import { WithLicenseSummary } from "#elements/mixins/license";
+
+import { setPageDetails } from "#components/ak-page-navbar";
 
 import {
     Application,
+    ContentTypeEnum,
     CoreApi,
     OutpostsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -36,13 +38,12 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-application-view")
-export class ApplicationViewPage extends AKElement {
+export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     static styles: CSSResult[] = [
-        PFBase,
         PFList,
         PFBanner,
         PFPage,
@@ -50,6 +51,7 @@ export class ApplicationViewPage extends AKElement {
         PFButton,
         PFDescriptionList,
         PFGrid,
+        PFFlex,
         PFCard,
     ];
 
@@ -95,8 +97,8 @@ export class ApplicationViewPage extends AKElement {
                 if (
                     app.providerObj &&
                     [
-                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                     ].includes(app.providerObj.metaModelName)
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
@@ -116,21 +118,6 @@ export class ApplicationViewPage extends AKElement {
     //#region Render
 
     render(): TemplateResult {
-        return html`<ak-page-header
-                header=${this.application?.name || msg("Loading")}
-                description=${ifPresent(this.application?.metaPublisher)}
-            >
-                <ak-app-icon
-                    size=${PFSize.Medium}
-                    name=${ifPresent(this.application?.name)}
-                    icon=${ifPresent(this.application?.metaIcon)}
-                    slot="icon"
-                ></ak-app-icon>
-            </ak-page-header>
-            ${this.renderApp()}`;
-    }
-
-    renderApp(): TemplateResult {
         if (this.error) {
             return html`<ak-empty-state icon="fa-ban"
                 ><span>${msg(str`Failed to fetch application "${this.applicationSlug}".`)}</span>
@@ -145,9 +132,25 @@ export class ApplicationViewPage extends AKElement {
         return html`<main>
             <ak-tabs>
                 ${this.missingOutpost
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${msg("Warning: Application is not used by any Outpost.")}
-                      </div>`
+                    ? html`
+                          <div
+                              slot="header"
+                              class="pf-c-banner pf-m-warning"
+                              role="status"
+                              aria-live="polite"
+                          >
+                              <div class="pf-l-flex pf-m-space-items-sm">
+                                  <div class="pf-l-flex__item">
+                                      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                  </div>
+                                  <div class="pf-l-flex__item">
+                                      ${msg("Warning: Application is not used by any Outpost.", {
+                                          id: "application.outpost.missing.warning",
+                                      })}
+                                  </div>
+                              </div>
+                          </div>
+                      `
                     : nothing}
                 <section
                     role="tabpanel"
@@ -342,11 +345,29 @@ export class ApplicationViewPage extends AKElement {
                     id="page-app-entitlements"
                     aria-label="${msg("Application entitlements")}"
                 >
-                    <div slot="header" class="pf-c-banner pf-m-info">
-                        ${msg("Application entitlements are in preview.")}
-                        <a href="mailto:hello+feature/app-ent@goauthentik.io"
-                            >${msg("Send us feedback!")}</a
-                        >
+                    <div
+                        slot="header"
+                        class="pf-c-banner pf-m-info"
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <div class="pf-l-flex pf-m-space-items-sm">
+                            <div class="pf-l-flex__item">
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                            </div>
+                            <div class="pf-l-flex__item">
+                                ${msg("Application entitlements are in preview.", {
+                                    id: "application.entitlements.preview.info",
+                                })}
+                            </div>
+                            <div class="pf-l-flex__item">
+                                <a href="mailto:hello+feature/app-ent@goauthentik.io"
+                                    >${msg("Send us feedback!", {
+                                        id: "preview.send-us-feedback",
+                                    })}</a
+                                >
+                            </div>
+                        </div>
                     </div>
                     <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                         <div class="pf-c-card">
@@ -382,16 +403,38 @@ export class ApplicationViewPage extends AKElement {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.hasEnterpriseLicense
+                    ? html`<ak-object-lifecycle-page
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-lifecycle"
+                          id="page-lifecycle"
+                          aria-label=${msg("Lifecycle")}
+                          model=${ContentTypeEnum.AuthentikCoreApplication}
+                          object-pk=${this.application.pk}
+                      ></ak-object-lifecycle-page>`
+                    : nothing}
             </ak-tabs>
         </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            header: this.application?.name ?? msg("Loading application..."),
+            description: this.application?.metaPublisher,
+            icon: this.application?.metaIconUrl,
+        });
     }
 }
 

@@ -6,7 +6,7 @@ The Remote Access Control (RAC) provider is a highly flexible feature for access
 
 For overview information, see the [RAC provider](./index.md) documentation. You can also view our video on YouTube for setting up RAC.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/9wahIBRV6Ts;start=22" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9wahIBRV6Ts?start=22" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 ## Overview workflow to create an RAC provider
 
@@ -25,7 +25,7 @@ The first step is to create the RAC application and provider pair.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with provider**.
-3. Follow these [instructions](../../applications/manage_apps.mdx#instructions) to create your RAC application and provider.
+3. Follow these [instructions](../../applications/manage_apps.mdx#create-an-application-and-provider-pair) to create your RAC application and provider.
 
 ### Create RAC property mappings
 

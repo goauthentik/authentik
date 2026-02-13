@@ -19,7 +19,7 @@ import { sourceBindingTypeNotices } from "#admin/sources/utils";
 import {
     OAuthSource,
     ProviderTypeEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -33,7 +33,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function ProviderToLabel(provider?: ProviderTypeEnum): string {
     switch (provider) {
@@ -65,10 +64,14 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Patreon";
         case ProviderTypeEnum.Reddit:
             return "Reddit";
+        case ProviderTypeEnum.Slack:
+            return "Slack";
         case ProviderTypeEnum.Twitter:
             return "Twitter";
         case ProviderTypeEnum.Twitch:
             return "Twitch";
+        case ProviderTypeEnum.Wechat:
+            return "WeChat";
         case ProviderTypeEnum.UnknownDefaultOpenApi:
             return msg("Unknown provider type");
     }
@@ -90,15 +93,7 @@ export class OAuthSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: OAuthSource;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFPage,
-        PFButton,
-        PFGrid,
-        PFContent,
-        PFCard,
-        PFDescriptionList,
-    ];
+    static styles: CSSResult[] = [PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
 
     constructor() {
         super();
@@ -277,12 +272,13 @@ export class OAuthSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesOauthOauthsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesOauthOauthsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

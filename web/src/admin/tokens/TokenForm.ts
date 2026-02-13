@@ -2,28 +2,46 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { AKLabel } from "#components/ak-label";
+
 import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
+
+const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
+    protected expirationMinimumDate = new Date();
+
     @state()
-    showExpiry = true;
+    protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
+
+    public override reset(): void {
+        super.reset();
+
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+    }
 
     async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
-        this.showExpiry = token.expiring || true;
+
+        this.expiresAt = token.expiring
+            ? new Date(token.expires || Date.now() + EXPIRATION_DURATION)
+            : null;
+
         return token;
     }
 
@@ -45,46 +63,64 @@ export class TokenForm extends ModelForm<Token, string> {
         });
     }
 
-    renderExpiry(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Expires on")} name="expires">
-            <input
-                type="datetime-local"
-                data-type="datetime-local"
-                value="${dateTimeLocal(this.instance?.expires ?? new Date())}"
-                class="pf-c-form-control"
-            />
-        </ak-form-element-horizontal>`;
-    }
+    //#region Event Listeners
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                label=${msg("Identifier")}
+    #expiringChangeListener = (event: Event) => {
+        const expiringElement = event.target as HTMLInputElement;
+
+        if (!expiringElement.checked) {
+            this.expiresAt = null;
+            return;
+        }
+
+        if (this.instance?.expiring && this.instance.expires) {
+            this.expiresAt = new Date(this.instance.expires);
+            return;
+        }
+
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+    };
+
+    //#endregion
+
+    //#region Renders
+
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
                 name="identifier"
+                value="${this.instance?.identifier ?? ""}"
+                label=${msg("Identifier")}
+                placeholder=${msg("Type a unique identifier...")}
+                spellcheck="false"
+                input-hint="code"
                 required
-            >
-                <input
-                    type="text"
-                    value="${this.instance?.identifier ?? ""}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Unique identifier the token is referenced by.")}
-                </p>
-            </ak-form-element-horizontal>
+                ?autofocus=${!this.instance}
+                help=${msg("Unique identifier the token is referenced by.")}
+            ></ak-text-input>
+
             <ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
                         };
-                        if (query !== undefined) {
+
+                        if (typeof query !== "undefined") {
                             args.search = query;
                         }
+
                         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
-                        return users.results;
+                        const instanceUser = this.instance?.userObj;
+
+                        if (!instanceUser) {
+                            return users.results;
+                        }
+
+                        if (users.results.find((user) => user.pk === instanceUser.pk)) {
+                            return users.results;
+                        }
+
+                        return [instanceUser, ...users.results];
                     }}
                     .renderElement=${(user: User): string => {
                         return user.username;
@@ -120,39 +156,46 @@ export class TokenForm extends ModelForm<Token, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Description")} name="description">
+
+            <ak-text-input
+                name="description"
+                value="${this.instance?.description ?? ""}"
+                label=${msg("Description")}
+                placeholder=${msg("Type a token description...")}
+            ></ak-text-input>
+
+            <ak-switch-input
+                name="expiring"
+                label=${msg("Expiring")}
+                help=${msg(
+                    "Whether the token will expire. Upon expiration, the token will be rotated.",
+                )}
+                @change=${this.#expiringChangeListener}
+                ?checked=${this.expiresAt}
+            ></ak-switch-input>
+
+            <ak-form-element-horizontal name="expires">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "expiration-date-input",
+                    },
+                    msg("Expires on"),
+                )}
+
                 <input
-                    type="text"
-                    value="${this.instance?.description ?? ""}"
+                    id="expiration-date-input"
+                    type="datetime-local"
+                    value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
+                    min=${dateTimeLocal(this.expirationMinimumDate)}
+                    ?disabled=${!this.expiresAt}
                     class="pf-c-form-control"
                 />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="expiring">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.expiring ?? true}
-                        @change=${(ev: Event) => {
-                            const el = ev.target as HTMLInputElement;
-                            this.showExpiry = el.checked;
-                        }}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Expiring")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "If this is selected, the token will expire. Upon expiration, the token will be rotated.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            ${this.showExpiry ? this.renderExpiry() : nothing}`;
+            </ak-form-element-horizontal>`;
     }
+
+    //#endregion
 }
 
 declare global {

@@ -44,7 +44,7 @@ def structlog_configure():
             structlog.processors.TimeStamper(fmt="iso", utc=False),
             structlog.processors.StackInfoRenderer(),
             structlog.processors.ExceptionRenderer(
-                structlog.processors.ExceptionDictTransformer(show_locals=CONFIG.get_bool("debug"))
+                structlog.tracebacks.ExceptionDictTransformer(show_locals=CONFIG.get_bool("debug"))
             ),
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
@@ -70,7 +70,7 @@ def get_logger_config():
                 "foreign_pre_chain": LOG_PRE_CHAIN
                 + [
                     structlog.processors.ExceptionRenderer(
-                        structlog.processors.ExceptionDictTransformer(
+                        structlog.tracebacks.ExceptionDictTransformer(
                             show_locals=CONFIG.get_bool("debug")
                         )
                     ),
@@ -104,7 +104,6 @@ def get_logger_config():
         "daphne": "WARNING",
         "kubernetes": "INFO",
         "asyncio": "WARNING",
-        "redis": "WARNING",
         "fsevents": "WARNING",
         "uvicorn": "WARNING",
         "gunicorn": "INFO",
@@ -112,6 +111,7 @@ def get_logger_config():
         "hpack": "WARNING",
         "httpx": "WARNING",
         "azure": "WARNING",
+        "httpcore": "WARNING",
     }
     for handler_name, level in handler_level_map.items():
         base_config["loggers"][handler_name] = {

@@ -42,7 +42,7 @@ class AuthenticatorEndpointGDTCStageViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
 
-class EndpointDeviceSerializer(ModelSerializer):
+class GoogleEndpointDeviceSerializer(ModelSerializer):
     """Serializer for Endpoint authenticator devices"""
 
     class Meta:
@@ -60,7 +60,7 @@ class EndpointDeviceViewSet(
     """Viewset for Endpoint authenticator devices"""
 
     queryset = EndpointDevice.objects.all()
-    serializer_class = EndpointDeviceSerializer
+    serializer_class = GoogleEndpointDeviceSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
@@ -72,7 +72,7 @@ class EndpointAdminDeviceViewSet(ModelViewSet):
 
     permission_classes = [IsAdminUser]
     queryset = EndpointDevice.objects.all()
-    serializer_class = EndpointDeviceSerializer
+    serializer_class = GoogleEndpointDeviceSerializer
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]

@@ -17,13 +17,13 @@ The following placeholders are used in this guide:
 - `github.com/orgs/foo` is your GitHub organization, where `foo` is the name of your GitHub organization.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-To support the integration of AWX Tower with authentik, you need to create an application/provider pair in authentik.
+To support the integration of GitHub Organization with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -37,7 +37,7 @@ To support the integration of AWX Tower with authentik, you need to create an ap
     - Set the **Audience** to `https://github.com/orgs/foo`.
     - Set the **Issuer** to `https://github.com/orgs/foo`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

@@ -4,9 +4,9 @@ from django.test import TestCase
 
 from authentik.core.auth import TokenBackend
 from authentik.core.models import Token, TokenIntents, User
+from authentik.core.tests.utils import RequestFactory
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.tests.utils import get_request
 
 
 class TestTokenAuth(TestCase):
@@ -17,8 +17,9 @@ class TestTokenAuth(TestCase):
         self.token = Token.objects.create(
             expiring=False, user=self.user, intent=TokenIntents.INTENT_APP_PASSWORD
         )
+        self.request_factory = RequestFactory()
         # To test with session we need to create a request and pass it through all middlewares
-        self.request = get_request("/")
+        self.request = self.request_factory.get("/")
         self.request.session[SESSION_KEY_PLAN] = FlowPlan("test")
 
     def test_token_auth(self):

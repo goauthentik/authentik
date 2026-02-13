@@ -3,7 +3,7 @@ import "#elements/forms/SearchSelect/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { ifPresent } from "#elements/utils/attributes";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
@@ -11,14 +11,16 @@ import {
     CertificateKeyPair,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    KeyTypeEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
 
-const renderValue = (item: CertificateKeyPair | undefined): string | undefined => item?.pk;
+const renderValue = (item: CertificateKeyPair | null) => item?.pk;
 
 /**
  * Cryptographic Certificate Search
@@ -34,19 +36,19 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
 @customElement("ak-crypto-certificate-search")
 export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
-    certificate?: string;
+    certificate?: string | null;
 
     @query("ak-search-select")
-    search!: SearchSelect<CertificateKeyPair>;
+    search!: ISearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
     public name?: string | null;
 
     @property({ type: String })
-    public label: string | null = null;
+    public label: string | null = msg("Certificate");
 
     @property({ type: String })
-    public placeholder: string | null = null;
+    public placeholder: string | null = msg("Select a certificate...");
 
     /**
      * Set to `true` to allow certificates without private key to show up. When set to `false`,
@@ -64,6 +66,15 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      */
     @property({ type: Boolean, attribute: "singleton" })
     public singleton = false;
+
+    /**
+     * When allowedKeyTypes is set, only certificates or keypairs with matching
+     * key algorithms will be shown.
+     * @attr
+     * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
+     */
+    @property({ type: Array, attribute: "allowed-key-types" })
+    public allowedKeyTypes?: KeyTypeEnum[];
 
     /**
      * @todo Document this.
@@ -97,10 +108,12 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
-            includeDetails: false,
         };
         if (query !== undefined) {
             args.search = query;
+        }
+        if (this.allowedKeyTypes?.length) {
+            args.keyType = this.allowedKeyTypes;
         }
         const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             args,

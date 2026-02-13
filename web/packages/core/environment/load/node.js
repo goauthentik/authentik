@@ -1,9 +1,11 @@
 /**
  * @file Load the contents of an environment file into `process.env`.
  */
-import { MonoRepoRoot } from "#paths/node";
+
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+
+import { MonoRepoRoot } from "#paths/node";
 
 const envFilePath = join(MonoRepoRoot, ".env");
 

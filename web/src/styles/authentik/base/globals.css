@@ -1,0 +1,60 @@
+/* #region Document */
+
+html,
+body {
+    height: auto;
+    min-height: 100dvh;
+}
+
+body {
+    background-color: var(
+        --ak-global--background-color,
+        var(--pf-global--BackgroundColor--200, Canvas)
+    );
+    color: var(--pf-global--Color--100, CanvasText);
+    &::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: local;
+        background-image: none;
+        z-index: -1;
+
+        @media (min-width: 35rem) and (min-height: 17.5rem) {
+            background-image: var(--ak-global--background-image, none);
+        }
+    }
+}
+
+/* #endregion */
+
+html > form > input {
+    position: absolute;
+    top: -2000px;
+    left: -2000px;
+}
+
+/* #region Light Theme */
+
+html[data-theme="light"] body {
+    color-scheme: light;
+}
+
+/* #endregion */
+
+/* #region Dark Theme */
+
+html[data-theme="dark"] body {
+    color-scheme: dark;
+
+    &:has(ak-flow-executor) {
+        background-color: var(--pf-global--BackgroundColor--150);
+    }
+}
+
+/* #endregion */

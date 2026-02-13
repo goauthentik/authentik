@@ -2,7 +2,7 @@
  * @file Docusaurus config.
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";

@@ -23,7 +23,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of authentik.
 - `nodred.company` is the FQDN of Node-RED.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -46,11 +46,11 @@ To support the integration of Node-RED with authentik, you need to create an app
 
 3. Click **Submit** to save the new application and provider.
 
-## Note-RED configuration
+## Node-RED configuration
 
 ### Step 1
 
-:::note
+:::info
 Group based permissions are not implemented in the below example
 :::
 

@@ -14,7 +14,6 @@ We appreciate all contributions to our documentation — whether it's fixing a t
 - [Component-Based Formatting](#component-based-formatting)
 - [Error Message Formatting and Troubleshooting](#error-message-formatting-and-troubleshooting)
 - [Accessibility Best Practices](#accessibility-best-practices)
-- [Notes and Warnings](#notes-and-warnings)
 - [Inclusive Language](#inclusive-language)
 - [Images and Media](#images-and-media)
 - [Document Structure and Metadata](#document-structure-and-metadata)
@@ -188,6 +187,36 @@ Add a period at the end of a bulleted item if it is a complete sentence. Try not
 
 If there is a [colon](#following-a-colon) used in a bulleted list item, follow the capitalization rules.
 
+### Notes and warnings
+
+We use Info, Warning, and Danger boxes, to provide supplemental information. Info boxes can optionally have a title, but do not use a title with Warning or Danger boxes.
+
+Use the following syntax for these components:
+
+**Info**:
+
+```md
+::: info add-title-here
+This is a tip or general note.
+:::
+```
+
+**Warnings**:
+
+```md
+:::warning
+This level is for more serious situations: an action cannot be undone, a process might be canceled, etc.
+:::
+```
+
+**Critical warnings** (for irreversible actions):
+
+```md
+:::danger
+This level is for extremely serious situations, such as an action permanently removing data.
+:::
+```
+
 ### URLs
 
     - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
@@ -348,36 +377,6 @@ When documenting errors, follow this structure:
 
 ---
 
-## Notes and warnings
-
-Use the following components to highlight important information:
-
-**Info notes**:
-
-```md
-:::info
-This is a tip or general note.
-:::
-```
-
-**Warnings**:
-
-```md
-:::warning
-This level is for more serious situations: an action cannot be undone, a process might be canceled, etc..
-:::
-```
-
-**Critical warnings** (for irreversible actions):
-
-```md
-:::danger
-This level is for extremely serious situations, such as an action permanently removing data.
-:::
-```
-
----
-
 ## Inclusive language
 
 - Use **gender-neutral pronouns** like "they/them" instead of "he/she" (e.g., "The user should check their settings").
@@ -395,6 +394,8 @@ This level is for extremely serious situations, such as an action permanently re
 - **Diagrams**:
     - Use [Mermaid](https://mermaid.js.org/) for creating diagrams directly in markdown. Mermaid is our preferred tool for documentation diagrams as it allows for version control and easy updates.
     - For more complex diagrams, you can use tools like [Draw.io](https://draw.io). Ensure high contrast and text descriptions.
+- **authentik icons**:
+    - For authentik icons in integration guides, reference assets from the user's own self-hosted instance to avoid external calls, for example: `https://authentik.company/static/dist/assets/icons/icon.svg`
 
 ---
 

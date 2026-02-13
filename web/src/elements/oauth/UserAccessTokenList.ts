@@ -47,24 +47,18 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     ];
 
     renderExpanded(item: TokenModel): TemplateResult {
-        return html` <td colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-l-flex">
-                        <div class="pf-l-flex__item">
-                            <h3>${msg("ID Token")}</h3>
-                            <pre>${item.idToken}</pre>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td></td>
-            <td></td>`;
+        return html`<div class="pf-l-flex">
+            <div class="pf-l-flex__item">
+                <h3>${msg("ID Token")}</h3>
+                <pre>${item.idToken}</pre>
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Access Tokens(s)")}
+            object-label=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensUsedByList({

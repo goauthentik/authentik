@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
-import { ProvidersApi, SCIMProvider } from "@goauthentik/api";
+import { ProvidersApi, SCIMAuthenticationModeEnum, SCIMProvider } from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
@@ -17,7 +17,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     }
 
     async send(data: SCIMProvider): Promise<SCIMProvider> {
-        if (this.instance) {
+        if (this.instance?.pk) {
             return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
                 id: this.instance.pk,
                 sCIMProviderRequest: data,
@@ -28,8 +28,17 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
         });
     }
 
+    get defaultInstance() {
+        return {
+            authMode: SCIMAuthenticationModeEnum.Token,
+        } as SCIMProvider;
+    }
+
     renderForm() {
-        return renderForm(this.instance ?? {}, []);
+        return renderForm({
+            update: this.requestUpdate.bind(this),
+            provider: this.instance,
+        });
     }
 }
 

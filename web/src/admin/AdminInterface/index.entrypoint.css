@@ -1,0 +1,36 @@
+.pf-c-page {
+    height: 100dvh;
+}
+
+.pf-c-page__main {
+    display: flex;
+    flex-flow: column;
+    scrollbar-gutter: stable;
+
+    & > :first-child {
+        display: flex;
+        flex-grow: 1;
+        flex-flow: column;
+    }
+}
+
+ak-page-navbar {
+    grid-area: header;
+}
+
+ak-sidebar::part(about-dialog-trigger) {
+    --pf-c-button--m-plain--hover--Color: var(--pf-c-nav__link--Color);
+}
+
+ak-sidebar-item:active ak-sidebar-item::part(list-item),
+ak-sidebar-item:hover ak-sidebar-item::part(list-item) {
+    --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--200);
+}
+
+ak-sidebar-item:active ak-sidebar-item::part(list-item) {
+    --pf-c-nav__link--active--after--BorderColor: var(--ak-accent);
+}
+
+.pf-c-drawer__panel {
+    background-color: transparent !important;
+}

@@ -1,3 +1,5 @@
+import "#elements/Spinner";
+
 import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
 import { PFSize } from "#common/enums";
 
@@ -11,12 +13,10 @@ import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // `pointer-events: none` makes the button inaccessible during the processing phase.
 
 const buttonStyles = [
-    PFBase,
     PFButton,
     PFSpinner,
     css`
@@ -26,15 +26,25 @@ const buttonStyles = [
         #spinner-button.working {
             pointer-events: none;
         }
+
+        .pf-c-button {
+            &.pf-m-primary.pf-m-success {
+                color: var(--pf-c-button--m-primary--Color) !important;
+            }
+
+            &.pf-m-secondary.pf-m-success {
+                color: var(--pf-c-button--m-secondary--Color) !important;
+            }
+        }
     `,
 ];
 
-const StatusMap = new Map<TaskStatus, string>([
-    [TaskStatus.INITIAL, ""],
-    [TaskStatus.PENDING, PROGRESS_CLASS],
-    [TaskStatus.COMPLETE, SUCCESS_CLASS],
-    [TaskStatus.ERROR, ERROR_CLASS],
-]);
+const StatusMap = {
+    [TaskStatus.INITIAL]: "",
+    [TaskStatus.PENDING]: PROGRESS_CLASS,
+    [TaskStatus.COMPLETE]: SUCCESS_CLASS,
+    [TaskStatus.ERROR]: ERROR_CLASS,
+} as const satisfies Record<TaskStatus, string>;
 
 const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
 
@@ -49,14 +59,12 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  *
  */
 
-export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
-    eventPrefix = "ak-button";
+export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(AKElement) {
+    public eventPrefix = "ak-button";
 
-    static styles = [...buttonStyles];
+    public static styles = [...buttonStyles];
 
-    callAction!: () => Promise<unknown>;
-
-    actionTask: Task;
+    public callAction?(): Promise<R>;
 
     @property({ type: Boolean })
     public disabled = false;
@@ -64,25 +72,24 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     @property({ type: String })
     public label: string | null = null;
 
-    constructor() {
-        super();
-        this.onSuccess = this.onSuccess.bind(this);
-        this.onError = this.onError.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.actionTask = this.buildTask();
-    }
-
-    buildTask() {
-        return new Task(this, {
-            task: () => this.callAction(),
+    protected buildTask() {
+        return new Task<[], R>(this, {
+            task: () => {
+                if (typeof this.callAction !== "function") {
+                    throw new TypeError("No action defined for SpinnerButton");
+                }
+                return this.callAction();
+            },
             args: () => [],
             autoRun: false,
-            onComplete: (r: unknown) => this.onSuccess(r),
-            onError: (r: unknown) => this.onError(r),
+            onComplete: (r: R) => this.onSuccess(r),
+            onError: (error) => this.onError(error),
         });
     }
 
-    onComplete() {
+    protected actionTask: Task = this.buildTask();
+
+    protected onComplete() {
         setTimeout(() => {
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
             // set-up for the next task...
@@ -91,44 +98,45 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         }, SPINNER_TIMEOUT);
     }
 
-    onSuccess(r: unknown) {
+    protected onSuccess(result: R): void {
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
-            result: r,
+            result,
         });
         this.onComplete();
     }
 
-    onError(error: unknown) {
+    protected onError(error: unknown) {
         this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
             error,
         });
         this.onComplete();
     }
 
-    onClick() {
+    protected onClick() {
         // Don't accept clicks when a task is in progress..
         if (this.actionTask.status === TaskStatus.PENDING) {
             return;
         }
+
         this.dispatchCustomEvent(`${this.eventPrefix}-click`);
         this.actionTask.run();
     }
 
-    private spinner = html`<span class="pf-c-button__progress">
+    #spinner = html`<span class="pf-c-button__progress">
         <ak-spinner size=${PFSize.Medium}></ak-spinner>
     </span>`;
 
-    get buttonClasses() {
+    public get buttonClasses() {
         return [
             ...this.classList,
-            StatusMap.get(this.actionTask.status),
+            StatusMap[this.actionTask.status],
             this.actionTask.status === TaskStatus.INITIAL ? "" : "working",
         ]
             .join(" ")
             .trim();
     }
 
-    render() {
+    protected override render() {
         return html`<button
             id="spinner-button"
             part="spinner-button"
@@ -136,9 +144,12 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             @click=${this.onClick}
             type="button"
             aria-label=${ifPresent(this.label)}
+            aria-busy=${this.actionTask.status === TaskStatus.PENDING ? "true" : "false"}
             ?disabled=${this.disabled}
         >
-            ${this.actionTask.render({ pending: () => this.spinner })}
+            ${this.actionTask.render({
+                pending: () => this.#spinner,
+            })}
             <slot></slot>
         </button>`;
     }

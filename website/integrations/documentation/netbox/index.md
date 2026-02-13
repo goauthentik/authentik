@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `netbox.company` is the FQDN of the NetBox installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -141,7 +141,7 @@ def remove_groups(response, user, backend, *args, **kwargs):
 
 
 def set_roles(response, user, backend, *args, **kwargs):
-    # Remove Roles temporary
+    # Remove Roles temporarily
     user.is_superuser = False
     user.is_staff = False
     try:

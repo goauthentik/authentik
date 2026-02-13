@@ -1,6 +1,6 @@
 """authentik crypto app config"""
 
-from datetime import UTC, datetime
+from dramatiq.broker import get_broker
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
@@ -45,10 +45,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         cert: CertificateKeyPair | None = CertificateKeyPair.objects.filter(
             managed=MANAGED_KEY
         ).first()
-        now = datetime.now(tz=UTC)
-        if not cert or (
-            now < cert.certificate.not_valid_after_utc or now > cert.certificate.not_valid_after_utc
-        ):
+        if not cert:
             self._create_update_cert()
 
     @ManagedAppConfig.reconcile_tenant
@@ -69,6 +66,12 @@ class AuthentikCryptoConfig(ManagedAppConfig):
                 "key_data": builder.private_key,
             },
         )
+
+    @ManagedAppConfig.reconcile_global
+    def tasks_middlewares(self):
+        from authentik.crypto.tasks import CertificateWatcherMiddleware
+
+        get_broker().add_middleware(CertificateWatcherMiddleware())
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:

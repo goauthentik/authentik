@@ -7,6 +7,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
@@ -20,7 +21,7 @@ import {
     BlueprintInstanceStatusEnum,
     ManagedApi,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -42,6 +43,16 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
             return msg("Error");
     }
     return msg("Unknown");
+}
+
+const BlueprintDescriptionProperty = "blueprints.goauthentik.io/description";
+
+export function formatBlueprintDescription(item: BlueprintInstance): string | null {
+    const { labels = {} } = (item.metadata || {}) as {
+        labels?: Record<string, string | undefined>;
+    };
+
+    return labels[BlueprintDescriptionProperty] || null;
 }
 
 @customElement("ak-blueprint-list")
@@ -77,7 +88,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Blueprint(s)")}
+            object-label=${msg("Blueprint(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: BlueprintInstance) => {
                 return [{ key: msg("Name"), value: item.name }];
@@ -101,57 +112,50 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     renderExpanded(item: BlueprintInstance): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikBlueprintsBlueprintinstance.split(".");
-        return html`<td colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Path")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <pre>${item.path}</pre>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Path")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <pre>${item.path}</pre>
+                        </div>
+                    </dd>
+                </div>
+            </dl>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>`;
     }
 
     row(item: BlueprintInstance): SlottedTemplateResult[] {
-        let description = undefined;
-        const descKey = "blueprints.goauthentik.io/description";
-        if (
-            item.metadata &&
-            item.metadata.labels &&
-            Object.hasOwn(item.metadata?.labels, descKey)
-        ) {
-            description = item.metadata?.labels[descKey];
-        }
+        const description = formatBlueprintDescription(item);
+
         return [
             html`<div>${item.name}</div>
-                ${description ? html`<small>${description}</small>` : nothing}`,
+                ${description
+                    ? html`<small><ak-mdx .content=${description}></ak-mdx></small>`
+                    : nothing}`,
             html`${BlueprintStatus(item)}`,
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
@@ -167,7 +171,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
                     label=${item.name}
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBlueprintsBlueprintinstance}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -192,7 +196,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                     <pf-tooltip position="top" content=${msg("Apply")}>
                         <i class="fas fa-play" aria-hidden="true"></i>
                     </pf-tooltip>
-                </ak-action-button>`,
+                </ak-action-button>
+            </div>`,
         ];
     }
 

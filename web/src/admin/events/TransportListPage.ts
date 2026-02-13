@@ -17,7 +17,7 @@ import {
     EventsApi,
     ModelEnum,
     NotificationTransport,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -55,7 +55,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Notification transport(s)")}
+            object-label=${msg("Notification transport(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationTransport) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsTransportsUsedByList({
@@ -78,7 +78,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Notification Transport")}</span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
@@ -91,7 +92,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationtransport}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEventsNotificationtransport}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -106,32 +107,29 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     <pf-tooltip position="top" content=${msg("Test")}>
                         <i class="fas fa-vial" aria-hidden="true"></i>
                     </pf-tooltip>
-                </ak-action-button>`,
+                </ak-action-button>
+            </div>`,
         ];
     }
 
     renderExpanded(item: NotificationTransport): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
-        return html`<td colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${item.pk}"
+                        ></ak-task-list>
                     </div>
-                </dl>
+                </dd>
             </div>
-        </td>`;
+        </dl>`;
     }
 
     renderObjectCreate(): TemplateResult {

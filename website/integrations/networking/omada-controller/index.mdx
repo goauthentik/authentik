@@ -19,7 +19,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -103,7 +103,7 @@ Omada can't handle a user being in multiple groups/roles. Therefore, ensure that
             - For Software and Hardware Controllers: `https://<controller_ip_address>:8043`
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
-            - Set an available signing certificate.
+            - Set an available **Signing certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: UPN`
             - Under **Property mappings**:
                 - Select only the following **User Property Mappings**:
@@ -146,7 +146,7 @@ You can generate the relay state value using one of the following methods:
 <Tabs
   defaultValue="linuxmac"
   values={[
-    {label: 'Linux and MacOS', value: 'linuxmac'},
+    {label: 'Linux and macOS', value: 'linuxmac'},
     {label: 'Windows', value: 'windows'},
   ]}>
   <TabItem value="linuxmac">

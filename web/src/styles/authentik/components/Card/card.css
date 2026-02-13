@@ -1,0 +1,42 @@
+.pf-c-card > fieldset {
+    margin-inline: var(--pf-global--spacer--md);
+    margin-block-end: var(--pf-global--spacer--md);
+
+    @media not (prefers-contrast: more) {
+        --ak-legend-margin-inline-start: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
+        );
+        --ak-legend-margin-inline-end: calc(
+            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+        );
+
+        border-width: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+
+        legend {
+            padding-block-start: var(--pf-c-card--first-child--PaddingTop) !important;
+            padding-block-end: var(--pf-c-card__title--not--last-child--PaddingBottom) !important;
+            line-height: var(--pf-global--LineHeight--md);
+        }
+    }
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-card,
+:host([theme="dark"]) .pf-c-card.pf-m-non-selectable-raised,
+:host([theme="dark"]) .pf-c-card {
+    /** TODO: PF5 uses shadows differently in dark mode, adjust when they are available. */
+    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
+    --pf-c-card--m-hoverable-raised--hover--BoxShadow: var(--pf-global--BoxShadow--lg);
+    --pf-c-card--m-selectable-raised--hover--BoxShadow: var(--pf-global--BoxShadow--lg);
+    --pf-c-card--m-selectable-raised--focus--BoxShadow: var(--pf-global--BoxShadow--lg);
+    --pf-c-card--m-selectable-raised--active--BoxShadow: var(--pf-global--BoxShadow--lg);
+
+    --pf-c-card--m-non-selectable-raised--BackgroundColor: var(--pf-global--BackgroundColor--150);
+
+    --pf-c-card--m-non-selectable-raised--before--BackgroundColor: var(
+        --pf-global--info-color--100
+    );
+}

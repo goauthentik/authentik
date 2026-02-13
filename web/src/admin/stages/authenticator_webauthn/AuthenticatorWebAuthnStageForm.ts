@@ -31,7 +31,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
     async loadInstance(pk: string): Promise<AuthenticatorWebAuthnStage> {
-        return await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnRetrieve({
             stageUuid: pk,
         });
     }
@@ -51,7 +51,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",

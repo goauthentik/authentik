@@ -66,7 +66,7 @@ class TestUserinfo(OAuthTestCase):
                 "given_name": self.user.name,
                 "preferred_username": self.user.name,
                 "nickname": self.user.name,
-                "groups": [group.name for group in self.user.ak_groups.all()],
+                "groups": [group.name for group in self.user.groups.all()],
                 "sub": "bar",
             },
         )
@@ -88,7 +88,7 @@ class TestUserinfo(OAuthTestCase):
                 "given_name": self.user.name,
                 "preferred_username": self.user.name,
                 "nickname": self.user.name,
-                "groups": [group.name for group in self.user.ak_groups.all()],
+                "groups": [group.name for group in self.user.groups.all()],
                 "sub": "bar",
             },
         )

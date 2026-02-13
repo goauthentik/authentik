@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
@@ -101,14 +102,13 @@ class StreamResponseSerializer(PassiveSerializer):
 
 
 class StreamView(SSFView):
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        stream = StreamSerializer(data=request.data, context={"request": request})
-        stream.is_valid(raise_exception=True)
+    @validate(StreamSerializer)
+    def post(self, request: Request, *args, body: StreamSerializer, **kwargs) -> Response:
         if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
             raise PermissionDenied(
                 "User does not have permission to create stream for this provider."
             )
-        instance: Stream = stream.save(provider=self.provider)
+        instance: Stream = body.save(provider=self.provider)
         send_ssf_events(
             EventTypes.SET_VERIFICATION,
             {

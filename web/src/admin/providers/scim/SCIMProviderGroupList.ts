@@ -50,7 +50,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("SCIM Group(s)")}
+            object-label=${msg("SCIM Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SCIMProviderGroup) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersScimGroupsDestroy({
@@ -90,11 +90,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         ];
     }
     renderExpanded(item: SCIMProviderGroup): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

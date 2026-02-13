@@ -13,14 +13,13 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-source-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {
     @property({ type: Boolean })
     isModalShown = false;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     firstUpdated(): void {
         const appleAuth = document.createElement("script");
@@ -28,8 +27,13 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
         appleAuth.type = "text/javascript";
         appleAuth.onload = () => {
+            if (!this.challenge) {
+                console.warn("No challenge present for Apple Login");
+                return;
+            }
+
             AppleID.auth.init({
-                clientId: this.challenge?.clientId,
+                clientId: this.challenge.clientId,
                 scope: this.challenge.scope,
                 redirectURI: this.challenge.redirectUri,
                 state: this.challenge.state,

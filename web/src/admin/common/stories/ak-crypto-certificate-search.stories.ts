@@ -28,9 +28,9 @@ const metadata: Meta<AkCryptoCertificateSearch> = {
         ],
     },
     argTypes: {
-        // Typescript is unaware that arguments for components are treated as properties, and
-        // properties are typically renamed to lower case, even if the variable is not.
-        // @ts-expect-error
+        // @ts-expect-error Typescript is unaware that arguments for components
+        // are treated as properties, and properties are typically renamed to lower case,
+        // even if the variable is not.
         nokey: {
             control: "boolean",
             description:

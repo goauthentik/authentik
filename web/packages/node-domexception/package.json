@@ -1,0 +1,9 @@
+{
+    "name": "node-domexception",
+    "version": "2025.11.0",
+    "description": "Vendored DOMException implementation for Node.js",
+    "license": "MIT",
+    "private": true,
+    "main": "index.cjs",
+    "type": "commonjs"
+}

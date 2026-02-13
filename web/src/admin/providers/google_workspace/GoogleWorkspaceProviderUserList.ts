@@ -53,7 +53,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Google Workspace User(s)")}
+            object-label=${msg("Google Workspace User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderUser) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersDestroy({
@@ -95,11 +95,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     }
 
     renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

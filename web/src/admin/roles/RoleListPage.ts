@@ -6,16 +6,18 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, HTMLTemplateResult, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { html, HTMLTemplateResult, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
@@ -31,8 +33,14 @@ export class RoleListPage extends TablePage<Role> {
     @property()
     order = "name";
 
+    @state()
+    hideManaged = getURLParam<boolean>("hideManaged", true);
+
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+            ...(await this.defaultEndpointConfig()),
+            managedIsnull: this.hideManaged ? true : undefined,
+        });
     }
 
     protected columns: TableColumn[] = [
@@ -44,7 +52,7 @@ export class RoleListPage extends TablePage<Role> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Role(s)")}
+            object-label=${msg("Role(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Role) => {
                 return new RbacApi(DEFAULT_CONFIG).rbacRolesUsedByList({
@@ -64,30 +72,26 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     render(): HTMLTemplateResult {
-        return html`<ak-page-header
-                icon=${this.pageIcon}
-                header=${this.pageTitle}
-                description=${ifDefined(this.pageDescription)}
-            >
-            </ak-page-header>
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <div class="pf-c-card">${this.renderTable()}</div>
-            </section>`;
+        return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+            <div class="pf-c-card">${this.renderTable()}</div>
+        </section>`;
     }
 
     row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Role")}</span>
-                <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Role")}</span>
+                    <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 
@@ -100,6 +104,45 @@ export class RoleListPage extends TablePage<Role> {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        return html`<div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.hideManaged}
+                            @change=${() => {
+                                this.hideManaged = !this.hideManaged;
+                                this.page = 1;
+                                this.fetch();
+                                updateURLParams({
+                                    hideManaged: this.hideManaged,
+                                });
+                            }}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Hide managed roles")}</span>
+                    </label>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }
 

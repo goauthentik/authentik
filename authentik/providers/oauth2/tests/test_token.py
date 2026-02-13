@@ -8,15 +8,15 @@ from django.urls import reverse
 from django.utils import timezone
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_REFRESH_TOKEN,
     TOKEN_TYPE,
 )
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -376,3 +376,117 @@ class TestToken(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertTrue(Event.objects.filter(action=EventAction.SUSPICIOUS_REQUEST).exists())
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_refresh_token_view_threshold(self):
+        """test request param"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=self.keypair,
+            refresh_token_threshold="hours=1",  # nosec
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                    "goauthentik.io/providers/oauth2/scope-offline_access",
+                ]
+            )
+        )
+        # Needs to be assigned to an application for iss to be set
+        self.app.provider = provider
+        self.app.save()
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        token: RefreshToken = RefreshToken.objects.create(
+            provider=provider,
+            user=user,
+            token=generate_id(),
+            _id_token=dumps({}),
+            auth_time=timezone.now(),
+            _scope="offline_access",
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "grant_type": GRANT_TYPE_REFRESH_TOKEN,
+                "refresh_token": token.token,
+                "redirect_uri": "http://local.invalid",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+            HTTP_ORIGIN="http://local.invalid",
+        )
+        self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
+        self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
+        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "access_token": access.token,
+                "token_type": TOKEN_TYPE,
+                "expires_in": 3600,
+                "id_token": provider.encode(
+                    access.id_token.to_dict(),
+                ),
+                "scope": "offline_access",
+            },
+        )
+        self.validate_jwt(access, provider)
+
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_scope_claim_override_via_property_mapping(self):
+        """Test that property mappings can override the scope claim in access tokens.
+
+        See: https://github.com/goauthentik/authentik/issues/19224
+        """
+        # Create a custom scope mapping that returns a custom scope claim
+        custom_scope_mapping = ScopeMapping.objects.create(
+            name="custom-scope-override",
+            scope_name="custom",
+            expression='return {"scope": "custom-scope-value additional-scope"}',
+        )
+
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=self.keypair,
+            include_claims_in_id_token=True,
+        )
+        provider.property_mappings.add(custom_scope_mapping)
+
+        # Needs to be assigned to an application for iss to be set
+        self.app.provider = provider
+        self.app.save()
+
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        code = AuthorizationCode.objects.create(
+            code="foobar",
+            provider=provider,
+            user=user,
+            auth_time=timezone.now(),
+            _scope="openid custom",  # Request the custom scope
+        )
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://local.invalid",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        jwt_data = self.validate_jwt(access, provider)
+
+        # The scope should be the custom value from the property mapping,
+        # not the default "openid custom"
+        self.assertEqual(jwt_data["scope"], "custom-scope-value additional-scope")

@@ -15,15 +15,15 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `roudcube.company` is the FQDN of the Roundcube installation.
+- `roundcube.company` is the FQDN of the Roundcube installation.
 
-:::note
+:::info
 Roundcube is often used alongside Postfix and Dovecot. Postfix sends/receives email (SMTP), Dovecot stores/retrieves mail (IMAP/POP3), and Roundcube acts as a webmail client.
 
 Whichever mail server is used in conjunction with Roundcube must support XOAUTH2 for both SMTPD and IMAP/POP. A Postfix SMTP server can use Dovecot for authentication, which allows XOAUTH2 support in Postfix without requiring separate configuration.
 :::
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -118,7 +118,7 @@ auth_verbose = yes
 
 :::
 
-:::note
+:::info
 With this setup, Dovecot can also be used with other email clients that support XOAUTH2 authentication. However, most commonly available clients, such as FairEmail for Android and Thunderbird, only provide built-in support for providers like Gmail and Outlook, with no option to configure custom mail servers.
 :::
 

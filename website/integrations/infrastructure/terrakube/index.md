@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Terrakube
 
-> Terrakube is an open-source collaboration platform designed for managing remote Infrastructure-as-Code (IaC) operations with Terraform. It serves as a alternative to proprietary tools like Terraform Enterprise.
+> Terrakube is an open-source collaboration platform designed for managing remote Infrastructure-as-Code (IaC) operations with Terraform. It serves as an alternative to proprietary tools like Terraform Enterprise.
 >
 > -- https://terrakube.io/
 
@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `terrakube-dex.company` is the FQDN of the [Dex](https://dexidp.io/) container of the Terrakube installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

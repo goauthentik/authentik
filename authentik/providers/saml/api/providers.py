@@ -23,18 +23,20 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.validation import validate
+from authentik.common.saml.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.models import KeyType
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 from authentik.rbac.decorators import permission_required
-from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
 
@@ -159,7 +161,8 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "-"
 
     def validate(self, attrs: dict):
-        if attrs.get("signing_kp"):
+        signing_kp = attrs.get("signing_kp")
+        if signing_kp:
             if not attrs.get("sign_assertion") and not attrs.get("sign_response"):
                 raise ValidationError(
                     _(
@@ -167,12 +170,33 @@ class SAMLProviderSerializer(ProviderSerializer):
                         "and 'Sign Response' must be selected."
                     )
                 )
+
+            key_type = signing_kp.key_type
+
+            if key_type and key_type not in [KeyType.RSA, KeyType.EC, KeyType.DSA]:
+                raise ValidationError(
+                    {
+                        "signing_kp": _(
+                            "Only RSA, EC, and DSA key types are supported for SAML signing."
+                        )
+                    }
+                )
+
+        # Validate logout_method - backchannel is only available with POST SLS binding
+        if (
+            attrs.get("logout_method") == SAMLLogoutMethods.BACKCHANNEL
+            and attrs.get("sls_binding") == SAML_BINDING_REDIRECT
+        ):
+            # Auto-correct to frontchannel_iframe
+            attrs["logout_method"] = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
+
         return super().validate(attrs)
 
     class Meta:
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",
+            "sls_url",
             "audience",
             "issuer",
             "assertion_valid_not_before",
@@ -188,7 +212,11 @@ class SAMLProviderSerializer(ProviderSerializer):
             "encryption_kp",
             "sign_assertion",
             "sign_response",
+            "sign_logout_request",
+            "sign_logout_response",
             "sp_binding",
+            "sls_binding",
+            "logout_method",
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",
@@ -229,6 +257,8 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = "__all__"
     ordering = ["name"]
     search_fields = ["name"]
+
+    metadata_generator_class = MetadataProcessor
 
     @extend_schema(
         responses={
@@ -274,7 +304,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError:
             raise Http404 from None
         try:
-            proc = MetadataProcessor(provider, request)
+            proc = self.metadata_generator_class(provider, request)
             proc.force_binding = request.query_params.get("force_binding", None)
             metadata = proc.build_entity_descriptor()
             if "download" in request.query_params:
@@ -299,17 +329,15 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
             "multipart/form-data": SAMLProviderImportSerializer,
         },
         responses={
-            204: OpenApiResponse(description="Successfully imported provider"),
+            201: SAMLProviderSerializer,
             400: OpenApiResponse(description="Bad request"),
         },
     )
     @action(detail=False, methods=["POST"], parser_classes=(MultiPartParser,))
-    def import_metadata(self, request: Request) -> Response:
+    @validate(SAMLProviderImportSerializer)
+    def import_metadata(self, request: Request, body: SAMLProviderImportSerializer) -> Response:
         """Create provider from SAML Metadata"""
-        data = SAMLProviderImportSerializer(data=request.data)
-        if not data.is_valid():
-            raise ValidationError(data.errors)
-        file = data.validated_data["file"]
+        file = body.validated_data["file"]
         # Validate syntax first
         try:
             fromstring(file.read())
@@ -318,17 +346,18 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         file.seek(0)
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
-            metadata.to_provider(
-                data.validated_data["name"],
-                data.validated_data["authorization_flow"],
-                data.validated_data["invalidation_flow"],
+            provider = metadata.to_provider(
+                body.validated_data["name"],
+                body.validated_data["authorization_flow"],
+                body.validated_data["invalidation_flow"],
             )
+            # Return the created provider for use in workflows like the application wizard
+            return Response(SAMLProviderSerializer(provider).data, status=201)
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
                 _("Failed to import Metadata: {messages}".format_map({"messages": str(exc)})),
             ) from None
-        return Response(status=204)
 
     @permission_required(
         "authentik_providers_saml.view_samlprovider",

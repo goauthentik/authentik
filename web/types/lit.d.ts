@@ -18,4 +18,8 @@ declare global {
          */
         litNonce?: string;
     }
+
+    interface HTMLElementTagNameMap {
+        "qr-code": import("webcomponent-qr-code").default;
+    }
 }

@@ -1,7 +1,9 @@
 import "formdata-polyfill";
 import "weakmap-polyfill";
+import "core-js/actual/object/assign";
 
 import {
+    type AccessDeniedChallenge,
     type AuthenticatorValidationChallenge,
     type AutosubmitChallenge,
     type ChallengeTypes,
@@ -16,6 +18,8 @@ import {
 
 import { fromByteArray } from "base64-js";
 import $ from "jquery";
+
+/* eslint-disable @typescript-eslint/no-use-before-define */
 
 interface GlobalAuthentik {
     brand: {
@@ -111,8 +115,16 @@ class SimpleFlowExecutor {
             case "ak-stage-authenticator-validate":
                 new AuthenticatorValidateStage(this, this.challenge).render();
                 return;
+            case "ak-stage-access-denied":
+                new AccessDeniedStage(this, this.challenge).render();
+                return;
             default:
-                this.container.innerText = "Unsupported stage: " + this.challenge?.component;
+                new AccessDeniedStage(this, {
+                    component: "ak-stage-access-denied",
+                    errorMessage: "Unsupported stage: " + this.challenge?.component,
+                    pendingUser: "",
+                    pendingUserAvatar: "",
+                }).render();
                 return;
         }
     }
@@ -311,53 +323,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         return false;
     }
 
-    /**
-     * Transforms items in the credentialCreateOptions generated on the server
-     * into byte arrays expected by the navigator.credentials.create() call
-     */
-    transformCredentialCreateOptions(
-        credentialCreateOptions: PublicKeyCredentialCreationOptions,
-        userId: string,
-    ): PublicKeyCredentialCreationOptions {
-        const user = credentialCreateOptions.user;
-        // Because json can't contain raw bytes, the server base64-encodes the User ID
-        // So to get the base64 encoded byte array, we first need to convert it to a regular
-        // string, then a byte array, re-encode it and wrap that in an array.
-        const stringId = decodeURIComponent(window.atob(userId));
-        user.id = this.u8arr(this.b64enc(this.u8arr(stringId)));
-        const challenge = this.u8arr(credentialCreateOptions.challenge.toString());
-
-        return Object.assign({}, credentialCreateOptions, {
-            challenge,
-            user,
-        });
-    }
-
-    /**
-     * Transforms the binary data in the credential into base64 strings
-     * for posting to the server.
-     * @param {PublicKeyCredential} newAssertion
-     */
-    transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
-        const attObj = new Uint8Array(
-            (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
-        );
-        const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
-        const rawId = new Uint8Array(newAssertion.rawId);
-
-        const registrationClientExtensions = newAssertion.getClientExtensionResults();
-        return {
-            id: newAssertion.id,
-            rawId: this.b64enc(rawId),
-            type: newAssertion.type,
-            registrationClientExtensions: JSON.stringify(registrationClientExtensions),
-            response: {
-                clientDataJSON: this.b64enc(clientDataJSON),
-                attestationObject: this.b64enc(attObj),
-            },
-        };
-    }
-
     transformCredentialRequestOptions(
         credentialRequestOptions: PublicKeyCredentialRequestOptions,
     ): PublicKeyCredentialRequestOptions {
@@ -534,6 +499,18 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 this.deviceChallenge = undefined;
                 this.render();
             });
+    }
+}
+
+class AccessDeniedStage extends Stage<AccessDeniedChallenge> {
+    render() {
+        this.html(`<form id="access-denied">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <p>
+                    ${this.challenge.errorMessage ?? "Access denied."}
+                </p>
+            </form>`);
     }
 }
 

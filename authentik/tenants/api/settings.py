@@ -69,6 +69,8 @@ class SettingsSerializer(ModelSerializer):
             "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
+            "pagination_default_page_size",
+            "pagination_max_page_size",
             "flags",
         ]
 

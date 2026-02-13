@@ -12,7 +12,7 @@ import { ConnectionToken, RacApi, RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
@@ -45,7 +45,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Connection Token(s)")}
+            object-label=${msg("Connection Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: ConnectionToken) => {
                 return [
@@ -77,6 +77,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return item.providerObj.name ?? null;
     }
 
+    @state()
     protected get columns(): TableColumn[] {
         if (this.provider) {
             return [

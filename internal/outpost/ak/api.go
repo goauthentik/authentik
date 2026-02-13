@@ -83,7 +83,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
 		func() (*api.PaginatedOutpostList, error) {
-			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+			outposts, _, err := apiClient.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 			return outposts, err
 		},
 		retry.Attempts(0),
@@ -93,13 +93,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		}),
 	)
 	if len(outposts.Results) < 1 {
-		log.Panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		log.Panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
 	}
 	outpost := outposts.Results[0]
 
 	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
 
-	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
+	akConfig, _, err := apiClient.RootAPI.RootConfigRetrieve(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch global configuration")
 		return nil
@@ -122,6 +122,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		eventHandlers:   []EventHandler{},
 		refreshHandlers: make([]func(), 0),
 	}
+	ac.logger.WithField("embedded", ac.IsEmbedded()).Info("Outpost mode")
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	err = ac.initEvent(akURL, outpost.Pk)
 	if err != nil {
@@ -133,6 +134,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 func (a *APIController) Log() *log.Entry {
 	return a.logger
+}
+
+func (a *APIController) IsEmbedded() bool {
+	if m := a.Outpost.Managed.Get(); m != nil {
+		return *m == "goauthentik.io/outposts/embedded"
+	}
+	return false
 }
 
 // Start Starts all handlers, non-blocking
@@ -180,7 +188,7 @@ func (a *APIController) Token() string {
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+	outposts, _, err := a.Client.OutpostsAPI.OutpostsInstancesList(context.Background()).Execute()
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err

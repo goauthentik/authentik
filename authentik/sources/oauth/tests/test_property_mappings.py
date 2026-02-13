@@ -5,8 +5,8 @@ from copy import deepcopy
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 
+from authentik.core.tests.utils import RequestFactory
 from authentik.lib.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.sources.oauth.models import OAuthSource, OAuthSourcePropertyMapping
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 
@@ -33,6 +33,7 @@ class TestPropertyMappings(TestCase):
             profile_url="",
             consumer_key=generate_id(),
         )
+        self.request_factory = RequestFactory()
 
     def test_user_base_properties(self):
         """Test user base properties"""
@@ -64,7 +65,7 @@ class TestPropertyMappings(TestCase):
                 expression="return {'attributes': {'department': info.get('department')}}",
             )
         )
-        request = get_request("/", user=AnonymousUser())
+        request = self.request_factory.get("/", user=AnonymousUser())
         flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": INFO}, {})
         self.assertEqual(
             flow_manager.user_properties,
@@ -88,7 +89,7 @@ class TestPropertyMappings(TestCase):
                 expression="return {'attributes': {'id': group_id}}",
             )
         )
-        request = get_request("/", user=AnonymousUser())
+        request = self.request_factory.get("/", user=AnonymousUser())
         flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
         self.assertEqual(
             flow_manager.groups_properties,

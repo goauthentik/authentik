@@ -113,7 +113,6 @@ entries:
       policy_engine_mode: any
       invalid_response_action: retry
   - identifiers:
-      pk: 1219d06e-2c06-4c5b-a162-78e3959c6cf0
       target: !KeyOf flow
       stage: !KeyOf stages-prompt-password
       order: 30

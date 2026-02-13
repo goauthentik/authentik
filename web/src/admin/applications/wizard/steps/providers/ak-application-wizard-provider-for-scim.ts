@@ -21,10 +21,11 @@ export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm
     render() {
         return html`<ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    (this.wizard.provider as SCIMProvider) ?? {},
-                    this.wizard.errors.provider,
-                )}
+                ${renderForm({
+                    update: this.requestUpdate.bind(this),
+                    provider: this.wizard.provider as SCIMProvider,
+                    errors: this.wizard.errors.provider,
+                })}
             </form>`;
     }
 }

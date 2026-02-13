@@ -60,19 +60,35 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 			return "", false
 		}
 	} else {
-		if !strings.HasSuffix(u.Host, *a.proxyConfig.CookieDomain) {
-			a.log.WithField("host", u.Host).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Host was not included in cookie domain")
+		if !strings.HasSuffix(u.Hostname(), *a.proxyConfig.CookieDomain) {
+			a.log.WithField("host", u.Hostname()).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Hostname was not included in cookie domain")
 			return "", false
 		}
 	}
 	return u.String(), true
 }
 
-func (a *Application) createState(r *http.Request, fwd string) (string, error) {
-	s, _ := a.sessions.Get(r, a.SessionName())
+func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		// Session file may not exist (e.g., after outpost restart or logout)
+		// Delete the stale session cookie and continue with the new empty session
+		a.log.WithError(err).Debug("failed to get session, clearing stale cookie")
+		s.Options.MaxAge = -1
+		if saveErr := s.Save(r, w); saveErr != nil {
+			a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
+		}
+		// Get a fresh session after clearing the stale cookie
+		s, _ = a.sessions.Get(r, a.SessionName())
+	}
 	if s.ID == "" {
 		// Ensure session has an ID
 		s.ID = base32RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+		// Save the session immediately so it persists
+		err := s.Save(r, w)
+		if err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
 	}
 	st := &OAuthState{
 		Issuer:    fmt.Sprintf("goauthentik.io/outpost/%s", a.proxyConfig.GetClientId()),
@@ -88,7 +104,7 @@ func (a *Application) createState(r *http.Request, fwd string) (string, error) {
 	return tokenString, nil
 }
 
-func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
+func (a *Application) stateFromRequest(rw http.ResponseWriter, r *http.Request) *OAuthState {
 	stateJwt := r.URL.Query().Get("state")
 	token, err := jwt.Parse(stateJwt, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
@@ -116,7 +132,18 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 		a.log.WithError(err).Warning("failed to mapdecode")
 		return nil
 	}
-	s, _ := a.sessions.Get(r, a.SessionName())
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		a.log.WithError(err).Warning("failed to get session")
+		// Delete the stale session cookie if it exists
+		if rw != nil {
+			s.Options.MaxAge = -1
+			if saveErr := s.Save(r, rw); saveErr != nil {
+				a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
+			}
+		}
+		return nil
+	}
 	if claims.SessionID != s.ID {
 		a.log.WithField("is", claims.SessionID).WithField("should", s.ID).Warning("mismatched session ID")
 		return nil

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `knocknoc.company` is the FQDN of the Knocknoc installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -63,7 +63,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     return 540
     ```
 
-:::note
+:::info
 This example will set session duration at 540 minutes. Change the value to match your desired session duration length in minutes.
 :::
 
@@ -79,7 +79,7 @@ This example will set session duration at 540 minutes. Change the value to match
     - **ACS URL**: `https://knocknoc.company/api/saml/acs`
     - **Issuer**: `https://authentik.company`
     - **Service Provider Binding**: `Post`
-    - **Audience**: `https://kocknoc.company/api/saml/metadata`
+    - **Audience**: `https://knocknoc.company/api/saml/metadata`
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -101,7 +101,7 @@ This example will set session duration at 540 minutes. Change the value to match
 
 3. Click on **Save**.
 
-:::note
+:::info
 Key file and Cert file are currently required fields in Knocknoc. You can generate a certificate and key on a Linux host with this command:
 `openssl req -new -x509 -days 3650 -nodes -subj /CN=Knocknoc/ -out <certificate_filename>.crt -keyout <certificate_key_filename>.key`
 :::

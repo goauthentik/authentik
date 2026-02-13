@@ -1,3 +1,4 @@
+import "#elements/forms/ConfirmationForm";
 import "#admin/applications/ApplicationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
@@ -80,7 +81,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     protected renderSidebarAfter(): TemplateResult {
         return html`<aside
             aria-label=${msg("Applications Documentation")}
-            class="pf-c-sidebar__panel pf-m-width-25"
+            class="pf-c-sidebar__panel"
         >
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
@@ -93,7 +94,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application(s)")}
+            object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
@@ -117,7 +118,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
                 name=${item.name}
-                icon=${ifPresent(item.metaIcon)}
+                icon=${ifPresent(item.metaIconUrl)}
+                .iconThemedUrls=${item.metaIconThemedUrls}
             ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
@@ -130,12 +132,17 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                   </a>`
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain" aria-label=${msg("Edit")}>
+                    <button
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                        aria-label=${msg(str`Edit "${item.name}"`)}
+                    >
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
@@ -146,13 +153,14 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                           href=${item.launchUrl}
                           target="_blank"
                           class="pf-c-button pf-m-plain"
-                          aria-label=${msg("Open")}
+                          aria-label=${msg(str`Open "${item.name}"`)}
                       >
                           <pf-tooltip position="top" content=${msg("Open")}>
                               <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
-                    : nothing}`,
+                    : nothing}
+            </div>`,
         ];
     }
 

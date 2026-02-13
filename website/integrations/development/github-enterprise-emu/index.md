@@ -25,7 +25,7 @@ The following placeholders are used in this guide:
 - `GitHub Users` is an authentik group used for holding GitHub users.
 - `GitHub Admins` is an authentik group used for indicating GitHub administrators.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -33,13 +33,14 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of GitHub Enterprise Cloud EMU with authentik, you need to create an application/provider pair in authentik.
 
-:::note
+:::info
 In order to use GitHub Enterprise Cloud EMU, SCIM must also be set up.
 :::
 
-:::note
-GitHub will create usenames for your EMU users based on the SAML `NameID` property which must also match SCIM's `_userName_` attribute.
-:::note
+:::info
+GitHub will create usernames for your EMU users based on the SAML `NameID` property which must also match
+SCIM's `_userName_` attribute.
+:::info
 
 ### Create an application and provider in authentik
 
@@ -53,7 +54,7 @@ GitHub will create usenames for your EMU users based on the SAML `NameID` proper
     - Set the **Audience** to `https://github.com/enterprises/foo`.
     - Set the **Issuer** to `https://github.com/enterprises/foo`.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
+    - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
     - Under **NameID Property Mapping**, set **NameID Property Mapping** to be based on the `Email` field.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -123,4 +124,4 @@ Create a new SCIM provider with the following parameters:
 
 Go back to your GitHub EMU Application created in the first step and add your new SCIM provider in the _Backchannel Providers_ field, then click the _Update_ button.
 
-You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioend by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.
+You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioned by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.

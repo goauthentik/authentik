@@ -10,7 +10,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { intentToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
-import { me } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -27,20 +26,30 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 export class UserTokenList extends Table<Token> {
     protected override searchEnabled = true;
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    @property()
-    order = "expires";
+    @property({ type: String })
+    public override order = "expires";
+
+    public override label = msg("User Tokens");
+    protected override emptyStateMessage = msg("No User Tokens enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+        let { currentUser } = this;
+
+        if (!currentUser) {
+            const session = await this.refreshSession();
+            currentUser = session ? session.user : null;
+        }
+
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ...(await this.defaultEndpointConfig()),
             managed: "",
             // The user might have access to other tokens that aren't for their user
             // but only show tokens for their user here
-            userUsername: (await me()).user.username,
+            userUsername: currentUser?.username,
         });
     }
 
@@ -59,20 +68,20 @@ export class UserTokenList extends Table<Token> {
     renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Token")}</span>
+                <span slot="submit">${msg("Create Token")}</span>
+                <span slot="header">${msg("New Token")}</span>
                 <ak-user-token-form intent=${IntentEnum.Api} slot="form"> </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create Token")}
+                    ${msg("New Token")}
                 </button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create App password")}</span>
+                <span slot="submit">${msg("Create App Password")}</span>
+                <span slot="header">${msg("New App Password")}</span>
                 <ak-user-token-form intent=${IntentEnum.AppPassword} slot="form">
                 </ak-user-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create App password")}
+                    ${msg("New App Password")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}
@@ -80,66 +89,59 @@ export class UserTokenList extends Table<Token> {
     }
 
     renderExpanded(item: Token): TemplateResult {
-        return html` <td colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("User")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.userObj?.username}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Expiring")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-status-label ?good=${item.expiring}></ak-status-label>
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Expiring")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${item.expiring
-                                        ? html`<pf-tooltip
-                                              position="top"
-                                              .content=${item.expires?.toLocaleString()}
-                                          >
-                                              ${formatElapsedTime(item.expires!)}
-                                          </pf-tooltip>`
-                                        : msg("-")}
-                                </div>
-                            </dd>
-                        </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Intent")}</span>
-                            </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    ${intentToLabel(item.intent ?? IntentEnum.Api)}
-                                </div>
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-            </td>
-            <td></td>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("User")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.userObj?.username}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Expiring")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-status-label ?good=${item.expiring}></ak-status-label>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Expiring")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${item.expiring
+                            ? html`<pf-tooltip
+                                  position="top"
+                                  .content=${item.expires?.toLocaleString()}
+                              >
+                                  ${formatElapsedTime(item.expires!)}
+                              </pf-tooltip>`
+                            : msg("-")}
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Intent")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${intentToLabel(item.intent ?? IntentEnum.Api)}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Token(s)")}
+            object-label=${msg("Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Token) => [{ key: msg("Identifier"), value: item.identifier }]}
             .delete=${(item: Token) =>

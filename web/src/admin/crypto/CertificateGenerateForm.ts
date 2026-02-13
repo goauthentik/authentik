@@ -1,3 +1,4 @@
+import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -27,7 +28,7 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("Common Name")}
                 name="commonName"
@@ -55,6 +56,14 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                         {
                             label: msg("ECDSA"),
                             value: AlgEnum.Ecdsa,
+                        },
+                        {
+                            label: msg("ED25519"),
+                            value: AlgEnum.Ed25519,
+                        },
+                        {
+                            label: msg("ED448"),
+                            value: AlgEnum.Ed448,
                         },
                     ]}
                 >

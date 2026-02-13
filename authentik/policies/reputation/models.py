@@ -8,12 +8,13 @@ from django.db.models import Sum
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from psqlextra.manager import PostgresManager
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
 from authentik.core.models import ExpiringModel
 from authentik.lib.config import CONFIG
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
@@ -68,8 +69,10 @@ class ReputationPolicy(Policy):
         verbose_name_plural = _("Reputation Policies")
 
 
-class Reputation(ExpiringModel, SerializerModel):
+class Reputation(InternallyManagedMixin, ExpiringModel, SerializerModel):
     """Reputation for user and or IP."""
+
+    objects = PostgresManager()
 
     reputation_uuid = models.UUIDField(primary_key=True, unique=True, default=uuid4)
 

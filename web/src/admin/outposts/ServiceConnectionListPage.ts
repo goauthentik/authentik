@@ -7,17 +7,18 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 import "#elements/tasks/ScheduleList";
 import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
 
@@ -83,16 +84,14 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.pk,
-                        }}
-                        type=${ifDefined(item.component)}
-                    >
-                    </ak-proxy-form>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.component, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
@@ -107,48 +106,44 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     renderExpanded(item: ServiceConnection): TemplateResult {
         const [appLabel, modelName] = item.metaModelName.split(".");
-        return html` <td colspan="5">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Schedules")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-schedule-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-schedule-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Schedules")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-schedule-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>`;
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Outpost integration(s)")}
+            object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllUsedByList({

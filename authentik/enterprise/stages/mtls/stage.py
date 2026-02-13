@@ -1,4 +1,5 @@
 from binascii import hexlify
+from enum import IntFlag, auto
 from urllib.parse import unquote_plus
 
 from cryptography.exceptions import InvalidSignature
@@ -7,6 +8,8 @@ from cryptography.x509 import (
     Certificate,
     NameOID,
     ObjectIdentifier,
+    RFC822Name,
+    SubjectAlternativeName,
     UnsupportedGeneralNameType,
     load_pem_x509_certificate,
 )
@@ -15,11 +18,11 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.brands.models import Brand
 from authentik.core.models import User
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import CertificateKeyPair, fingerprint_sha256, format_cert
+from authentik.endpoints.models import StageMode
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
     MutualTLSStage,
-    TLSMode,
     UserAttributes,
 )
 from authentik.flows.challenge import AccessDeniedChallenge
@@ -41,14 +44,28 @@ HEADER_OUTPOST_FORWARDED = "X-Authentik-Outpost-Certificate"
 PLAN_CONTEXT_CERTIFICATE = "certificate"
 
 
+class ParseOptions(IntFlag):
+
+    # URL unquote the string
+    UNQUOTE = auto()
+    # Re-add PEM Header & footer, and chunk it into 64 character lines
+    FORMAT = auto()
+
+
 class MTLSStageView(ChallengeStageView):
 
-    def __parse_single_cert(self, raw: str | None) -> list[Certificate]:
+    def __parse_single_cert(self, raw: str | None, *options: ParseOptions) -> list[Certificate]:
         """Helper to parse a single certificate"""
         if not raw:
             return []
+        for opt in options:
+            match opt:
+                case ParseOptions.FORMAT:
+                    raw = format_cert(raw)
+                case ParseOptions.UNQUOTE:
+                    raw = unquote_plus(raw)
         try:
-            cert = load_pem_x509_certificate(unquote_plus(raw).encode())
+            cert = load_pem_x509_certificate(raw.encode())
             return [cert]
         except ValueError as exc:
             self.logger.info("Failed to parse certificate", exc=exc)
@@ -57,6 +74,7 @@ class MTLSStageView(ChallengeStageView):
     def _parse_cert_xfcc(self) -> list[Certificate]:
         """Parse certificates in the format given to us in
         the format of the authentik router/envoy"""
+        # https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert
         xfcc_raw = self.request.headers.get(HEADER_PROXY_FORWARDED)
         if not xfcc_raw:
             return []
@@ -66,18 +84,26 @@ class MTLSStageView(ChallengeStageView):
             raw_cert = {k.split("=")[0]: k.split("=")[1] for k in el}
             if "Cert" not in raw_cert:
                 continue
-            certs.extend(self.__parse_single_cert(raw_cert["Cert"]))
+            certs.extend(self.__parse_single_cert(raw_cert["Cert"], ParseOptions.UNQUOTE))
         return certs
 
     def _parse_cert_nginx(self) -> list[Certificate]:
         """Parse certificates in the format nginx-ingress gives to us"""
+        # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication
+        # https://github.com/kubernetes/ingress-nginx/blob/78f593b24494a0674b362faf551079f06d71b5a9/rootfs/etc/nginx/template/nginx.tmpl#L1096
         sslcc_raw = self.request.headers.get(HEADER_NGINX_FORWARDED)
-        return self.__parse_single_cert(sslcc_raw)
+        return self.__parse_single_cert(sslcc_raw, ParseOptions.UNQUOTE)
 
     def _parse_cert_traefik(self) -> list[Certificate]:
         """Parse certificates in the format traefik gives to us"""
+        # https://doc.traefik.io/traefik/reference/routing-configuration/http/middlewares/passtlsclientcert/
         ftcc_raw = self.request.headers.get(HEADER_TRAEFIK_FORWARDED)
-        return self.__parse_single_cert(ftcc_raw)
+        if not ftcc_raw:
+            return []
+        certs = []
+        for cert in ftcc_raw.split(","):
+            certs.extend(self.__parse_single_cert(cert, ParseOptions.UNQUOTE, ParseOptions.FORMAT))
+        return certs
 
     def _parse_cert_outpost(self) -> list[Certificate]:
         """Parse certificates in the format outposts give to us. Also authenticates
@@ -90,7 +116,7 @@ class MTLSStageView(ChallengeStageView):
         ) and not user.has_perm("authentik_stages_mtls.pass_outpost_certificate"):
             return []
         outpost_raw = self.request.headers.get(HEADER_OUTPOST_FORWARDED)
-        return self.__parse_single_cert(outpost_raw)
+        return self.__parse_single_cert(outpost_raw, ParseOptions.UNQUOTE)
 
     def get_authorities(self) -> list[CertificateKeyPair] | None:
         # We can't access `certificate_authorities` on `self.executor.current_stage`, as that would
@@ -137,7 +163,7 @@ class MTLSStageView(ChallengeStageView):
             case CertAttributes.COMMON_NAME:
                 cert_attr = self.get_cert_attribute(cert, NameOID.COMMON_NAME)
             case CertAttributes.EMAIL:
-                cert_attr = self.get_cert_attribute(cert, NameOID.EMAIL_ADDRESS)
+                cert_attr = self.get_cert_email(cert)
         match stage.user_attribute:
             case UserAttributes.USERNAME:
                 user_attr = "username"
@@ -166,12 +192,13 @@ class MTLSStageView(ChallengeStageView):
         self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
             {"certificate": self._cert_to_dict(cert)}
         )
+        self.executor.plan.context[PLAN_CONTEXT_CERTIFICATE] = self._cert_to_dict(cert)
 
     def enroll_prepare_user(self, cert: Certificate):
         self.executor.plan.context.setdefault(PLAN_CONTEXT_PROMPT, {})
         self.executor.plan.context[PLAN_CONTEXT_PROMPT].update(
             {
-                "email": self.get_cert_attribute(cert, NameOID.EMAIL_ADDRESS),
+                "email": self.get_cert_email(cert),
                 "name": self.get_cert_attribute(cert, NameOID.COMMON_NAME),
             }
         )
@@ -182,6 +209,13 @@ class MTLSStageView(ChallengeStageView):
         if len(attr) < 1:
             return None
         return str(attr[0].value)
+
+    def get_cert_email(self, cert: Certificate) -> str | None:
+        ext = cert.extensions.get_extension_for_class(SubjectAlternativeName)
+        _cert_attr = ext.value.get_values_for_type(RFC822Name)
+        if len(_cert_attr) < 1:
+            return None
+        return str(_cert_attr[0])
 
     def dispatch(self, request, *args, **kwargs):
         stage: MutualTLSStage = self.executor.current_stage
@@ -194,12 +228,12 @@ class MTLSStageView(ChallengeStageView):
         authorities = self.get_authorities()
         if not authorities:
             self.logger.warning("No Certificate authority found")
-            if stage.mode == TLSMode.OPTIONAL:
+            if stage.mode == StageMode.OPTIONAL:
                 return self.executor.stage_ok()
-            if stage.mode == TLSMode.REQUIRED:
+            if stage.mode == StageMode.REQUIRED:
                 return super().dispatch(request, *args, **kwargs)
         cert = self.validate_cert(authorities, certs)
-        if not cert and stage.mode == TLSMode.REQUIRED:
+        if not cert and stage.mode == StageMode.REQUIRED:
             self.logger.warning("Client certificate required but no certificates given")
             return super().dispatch(
                 request,
@@ -207,9 +241,10 @@ class MTLSStageView(ChallengeStageView):
                 error_message=_("Certificate required but no certificate was given."),
                 **kwargs,
             )
-        if not cert and stage.mode == TLSMode.OPTIONAL:
+        if not cert and stage.mode == StageMode.OPTIONAL:
             self.logger.info("No certificate given, continuing")
             return self.executor.stage_ok()
+        self.logger.debug("Received certificate", cert=fingerprint_sha256(cert))
         existing_user = self.check_if_user(cert)
         if self.executor.flow.designation == FlowDesignation.ENROLLMENT:
             self.enroll_prepare_user(cert)

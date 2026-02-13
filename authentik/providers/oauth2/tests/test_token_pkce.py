@@ -1,15 +1,14 @@
 """Test token view"""
 
-from base64 import b64encode, urlsafe_b64encode
-from hashlib import sha256
+from base64 import b64encode
 
 from django.test import RequestFactory
 from django.urls import reverse
 
+from authentik.common.oauth.constants import GRANT_TYPE_AUTHORIZATION_CODE
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.constants import GRANT_TYPE_AUTHORIZATION_CODE
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
     OAuth2Provider,
@@ -17,6 +16,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.utils import pkce_s256_challenge
 
 
 class TestTokenPKCE(OAuthTestCase):
@@ -157,11 +157,6 @@ class TestTokenPKCE(OAuthTestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         verifier = generate_id()
-        challenge = (
-            urlsafe_b64encode(sha256(verifier.encode("ascii")).digest())
-            .decode("utf-8")
-            .replace("=", "")
-        )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
         response = self.client.get(
@@ -171,7 +166,7 @@ class TestTokenPKCE(OAuthTestCase):
                 "client_id": "test",
                 "state": state,
                 "redirect_uri": "foo://localhost",
-                "code_challenge": challenge,
+                "code_challenge": pkce_s256_challenge(verifier),
                 "code_challenge_method": "S256",
             },
         )

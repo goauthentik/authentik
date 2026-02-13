@@ -98,7 +98,9 @@ export function formatElapsedTime(d1: Date, d2: Date = new Date()): string {
  * Additionally, `toISOString` always returns the date without timezone,
  * which we would like to include for better usability
  */
-export function dateTimeLocal(input: Date): string {
+export function dateTimeLocal(input: Date | number = new Date()): string {
+    input = typeof input === "number" ? new Date(input) : input;
+
     const tzOffset = new Date().getTimezoneOffset() * 60_000; //offset in milliseconds
     const localISOTime = new Date(input.getTime() - tzOffset).toISOString().slice(0, -1);
 

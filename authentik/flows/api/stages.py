@@ -27,7 +27,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
     component = SerializerMethodField()
-    flow_set = FlowSetSerializer(many=True, required=False)
+    flow_set = FlowSetSerializer(many=True, required=False, read_only=True)
 
     def to_representation(self, instance: Stage):
         if isinstance(instance, Stage) and instance.is_in_memory:

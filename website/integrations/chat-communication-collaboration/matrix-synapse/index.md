@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Matrix Synapse
 
-> Matrix is an open source project that publishes the Matrix open standard for secure, decentralised, real-time communication, and its Apache licensed reference implementations.
+> Matrix is an open source project that publishes the Matrix open standard for secure, decentralized, real-time communication, and its Apache licensed reference implementations.
 >
 > -- https://matrix.org/
 
@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `matrix.company` is the FQDN of the Matrix installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 

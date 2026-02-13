@@ -1,8 +1,6 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
-import { FocusTarget } from "#elements/utils/focus";
-
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -23,7 +21,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-provider-oauth2-code")
 export class OAuth2DeviceCode extends BaseStage<
@@ -32,21 +29,7 @@ export class OAuth2DeviceCode extends BaseStage<
 > {
     static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFForm,
-        PFFormControl,
-        PFTitle,
-        PFButton,
-        PFInputGroup,
-    ];
-
-    #focusTarget = new FocusTarget<HTMLInputElement>();
-
-    protected override firstUpdated(): void {
-        this.#focusTarget.focus();
-    }
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, PFButton, PFInputGroup];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -55,7 +38,7 @@ export class OAuth2DeviceCode extends BaseStage<
                     ${AKLabel({ required: true, htmlFor: "device-code-input" }, msg("Device Code"))}
 
                     <input
-                        ${this.#focusTarget.toRef()}
+                        ${this.autofocusTarget.toRef()}
                         id="device-code-input"
                         type="text"
                         name="code"
@@ -68,11 +51,15 @@ export class OAuth2DeviceCode extends BaseStage<
                         value=""
                         required
                     />
-                    ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+                    ${AKFormErrors({ errors: this.challenge?.responseErrors?.code })}
                 </div>
 
                 <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
                 </div>

@@ -82,6 +82,11 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config := api.NewConfiguration()
 	config.Host = refConfig.Host
 	config.Scheme = refConfig.Scheme
+	config.Servers = api.ServerConfigurations{
+		{
+			URL: refConfig.Servers[0].URL,
+		},
+	}
 	config.HTTPClient = &http.Client{
 		Jar:       jar,
 		Transport: fe,
@@ -92,6 +97,10 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config.AddDefaultHeader(HeaderAuthentikOutpostToken, fe.token)
 	fe.api = api.NewAPIClient(config)
 	return fe
+}
+
+func (fe *FlowExecutor) AddHeader(name string, value string) {
+	fe.api.GetConfig().AddDefaultHeader(name, value)
 }
 
 func (fe *FlowExecutor) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -139,7 +148,7 @@ func (fe *FlowExecutor) SetSession(s *http.Cookie) {
 func (fe *FlowExecutor) WarmUp() error {
 	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
 	defer gcsp.Finish()
-	req := fe.api.FlowsApi.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
+	req := fe.api.FlowsAPI.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	_, _, err := req.Execute()
 	return err
 }
@@ -156,7 +165,7 @@ func (fe *FlowExecutor) Execute() (bool, error) {
 func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 	// Get challenge
 	gcsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.get_challenge")
-	req := fe.api.FlowsApi.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
+	req := fe.api.FlowsAPI.FlowsExecutorGet(gcsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	challenge, _, err := req.Execute()
 	if err != nil {
 		return nil, err
@@ -179,7 +188,7 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth int) (bool, error) {
 	// Resole challenge
 	scsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.solve_challenge")
-	responseReq := fe.api.FlowsApi.FlowsExecutorSolve(scsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
+	responseReq := fe.api.FlowsAPI.FlowsExecutorSolve(scsp.Context(), fe.flowSlug).Query(fe.Params.Encode())
 	i := challenge.GetActualInstance()
 	if i == nil {
 		return false, errors.New("response request instance was null")
@@ -197,7 +206,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 
 	switch ch.GetComponent() {
 	case string(StageAccessDenied):
-		return false, nil
+		return false, errors.New(challenge.AccessDeniedChallenge.GetErrorMessage())
 	case string(StageRedirect):
 		return true, nil
 	default:

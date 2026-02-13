@@ -114,6 +114,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "connectivity",
             "lookup_groups_from_user",
             "delete_not_found_objects",
+            "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 
@@ -183,9 +184,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             return Response(SyncStatusSerializer(status).data)
 
         last_task: Task = (
-            sync_schedule.tasks.exclude(
-                aggregated_status__in=(TaskStatus.CONSUMED, TaskStatus.QUEUED)
-            )
+            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
             .order_by("-mtime")
             .first()
         )

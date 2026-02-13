@@ -1,44 +1,10 @@
 """Pagination which includes total pages and current page"""
 
+from drf_spectacular.plumbing import build_object_type
 from rest_framework import pagination
 from rest_framework.response import Response
 
-PAGINATION_COMPONENT_NAME = "Pagination"
-PAGINATION_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "next": {
-            "type": "number",
-        },
-        "previous": {
-            "type": "number",
-        },
-        "count": {
-            "type": "number",
-        },
-        "current": {
-            "type": "number",
-        },
-        "total_pages": {
-            "type": "number",
-        },
-        "start_index": {
-            "type": "number",
-        },
-        "end_index": {
-            "type": "number",
-        },
-    },
-    "required": [
-        "next",
-        "previous",
-        "count",
-        "current",
-        "total_pages",
-        "start_index",
-        "end_index",
-    ],
-}
+from authentik.api.v3.schema.response import PAGINATION
 
 
 class Pagination(pagination.PageNumberPagination):
@@ -46,6 +12,13 @@ class Pagination(pagination.PageNumberPagination):
 
     page_query_param = "page"
     page_size_query_param = "page_size"
+
+    def get_page_size(self, request):
+        if self.page_size_query_param in request.query_params:
+            page_size = super().get_page_size(request)
+            if page_size is not None:
+                return min(super().get_page_size(request), request.tenant.pagination_max_page_size)
+        return request.tenant.pagination_default_page_size
 
     def get_paginated_response(self, data):
         previous_page_number = 0
@@ -70,14 +43,13 @@ class Pagination(pagination.PageNumberPagination):
         )
 
     def get_paginated_response_schema(self, schema):
-        return {
-            "type": "object",
-            "properties": {
-                "pagination": {"$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"},
+        return build_object_type(
+            properties={
+                "pagination": PAGINATION.ref,
                 "results": schema,
             },
-            "required": ["pagination", "results"],
-        }
+            required=["pagination", "results"],
+        )
 
 
 class SmallerPagination(Pagination):

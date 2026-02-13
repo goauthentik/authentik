@@ -12,7 +12,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import { Brand, CoreApi, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -21,6 +21,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
     protected override searchEnabled = true;
+    public override searchPlaceholder = msg("Search by domain or brand name...");
     public pageTitle = msg("Brands");
     public pageDescription = msg("Configure visual settings and defaults for different domains.");
     public pageIcon = "pf-icon pf-icon-tenant";
@@ -49,7 +50,7 @@ export class BrandListPage extends TablePage<Brand> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Brand(s)")}
+            object-label=${msg("Brand(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: Brand) => {
                 return [{ key: msg("Domain"), value: item.domain }];
@@ -76,7 +77,8 @@ export class BrandListPage extends TablePage<Brand> {
             html`${item.domain}`,
             html`${item.brandingTitle}`,
             html`<ak-status-label ?good=${item._default}></ak-status-label>`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Brand")}</span>
                     <ak-brand-form slot="form" .instancePk=${item.brandUuid}> </ak-brand-form>
@@ -88,20 +90,21 @@ export class BrandListPage extends TablePage<Brand> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBrandsBrand}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Brand")}</span>
+                <span slot="submit">${msg("Create Brand")}</span>
+                <span slot="header">${msg("New Brand")}</span>
                 <ak-brand-form slot="form"> </ak-brand-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("New Brand")}</button>
             </ak-forms-modal>
         `;
     }

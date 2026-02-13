@@ -15,12 +15,12 @@ from pathlib import Path
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
 
-from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
+from authentik.lib.utils.dict import delete_path_in_dict, get_path_from_dict, set_path_in_dict
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -28,24 +28,10 @@ SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + 
 ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
-REDIS_ENV_KEYS = [
-    f"{ENV_PREFIX}_REDIS__HOST",
-    f"{ENV_PREFIX}_REDIS__PORT",
-    f"{ENV_PREFIX}_REDIS__DB",
-    f"{ENV_PREFIX}_REDIS__USERNAME",
-    f"{ENV_PREFIX}_REDIS__PASSWORD",
-    f"{ENV_PREFIX}_REDIS__TLS",
-    f"{ENV_PREFIX}_REDIS__TLS_REQS",
-]
-
 # Old key -> new key
 DEPRECATIONS = {
     "geoip": "events.context_processors.geoip",
     "worker.concurrency": "worker.threads",
-    "redis.cache_timeout": "cache.timeout",
-    "redis.cache_timeout_flows": "cache.timeout_flows",
-    "redis.cache_timeout_policies": "cache.timeout_policies",
-    "redis.cache_timeout_reputation": "cache.timeout_reputation",
 }
 
 
@@ -251,12 +237,15 @@ class ConfigLoader:
     @contextmanager
     def patch(self, path: str, value: Any):
         """Context manager for unittests to patch a value"""
-        original_value = self.get(path)
+        original_value = self.get(path, UNSET)
         self.set(path, value)
         try:
             yield
         finally:
-            self.set(path, original_value)
+            if original_value is not UNSET:
+                self.set(path, original_value)
+            else:
+                self.delete(path)
 
     @property
     def raw(self) -> dict:
@@ -312,8 +301,6 @@ class ConfigLoader:
             return {}
         try:
             b64decoded_str = base64.b64decode(config_value).decode("utf-8")
-            b64decoded_str = b64decoded_str.strip().lstrip("{").rstrip("}")
-            b64decoded_str = "{" + b64decoded_str + "}"
             return json.loads(b64decoded_str)
         except (JSONDecodeError, TypeError, ValueError) as exc:
             self.log(
@@ -328,28 +315,11 @@ class ConfigLoader:
             value = Attr(value)
         set_path_in_dict(self.raw, path, value, sep=sep)
 
+    def delete(self, path: str, sep="."):
+        delete_path_in_dict(self.raw, path, sep=sep)
+
 
 CONFIG = ConfigLoader()
-
-
-def redis_url(db: int) -> str:
-    """Helper to create a Redis URL for a specific database"""
-    _redis_protocol_prefix = "redis://"
-    _redis_tls_requirements = ""
-    if CONFIG.get_bool("redis.tls", False):
-        _redis_protocol_prefix = "rediss://"
-        _redis_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-        if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
-            _redis_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
-    _redis_url = (
-        f"{_redis_protocol_prefix}"
-        f"{quote_plus(CONFIG.get('redis.username'))}:"
-        f"{quote_plus(CONFIG.get('redis.password'))}@"
-        f"{quote_plus(CONFIG.get('redis.host'))}:"
-        f"{CONFIG.get_int('redis.port')}"
-        f"/{db}{_redis_tls_requirements}"
-    )
-    return _redis_url
 
 
 def django_db_config(config: ConfigLoader | None = None) -> dict:
@@ -370,7 +340,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
 
     db = {
         "default": {
-            "ENGINE": "authentik.root.db",
+            "ENGINE": "psqlextra.backend",
             "HOST": config.get("postgresql.host"),
             "NAME": config.get("postgresql.name"),
             "USER": config.get("postgresql.user"),

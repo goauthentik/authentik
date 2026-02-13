@@ -1,0 +1,113 @@
+/* #region Screen readers */
+
+.sr-only {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+@media (prefers-contrast: more) {
+    .more-contrast-only {
+        position: static;
+        left: auto;
+        width: auto;
+        height: auto;
+        overflow: visible;
+    }
+}
+
+/* #endregion */
+
+/* #region Modifiers */
+
+.pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--dark-100);
+    --pf-global--Color--200: var(--pf-global--Color--dark-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--dark-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--dark);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--dark);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
+}
+
+.pf-m-monospace {
+    font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
+}
+
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
+}
+
+.ak-m-capitalize {
+    text-transform: capitalize;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
+/* #endregion */
+
+/* #region Animations */
+
+@keyframes ak-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.ak-fade-in {
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-name: ak-fade-in;
+    animation-duration: 150ms;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-delay: 500ms;
+}
+
+/* #endregion */
+
+/* #region Dark Theme */
+
+/**
+ * Our reversal of Patternfly's light variables requires us to set the colors
+ * back to their defaults when in dark mode.
+ */
+:host([theme="dark"]) .pf-m-dark {
+    --pf-global--Color--100: var(--pf-global--Color--light-100);
+    --pf-global--Color--200: var(--pf-global--Color--light-200);
+    --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+    --pf-global--primary-color--100: var(--pf-global--primary-color--light-100);
+    --pf-global--link--Color: var(--pf-global--link--Color--light);
+    --pf-global--link--Color--hover: var(--pf-global--link--Color--light);
+    --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
+}
+
+:host([theme="dark"]) .pf-u-mb-xl {
+    color: var(--ak-dark-foreground);
+}
+
+/* #endregion */

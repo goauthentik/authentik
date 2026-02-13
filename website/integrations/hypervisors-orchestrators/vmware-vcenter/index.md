@@ -19,7 +19,7 @@ The following placeholders will be used in the examples below:
 - `vcenter.company` is the FQDN of the vCenter server.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -73,6 +73,7 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Create a SCIM provider with the name `vcenter-scim`.
     - Paste the Tenant URL into **URL** field for the provider.
     - Paste the token you saved into the **Token** field.
+    - Set **SCIM Compatibility Mode** to `vCenter`.
     - If your vCenter certificate is self-signed (which is the default), toggle **Verify SCIM server's certificates** to be off.
     - Configure options under `User filtering` to your needs.
     - Save the provider.

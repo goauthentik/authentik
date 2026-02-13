@@ -60,16 +60,17 @@ authentik
 │   ├── oauth2 - OIDC-compliant OAuth2 provider
 │   ├── proxy - Provides an identity-aware proxy using an outpost
 │   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 Provider
-│   └── scim - SCIM Provider
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
 │   ├── kerberos - Sync Kerberos users into authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 Source
+│   ├── oauth - OAuth1 and OAuth2 source
 │   ├── plex - Plex source
-│   └── saml - SAML2 Source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
 │   ├── authenticator_duo - Configure a DUO authenticator
 │   ├── authenticator_static - Configure TOTP backup keys
@@ -125,7 +126,7 @@ This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
-Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 ### Pull requests
 
@@ -135,6 +136,39 @@ The process described here has several goals:
 - Fix problems that are important to users
 - Engage the community in working toward the best possible authentik
 - Enable a sustainable system for authentik's maintainers to review contributions
+
+#### Always use feature branches
+
+**DO NOT open pull requests from your `main` branch.** Always create a feature branch for your changes.
+
+Here's one way to do it correctly (your own preferred git commands may differ):
+
+```bash
+# Create and switch to a new feature branch
+git checkout -b feature/my-awesome-feature
+
+# Make your changes, then commit and push
+git add .
+git commit -m "providers/oauth2: add awesome feature"
+git push -u origin feature/my-awesome-feature
+```
+
+Then open your PR from the feature branch.
+
+:::tip Accidentally made changes on main?
+If you already started working on `main` (even if you've already made commits), you can still recover by creating a branch from your current state, then resetting `main`:
+
+```bash
+# Create a new branch with your current changes/commits
+git checkout -b feature/my-awesome-feature
+
+# Switch back to main and reset it to match origin
+git checkout main
+git reset --hard origin/main
+```
+
+Your changes are now safely on the feature branch, and `main` is back in sync with the remote.
+:::
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -166,7 +200,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
-authentik runs on Python 3.13 at the time of writing this.
+authentik runs on Python 3.14 at the time of writing this.
 
 - Use native type-annotations wherever possible.
 - Add meaningful docstrings when possible.

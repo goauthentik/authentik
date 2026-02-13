@@ -1,0 +1,53 @@
+[project]
+name = "django-channels-postgres"
+version = "0.1.0"
+description = "Django channels layer using PostgreSQL NOTIFY/LISTEN"
+requires-python = ">=3.9,<3.15"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Authentik Security Inc.", email = "hello@goauthentik.io" }]
+keywords = ["django", "channels", "postgres"]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: Developers",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+
+dependencies = [
+  "channels >=4.3,<4.4",
+  "django >=4.2,<6.0",
+  "django-pgtrigger >=4,<5",
+  "msgpack >=1,<2",
+  "psycopg[pool] >=3,<4",
+  "structlog >=25,<26",
+]
+
+[project.urls]
+Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+Repository = "https://github.com/goauthentik/authentik/tree/main/packages/django-channels-postgres"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.setuptools.packages]
+find = {}

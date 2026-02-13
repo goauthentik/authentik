@@ -67,7 +67,7 @@ class DebugSession(TimeoutSession):
             "HTTP response received",
             uid=request_id,
             status=resp.status_code,
-            body=resp.text,
+            body=resp.text[: 32 * 1024],
             headers=resp.headers,
         )
         return resp

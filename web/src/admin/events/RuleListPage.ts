@@ -19,7 +19,7 @@ import {
     EventsApi,
     ModelEnum,
     NotificationRule,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -57,7 +57,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Notification rule(s)")}
+            object-label=${msg("Notification rule(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: NotificationRule) => {
                 return new EventsApi(DEFAULT_CONFIG).eventsRulesUsedByList({
@@ -87,7 +87,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
                       >${item.destinationGroupObj.name}</a
                   >`
                 : msg("-")}`,
-            html`<ak-forms-modal>
+            html`<div>
+                <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Notification Rule")}</span>
                     <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
@@ -99,10 +100,11 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationrule}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
-                </ak-rbac-object-permission-modal>`,
+                </ak-rbac-object-permission-modal>
+            </div>`,
         ];
     }
 
@@ -119,33 +121,29 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
-        return html` <td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <p>
-                    ${msg(
-                        `These bindings control upon which events this rule triggers.
+        return html`<p>
+                ${msg(
+                    `These bindings control upon which events this rule triggers.
 Bindings to groups/users are checked against the user of the event.`,
-                    )}
-                </p>
-                <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <ak-task-list
-                                    .relObjAppLabel=${appLabel}
-                                    .relObjModel=${modelName}
-                                    .relObjId="${item.pk}"
-                                ></ak-task-list>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-        </td>`;
+                )}
+            </p>
+            <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+            <dl class="pf-c-description-list pf-m-horizontal">
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${item.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </dd>
+                </div>
+            </dl>`;
     }
 }
 

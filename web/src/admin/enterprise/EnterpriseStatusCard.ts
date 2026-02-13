@@ -1,3 +1,5 @@
+import "#elements/ak-progress-bar";
+
 import { AKElement } from "#elements/Base";
 import { PFColor } from "#elements/Label";
 
@@ -11,7 +13,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
@@ -21,7 +22,7 @@ export class EnterpriseStatusCard extends AKElement {
     @state()
     summary?: LicenseSummary;
 
-    static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
+    static styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFProgress];
 
     renderSummaryBadge() {
         switch (this.summary?.status) {
@@ -81,66 +82,32 @@ export class EnterpriseStatusCard extends AKElement {
                         </div>
                     </dl>
                     <div class="pf-l-split__item pf-m-fill">
-                        <div
-                            class="pf-c-progress ${internalUserPercentage > 100
+                        <ak-progress-bar
+                            class="${internalUserPercentage > 100
                                 ? "pf-m-danger"
                                 : ""} ${internalUserPercentage >= 80 ? "pf-m-warning" : ""}"
-                            id="internalUsers"
+                            value=${internalUserPercentage}
                         >
-                            <div class="pf-c-progress__description">
-                                ${msg("Internal user usage")}
-                            </div>
-                            <div class="pf-c-progress__status" aria-hidden="true">
-                                <span class="pf-c-progress__measure"
-                                    >${msg(
-                                        str`${internalUserPercentage < Infinity ? internalUserPercentage : "∞"}%`,
-                                    )}</span
-                                >
-                            </div>
-                            <div
-                                class="pf-c-progress__bar"
-                                role="progressbar"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                aria-valuenow="${internalUserPercentage}"
-                            >
-                                <div
-                                    class="pf-c-progress__indicator"
-                                    style="width:${Math.min(internalUserPercentage, 100)}%;"
-                                ></div>
-                            </div>
-                        </div>
-                        <div
-                            class="pf-c-progress ${externalUserPercentage > 100
+                            <span slot="description">${msg("Internal user usage")}</span>
+                            <span slot="status">
+                                ${msg(
+                                    str`${internalUserPercentage < Infinity ? internalUserPercentage : "∞"}%`,
+                                )}
+                            </span>
+                        </ak-progress-bar>
+                        <ak-progress-bar
+                            class="${externalUserPercentage > 100
                                 ? "pf-m-danger"
                                 : ""} ${externalUserPercentage >= 80 ? "pf-m-warning" : ""}"
-                            id="externalUsers"
+                            value=${externalUserPercentage}
                         >
-                            <div class="pf-c-progress__description">
-                                ${msg("External user usage")}
-                            </div>
-                            <div class="pf-c-progress__status" aria-hidden="true">
-                                <span class="pf-c-progress__measure"
-                                    >${msg(
-                                        str`${externalUserPercentage < Infinity ? externalUserPercentage : "∞"}%`,
-                                    )}</span
-                                >
-                            </div>
-                            <div
-                                class="pf-c-progress__bar"
-                                role="progressbar"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                aria-valuenow="${externalUserPercentage < Infinity
-                                    ? externalUserPercentage
-                                    : "∞"}"
-                            >
-                                <div
-                                    class="pf-c-progress__indicator"
-                                    style="width:${Math.min(externalUserPercentage, 100)}%;"
-                                ></div>
-                            </div>
-                        </div>
+                            <span slot="description">${msg("External user usage")}</span>
+                            <span slot="status">
+                                ${msg(
+                                    str`${externalUserPercentage < Infinity ? externalUserPercentage : "∞"}%`,
+                                )}
+                            </span>
+                        </ak-progress-bar>
                     </div>
                 </div>
             </div>

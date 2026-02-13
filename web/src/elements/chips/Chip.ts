@@ -1,5 +1,7 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import Styles from "./styles.css";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
@@ -8,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip")
 export class Chip extends AKElement {
@@ -18,11 +19,11 @@ export class Chip extends AKElement {
     @property({ type: Boolean })
     removable = false;
 
-    static styles: CSSResult[] = [PFBase, PFButton, PFChip];
+    static styles: CSSResult[] = [PFButton, PFChip, Styles];
 
     render(): TemplateResult {
         return html`<li class="pf-c-chip-group__list-item">
-            <div class="pf-c-chip">
+            <div class="pf-c-chip" part="chip">
                 <span class="pf-c-chip__text">
                     <slot></slot>
                 </span>

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `fortigate.company` is the FQDN of the FortiGate installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -54,7 +54,7 @@ To support the integration of FortiGate with authentik, you need to create an ap
 
 ## FortiGate Configuration
 
-To integrate Fortigate with authentik, nagiate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
+To integrate Fortigate with authentik, navigate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
 
 Once that is done, navigate to `https://fortigate.company/fabric-connector/edit/security-fabric-connection` and select **Single Sign-On** to configure SAML authentication. You should see, under **Mode**, a toggle named **Service Provider (SP)**, toggle it to enable this authentication method.
 
@@ -118,4 +118,4 @@ end
 
 ## Resources
 
-- [Offocial Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)
+- [Official Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)

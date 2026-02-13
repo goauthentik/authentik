@@ -16,7 +16,7 @@ func urlJoin(originalUrl string, newPath string) string {
 
 func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
 	fallbackRedirect := a.proxyConfig.ExternalHost
-	state := a.stateFromRequest(r)
+	state := a.stateFromRequest(rw, r)
 	if state == nil {
 		rw.WriteHeader(http.StatusBadRequest)
 		return

@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `karakeep.company` is the FQDN of the Karakeep installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -48,7 +48,7 @@ In Karakeep, you'll need to add these environment variables:
 NEXTAUTH_URL=https://karakeep.company
 OAUTH_CLIENT_ID=<Client ID from authentik>
 OAUTH_CLIENT_SECRET=<Client secret from authentik>
-OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/karakeep/.well-known/openid-configuration
+OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
 OAUTH_PROVIDER_NAME=authentik
 OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
 # Optional: You can add this if you only want to allow login with Authentik

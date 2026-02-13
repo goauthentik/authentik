@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 - `coder.company` is the FQDN of your Coder installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::note
+:::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -59,4 +59,4 @@ To confirm that authentik is properly configured with Coder, log out and attempt
 
 ## Resources
 
-- [Coder OIDC authentication documentatiom](https://coder.com/docs/admin/users/oidc-auth/)
+- [Coder OIDC authentication documentation](https://coder.com/docs/admin/users/oidc-auth/)

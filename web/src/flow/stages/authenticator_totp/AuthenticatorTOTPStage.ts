@@ -1,14 +1,16 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "webcomponent-qr-code";
+import "#types/qr-code";
 
-import { MessageLevel } from "#common/messages";
+import { writeToClipboard } from "#common/clipboard";
 
-import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
+import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -17,9 +19,8 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -27,7 +28,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<
@@ -35,7 +35,6 @@ export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFFormControl,
@@ -48,59 +47,102 @@ export class AuthenticatorTOTPStage extends BaseStage<
                 flex-direction: column;
                 place-items: center;
             }
+            .qr-buttons {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 1rem;
+            }
         `,
     ];
 
-    render(): TemplateResult {
+    #copyTOTPToClipboard = (event: Event): void => {
+        event.preventDefault();
+
+        writeToClipboard(
+            this.challenge?.configUrl,
+            msg("TOTP Config", {
+                id: "totp.config",
+            }),
+            msg(
+                "Paste this URL into your authenticator app to set up a time-based one-time password.",
+                {
+                    id: "totp.config.clipboard.description",
+                },
+            ),
+        );
+    };
+
+    #copySecretToClipboard = (event: Event): void => {
+        event.preventDefault();
+
+        writeToClipboard(
+            this.#secretParam,
+            msg("TOTP Secret", {
+                id: "totp.secret",
+            }),
+            msg(
+                "Paste this secret into your authenticator app to set up a time-based one-time password.",
+                {
+                    id: "totp.secret.clipboard.description",
+                },
+            ),
+        );
+    };
+
+    get #secretParam(): string | null {
+        const configUrl = this.challenge?.configUrl;
+        if (!configUrl || !URL.canParse(configUrl)) return null;
+
+        const url = new URL(configUrl);
+
+        return url.searchParams.get("secret");
+    }
+
+    protected render(): SlottedTemplateResult {
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
+                ${FlowUserDetails({ challenge: this.challenge })}
+
                 <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
 
                 <div class="pf-c-form__group">
                     <div class="qr-container">
-                        <qr-code data="${this.challenge.configUrl}"></qr-code>
-                        <button
-                            type="button"
-                            class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
-                            @click=${(e: Event) => {
-                                e.preventDefault();
-                                if (!this.challenge?.configUrl) return;
-                                if (!navigator.clipboard) {
-                                    showMessage({
-                                        level: MessageLevel.info,
-                                        message: this.challenge?.configUrl,
-                                    });
-                                    return;
-                                }
-                                navigator.clipboard
-                                    .writeText(this.challenge?.configUrl)
-                                    .then(() => {
-                                        showMessage(
-                                            {
-                                                level: MessageLevel.success,
-                                                message: msg("Successfully copied TOTP Config."),
-                                            },
-                                            true,
-                                        );
-                                    });
-                            }}
-                        >
-                            <span class="pf-c-button__progress"
-                                ><i class="fas fa-copy" aria-hidden="true"></i
-                            ></span>
-                            ${msg("Copy")}
-                        </button>
+                        <qr-code
+                            role="img"
+                            aria-label=${msg("QR-Code to setup a time-based one-time password")}
+                            format="svg"
+                            data="${this.challenge.configUrl}"
+                        ></qr-code>
+                        <div class="qr-buttons">
+                            <button
+                                type="button"
+                                class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                                aria-label=${msg("Copy time-based one-time password configuration")}
+                                @click=${this.#copyTOTPToClipboard}
+                            >
+                                <span class="pf-c-button__progress"
+                                    ><i class="fas fa-code" aria-hidden="true"></i
+                                ></span>
+                                ${msg("Copy TOTP Config")}
+                            </button>
+                            <button
+                                type="button"
+                                class="pf-c-button pf-m-secondary pf-m-progress pf-m-in-progress"
+                                aria-label=${msg("Copy time-based one-time password secret")}
+                                @click=${this.#copySecretToClipboard}
+                            >
+                                <span class="pf-c-button__progress"
+                                    ><i class="fas fa-key" aria-hidden="true"></i
+                                ></span>
+                                ${msg("Copy Secret")}
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <p>
@@ -109,15 +151,22 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     )}
                 </p>
                 <div class="pf-c-form__group">
-                    ${AKLabel({ required: true, htmlFor: "totp-code-input" }, msg("Code"))}
+                    ${AKLabel(
+                        {
+                            "required": true,
+                            "htmlFor": "totp-code-input",
+                            "aria-label": msg("Time-based one-time password"),
+                        },
+                        msg("TOTP Code"),
+                    )}
                     <input
                         id="totp-code-input"
                         type="text"
                         name="code"
                         inputmode="numeric"
                         pattern="[0-9]*"
-                        placeholder="${msg("Please enter your TOTP Code")}"
-                        autofocus=""
+                        placeholder="${msg("Type your TOTP code...")}"
+                        aria-placeholder=${msg("Type your time-based one-time password code.")}
                         autocomplete="one-time-code"
                         class="pf-c-form-control pf-m-monospace"
                         spellcheck="false"
@@ -126,11 +175,16 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
 
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                <fieldset class="pf-c-form__group pf-m-action">
+                    <legend class="sr-only">${msg("Form actions")}</legend>
+                    <button
+                        name="continue"
+                        type="submit"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                    >
                         ${msg("Continue")}
                     </button>
-                </div>
+                </fieldset>
             </form>
         </ak-flow-card>`;
     }

@@ -1,10 +1,12 @@
 """authentik Blueprints app"""
 
+import traceback
 from collections.abc import Callable
 from importlib import import_module
 from inspect import ismethod
 
 from django.apps import AppConfig
+from django.conf import settings
 from django.db import DatabaseError, InternalError, ProgrammingError
 from dramatiq.broker import get_broker
 from structlog.stdlib import BoundLogger, get_logger
@@ -44,8 +46,21 @@ class ManagedAppConfig(AppConfig):
                 module_name = f"{self.name}.{rel_module}"
                 import_module(module_name)
                 self.logger.info("Imported related module", module=module_name)
-            except ModuleNotFoundError:
-                pass
+            except ModuleNotFoundError as exc:
+                if settings.DEBUG:
+                    # This is a heuristic for determining whether the exception was caused
+                    # "directly" by the `import_module` call or whether the initial import
+                    # succeeded and a later import (within the existing module) failed.
+                    # 1. <the calling function>
+                    # 2. importlib.import_module
+                    # 3. importlib._bootstrap._gcd_import
+                    # 4. importlib._bootstrap._find_and_load
+                    # 5. importlib._bootstrap._find_and_load_unlocked
+                    STACK_LENGTH_HEURISTIC = 5
+
+                    stack_length = len(traceback.extract_tb(exc.__traceback__))
+                    if stack_length > STACK_LENGTH_HEURISTIC:
+                        raise
 
         import_relative("checks")
         import_relative("tasks")

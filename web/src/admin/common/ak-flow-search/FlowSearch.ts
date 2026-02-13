@@ -6,6 +6,8 @@ import { AKElement } from "#elements/Base";
 import type { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 
 import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
@@ -24,8 +26,8 @@ export function renderDescription(flow: Flow) {
     return html`${flow.slug}`;
 }
 
-export function getFlowValue(flow: Flow | undefined): string | undefined {
-    return flow?.pk;
+export function getFlowValue(flow: Flow | null): string {
+    return String(flow?.pk ?? "");
 }
 
 /**
@@ -52,7 +54,13 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
      * @attr
      */
     @property({ type: String })
-    public currentFlow?: string;
+    public currentFlow?: string | null;
+
+    /**
+     * @property
+     */
+    @property({ attribute: false })
+    public errorMessages?: ErrorProp[];
 
     /**
      * If true, it is not valid to leave the flow blank.
@@ -191,6 +199,7 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
                 ?blankable=${!this.required}
             >
             </ak-search-select>
+            ${AKFormErrors({ errors: this.errorMessages })}
         `;
     }
 

@@ -14,7 +14,6 @@ import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Props for the EmptyState component
@@ -64,8 +63,9 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
+    public role = "status";
+
     static styles = [
-        PFBase,
         PFEmptyState,
         PFTitle,
         css`
@@ -96,7 +96,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         };
 
         return html`<div aria-label=${this.localAriaLabel ?? nothing} class="${classMap(classes)}">
-            <div class="pf-c-empty-state__content" role="progressbar">
+            <div class="pf-c-empty-state__content">
                 ${loading
                     ? html`<div part="spinner" class="pf-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
@@ -133,7 +133,6 @@ interface IEmptyStateContent {
     primary?: SlottedTemplateResult;
 }
 
-type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**

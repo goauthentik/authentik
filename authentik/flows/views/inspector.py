@@ -13,6 +13,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.fields import BooleanField, ListField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -70,7 +71,7 @@ class FlowInspectorView(APIView):
 
     flow: Flow
     _logger: BoundLogger
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)

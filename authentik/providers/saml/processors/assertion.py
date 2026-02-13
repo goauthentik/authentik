@@ -6,25 +6,12 @@ from types import GeneratorType
 
 import xmlsec
 from django.http import HttpRequest
+from django.utils.timezone import now
 from lxml import etree  # nosec
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.events.models import Event, EventAction
-from authentik.events.signals import get_login_event
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.saml.exceptions import (
-    InvalidEncryption,
-    InvalidSignature,
-    UnsupportedNameIDFormat,
-)
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -36,6 +23,21 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
+)
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
+from authentik.events.signals import get_login_event
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.lib.xml import remove_xml_newlines
+from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.providers.saml.utils import get_random_id
+from authentik.providers.saml.utils.time import get_time_string
+from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    UnsupportedNameIDFormat,
 )
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -58,6 +60,11 @@ class AssertionProcessor:
     _session_not_on_or_after: str
     _valid_not_on_or_after: str
 
+    session_index: str
+    name_id: str
+    name_id_format: str
+    session_not_on_or_after_datetime: datetime
+
     def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
         self.provider = provider
         self.http_request = request
@@ -68,16 +75,17 @@ class AssertionProcessor:
         self._response_id = get_random_id()
 
         _login_event = get_login_event(self.http_request)
-        _login_time = datetime.now()
+        _login_time = now()
         if _login_event:
             _login_time = _login_event.created
         self._auth_instant = get_time_string(_login_time)
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
         )
-        self._session_not_on_or_after = get_time_string(
-            timedelta_from_string(self.provider.session_valid_not_on_or_after)
+        self.session_not_on_or_after_datetime = now() + timedelta_from_string(
+            self.provider.session_valid_not_on_or_after
         )
+        self._session_not_on_or_after = get_time_string(self.session_not_on_or_after_datetime)
         self._valid_not_on_or_after = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_on_or_after)
         )
@@ -139,9 +147,10 @@ class AssertionProcessor:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._auth_instant
-        auth_n_statement.attrib["SessionIndex"] = sha256(
+        self.session_index = sha256(
             self.http_request.session.session_key.encode("ascii")
         ).hexdigest()
+        auth_n_statement.attrib["SessionIndex"] = self.session_index
         auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
         auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
@@ -213,9 +222,11 @@ class AssertionProcessor:
         ):
             self.auth_n_request.name_id_policy = self.provider.default_name_id_policy
         name_id.attrib["Format"] = self.auth_n_request.name_id_policy
+        self.name_id_format = self.auth_n_request.name_id_policy
         # persistent is used as a fallback, so always generate it
         persistent = self.http_request.user.uid
         name_id.text = persistent
+        self.name_id = persistent
         # If name_id_mapping is set, we override the value, regardless of what the SP asks for
         if self.provider.name_id_mapping:
             try:
@@ -226,6 +237,7 @@ class AssertionProcessor:
                 )
                 if value is not None:
                     name_id.text = str(value)
+                    self.name_id = str(value)
                 return name_id
             except PropertyMappingExpressionException as exc:
                 Event.new(
@@ -239,32 +251,38 @@ class AssertionProcessor:
                 ).from_http(self.http_request)
                 LOGGER.warning("Failed to evaluate property mapping", exc=exc)
                 return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
+            self.name_id = self.http_request.user.email
             return name_id
-        if name_id.attrib["Format"] in [
+        if self.auth_n_request.name_id_policy in [
             SAML_NAME_ID_FORMAT_PERSISTENT,
             SAML_NAME_ID_FORMAT_UNSPECIFIED,
         ]:
             name_id.text = persistent
+            self.name_id = persistent
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get(
                 LDAP_DISTINGUISHED_NAME, persistent
             )
+            self.name_id = name_id.text
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_WINDOWS:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_WINDOWS:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get("upn", persistent)
+            self.name_id = name_id.text
             return name_id
-        if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_TRANSIENT:
             # Use the hash of the user's session, which changes every session
             session_key: str = self.http_request.session.session_key
             name_id.text = sha256(session_key.encode()).hexdigest()
+            self.name_id = name_id.text
             return name_id
         raise UnsupportedNameIDFormat(
-            f"Assertion contains NameID with unsupported format {name_id.attrib['Format']}."
+            "Assertion contains NameID with unsupported "
+            f"format {self.auth_n_request.name_id_policy}."
         )
 
     def get_assertion_subject(self) -> Element:
@@ -303,14 +321,6 @@ class AssertionProcessor:
                 ns=xmlsec.constants.DSigNs,
             )
             assertion.append(signature)
-        if self.provider.encryption_kp:
-            encryption = xmlsec.template.encrypted_data_create(
-                assertion,
-                xmlsec.constants.TransformAes128Cbc,
-                self._assertion_id,
-                ns=xmlsec.constants.DSigNs,
-            )
-            assertion.append(encryption)
 
         assertion.append(self.get_assertion_subject())
         assertion.append(self.get_assertion_conditions())
@@ -350,7 +360,7 @@ class AssertionProcessor:
         response.append(self.get_assertion())
         return response
 
-    def _sign(self, element: Element):
+    def _sign(self, element: _Element):
         """Sign an XML element based on the providers' configured signing settings"""
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
@@ -380,18 +390,21 @@ class AssertionProcessor:
         )
         ctx.key = key
         try:
-            ctx.sign(signature_node)
+            ctx.sign(remove_xml_newlines(element, signature_node))
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 
-    def _encrypt(self, element: Element, parent: Element):
+    def _encrypt(self, element: _Element, parent: _Element):
         """Encrypt SAMLResponse EncryptedAssertion Element"""
+        # Create a standalone copy so namespace declarations are included in the encrypted content
+        element_xml = etree.tostring(element)
+        standalone_element = etree.fromstring(element_xml)
+
+        # Remove the original element from the tree since we're replacing it with encrypted version
+        parent.remove(element)
+
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
-            self.provider.encryption_kp.key_data,
-            xmlsec.constants.KeyDataFormatPem,
-        )
-        key.load_cert_from_memory(
             self.provider.encryption_kp.certificate_data,
             xmlsec.constants.KeyDataFormatCertPem,
         )
@@ -412,24 +425,25 @@ class AssertionProcessor:
         xmlsec.template.encrypted_data_ensure_cipher_value(enc_key)
 
         try:
-            enc_data = encryption_context.encrypt_xml(enc_data, element)
+            enc_data = encryption_context.encrypt_xml(enc_data, standalone_element)
         except xmlsec.Error as exc:
             raise InvalidEncryption() from exc
 
-        parent.remove(enc_data)
         container.append(enc_data)
 
     def build_response(self) -> str:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
-        if self.provider.signing_kp:
-            if self.provider.sign_assertion:
-                assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-                self._sign(assertion)
-            if self.provider.sign_response:
-                response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
-                self._sign(response)
+        # Sign assertion first (before encryption)
+        if self.provider.signing_kp and self.provider.sign_assertion:
+            assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+            self._sign(assertion)
+        # Encrypt assertion (this replaces Assertion with EncryptedAssertion)
         if self.provider.encryption_kp:
             assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
             self._encrypt(assertion, root_response)
+        # Sign response AFTER encryption so signature covers the encrypted content
+        if self.provider.signing_kp and self.provider.sign_response:
+            response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
+            self._sign(response)
         return etree.tostring(root_response).decode("utf-8")  # nosec

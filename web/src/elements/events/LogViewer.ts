@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/EmptyState";
+import "#elements/timestamp/ak-timestamp";
 
 import { formatElapsedTime } from "#common/temporal";
 
@@ -46,32 +47,28 @@ export class LogViewer extends Table<LogEvent> {
     }
 
     renderExpanded(item: LogEvent): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <dl class="pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Timestamp")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${item.timestamp.toLocaleString()}
-                            </div>
-                        </dd>
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Timestamp")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        ${item.timestamp.toLocaleString()}
                     </div>
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text">${msg("Attributes")}</span>
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
+                </dd>
             </div>
-        </td>`;
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Attributes")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
     }
 
     renderToolbarContainer(): SlottedTemplateResult {
@@ -105,7 +102,7 @@ export class LogViewer extends Table<LogEvent> {
 
     row(item: LogEvent): SlottedTemplateResult[] {
         return [
-            html`${formatElapsedTime(item.timestamp)}`,
+            html`<ak-timestamp .timestamp=${item.timestamp} refresh></ak-timestamp>`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}

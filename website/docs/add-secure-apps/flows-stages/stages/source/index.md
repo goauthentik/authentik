@@ -18,7 +18,7 @@ Another use case is to route users to authenticate with your legacy (Okta, etc) 
 
 It is very important that the configured source's authentication and enrollment flows (when set; they can be left unselected to prevent authentication or enrollment with the source) do **not** have a [User login stage](../user_login/index.md) bound to them.
 
-This is because the Source stage works by appending a [dynamic in-memory](../../../../core/terminology.md#dynamic-in-memory-stage) stage to the source's flow, so having a [User login stage](../user_login/index.md) bound will cause the source's flow to not resume the original flow it was started from, and instead directly authenticating the pending user.
+This is because the Source stage works by appending a [dynamic in-memory](../../../../core/glossary?dynamic-in-memory-stage) stage to the source's flow, so having a [User login stage](../user_login/index.md) bound will cause the source's flow to not resume the original flow it was started from, and instead directly authenticating the pending user.
 
 ## Source stage workflow
 

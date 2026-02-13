@@ -21,6 +21,7 @@ from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.policies.reputation.signals import update_score
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_email.models import EmailDevice
@@ -417,6 +418,10 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             samesite=settings.SESSION_COOKIE_SAMESITE,
         )
         return response
+
+    def challenge_invalid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
+        update_score(self.request, self.get_pending_user().username, -1)
+        return super().challenge_invalid(response)
 
     def challenge_valid(self, response: AuthenticatorValidationChallengeResponse) -> HttpResponse:
         # All validation is done by the serializer

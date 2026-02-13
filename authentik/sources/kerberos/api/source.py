@@ -44,6 +44,7 @@ class KerberosSourceSerializer(SourceSerializer):
             "spnego_keytab",
             "spnego_ccache",
             "password_login_update_internal_password",
+            "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {
             "sync_password": {"write_only": True},
@@ -108,9 +109,7 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
             return Response(SyncStatusSerializer(status).data)
 
         last_task: Task = (
-            sync_schedule.tasks.exclude(
-                aggregated_status__in=(TaskStatus.CONSUMED, TaskStatus.QUEUED)
-            )
+            sync_schedule.tasks.filter(state__in=(TaskStatus.DONE, TaskStatus.REJECTED))
             .order_by("-mtime")
             .first()
         )

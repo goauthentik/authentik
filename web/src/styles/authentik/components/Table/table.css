@@ -1,0 +1,53 @@
+.pf-c-table {
+    --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
+    --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+}
+
+.pf-c-toolbar {
+    .pf-c-button.pf-m-danger:disabled {
+        opacity: var(--ak-table--toolbar--bulk-delete-disabled-opacity, 0.5);
+    }
+
+    @media (prefers-contrast: more) {
+        --ak-table--toolbar--bulk-delete-disabled-opacity: 0.75;
+    }
+}
+
+.pf-c-table__sort.pf-m-selected {
+    text-decoration: underline;
+
+    .pf-c-table__button .pf-c-table__text {
+        --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
+
+        --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+    }
+}
+
+/* #region Dark Theme */
+
+:host([theme="dark"]) .pf-c-toolbar {
+    --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
+}
+
+:host([theme="dark"]) .pf-c-pagination {
+    --pf-c-pagination--m-bottom--BackgroundColor: var(--ak-dark-background-light);
+}
+
+:host([theme="dark"]) .pf-c-table {
+    --pf-c-table--m-striped__tr--BackgroundColor: var(--pf-global--BackgroundColor--150);
+
+    .pf-c-button:has(.pf-c-table__toggle-icon) {
+        background-color: transparent !important;
+
+        &:hover {
+            color: var(--pf-c-button--m-plain--hover--Color) !important;
+        }
+    }
+}
+
+:host([theme="dark"]) .pf-c-table__favorite .pf-c-button:hover,
+:host([theme="dark"]) .pf-c-table__favorite .pf-c-button:focus {
+    --pf-c-button--m-plain--Color: var(--pf-global--palette--gold-100);
+}
+
+/* #endregion  */

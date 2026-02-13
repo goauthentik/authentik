@@ -1,11 +1,12 @@
 """common RBAC serializers"""
 
+from django.contrib.auth.models import Permission
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from guardian.models import GroupObjectPermission
+from guardian.models import RoleModelPermission, RoleObjectPermission
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ReadOnlyField
@@ -31,47 +32,88 @@ class RoleObjectPermissionSerializer(ModelSerializer):
     object_pk = CharField()
 
     class Meta:
-        model = GroupObjectPermission
+        model = RoleObjectPermission
         fields = ["id", "codename", "model", "app_label", "object_pk", "name"]
+
+
+class RoleModelPermissionSerializer(ModelSerializer):
+    """Role-bound object level permission"""
+
+    app_label = ReadOnlyField(source="content_type.app_label")
+    model = ReadOnlyField(source="content_type.model")
+    codename = ReadOnlyField(source="permission.codename")
+    name = ReadOnlyField(source="permission.name")
+
+    class Meta:
+        model = RoleModelPermission
+        fields = ["id", "codename", "model", "app_label", "name"]
 
 
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):
     """Roles assigned object permission serializer"""
 
-    role_pk = CharField(source="group.role.pk", read_only=True)
-    name = CharField(source="group.name", read_only=True)
-    permissions = RoleObjectPermissionSerializer(
-        many=True, source="group.groupobjectpermission_set"
+    role_pk = CharField(source="pk", read_only=True)
+    name = CharField(read_only=True)
+    object_permissions = RoleObjectPermissionSerializer(
+        many=True, source="roleobjectpermission_set"
     )
+    model_permissions = RoleModelPermissionSerializer(many=True, source="rolemodelpermission_set")
 
     class Meta:
         model = Role
-        fields = ["role_pk", "name", "permissions"]
+        fields = ["role_pk", "name", "object_permissions", "model_permissions"]
 
 
 class RoleAssignedPermissionFilter(FilterSet):
-    """Role Assigned permission filter"""
+    """Assigned permission filter"""
 
     model = ChoiceFilter(choices=model_choices(), method="filter_model", required=True)
     object_pk = CharFilter(method="filter_object_pk")
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        data = self.form.cleaned_data
+        model: str = data["model"]
+        object_pk: str | None = data.get("object_pk", None)
+        app, _, model = model.partition(".")
+
+        permissions = Permission.objects.filter(
+            content_type__app_label=app,
+            content_type__model=model,
+        )
+
+        role_pks_with_model_permission = (
+            permissions.order_by().values_list("rolemodelpermission__role", flat=True).distinct()
+        )
+        role_pks_with_object_permission = []
+        if object_pk:
+            role_pks_with_object_permission = (
+                RoleObjectPermission.objects.filter(
+                    permission__in=permissions,
+                    object_pk=object_pk,
+                )
+                .order_by()
+                .values_list("role", flat=True)
+                .distinct()
+            )
+
+        return queryset.filter(
+            Q(pk__in=role_pks_with_model_permission) | Q(pk__in=role_pks_with_object_permission)
+        )
+
     def filter_model(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object type"""
-        app, _, model = value.partition(".")
-        return queryset.filter(
-            Q(
-                group__permissions__content_type__app_label=app,
-                group__permissions__content_type__model=model,
-            )
-            | Q(
-                group__groupobjectpermission__permission__content_type__app_label=app,
-                group__groupobjectpermission__permission__content_type__model=model,
-            )
-        ).distinct()
+        # Actual filtering is handled by the above method where both `model` and `object_pk` are
+        # available. Don't do anything here, this method is only left here to avoid overriding too
+        # much of filter_queryset.
+        return queryset
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object primary key"""
-        return queryset.filter(Q(group__groupobjectpermission__object_pk=value)).distinct()
+        # Actual filtering is handled by the above method where both `model` and `object_pk` are
+        # available. Don't do anything here, this method is only left here to avoid overriding too
+        # much of filter_queryset.
+        return queryset
 
 
 class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
@@ -83,6 +125,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     # which has a required filter that does the heavy lifting
     queryset = Role.objects.all()
     filterset_class = RoleAssignedPermissionFilter
+    search_fields = ["name"]
 
     @permission_required("authentik_rbac.assign_role_permissions")
     @extend_schema(
@@ -102,7 +145,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         ids = []
         with atomic():
             for perm in data.validated_data["permissions"]:
-                assigned_perm = assign_perm(perm, role.group, data.validated_data["model_instance"])
+                assigned_perm = assign_perm(perm, role, data.validated_data["model_instance"])
                 ids.append(PermissionAssignResultSerializer(instance={"id": assigned_perm.pk}).data)
         return Response(ids, status=200)
 
@@ -122,5 +165,5 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         data.is_valid(raise_exception=True)
         with atomic():
             for perm in data.validated_data["permissions"]:
-                remove_perm(perm, role.group, data.validated_data["model_instance"])
+                remove_perm(perm, role, data.validated_data["model_instance"])
         return Response(status=204)

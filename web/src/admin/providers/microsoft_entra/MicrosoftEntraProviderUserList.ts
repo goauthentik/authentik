@@ -53,7 +53,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Microsoft Entra User(s)")}
+            object-label=${msg("Microsoft Entra User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: MicrosoftEntraProviderUser) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUsersDestroy({
@@ -95,11 +95,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     }
 
     renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
-        return html`<td colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html`<pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

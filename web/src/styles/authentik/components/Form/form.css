@@ -1,0 +1,242 @@
+.pf-c-form {
+    /**
+     * This variable is derived from PatternFly 4, modified to align with our borderless
+     * form controls.
+     * @see {@patternfly/patternfly/components/Form/form.scss}
+     */
+    /* prettier-ignore */
+    --pf-c-form--m-horizontal__group-label--md--PaddingTop: calc(
+        (((((var(
+            --pf-global--FontSize--md) * var(
+            --pf-global--LineHeight--md)) + (2 * var(
+            --pf-global--BorderWidth--sm))) - var(
+            --pf-global--FontSize--md)) / 2) + var(
+            --pf-global--FontSize--md)) - ((((var(
+            --pf-global--FontSize--sm) * var(
+            --pf-global--LineHeight--sm)) - var(
+            --pf-global--FontSize--sm)) / 2) + var(
+            --pf-global--FontSize--sm)) + (var(
+            --pf-global--BorderWidth--sm) * 4)
+    );
+}
+
+.pf-c-form__group {
+    column-gap: var(--pf-global--spacer--md);
+}
+
+.pf-c-form__group-label {
+    display: flex;
+    user-select: none;
+    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+
+    /* Increase the pressable area of the label. */
+    .pf-c-form__label {
+        display: block;
+        flex: 1 1 auto;
+    }
+}
+
+.pf-c-form__label[aria-required="true"] .pf-c-form__label-text::after {
+    content: "*" / "";
+    user-select: none;
+    margin-left: var(--pf-c-form__label-required--MarginLeft);
+    font-size: var(--pf-c-form__label-required--FontSize);
+    color: var(--pf-c-form__label-required--Color);
+}
+
+/* #endregion */
+
+/* #region Form controls */
+
+.pf-c-form-control {
+    --pf-c-form-control--BorderTopColor: transparent !important;
+    --pf-c-form-control--BorderRightColor: transparent !important;
+    --pf-c-form-control--BorderLeftColor: transparent !important;
+
+    --pf-c-form-control--readonly--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    --pf-c-form-control--disabled--BackgroundColor: var(--pf-global--BackgroundColor--200);
+
+    /* #region Caps Lock */
+
+    --pf-c-form-control--m-caps-lock--BackgroundUrl: url("data:image/svg+xml;charset=utf8,%3Csvg fill='%23aaabac' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 20.7812 37.6211 L 35.2421 37.6211 C 38.5233 37.6211 40.2577 35.6992 40.2577 32.6055 L 40.2577 28.4570 L 49.1404 28.4570 C 51.0859 28.4570 52.6329 27.3086 52.6329 25.5039 C 52.6329 24.4024 52.0703 23.5351 51.0158 22.6211 L 30.9062 4.8789 C 29.9452 4.0351 29.0546 3.4727 27.9999 3.4727 C 26.9687 3.4727 26.0780 4.0351 25.1171 4.8789 L 4.9843 22.6445 C 3.8828 23.6055 3.3671 24.4024 3.3671 25.5039 C 3.3671 27.3086 4.9140 28.4570 6.8828 28.4570 L 15.7421 28.4570 L 15.7421 32.6055 C 15.7421 35.6992 17.4999 37.6211 20.7812 37.6211 Z M 21.1562 34.0820 C 20.2655 34.0820 19.6562 33.4961 19.6562 32.6055 L 19.6562 25.7149 C 19.6562 25.1524 19.4452 24.9180 18.8828 24.9180 L 8.6640 24.9180 C 8.4999 24.9180 8.4296 24.8476 8.4296 24.7305 C 8.4296 24.6367 8.4530 24.5430 8.5702 24.4492 L 27.5077 7.9961 C 27.7187 7.8086 27.8359 7.7383 27.9999 7.7383 C 28.1640 7.7383 28.3046 7.8086 28.4921 7.9961 L 47.4532 24.4492 C 47.5703 24.5430 47.5939 24.6367 47.5939 24.7305 C 47.5939 24.8476 47.4998 24.9180 47.3356 24.9180 L 37.1406 24.9180 C 36.5780 24.9180 36.3671 25.1524 36.3671 25.7149 L 36.3671 32.6055 C 36.3671 33.4727 35.7109 34.0820 34.8671 34.0820 Z M 19.7733 52.5273 L 36.0624 52.5273 C 38.7577 52.5273 40.3046 51.0273 40.3046 48.3086 L 40.3046 44.9336 C 40.3046 42.2148 38.7577 40.6680 36.0624 40.6680 L 19.7733 40.6680 C 17.0546 40.6680 15.5077 42.2383 15.5077 44.9336 L 15.5077 48.3086 C 15.5077 51.0039 17.0546 52.5273 19.7733 52.5273 Z M 20.3124 49.2227 C 19.4921 49.2227 19.0468 48.8008 19.0468 47.9805 L 19.0468 45.2617 C 19.0468 44.4414 19.4921 43.9727 20.3124 43.9727 L 35.5233 43.9727 C 36.3202 43.9727 36.7655 44.4414 36.7655 45.2617 L 36.7655 47.9805 C 36.7655 48.8008 36.3202 49.2227 35.5233 49.2227 Z'/%3E%3C/svg%3E");
+
+    &.pf-m-icon.pf-m-caps-lock {
+        --pf-c-form-control--m-icon--BackgroundUrl: var(
+            --pf-c-form-control--m-caps-lock--BackgroundUrl
+        );
+    }
+
+    /* #endregion */
+}
+
+.pf-c-form__helper-text {
+    text-wrap: pretty;
+}
+
+/* #region Fields */
+
+fieldset {
+    --ak-fieldset-border-width: thin;
+    --ak-fieldset-border-color: var(--pf-global--BackgroundColor--light-100);
+    --ak-legend-margin-inline-base: var(--pf-global--spacer--sm);
+    --ak-legend-padding-inline-base: var(--pf-global--spacer--sm);
+
+    border-color: var(--ak-fieldset-border-color);
+    border-width: var(--ak-fieldset-border-width);
+
+    padding: var(--ak-legend-padding-inline-base) !important;
+
+    @media (prefers-contrast: more) {
+        --ak-fieldset-border-color: var(--pf-global--BorderColor--200);
+    }
+
+    @media (prefers-contrast: less) {
+        --ak-fieldset-border-color: transparent;
+    }
+
+    & > legend {
+        line-height: 1;
+        padding: var(--ak-legend-padding-inline-base) !important;
+        margin-inline-start: var(
+            --ak-legend-margin-inline-start,
+            var(--ak-legend-margin-inline-base)
+        ) !important;
+        margin-inline-end: var(
+            --ak-legend-margin-inline-end,
+            var(--ak-legend-margin-inline-base)
+        ) !important;
+    }
+
+    &:has(legend.sr-only:not(.more-contrast-only)) {
+        border-width: 0;
+
+        &:not(.pf-c-modal-box__footer) {
+            --ak-legend-padding-inline-base: 0;
+            --ak-legend-margin-inline-base: 0;
+        }
+    }
+
+    &.pf-c-form__group {
+        border-radius: var(--pf-global--BorderRadius--sm);
+    }
+
+    &.pf-c-form__group {
+        display: flex;
+        flex-wrap: wrap;
+
+        &.pf-m-action {
+            gap: var(--pf-global--spacer--md) var(--pf-global--spacer--sm);
+            margin-block-start: 0;
+        }
+    }
+
+    &.pf-c-login__main-footer-band {
+        & > *:last-child {
+            padding-block-end: var(--pf-c-login__main-footer-band-item--PaddingTop);
+        }
+    }
+
+    &.pf-c-modal-box__footer {
+        --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
+        padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+        border-inline: none;
+        border-block-end: none;
+
+        --pf-c-modal-box__footer--c-button--sm--MarginRight: var(
+            --pf-c-modal-box__footer--c-button--MarginRight
+        );
+
+        & > ak-spinner-button:not(:last-child) {
+            margin-right: var(--pf-c-modal-box__footer--c-button--MarginRight);
+        }
+    }
+}
+
+/* #region Dark Theme */
+
+[data-theme="dark"],
+:host([theme="dark"]) {
+    /* #region Inputs */
+
+    .pf-c-input-group:not(:has(.pf-c-switch)) {
+        --pf-c-input-group--BackgroundColor: transparent;
+
+        --pf-global--Color--100: var(--pf-global--Color--light-100);
+        --pf-global--Color--200: var(--pf-global--Color--light-200);
+        --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
+        --pf-global--primary-color--100: var(--pf-global--primary-color--300);
+        --pf-global--link--Color: var(--pf-global--link--Color--light);
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
+        --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
+    }
+
+    select.pf-c-form-control {
+        --pf-c-form-control__select--BackgroundUrl: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%23fafafa' d='M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z'/%3E%3C/svg%3E");
+    }
+
+    .pf-c-form-control {
+        /* !important is required to ensure priority when in compatibility mode. */
+
+        --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
+        --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
+        --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100) !important;
+        --pf-global--BackgroundColor--200: var(--pf-global--BackgroundColor--dark-200) !important;
+        --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100) !important;
+        --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
+        --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
+        --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover) !important;
+
+        --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light) !important;
+
+        --pf-c-form-control--readonly--BackgroundColor: var(--ak-dark-background-light) !important;
+        --pf-c-form-control--disabled--BackgroundColor: var(--ak-dark-background-light) !important;
+    }
+
+    .form-control-static {
+        color: var(--ak-dark-foreground);
+    }
+
+    /* #endregion */
+
+    /* #region Fields */
+
+    .pf-c-form__field-group-header-title-text {
+        color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-form__field-group {
+        border-bottom: 0;
+    }
+
+    fieldset {
+        --ak-fieldset-border-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+
+        @media (prefers-contrast: more) {
+            --ak-fieldset-border-color: var(--pf-global--BorderColor--300);
+        }
+
+        @media (prefers-contrast: less) {
+            --ak-fieldset-border-color: transparent;
+        }
+    }
+
+    /* #endregion */
+
+    /* #region Radio */
+
+    .pf-c-radio {
+        --pf-c-radio__label--Color: var(--ak-dark-foreground);
+    }
+
+    /* #endregion */
+
+    .pf-c-form__label-text {
+        color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-check__label {
+        color: var(--ak-dark-foreground);
+    }
+}
+
+/* #endregion */

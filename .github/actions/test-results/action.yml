@@ -1,0 +1,28 @@
+name: "Process test results"
+description: Convert test results to JUnit, add them to GitHub Actions and codecov
+
+inputs:
+  flags:
+    description: Codecov flags
+
+runs:
+  using: "composite"
+  steps:
+    - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
+      with:
+        flags: ${{ inputs.flags }}
+        use_oidc: true
+    - uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
+      with:
+        flags: ${{ inputs.flags }}
+        use_oidc: true
+        report_type: test_results
+    - name: PostgreSQL Logs
+      shell: bash
+      run: |
+        if [[ $RUNNER_DEBUG == '1' ]]; then
+          docker stop setup-postgresql-1
+          echo "::group::PostgreSQL Logs"
+          docker logs setup-postgresql-1
+          echo "::endgroup::"
+        fi

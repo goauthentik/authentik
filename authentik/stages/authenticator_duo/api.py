@@ -9,19 +9,23 @@ from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, IntegerField
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.api.validation import Serializer, validate
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.flows.api.stages import StageSerializer
+from authentik.flows.auth import FlowActive
+from authentik.flows.planner import FlowPlan
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
+from authentik.stages.authenticator_duo.stage import PLAN_CONTEXT_DUO_ENROLL
 
 LOGGER = get_logger()
 
@@ -44,6 +48,11 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "client_secret": {"write_only": True},
             "admin_secret_key": {"write_only": True},
         }
+
+
+class AuthenticatorDuoStageManualDeviceImport(Serializer):
+    duo_user_id = CharField(required=True)
+    username = CharField(required=True)
 
 
 class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
@@ -77,53 +86,56 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             ),
         },
     )
-    @action(methods=["POST"], detail=True, permission_classes=[])
+    @action(
+        methods=["POST"],
+        detail=True,
+        authentication_classes=[FlowActive],
+        permission_classes=[AllowAny],
+    )
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check enrollment status of user details in current session"""
         stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()
         if not stage:
             raise Http404
         client = stage.auth_client()
-        enroll = self.request.session.get(SESSION_KEY_DUO_ENROLL)
+        plan: FlowPlan = request.auth
+        enroll = plan.context.get(PLAN_CONTEXT_DUO_ENROLL)
         if not enroll:
             return Response(status=400)
         status = client.enroll_status(enroll["user_id"], enroll["activation_code"])
         return Response({"duo_response": status})
 
     @permission_required(
-        "", ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
+        None, ["authentik_stages_authenticator_duo.add_duodevice", "authentik_core.view_user"]
     )
     @extend_schema(
-        request=inline_serializer(
-            "AuthenticatorDuoStageManualDeviceImport",
-            {
-                "duo_user_id": CharField(required=True),
-                "username": CharField(required=True),
-            },
-        ),
+        request=AuthenticatorDuoStageManualDeviceImport(),
         responses={
             204: OpenApiResponse(description="Enrollment successful"),
             400: OpenApiResponse(description="Bad request"),
         },
     )
     @action(methods=["POST"], detail=True)
-    def import_device_manual(self, request: Request, pk: str) -> Response:
+    @validate(AuthenticatorDuoStageManualDeviceImport)
+    def import_device_manual(
+        self, request: Request, pk: str, body: AuthenticatorDuoStageManualDeviceImport
+    ) -> Response:
         """Import duo devices into authentik"""
         stage: AuthenticatorDuoStage = self.get_object()
         user = (
             get_objects_for_user(request.user, "authentik_core.view_user")
-            .filter(username=request.data.get("username", ""))
+            .filter(username=body.validated_data.get("username", ""))
             .first()
         )
         if not user:
             return Response(data={"non_field_errors": ["User does not exist."]}, status=400)
         device = DuoDevice.objects.filter(
-            duo_user_id=request.data.get("duo_user_id"), user=user, stage=stage
+            duo_user_id=body.validated_data.get("duo_user_id"), user=user, stage=stage
         ).first()
         if device:
             return Response(data={"non_field_errors": ["Device exists already."]}, status=400)
         DuoDevice.objects.create(
-            duo_user_id=request.data.get("duo_user_id"),
+            duo_user_id=body.validated_data.get("duo_user_id"),
             user=user,
             stage=stage,
             confirmed=True,
@@ -207,7 +219,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
 class DuoDeviceSerializer(ModelSerializer):
     """Serializer for Duo authenticator devices"""
 
-    user = GroupMemberSerializer(read_only=True)
+    user = PartialUserSerializer(read_only=True)
 
     class Meta:
         model = DuoDevice

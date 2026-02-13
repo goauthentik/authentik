@@ -15,7 +15,7 @@ from structlog.stdlib import get_logger
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.models import OutpostModel
 from authentik.policies.models import PolicyBindingModel
@@ -145,7 +145,7 @@ class RACPropertyMapping(PropertyMapping):
         verbose_name_plural = _("RAC Provider Property Mappings")
 
 
-class ConnectionToken(ExpiringModel):
+class ConnectionToken(InternallyManagedMixin, ExpiringModel):
     """Token for a single connection to a specified endpoint"""
 
     connection_token_uuid = models.UUIDField(default=uuid4, primary_key=True)

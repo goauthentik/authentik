@@ -179,7 +179,7 @@ runs:
             fi
 
             # Create a unique branch name for the cherry-pick
-            CHERRY_PICK_BRANCH="cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}"
+            CHERRY_PICK_BRANCH="cherry-pick/${PR_NUMBER}-to-${TARGET_BRANCH}"
 
             # Check if a cherry-pick PR already exists
             EXISTING_PR=$(gh pr list --head "$CHERRY_PICK_BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
@@ -201,7 +201,7 @@ runs:
               git push origin "$CHERRY_PICK_BRANCH"
 
               # Create PR for the cherry-pick
-              CHERRY_PICK_TITLE="$PR_TITLE (cherry-pick #$PR_NUMBER)"
+              CHERRY_PICK_TITLE="$PR_TITLE (cherry-pick #$PR_NUMBER to $TARGET_BRANCH)"
               CHERRY_PICK_BODY="Cherry-pick of #$PR_NUMBER to \`$TARGET_BRANCH\` branch.
 
         **Original PR:** #$PR_NUMBER
@@ -214,6 +214,9 @@ runs:
                 --base "$TARGET_BRANCH" \
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick")
+
+              # Assign the PR to the original author
+              gh pr edit "$NEW_PR" --add-assignee "$PR_AUTHOR" || true
 
               echo "✅ Created cherry-pick PR $NEW_PR for $TARGET_BRANCH"
 
@@ -236,7 +239,7 @@ runs:
               git push origin "$CHERRY_PICK_BRANCH"
 
               # Create PR with conflict notice
-              CONFLICT_TITLE="$PR_TITLE (backport of #$PR_NUMBER)"
+              CONFLICT_TITLE="$PR_TITLE (cherry-pick #$PR_NUMBER to $TARGET_BRANCH)"
               CONFLICT_BODY="⚠️ **This cherry-pick has conflicts that require manual resolution.**
 
         Cherry-pick of #$PR_NUMBER to \`$TARGET_BRANCH\` branch.
@@ -253,6 +256,9 @@ runs:
                 --base "$TARGET_BRANCH" \
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick")
+
+              # Assign the PR to the original author
+              gh pr edit "$NEW_PR" --add-assignee "$PR_AUTHOR" || true
 
               echo "⚠️ Created conflict resolution PR $NEW_PR for $TARGET_BRANCH"
 

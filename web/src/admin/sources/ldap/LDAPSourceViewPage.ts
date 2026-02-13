@@ -19,7 +19,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import {
     LDAPSource,
     ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -34,7 +34,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
@@ -53,7 +52,6 @@ export class LDAPSourceViewPage extends AKElement {
     source!: LDAPSource;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFGrid,
@@ -206,12 +204,13 @@ export class LDAPSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsource}
+                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikSourcesLdapLdapsource}
                     objectPk=${this.source.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>

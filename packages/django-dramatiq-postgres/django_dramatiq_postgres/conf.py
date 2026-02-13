@@ -1,11 +1,11 @@
-from typing import Any
+from typing import Any, cast
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
 
 class Conf:
-    def __init__(self):
+    def __init__(self) -> None:
         try:
             _ = settings.DRAMATIQ
         except AttributeError as exc:
@@ -19,68 +19,73 @@ class Conf:
 
     @property
     def encoder_class(self) -> str:
-        return self.conf.get("encoder_class", "dramatiq.encoder.PickleEncoder")
+        return cast(str, self.conf.get("encoder_class", "dramatiq.encoder.PickleEncoder"))
 
     @property
     def broker_class(self) -> str:
-        return self.conf.get("broker_class", "django_dramatiq_postgres.broker.PostgresBroker")
+        return cast(
+            str, self.conf.get("broker_class", "django_dramatiq_postgres.broker.PostgresBroker")
+        )
 
     @property
     def broker_args(self) -> tuple[Any]:
-        return self.conf.get("broker_args", ())
+        return cast(tuple[Any], self.conf.get("broker_args", tuple()))
 
     @property
     def broker_kwargs(self) -> dict[str, Any]:
-        return self.conf.get("broker_kwargs", {})
+        return cast(dict[str, Any], self.conf.get("broker_kwargs", {}))
 
     @property
     def middlewares(self) -> tuple[tuple[str, dict[str, Any]]]:
-        return self.conf.get(
-            "middlewares",
-            (
-                ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
-                ("dramatiq.middleware.age_limit.AgeLimit", {}),
-                ("dramatiq.middleware.time_limit.TimeLimit", {}),
-                ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
-                ("dramatiq.middleware.callbacks.Callbacks", {}),
-                ("dramatiq.middleware.pipelines.Pipelines", {}),
-                ("dramatiq.middleware.retries.Retries", {}),
+        return cast(
+            tuple[tuple[str, dict[str, Any]]],
+            self.conf.get(
+                "middlewares",
+                (
+                    ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
+                    ("django_dramatiq_postgres.middleware.TaskStateBeforeMiddleware", {}),
+                    ("dramatiq.middleware.age_limit.AgeLimit", {}),
+                    ("dramatiq.middleware.time_limit.TimeLimit", {}),
+                    ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
+                    ("dramatiq.middleware.callbacks.Callbacks", {}),
+                    ("dramatiq.middleware.pipelines.Pipelines", {}),
+                    ("dramatiq.middleware.retries.Retries", {}),
+                    ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
+                ),
             ),
         )
 
     @property
     def channel_prefix(self) -> str:
-        return self.conf.get("channel_prefix", "dramatiq")
+        return cast(str, self.conf.get("channel_prefix", "dramatiq"))
 
     @property
     def task_model(self) -> str:
-        return self.conf["task_model"]
-
-    @property
-    def lock_purge_interval(self) -> int:
-        return self.conf.get("lock_purge_interval", 60)
+        return cast(str, self.conf["task_model"])
 
     @property
     def task_purge_interval(self) -> int:
         # 24 hours
-        return self.conf.get("task_purge_interval", 24 * 60 * 60)
+        return cast(int, self.conf.get("task_purge_interval", 24 * 60 * 60))
 
     @property
     def task_expiration(self) -> int:
         # 30 days
-        return self.conf.get("task_expiration", 60 * 60 * 24 * 30)
+        return cast(int, self.conf.get("task_expiration", 60 * 60 * 24 * 30))
 
     @property
     def result_backend(self) -> str:
-        return self.conf.get("result_backend", "django_dramatiq_postgres.results.PostgresBackend")
+        return cast(
+            str, self.conf.get("result_backend", "django_dramatiq_postgres.results.PostgresBackend")
+        )
 
     @property
     def result_backend_args(self) -> tuple[Any]:
-        return self.conf.get("result_backend_args", ())
+        return cast(tuple[Any], self.conf.get("result_backend_args", ()))
 
     @property
     def result_backend_kwargs(self) -> dict[str, Any]:
-        return self.conf.get("result_backend_kwargs", {})
+        return cast(dict[str, Any], self.conf.get("result_backend_kwargs", {}))
 
     @property
     def autodiscovery(self) -> dict[str, Any]:
@@ -113,16 +118,18 @@ class Conf:
 
     @property
     def scheduler_class(self) -> str:
-        return self.conf.get("scheduler_class", "django_dramatiq_postgres.scheduler.Scheduler")
+        return cast(
+            str, self.conf.get("scheduler_class", "django_dramatiq_postgres.scheduler.Scheduler")
+        )
 
     @property
     def schedule_model(self) -> str | None:
-        return self.conf.get("schedule_model")
+        return cast(str | None, self.conf.get("schedule_model"))
 
     @property
     def scheduler_interval(self) -> int:
-        return self.conf.get("scheduler_interval", 60)
+        return cast(int, self.conf.get("scheduler_interval", 60))
 
     @property
     def test(self) -> bool:
-        return self.conf.get("test", False)
+        return cast(bool, self.conf.get("test", False))

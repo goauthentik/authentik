@@ -7,22 +7,10 @@ from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from lxml.etree import _Element  # nosec
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import (
-    GroupSourceConnection,
-    PropertyMapping,
-    Source,
-    UserSourceConnection,
-)
-from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.challenge import RedirectChallenge
-from authentik.flows.models import Flow
-from authentik.lib.expression.evaluator import BaseEvaluator
-from authentik.lib.models import DomainlessURLValidator
-from authentik.lib.utils.time import timedelta_string_validator
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -47,6 +35,19 @@ from authentik.sources.saml.processors.constants import (
     SHA384,
     SHA512,
 )
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
+from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.models import CertificateKeyPair
+from authentik.flows.challenge import RedirectChallenge
+from authentik.flows.models import Flow
+from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 class SAMLBindingTypes(models.TextChoices):
@@ -200,6 +201,9 @@ class SAMLSource(Source):
         default=RSA_SHA256,
     )
 
+    signed_assertion = models.BooleanField(default=True)
+    signed_response = models.BooleanField(default=False)
+
     @property
     def component(self) -> str:
         return "ak-source-saml-form"
@@ -214,9 +218,8 @@ class SAMLSource(Source):
     def property_mapping_type(self) -> type[PropertyMapping]:
         return SAMLSourcePropertyMapping
 
-    def get_base_user_properties(self, root: Any, name_id: Any, **kwargs):
+    def get_base_user_properties(self, root: _Element, assertion: _Element, name_id: Any, **kwargs):
         attributes = {}
-        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
         if assertion is None:
             raise ValueError("Assertion element not found")
         attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
@@ -276,6 +279,7 @@ class SAMLSource(Source):
             ),
             name=self.name,
             icon_url=self.icon_url,
+            promoted=self.promoted,
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:

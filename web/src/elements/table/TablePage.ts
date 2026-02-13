@@ -1,12 +1,13 @@
-import "#components/ak-page-header";
+import "#elements/EmptyState";
 
 import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -19,6 +20,19 @@ export abstract class TablePage<T extends object> extends Table<T> {
         PFPage,
         PFContent,
         PFSidebar,
+        css`
+            :host {
+                display: flex;
+            }
+
+            .pf-c-sidebar__panel {
+                --pf-c-sidebar__panel--Position: static;
+                flex: 0 1 25%;
+            }
+            .pf-c-sidebar__content {
+                flex: 1 1 75%;
+            }
+        `,
     ];
 
     //#region Abstract properties
@@ -107,7 +121,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No objects found.")}</span>
+                      ><span>${this.emptyStateMessage}</span>
                       <div slot="body">
                           ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>
@@ -134,13 +148,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
     }
 
     render() {
-        return html`<ak-page-header
-                icon=${this.pageIcon}
-                header=${this.pageTitle}
-                description=${ifDefined(this.pageDescription)}
-            >
-            </ak-page-header>
-            ${this.renderSectionBefore?.()}
+        return html` ${this.renderSectionBefore?.()}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
@@ -153,5 +161,14 @@ export abstract class TablePage<T extends object> extends Table<T> {
                 </div>
             </div>
             ${this.renderSectionAfter?.()}`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }

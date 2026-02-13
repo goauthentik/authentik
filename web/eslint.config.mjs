@@ -1,28 +1,41 @@
-import { createESLintPackageConfig } from "@goauthentik/eslint-config";
+/**
+ * @file ESLint Configuration
+ *
+ * @import { Config } from "eslint/config";
+ */
 
-import tseslint from "typescript-eslint";
+import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
+
+import { defineConfig } from "eslint/config";
 
 // @ts-check
 
 /**
  * ESLint configuration for authentik's monorepo.
+ * @type {Config[]}
  */
-const ESLintConfig = createESLintPackageConfig({
-    ignorePatterns: [
-        "**/dist/**",
-        "**/out/**",
-        "**/.wireit/**",
-        "**/node_modules/",
-        "**/.storybook/*",
-        "coverage/",
-        "src/locale-codes.ts",
-        "storybook-static/",
-        "src/locales/",
-    ],
-});
-
-export default tseslint.config(
-    ...ESLintConfig,
+const eslintConfig = defineConfig(
+    createESLintPackageConfig({
+        parserOptions: {
+            tsconfigRootDir: import.meta.dirname,
+        },
+        ignorePatterns: [
+            // ---
+            ...DefaultIgnorePatterns,
+            "**/dist/**",
+            "**/out/**",
+            "**/vendored/**",
+            "**/.wireit/**",
+            "**/node_modules/",
+            "**/.storybook/*",
+            "coverage/",
+            "src/locale-codes.ts",
+            "playwright-report",
+            "storybook-static/",
+            "src/locales/",
+            "**/*.min.js",
+        ],
+    }),
     {
         rules: {
             "no-console": "off",
@@ -31,27 +44,18 @@ export default tseslint.config(
     },
     {
         rules: {
-            "no-void": "off",
-            "no-implicit-coercion": "off",
-            "prefer-template": "off",
-            "@typescript-eslint/ban-ts-comment": "off",
-            "@typescript-eslint/no-unused-vars": "off",
-            "@typescript-eslint/no-use-before-define": "off",
-            "array-callback-return": "off",
-            "block-scoped-var": "off",
             "consistent-return": "off",
-            "func-names": "off",
-            "guard-for-in": "off",
-            "no-bitwise": "off",
             "no-div-regex": "off",
-            "no-else-return": "off",
-            "no-empty-function": "off",
+            "no-empty-function": ["error", { allow: ["arrowFunctions"] }],
             "no-param-reassign": "off",
-            "no-throw-literal": "off",
-            // "no-var": "off",
-            "prefer-arrow-callback": "off",
-            "react/jsx-no-leaked-render": "off",
-            "vars-on-top": "off",
         },
     },
+    {
+        rules: {
+            "vars-on-top": "off",
+        },
+        files: ["**/*.d.ts"],
+    },
 );
+
+export default eslintConfig;

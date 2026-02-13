@@ -10,12 +10,13 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { InitialPermissions, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, HTMLTemplateResult, TemplateResult } from "lit";
+import { html, HTMLTemplateResult, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-initial-permissions-list")
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
@@ -44,7 +45,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Initial Permissions")}
+            object-label=${msg("Initial Permissions")}
             .objects=${this.selectedElements}
             .usedBy=${(item: InitialPermissions) => {
                 return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsUsedByList({
@@ -64,31 +65,27 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     }
 
     render(): HTMLTemplateResult {
-        return html`<ak-page-header
-                icon=${this.pageIcon}
-                header=${this.pageTitle}
-                description=${ifDefined(this.pageDescription)}
-            >
-            </ak-page-header>
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <div class="pf-c-card">${this.renderTable()}</div>
-            </section>`;
+        return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+            <div class="pf-c-card">${this.renderTable()}</div>
+        </section>`;
     }
 
     row(item: InitialPermissions): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`<ak-forms-modal>
-                <span slot="submit">${msg("Update")}</span>
-                <span slot="header">${msg("Update Initial Permissions")}</span>
-                <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
-                </ak-initial-permissions-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Initial Permissions")}</span>
+                    <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
+                    </ak-initial-permissions-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+            </div>`,
         ];
     }
 
@@ -102,10 +99,25 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             </ak-forms-modal>
         `;
     }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
+    }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
         "initial-permissions-list": InitialPermissionsListPage;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-initial-permissions-list": InitialPermissionsListPage;
     }
 }
