@@ -15,11 +15,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
-import { MessageLevel } from "#common/messages";
 
 import { Form } from "#elements/forms/Form";
-import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
@@ -28,6 +25,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { UserOption } from "#elements/user/utils";
 
 import { AKLabel } from "#components/ak-label";
+
+import { renderRecoveryButtons } from "#admin/users/UserListPage";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, RbacApi, Role, User } from "@goauthentik/api";
 
@@ -80,7 +79,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         // TODO: The `form-control-sibling` container is a workaround to get the
         // table to allow the table to appear as an inline-block element next to the input group.
         // This should be fixed by moving the `@container` query off `:host`.
@@ -195,10 +194,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const disabled = this.selectedElements.length < 1;
         const targetLabel = this.targetGroup?.name || this.targetRole?.name;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("User(s)")}
-            actionLabel=${msg("Remove User(s)")}
+            object-label=${msg("User(s)")}
+            action-label=${msg("Remove User(s)")}
             action=${msg("removed")}
-            actionSubtext=${targetLabel
+            action-subtext=${targetLabel
                 ? msg(str`Are you sure you want to remove the selected users from ${targetLabel}?`)
                 : msg("Are you sure you want to remove the selected users?")}
             .objects=${this.selectedElements}
@@ -303,7 +302,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     <div class="pf-c-description-list__text">
                         <ak-user-active-form
                             .obj=${item}
-                            objectLabel=${msg("User")}
+                            object-label=${msg("User")}
                             .delete=${() => {
                                 return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                                     id: item.pk || 0,
@@ -326,78 +325,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-forms-modal>
-                            <span slot="submit">${msg("Update password")}</span>
-                            <span slot="header">
-                                ${msg(str`Update ${item.name || item.username}'s password`)}
-                            </span>
-                            <ak-user-password-form
-                                username=${item.username}
-                                email=${ifDefined(item.email)}
-                                slot="form"
-                                .instancePk=${item.pk}
-                            ></ak-user-password-form>
-                            <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                ${msg("Set password")}
-                            </button>
-                        </ak-forms-modal>
-                        ${this.brand.flowRecovery
-                            ? html`
-                                  <ak-action-button
-                                      class="pf-m-secondary"
-                                      .apiRequest=${() => {
-                                          return new CoreApi(DEFAULT_CONFIG)
-                                              .coreUsersRecoveryCreate({
-                                                  id: item.pk,
-                                              })
-                                              .then((rec) => {
-                                                  showMessage({
-                                                      level: MessageLevel.success,
-                                                      message: msg(
-                                                          "Successfully generated recovery link",
-                                                      ),
-                                                      description: rec.link,
-                                                  });
-                                              })
-                                              .catch(async (error: unknown) => {
-                                                  const parsedError =
-                                                      await parseAPIResponseError(error);
-
-                                                  showMessage({
-                                                      level: MessageLevel.error,
-                                                      message: pluckErrorDetail(parsedError),
-                                                  });
-                                              });
-                                      }}
-                                  >
-                                      ${msg("Copy recovery link")}
-                                  </ak-action-button>
-                                  ${item.email
-                                      ? html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                                            <span slot="submit"> ${msg("Send link")} </span>
-                                            <span slot="header">
-                                                ${msg("Send recovery link to user")}
-                                            </span>
-                                            <ak-user-reset-email-form slot="form" .user=${item}>
-                                            </ak-user-reset-email-form>
-                                            <button
-                                                slot="trigger"
-                                                class="pf-c-button pf-m-secondary"
-                                            >
-                                                ${msg("Email recovery link")}
-                                            </button>
-                                        </ak-forms-modal>`
-                                      : html`<span
-                                            >${msg(
-                                                "Recovery link cannot be emailed, user has no email address saved.",
-                                            )}</span
-                                        >`}
-                              `
-                            : html` <p>
-                                  ${msg(
-                                      "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
-                                  )}
-                              </p>`}
+                        ${renderRecoveryButtons({
+                            user: item,
+                            brandHasRecoveryFlow: Boolean(this.brand.flowRecovery),
+                        })}
                     </div>
                 </dd>
             </div>
@@ -439,7 +370,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 : nothing}
             <ak-dropdown class="pf-c-dropdown">
                 <button
-                    class="pf-m-secondary pf-c-dropdown__toggle"
+                    class="pf-c-button pf-m-secondary pf-c-dropdown__toggle"
                     type="button"
                     id="add-user-toggle"
                     aria-haspopup="menu"
@@ -449,10 +380,9 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                     <span class="pf-c-dropdown__toggle-text">${msg("Add new user")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
-                <ul
+                <menu
                     class="pf-c-dropdown__menu"
                     hidden
-                    role="menu"
                     id="add-user-menu"
                     aria-labelledby="add-user-toggle"
                     tabindex="-1"
@@ -526,7 +456,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             </a>
                         </ak-forms-modal>
                     </li>
-                </ul>
+                </menu>
             </ak-dropdown>
             ${super.renderToolbar()}
         `;

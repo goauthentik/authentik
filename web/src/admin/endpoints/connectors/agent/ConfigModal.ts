@@ -16,7 +16,7 @@ import {
     MDMConfigResponse,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -28,6 +28,25 @@ export class ConfigModal extends ModalButton {
 
     @state()
     config?: MDMConfigResponse;
+
+    #downloadConnectorConfig = async () => {
+        if (!this.config) {
+            return;
+        }
+
+        downloadFile({
+            content: this.config.config,
+            filename: this.config.filename,
+            type: this.config.mimeType,
+        });
+
+        showMessage({
+            level: MessageLevel.info,
+            message: msg(str`Successfully downloaded ${this.config.filename}!`),
+        });
+
+        this.close();
+    };
 
     connectedCallback(): void {
         super.connectedCallback();
@@ -68,20 +87,7 @@ export class ConfigModal extends ModalButton {
                 </ak-expand>
             </div>
             <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <ak-action-button
-                    class="pf-m-primary"
-                    .apiRequest=${() => {
-                        if (!this.config) {
-                            return;
-                        }
-                        downloadFile(
-                            this.config.config,
-                            this.config.filename,
-                            this.config.mimeType,
-                        );
-                        this.close();
-                    }}
-                >
+                <ak-action-button class="pf-m-primary" .apiRequest=${this.#downloadConnectorConfig}>
                     ${msg("Download")}
                 </ak-action-button>
                 &nbsp;

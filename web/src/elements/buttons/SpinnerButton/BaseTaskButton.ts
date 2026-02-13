@@ -13,12 +13,10 @@ import { property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 // `pointer-events: none` makes the button inaccessible during the processing phase.
 
 const buttonStyles = [
-    PFBase,
     PFButton,
     PFSpinner,
     css`
@@ -61,14 +59,12 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  *
  */
 
-export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
-    eventPrefix = "ak-button";
+export abstract class BaseTaskButton<R = unknown> extends CustomEmitterElement(AKElement) {
+    public eventPrefix = "ak-button";
 
-    static styles = [...buttonStyles];
+    public static styles = [...buttonStyles];
 
-    callAction!: () => Promise<unknown>;
-
-    actionTask: Task;
+    public callAction?(): Promise<R>;
 
     @property({ type: Boolean })
     public disabled = false;
@@ -76,25 +72,24 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     @property({ type: String })
     public label: string | null = null;
 
-    constructor() {
-        super();
-        this.onSuccess = this.onSuccess.bind(this);
-        this.onError = this.onError.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.actionTask = this.buildTask();
-    }
-
-    buildTask() {
-        return new Task(this, {
-            task: () => this.callAction(),
+    protected buildTask() {
+        return new Task<[], R>(this, {
+            task: () => {
+                if (typeof this.callAction !== "function") {
+                    throw new TypeError("No action defined for SpinnerButton");
+                }
+                return this.callAction();
+            },
             args: () => [],
             autoRun: false,
-            onComplete: (r: unknown) => this.onSuccess(r),
-            onError: (r: unknown) => this.onError(r),
+            onComplete: (r: R) => this.onSuccess(r),
+            onError: (error) => this.onError(error),
         });
     }
 
-    onComplete() {
+    protected actionTask: Task = this.buildTask();
+
+    protected onComplete() {
         setTimeout(() => {
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
             // set-up for the next task...
@@ -103,34 +98,35 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         }, SPINNER_TIMEOUT);
     }
 
-    onSuccess(r: unknown) {
+    protected onSuccess(result: R): void {
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
-            result: r,
+            result,
         });
         this.onComplete();
     }
 
-    onError(error: unknown) {
+    protected onError(error: unknown) {
         this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
             error,
         });
         this.onComplete();
     }
 
-    onClick() {
+    protected onClick() {
         // Don't accept clicks when a task is in progress..
         if (this.actionTask.status === TaskStatus.PENDING) {
             return;
         }
+
         this.dispatchCustomEvent(`${this.eventPrefix}-click`);
         this.actionTask.run();
     }
 
-    private spinner = html`<span class="pf-c-button__progress">
+    #spinner = html`<span class="pf-c-button__progress">
         <ak-spinner size=${PFSize.Medium}></ak-spinner>
     </span>`;
 
-    get buttonClasses() {
+    public get buttonClasses() {
         return [
             ...this.classList,
             StatusMap[this.actionTask.status],
@@ -140,7 +136,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             .trim();
     }
 
-    render() {
+    protected override render() {
         return html`<button
             id="spinner-button"
             part="spinner-button"
@@ -152,7 +148,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             ?disabled=${this.disabled}
         >
             ${this.actionTask.render({
-                pending: () => this.spinner,
+                pending: () => this.#spinner,
             })}
             <slot></slot>
         </button>`;

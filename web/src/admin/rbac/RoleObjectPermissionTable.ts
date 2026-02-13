@@ -7,6 +7,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import type { Pagination } from "@goauthentik/api";
 import {
@@ -19,7 +20,6 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const FALLBACK_PAGINATED_RESPONSE: { pagination: Pagination; results: [] } = {
     pagination: {
@@ -36,11 +36,13 @@ const FALLBACK_PAGINATED_RESPONSE: { pagination: Pagination; results: [] } = {
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
-    @property()
-    model?: RbacPermissionsAssignedByRolesListModelEnum;
+    @property({ type: String })
+    public model: RbacPermissionsAssignedByRolesListModelEnum | null = null;
 
+    // TODO: Use attribute casing.
+    // @property({ attribute: "object-pk" })
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     @state()
     modelPermissions?: PaginatedPermissionList;
@@ -89,8 +91,8 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             <span slot="submit">${msg("Assign")}</span>
             <span slot="header">${msg("Assign object permissions to role")}</span>
             <ak-rbac-role-object-permission-form
-                model=${ifDefined(this.model)}
-                objectPk=${ifDefined(this.objectPk)}
+                model=${ifPresent(this.model)}
+                objectPk=${ifPresent(this.objectPk)}
                 slot="form"
             >
             </ak-rbac-role-object-permission-form>
@@ -103,7 +105,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Permission(s)")}
+            object-label=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: RoleAssignedObjectPermission) => {
                 return [{ key: msg("Permission"), value: item.name }];
@@ -115,7 +117,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                     uuid: item.rolePk,
                     patchedPermissionAssignRequest: {
                         objectPk: this.objectPk?.toString(),
-                        model: this.model,
+                        model: this.model || undefined,
                         permissions: item.objectPermissions.map((perm) => {
                             return `${perm.appLabel}.${perm.codename}`;
                         }),

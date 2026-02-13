@@ -5,12 +5,13 @@ import "#admin/stages/StageWizard";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/forms/ProxyForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CustomFormElementTagName } from "#elements/forms/unsafe";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import {
     FlowsApi,
@@ -55,7 +56,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Stage binding(s)")}
+            object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
@@ -86,16 +87,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg(str`Update ${item.stageObj?.verboseName}`)}</span>
-                    <ak-proxy-form
-                        slot="form"
-                        .args=${{
-                            instancePk: item.stage,
-                        }}
-                        type=${ifDefined(item.stageObj?.component)}
-                    >
-                    </ak-proxy-form>
+                    ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
+                        slot: "form",
+                        instancePk: item.pk,
+                        actionLabel: msg("Update"),
+                        headline: msg(str`Update ${item.stageObj?.verboseName}`, {
+                            id: "form.headline.update",
+                        }),
+                    })}
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Stage")}
                     </button>

@@ -49,15 +49,10 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             scim_user.externalId = str(obj.uid)
         return scim_user
 
-    def delete(self, obj: User):
+    def delete(self, identifier: str):
         """Delete user"""
-        scim_user = SCIMProviderUser.objects.filter(provider=self.provider, user=obj).first()
-        if not scim_user:
-            self.logger.debug("User does not exist in SCIM, skipping")
-            return None
-        response = self._request("DELETE", f"/Users/{scim_user.scim_id}")
-        scim_user.delete()
-        return response
+        SCIMProviderUser.objects.filter(provider=self.provider, scim_id=identifier).delete()
+        return self._request("DELETE", f"/Users/{identifier}")
 
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
@@ -77,7 +72,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     raise exc
                 users = self._request(
                     "GET",
-                    f"/Users?{urlencode({'filter': f'userName eq \"{scim_user.userName}\"'})}",
+                    f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
                 )
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:

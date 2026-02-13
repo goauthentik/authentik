@@ -60,20 +60,18 @@ class TestEndpointFacts(APITestCase):
                 ]
             }
         )
-        self.assertEqual(
-            device.cached_facts.data,
-            {
-                "software": [
-                    {
-                        "name": "software-a",
-                        "version": "1.2.3.4",
-                        "source": "package",
-                    },
-                    {
-                        "name": "software-b",
-                        "version": "5.6.7.8",
-                        "source": "package",
-                    },
-                ]
-            },
+        self.assertCountEqual(
+            device.cached_facts.data["software"],
+            [
+                {
+                    "name": "software-a",
+                    "version": "1.2.3.4",
+                    "source": "package",
+                },
+                {
+                    "name": "software-b",
+                    "version": "5.6.7.8",
+                    "source": "package",
+                },
+            ],
         )

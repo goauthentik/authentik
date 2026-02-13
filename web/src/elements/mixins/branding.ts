@@ -2,7 +2,7 @@ import { DefaultBrand } from "#common/ui/config";
 
 import { createMixin } from "#elements/types";
 
-import type { CurrentBrand, FooterLink } from "@goauthentik/api";
+import type { CurrentBrand, FooterLink, ThemedUrls } from "@goauthentik/api";
 
 import { consume, Context, createContext } from "@lit/context";
 
@@ -43,11 +43,21 @@ export interface BrandingMixin {
     readonly brandingLogo: string;
 
     /**
+     * Pre-resolved themed URLs for the logo (for S3 presigned URLs).
+     */
+    readonly brandingLogoThemedUrls: ThemedUrls | null | undefined;
+
+    /**
      * The application favicon.
      *
      * @see {@linkcode DefaultBrand.brandingFavicon}
      */
     readonly brandingFavicon: string;
+
+    /**
+     * Pre-resolved themed URLs for the favicon (for S3 presigned URLs).
+     */
+    readonly brandingFaviconThemedUrls: ThemedUrls | null | undefined;
 
     /**
      * Footer links provided by the brand configuration.
@@ -81,8 +91,16 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
                 return this.brand.brandingLogo ?? DefaultBrand.brandingLogo;
             }
 
+            public get brandingLogoThemedUrls(): ThemedUrls | null | undefined {
+                return this.brand.brandingLogoThemedUrls;
+            }
+
             public get brandingFavicon(): string {
                 return this.brand.brandingFavicon ?? DefaultBrand.brandingFavicon;
+            }
+
+            public get brandingFaviconThemedUrls(): ThemedUrls | null | undefined {
+                return this.brand.brandingFaviconThemedUrls;
             }
 
             public get brandingFooterLinks(): FooterLink[] {

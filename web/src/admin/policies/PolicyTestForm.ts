@@ -29,13 +29,19 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
-    policy?: Policy;
+    public policy?: Policy;
 
     @state()
-    result?: PolicyTestResult;
+    protected result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    public request?: PolicyTestRequest;
+
+    public override reset(): void {
+        super.reset();
+
+        this.result = null;
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
@@ -93,7 +99,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {

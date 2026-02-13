@@ -194,13 +194,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         async with await self.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(
-                    sql.SQL(
-                        """
+                    sql.SQL("""
                         INSERT INTO {table}
                         ({id}, {channel}, {message}, {expires})
                         VALUES (%s, %s, %s, %s)
-                        """
-                    ).format(
+                        """).format(
                         table=sql.Identifier(MESSAGE_TABLE),
                         id=sql.Identifier("id"),
                         channel=sql.Identifier("channel"),
@@ -236,18 +234,16 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         q = self.channels[channel]
         try:
             while True:
-                (message_id, message) = await q.get()
+                message_id, message = await q.get()
                 if message is None:
                     async with await self.connection() as conn:
                         async with conn.cursor() as cursor:
                             await cursor.execute(
-                                sql.SQL(
-                                    """
+                                sql.SQL("""
                                     SELECT {table}.{message}
                                     FROM {table}
                                     WHERE {table}.{id} = %s
-                                    """
-                                ).format(
+                                    """).format(
                                     table=sql.Identifier(MESSAGE_TABLE),
                                     id=sql.Identifier("id"),
                                     message=sql.Identifier("message"),
@@ -259,7 +255,7 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                                 continue
                             message = row[0]
                 break
-        except (asyncio.CancelledError, TimeoutError, GeneratorExit):
+        except asyncio.CancelledError, TimeoutError, GeneratorExit:
             # We assume here that the reason we are cancelled is because the consumer
             # is exiting, therefore we need to cleanup by unsubscribe below. Indeed,
             # currently the way that Django Channels works, this is a safe assumption.
@@ -296,13 +292,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         async with await self.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(
-                    sql.SQL(
-                        """
+                    sql.SQL("""
                         INSERT INTO {table}
                         ({id}, {group_key}, {channel}, {expires})
                         VALUES (%s, %s, %s, %s)
-                        """
-                    ).format(
+                        """).format(
                         table=sql.Identifier(GROUP_CHANNEL_TABLE),
                         id=sql.Identifier("id"),
                         group_key=sql.Identifier("group_key"),
@@ -331,14 +325,12 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         async with await self.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(
-                    sql.SQL(
-                        """
+                    sql.SQL("""
                         DELETE
                         FROM {table}
                         WHERE {table}.{group_key} = %s
                           AND {table}.{channel} = %s
-                        """
-                    ).format(
+                        """).format(
                         table=sql.Identifier(GROUP_CHANNEL_TABLE),
                         group_key=sql.Identifier("group_key"),
                         channel=sql.Identifier("channel"),
@@ -359,13 +351,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         async with await self.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(
-                    sql.SQL(
-                        """
+                    sql.SQL("""
                         SELECT DISTINCT {table}.{channel}
                         FROM {table}
                         WHERE {table}.{group_key} = %s
-                        """
-                    ).format(
+                        """).format(
                         table=sql.Identifier(GROUP_CHANNEL_TABLE),
                         channel=sql.Identifier("channel"),
                         group_key=sql.Identifier("group_key"),
@@ -379,13 +369,11 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
             ]
             async with conn.cursor() as cursor:
                 await cursor.executemany(
-                    sql.SQL(
-                        """
+                    sql.SQL("""
                         INSERT INTO {table}
                         ({id}, {channel}, {message}, {expires})
                         VALUES (%s, %s, %s, %s)
-                        """
-                    ).format(
+                        """).format(
                         table=sql.Identifier(MESSAGE_TABLE),
                         id=sql.Identifier("id"),
                         channel=sql.Identifier("channel"),
@@ -456,7 +444,7 @@ class PostgresChannelLayerReceiver:
                     while True:
                         async for notify in conn.notifies(timeout=30):
                             await self._receive_notify(notify)
-            except (asyncio.CancelledError, TimeoutError, GeneratorExit):
+            except asyncio.CancelledError, TimeoutError, GeneratorExit:
                 raise
             except PsycopgError as exc:
                 LOGGER.warning("Postgres connection is not healthy", exc=exc)
@@ -469,15 +457,13 @@ class PostgresChannelLayerReceiver:
             return
         async with conn.cursor() as cursor:
             await cursor.execute(
-                sql.SQL(
-                    """
+                sql.SQL("""
                     DELETE
                     FROM {table}
                     WHERE {table}.{channel} = ANY(%s)
                       AND {table}.{expires} >= %s
                     RETURNING {table}.{id}, {table}.{channel}, {table}.{message}
-                """
-                ).format(
+                """).format(
                     table=sql.Identifier(MESSAGE_TABLE),
                     id=sql.Identifier("id"),
                     channel=sql.Identifier("channel"),

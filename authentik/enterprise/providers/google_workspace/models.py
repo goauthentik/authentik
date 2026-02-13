@@ -135,22 +135,34 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
             return GoogleWorkspaceGroupClient(self)
         raise ValueError(f"Invalid model {model}")
 
-    def get_object_qs(self, type: type[User | Group]) -> QuerySet[User | Group]:
+    def get_object_qs(self, type: type[User | Group], **kwargs) -> QuerySet[User | Group]:
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = User.objects.all().exclude_anonymous()
+            base = User.objects.all().exclude_anonymous().filter(**kwargs)
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
                 )
             if self.filter_group:
-                base = base.filter(ak_groups__in=[self.filter_group])
+                base = base.filter(groups__in=[self.filter_group])
             return base.order_by("pk")
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            return Group.objects.all().order_by("pk")
+            return Group.objects.all().filter(**kwargs).order_by("pk")
         raise ValueError(f"Invalid type {type}")
+
+    @classmethod
+    def get_object_mappings(cls, obj: User | Group) -> list[tuple[str, str]]:
+        if isinstance(obj, User):
+            return list(
+                obj.googleworkspaceprovideruser_set.values_list("provider__pk", "google_id")
+            )
+        if isinstance(obj, Group):
+            return list(
+                obj.googleworkspaceprovidergroup_set.values_list("provider__pk", "google_id")
+            )
+        raise ValueError(f"Invalid type {type(obj)}")
 
     def google_credentials(self):
         return {

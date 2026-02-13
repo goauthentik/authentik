@@ -129,7 +129,7 @@ export type FormStaticChallenge =
 export interface FlowUserDetailsProps {
     challenge?: Partial<
         Pick<FormStaticChallenge, "pendingUserAvatar" | "pendingUser" | "flowInfo">
-    >;
+    > | null;
 }
 
 export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {

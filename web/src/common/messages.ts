@@ -19,6 +19,7 @@ export interface APIMessage {
     level: MessageLevel;
     message: string;
     description?: string | TemplateResult;
+    icon?: string;
 }
 
 export class AKMessageEvent extends Event {

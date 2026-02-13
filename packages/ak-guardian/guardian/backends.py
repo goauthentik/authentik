@@ -8,8 +8,8 @@ from django.http import HttpRequest
 
 from guardian.conf import settings as guardian_settings
 from guardian.core import ObjectPermissionChecker
-from guardian.ctypes import get_content_type
 from guardian.exceptions import WrongAppError
+from guardian.utils import get_content_type
 
 
 def check_object_support(obj: Model) -> bool:

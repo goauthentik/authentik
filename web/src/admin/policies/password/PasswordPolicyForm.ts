@@ -16,13 +16,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
-    showStatic = true;
+    protected showStatic = true;
 
     @state()
-    showHIBP = false;
+    protected showHIBP = false;
 
     @state()
-    showZxcvbn = false;
+    protected showZxcvbn = false;
+
+    public override reset(): void {
+        super.reset();
+
+        this.showStatic = true;
+        this.showHIBP = false;
+        this.showZxcvbn = false;
+    }
 
     async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
@@ -215,7 +223,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",

@@ -143,7 +143,7 @@ func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields
 		ClientIp: *api.NewNullableString(api.PtrString(r.RemoteAddr)),
 		Context:  fields,
 	}
-	_, _, err := a.ak.Client.EventsApi.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
+	_, _, err := a.ak.Client.EventsAPI.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
 	if err != nil {
 		a.log.WithError(err).Warning("failed to report configuration error")
 	}

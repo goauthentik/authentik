@@ -17,7 +17,7 @@ jobs:
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
         env:
           GH_APP_ID: ${{ secrets.GH_APP_ID }}
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         if: ${{ steps.app-token.outcome != 'skipped' }}
         with:
           fetch-depth: 0

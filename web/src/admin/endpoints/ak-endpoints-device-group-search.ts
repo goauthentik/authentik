@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
-import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import {
@@ -26,7 +26,7 @@ async function fetchObjects(query?: string): Promise<DeviceAccessGroup[]> {
 
 const renderElement = (group: DeviceAccessGroup): string => group.name;
 
-const renderValue = (group: DeviceAccessGroup | undefined): string | undefined => group?.pbmUuid;
+const renderValue = (group: DeviceAccessGroup | null) => group?.pbmUuid;
 
 /**
  * @element ak-endpoints-device-group-search
@@ -43,7 +43,7 @@ export class EndpointsDeviceAccessGroupSearch extends CustomListenerElement(AKEl
     group?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<DeviceAccessGroup>;
+    search!: ISearchSelect<DeviceAccessGroup>;
 
     @property({ type: String })
     public name?: string | null;

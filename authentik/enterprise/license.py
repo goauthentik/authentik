@@ -107,7 +107,7 @@ class LicenseKey:
             intermediate = load_der_x509_certificate(b64decode(x5c[1]))
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
-        except (InvalidSignature, TypeError, ValueError, Error):
+        except InvalidSignature, TypeError, ValueError, Error:
             raise ValidationError("Unable to verify license") from None
         try:
             body = from_dict(

@@ -44,6 +44,7 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
+    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
@@ -57,6 +58,7 @@ COPY ./go.mod /go/src/goauthentik.io/go.mod
 COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
+    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
     CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
@@ -114,7 +116,7 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # postgresql
     libpq-dev \
     # python-kadmin-rs
-    clang libkrb5-dev sccache \
+    krb5-multidev libkrb5-dev heimdal-multidev libclang-dev \
     # xmlsec
     libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -156,7 +158,11 @@ WORKDIR /
 RUN apt-get update && \
     apt-get upgrade -y && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 libltdl7 libxslt1.1 && \
+    apt-get install -y --no-install-recommends \
+    libpq5 libmaxminddb0 ca-certificates \
+    krb5-multidev libkrb5-3 libkdb5-10 libkadm5clnt-mit12 \
+    heimdal-multidev libkadm5clnt7t64-heimdal \
+    libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     pip3 install --no-cache-dir --upgrade pip && \

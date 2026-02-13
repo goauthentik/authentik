@@ -51,7 +51,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     if session:
         session.save()
 
-    if not RefreshOtherFlowsAfterAuthentication().get():
+    if not RefreshOtherFlowsAfterAuthentication.get():
         return
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")

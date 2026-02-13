@@ -20,14 +20,20 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
     @state()
-    result?: FlowImportResult;
+    protected result: FlowImportResult | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.result = null;
+    }
 
     getSuccessMessage(): string {
         return msg("Successfully imported flow.");
     }
-
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async send(): Promise<FlowImportResult> {
         const file = this.files().get("flow");
@@ -67,7 +73,7 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal name="flow">
                 ${AKLabel(
                     {

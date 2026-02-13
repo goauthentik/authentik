@@ -1,4 +1,5 @@
 from django.db.models import TextChoices
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
@@ -15,7 +16,6 @@ from authentik.core.api.utils import JSONDictField
 
 
 class BigIntegerFieldFix(OpenApiSerializerFieldExtension):
-
     target_class = "authentik.endpoints.facts.BigIntegerField"
 
     def map_serializer_field(self, auto_schema, direction):
@@ -46,9 +46,23 @@ class DiskSerializer(Serializer):
 
 
 class OperatingSystemSerializer(Serializer):
+    """For example:
+    {"family":"linux","name":"Ubuntu","version":"24.04.3 LTS (Noble Numbat)","arch":"amd64"}
+    {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+    {"family": "windows","name":"Server 2022 Datacenter","version":"10.0.20348.4405","arch":"amd64"}
+    {"family": "mac_os", "name": "", "version": "26.2", "arch": "arm64"}
+    """
+
     family = ChoiceField(OSFamily.choices, required=True)
-    name = CharField(required=False)
-    version = CharField(required=False)
+    name = CharField(
+        required=False, help_text=_("Operating System name, such as 'Server 2022' or 'Ubuntu'")
+    )
+    version = CharField(
+        required=False,
+        help_text=_(
+            "Operating System version, must always be the version number but may contain build name"
+        ),
+    )
     arch = CharField(required=True)
 
 

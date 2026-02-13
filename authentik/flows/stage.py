@@ -197,6 +197,9 @@ class ChallengeStageView(StageView):
                     data={
                         "title": self.format_title(),
                         "background": self.executor.flow.background_url(self.request),
+                        "background_themed_urls": self.executor.flow.background_themed_urls(
+                            self.request
+                        ),
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
                     }

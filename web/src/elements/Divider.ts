@@ -4,12 +4,9 @@ import { type SlottedTemplateResult } from "#elements/types";
 import { css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 @customElement("ak-divider")
 export class Divider extends AKElement {
     static styles = [
-        PFBase,
         css`
             .separator {
                 display: flex;

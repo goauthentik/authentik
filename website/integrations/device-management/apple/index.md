@@ -163,7 +163,7 @@ Alternatively, you can use an existing key if you have one available.
 2. Click **Create** and use the following values:
     - **Name**: `apple-business-manager`
     - **Certificate**: Paste in your certificate
-    - **Private Key**: _[optional]_ Pastein your private key
+    - **Private Key**: _[optional]_ Paste in your private key
 
 3. Click **Create** and confirm that the new key is listed in the **Certificates** overview.
 
@@ -375,7 +375,7 @@ When creating test users, ensure that their role is set to Standard (or Student)
 
 1. Confirmed the test user in synchronized in authentik.
 2. Open a private browsing window and navigate to the [Apple Business Manager](https://business.apple.com/).
-3. In the the email field, provide the email address assigned to test user.
+3. In the email field, provide the email address assigned to test user.
 
 4. Submit the form to trigger the authentication flow.
 

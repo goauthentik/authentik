@@ -13,8 +13,8 @@ This will cause issues with icon uploads (for Applications), background uploads 
 To fix these issues, run these commands in the folder of your Docker Compose file:
 
 ```shell
-sudo chown 1000:1000 media/
+sudo chown 1000:1000 data/
 sudo chown 1000:1000 custom-templates/
-sudo chmod ug+rwx media/
+sudo chmod ug+rwx data/
 sudo chmod ug+rx certs/
 ```

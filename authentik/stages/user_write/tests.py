@@ -69,7 +69,7 @@ class TestUserWriteStage(FlowTestCase):
         self.assertTrue(user_qs.exists())
         user = user_qs.first()
         self.assertTrue(user.check_password(password))
-        self.assertEqual(list(user.ak_groups.order_by("name")), [self.other_group, self.group])
+        self.assertEqual(list(user.groups.order_by("name")), [self.other_group, self.group])
         self.assertEqual(user.attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
 
         self.assertTrue(

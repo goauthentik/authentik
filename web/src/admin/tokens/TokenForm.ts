@@ -27,6 +27,12 @@ export class TokenForm extends ModelForm<Token, string> {
     @state()
     protected expiresAt: Date | null = new Date(Date.now() + EXPIRATION_DURATION);
 
+    public override reset(): void {
+        super.reset();
+
+        this.expiresAt = new Date(Date.now() + EXPIRATION_DURATION);
+    }
+
     async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
@@ -79,7 +85,7 @@ export class TokenForm extends ModelForm<Token, string> {
 
     //#region Renders
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
                 name="identifier"
                 value="${this.instance?.identifier ?? ""}"

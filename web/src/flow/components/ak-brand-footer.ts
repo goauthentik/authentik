@@ -11,7 +11,6 @@ import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const styles = css`
     .pf-c-list a {
@@ -27,7 +26,7 @@ const styles = css`
 
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
-    static styles = [PFBase, PFList, styles];
+    static styles = [PFList, styles];
 
     @property({ type: Array, attribute: false })
     public links: FooterLink[] = globalAK().brand.uiFooterLinks || [];

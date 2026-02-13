@@ -20,19 +20,10 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFInputGroup,
-        PFForm,
-        PFFormControl,
-        PFButton,
-        PFTitle,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFInputGroup, PFForm, PFFormControl, PFButton, PFTitle];
 
     #errors(field: string): ErrorProp[] | undefined {
         const errors = this.challenge?.responseErrors?.[field];
@@ -51,7 +42,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     autocomplete="username"
                     hidden
                     readonly
-                    value="${this.challenge.pendingUser}"
+                    value="${this.challenge?.pendingUser ?? ""}"
                 />
                 <ak-flow-input-password
                     label=${msg("Password")}
@@ -59,7 +50,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     grab-focus
                     class="pf-c-form__group"
                     .errors=${this.#errors("password")}
-                    ?allow-show-password=${this.challenge.allowShowPassword}
+                    ?allow-show-password=${!!this.challenge?.allowShowPassword}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
                 <fieldset class="pf-c-form__group pf-m-action">
@@ -73,7 +64,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     </button>
                 </fieldset>
             </form>
-            ${this.challenge.recoveryUrl
+            ${this.challenge?.recoveryUrl
                 ? html`<fieldset
                       slot="footer-band"
                       part="additional-actions"

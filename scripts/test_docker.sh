@@ -2,7 +2,7 @@
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
-AUTHENTIK_IMAGE="xghcr.io/goauthentik/server"
+AUTHENTIK_IMAGE="authentik.invalid/goauthentik/server"
 AUTHENTIK_TAG="$(echo "$hash" | cut -c1-15)"
 
 if [ -f lifecycle/container/.env ]; then
@@ -20,11 +20,11 @@ if [[ -v BUILD ]]; then
 
     # Ensure buildx is installed
     docker buildx install
-    # For release builds we have an empty client here as we use the NPM package
-    mkdir -p ./gen-ts-api
+    make gen-client-ts
+    make gen-client-go
     touch lifecycle/container/.env
 
-    docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" .
+    docker build -t "${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}" -f lifecycle/container/Dockerfile .
 fi
 
 docker compose -f lifecycle/container/compose.yml up --no-start
