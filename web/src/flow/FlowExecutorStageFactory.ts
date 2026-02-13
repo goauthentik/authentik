@@ -50,8 +50,6 @@ interface StageMappingInit {
  * needs to import the component before deriving the name, it does that automatically.
  */
 class StageMapping {
-    protected static tokenCache = new Map<FlowChallengeComponentName, StageMapping>();
-
     public token: FlowChallengeComponentName;
     public variant: PropVariant;
 
@@ -104,12 +102,6 @@ class StageMapping {
     public static from(entry: StageEntry): StageMapping {
         const [token, ...rest] = entry;
 
-        let instance = StageMapping.tokenCache.get(token);
-
-        if (instance) {
-            return instance;
-        }
-
         const last = rest.at(-1);
         const callback = isImport(last) ? last : null;
         const meta = (callback ? rest.slice(0, -1) : rest) as StageEntryMetadata;
@@ -121,10 +113,7 @@ class StageMapping {
             .with([PTag], ([tag]) => ({ token, variant: STANDARD, tag, callback }))
             .exhaustive();
 
-        instance = new StageMapping(init);
-        StageMapping.tokenCache.set(token, instance);
-
-        return instance;
+        return new StageMapping(init);
     }
 }
 
