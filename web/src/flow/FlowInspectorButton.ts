@@ -26,7 +26,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
     private loaded = false;
 
     @listen(AKFlowInspectorChangeEvent)
-    private onInspectorToggle = (ev: AKFlowInspectorChangeEvent) => {
+    protected _onInspectorToggle = (ev: AKFlowInspectorChangeEvent) => {
         this.open = ev.open;
     };
 

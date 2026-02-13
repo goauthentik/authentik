@@ -1,4 +1,3 @@
-import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
@@ -6,7 +5,6 @@ import "#flow/components/ak-flow-card";
 import "#flow/FlowInspectorButton";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
-import { stages } from "./FlowExecutorSelections";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -26,7 +24,9 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent } from "#flow/events";
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { StageMappings } from "#flow/FlowExecutorStageFactory";
+import { BaseStage } from "#flow/stages/base";
+import type { FlowChallengeComponentName, StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -235,10 +235,6 @@ export class FlowExecutor
             .with(P.nullish, () => this.brandingTitle)
             .otherwise((title) => `${title} - ${this.brandingTitle}`);
 
-        document.title = match(this.challenge?.flowInfo?.title)
-            .with(P.nullish, () => this.brandingTitle)
-            .otherwise((title) => `${title} - ${this.brandingTitle}`);
-
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
         }
@@ -298,21 +294,22 @@ export class FlowExecutor
     //#region Render Challenge
 
     protected async renderChallenge(
-        component: ChallengeTypes["component"],
+        component: FlowChallengeComponentName,
     ): Promise<TemplateResult> {
         const { challenge } = this;
 
-        const stage = stages.get(component);
+        const createMapping = StageMappings.get(component);
 
         // The special cases!
-        if (!stage) {
+        if (!createMapping) {
             if (component === "xak-flow-shell") {
                 return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
             }
+
             return html`Invalid native challenge element`;
         }
 
-        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, unknown>> =
+        const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
             {
                 ".challenge": challenge!,
                 ".host": this,
@@ -323,13 +320,12 @@ export class FlowExecutor
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const { tag, variant, importfn } = stage;
-        if (importfn) {
-            await importfn();
-        }
+        const mapping = createMapping();
+
+        const tag = await mapping.tag;
 
         const props = spread(
-            match(variant)
+            match(mapping.variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .exhaustive(),
