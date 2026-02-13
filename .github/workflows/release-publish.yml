@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
         id: push
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: website/Dockerfile
@@ -119,7 +119,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         id: push
         with:
           push: true
@@ -160,10 +160,17 @@ jobs:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
-      - name: Build web
+      - name: Install web dependencies
         working-directory: web/
         run: |
           npm ci
+      - name: Generate API Clients
+        run: |
+          make gen-client-ts
+          make gen-client-go
+      - name: Build web
+        working-directory: web/
+        run: |
           npm run build-proxy
       - name: Build outpost
         run: |
@@ -210,12 +217,12 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Run test suite in final docker images
         run: |
-          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> .env
-          docker compose pull -q
-          docker compose up --no-start
-          docker compose start postgresql
-          docker compose run -u root server test-all
+          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> lifecycle/container/.env
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> lifecycle/container/.env
+          docker compose -f lifecycle/container/compose.yml pull -q
+          docker compose -f lifecycle/container/compose.yml up --no-start
+          docker compose -f lifecycle/container/compose.yml start postgresql
+          docker compose -f lifecycle/container/compose.yml run -u root server test-all
   sentry-release:
     needs:
       - build-server

@@ -118,6 +118,10 @@ Configure the following settings:
 
 On the **Invitations** page, click the chevron beside your new invitation to expand the details. The **Link to use the invitation** displays with the URL.
 
+You can share the invitation in two ways:
+
+#### Option 1: Copy the link manually
+
 Copy the URL and send it in an email to the people you want to invite to enroll.
 
 The invitation link format is:
@@ -125,6 +129,24 @@ The invitation link format is:
 ```
 https://authentik.company/if/flow/<flow-slug>/?itoken=<invitation-uuid>
 ```
+
+#### Option 2: Send an invitation email directly from authentik
+
+Follow the steps below to send invitation emails directly from authentik:
+
+1. On the **Invitations** page, click the chevron beside your invitation to expand the details.
+2. Click **Send via Email** and configure the following settings:
+    - **To**: Enter the email addresses of the recipients. You can enter multiple addresses, one per line, or separated by commas or semicolons. Each recipient will receive a separate email with the invitation link.
+    - **CC**: (_optional_) Enter the email addresses to carbon copy.
+    - **BCC**: (_optional_) Enter the email addresses to blind carbon copy.
+    - **Template**: Select the email template to use. The default `Invitation` template is recommended.
+3. Click **Send**.
+
+The emails are queued and sent asynchronously by the background worker. Each recipient receives an email containing the invitation link.
+
+:::note Email configuration required
+To use this feature, you must have email configured in authentik, refer to the [Email configuration](../../install-config/email.mdx) documentation for details.
+:::
 
 ## Manual setup (without blueprints)
 

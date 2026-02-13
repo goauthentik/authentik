@@ -3,6 +3,7 @@ title: Fleet connector
 sidebar_label: Fleet connector
 tags: [device compliance, compliance, connectors, fleet, fleetdm]
 authentik_enterprise: true
+authentik_version: "2026.2.0"
 ---
 
 [Fleet](https://fleetdm.com/) is an open-source device management platform designed to monitor, manage, and secure large fleets of devices.
