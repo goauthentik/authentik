@@ -4,6 +4,7 @@ import "#flow/sources/telegram/TelegramLogin";
 import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
+import "#flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
 
 import type {
     FlowChallengeComponentName,
@@ -41,15 +42,19 @@ export type StageEntry =
 //
 // The resolution of the web component tag name is: tag supplied, tag received with import, tag
 // derived from component name. THIS CAN FAIL: a preloaded stage with an incongruent and non- or
-// incorrectly-specified tag will result in a stage that cannot be rendered. Pre-loaded stages must
-// be tested carefully.
+// incorrectly-specified tag will result in a stage that cannot be rendered. Pre-loaded stages
+// (those without a StageModuleCallback) must be tested carefully.
 
 // prettier-ignore
 export const StageModules: StageEntry[] = [
     ["ak-provider-iframe-logout", () => import("#flow/providers/IFrameLogoutStage")],
-    ["ak-provider-oauth2-device-code-finish", () => import("#flow/providers/oauth2/DeviceCodeFinish")],
     ["ak-provider-oauth2-device-code", () => import("#flow/providers/oauth2/DeviceCode")],
+    ["ak-provider-oauth2-device-code-finish", () => import("#flow/providers/oauth2/DeviceCodeFinish")],
     ["ak-provider-saml-native-logout", () => import("#flow/providers/saml/NativeLogoutStage")],
+
+    ["ak-source-oauth-apple", "ak-flow-source-oauth-apple"],
+    ["ak-source-plex", "ak-flow-source-plex"],
+    ["ak-source-telegram", "ak-flow-source-telegram"],
 
     ["ak-stage-access-denied", () => import("#flow/stages/access_denied/AccessDeniedStage")],
     ["ak-stage-authenticator-duo", () => import("#flow/stages/authenticator_duo/AuthenticatorDuoStage")],
@@ -58,25 +63,19 @@ export const StageModules: StageEntry[] = [
     ["ak-stage-authenticator-static", () => import("#flow/stages/authenticator_static/AuthenticatorStaticStage")],
     ["ak-stage-authenticator-totp", () => import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage")],
     ["ak-stage-authenticator-validate", () => import("#flow/stages/authenticator_validate/AuthenticatorValidateStage")],
+    ["ak-stage-authenticator-webauthn"],
     ["ak-stage-autosubmit", () => import("#flow/stages/autosubmit/AutosubmitStage")],
     ["ak-stage-captcha", () => import("#flow/stages/captcha/CaptchaStage")],
     ["ak-stage-consent", () => import("#flow/stages/consent/ConsentStage")],
     ["ak-stage-dummy", () => import("#flow/stages/dummy/DummyStage")],
     ["ak-stage-email", () => import("#flow/stages/email/EmailStage")],
+    ["ak-stage-endpoint-agent", "challenge", () => import("#flow/stages/endpoint/agent/EndpointAgentStage")],
+    ["ak-stage-flow-error"],
     ["ak-stage-identification", () => import("#flow/stages/identification/IdentificationStage")],
     ["ak-stage-password", () => import("#flow/stages/password/PasswordStage")],
     ["ak-stage-prompt", () => import("#flow/stages/prompt/PromptStage")],
     ["ak-stage-session-end", () => import("#flow/providers/SessionEnd")],
-
-    ["ak-stage-endpoint-agent", "challenge", () => import("#flow/stages/endpoint/agent/EndpointAgentStage")],
     ["ak-stage-user-login", "challenge", () => import("#flow/stages/user_login/UserLoginStage")],
-
-    ["ak-source-oauth-apple", "ak-flow-source-oauth-apple"],
-    ["ak-stage-authenticator-webauthn"],
-    ["ak-stage-flow-error"],
-
-    ["ak-source-plex", "ak-flow-source-plex"],
-    ["ak-source-telegram", "ak-flow-source-telegram"],
 
     ["xak-flow-frame", "challenge"],
     ["xak-flow-redirect", "ak-stage-redirect"],

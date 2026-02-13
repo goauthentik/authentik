@@ -97,7 +97,7 @@ class StageMapping {
     }
 
     /**
-     * Create a `StageMapping`, caching it by token for future use.
+     * Create a `StageMapping` from a `StageEntry`.
      */
     public static from(entry: StageEntry): StageMapping {
         const [token, ...rest] = entry;
@@ -122,16 +122,16 @@ class StageMapping {
  * of props they consume and an optional import callback for lazy-loading.
  *
  * @remarks
- * This is the actual table of stages consumed by the FlowExecutor.
- * It is generated from the more concise `StageModuleRecord` above, which is easier to read and maintain.
- * The `StageModuleRecord` allows for specifying just the serverComponent, or the serverComponent and variant,
- * or the serverComponent and tag, or all three, and it can also include an import callback if the stage should be lazy-loaded.
- * The code below normalizes all of these possibilities into a consistent format that the FlowExecutor can use.
+ * This is the actual table of stages consumed by the FlowExecutor. It is generated from the more
+ * concise `StageModules` table in the file `FlowExecutorStages`, which is easier to read and
+ * maintain. The `StageEntry` allows for specifying just the serverComponent, or the
+ * serverComponent and variant, or the serverComponent and tag, or all three, and it can also
+ * include an import callback if the stage should be lazy-loaded. The code below normalizes all of
+ * these possibilities into a consistent format that the FlowExecutor can use.
  */
 export const StageMappings: ReadonlyMap<FlowChallengeComponentName, () => StageMapping> = new Map(
     StageModules.map((stageEntry) => {
         const [token] = stageEntry;
-
         return [token, () => StageMapping.from(stageEntry)] as const;
     }),
 );
