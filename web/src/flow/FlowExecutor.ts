@@ -331,10 +331,10 @@ export class FlowExecutor
     ): Promise<TemplateResult> {
         const { challenge, inspectorOpen } = this;
 
-        const stage = StageMappings.get(component);
+        const createMapping = StageMappings.get(component);
 
         // The special cases!
-        if (!stage) {
+        if (!createMapping) {
             if (component === "xak-flow-shell") {
                 return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
             }
@@ -353,10 +353,12 @@ export class FlowExecutor
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const tag = await stage.tag;
+        const mapping = createMapping();
+
+        const tag = await mapping.tag;
 
         const props = spread(
-            match(stage.variant)
+            match(mapping.variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))

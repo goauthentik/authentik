@@ -1,3 +1,10 @@
+/**
+ * We have several patterns for the client-side components that handle a stage. In most cases, the
+ * stage component-name and the client-side element-name are the same, but not always. Most stages
+ * need CSS-related help to be visually attractive, but "challenge" stages do not. Most stages can
+ * be imported as-needed, but some must be pre-loaded.
+ */
+
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/sources/telegram/TelegramLogin";
@@ -5,7 +12,7 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
-import StageModules from "#flow/FlowExecutorStages";
+import StageModules, { StageEntry } from "#flow/FlowExecutorStages";
 import type { FlowChallengeComponentName, StageModuleCallback } from "#flow/types";
 
 import { match, P } from "ts-pattern";
@@ -14,74 +21,112 @@ export type { FlowChallengeComponentName, StageModuleCallback };
 export const propVariants = ["standard", "challenge", "inspect"] as const;
 export type PropVariant = (typeof propVariants)[number];
 
-// We have several patterns for the client-side components that handle a stage. In most cases, the
-// stage component-name and the client-side element-name are the same, but not always. Most stages
-// need CSS-related help to be visually attractive, but "challenge" stages do not. Most stages can
-// be imported as-needed, but some must be pre-loaded.
+// The first type supports "import only."
+type StageEntryMetadata =
+    | []
+    | [tag: string]
+    | [variant: PropVariant]
+    | [tag: string, variant: PropVariant];
 
-// StageMapping describes the metadata needed to load and invoke a stage.  If a tag name is not
-// supplied it automatically tries to derive its tag name by first seeing if there's an import
-// function supplied; if it is, it imports the web component and derives the tag name from the
-// tag registered with the browser; if not, it uses the token name by default.  If the tag name
-// needs to import the component before deriving the name, it does that automatically.
+const STANDARD = propVariants[0];
+const isImport = (x: unknown): x is StageModuleCallback => typeof x === "function";
+const PVariant = P.when(
+    (x): x is PropVariant => typeof x === "string" && propVariants.includes(x as PropVariant),
+);
+const PTag = P.when((x): x is string => typeof x === "string" && x.includes("-"));
 
+interface StageMappingInit {
+    token: FlowChallengeComponentName;
+    variant: PropVariant;
+    tag?: string | null;
+    callback?: StageModuleCallback | null;
+}
+
+/**
+ * StageMapping describes the metadata needed to load and invoke a stage.
+ * If a tag name is not supplied it automatically tries to derive its tag name by first seeing if there's an import
+ * function supplied; if it is, it imports the web component and derives the tag name from the
+ * tag registered with the browser; if not, it uses the token name by default.  If the tag name
+ * needs to import the component before deriving the name, it does that automatically.
+ */
 class StageMapping {
-    // Singleton pattern to reduce calls to `import`
-    static tokenCache = new Map<FlowChallengeComponentName, StageMapping>();
+    protected static tokenCache = new Map<FlowChallengeComponentName, StageMapping>();
 
-    public token!: FlowChallengeComponentName;
-    public variant!: PropVariant;
-    #tag?: string;
-    #importCallback?: StageModuleCallback;
+    public token: FlowChallengeComponentName;
+    public variant: PropVariant;
 
-    constructor(token: FlowChallengeComponentName, variant: PropVariant, tag?: string, callback?: StageModuleCallback) {
-        const instance = StageMapping.tokenCache.get(token);
-        if (instance) {
-            return instance;
-        }
+    #tag: string | null = null;
+    #importCallback: StageModuleCallback | null = null;
 
+    constructor({ token, variant, tag = null, callback = null }: StageMappingInit) {
         this.token = token;
         this.#tag = tag;
         this.variant = variant;
         this.#importCallback = callback;
-        StageMapping.tokenCache.set(token, this);
     }
 
-    // Warning: this is secretly an async operation and returns a Promise. The internal async IIFE
-    // is a workaround for Typescript's "accessors cannot use await."
-    /* async */ get tag() {
-        return (async () => {
-            if (this.#tag) {
-                return Promise.resolve(this.#tag);
-            }
+    get tag(): Promise<string> {
+        if (this.#tag) {
+            return Promise.resolve(this.#tag);
+        }
 
-            if (!this.#importCallback) {
-                return Promise.resolve(this.token);
-            }
+        if (!this.#importCallback) {
+            return Promise.resolve(this.token);
+        }
 
-            const module = await this.#importCallback();
-            const StageConstructor = module.default;
-            const tag = window.customElements.getName(StageConstructor);
-            if (!tag) {
-                const error = `Failed to load module: no client stage found for component ${this.token}`;
-                // eslint-disable-next-line no-console
-                console.trace(error);
-                throw new TypeError(error);
-            }
-            this.#tag = tag;
-            return Promise.resolve(tag);
-        })();
+        return this.#importCallback()
+            .then((module) => {
+                const StageConstructor = module.default;
+                const tag = window.customElements.getName(StageConstructor);
+
+                if (!tag) {
+                    const error = new TypeError(
+                        `Failed to load module: no client stage found for component ${this.token}`,
+                    );
+
+                    // eslint-disable-next-line no-console
+                    console.trace(error);
+                    throw error;
+                }
+
+                this.#tag = tag;
+
+                return Promise.resolve(tag);
+            })
+            .catch((cause) => {
+                throw new TypeError(`Failed to load module for component ${this.token}`, { cause });
+            });
+    }
+
+    /**
+     * Create a `StageMapping`, caching it by token for future use.
+     */
+    public static from(entry: StageEntry): StageMapping {
+        const [token, ...rest] = entry;
+
+        let instance = StageMapping.tokenCache.get(token);
+
+        if (instance) {
+            return instance;
+        }
+
+        const last = rest.at(-1);
+        const callback = isImport(last) ? last : null;
+        const meta = (callback ? rest.slice(0, -1) : rest) as StageEntryMetadata;
+
+        const init = match<StageEntryMetadata, StageMappingInit>(meta)
+            .with([], () => ({ token, variant: STANDARD, callback }))
+            .with([PTag, PVariant], ([tag, variant]) => ({ token, variant, tag, callback }))
+            .with([PVariant], ([variant]) => ({ token, variant, callback }))
+            .with([PTag], ([tag]) => ({ token, variant: STANDARD, tag, callback }))
+            .exhaustive();
+
+        instance = new StageMapping(init);
+        StageMapping.tokenCache.set(token, instance);
+
+        return instance;
     }
 }
-
-// The first type supports "import only."
-type StageEntryMetadata = [] | [tag: string] | [variant: PropVariant] | [tag: string, variant: PropVariant];
-
-const STANDARD = propVariants[0];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isImport = (x: any): x is StageModuleCallback => typeof x === "function";
-const PVariant = P.when((x): x is PropVariant => typeof x === "string" && propVariants.includes(x as PropVariant));
-const PTag = P.when((x): x is string => typeof x === "string" && x.includes("-"));
 
 /**
  * A mapping of server-side stage tokens to client-side custom element tags, along with the variant
@@ -94,22 +139,10 @@ const PTag = P.when((x): x is string => typeof x === "string" && x.includes("-")
  * or the serverComponent and tag, or all three, and it can also include an import callback if the stage should be lazy-loaded.
  * The code below normalizes all of these possibilities into a consistent format that the FlowExecutor can use.
  */
-export const StageMappings: ReadonlyMap<FlowChallengeComponentName, StageMapping> = new Map(
+export const StageMappings: ReadonlyMap<FlowChallengeComponentName, () => StageMapping> = new Map(
     StageModules.map((stageEntry) => {
-        const [serverComponent, ...entry] = stageEntry;
-        const last = entry.at(-1);
-        const importfn = isImport(last) ? last : undefined;
-        const meta = (importfn ? entry.slice(0, -1) : entry) as StageEntryMetadata;
+        const [token] = stageEntry;
 
-        // prettier-ignore
-        return [
-            serverComponent,
-            match<StageEntryMetadata, StageMapping>(meta)
-                .with([], () => new StageMapping(serverComponent, STANDARD, undefined, importfn))
-                .with([PTag, PVariant], ([tag, variant]) => new StageMapping(serverComponent, variant, tag, importfn))
-                .with([PVariant], ([variant]) => new StageMapping(serverComponent, variant, undefined, importfn))
-                .with([PTag], ([tag]) => new StageMapping(serverComponent, STANDARD, tag, importfn))
-                .exhaustive(),
-        ];
-    })
+        return [token, () => StageMapping.from(stageEntry)] as const;
+    }),
 );

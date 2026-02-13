@@ -5,16 +5,18 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
-import type { FlowChallengeComponentName, PropVariant, StageModuleCallback } from "./FlowExecutorStageFactory";
+import type {
+    FlowChallengeComponentName,
+    PropVariant,
+    StageModuleCallback,
+} from "./FlowExecutorStageFactory";
 
 // prettier-ignore
-type StageEntry =
+export type StageEntry =
     | [token: FlowChallengeComponentName, tag: string, variant: PropVariant, import?: StageModuleCallback]
     | [token: FlowChallengeComponentName, variant: PropVariant, import?: StageModuleCallback]
     | [token: FlowChallengeComponentName, tag: string, import?: StageModuleCallback]
     | [token: FlowChallengeComponentName, import?: StageModuleCallback];
-
-type StageEntries = StageEntry[];
 
 // ,---.    |    |    ,   .              ,---.|                            |   |
 // |---|,---|,---|    |\  |,---.. . .    `---.|--- ,---.,---.,---.,---.    |---|,---.,---.,---.
@@ -43,7 +45,7 @@ type StageEntries = StageEntry[];
 // be tested carefully.
 
 // prettier-ignore
-export const StageModules: StageEntries = [
+export const StageModules: StageEntry[] = [
     ["ak-provider-iframe-logout", () => import("#flow/providers/IFrameLogoutStage")],
     ["ak-provider-oauth2-device-code-finish", () => import("#flow/providers/oauth2/DeviceCodeFinish")],
     ["ak-provider-oauth2-device-code", () => import("#flow/providers/oauth2/DeviceCode")],
