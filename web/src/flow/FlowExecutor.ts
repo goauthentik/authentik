@@ -18,7 +18,6 @@ import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
@@ -66,10 +65,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
  */
 @customElement("ak-flow-executor")
-export class FlowExecutor
-    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
-    implements StageHost
-{
+export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
     public static readonly DefaultLayout: FlowLayoutEnum =
         globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
 
