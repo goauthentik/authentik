@@ -38,8 +38,10 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge?.to || "", document.baseURI).toString();
     }
 
+    // The current implementation expects the button and the stage to share the same DOM context,
+    // and the same rootNode. If that changes, this will need to be updated.
     get promptUser() {
-        return (this.getRootNode() as Element | undefined)?.querySelector(
+        return !!(this.getRootNode() as Element | undefined)?.querySelector(
             "ak-flow-inspector-button",
         )?.open;
     }
@@ -120,6 +122,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         </ak-flow-card>`;
     }
 }
+
+export default RedirectStage;
 
 declare global {
     interface HTMLElementTagNameMap {
