@@ -42,7 +42,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     // and the same rootNode. If that changes, this will need to be updated.
     get promptUser() {
         return !!(this.getRootNode() as Element | undefined)?.querySelector(
-            "ak-flow-inspector-button"
+            "ak-flow-inspector-button",
         )?.open;
     }
 
@@ -66,7 +66,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
-            this.challenge?.to
+            this.challenge?.to,
         );
 
         window.location.assign(this.challenge?.to || "");
