@@ -102,7 +102,7 @@ class IterationViewSet(EnterpriseRequiredMixin, CreateModelMixin, GenericViewSet
                 default=Value(False),
                 output_field=ModelBooleanField(),
             )
-        )
+        ).distinct()
 
     @action(
         detail=False,
