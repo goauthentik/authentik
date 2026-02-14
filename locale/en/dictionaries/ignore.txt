@@ -1,3 +1,4 @@
+# Ignored terms that should not be suggested by the spell checker.
 aaguids
 ASGI
 asgi

@@ -1,8 +1,11 @@
-# People names
+# People names.
 Bery
-beryju
-teffen
-girlbossrush
+Beryju
+Teffen
+GirlBossRush
+Gergo
+Marc
+Dewi
 Zwanenburg
 Naur
 Wärting
