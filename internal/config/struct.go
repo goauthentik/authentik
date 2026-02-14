@@ -101,6 +101,7 @@ type OutpostConfig struct {
 	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
 	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+	SessionBackend         string `yaml:"session_backend" env:"SESSION_BACKEND, overwrite"`
 }
 
 type WebConfig struct {

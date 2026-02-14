@@ -184,9 +184,21 @@ func (c *Config) parseScheme(rawVal string) string {
 	case "file":
 		d, err := os.ReadFile(u.Path)
 		if err != nil {
+			log.WithFields(log.Fields{
+				"file_path": u.Path,
+				"raw_uri":   rawVal,
+				"error":     err,
+				"fallback":  u.RawQuery,
+			}).Error("Failed to read file URI, using fallback")
 			return u.RawQuery
 		}
-		return strings.TrimSpace(string(d))
+		result := strings.TrimSpace(string(d))
+		log.WithFields(log.Fields{
+			"file_path": u.Path,
+			"raw_uri":   rawVal,
+			"resolved":  true,
+		}).Debug("Successfully resolved file URI")
+		return result
 	}
 	return rawVal
 }

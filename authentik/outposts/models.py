@@ -82,6 +82,19 @@ class OutpostConfig:
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
     kubernetes_json_patches: dict[str, list[dict[str, Any]]] | None = field(default=None)
 
+    # Session backend for proxy outposts (postgres or filesystem)
+    # Empty string means use default behavior (embedded=postgres, non-embedded=filesystem)
+    session_backend: str = field(default="")
+    # Name of Kubernetes secret for envFrom containing PostgreSQL environment variables
+    # Should contain AUTHENTIK_POSTGRESQL__* variables, which may reference files via file:// URIs
+    # Only used when session_backend is set to postgres/postgresql
+    kubernetes_postgresql_secret_name: str = field(default="")
+    # Name of Kubernetes secret to mount as volume containing credential files
+    # Required when using file:// references. Should contain keys like: username, password, database
+    # The mount path and volume name are auto-detected from file:// URIs in postgresql_secret
+    # Only used when session_backend is set to postgres/postgresql
+    kubernetes_postgresql_credentials_secret_name: str = field(default="")
+
 
 class OutpostModel(Model):
     """Base model for providers that need more objects than just themselves"""

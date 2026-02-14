@@ -25,6 +25,28 @@ object_naming_template: ak-outpost-%(name)s
 # Applies to: non-embedded
 container_image:
 ########################################
+# Session backend settings
+########################################
+# Session backend to use for user sessions in non-embedded outposts.
+# Embedded outposts (running within authentik Core) always use PostgreSQL.
+# Non-embedded outposts default to filesystem-based sessions.
+# Allowed values: "", "filesystem", "postgres", "postgresql"
+# When set to "postgres" or "postgresql", sessions will be stored in PostgreSQL database
+# for persistence across container restarts.
+# Applies to: non-embedded proxy outposts
+session_backend: ""
+# Name of Kubernetes secret containing PostgreSQL connection environment variables.
+# The secret should contain variables like AUTHENTIK_POSTGRESQL__HOST, AUTHENTIK_POSTGRESQL__USER, etc.
+# These variables can reference credential files using file:// URIs (e.g., file:///creds/username).
+# When file:// URIs are used, authentik automatically mounts the credentials secret as a volume.
+# Applies to: proxy outposts running on Kubernetes with session_backend set to postgres
+kubernetes_postgresql_secret_name: ""
+# Name of Kubernetes secret containing actual credential files referenced by file:// URIs.
+# This secret is automatically detected by examining keys (should contain: username, password, database).
+# Only needs to be specified if you want to override the auto-detection or use a non-standard secret.
+# Applies to: proxy outposts running on Kubernetes with file:// references in PostgreSQL configuration
+kubernetes_postgresql_credentials_secret_name: ""
+########################################
 # Docker outpost specific settings
 ########################################
 # Network the outpost container should be connected to

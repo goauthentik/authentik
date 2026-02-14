@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/getsentry/sentry-go"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
@@ -82,6 +84,41 @@ func (ps *ProxyServer) Apps() []*application.Application {
 }
 
 func (ps *ProxyServer) SessionBackend() string {
+	// Priority order:
+	// 1. Check API outpost configuration (set via authentik UI)
+	// 2. Check environment variable (AUTHENTIK_OUTPOSTS__SESSION_BACKEND)
+	// 3. Default behavior:
+	//    - Embedded outposts: postgres (unchanged)
+	//    - Non-embedded outposts: filesystem (can be configured to use postgres via options above)
+	
+	// Check API outpost configuration first
+	if sessionBackend, ok := ps.akAPI.Outpost.Config["session_backend"].(string); ok && sessionBackend != "" {
+		backend := strings.ToLower(sessionBackend)
+		switch backend {
+		case "postgres", "postgresql":
+			return "postgres"
+		case "filesystem":
+			return "filesystem"
+		default:
+			ps.log.WithField("backend", sessionBackend).Warning("unknown session backend in API config, checking environment variable")
+		}
+	}
+	
+	// Check environment variable configuration
+	cfg := config.Get()
+	if cfg.Outposts.SessionBackend != "" {
+		backend := strings.ToLower(cfg.Outposts.SessionBackend)
+		switch backend {
+		case "postgres", "postgresql":
+			return "postgres"
+		case "filesystem":
+			return "filesystem"
+		default:
+			ps.log.WithField("backend", cfg.Outposts.SessionBackend).Warning("unknown session backend in environment variable, falling back to default")
+		}
+	}
+	
+	// Default behavior: use postgres for embedded, filesystem for non-embedded
 	if ps.akAPI.IsEmbedded() {
 		return "postgres"
 	}

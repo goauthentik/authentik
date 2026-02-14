@@ -55,11 +55,7 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	if ac.GlobalConfig.ErrorReporting.Enabled {
 		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	}
-	if ac.IsEmbedded() {
-		l.Info("using PostgreSQL session backend")
-	} else {
-		l.Info("using filesystem session backend")
-	}
+	
 	s := &ProxyServer{
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
 		apps:        make(map[string]*application.Application),
@@ -68,6 +64,11 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 		akAPI:       ac,
 		defaultCert: defaultCert,
 	}
+	
+	// Log which session backend is being used
+	backend := s.SessionBackend()
+	l.WithField("backend", backend).Info("configured session backend")
+	
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
