@@ -109,10 +109,10 @@ class SystemInfoSerializer(PassiveSerializer):
 
     def get_embedded_outpost_host(self, request: Request) -> str:
         """Get the FQDN configured on the embedded outpost"""
-        outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
-        if not outposts.exists():  # pragma: no cover
+        outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
+        if outpost is None:  # pragma: no cover
             return ""
-        return outposts.first().config.authentik_host
+        return outpost.config.authentik_host
 
 
 class SystemView(APIView):
@@ -120,7 +120,7 @@ class SystemView(APIView):
 
     permission_classes = [HasPermission("authentik_rbac.view_system_info")]
     pagination_class = None
-    filter_backends = []
+    filter_backends: list[str] = []
     serializer_class = SystemInfoSerializer
 
     @extend_schema(responses={200: SystemInfoSerializer(many=False)})

@@ -1,5 +1,7 @@
 """authentik administration overview"""
 
+from typing import Any
+
 from django.core.cache import cache
 from django_tenants.utils import get_public_schema_name
 from drf_spectacular.utils import extend_schema
@@ -27,33 +29,34 @@ class VersionSerializer(PassiveSerializer):
     outdated = SerializerMethodField()
     outpost_outdated = SerializerMethodField()
 
-    def get_build_hash(self, _) -> str:
+    def get_build_hash(self, _: Any) -> str:
         """Get build hash, if version is not latest or released"""
         return authentik_build_hash()
 
-    def get_version_current(self, _) -> str:
+    def get_version_current(self, _: Any) -> str:
         """Get current version"""
         return authentik_version()
 
-    def get_version_latest(self, _) -> str:
+    def get_version_latest(self, _: Any) -> str:
         """Get latest version from cache"""
         if get_current_tenant().schema_name != get_public_schema_name():
             return authentik_version()
-        version_in_cache = cache.get(VERSION_CACHE_KEY)
-        if not version_in_cache:  # pragma: no cover
+        version_in_cache: str | None = cache.get(VERSION_CACHE_KEY)
+        if version_in_cache is None:  # pragma: no cover
             update_latest_version.send()
             return authentik_version()
         return version_in_cache
 
-    def get_version_latest_valid(self, _) -> bool:
+    def get_version_latest_valid(self, _: Any) -> bool:
         """Check if latest version is valid"""
-        return cache.get(VERSION_CACHE_KEY) != VERSION_NULL
+        version_in_cache: str | None = cache.get(VERSION_CACHE_KEY)
+        return version_in_cache != VERSION_NULL
 
-    def get_outdated(self, instance) -> bool:
+    def get_outdated(self, instance: Any) -> bool:
         """Check if we're running the latest version"""
         return parse(self.get_version_current(instance)) < parse(self.get_version_latest(instance))
 
-    def get_outpost_outdated(self, _) -> bool:
+    def get_outpost_outdated(self, _: Any) -> bool:
         """Check if any outpost is outdated/has a version mismatch"""
         any_outdated = False
         for outpost in Outpost.objects.all():
@@ -68,7 +71,7 @@ class VersionView(APIView):
 
     permission_classes = [IsAuthenticated]
     pagination_class = None
-    filter_backends = []
+    filter_backends: list[str] = []
 
     @extend_schema(responses={200: VersionSerializer(many=False)})
     def get(self, request: Request) -> Response:
