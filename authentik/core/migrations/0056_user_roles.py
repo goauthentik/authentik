@@ -34,7 +34,7 @@ def migrate_object_permissions(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
             name = f"ak-migrated-role--group-{group_id}"
             role, created = Role.objects.using(db_alias).get_or_create(
                 group_id=group_id,
-                name=name,
+                defaults={"name": name},
             )
             if created:
                 role.group_id = group_id
