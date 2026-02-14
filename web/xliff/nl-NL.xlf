@@ -9542,6 +9542,51 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s5158b7f014cecefc">
   <source>Review completed</source>
 </trans-unit>
+<trans-unit id="s9a2a2fda9cfa1ddc">
+  <source>Copy Link</source>
+</trans-unit>
+<trans-unit id="s57adf424d57c8a0f">
+  <source>Send</source>
+</trans-unit>
+<trans-unit id="s28128d03244fa1ca">
+  <source>Send Invitation via Email</source>
+</trans-unit>
+<trans-unit id="s1ed9fed1a5e85d63">
+  <source>Send via Email</source>
+</trans-unit>
+<trans-unit id="safcbc1ba006eba57">
+  <source>Please enter at least one email address</source>
+</trans-unit>
+<trans-unit id="s0f957a7b0725a6dd">
+  <source>Invitation emails queued for sending to <x id="0" equiv-text="${addresses.length}"/> recipient(s). Check the System Tasks for more information.</source>
+</trans-unit>
+<trans-unit id="s27c34847aec88ec6">
+  <source>Failed to queue invitation emails: <x id="0" equiv-text="${error}"/></source>
+</trans-unit>
+<trans-unit id="s8b97ea84af17c029">
+  <source>Never</source>
+</trans-unit>
+<trans-unit id="s6e0b6a18cc59fd56">
+  <source>No flow set</source>
+</trans-unit>
+<trans-unit id="sac428aa7c586a35a">
+  <source>One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.</source>
+</trans-unit>
+<trans-unit id="s090f2d07b5a6aee3">
+  <source>CC</source>
+</trans-unit>
+<trans-unit id="s7f39ec207409ff19">
+  <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.</source>
+</trans-unit>
+<trans-unit id="s15db6d19b09a16c3">
+  <source>BCC</source>
+</trans-unit>
+<trans-unit id="sf4021c7b40b6f54e">
+  <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will not receive the addresses of other recipients.</source>
+</trans-unit>
+<trans-unit id="s7c37f1acb9f97ea3">
+  <source>Select the email template to use for sending invitations.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
