@@ -1,3 +1,4 @@
+# Golang-specific terms
 gounicorn
 pems
 connm

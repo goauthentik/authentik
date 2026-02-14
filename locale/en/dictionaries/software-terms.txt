@@ -1,3 +1,4 @@
+# Software-specific terms
 *_c_name_*
 *_c_slug_*
 *ecdsa*
