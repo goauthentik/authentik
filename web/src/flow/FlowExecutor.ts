@@ -24,9 +24,9 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
-import { StageMappings } from "#flow/FlowExecutorStageFactory";
+import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
-import type { FlowChallengeComponentName, StageHost, SubmitOptions } from "#flow/types";
+import type { StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -37,14 +37,13 @@ import {
     FlowErrorChallenge,
     FlowLayoutEnum,
     FlowsApi,
-    ShellChallenge,
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -326,20 +325,20 @@ export class FlowExecutor
 
     //#region Render Challenge
 
-    protected async renderChallenge(
-        component: FlowChallengeComponentName,
-    ): Promise<TemplateResult> {
-        const { challenge, inspectorOpen } = this;
+    protected async renderChallenge(challenge: ChallengeTypes): Promise<SlottedTemplateResult> {
+        const { inspectorOpen } = this;
 
-        const createMapping = StageMappings.get(component);
+        const stageEntry = StageMapping.registry.get(challenge.component);
 
         // The special cases!
-        if (!createMapping) {
-            if (component === "xak-flow-shell") {
-                return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
+        if (!stageEntry) {
+            if (challenge?.component === "xak-flow-shell") {
+                return html`${unsafeHTML(challenge.body)}`;
             }
 
-            return html`Invalid native challenge element`;
+            return this.renderChallengeError(
+                `No stage found for component: ${challenge.component}`,
+            );
         }
 
         const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
@@ -353,12 +352,18 @@ export class FlowExecutor
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const mapping = createMapping();
+        let mapping: StageMapping;
 
-        const tag = await mapping.tag;
+        try {
+            mapping = await StageMapping.from(stageEntry);
+        } catch (error: unknown) {
+            return this.renderChallengeError(error);
+        }
+
+        const { tag, variant } = mapping;
 
         const props = spread(
-            match(mapping.variant)
+            match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .with("inspect", () => ({ ...challengeProps, "?promptUser": inspectorOpen }))
@@ -366,6 +371,21 @@ export class FlowExecutor
         );
 
         return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+    }
+
+    protected renderChallengeError(error: unknown): SlottedTemplateResult {
+        const detail = pluckErrorDetail(error);
+
+        // eslint-disable-next-line no-console
+        console.trace(error);
+
+        const errorChallenge: FlowErrorChallenge = {
+            component: "ak-stage-flow-error",
+            error: detail,
+            requestId: "",
+        };
+
+        return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
     }
 
     //#endregion
@@ -441,7 +461,7 @@ export class FlowExecutor
     }
 
     protected override render(): SlottedTemplateResult {
-        const { component } = this.challenge || {};
+        const { challenge, loading } = this;
 
         return html`<ak-locale-select
                 part="locale-select"
@@ -465,10 +485,12 @@ export class FlowExecutor
                         themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${this.loading && this.challenge
-                    ? html`<ak-loading-overlay></ak-loading-overlay>`
-                    : nothing}
-                ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
+                ${loading && challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${guard([challenge], () => {
+                    return challenge?.component
+                        ? until(this.renderChallenge(challenge))
+                        : this.renderLoading();
+                })}
             </main>
             <slot name="footer"></slot>`;
     }
