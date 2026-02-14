@@ -41,7 +41,7 @@ updates:
   #region Rust Toolchain
 
   - package-ecosystem: rust-toolchain
-    directory: "/lifecycle/container"
+    directory: "/"
     schedule:
       interval: daily
       time: "04:00"

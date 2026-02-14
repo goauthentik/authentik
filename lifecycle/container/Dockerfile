@@ -104,7 +104,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
-    --mount=type=bind,target=rust-toolchain.toml,src=lifecycle/container/rust-toolchain.toml \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     apt-get update && \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
@@ -135,7 +135,7 @@ ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
     --mount=type=bind,target=packages,src=packages \
-    --mount=type=bind,target=rust-toolchain.toml,src=lifecycle/container/rust-toolchain.toml \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
     RUSTUP_TOOLCHAIN="$(awk -F'\"' '/^[[:space:]]*channel[[:space:]]*=/{print $2; exit}' rust-toolchain.toml)" \
     uv sync --frozen --no-install-project --no-dev
