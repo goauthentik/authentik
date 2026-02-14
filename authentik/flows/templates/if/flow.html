@@ -8,7 +8,7 @@
 {% block head_before %}
 {{ block.super }}
 <link rel="prefetch" href="{{ flow_background_url }}" />
-{% comment %} {% if flow.compatibility_mode and not inspector %} {% endcomment %}
+{% if flow.compatibility_mode and not inspector %}
 {% comment %}
     @see {@link web/types/webcomponents.d.ts} for type definitions.
 {% endcomment %}
@@ -16,9 +16,9 @@
     "use strict";
 
     window.ShadyDOM = window.ShadyDOM || {}
-    window.ShadyDOM.force = window.location.search.includes("shady-dom=true");
+    window.ShadyDOM.force = true
 </script>
-{% comment %} {% endif %} {% endcomment %}
+{% endif %}
 {% include "base/header_js.html" %}
 <script data-id="flow-config">
     "use strict";
