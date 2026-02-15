@@ -33,9 +33,12 @@ class PolicyEvaluator(BaseEvaluator):
         self._context["ak_message"] = self.expr_func_message
         self._context["ak_user_has_authenticator"] = self.expr_func_user_has_authenticator
 
-    def expr_func_message(self, message: str):
+    def expr_func_message(self, message: list[str] | str):
         """Wrapper to append to messages list, which is returned with PolicyResult"""
-        self._messages.append(message)
+        if isinstance(message, list):
+            self._messages.extend(message)
+        else:
+            self._messages.append(message)
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""
