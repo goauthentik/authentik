@@ -66,13 +66,8 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
-<<<<<<< HEAD
 export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))) {
-=======
-export class UserViewPage extends WithCapabilitiesConfig(WithSession(AKElement)) {
     #api = new CoreApi(DEFAULT_CONFIG);
-
->>>>>>> edd235c51e (teffen's suggestions)
     @property({ type: Number })
     set userId(id: number) {
         this.#api
