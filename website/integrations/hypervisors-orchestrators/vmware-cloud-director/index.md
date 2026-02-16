@@ -51,7 +51,7 @@ The redirect URI is for provider level configuration. If you're configuring a te
     - Set **IDP Well-known Configuration Endpoint** to the value of the **OpenID Configuration URL** field in the authentik provider.
 4. Click **NEXT**.
 5. The values on the **Endpoint** page are fetched automatically from the **IDP Well-known Configuration Endpoint** set in the previous step. Confirm their accuracy, then click **NEXT**.
-6. The integration works with the scopes `openid`, `profile` and `email`, which are set by default. If you need other scopes, add them here. Otherwise click **NEXT**.
+6. VMware Cloud Director requires the `openid`, `profile`, and `email` scopes, which are set by default. If you need other scopes, add them here. Otherwise, click **NEXT**.
 7. The default Claim Mapping works fine, add any modifications you need and click **NEXT**.
 8. On the **Key Configuration** page, you can leave the default key selected, or upload a custom PEM file. Click **NEXT**
 9. On the **Button Label** page you are able to customize the label that's shown on the sign in page. Click **SAVE** to save the configuration and close the wizard.
