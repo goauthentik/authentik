@@ -17,7 +17,7 @@ export interface GlossaryHelperTerm {
     shortDefinition: string;
     fullDefinition?: string;
     tags?: string[];
-    isAuthentikSpecific?: boolean;
+    authentikSpecific?: boolean;
 }
 
 /**
@@ -50,13 +50,6 @@ export function isGlossaryItem(item: PropSidebarItem | GlossaryItem): boolean {
 }
 
 /**
- * Filters out glossary items from a list of sidebar items
- */
-export function filterGlossaryItems<T extends PropSidebarItem | GlossaryItem>(items: T[]): T[] {
-    return items.filter((item) => !isGlossaryItem(item));
-}
-
-/**
  * Safely extracts string value from potentially undefined/mixed-type object property
  */
 export function safeStringExtract(value: unknown, fallback: string = ""): string {
@@ -80,7 +73,8 @@ export function safeBooleanExtract(value: unknown, fallback: boolean = false): b
 }
 
 /**
- * Extracts all available tags from a collection of terms
+ * Extracts all available tags from a collection of terms.
+ * Terms without tags are treated as having "General" tag.
  */
 export const extractAvailableTags = (terms: readonly GlossaryHelperTerm[]): string[] =>
-    Array.from(new Set(terms.flatMap((t) => t.tags ?? []))).toSorted();
+    Array.from(new Set(terms.flatMap((t) => t.tags ?? ["General"]))).toSorted();

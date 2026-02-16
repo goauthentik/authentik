@@ -2,13 +2,12 @@ import "#elements/EmptyState";
 import "#elements/Expand";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { AKRequestPostEvent } from "#common/api/events";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
 
-import { AKFlowInspectorChangeEvent } from "#flow/events";
+import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import Styles from "#flow/FlowInspector.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
@@ -24,7 +23,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 function stringify(obj: unknown): string {
     return JSON.stringify(obj, null, 4);
@@ -33,7 +31,6 @@ function stringify(obj: unknown): string {
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFButton,
         PFStack,
         PFCard,
@@ -56,7 +53,7 @@ export class FlowInspector extends AKElement {
 
     //#endregion
 
-    @listen(AKRequestPostEvent)
+    @listen(AKFlowAdvanceEvent)
     protected advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({

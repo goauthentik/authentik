@@ -27,6 +27,7 @@ export function createBundleDefinitions() {
         AK_DOCS_RELEASE_NOTES_URL: ReleaseNotesURL.href,
         AK_DOCS_PRE_RELEASE_URL: PreReleaseDocsURL.href,
         AK_API_BASE_PATH: process.env.AK_API_BASE_PATH ?? "",
+        AK_BUNDLER: JSON.stringify(process.env.AK_BUNDLER ?? "authentik"),
     };
 
     return {

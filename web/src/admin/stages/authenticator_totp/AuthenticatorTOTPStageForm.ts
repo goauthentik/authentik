@@ -41,7 +41,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",

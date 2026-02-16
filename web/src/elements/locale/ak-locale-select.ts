@@ -1,9 +1,10 @@
 import { TargetLanguageTag } from "#common/ui/locale/definitions";
-import { formatLocaleDisplayNames, renderLocaleDisplayNames } from "#common/ui/locale/format";
+import { formatLocaleDisplayNames } from "#common/ui/locale/format";
 import { setSessionLocale } from "#common/ui/locale/utils";
 
 import { AKElement } from "#elements/Base";
 import Styles from "#elements/locale/ak-locale-select.css";
+import { LocaleOptions } from "#elements/locale/utils";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLocale } from "#elements/mixins/locale";
 
@@ -89,8 +90,6 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        this.addEventListener("click", this.show);
-
         window.addEventListener(LOCALE_STATUS_EVENT, this.#localeStatusListener, {
             once: true,
             passive: true,
@@ -156,10 +155,10 @@ export class AKLocaleSelect extends WithLocale(WithCapabilitiesConfig(AKElement)
                     part="select"
                     id="locale-selector"
                     @change=${this.#localeChangeListener}
-                    class="pf-c-form-control ak-m-capitalize"
+                    class="ak-m-capitalize"
                     name="locale"
                 >
-                    ${renderLocaleDisplayNames(entries, activeLocaleTag)}
+                    ${LocaleOptions({ entries, activeLocaleTag })}
                 </select>`;
         });
     }

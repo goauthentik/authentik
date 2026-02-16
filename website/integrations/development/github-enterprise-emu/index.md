@@ -38,7 +38,8 @@ In order to use GitHub Enterprise Cloud EMU, SCIM must also be set up.
 :::
 
 :::info
-GitHub will create usenames for your EMU users based on the SAML `NameID` property which must also match SCIM's `_userName_` attribute.
+GitHub will create usernames for your EMU users based on the SAML `NameID` property which must also match
+SCIM's `_userName_` attribute.
 :::info
 
 ### Create an application and provider in authentik
@@ -123,4 +124,4 @@ Create a new SCIM provider with the following parameters:
 
 Go back to your GitHub EMU Application created in the first step and add your new SCIM provider in the _Backchannel Providers_ field, then click the _Update_ button.
 
-You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioend by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.
+You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioned by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.

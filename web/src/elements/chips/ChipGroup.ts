@@ -7,12 +7,10 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip-group")
 export class ChipGroup extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFChip,
         PFChipGroup,
         PFButton,

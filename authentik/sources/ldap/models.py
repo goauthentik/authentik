@@ -183,7 +183,7 @@ class LDAPSource(IncomingSyncSource):
         ]
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         from authentik.sources.ldap.models import LDAPSourcePropertyMapping
 
         return LDAPSourcePropertyMapping

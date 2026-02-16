@@ -59,11 +59,11 @@ If you have Paperless-ngx setup in Docker, add the following environment variabl
 
 ```yaml
 environment:
-    PAPERLESS_ENABLE_ALLAUTH: true
     PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
     PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
         {
           "openid_connect": {
+            "OAUTH_PKCE_ENABLED": true,
             "APPS": [
               {
                 "provider_id": "authentik",
@@ -72,32 +72,35 @@ environment:
                 "secret": "<client_secret>",
                 "settings": {
                   "server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration",
-                  "claims": {"username": "email"}
+                  "fetch_userinfo": true
                 }
               }
             ],
-            "OAUTH_PKCE_ENABLED": "True"
+            "SCOPE": ["openid", "profile", "email"]
           }
         }
-    PAPERLESS_AUTO_LOGIN: true
-    PAPERLESS_AUTO_CREATE: true
     PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
+    PAPERLESS_SOCIAL_AUTO_SIGNUP: true
+    PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: true
 ```
 
 Alternatively, add the variables directly to your environment file:
 
 ```sh
-PAPERLESS_ENABLE_ALLAUTH=true
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect": {"APPS": [{"provider_id": "authentik", "name": "authentik", "client_id": "<client_id>", "secret": "<client_secret>", "settings": {"server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration", "claims": {"username": "email"}}}], "OAUTH_PKCE_ENABLED": "True"}}
-PAPERLESS_AUTO_LOGIN=true
-PAPERLESS_AUTO_CREATE=true
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect": {"OAUTH_PKCE_ENABLED": true, "APPS": [{"provider_id": "authentik", "name": "authentik", "client_id": "<client_id>", "secret": "<client_secret>", "settings": {"server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration", "fetch_userinfo": true}}], "SCOPE": ["openid", "profile", "email"]}}
 PAPERLESS_LOGOUT_REDIRECT_URL=https://authentik.company/application/o/<application_slug>/end-session/
+PAPERLESS_SOCIAL_AUTO_SIGNUP=true
+PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS=true
 ```
+
+Remove `PAPERLESS_SOCIAL_AUTO_SIGNUP` if you want to allow only pre-created Paperless-ngx users.
 
 To add authentik authentication to an existing Paperless-ngx user, the user can log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, then **Connect new social account**.
 
-If you want to be able to automatically sign up authentik users, set [PAPERLESS_SOCIAL_AUTO_SIGNUP](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_AUTO_SIGNUP) and/or [PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS) to true, either in your compose or environment file.
+To sync groups from your IdP, enable [PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS) and include `groups` in the provider `SCOPE`. Paperless expects a `groups` claim, so map your IdP's group claim to `groups` if it uses a different name.
+
+If you want to disable local logins after validating SSO, set [PAPERLESS_DISABLE_REGULAR_LOGIN](https://docs.paperless-ngx.com/configuration/#PAPERLESS_DISABLE_REGULAR_LOGIN) and optionally [PAPERLESS_REDIRECT_LOGIN_TO_SSO](https://docs.paperless-ngx.com/configuration/#PAPERLESS_REDIRECT_LOGIN_TO_SSO) to true.
 
 Now restart your container:
 `docker compose down && docker compose up -d`
@@ -115,14 +118,19 @@ You need to update your `paperless.conf` configuration file. Paperless-ngx will 
 Edit your `paperless.conf` and add the following:
 
 ```ini
-PAPERLESS_ENABLE_ALLAUTH=true
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID>","secret":"<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID>","secret":"<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration","fetch_userinfo":true}}],"SCOPE":["openid","profile","email"]}}
+PAPERLESS_SOCIAL_AUTO_SIGNUP=true
+PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS=true
 ```
+
+Remove `PAPERLESS_SOCIAL_AUTO_SIGNUP` if you want to allow only pre-created Paperless-ngx users.
 
 To add authentik authentication to an existing Paperless-ngx user, the user can log in to Paperless-ngx with local authentication, click the profile icon in the top-right, click **My Profile**, then **Connect new social account**.
 
-If you want to be able to automatically sign up authentik users, set [PAPERLESS_SOCIAL_AUTO_SIGNUP](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_AUTO_SIGNUP) and/or [PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS) to true in your `paperless.conf` file.
+To sync groups from your IdP, enable [PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS](https://docs.paperless-ngx.com/configuration/#PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS) and include `groups` in the provider `SCOPE`. Paperless expects a `groups` claim, so map your IdP's group claim to `groups` if it uses a different name.
+
+If you want to disable local logins after validating SSO, set [PAPERLESS_DISABLE_REGULAR_LOGIN](https://docs.paperless-ngx.com/configuration/#PAPERLESS_DISABLE_REGULAR_LOGIN) and optionally [PAPERLESS_REDIRECT_LOGIN_TO_SSO](https://docs.paperless-ngx.com/configuration/#PAPERLESS_REDIRECT_LOGIN_TO_SSO) to true.
 
 Now restart your Paperless-ngx services using `sudo systemctl restart paperless-*`
 

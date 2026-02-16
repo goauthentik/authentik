@@ -165,7 +165,7 @@ export class UserSettingsPage extends WithSession(AKElement) {
                             </div>
                             <ak-user-settings-source
                                 allow-configuration
-                                userId=${ifPresent(currentUser?.pk)}
+                                user-id=${ifPresent(currentUser?.pk)}
                             ></ak-user-settings-source>
                         </div>
                     </div>

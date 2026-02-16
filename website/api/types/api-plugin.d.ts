@@ -1,6 +1,8 @@
 /// <reference types="docusaurus-theme-openapi-docs" />
 /// <reference types="docusaurus-plugin-openapi-docs" />
 
+// cspell:ignore persistence
+
 declare module "@docusaurus/plugin-content-docs/src/sidebars/types" {
     export * from "@docusaurus/plugin-content-docs/src/sidebars/types.ts";
 }

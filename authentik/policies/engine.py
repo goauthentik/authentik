@@ -140,7 +140,7 @@ class PolicyEngine:
             passing = False
         self.__static_result = PolicyResult(passing)
 
-    def build(self) -> "PolicyEngine":
+    def build(self) -> PolicyEngine:
         """Build wrapper which monitors performance"""
         with (
             start_span(

@@ -1,22 +1,39 @@
 import { AKElement } from "#elements/Base";
+import { LitFC } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { isDefaultAvatar } from "#elements/utils/images";
+
+import {
+    AccessDeniedChallenge,
+    AuthenticatorDuoChallenge,
+    AuthenticatorEmailChallenge,
+    AuthenticatorStaticChallenge,
+    AuthenticatorTOTPChallenge,
+    AuthenticatorWebAuthnChallenge,
+    CaptchaChallenge,
+    ConsentChallenge,
+    PasswordChallenge,
+    SessionEndChallenge,
+    UserLoginChallenge,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-form-static")
-export class FormStatic extends AKElement {
+export class AKFormStatic extends AKElement {
     public override role = "banner";
     public override ariaLabel = msg("User information");
 
-    @property()
-    userAvatar?: string;
+    @property({ type: String })
+    public avatar: string = "";
 
-    @property()
-    user?: string;
+    @property({ type: String })
+    public username: string = "";
 
     static styles: CSSResult[] = [
         PFAvatar,
@@ -64,21 +81,27 @@ export class FormStatic extends AKElement {
         `,
     ];
 
-    render() {
-        if (!this.user) {
+    protected override render() {
+        if (!this.username) {
             return nothing;
         }
 
         return html`
             <div class="primary-content">
-                ${this.userAvatar && !isDefaultAvatar(this.userAvatar)
+                ${this.avatar && !isDefaultAvatar(this.avatar)
                     ? html`<img
                           class="pf-c-avatar"
-                          src=${this.userAvatar}
-                          alt=${this.user ? msg(str`Avatar for ${this.user}`) : msg("User avatar")}
+                          src=${this.avatar}
+                          alt=${this.username
+                              ? msg(str`Avatar for ${this.username}`, {
+                                    id: "avatar.alt-text-for-user",
+                                })
+                              : msg("User avatar", {
+                                    id: "avatar.alt-text",
+                                })}
                       />`
                     : nothing}
-                <div class="username" aria-description=${msg("Username")}>${this.user}</div>
+                <div class="username" aria-description=${msg("Username")}>${this.username}</div>
             </div>
             <div class="links">
                 <slot name="link"></slot>
@@ -87,8 +110,51 @@ export class FormStatic extends AKElement {
     }
 }
 
+/**
+ * @internal
+ */
+export type FormStaticChallenge =
+    | SessionEndChallenge
+    | AccessDeniedChallenge
+    | AuthenticatorDuoChallenge
+    | AuthenticatorEmailChallenge
+    | AuthenticatorStaticChallenge
+    | AuthenticatorTOTPChallenge
+    | AuthenticatorWebAuthnChallenge
+    | CaptchaChallenge
+    | ConsentChallenge
+    | PasswordChallenge
+    | UserLoginChallenge;
+
+export interface FlowUserDetailsProps {
+    challenge?: Partial<
+        Pick<FormStaticChallenge, "pendingUserAvatar" | "pendingUser" | "flowInfo">
+    > | null;
+}
+
+export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
+    const { pendingUserAvatar, pendingUser, flowInfo } = challenge || {};
+    return guard(
+        [pendingUserAvatar, pendingUser, flowInfo],
+        () =>
+            html`<ak-form-static
+                class="pf-c-form__group"
+                avatar=${ifPresent(pendingUserAvatar)}
+                username=${ifPresent(pendingUser)}
+            >
+                ${flowInfo?.cancelUrl
+                    ? html`
+                          <div slot="link">
+                              <a href=${flowInfo.cancelUrl}>${msg("Not you?")}</a>
+                          </div>
+                      `
+                    : nothing}
+            </ak-form-static>`,
+    );
+};
+
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-form-static": FormStatic;
+        "ak-form-static": AKFormStatic;
     }
 }

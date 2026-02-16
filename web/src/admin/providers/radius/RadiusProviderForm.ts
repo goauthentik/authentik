@@ -10,6 +10,11 @@ import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
 import { customElement } from "lit/decorators.js";
 
+/**
+ * Radius Provider Form
+ *
+ * @prop {number} instancePk - The primary key of the instance to load.
+ */
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
     loadInstance(pk: number): Promise<RadiusProvider> {

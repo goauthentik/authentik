@@ -15,7 +15,7 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `roudcube.company` is the FQDN of the Roundcube installation.
+- `roundcube.company` is the FQDN of the Roundcube installation.
 
 :::info
 Roundcube is often used alongside Postfix and Dovecot. Postfix sends/receives email (SMTP), Dovecot stores/retrieves mail (IMAP/POP3), and Roundcube acts as a webmail client.

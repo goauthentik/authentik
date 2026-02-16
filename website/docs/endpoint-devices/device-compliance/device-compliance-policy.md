@@ -3,28 +3,29 @@ title: Device compliance policy
 sidebar_label: Device compliance policy
 tags: [device compliance, compliance, device access, policy]
 toc_max_heading_level: 4
+authentik_version: "2025.12.0"
 ---
 
 Device compliance policies are used to limit access to authentik and applications based on [Device Compliance](./index.mdx) information.
 
-Device compliance policies are currently in development and inaccessible.
-
-However, similar functionality can be achieved with existing stages and policies.
+Device compliance policies are currently in development and inaccessible. However, similar functionality can be achieved with existing stages and policies.
 
 ## Prerequisites
 
-You must have [configured compliance](./configuration.md) in authentik and on the endpoint device.
+You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#enable-device-compliance-ssh-server-authentication-and-local-device-login), [Windows](../../authentik-agent/agent-deployment/windows/#enable-device-compliance-and-local-device-login), [macOS](../../authentik-agent/agent-deployment/macos/#enable-device-compliance)).
 
 ## Accessing device facts within a flow
 
-To access device facts within a flow, the flow must include an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md). The Endpoint stage fetches device facts via a configured [Connector](./connectors.md) and adds them to the [Flow context](../../add-secure-apps/flows-stages/flow/context/index.mdx).
+To access device facts within a flow, the flow must include an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md). The Endpoint stage fetches device facts via a configured [Connector](./connectors/index.mdx) and adds them to the [Flow context](../../add-secure-apps/flows-stages/flow/context/index.mdx).
 
 The following example shows how to use these facts within an expression policy.
 
 ```python
-flow_plan = request.context.get("flow_plan") #set a flow_plan object
-device = flow_plan.context.get("device") #set a device object
-name = device.name #the name of the device
+flow_plan = request.context.get("flow_plan") # set a flow_plan object
+device = flow_plan.context.get("device") # set a device object
+name = device.name # the name of the device
+facts = device.cached_facts.data
+ak_logger.debug("device facts", facts=facts)
 ```
 
 ## Examples
@@ -87,6 +88,7 @@ The following example will only allow authentication via Apple devices.
         device = flow_plan.context.get("device")
         if device.manufacturer.lower() != "apple":
             return True
+        return False
         ```
         :::info Deny stage
         Because this is a deny stage, the policy must evaluate true when a requirement is not met.

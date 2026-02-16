@@ -1,3 +1,5 @@
+import { SelectOptions } from "#elements/types";
+
 import { kebabCase } from "change-case";
 
 import type { TemplateResult } from "lit";
@@ -340,10 +342,14 @@ const reseason = (acc: Seasoned[], { produce, seasons, desc }: ViewSample): Seas
     ...seasons.map((s) => [s, produce, desc] as Seasoned),
 ];
 
-export const groupedSampleData = (() => {
+export const groupedSampleData = ((): SelectOptions<string> => {
     const seasoned: Seasoned[] = sampleData.reduce(reseason, [] as Seasoned[]);
     const grouped = Object.groupBy(seasoned, ([season]) => season);
-    const ungrouped = ([_season, label, desc]: Seasoned) => [kebabCase(label), label, desc];
+    const ungrouped = ([_season, label, desc]: Seasoned): Seasoned => [
+        kebabCase(label),
+        label,
+        desc,
+    ];
 
     if (grouped === undefined) {
         throw new Error("Not possible with existing data.");

@@ -9,7 +9,7 @@ from botocore.exceptions import ClientError
 from django.db import connection
 from django.http.request import HttpRequest
 
-from authentik.admin.files.backends.base import ManageableBackend
+from authentik.admin.files.backends.base import ManageableBackend, get_content_type
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
@@ -173,7 +173,22 @@ class S3Backend(ManageableBackend):
             if custom_domain:
                 parsed = urlsplit(url)
                 scheme = "https" if use_https else "http"
-                url = f"{scheme}://{custom_domain}{parsed.path}?{parsed.query}"
+                path = parsed.path
+
+                # When using path-style addressing, the presigned URL contains the bucket
+                # name in the path (e.g., /bucket-name/key). Since custom_domain must
+                # include the bucket name (per docs), strip it from the path to avoid
+                # duplication. See: https://github.com/goauthentik/authentik/issues/19521
+                # Check with trailing slash to ensure exact bucket name match
+                if path.startswith(f"/{self.bucket_name}/"):
+                    path = path.removeprefix(f"/{self.bucket_name}")
+
+                # Normalize to avoid double slashes
+                custom_domain = custom_domain.rstrip("/")
+                if not path.startswith("/"):
+                    path = f"/{path}"
+
+                url = f"{scheme}://{custom_domain}{path}?{parsed.query}"
 
             return url
 
@@ -189,6 +204,7 @@ class S3Backend(ManageableBackend):
             Key=f"{self.base_path}/{name}",
             Body=content,
             ACL="private",
+            ContentType=get_content_type(name),
         )
 
     @contextmanager
@@ -204,6 +220,7 @@ class S3Backend(ManageableBackend):
                 Key=f"{self.base_path}/{name}",
                 ExtraArgs={
                     "ACL": "private",
+                    "ContentType": get_content_type(name),
                 },
             )
 

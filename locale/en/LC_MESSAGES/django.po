@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-28 00:13+0000\n"
+"POT-Creation-Date: 2026-02-14 00:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,9 +27,11 @@ msgid "File name cannot be empty"
 msgstr ""
 
 #: authentik/admin/files/validation.py
+#, python-format
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
-"hyphens (-), underscores (_), and forward slashes (/)"
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -176,6 +178,32 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr ""
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr ""
@@ -205,6 +233,34 @@ msgid "No empty segments in user path allowed."
 msgstr ""
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr ""
 
@@ -214,6 +270,14 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -280,14 +344,6 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Can impersonate other users"
-msgstr ""
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr ""
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
 msgstr ""
 
 #: authentik/core/models.py
@@ -505,7 +561,9 @@ msgstr ""
 msgid "Powered by authentik"
 msgstr ""
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -528,6 +586,14 @@ msgstr ""
 msgid "ecdsa"
 msgstr ""
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr ""
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr ""
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr ""
@@ -538,14 +604,6 @@ msgstr ""
 
 #: authentik/crypto/models.py
 msgid "DSA"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr ""
-
-#: authentik/crypto/models.py
-msgid "Ed448"
 msgstr ""
 
 #: authentik/crypto/models.py
@@ -656,6 +714,16 @@ msgstr ""
 msgid "Apple Nonces"
 msgstr ""
 
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+
 #: authentik/endpoints/models.py
 msgid "Device"
 msgstr ""
@@ -714,6 +782,92 @@ msgstr ""
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Only one type-wide rule for each object type is allowed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to validate lifecycle rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
 msgstr ""
 
 #: authentik/enterprise/models.py
@@ -832,6 +986,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -890,6 +1054,15 @@ msgstr ""
 msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra providers."
 msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
@@ -953,6 +1126,21 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
 msgstr ""
 
 #: authentik/enterprise/reports/models.py
@@ -1074,12 +1262,6 @@ msgstr ""
 msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
-msgstr ""
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
 msgstr ""
 
 #: authentik/events/models.py
@@ -1788,32 +1970,6 @@ msgstr ""
 msgid "Invalid Regex Pattern: {url}"
 msgstr ""
 
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr ""
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
 msgstr ""
@@ -2066,12 +2222,6 @@ msgstr ""
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
-msgstr ""
-
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr ""
@@ -2251,6 +2401,10 @@ msgstr ""
 msgid ""
 "With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
 "Response' must be selected."
+msgstr ""
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
 msgstr ""
 
 #: authentik/providers/saml/api/providers.py
@@ -2506,6 +2660,10 @@ msgid "Salesforce"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
@@ -2564,6 +2722,14 @@ msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
 msgstr ""
 
 #: authentik/providers/scim/tasks.py
@@ -3774,6 +3940,10 @@ msgstr ""
 msgid "Event Notification"
 msgstr ""
 
+#: authentik/stages/email/models.py authentik/stages/invitation/models.py
+msgid "Invitation"
+msgstr ""
+
 #: authentik/stages/email/models.py
 msgid ""
 "The time window used to count recent account recovery attempts. If the "
@@ -3876,6 +4046,64 @@ msgstr ""
 msgid ""
 "\n"
 "This email was sent from the notification transport %(name)s.\n"
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"      You're Invited!\n"
+"      "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          You have been invited to join %(host)s. Click the button below to "
+"get started.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          This invitation expires %(expires)s.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "Accept Invitation"
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"    If you cannot click the button above, please copy and paste the "
+"following URL into your browser:\n"
+"    "
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "You're Invited!"
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid ""
+"You have been invited to join %(host)s. Use the link below to get started."
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid "This invitation expires %(expires)s."
+msgstr ""
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid ""
+"If you cannot click the link above, please copy and paste the following URL "
+"into your browser:"
 msgstr ""
 
 #: authentik/stages/email/templates/email/password_reset.html
@@ -4027,10 +4255,6 @@ msgstr ""
 
 #: authentik/stages/invitation/models.py
 msgid "Optional fixed data to enforce on user enrollment."
-msgstr ""
-
-#: authentik/stages/invitation/models.py
-msgid "Invitation"
 msgstr ""
 
 #: authentik/stages/invitation/models.py

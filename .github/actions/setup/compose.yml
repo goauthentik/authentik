@@ -22,7 +22,7 @@ services:
       - 8020:8000
     volumes:
       - s3-data:/usr/src/app/localData
-      - s3-metadata:/usr/scr/app/localMetadata
+      - s3-metadata:/usr/src/app/localMetadata
     restart: always
 
 volumes:

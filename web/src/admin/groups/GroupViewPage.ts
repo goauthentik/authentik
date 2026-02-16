@@ -2,6 +2,8 @@ import "#admin/groups/GroupForm";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RelatedRoleList";
+import "#components/ak-object-attributes-card";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
@@ -15,11 +17,17 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
-import { CoreApi, Group, RbacPermissionsAssignedByRolesListModelEnum } from "@goauthentik/api";
+import {
+    ContentTypeEnum,
+    CoreApi,
+    Group,
+    RbacPermissionsAssignedByRolesListModelEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -32,12 +40,11 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-group-view")
-export class GroupViewPage extends AKElement {
+export class GroupViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set groupId(id: string) {
         new CoreApi(DEFAULT_CONFIG)
@@ -55,7 +62,6 @@ export class GroupViewPage extends AKElement {
     group?: Group;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFDisplay,
@@ -216,6 +222,11 @@ export class GroupViewPage extends AKElement {
                                 </ak-object-changelog>
                             </div>
                         </div>
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                            <ak-object-attributes-card
+                                .objectAttributes=${this.group.attributes}
+                            ></ak-object-attributes-card>
+                        </div>
                     </div>
                 </section>
                 <section
@@ -243,6 +254,7 @@ export class GroupViewPage extends AKElement {
                     ${this.renderTabRoles(this.group)}
                 </section>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
@@ -251,6 +263,18 @@ export class GroupViewPage extends AKElement {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreGroup}
                     objectPk=${this.group.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.hasEnterpriseLicense
+                    ? html`<ak-object-lifecycle-page
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-lifecycle"
+                          id="page-lifecycle"
+                          aria-label="${msg("Lifecycle")}"
+                          model=${ContentTypeEnum.AuthentikCoreGroup}
+                          object-pk=${this.group.pk}
+                      ></ak-object-lifecycle-page>`
+                    : nothing}
             </ak-tabs>
         </main>`;
     }

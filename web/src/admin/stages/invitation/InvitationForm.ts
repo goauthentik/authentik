@@ -43,7 +43,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const checkSlug = (ev: InputEvent) => {
             if (ev && ev.target && ev.target instanceof HTMLInputElement) {
                 ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");

@@ -38,6 +38,12 @@ You can download our [Example flows](./examples/flows.md) and then import them i
 
 Starting with authentik 2022.8, flows are exported as YAML, but legacy JSON-based flows can still be imported.
 
+:::warning Flow imports
+Flow imports are blueprint files, which may contain objects other than flows (such as policies, users, groups, etc).
+
+You should only import files from trusted sources and review blueprints before importing them.
+:::
+
 ## Create a custom flow
 
 To create a flow, follow these steps:
@@ -48,7 +54,7 @@ To create a flow, follow these steps:
 
 After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
 
-To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../sys-mgmt/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
+To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../sys-mgmt/brands/index.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
 ## Flow configuration options
 
@@ -68,7 +74,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 <Defaultflowlist />
 
-**Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
+**Authentication**: Using this option, you can configure whether the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
 
 **Behavior settings**:
 
@@ -89,7 +95,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
-- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands.md#branding-settings).
+- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands/index.md#branding-settings).
 
 ## Edit or delete a flow
 

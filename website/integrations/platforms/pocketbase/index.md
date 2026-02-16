@@ -50,7 +50,7 @@ To support the integration of Pocketbase with authentik, you need to create an a
 ## PocketBase configuration
 
 1. Sign in to PocketBase and access the superusers dashboard by navigating to `https://pocketbase.company/\_/#/settings`.
-2. Toggle off **Hide collection create and edit controls**," then click the **Save changes** button.
+2. Toggle off **Hide collection create and edit controls** then click the **Save changes** button.
 3. Open the **users** collection by clicking the **Collections** icon on the sidebar or head to `https://pocketbase.company/\_/#/collections?collection=pb_users_auth`.
 4. Click the gear icon next to the collection's name, then select the **Options** tab in the popup on the right.
 5. Enable the **OAuth2** authentication method by clicking the **OAuth2** tab and toggling **Enable**.

@@ -41,7 +41,7 @@ class ScheduleSpec:
             options["uid"] = self.uid
         return pickle.dumps(options)
 
-    def update_or_create(self) -> "Schedule":
+    def update_or_create(self) -> Schedule:
         from django.contrib.contenttypes.models import ContentType
 
         from authentik.tasks.schedules.models import Schedule

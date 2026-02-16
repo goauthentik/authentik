@@ -31,7 +31,7 @@ func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 }
 
 func (ls *LDAPServer) Refresh() error {
-	apiProviders, err := ak.Paginator(ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()), ak.PaginatorOptions{
+	apiProviders, err := ak.Paginator(ls.ac.Client.OutpostsAPI.OutpostsLdapList(context.Background()), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ls.log,
 	})

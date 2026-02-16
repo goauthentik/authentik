@@ -35,6 +35,12 @@ This YAML file is validated and applied directly after being uploaded, but is no
 Be aware that if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an existing default flow, what you get is a merged version of the two: the _original flow_ (which is based on the blueprint) _plus any changes you made to the flow_. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to _first_ delete the modified flow, and _then_ [apply the flow's blueprint](./working_with_blueprints.md#apply-a-new-flow) again.
 :::
 
+:::warning Flow imports
+Flow imports are blueprint files, which may contain objects other than flows (such as policies, users, groups, etc).
+
+You should only import files from trusted sources and review blueprints before importing them.
+:::
+
 ## Blueprint execution
 
 When a blueprint is applied, all entries are processed within a single **atomic database transaction**. This means:

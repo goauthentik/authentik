@@ -67,7 +67,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const userSelectFields = [
             { name: UserFieldsEnum.Username, label: msg("Username") },
             { name: UserFieldsEnum.Email, label: msg("Email") },

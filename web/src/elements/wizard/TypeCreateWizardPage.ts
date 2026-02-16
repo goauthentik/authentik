@@ -17,7 +17,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum TypeCreateWizardPageLayouts {
     list = "list",
@@ -40,7 +39,6 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#endregion
 
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFGrid,
         PFRadio,
@@ -96,61 +94,66 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     };
 
     protected renderGrid(): TemplateResult {
-        return html`<div
-            role="listbox"
-            aria-label="${msg("Select a provider type")}"
-            class="pf-l-grid pf-m-gutter"
-            data-ouid-component-type="ak-type-create-grid"
-        >
-            ${this.types.map((type, idx) => {
-                const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
+        return html`${this.hasSlotted("above-form")
+                ? html`<div class="pf-c-page__main-section"><slot name="above-form"></slot></div>`
+                : nothing}
+            <div
+                role="listbox"
+                aria-label="${msg("Select a provider type")}"
+                class="pf-l-grid pf-m-gutter"
+                data-ouid-component-type="ak-type-create-grid"
+            >
+                ${this.types.map((type, idx) => {
+                    const disabled = !!(type.requiresEnterprise && !this.hasEnterpriseLicense);
 
-                const selected = this.selectedType === type;
+                    const selected = this.selectedType === type;
 
-                return html`<div
-                    class=${classMap({
-                        "pf-l-grid__item": true,
-                        "pf-m-3-col": true,
-                        "pf-c-card": true,
-                        "pf-m-non-selectable-raised": disabled,
-                        "ak-m-enterprise-only": disabled,
-                        "pf-m-selectable-raised": !disabled,
-                        "pf-m-selected-raised": selected,
-                    })}
-                    tabindex=${idx}
-                    role="option"
-                    aria-disabled="${disabled ? "true" : "false"}"
-                    aria-selected="${selected ? "true" : "false"}"
-                    aria-label="${type.name}"
-                    aria-describedby="${type.description}"
-                    @click=${() => {
-                        if (disabled) return;
+                    return html`<div
+                        class=${classMap({
+                            "pf-l-grid__item": true,
+                            "pf-m-3-col": true,
+                            "pf-c-card": true,
+                            "pf-m-non-selectable-raised": disabled,
+                            "ak-m-enterprise-only": disabled,
+                            "pf-m-selectable-raised": !disabled,
+                            "pf-m-selected-raised": selected,
+                        })}
+                        tabindex=${idx}
+                        role="option"
+                        aria-disabled="${disabled ? "true" : "false"}"
+                        aria-selected="${selected ? "true" : "false"}"
+                        aria-label="${type.name}"
+                        aria-describedby="${type.description}"
+                        @click=${() => {
+                            if (disabled) return;
 
-                        this.#selectDispatch(type);
-                        this.selectedType = type;
-                    }}
-                >
-                    ${type.iconUrl
-                        ? html`<div role="presentation" class="pf-c-card__header">
-                              <div role="presentation" class="pf-c-card__header-main">
-                                  <img
-                                      aria-hidden="true"
-                                      src=${type.iconUrl}
-                                      alt=${msg(str`${type.name} Icon`)}
-                                  />
-                              </div>
-                          </div>`
-                        : nothing}
-                    <div role="heading" aria-level="2" class="pf-c-card__title">${type.name}</div>
-                    <div role="presentational" class="pf-c-card__body">${type.description}</div>
-                    ${disabled
-                        ? html`<div class="pf-c-card__footer">
-                              <ak-license-notice></ak-license-notice>
-                          </div> `
-                        : nothing}
-                </div>`;
-            })}
-        </div>`;
+                            this.#selectDispatch(type);
+                            this.selectedType = type;
+                        }}
+                    >
+                        ${type.iconUrl
+                            ? html`<div role="presentation" class="pf-c-card__header">
+                                  <div role="presentation" class="pf-c-card__header-main">
+                                      <img
+                                          aria-hidden="true"
+                                          src=${type.iconUrl}
+                                          alt=${msg(str`${type.name} Icon`)}
+                                      />
+                                  </div>
+                              </div>`
+                            : nothing}
+                        <div role="heading" aria-level="2" class="pf-c-card__title">
+                            ${type.name}
+                        </div>
+                        <div role="presentational" class="pf-c-card__body">${type.description}</div>
+                        ${disabled
+                            ? html`<div class="pf-c-card__footer">
+                                  <ak-license-notice></ak-license-notice>
+                              </div> `
+                            : nothing}
+                    </div>`;
+                })}
+            </div>`;
     }
 
     renderList(): TemplateResult {

@@ -1,3 +1,8 @@
+.pf-c-drawer {
+    /* TODO: Revisit this after native <dialog> modals are implemented. */
+    --pf-c-drawer__content--ZIndex: auto;
+}
+
 .pf-c-drawer__body {
     display: flex;
     flex-flow: column;

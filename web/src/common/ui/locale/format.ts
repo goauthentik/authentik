@@ -9,8 +9,6 @@ import {
 import { safeParseLocale } from "#common/ui/locale/utils";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
-import { repeat } from "lit/directives/repeat.js";
 
 /**
  * Safely get a minimized locale ID, with fallback for older browsers.
@@ -198,34 +196,41 @@ export function formatLocaleDisplayNames(
     return entries.sort(createIntlCollator(activeLocaleTag, collatorOptions));
 }
 
-export function renderLocaleDisplayNames(
-    entries: LocaleDisplay[],
-    activeLocaleTag: TargetLanguageTag | null,
+export function formatRelativeLocaleDisplayName(
+    languageTag: TargetLanguageTag,
+    localizedDisplayName: string,
+    relativeDisplayName: string,
 ) {
-    return repeat(
-        entries,
-        ([languageTag]) => languageTag,
-        ([languageTag, localizedDisplayName, relativeDisplayName]) => {
-            const pseudo = languageTag === PseudoLanguageTag;
+    const pseudo = languageTag === PseudoLanguageTag;
 
-            const same =
-                relativeDisplayName &&
-                normalizeDisplayName(relativeDisplayName) ===
-                    normalizeDisplayName(localizedDisplayName);
+    const same =
+        relativeDisplayName &&
+        normalizeDisplayName(relativeDisplayName) === normalizeDisplayName(localizedDisplayName);
 
-            let localizedMessage = localizedDisplayName;
+    if (same || pseudo) {
+        return localizedDisplayName;
+    }
 
-            if (!same && !pseudo) {
-                localizedMessage = msg(str`${relativeDisplayName} (${localizedDisplayName})`, {
-                    id: "locale-option-localized-label",
-                    desc: "Locale option label showing the localized language name along with the native language name in parentheses.",
-                });
-            }
+    return msg(str`${relativeDisplayName} (${localizedDisplayName})`, {
+        id: "locale-option-localized-label",
+        desc: "Locale option label showing the localized language name along with the native language name in parentheses.",
+    });
+}
 
-            return html`${pseudo ? html`<hr />` : null}
-                <option value=${languageTag} ?selected=${languageTag === activeLocaleTag}>
-                    ${localizedMessage}
-                </option>`;
-        },
-    );
+/**
+ * Format the display name for the auto-detect locale option.
+ *
+ * @param detectedLocale The detected locale display, if any.
+ */
+export function formatAutoDetectLocaleDisplayName(detectedLocale?: LocaleDisplay | null) {
+    const prefix = msg("Auto-detect", {
+        id: "locale-auto-detect-option",
+        desc: "Label for the auto-detect locale option in language selection dropdown",
+    });
+
+    if (!detectedLocale) {
+        return prefix;
+    }
+
+    return `${prefix} (${formatRelativeLocaleDisplayName(...detectedLocale)})`;
 }

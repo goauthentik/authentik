@@ -54,7 +54,7 @@ export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Enrollment Token(s)")}
+            object-label=${msg("Enrollment Token(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: EnrollmentToken) => {
                 return [

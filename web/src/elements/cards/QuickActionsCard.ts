@@ -9,7 +9,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export type QuickAction = [label: string, url: string, isExternal?: boolean];
 
@@ -39,7 +38,7 @@ function renderItem([label, url, external]: QuickAction) {
  */
 @customElement("ak-quick-actions-card")
 export class QuickActionsCard extends AKElement implements IQuickActionsCard {
-    static styles = [PFBase, PFList];
+    static styles = [PFList];
 
     /**
      * Card title

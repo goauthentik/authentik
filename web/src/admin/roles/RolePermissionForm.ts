@@ -23,10 +23,16 @@ interface RolePermissionAssign {
 @customElement("ak-role-permission-form")
 export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> {
     @state()
-    permissionsToAdd: Permission[] = [];
+    protected permissionsToAdd: Permission[] = [];
 
     @property({ type: String })
     public roleUuid: string | null = null;
+
+    public override reset(): void {
+        super.reset();
+
+        this.permissionsToAdd = [];
+    }
 
     loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
@@ -49,7 +55,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         this.permissionsToAdd = [];
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Permissions to add")} name="permissions">
                 <div class="pf-c-input-group">

@@ -38,7 +38,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
@@ -57,7 +56,6 @@ export class KerberosSourceViewPage extends AKElement {
     source!: KerberosSource;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFButton,
         PFGrid,
@@ -208,6 +206,7 @@ export class KerberosSourceViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

@@ -43,7 +43,7 @@ func NewServer(ac *ak.APIController) ak.Outpost {
 		log:         log.WithField("logger", "authentik.outpost.radius"),
 		ac:          ac,
 		providers:   map[int32]*ProviderInstance{},
-		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
 	}
 	rs.s = radius.PacketServer{
 		Handler:      rs,

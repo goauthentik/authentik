@@ -204,6 +204,7 @@ func (c *Config) RefreshPostgreSQLConfig() PostgreSQLConfig {
 	// Map of environment variable suffix to config field pointer
 	envVars := map[string]*string{
 		"HOST":           &refreshed.Host,
+		"PORT":           &refreshed.Port,
 		"USER":           &refreshed.User,
 		"PASSWORD":       &refreshed.Password,
 		"NAME":           &refreshed.Name,

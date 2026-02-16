@@ -40,16 +40,19 @@ export class UserSettingsFlowExecutor
     @property()
     flowSlug = this.brand?.flowUserSettings;
 
-    private _challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
-        this.requestUpdate();
+    set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+
+        this.#challenge = value;
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
+    get challenge(): ChallengeTypes | null {
+        return this.#challenge;
     }
 
     @property({ type: Boolean })

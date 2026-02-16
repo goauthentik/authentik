@@ -5,7 +5,6 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface VisibilityToggleProps {
     open: boolean;
@@ -27,7 +26,7 @@ export interface VisibilityToggleProps {
  */
 @customElement("ak-visibility-toggle")
 export class VisibilityToggle extends AKElement implements VisibilityToggleProps {
-    static styles = [PFBase, PFButton];
+    static styles = [PFButton];
 
     /**
      * @property

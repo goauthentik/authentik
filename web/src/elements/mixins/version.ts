@@ -13,9 +13,7 @@ import { property } from "lit/decorators.js";
  * @see {@linkcode WithVersion}
  */
 
-export const VersionContext = createContext<Version | null>(
-    Symbol.for("authentik-version-context"),
-);
+export const VersionContext = createContext<Version | null>(Symbol("authentik-version-context"));
 
 export type VersionContext = typeof VersionContext;
 

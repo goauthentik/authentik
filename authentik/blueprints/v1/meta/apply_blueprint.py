@@ -23,7 +23,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
 
     # We cannot override `instance` as that will confuse rest_framework
     # and make it attempt to update the instance
-    blueprint_instance: "BlueprintInstance"
+    blueprint_instance: BlueprintInstance
 
     def validate(self, attrs):
         from authentik.blueprints.models import BlueprintInstance

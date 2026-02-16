@@ -45,7 +45,7 @@ To support the integration of Firezone with authentik, you need to create an app
 To configure OpenID Connect authentication with Firezone, navigate to **Settings** > **Security** of your Firezone installation and click **Add OpenID Connect Provider** under **Single Sign-On**.
 
 :::info
-In the event of a configuration errorm it is possible to re-enable local authentication, if previously disabled, by following instructions provided on [Firezone's troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli).
+In the event of a configuration error it is possible to re-enable local authentication, if previously disabled, by following instructions provided on [Firezone's troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli).
 :::info
 
 Set the following values in the Firezone UI:
