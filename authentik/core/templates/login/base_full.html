@@ -45,7 +45,7 @@
                             </div>
                         </main>
                         <footer aria-label="Site footer" class="pf-c-login__footer pf-m-dark">
-                            <ul class="pf-c-list pf-m-inline">
+                            <ul aria-label="Site links" class="pf-c-list pf-m-inline" part="list">
                                 {% for link in footer_links %}
                                 <li>
                                     <a href="{{ link.href }}">{{ link.name }}</a>
