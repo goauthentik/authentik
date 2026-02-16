@@ -201,7 +201,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                 : nothing}
             <ak-user-delete-form
                 .obj=${user}
-                objectLabel=${msg("User")}
+                object-label=${msg("User")}
                 .usedBy=${() =>
                     this.#api.coreUsersUsedByList({
                         id: user.pk,

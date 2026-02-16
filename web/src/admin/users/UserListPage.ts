@@ -26,7 +26,6 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
-import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
