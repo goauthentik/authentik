@@ -4,7 +4,7 @@ description: "Integrate Okta as a source in authentik"
 tags: [source, okta]
 ---
 
-Allows users to authenticate using their Okta credentials by configuring Okra as a federated identity provider via OAuth2.
+Allows users to authenticate using their Okta credentials by configuring Okta as a federated identity provider via OAuth2.
 
 ## Preparation
 
