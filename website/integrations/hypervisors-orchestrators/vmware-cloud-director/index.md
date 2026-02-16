@@ -53,7 +53,7 @@ The redirect URI is for provider level configuration. If you're configuring a te
 5. The values on the **Endpoint** page are fetched automatically from the **IDP Well-known Configuration Endpoint** set in the previous step. Confirm their accuracy, then click **NEXT**.
 6. VMware Cloud Director requires the `openid`, `profile`, and `email` scopes, which are set by default. If you need other scopes, add them here. Otherwise, click **NEXT**.
 7. The default **Claim Mapping** works fine, add any modifications you need and click **NEXT**.
-8. On the **Key Configuration** page, you can leave the default key selected, or upload a custom PEM file. Click **NEXT**
+8. On the **Key Configuration** page, VMware Cloud Director fetches the correct public key from the authentik Key Refresh Endpoint. Once the signing key expires, you must manually upload the new key, or you could toggle the **Automatic Key Refresh** option to on. You then need to set the **Key Refresh Period** and the **Key Refresh Strategy**. The different strategies are explained in the [VMware Cloud Director docs](https://techdocs.broadcom.com/us/en/vmware-cis/cloud-director/vmware-cloud-director/10-6/configure-your-system-to-use-an-openid-connect-identity-provider.html). Click **NEXT** to complete this step.
 9. On the **Button Label** page, you are able to customize the label that's shown on the sign in page. Set a label of your choosing, then click **SAVE** to save the configuration and close the wizard.
 10. It's necessary to link authentik groups to Cloud Director roles, otherwise Cloud Director will deny permissions to authentik users. Using the menu in the left navigation bar, navigate to **Administration** > **Provider Access Control** > **Groups**.
 
