@@ -3,14 +3,19 @@
  */
 
 html[lang^="zh"] {
+    /* cSpell:disable */
+
     --ak-font-family-sans-serif:
         "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei",
         sans-serif, var(--ak-generic-sans-serif);
+
     --ak-font-family-serif: "Noto Serif SC", var(--ak-generic-serif);
 
     --ak-font-family-heading:
         "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei",
         sans-serif;
+
+    /* cSpell:enable */
 
     --pf-c-content--h1--FontWeight: 500;
 

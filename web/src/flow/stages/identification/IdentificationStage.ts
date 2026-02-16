@@ -421,7 +421,7 @@ export class IdentificationStage extends BaseStage<
                 ? html`
                       <p>
                           ${msg(
-                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
+                              "Enter the email address or username associated with your account.",
                           )}
                       </p>
                   `

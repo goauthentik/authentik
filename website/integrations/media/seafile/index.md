@@ -66,7 +66,7 @@ OAUTH_USER_INFO_URL = 'https://authentik.company/application/o/userinfo/'
 OAUTH_SCOPE = ["openid", "profile", "email"]
 
 OAUTH_ATTRIBUTE_MAP = {
-    "email": (True, "email"),
+    "email": (True, "contact_email"),
     "name": (False, "name"),
     "sub": (False, "uid"),
 }
