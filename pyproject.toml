@@ -95,7 +95,7 @@ dev = [
   "lxml-stubs==0.5.1",
   "mypy==1.19.1",
   "pdoc==16.0.0",
-  "pytest-django==4.11.1",
+  "pytest-django==4.12.0",
   "pytest-flakefinder==1.1.0",
   "pytest-github-actions-annotate-failures==0.3.0",
   "pytest-randomly==4.0.1",
