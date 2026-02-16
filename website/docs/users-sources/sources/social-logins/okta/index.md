@@ -1,6 +1,6 @@
 ---
 title: Okta
-description: "Integrate Okta with authentik"
+description: "Integrate Okta as a source in authentik"
 tags: [source, okta]
 ---
 
@@ -11,18 +11,18 @@ Allows users to authenticate using their Okta credentials by configuring Okra as
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `company.okta.com` is the FQDN of your Okta instance.
+- `company.okta.com` is the FQDN of your Okta tenant.
 
 ## Okta configuration
 
 To integrate Okta with authentik you will need to create an App Integration in the Okta Admin Console.
 
-1. Sign in to the Okta Admin Console.
+1. Log in to the Okta Admin Console as an administrator.
 2. Navigate to **Applications** > **Applications** > **Add App Integration**.
 3. Select **OIDC - OpenID Connect**, set **Application Type** to **Web Application**, and then click **Next**.
 4. Configure the following required settings:
     - **App Integration Name**: `authentik`
-    - **Sign-in redirect URIs**: `https://authentik.company/source/oauth/callback/okta/`
+    - **Sign-in redirect URIs**: `https://authentik.company/source/oauth/callback/<source_slug>/`
     - Under **Assignments**, select how you'd like to control access to authentik. **Allow everyone in your organization to access** or select a group to limit access.
 5. Click **Save**.
 6. Under **Client Credentials**, take note of the **Client ID**. This value will be required in the next section.
