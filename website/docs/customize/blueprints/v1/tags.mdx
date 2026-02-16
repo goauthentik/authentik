@@ -180,7 +180,7 @@ Full example:
 
 ```yaml
 required: !Condition [
-    AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
+    AND, # Valid modes are: EQ, NEQ, AND, NAND, OR, NOR, XOR, XNOR
     !Context instance_name,
     !Find [authentik_flows.flow, [slug, default-password-change],
     "My string",
