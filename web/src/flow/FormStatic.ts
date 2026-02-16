@@ -3,6 +3,8 @@ import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { isDefaultAvatar } from "#elements/utils/images";
 
+import Styles from "#flow/FormStatic.css";
+
 import {
     AccessDeniedChallenge,
     AuthenticatorDuoChallenge,
@@ -18,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -26,6 +28,8 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
 @customElement("ak-form-static")
 export class AKFormStatic extends AKElement {
+    static styles: CSSResult[] = [PFAvatar, Styles];
+
     public override role = "banner";
     public override ariaLabel = msg("User information");
 
@@ -35,59 +39,12 @@ export class AKFormStatic extends AKElement {
     @property({ type: String })
     public username: string = "";
 
-    static styles: CSSResult[] = [
-        PFAvatar,
-        css`
-            :host {
-                margin-block-start: var(--pf-global--spacer--sm);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-flow: wrap;
-                gap: var(--pf-global--spacer--sm);
-            }
-
-            .pf-c-avatar {
-                flex: 0 0 auto;
-            }
-
-            .primary-content {
-                display: flex;
-                align-items: center;
-                flex: 1 1 auto;
-                gap: var(--pf-global--spacer--md);
-            }
-
-            .username {
-                flex: 1 1 auto;
-                text-align: left;
-                max-width: 20rem;
-                text-overflow: ellipsis;
-                overflow-wrap: break-word;
-
-                display: box;
-                display: -webkit-box;
-                line-clamp: 3;
-                -webkit-line-clamp: 3;
-                box-orient: vertical;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-
-            .links {
-                flex: 0 0 auto;
-                text-align: right;
-            }
-        `,
-    ];
-
     protected override render() {
         if (!this.username) {
             return nothing;
         }
 
-        return html`
-            <div class="primary-content">
+        return html`<div class="primary-content">
                 ${this.avatar && !isDefaultAvatar(this.avatar)
                     ? html`<img
                           class="pf-c-avatar"
@@ -105,8 +62,7 @@ export class AKFormStatic extends AKElement {
             </div>
             <div class="links">
                 <slot name="link"></slot>
-            </div>
-        `;
+            </div>`;
     }
 }
 
@@ -138,8 +94,7 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
         [pendingUserAvatar, pendingUser, flowInfo],
         () =>
             html`<ak-form-static
-                class="pf-c-form__group"
-                avatar=${ifPresent(pendingUserAvatar)}
+                .avatar=${ifPresent(pendingUserAvatar)}
                 username=${ifPresent(pendingUser)}
             >
                 ${flowInfo?.cancelUrl

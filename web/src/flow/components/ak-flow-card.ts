@@ -42,9 +42,13 @@ export class FlowCard extends AKElement {
         // No title if the challenge doesn't provide a title and no custom title is set
         let title: null | SlottedTemplateResult = null;
         if (this.hasSlotted("title")) {
-            title = html`<h1 class="pf-c-title pf-m-3xl"><slot name="title"></slot></h1>`;
+            title = html`<h1 class="pf-c-title pf-m-3xl ak-m-clamped">
+                <slot name="title"></slot>
+            </h1>`;
         } else if (this.challenge?.flowInfo?.title) {
-            title = html`<h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo.title}</h1>`;
+            title = html`<h1 class="pf-c-title pf-m-3xl ak-m-clamped">
+                ${this.challenge.flowInfo.title}
+            </h1>`;
         }
         const footer = this.hasSlotted("footer") ? html`<slot name="footer"></slot>` : null;
         const footerBand = this.hasSlotted("footer-band")
