@@ -36,7 +36,7 @@ To support the integration of VMware Cloud Director with authentik, you need to 
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 :::info Tenant configuration
-The redirect URI is for provider level configuration. If you're configuring a tenant-level integration in VMware Cloud Director, use the URI displayed in [step 2 of the VMware Cloud Director configuration](#cloud-director-configuration).
+The redirect URI is for provider level configuration. If you're configuring a tenant-level integration in VMware Cloud Director, use the URI displayed in [step 2 of the VMware Cloud Director configuration](#vmware-cloud-director-configuration).
 :::
 
 3. Click **Submit** to save the new application and provider.
