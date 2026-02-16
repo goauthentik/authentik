@@ -45,7 +45,7 @@ The redirect URI is for provider level configuration. If you're configuring a te
 
 1. Log in to VMware Cloud Director with your local administrator account. Using the menu in the left navigation bar, navigate to **Administration** > **Identity Providers** > **OIDC**.
 2. Click the blue **Configure** button in the middle of the screen.
-3. In the wizard, enter the following values:
+3. In the wizard, set the following values:
     - Set **Client ID** to the client ID from authentik.
     - Set **Client Secret** to the client secret from authentik.
     - Set **IDP Well-known Configuration Endpoint** to the value of the **OpenID Configuration URL** field in your authentik provider.
