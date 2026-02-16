@@ -98,11 +98,11 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
+	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
 	sed -i 's/^version = ".*"/version = "$(version)"/' pyproject.toml
 	sed -i 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
-	npm version --no-git-tag-version --allow-same-version $(version)
-	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	sed -i "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
