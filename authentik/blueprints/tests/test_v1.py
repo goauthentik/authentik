@@ -158,7 +158,7 @@ class TestBlueprintsV1(TransactionTestCase):
                 "policy_pk1": str(policy.pk) + "-suffix",
                 "policy_pk2": str(policy.pk) + "-suffix",
                 "boolEq": True,
-                "boolNeq": True,
+                "boolNeq": False,
                 "boolAnd": True,
                 "boolNand": False,
                 "boolOr": True,
