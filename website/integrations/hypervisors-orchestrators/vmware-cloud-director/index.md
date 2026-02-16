@@ -48,7 +48,7 @@ The redirect URI is for provider level configuration. If you're configuring a te
 3. In the wizard, set the following values:
     - Set **Client ID** to the client ID from authentik.
     - Set **Client Secret** to the client secret from authentik.
-    - Set **IDP Well-known Configuration Endpoint** to the value of the **OpenID Configuration URL** field in your authentik provider.
+    - Set **IDP Well-known Configuration Endpoint** to the value of the **OpenID Configuration URL** field in the authentik provider.
 4. Click **NEXT**.
 5. The values on the **Endpoint** page are fetched automatically from the **IDP Well-known Configuration Endpoint** set before. Example: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration` Click **NEXT**.
 6. The integration works with the scopes `openid`, `profile` and `email`, which are set by default. If you need other scopes, add them here. Otherwise click **NEXT**.
