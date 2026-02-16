@@ -18678,6 +18678,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sign_logout_response
+        schema:
+          type: boolean
+      - in: query
         name: sign_response
         schema:
           type: boolean
@@ -19861,6 +19865,10 @@ paths:
           type: boolean
       - in: query
         name: sign_logout_request
+        schema:
+          type: boolean
+      - in: query
+        name: sign_logout_response
         schema:
           type: boolean
       - in: query
@@ -30597,6 +30605,35 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/invitation/invitations/{invite_uuid}/send_email/:
+    post:
+      operationId: stages_invitation_invitations_send_email_create
+      description: Send invitation link via email to one or more addresses
+      parameters:
+      - in: path
+        name: invite_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Invitation.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvitationSendEmailRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/invitation/invitations/{invite_uuid}/used_by/:
     get:
       operationId: stages_invitation_invitations_used_by_list
@@ -40696,8 +40733,7 @@ components:
         logout_urls:
           type: array
           items:
-            type: object
-            additionalProperties: {}
+            $ref: '#/components/schemas/LogoutURL'
     IframeLogoutChallengeResponseRequest:
       type: object
       description: Response for iframe logout
@@ -40845,6 +40881,25 @@ components:
           description: When set, only the configured flow can use this invitation.
       required:
       - name
+    InvitationSendEmailRequest:
+      type: object
+      description: Serializer for sending invitation emails
+      properties:
+        email_addresses:
+          type: array
+          items: {}
+        cc_addresses:
+          type: array
+          items: {}
+        bcc_addresses:
+          type: array
+          items: {}
+        template:
+          type: string
+          minLength: 1
+          default: invitation
+      required:
+      - email_addresses
     InvitationStage:
       type: object
       description: InvitationStage Serializer
@@ -42393,6 +42448,29 @@ components:
       required:
       - challenge
       - name
+    LogoutURL:
+      type: object
+      description: Data for a single logout URL
+      properties:
+        url:
+          type: string
+        provider_name:
+          type: string
+          nullable: true
+        binding:
+          type: string
+          nullable: true
+        saml_request:
+          type: string
+          nullable: true
+        saml_response:
+          type: string
+          nullable: true
+        saml_relay_state:
+          type: string
+          nullable: true
+      required:
+      - url
     MDMConfigRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -42956,21 +43034,23 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-        post_url:
-          type: string
-        saml_request:
-          type: string
-        relay_state:
-          type: string
         provider_name:
-          type: string
-        binding:
-          type: string
-        redirect_url:
           type: string
         is_complete:
           type: boolean
           default: false
+        post_url:
+          type: string
+        redirect_url:
+          type: string
+        saml_binding:
+          $ref: '#/components/schemas/SAMLBindingsEnum'
+        saml_request:
+          type: string
+        saml_response:
+          type: string
+        saml_relay_state:
+          type: string
     NativeLogoutChallengeResponseRequest:
       type: object
       description: Response for native browser logout
@@ -49905,6 +49985,8 @@ components:
           type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -53397,6 +53479,8 @@ components:
           type: boolean
         sign_logout_request:
           type: boolean
+        sign_logout_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SAMLBindingsEnum'
@@ -53590,6 +53674,8 @@ components:
         sign_response:
           type: boolean
         sign_logout_request:
+          type: boolean
+        sign_logout_response:
           type: boolean
         sp_binding:
           allOf:

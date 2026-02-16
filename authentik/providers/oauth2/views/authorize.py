@@ -432,7 +432,7 @@ class AuthorizationFlowInitView(BufferedPolicyAccessView):
         return response
 
     def dispatch(self, request: HttpRequest, *args, **kwargs):
-        # Activate language before parsing params (error messages should be localised)
+        # Activate language before parsing params (error messages should be localized)
         return self.dispatch_with_language(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

@@ -10759,6 +10759,10 @@
                     "type": "boolean",
                     "title": "Sign logout request"
                 },
+                "sign_logout_response": {
+                    "type": "boolean",
+                    "title": "Sign logout response"
+                },
                 "sp_binding": {
                     "type": "string",
                     "enum": [
