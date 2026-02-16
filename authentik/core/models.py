@@ -15,7 +15,6 @@ from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
-from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -43,6 +42,7 @@ from authentik.lib.models import (
     DomainlessFormattedURLValidator,
     SerializerModel,
 )
+from authentik.lib.utils.inheritance import get_deepest_child
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.rbac.models import Role
@@ -789,26 +789,7 @@ class Application(SerializerModel, PolicyBindingModel):
         """Get casted provider instance. Needs Application queryset with_provider"""
         if not self.provider:
             return None
-
-        best_candidate = None
-        best_depth = -1
-        base_class = Provider
-        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
-            parent = self.provider
-            for level in subclass.split(LOOKUP_SEP):
-                try:
-                    parent = getattr(parent, level)
-                except AttributeError:
-                    break
-            # Skip if we didn't find a subclass (parent is still the base Provider)
-            if type(parent) is base_class:
-                continue
-            # Track the most specific (deepest) subclass
-            depth = subclass.count(LOOKUP_SEP)
-            if depth > best_depth:
-                best_depth = depth
-                best_candidate = parent
-        return best_candidate
+        return get_deepest_child(self.provider)
 
     def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
         """Get Backchannel provider for a specific type"""
