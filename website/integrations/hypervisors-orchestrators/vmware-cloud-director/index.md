@@ -61,7 +61,7 @@ The redirect URI is for provider level configuration. If you're configuring a te
 If you're configuring the integration on a tenant-level in Cloud Director, navigate to **Administration** > **Access Control** > **Groups**.
 :::
 
-11. Click **IMPORT Groups**. In the dialog fill in the following values:
+11. Click **IMPORT Groups** and set the following values:
     - Switch the **Source** dropdown to "OIDC"
     - The dialog now displays a large text area labeled **Enter the group names**. Use a new line for each group.
     - Select the Cloud Director role you wish to map to those authentik groups in the **Assign Role** dropdown.
@@ -69,7 +69,7 @@ If you're configuring the integration on a tenant-level in Cloud Director, navig
 
 ## Configuration Verification
 
-To verify the integration of authentik with VMware Cloud Director, log out of Cloud Director, then on the login page click the "Sign in with OIDC" button. If you specified a custom string on step 9, it is displayed instead.
+To verify the integration of authentik with VMware Cloud Director, log out of Cloud Director, then on the login page click the "Sign in with OIDC" button. If you specified a custom string on step 9, it is displayed instead. You will be redirected to authentik, and once authenticated, you will be logged in to Cloud Director.
 
 ## Resources
 
