@@ -234,7 +234,7 @@ export class IdentificationStage extends BaseStage<
 
     //#region Render
 
-    renderApplicationPre(applicationPre: string) {
+    #renderApplicationPre(applicationPre: string) {
         return html`<p>${msg(str`Login to continue to ${applicationPre}.`)}</p>`;
     }
 
@@ -243,7 +243,7 @@ export class IdentificationStage extends BaseStage<
         this.host.challenge = challenge;
     };
 
-    renderDefaultSource(source: LoginSource, showLabels: boolean) {
+    #renderDefaultSource(source: LoginSource, showLabels: boolean) {
         const icon = renderSourceIcon(source.name, source.iconUrl);
         return html`<button
             type="button"
@@ -258,7 +258,7 @@ export class IdentificationStage extends BaseStage<
         </button>`;
     }
 
-    renderPromotedSource(source: LoginSource) {
+    #renderPromotedSource(source: LoginSource) {
         return html`<button
             type="button"
             @click=${() => this.dispatchChallengeToHost(source.challenge)}
@@ -271,20 +271,20 @@ export class IdentificationStage extends BaseStage<
         </button>`;
     }
 
-    renderSource(source: LoginSource, showLabels: boolean) {
+    #renderSource(source: LoginSource, showLabels: boolean) {
         return source.promoted
-            ? this.renderPromotedSource(source)
-            : this.renderDefaultSource(source, showLabels);
+            ? this.#renderPromotedSource(source)
+            : this.#renderDefaultSource(source, showLabels);
     }
 
-    renderRecoveryPhase() {
+    #renderRecoveryPhase() {
         const message = msg(
             "Enter the email associated with your account, and we'll send you a link to reset your password.",
         );
         return html` <p>${message}</p> `;
     }
 
-    renderIdentityInput(challenge: IdentificationChallenge) {
+    #renderIdentityInput(challenge: IdentificationChallenge) {
         const fields = (challenge.userFields || []).sort();
         const type =
             fields.includes(UserFieldsEnum.Email) && fields.length === 1 ? "email" : "text";
@@ -311,7 +311,7 @@ export class IdentificationStage extends BaseStage<
         </div>`;
     }
 
-    renderPasswordFields(challenge: IdentificationChallenge) {
+    #renderPasswordFields(challenge: IdentificationChallenge) {
         return html`
             <ak-flow-input-password
                 label=${msg("Password")}
@@ -325,7 +325,7 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    renderSubmitButton(challenge: IdentificationChallenge) {
+    #renderSubmitButton(challenge: IdentificationChallenge) {
         return html` <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
             <button
                 ?disabled="${this.#captcha.pending}"
@@ -337,7 +337,7 @@ export class IdentificationStage extends BaseStage<
         </div>`;
     }
 
-    renderInput(challenge: IdentificationChallenge): TemplateResult {
+    #renderInput(challenge: IdentificationChallenge): TemplateResult {
         if (!challenge.userFields || challenge.userFields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
@@ -346,16 +346,16 @@ export class IdentificationStage extends BaseStage<
 
         // prettier-ignore
         return html`
-            ${recovery ? this.renderRecoveryPhase() : nothing}
-            ${this.renderIdentityInput(challenge)}
-            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
+            ${recovery ? this.#renderRecoveryPhase() : nothing}
+            ${this.#renderIdentityInput(challenge)}
+            ${passwordFields ? this.#renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()}
             ${this.#captcha.render()}
-            ${this.renderSubmitButton(challenge)}
+            ${this.#renderSubmitButton(challenge)}
         `;
     }
 
-    renderPasswordlessUrl(passwordlessUrl: string) {
+    #renderPasswordlessUrl(passwordlessUrl: string) {
         return html`<ak-divider>${msg("Or")}</ak-divider>
             <a
                 name="passwordless"
@@ -368,7 +368,7 @@ export class IdentificationStage extends BaseStage<
 
     // These have the same type, and can be supplied out-of-order. Passing them in by name prevents
     // mis-ordering.
-    renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
+    #renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
         if (!(enrollUrl || recoveryUrl)) {
             return nothing;
         }
@@ -395,9 +395,9 @@ export class IdentificationStage extends BaseStage<
         </fieldset>`;
     }
 
-    renderLoginSources(sources: LoginSource[], showLabels: boolean) {
+    #renderLoginSources(sources: LoginSource[], showLabels: boolean) {
         const key = ({ name }: LoginSource, idx: number) => `${name}${idx}`;
-        const content = (source: LoginSource) => this.renderSource(source, showLabels);
+        const content = (source: LoginSource) => this.#renderSource(source, showLabels);
         const promoted = (a: LoginSource) => !!a.promoted;
 
         // Sort promoted sources to show up first
@@ -421,7 +421,7 @@ export class IdentificationStage extends BaseStage<
         </fieldset> `;
     }
 
-    renderIdentificationStage(challenge: IdentificationChallenge) {
+    #renderIdentificationStage(challenge: IdentificationChallenge) {
         const {
             passwordlessUrl,
             applicationPre,
@@ -436,12 +436,12 @@ export class IdentificationStage extends BaseStage<
         // prettier-ignore
         return html`<ak-flow-card .challenge=${challenge} part="flow-card">
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${applicationPre ? this.renderApplicationPre(applicationPre) : nothing}
-                ${this.renderInput(challenge)}
-                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+                ${applicationPre ? this.#renderApplicationPre(applicationPre) : nothing}
+                ${this.#renderInput(challenge)}
+                ${passwordlessUrl ? this.#renderPasswordlessUrl(passwordlessUrl) : nothing}
             </form>
-            ${hasSources ? this.renderLoginSources(sources, showSourceLabels) : nothing}
-            ${hasFooter ? this.renderFooter({ enrollUrl, recoveryUrl}) : nothing }
+            ${hasSources ? this.#renderLoginSources(sources, showSourceLabels) : nothing}
+            ${hasFooter ? this.#renderFooter({ enrollUrl, recoveryUrl}) : nothing }
         </ak-flow-card>`;
     }
 
@@ -451,7 +451,7 @@ export class IdentificationStage extends BaseStage<
             return nothing;
         }
 
-        return this.renderIdentificationStage(this.challenge);
+        return this.#renderIdentificationStage(this.challenge);
     }
 
     //#endregion

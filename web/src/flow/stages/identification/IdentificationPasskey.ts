@@ -17,8 +17,8 @@ type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
 type PasskeyHost = IdentificationStage & ReactiveControllerHost;
 
 export class IdentificationPasskey implements ReactiveController {
-    passkey: PublicKeyCredentialRequestOptions | null = null;
-    host: IdentificationStage;
+    public passkey: PublicKeyCredentialRequestOptions | null = null;
+    public host: IdentificationStage;
 
     constructor(host: PasskeyHost) {
         this.host = host;
@@ -29,7 +29,7 @@ export class IdentificationPasskey implements ReactiveController {
 
     //#endregion
 
-    hostUpdated() {
+    public hostUpdated() {
         if (this.passkey !== (this.host.challenge as PasskeyChallenge)?.passkeyChallenge) {
             this.passkey = (this.host.challenge as PasskeyChallenge)?.passkeyChallenge ?? null;
         }
@@ -38,7 +38,7 @@ export class IdentificationPasskey implements ReactiveController {
         }
     }
 
-    hostDisconnected() {
+    public hostDisconnected() {
         this.#passkeyAbortController?.abort();
         this.#passkeyAbortController = null;
     }

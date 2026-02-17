@@ -22,17 +22,17 @@ export class IdentificationCaptchas implements ReactiveController {
         host.addController(this);
     }
 
-    hostUpdate() {
+    public hostUpdate() {
         if (this.challenge !== this.host.challenge?.captchaStage) {
             this.challenge = this.host.challenge?.captchaStage ?? null;
         }
     }
 
-    get live() {
+    public get live() {
         return !!this.challenge;
     }
 
-    get pending() {
+    public get pending() {
         return this.challenge && this.challenge.interactive && !this.loaded;
     }
 
@@ -49,7 +49,7 @@ export class IdentificationCaptchas implements ReactiveController {
         input.value = token;
     };
 
-    onFailure() {
+    public onFailure() {
         const captchaInput = this.#inputRef.value;
         if (captchaInput) {
             captchaInput.value = "";
@@ -58,7 +58,7 @@ export class IdentificationCaptchas implements ReactiveController {
         this.host.requestUpdate();
     }
 
-    renderCaptchaStage(challenge: CaptchaChallenge) {
+    #renderCaptchaStage(challenge: CaptchaChallenge) {
         return html` <div class="captcha-container">
             <ak-stage-captcha
                 .challenge=${challenge}
@@ -80,7 +80,7 @@ export class IdentificationCaptchas implements ReactiveController {
         </div>`;
     }
 
-    render() {
-        return this.challenge ? this.renderCaptchaStage(this.challenge) : nothing;
+    public render() {
+        return this.challenge ? this.#renderCaptchaStage(this.challenge) : nothing;
     }
 }
