@@ -220,6 +220,10 @@ async function run({ warnOnly, cwd }) {
 
     logger.info("Running npm install --package-lock-only...");
 
+    const npmVersion = await execAsync("npm --version").then(({ stdout }) => stdout.trim());
+
+    logger.info(`Detected npm version: ${npmVersion}`);
+
     await execAsync("npm install --package-lock-only", {
         cwd: lockfileDir,
     }).catch((cause) => {
