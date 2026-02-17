@@ -66,6 +66,6 @@ To support the integration of Uptime Kuma with authentik, you need to create an 
 
 ## Uptime Kuma configuration
 
-Disable auth from Uptime Kuma, go to `Settings` > `Advanced` > `Disable Auth`
+Disable auth in Uptime Kuma by going to `Settings` > `Advanced` > `Disable Auth`.
 
-To access the dashboard, open `https://uptime-kuma.company/dashboard`, this will start the login with authentik. You can also set this address as the Launch URL for the application.
+To access the dashboard, open `https://uptime-kuma.company/dashboard`. This will start the login with authentik. You can also set this address as the Launch URL for the application.

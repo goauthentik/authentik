@@ -57,12 +57,12 @@ All of the URLs mentioned below can be copied & pasted from authentik (**Applica
 - Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
 - Set the `Client identifier (key)` to the Client ID from your notes.
 - Set the `Client secret` to the Client Secret from your notes.
-- Check the `Fill information (optional)`-Checkbox to open the advanced menu.
+- Check the `Fill information (optional)` checkbox to open the advanced menu.
 - Set the `Username field` to `username`
 - Set the `Scopes` to `openid profile email`
 
 4. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
-5. You should be able to login with OIDC.
+5. You should be able to log in with OIDC.
 
 :::info
 The first time a user signs in, Xen Orchesta will create a new user with the same username used in authentik. If you want to map the users by their e-mail-address instead of their username, you have to set the `Username field` to `email` in the Xen Orchestra plugin configuration.
