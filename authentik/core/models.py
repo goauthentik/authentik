@@ -1,5 +1,7 @@
 """authentik core models"""
 
+import re
+import traceback
 from datetime import datetime, timedelta
 from enum import StrEnum
 from hashlib import sha256
@@ -528,23 +530,35 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             "default: in 30 days). See authentik logs for every will invocation of this "
             "deprecation."
         )
+        stacktrace = traceback.format_stack()
+        # The last line is this function, the next-to-last line is its caller
+        cause = stacktrace[-2] if len(stacktrace) > 1 else "Unknown, see stacktrace in logs"
+        if search := re.search(r'"(.*?)"', cause):
+            cause = f"Property mapping or Expression policy named {search.group(1)}"
+
         LOGGER.warning(
             "deprecation used",
             message=message_logger,
             deprecation=deprecation,
             replacement=replacement,
+            cause=cause,
+            stacktrace=stacktrace,
         )
         if not Event.filter_not_expired(
-            action=EventAction.CONFIGURATION_WARNING, context__deprecation=deprecation
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=deprecation,
+            context__cause=cause,
         ).exists():
             event = Event.new(
                 EventAction.CONFIGURATION_WARNING,
                 deprecation=deprecation,
                 replacement=replacement,
                 message=message_event,
+                cause=cause,
             )
             event.expires = datetime.now() + timedelta(days=30)
             event.save()
+
         return self.groups
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
