@@ -39,7 +39,7 @@ To support the integration of Seafile with authentik, you need to create an appl
 
 ## Seafile configuration
 
-To support the integration of Seafile with authentik, you'll need to update the `seahub_settings.py` file of your Seafile deployment (The location may vary depending on your installation and deployment methods):
+To support the integration of Seafile with authentik, you'll need to update the `seahub_settings.py` file of your Seafile deployment (the location may vary depending on your installation and deployment methods):
 
 ```py showLineNumbers title="seahub_settings.py"
 CSRF_TRUSTED_ORIGINS = ['https://seafile.company']
@@ -89,5 +89,5 @@ To confirm that authentik is properly configured with Seafile, log out of Seafil
 
 ## Resources
 
-- [Seafile Oauth authentication documentation](https://manual.seafile.com/13.0/config/oauth/)
+- [Seafile OAuth authentication documentation](https://manual.seafile.com/13.0/config/oauth/)
 - [Seafile `seahub_settings.py` documentation](https://manual.seafile.com/13.0/config/seahub_settings_py/)

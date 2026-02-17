@@ -72,7 +72,7 @@ The following groups will be created:
 - `gitrestricted`: restricted Gitea users.
 
 :::info
-Users who are in none of these groups will not be able to log in to gitea.
+Users who are in none of these groups will not be able to log in to Gitea.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.

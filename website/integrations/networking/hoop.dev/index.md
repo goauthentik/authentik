@@ -41,9 +41,9 @@ To support the integration of Hoop.dev with authentik, you need to create an app
 
 ## Hoop.dev configuration
 
-To support the integration of Hoop.dev with authentik, you must configure it to use authentik as it's identity provider.
+To support the integration of Hoop.dev with authentik, you must configure it to use authentik as its identity provider.
 
-1. Create the Kubernetes ConfigMap for `hoopgateway` deploment or set corresponding environment variables with the **Client ID**, **Client Secret** and **slug** values from the authentik provider created earlier:
+1. Create the Kubernetes ConfigMap for `hoopgateway` deployment or set corresponding environment variables with the **Client ID**, **Client Secret**, and **slug** values from the authentik provider created earlier:
 
 ```yaml
 config:
@@ -58,7 +58,7 @@ config:
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Hoop.dev, log in using the command below. Once authenticated, you should be signed into Hoop.dev network.
+To confirm that authentik is properly configured with Hoop.dev, log in using the command below. Once authenticated, you should be signed into the Hoop.dev network.
 
 ```bash
 hoop config create --api-url https://hoop.company
