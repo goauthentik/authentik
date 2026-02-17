@@ -197,6 +197,7 @@ def default_grant_types() -> list[GrantType]:
         GrantType.HYBRID,
         GrantType.IMPLICIT,
         GrantType.CLIENT_CREDENTIALS,
+        GrantType.PASSWORD,
         GrantType.DEVICE_CODE,
         GrantType.REFRESH_TOKEN,
     ]

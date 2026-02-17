@@ -40,6 +40,27 @@ class TestAuthorize(OAuthTestCase):
         super().setUp()
         self.factory = RequestFactory()
 
+    def test_disallowed_grant_type(self):
+        """Test with disallowed grant type"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            grant_types=[],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "code",
+                    "client_id": "test",
+                    "redirect_uri": "http://local.invalid/Foo",
+                },
+            )
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
+
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
         OAuth2Provider.objects.create(
