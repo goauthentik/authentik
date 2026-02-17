@@ -166,6 +166,11 @@
     &::part(list) {
         --pf-c-list--m-inline--li--MarginRight: 0;
 
+        /* 3 entries is a unique scenario where 2 columns is visually balanced. */
+        &[data-count="3"] {
+            --ak-c-login__footer--ColumnCount: 2;
+        }
+
         justify-content: center;
         column-gap: var(--ak-c-login__footer--ColumnGap);
         row-gap: var(--ak-c-login__footer--RowGap);
@@ -174,26 +179,30 @@
         place-items: center;
         display: var(--ak-c-login__footer--Display);
 
-        grid-template-columns: repeat(auto-fit, var(--ak-c-login__footer--TrackWidth));
+        grid-template-columns: repeat(
+            var(--ak-c-login__footer--ColumnCount),
+            var(--ak-c-login__footer--TrackWidth)
+        );
 
         grid-template-rows:
             [header] max-content
             [main] max-content
-            [footer] max-content;
+            [footer];
     }
 
     [part="list-item"],
     &::part(list-item) {
+        /* CSS grid is preferred, but if the custom CSS overrides this, default to something reasonable. */
         flex: 1 1 var(--ak-c-login__footer__list-item--FlexBasis, auto);
         text-align: center;
         max-width: var(--ak-c-login__footer--ItemMaxWidth);
 
         &[data-kind="text"] {
             &[data-track-name="start"] {
-                grid-column: header / 1;
+                grid-column: 1 / -1;
             }
             &[data-track-name="end"] {
-                grid-column: footer / 1;
+                grid-column: 1 / -1;
             }
         }
     }
