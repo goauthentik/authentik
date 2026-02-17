@@ -38,6 +38,21 @@ updates:
 
   #endregion
 
+  #region Rust
+
+  - package-ecosystem: rust-toolchain
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+
+  #endregion
+
   #region Web
 
   - package-ecosystem: npm
