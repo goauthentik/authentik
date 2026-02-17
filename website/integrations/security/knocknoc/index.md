@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Knocknoc with authentik, you need to create an application/provider pair and 3 property mappings in authentik.
+To support the integration of Knocknoc with authentik, you need to create an application/provider pair and three property mappings in authentik.
 
 ### Create property mappings in authentik
 
@@ -64,7 +64,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     ```
 
 :::info
-This example will set session duration at 540 minutes. Change the value to match your desired session duration length in minutes.
+This example sets the session duration to 540 minutes. Change the value to match your desired session duration in minutes.
 :::
 
 ### Create an application and provider in authentik

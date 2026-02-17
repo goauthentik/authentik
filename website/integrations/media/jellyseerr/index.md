@@ -34,7 +34,7 @@ To support the integration of Jellyseerr with authentik, you need to create an a
 ## Jellyseerr configuration
 
 :::info
-Jellyseer OAuth support is currently in preview, please make sure to use the `preview-OIDC` Docker tag.
+Jellyseerr OAuth support is currently in preview, please make sure to use the `preview-OIDC` Docker tag.
 :::
 
 1. Log in to Jellyseerr with an administrator account.

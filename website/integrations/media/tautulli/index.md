@@ -79,7 +79,7 @@ Optionally, you can use the built-in authentik embedded outpost:
 
 ## Tautulli configuration
 
-To configure basic authentication, set the following variables in the `config.ini` file of you Tautulli deployment:
+To configure basic authentication, set the following variables in the `config.ini` file of your Tautulli deployment:
 
 ```yaml title="config.ini"
 http_basic_auth = 1

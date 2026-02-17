@@ -123,7 +123,7 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    Arbitrary `libpq` parameter keywords for the database connection. A list of parameter keywords can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
     - Parameters passed with this setting will override those passed with other settings.
     - These parameters are not applied to read replicas.
     - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
@@ -154,9 +154,9 @@ Additionally, you can set arbitrary connection parameters on all read replicas w
 
 - `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    Arbitrary `libpq` parameter keywords for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
     - Parameters passed with this setting will override those passed with other settings.
-    - Parameter key words should be formatted as a base64-encoded JSON dictionary.
+    - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
 
 ### Using a PostgreSQL Connection Pooler
 
