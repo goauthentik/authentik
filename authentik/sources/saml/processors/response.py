@@ -14,20 +14,6 @@ from lxml import etree  # nosec
 from lxml.etree import _Element  # nosec
 from structlog.stdlib import get_logger
 
-<<<<<<< HEAD
-=======
-from authentik.common.saml.constants import (
-    NS_MAP,
-    NS_SAML_ASSERTION,
-    NS_SAML_PROTOCOL,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PERSISTENT,
-    SAML_NAME_ID_FORMAT_TRANSIENT,
-    SAML_NAME_ID_FORMAT_WINDOWS,
-    SAML_NAME_ID_FORMAT_X509,
-    SAML_STATUS_SUCCESS,
-)
->>>>>>> 8610ec2d5 (sources/saml: update handling statusmessage (#19739))
 from authentik.core.models import (
     USER_ATTRIBUTE_DELETE_ON_LOGOUT,
     USER_ATTRIBUTE_EXPIRES,
@@ -58,6 +44,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
+    SAML_STATUS_SUCCESS,
 )
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
 
