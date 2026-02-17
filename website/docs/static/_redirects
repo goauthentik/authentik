@@ -47,6 +47,10 @@
 /policies/*                                                 /customize/policies/:splat 301!
 #endregion
 
+#region Endpoint Devices
+/endpoint-devices/device-authentication/*                                          /endpoint-devices/authentik-agent/device-authentication/:splat 301!
+#endregion
+
 #region System Management
 /core/certificates                                          /sys-mgmt/certificates/ 301!
 /core/settings                                              /sys-mgmt/settings/ 301!
@@ -74,6 +78,11 @@
 /security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53 301!
 /security/CVE-*                                             /security/cves/CVE-:splat 301!
 /security/GHSA-*                                            /security/cves/GHSA-:splat 301!
+#endregion
+
+#region Troubleshooting
+/troubleshooting/logs                                        /troubleshooting/logs/logs 301!
+/troubleshooting/forward_auth/general                        /troubleshooting/forward_auth 301!
 #endregion
 
 #region Integrations

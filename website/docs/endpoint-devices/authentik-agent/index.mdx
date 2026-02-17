@@ -10,9 +10,9 @@ import DocCardList from "@theme/DocCardList";
 The authentik Agent is a service that can be installed on Linux, macOS, and Windows devices. It provides the following capabilities:
 
 - [Device Compliance](../device-compliance/index.mdx) by reporting information about Endpoint Devices to authentik
-- [Local device login](../device-authentication/local-device-login/index.mdx) with authentik credentials
-- [Connecting via SSH to Endpoint Devices](../device-authentication/ssh-authentication.mdx) with authentik credentials
-- [Authenticating to CLI applications](../device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials
+- [Local device login](./device-authentication/local-device-login/index.mdx) with authentik credentials
+- [Connecting via SSH to Endpoint Devices](./device-authentication/ssh-authentication.mdx) with authentik credentials
+- [Authenticating to CLI applications](./device-authentication/cli-app-authentication/index.mdx) such as kubectl and AWS with authentik credentials
 
 ## authentik Agent components
 
@@ -23,7 +23,7 @@ The authentik Agent consists of several components:
 | **Linux, macOS, Windows** | `authentik-cli`                     | Provides CLI commands for interacting with `authentik-agent`.                                                                                                                                                                                        | `authentik-agent` |
 | **Linux, macOS, Windows** | `authentik-agent`                   | Authentication within a users' context, for CLI tools.                                                                                                                                                                                               | `authentik-sysd`  |
 | **Linux, macOS, Windows** | `authentik-sysd`                    | Responsible for handling device-level authentication and compliance checks.                                                                                                                                                                          | None              |
-| **Linux only**            | `libpam-authentik`                  | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](../device-authentication/ssh-authentication.mdx) and [local device login](../device-authentication/local-device-login/index.mdx).             | `authentik-sysd`  |
+| **Linux only**            | `libpam-authentik`                  | PAM Module for token-based and interactive authentication via authentik. Used for [SSH authentication](./device-authentication/ssh-authentication.mdx) and [local device login](./device-authentication/local-device-login/index.mdx).               | `authentik-sysd`  |
 | **Linux only**            | `libnss-authentik`                  | NSS Module that makes Linux aware of authentik users. All authentik users will be visible to Linux - but won't be able to login unless configured via device access groups. Provides a consistent `uid` and `gid` for users on all Endpoint Devices. | `authentik-sysd`  |
 | **Windows only**          | `Windows Credential Provider` (WCP) | Enables logging in to Windows devices using authentik credentials.                                                                                                                                                                                   | `authentik-sysd`  |
 

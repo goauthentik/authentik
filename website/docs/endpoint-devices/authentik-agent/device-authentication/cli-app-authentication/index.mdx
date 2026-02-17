@@ -10,7 +10,7 @@ The authentik Agent can authenticate to CLI applications such as [`aws`](./aws.m
 
 ## How CLI authentication works
 
-First, `authentik-agent` and `authentik-cli` request an authentik token from the [authentik-cli OAuth Provider](../../authentik-agent/configuration.md#create-an-application-and-provider-in-authentik-for-cli) and exchange it for a token from the specified Kubernetes or AWS provider.
+First, `authentik-agent` and `authentik-cli` request an authentik token from the [authentik-cli OAuth Provider](../../configuration.md#create-an-application-and-provider-in-authentik-for-cli) and exchange it for a token from the specified Kubernetes or AWS provider.
 
 This token is cached until expiration. This improves performance by eliminating repeated token requests.
 
