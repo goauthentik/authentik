@@ -10,6 +10,9 @@ on:
 permissions:
   contents: write
 
+env:
+  NPM_VERSION: "11.10.0"
+
 jobs:
   fix-lockfile:
     if: github.actor == 'dependabot[bot]'
@@ -54,6 +57,10 @@ jobs:
         if: steps.detect.outputs.npm_dirs != ''
         with:
           node-version-file: package.json
+
+      - name: Install NPM
+        if: steps.detect.outputs.npm_dirs != ''
+        run: npm install -g npm@${{ env.NPM_VERSION }}
 
       - name: Fix npm lockfiles
         if: steps.detect.outputs.npm_dirs != ''
