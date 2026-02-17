@@ -14,7 +14,7 @@
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
         "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:lockfile": "wireit",
+        "lint:lockfile": "../scripts/lint-lockfile.mjs",
         "lint:types": "wireit",
         "lit-analyse": "wireit",
         "precommit": "wireit",
@@ -261,11 +261,6 @@
             "dependencies": [
                 "build-locales"
             ]
-        },
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
         },
         "lit-analyse": {
             "command": "lit-analyzer src"
