@@ -38,7 +38,7 @@ updates:
 
   #endregion
 
-  #region Rust Toolchain
+  #region Rust
 
   - package-ecosystem: rust-toolchain
     directory: "/"
