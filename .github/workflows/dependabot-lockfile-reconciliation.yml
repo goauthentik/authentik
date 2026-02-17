@@ -18,8 +18,6 @@ jobs:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      #region Setup
-
       - id: app-token
         name: Generate app token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
@@ -38,11 +36,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           token: "${{ steps.app-token.outputs.token }}"
-
-      #endregion
-
-      #region NPM
-
       - name: Detect changed lockfiles
         id: detect
         run: |
@@ -70,11 +63,6 @@ jobs:
             node scripts/lint-lockfile.mjs --warn "$dir/" || true
             echo "::endgroup::"
           done
-
-      #endregion
-
-      #region Synchronize changes
-
       - name: Commit fixes
         run: |
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
@@ -82,5 +70,3 @@ jobs:
           git add -A
           git diff --staged --quiet || git commit -m "fix: regenerate lockfiles [dependabot skip]"
           git push
-
-      #endregion
