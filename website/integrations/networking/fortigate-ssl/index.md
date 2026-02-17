@@ -6,7 +6,7 @@ support_level: community
 
 ## What is FortiGate SSLVPN
 
-> FortiGate is a firewall from FortiNet. It is a NGFW with layer7 inspection and able to become a part of a FortiNet security fabric.
+> FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >
 > -- https://www.fortinet.com/products/next-generation-firewall
 
@@ -14,8 +14,8 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of your authentik installation
-- `fortigate.company` is the FQDN of your FortiGate firewall
+- `authentik.company` is the FQDN of your authentik installation.
+- `fortigate.company` is the FQDN of your FortiGate firewall.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -34,7 +34,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Create a user group
 
-1. Log in to authentik as an administrator and navigate to the admin Interface.
+1. Log in to authentik as an administrator and navigate to the Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set a descriptive name for the group (e.g. "FortiGate SSLVPN Users").
 4. Add the users who should have access to the SSLVPN.
@@ -42,7 +42,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin and navigate to the admin Interface.
+1. Log in to authentik as an admin and navigate to the Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
 
 - **Application**: provide a descriptive name (e.g. "FortiGate SSLVPN"), an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -66,7 +66,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Setup SAML SP
 
-1. SSH to the FortiGate (If you are using vdom change to the correct vdom).
+1. SSH into the FortiGate (if you are using vdom, change to the correct vdom).
 2. The configuration will be written to `/data/config/config.conf`. Copy and paste the following configuration, replacing the placeholders with your values:
 
 ```

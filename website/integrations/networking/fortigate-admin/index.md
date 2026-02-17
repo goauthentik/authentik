@@ -6,7 +6,7 @@ support_level: community
 
 ## What is FortiGate
 
-> FortiGate is a firewall from FortiNet. It is a NGFW with layer7 inspection and able to become a part of a FortiNet security fabric.
+> FortiGate is a firewall from Fortinet. It is an NGFW with layer 7 inspection and can become part of a Fortinet security fabric.
 >
 > -- https://www.fortinet.com/products/next-generation-firewall
 
@@ -54,11 +54,11 @@ To support the integration of FortiGate with authentik, you need to create an ap
 
 ## FortiGate Configuration
 
-To integrate Fortigate with authentik, nagiate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
+To integrate FortiGate with authentik, navigate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
 
 Once that is done, navigate to `https://fortigate.company/fabric-connector/edit/security-fabric-connection` and select **Single Sign-On** to configure SAML authentication. You should see, under **Mode**, a toggle named **Service Provider (SP)**, toggle it to enable this authentication method.
 
-Then, set the following values in the Fortigate administrative UI:
+Then, set the following values in the FortiGate administrative UI:
 
 - **SP Address**: `fortigate.company`
 - **Default login page**: `Normal` or `Single Sign-On`, depending on your needs. `Normal` allows local and SAML authentication while the latter only allows SAML authentication.
@@ -116,6 +116,8 @@ end
 
 ## Configuration verification
 
+To confirm that authentik is properly configured with FortiGate Admin Login, log out and attempt to log back in using SAML authentication through authentik.
+
 ## Resources
 
-- [Official Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)
+- [Official FortiGate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)

@@ -55,4 +55,4 @@ After making these changes, restart your Docker containers to apply the new conf
 
 ## Configuration verification
 
-Once completed, What's Up Docker should be successfully configured to use authentik as its Single Sign-On SSO provider.
+Once completed, What's Up Docker should be successfully configured to use authentik as its Single Sign-On provider.

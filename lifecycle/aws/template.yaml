@@ -18,7 +18,7 @@ Parameters:
     Description: authentik Docker image
   AuthentikVersion:
     Type: String
-    Default: 2026.2.0-rc3
+    Default: 2026.2.0-rc4
     Description: authentik Docker image tag
   AuthentikServerCPU:
     Type: Number
