@@ -22,7 +22,7 @@ from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
-    ClientTypes,
+    ClientType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -87,7 +87,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -136,7 +136,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -209,7 +209,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         invalidation_flow = Flow.objects.get(slug="default-provider-invalidation-flow")
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -289,7 +289,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -373,7 +373,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=authorization_flow,
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
@@ -434,7 +434,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_type=ClientTypes.CONFIDENTIAL,
+            client_type=ClientType.CONFIDENTIAL,
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),

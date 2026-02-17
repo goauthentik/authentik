@@ -21,7 +21,7 @@ from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, Red
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    GrantTypes,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -246,7 +246,7 @@ class TestAuthorize(OAuthTestCase):
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).grant_type,
-            GrantTypes.AUTHORIZATION_CODE,
+            GrantType.AUTHORIZATION_CODE,
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).redirect_uri,
@@ -265,7 +265,7 @@ class TestAuthorize(OAuthTestCase):
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).grant_type,
-            GrantTypes.IMPLICIT,
+            GrantType.IMPLICIT,
         )
         # Implicit without openid scope
         with self.assertRaises(AuthorizeError) as cm:
@@ -280,7 +280,7 @@ class TestAuthorize(OAuthTestCase):
             )
             self.assertEqual(
                 OAuthAuthorizationParams.from_request(request).grant_type,
-                GrantTypes.IMPLICIT,
+                GrantType.IMPLICIT,
             )
         request = self.factory.get(
             "/",
@@ -293,7 +293,7 @@ class TestAuthorize(OAuthTestCase):
             },
         )
         self.assertEqual(
-            OAuthAuthorizationParams.from_request(request).grant_type, GrantTypes.HYBRID
+            OAuthAuthorizationParams.from_request(request).grant_type, GrantType.HYBRID
         )
         with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(

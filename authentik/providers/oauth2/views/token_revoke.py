@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenRevocationError
-from authentik.providers.oauth2.models import AccessToken, ClientTypes, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, ClientType, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import (
     TokenResponse,
     authenticate_provider,
@@ -32,7 +32,7 @@ class TokenRevocationParams:
         raw_token = request.POST.get("token")
 
         provider, _, _ = provider_from_request(request)
-        if provider and provider.client_type == ClientTypes.CONFIDENTIAL:
+        if provider and provider.client_type == ClientType.CONFIDENTIAL:
             provider = authenticate_provider(request)
         if not provider:
             raise TokenRevocationError("invalid_client")

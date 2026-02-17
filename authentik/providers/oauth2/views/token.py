@@ -56,7 +56,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
@@ -163,7 +163,7 @@ class TokenParams:
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
-            if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
+            if self.provider.client_type == ClientType.CONFIDENTIAL and not compare_digest(
                 self.provider.client_secret, self.client_secret
             ):
                 LOGGER.warning(

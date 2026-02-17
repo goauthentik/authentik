@@ -58,7 +58,7 @@ def generate_client_secret() -> str:
     return generate_id(128)
 
 
-class ClientTypes(models.TextChoices):
+class ClientType(models.TextChoices):
     """Confidential clients are capable of maintaining the confidentiality
     of their credentials. Public clients are incapable."""
 
@@ -66,7 +66,7 @@ class ClientTypes(models.TextChoices):
     PUBLIC = "public", _("Public")
 
 
-class GrantTypes(models.TextChoices):
+class GrantType(models.TextChoices):
     """OAuth2 Grant types we support"""
 
     AUTHORIZATION_CODE = "authorization_code"
@@ -182,8 +182,8 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     client_type = models.CharField(
         max_length=30,
-        choices=ClientTypes.choices,
-        default=ClientTypes.CONFIDENTIAL,
+        choices=ClientType.choices,
+        default=ClientType.CONFIDENTIAL,
         verbose_name=_("Client Type"),
         help_text=_(
             "Confidential clients are capable of maintaining the confidentiality "

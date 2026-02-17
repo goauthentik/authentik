@@ -56,7 +56,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    GrantTypes,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -165,18 +165,18 @@ class OAuthAuthorizationParams:
         """Check grant"""
         # Determine which flow to use.
         if self.response_type in [ResponseTypes.CODE]:
-            self.grant_type = GrantTypes.AUTHORIZATION_CODE
+            self.grant_type = GrantType.AUTHORIZATION_CODE
         elif self.response_type in [
             ResponseTypes.ID_TOKEN,
             ResponseTypes.ID_TOKEN_TOKEN,
         ]:
-            self.grant_type = GrantTypes.IMPLICIT
+            self.grant_type = GrantType.IMPLICIT
         elif self.response_type in [
             ResponseTypes.CODE_TOKEN,
             ResponseTypes.CODE_ID_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
         ]:
-            self.grant_type = GrantTypes.HYBRID
+            self.grant_type = GrantType.HYBRID
 
         # Grant type validation.
         if not self.grant_type:
@@ -186,7 +186,7 @@ class OAuthAuthorizationParams:
         if self.response_mode not in ResponseMode.values:
             self.response_mode = ResponseMode.QUERY
 
-            if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+            if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID]:
                 self.response_mode = ResponseMode.FRAGMENT
 
     def check_redirect_uri(self):
@@ -255,7 +255,7 @@ class OAuthAuthorizationParams:
             )
             self.scope = self.scope.intersection(default_scope_names)
         if SCOPE_OPENID not in self.scope and (
-            self.grant_type == GrantTypes.HYBRID
+            self.grant_type == GrantType.HYBRID
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
@@ -606,8 +606,8 @@ class OAuthFulfillmentStage(StageView):
             code = None
 
             if self.params.grant_type in [
-                GrantTypes.AUTHORIZATION_CODE,
-                GrantTypes.HYBRID,
+                GrantType.AUTHORIZATION_CODE,
+                GrantType.HYBRID,
             ]:
                 code = self.params.create_code(self.request)
                 code.save()
@@ -622,7 +622,7 @@ class OAuthFulfillmentStage(StageView):
 
             if self.params.response_mode == ResponseMode.FRAGMENT:
                 query_fragment = {}
-                if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
+                if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     query_fragment["code"] = code.code
                     query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
                 else:
@@ -636,7 +636,7 @@ class OAuthFulfillmentStage(StageView):
 
             if self.params.response_mode == ResponseMode.FORM_POST:
                 post_params = {}
-                if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
+                if self.params.grant_type in [GrantType.AUTHORIZATION_CODE]:
                     post_params["code"] = code.code
                     post_params["state"] = [str(self.params.state) if self.params.state else ""]
                 else:
@@ -705,7 +705,7 @@ class OAuthFulfillmentStage(StageView):
         token.save()
 
         # Code parameter must be present if it's Hybrid Flow.
-        if self.params.grant_type == GrantTypes.HYBRID:
+        if self.params.grant_type == GrantType.HYBRID:
             query_fragment["code"] = code.code
 
         query_fragment["token_type"] = TOKEN_TYPE
