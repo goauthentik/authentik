@@ -36,8 +36,13 @@ To support the integration of Matrix Synapse with authentik, you need to create 
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://matrix.company/_synapse/client/oidc/callback`.
     - Select any available RSA signing key. Matrix Synapse doesn't support ECC keys.
+<<<<<<< HEAD
     - Do no set an encryption key because this is not supported by Matrix Synapse.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+=======
+    - Do not set an encryption key because this is not supported by Matrix Synapse.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+>>>>>>> e056dbdad (website/docs, integrations: fix language (#20338))
 
 3. Click **Submit** to save the new application and provider.
 
