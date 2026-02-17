@@ -69,7 +69,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
     - **IdP X509 Cert**: (paste in the downloaded signing certificate)
     - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
     - **EdgeConnect SLO Endpoint**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`
-    - **iDP SLO Endpoint**: (optional)
+    - **IdP SLO Endpoint**: (optional)
     - **EdgeConnect X.509 Cert SLO**: (optional)
     - **Roles Attribute**: `sp-roles` (optional)
     - **Appliance Access Group Attribute**: (optional)

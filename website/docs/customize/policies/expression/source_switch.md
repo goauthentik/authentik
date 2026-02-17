@@ -10,9 +10,9 @@ To switch which source is used for a specific user based on their email domain, 
 
 [Create](../working_with_policies.md#create-a-policy) an expression policy that does the following:
 
-    1. Maps the desired source for each user domain.
-    2. Determines the user's domain based on their email address.
-    3. Then "switches" the user to the desired source.
+1. Maps the desired source for each user domain.
+2. Determines the user's domain based on their email address.
+3. Then "switches" the user to the desired source.
 
 ### Example expression
 
@@ -42,4 +42,4 @@ return False
 
 ## Bind the policy to the stage
 
-The new expression policy needs to be bound to the stage binding that comes after the Identification stage (or any custom stage that you might have created). For more information read our documentation about [bindings](../../../add-secure-apps/bindings-overview/index.md), and for instructions to bind a policy, see [Bind a policy to a stage binding](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding).
+The new expression policy needs to be bound to the stage binding that comes after the Identification stage (or any custom stage that you might have created). For more information, read our documentation on [bindings](../../../add-secure-apps/bindings-overview/index.md), and for instructions to bind a policy, see [Bind a policy to a stage binding](../../../customize/policies/working_with_policies.md#bind-a-policy-to-a-stage-binding).

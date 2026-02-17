@@ -21,13 +21,13 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
+You will need one or more existing groups in authentik to assign roles in Veeam Enterprise Manager.
 
 ## Veeam Enterprise Manager pre-configuration
 
 Log in to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
 
-Check the checkbox called "Enable SAML 2.0". Further down the site, click the "Download" button, to download the metadata.
+Check the checkbox called "Enable SAML 2.0". Further down the page, click the "Download" button to download the metadata.
 
 ## authentik configuration
 

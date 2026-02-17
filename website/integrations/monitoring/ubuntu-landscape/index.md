@@ -25,7 +25,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Landscape uses the OpenID-Connect Protocol for single-sign on.
+Landscape uses the OpenID Connect protocol for single sign-on.
 
 ## authentik configuration
 
