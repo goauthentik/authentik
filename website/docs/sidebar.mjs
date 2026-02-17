@@ -625,6 +625,7 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
+                            "users-sources/sources/social-logins/okta/index",
                             "users-sources/sources/social-logins/plex/index",
                             "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
