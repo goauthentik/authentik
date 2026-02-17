@@ -14,7 +14,7 @@ dependencies = [
   "deepmerge==2.0",
   "defusedxml==0.7.1",
   "django-channels-postgres",
-  "django-countries==7.6.1",
+  "django-countries==8.2.0",
   "django-dramatiq-postgres",
   "django-filter==25.2",
   "django-model-utils==5.0.0",

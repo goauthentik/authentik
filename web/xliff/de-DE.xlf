@@ -8847,10 +8847,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Select one of the options below to continue.</source>
   <target>Wählen Sie eine der folgenden Optionen aus, um fortzufahren.</target>
 </trans-unit>
-<trans-unit id="s8cc0075913c67566">
-  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
-  <target>Gib die E-Mail-Adresse deines Accounts ein und du erhältst einen Link zum Zurücksetzen des Passworts.</target>
-</trans-unit>
 <trans-unit id="s091d5407b5b32e84">
   <source>Or</source>
   <target>Oder</target>
@@ -10428,6 +10424,12 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="s7c37f1acb9f97ea3">
   <source>Select the email template to use for sending invitations.</source>
+</trans-unit>
+<trans-unit id="sdd2ea73c24b40d5d">
+  <source>Site footer</source>
+</trans-unit>
+<trans-unit id="sf910cca0f06bbc31">
+  <source>Enter the email address or username associated with your account.</source>
 </trans-unit>
 </body>
 </file>
