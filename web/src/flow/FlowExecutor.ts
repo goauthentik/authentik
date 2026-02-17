@@ -172,7 +172,8 @@ export class FlowExecutor
             document.title = "continued";
             if (
                 this.#challenge?.component === "ak-stage-identification" &&
-                this.#challenge.applicationPreLaunch
+                this.#challenge.applicationPreLaunch &&
+                this.#challenge.applicationPreLaunch !== "blank://blank"
             ) {
                 multiTabOrchestrateLeave();
                 window.location.assign(this.#challenge.applicationPreLaunch);
