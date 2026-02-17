@@ -8,7 +8,7 @@ For instructions on creating a RAC provider, refer to the [Create a Remote Acces
 
 ## RAC components
 
-There are several components used with a RAC provider:
+A RAC provider uses several components:
 
 ```mermaid
 architecture-beta
@@ -27,27 +27,27 @@ architecture-beta
     outpost:B <--> T:machine
 ```
 
-When a user starts the RAC application, it communicates with the authentik server, which then connects to the RAC outpost and sends instructions (based on the data you defined in the endpoint) on how to connect to the remote machine.
+When a user starts the RAC application, it communicates with the authentik server, which then connects to the RAC outpost and sends instructions (based on the endpoint data you defined) on how to connect to the remote machine.
 
-After connecting to the remote machine, the outpost sends a message back to the authentik server (via websockets), and the web browser opens the websocket connection to the remote machine.
+After connecting to the remote machine, the outpost sends a message back to the authentik server (via WebSockets), and the web browser opens the WebSocket connection to the remote machine.
 
 ## Endpoints
 
-Unlike other providers, where an application-provider pair is created for each resource you wish to access, the RAC provider handles this slightly differently. For RAC there is instead a single application which is connected to a RAC provider. The RAC provider then has an _Endpoint_ object for each remote machine (computer/server) you wish to connect to.
+Unlike other providers, where an application-provider pair is created for each resource you wish to access, RAC works differently. RAC uses a single application connected to one RAC provider. The RAC provider then has an _Endpoint_ object for each remote machine (computer/server) you want to connect to.
 
-The _Endpoint_ object specifies the:
+The _Endpoint_ object specifies:
 
-- Hostname/IP/Port of the remote machine
-- The protocol to use; SSH, RDP, or VNC
+- Hostname, IP address, and port of the remote machine
+- Protocol to use: SSH, RDP, or VNC
 - RDP connection settings
 - [RAC Property mappings](#rac-property-mappings) to apply
 - [Connection settings](#connection-settings) to apply
 
-Additionally, it is possible to bind policies to _Endpoint_ objects to restrict user access. To connect to a remote machine, users must have access to both the application that the RAC Provider is using as well as the corresponding endpoint.
+Additionally, it is possible to bind policies to _Endpoint_ objects to restrict user access. To connect to a remote machine, users must have access to both the application that the RAC provider is using and the corresponding endpoint.
 
 ## Connection management
 
-A new connection is created every time an RAC application/endpoint is selected in the [User Interface](../../../customize/interfaces/user). After the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the RAC provider, which applies even if the user is still authenticated. The connection can also be terminated manually from the **Connections** tab of the RAC provider.
+A new connection is created every time an RAC application/endpoint is selected in the [User Interface](../../../customize/interfaces/user). After the user's authentik session expires, the connection is terminated. Additionally, you can configure connection expiry in the RAC provider, which applies even if the user is still authenticated. The connection can also be terminated manually from the **Connections** tab of the RAC provider.
 
 ## RAC Property Mappings
 
@@ -55,13 +55,13 @@ You can create RAC property mappings via **Customization** > **Property Mappings
 
 RAC property mappings allow you to configure the following settings:
 
-    - **Username**: the username for the remote machine
-    - **Password**: the password for the remote machine
-    - **Ignore Server certificate**: set whether the validity of the returned RDP server certificate will be ignored
-    - **Enable wallpaper**: enable/disable the desktop wallpaper of the RDP server
-    - **Enable font-smoothing**: enable/disable font-smoothing (anti-aliasing) on the RDP server
-    - **Enable full window dragging**: enable/disable whether the full content of a window is visible while moving it on the RDP server
-    - **Advanced settings**: set [connection settings](#connection-settings) via a Python expression
+- **Username**: the username for the remote machine
+- **Password**: the password for the remote machine
+- **Ignore Server certificate**: set whether the validity of the returned RDP server certificate will be ignored
+- **Enable wallpaper**: enable/disable the desktop wallpaper of the RDP server
+- **Enable font-smoothing**: enable/disable font-smoothing (anti-aliasing) on the RDP server
+- **Enable full window dragging**: enable/disable whether the full content of a window is visible while moving it on the RDP server
+- **Advanced settings**: set [connection settings](#connection-settings) via a Python expression
 
 ## Connection settings
 
@@ -80,7 +80,7 @@ RAC connection settings can be set via several methods and are all merged togeth
 5. RAC Endpoint property mapping settings
 6. The `connection_settings` object in the flow plan
 
-For examples of how to configure connection settings see the [RAC SSH public key authentication](./rac-public-key.md) and [RAC Credentials Prompt](./rac_credentials_prompt.md) documentation.
+For examples of how to configure connection settings, see the [RAC SSH public key authentication](./rac-public-key.md) and [RAC Credentials Prompt](./rac_credentials_prompt.md) documentation.
 
 ## Capabilities
 
