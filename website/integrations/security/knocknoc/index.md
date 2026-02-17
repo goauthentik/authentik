@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Knocknoc with authentik, you need to create an application/provider pair and 3 property mappings in authentik.
+To support the integration of Knocknoc with authentik, you need to create an application/provider pair and three property mappings in authentik.
 
 ### Create property mappings in authentik
 
@@ -64,7 +64,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     ```
 
 :::info
-This example will set session duration at 540 minutes. Change the value to match your desired session duration length in minutes.
+This example sets the session duration to 540 minutes. Change the value to match your desired session duration in minutes.
 :::
 
 ### Create an application and provider in authentik
@@ -81,7 +81,7 @@ This example will set session duration at 540 minutes. Change the value to match
     - **Service Provider Binding**: `Post`
     - **Audience**: `https://knocknoc.company/api/saml/metadata`
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

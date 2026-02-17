@@ -1,18 +1,15 @@
-fieldset[name="login-sources"] {
+fieldset[name="login-sources"],
+ak-stage-identification.style-scope fieldset[name="login-sources"] {
     --ak-c-login-sources-padding-inline: var(--pf-global--spacer--xl);
 
-    /* compatibility-mode-fix */
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: var(--pf-global--spacer--sm);
 
-    & {
-        flex: 1 1 auto;
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: center;
-        gap: var(--pf-global--spacer--sm);
-
-        padding-inline: var(--ak-c-login-sources-padding-inline) !important;
-        padding-block-start: var(--pf-global--spacer--md) !important;
-    }
+    padding-inline: var(--ak-c-login-sources-padding-inline) !important;
+    padding-block-start: var(--pf-global--spacer--md) !important;
 
     .source-button {
         display: flex;
@@ -65,9 +62,12 @@ fieldset[name="login-sources"] {
     }
 }
 
-:host([theme="dark"]) fieldset[name="login-sources"] .pf-c-button__icon {
-    img,
-    .pf-c-button__icon .fas {
-        filter: invert(1);
+:host([theme="dark"]),
+ak-stage-identification {
+    fieldset[name="login-sources"] .pf-c-button__icon {
+        img,
+        .pf-c-button__icon .fas {
+            filter: invert(1);
+        }
     }
 }

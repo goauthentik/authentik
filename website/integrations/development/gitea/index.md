@@ -36,7 +36,7 @@ To support the integration of Gitea with authentik, you need to create an applic
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://<gitea.company>/user/oauth2/authentik/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -72,7 +72,7 @@ The following groups will be created:
 - `gitrestricted`: restricted Gitea users.
 
 :::info
-Users who are in none of these groups will not be able to log in to gitea.
+Users who are in none of these groups will not be able to log in to Gitea.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.

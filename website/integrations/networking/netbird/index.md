@@ -43,7 +43,7 @@ To support the integration of NetBird with authentik, you need to create an appl
         - Set **Access Code Validity** to `minutes=10`.
         - Set **Subject Mode** to be `Based on the User's ID`.
         - Add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes to **Selected Scopes**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 :::warning
 It is important to set a signing key to secure the provider because this is a `Public` client.

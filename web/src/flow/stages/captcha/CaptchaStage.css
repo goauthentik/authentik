@@ -1,9 +1,11 @@
-:host {
+:host,
+ak-stage-captcha.style-scope {
     --captcha-background-to: var(--pf-global--BackgroundColor--light-100);
     --captcha-background-from: var(--pf-global--BackgroundColor--light-300);
 }
 
-:host([theme="dark"]) {
+:host([theme="dark"]),
+ak-stage-captcha[theme="dark"].style-scope {
     --captcha-background-to: var(--ak-dark-background-light);
     --captcha-background-from: var(--pf-global--BackgroundColor--300);
 }

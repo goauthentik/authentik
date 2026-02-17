@@ -68,6 +68,18 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  *
  * @attr {string} slug - The slug of the flow to execute.
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
+ *
+ * @part main - The main container for the flow content.
+ * @part content - The container for the stage content.
+ * @part content-iframe - The iframe element when using a frame background layout.
+ * @part footer - The footer container.
+ * @part locale-select - The locale select component.
+ * @part branding - The branding element, used for the background image in some layouts.
+ * @part loading-overlay - The loading overlay element.
+ * @part challenge-additional-actions - Container in stages which have additional actions.
+ * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
+ * @part locale-select-label - The label of the locale select component.
+ * @part locale-select-select - The select element of the locale select component.
  */
 @customElement("ak-flow-executor")
 export class FlowExecutor
@@ -538,7 +550,7 @@ export class FlowExecutor
     //#region Render
 
     protected renderLoading(): SlottedTemplateResult {
-        return html`<slot class="slotted-content" name="placeholder"></slot>`;
+        return html`<slot name="placeholder"></slot>`;
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {
@@ -564,6 +576,21 @@ export class FlowExecutor
                     ></iframe>
                 </div>
             `;
+        });
+    }
+
+    protected renderFooter(): SlottedTemplateResult {
+        return guard([this.layout], () => {
+            return html`<footer
+                aria-label=${msg("Site footer")}
+                name="site-footer"
+                part="footer"
+                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
+                    ? "pf-m-dark"
+                    : ""}"
+            >
+                <slot name="footer"></slot>
+            </footer>`;
         });
     }
 
@@ -593,11 +620,11 @@ export class FlowExecutor
                     })}
                 </div>
                 ${this.loading && this.challenge
-                    ? html`<ak-loading-overlay></ak-loading-overlay>`
+                    ? html`<ak-loading-overlay part="loading-overlay"></ak-loading-overlay>`
                     : nothing}
                 ${component ? until(this.renderChallenge(component)) : this.renderLoading()}
             </main>
-            <slot name="footer"></slot>`;
+            ${this.renderFooter()}`;
     }
 
     //#endregion
