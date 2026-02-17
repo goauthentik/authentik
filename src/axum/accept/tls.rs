@@ -6,17 +6,17 @@ use tokio_rustls::{rustls::pki_types::CertificateDer, server::TlsStream};
 use tower::Layer;
 
 #[derive(Clone, Debug)]
-pub struct TlsState {
-    pub peer_certificates: Option<Vec<CertificateDer<'static>>>,
+pub(crate) struct TlsState {
+    pub(crate) peer_certificates: Option<Vec<CertificateDer<'static>>>,
 }
 
 #[derive(Clone)]
-pub struct TlsAcceptor<A> {
+pub(crate) struct TlsAcceptor<A> {
     inner: RustlsAcceptor<A>,
 }
 
 impl<A> TlsAcceptor<A> {
-    pub fn new(inner: RustlsAcceptor<A>) -> Self {
+    pub(crate) fn new(inner: RustlsAcceptor<A>) -> Self {
         Self { inner }
     }
 }

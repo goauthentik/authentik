@@ -11,15 +11,16 @@ use axum::{
 };
 use forwarded_header_value::ForwardedHeaderValue;
 
-use crate::extract::trusted_proxy::TrustedProxy;
+use crate::axum::extract::trusted_proxy::TrustedProxy;
 
 const X_FORWARDED_HOST: &str = "X-Forwarded-Host";
 
 #[derive(Clone, Debug)]
-pub struct Host(pub String);
+pub(crate) struct Host(pub String);
 
 impl<S> FromRequestParts<S> for Host
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = (StatusCode, &'static str);
 
@@ -34,7 +35,8 @@ where S: Send + Sync
 }
 
 impl<S> OptionalFromRequestParts<S> for Host
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = Infallible;
 

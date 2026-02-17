@@ -9,13 +9,16 @@ use axum::{
     http::{StatusCode, request::Parts},
 };
 
-use crate::{accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy};
+use crate::axum::{
+    accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy,
+};
 
 #[derive(Clone, Debug)]
-pub struct ClientIP(pub IpAddr);
+pub(crate) struct ClientIP(pub IpAddr);
 
 impl<S> FromRequestParts<S> for ClientIP
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = (StatusCode, &'static str);
 
@@ -30,7 +33,8 @@ where S: Send + Sync
 }
 
 impl<S> OptionalFromRequestParts<S> for ClientIP
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = Infallible;
 

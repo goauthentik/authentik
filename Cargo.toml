@@ -89,12 +89,10 @@ tracing = "0.1.44"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 
-authentik-axum = { version = "0.0.0", path = "./crates/axum" }
 authentik-config = { version = "0.0.0", path = "./crates/config" }
 authentik-db = { version = "0.0.0", path = "./crates/db" }
 authentik-lib = { version = "0.0.0", path = "./crates/lib" }
 authentik-proxy = { version = "0.0.0", path = "./crates/proxy" }
-authentik-server = { version = "0.0.0", path = "./crates/server" }
 authentik-tokio = { version = "0.0.0", path = "./crates/tokio" }
 authentik-worker = { version = "0.0.0", path = "./crates/worker" }
 
@@ -144,3 +142,63 @@ default_job = "run"
 command = ["cargo", "run"]
 on_change_strategy = "kill_then_restart"
 kill = ["pkill", "-INT", "-P"]
+
+[package]
+name = "authentik"
+version = "0.0.0"
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[features]
+default = ["server", "worker"]
+server = ["dep:authentik-db", "dep:pyo3"]
+worker = ["dep:authentik-worker", "dep:authentik-db", "dep:pyo3"]
+
+[dependencies]
+argh.workspace = true
+aws-lc-rs.workspace = true
+axum-server.workspace = true
+axum.workspace = true
+client-ip.workspace = true
+color-eyre.workspace = true
+console-subscriber.workspace = true
+eyre.workspace = true
+forwarded-header-value.workspace = true
+futures.workspace = true
+http-body-util.workspace = true
+hyper-unix-socket.workspace = true
+hyper-util.workspace = true
+jsonwebtoken.workspace = true
+nix.workspace = true
+percent-encoding.workspace = true
+pyo3 = { workspace = true, optional = true }
+rcgen.workspace = true
+rustls.workspace = true
+sentry.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+time.workspace = true
+tokio-rustls.workspace = true
+tokio-util.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tower.workspace = true
+tracing-error.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+
+authentik-config.workspace = true
+authentik-db = { workspace = true, optional = true }
+authentik-lib.workspace = true
+authentik-proxy.workspace = true
+authentik-tokio.workspace = true
+authentik-worker = { workspace = true, optional = true }
+
+[lints]
+workspace = true

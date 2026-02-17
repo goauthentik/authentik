@@ -1,6 +1,5 @@
 use std::{
     net::SocketAddr,
-    process::Stdio,
     sync::{
         Arc,
         atomic::{AtomicBool, Ordering},
@@ -8,14 +7,14 @@ use std::{
     time::Duration,
 };
 
-use argh::FromArgs;
-use authentik_axum::{
+use crate::axum::{
     accept::{
         proxy_protocol::ProxyProtocolAcceptor,
         tls::{TlsAcceptor, TlsState},
     },
-    extract::{ClientIP, Host, Scheme},
+    extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
 };
+use argh::FromArgs;
 use authentik_config::get_config;
 use axum::{
     Extension, Router,
@@ -38,10 +37,6 @@ use eyre::eyre;
 use http_body_util::BodyExt;
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
-use nix::{
-    sys::signal::{Signal, kill},
-    unistd::Pid,
-};
 use rcgen::{
     Certificate, CertificateParams, DistinguishedName, DnType, ExtendedKeyUsagePurpose, KeyPair,
     KeyUsagePurpose, PKCS_ECDSA_P256_SHA256, SanType, SignatureAlgorithm,
@@ -55,7 +50,6 @@ use rustls::{
 };
 use serde_json::json;
 use tokio::{
-    process::{Child, Command},
     signal::unix::SignalKind,
     sync::{
         RwLock,
@@ -66,7 +60,7 @@ use tokio::{
 use tokio_util::sync::CancellationToken;
 use tower::ServiceExt;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
-use tracing::{Level, info, warn};
+use tracing::{Level, info};
 
 mod gunicorn;
 mod metrics;
@@ -104,7 +98,7 @@ impl ServerState {
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run the authentik server.
 #[argh(subcommand, name = "server")]
-pub struct Cli {}
+pub(super) struct Cli {}
 
 async fn gunicorn_socket_ready() -> bool {
     let socket_path = std::env::temp_dir().join("authentik-core.sock");
@@ -192,7 +186,7 @@ fn startup_response(accept: &str) -> Response {
     } else if accept.contains("text/html") {
         response = response.header(CONTENT_TYPE, "text/html");
         response
-            .body(include_str!("../../../web/dist/standalone/loading/startup.html").into())
+            .body(include_str!("../../web/dist/standalone/loading/startup.html").into())
             .unwrap()
     } else {
         response = response.header(CONTENT_TYPE, "text/plain");
@@ -205,9 +199,10 @@ async fn forward_request(
     Host(host): Host,
     Scheme(scheme): Scheme,
     State(state): State<CoreRouterState>,
-    tls_state: Option<Extension<TlsState>>,
+    _tls_state: Option<Extension<TlsState>>,
     req: Request,
 ) -> Response {
+    // TODO: tls state
     let accept = req
         .headers()
         .get("accept")
@@ -428,7 +423,7 @@ fn make_tls_config() -> Result<ServerConfig> {
     Ok(config)
 }
 
-pub async fn run(
+pub(super) async fn run(
     _cli: Cli,
     tasks: &mut JoinSet<Result<()>>,
     stop: CancellationToken,

@@ -8,18 +8,18 @@ use tokio::io::{AsyncRead, AsyncWrite};
 use tower::Layer;
 
 #[derive(Clone, Debug)]
-pub struct ProxyProtocolState {
-    pub header: Option<Header<'static>>,
+pub(crate) struct ProxyProtocolState {
+    pub(crate) header: Option<Header<'static>>,
 }
 
 #[derive(Clone)]
-pub struct ProxyProtocolAcceptor<A = DefaultAcceptor> {
+pub(crate) struct ProxyProtocolAcceptor<A = DefaultAcceptor> {
     inner: A,
     parsing_timeout: Duration,
 }
 
 impl ProxyProtocolAcceptor {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         let inner = DefaultAcceptor::new();
 
         #[cfg(not(test))]
@@ -43,7 +43,7 @@ impl Default for ProxyProtocolAcceptor {
 }
 
 impl<A> ProxyProtocolAcceptor<A> {
-    pub fn acceptor<Acceptor>(self, acceptor: Acceptor) -> ProxyProtocolAcceptor<Acceptor> {
+    pub(crate) fn acceptor<Acceptor>(self, acceptor: Acceptor) -> ProxyProtocolAcceptor<Acceptor> {
         ProxyProtocolAcceptor {
             inner: acceptor,
             parsing_timeout: self.parsing_timeout,

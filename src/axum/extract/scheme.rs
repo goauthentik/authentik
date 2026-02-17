@@ -7,7 +7,7 @@ use axum::{
 };
 use forwarded_header_value::{ForwardedHeaderValue, Protocol};
 
-use crate::{
+use crate::axum::{
     accept::{proxy_protocol::ProxyProtocolState, tls::TlsState},
     extract::trusted_proxy::TrustedProxy,
 };
@@ -16,10 +16,11 @@ const X_FORWARDED_PROTO: &str = "X-Forwarded-Proto";
 const X_FORWARDED_SCHEME: &str = "X-Forwarded-Scheme";
 
 #[derive(Clone, Debug)]
-pub struct Scheme(pub http::uri::Scheme);
+pub(crate) struct Scheme(pub http::uri::Scheme);
 
 impl<S> FromRequestParts<S> for Scheme
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = Infallible;
 

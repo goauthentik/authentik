@@ -9,10 +9,11 @@ use axum::{
 use tracing::trace;
 
 #[derive(Clone, Copy, Debug)]
-pub struct TrustedProxy(pub bool);
+pub(crate) struct TrustedProxy(pub bool);
 
 impl<S> FromRequestParts<S> for TrustedProxy
-where S: Send + Sync
+where
+    S: Send + Sync,
 {
     type Rejection = Infallible;
 

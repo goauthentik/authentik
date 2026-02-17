@@ -243,11 +243,11 @@ pub(crate) async fn build_router() -> Router {
 
     router = router.route(
         "/robots.txt",
-        any(|| async { include_str!("../../../web/robots.txt") }),
+        any(|| async { include_str!("../../web/robots.txt") }),
     );
     router = router.route(
         "/.well-known/security.txt",
-        any(|| async { include_str!("../../../web/security.txt") }),
+        any(|| async { include_str!("../../web/security.txt") }),
     );
 
     router = router.layer(middleware::from_fn(static_header_middleware));

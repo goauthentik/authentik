@@ -14,6 +14,10 @@ use tokio::{
 };
 use tokio_util::sync::CancellationToken;
 
+mod axum;
+#[cfg(feature = "server")]
+mod server;
+
 struct SignalStreams {
     hup: Signal,
     int: Signal,
@@ -73,7 +77,7 @@ struct Cli {
 #[argh(subcommand)]
 enum Command {
     #[cfg(feature = "server")]
-    Server(authentik_server::Cli),
+    Server(server::Cli),
     #[cfg(feature = "worker")]
     Worker(authentik_worker::Cli),
 }
@@ -208,7 +212,7 @@ async fn main() -> Result<()> {
     match cli.command {
         #[cfg(feature = "server")]
         Command::Server(args) => {
-            authentik_server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
+            server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
         }
         #[cfg(feature = "worker")]
         Command::Worker(_args) => todo!(),
