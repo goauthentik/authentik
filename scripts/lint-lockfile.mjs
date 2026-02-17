@@ -158,6 +158,26 @@ async function run({ warnOnly, cwd }) {
         assert.fail(message);
     };
 
+    /**
+     * Checks deep equality of two values. In strict mode, throws if they are not equal.
+     * In warn mode, records an issue instead.
+     *
+     * @param {unknown} a
+     * @param {unknown} b
+     * @param {string} message
+     */
+    const checkDeep = (a, b, message) => {
+        if (warnOnly) {
+            if (!isDeepStrictEqual(a, b)) {
+                issues.push(message);
+            }
+
+            return;
+        }
+
+        assert.deepStrictEqual(a, b, message);
+    };
+
     logger.info(`Checking lockfile integrity in: ${cwd}`);
 
     // MARK: Locate files
@@ -215,13 +235,15 @@ async function run({ warnOnly, cwd }) {
 
     // MARK: Compare
 
-    assert.ok(
-        isDeepStrictEqual(before.package, after.package),
+    assert.deepStrictEqual(
+        before.package,
+        after.package,
         `package.json was unexpectedly modified during lockfile check: ${packageJSONPath}`,
     );
 
-    check(
-        isDeepStrictEqual(before.lockfile, after.lockfile),
+    checkDeep(
+        before.lockfile,
+        after.lockfile,
         `package-lock.json is out of sync with package.json`,
     );
 
