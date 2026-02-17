@@ -160,10 +160,17 @@ jobs:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
-      - name: Build web
+      - name: Install web dependencies
         working-directory: web/
         run: |
           npm ci
+      - name: Generate API Clients
+        run: |
+          make gen-client-ts
+          make gen-client-go
+      - name: Build web
+        working-directory: web/
+        run: |
           npm run build-proxy
       - name: Build API client
         run: |

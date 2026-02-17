@@ -36,7 +36,9 @@ class TestPropertyMappings(TestCase):
 
     def test_user_base_properties(self):
         """Test user base properties"""
-        properties = self.source.get_base_user_properties(root=ROOT, name_id=NAME_ID)
+        properties = self.source.get_base_user_properties(
+            root=ROOT, assertion=ROOT.find(f"{{{NS_SAML_ASSERTION}}}Assertion"), name_id=NAME_ID
+        )
         self.assertEqual(
             properties,
             {
@@ -49,7 +51,11 @@ class TestPropertyMappings(TestCase):
 
     def test_group_base_properties(self):
         """Test group base properties"""
-        properties = self.source.get_base_user_properties(root=ROOT_GROUPS, name_id=NAME_ID)
+        properties = self.source.get_base_user_properties(
+            root=ROOT_GROUPS,
+            assertion=ROOT_GROUPS.find(f"{{{NS_SAML_ASSERTION}}}Assertion"),
+            name_id=NAME_ID,
+        )
         self.assertEqual(properties["groups"], ["group 1", "group 2"])
         for group_id in ["group 1", "group 2"]:
             properties = self.source.get_base_group_properties(root=ROOT, group_id=group_id)
