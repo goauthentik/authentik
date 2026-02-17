@@ -279,7 +279,7 @@ export class IdentificationStage extends BaseStage<
 
     renderRecoveryPhase() {
         const message = msg(
-            "Enter the email associated with your account, and we'll send you a link to reset your password."
+            "Enter the email associated with your account, and we'll send you a link to reset your password.",
         );
         return html` <p>${message}</p> `;
     }

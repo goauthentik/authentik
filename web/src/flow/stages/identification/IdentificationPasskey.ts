@@ -83,7 +83,7 @@ export class IdentificationPasskey implements ReactiveController {
                 },
                 {
                     invisible: true,
-                }
+                },
             );
         } catch (error) {
             if (error instanceof Error && error.name === "AbortError") {
