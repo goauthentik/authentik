@@ -19,6 +19,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
 from dacite.core import from_dict
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
@@ -33,7 +34,16 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
-from authentik.common.oauth.constants import SubModes
+from authentik.common.oauth.constants import (
+    GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_HYBRID,
+    GRANT_TYPE_IMPLICIT,
+    GRANT_TYPE_PASSWORD,
+    GRANT_TYPE_REFRESH_TOKEN,
+    SubModes,
+)
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -69,9 +79,13 @@ class ClientType(models.TextChoices):
 class GrantType(models.TextChoices):
     """OAuth2 Grant types we support"""
 
-    AUTHORIZATION_CODE = "authorization_code"
-    IMPLICIT = "implicit"
-    HYBRID = "hybrid"
+    AUTHORIZATION_CODE = GRANT_TYPE_AUTHORIZATION_CODE
+    IMPLICIT = GRANT_TYPE_IMPLICIT
+    HYBRID = GRANT_TYPE_HYBRID
+    REFRESH_TOKEN = GRANT_TYPE_REFRESH_TOKEN
+    CLIENT_CREDENTIALS = GRANT_TYPE_CLIENT_CREDENTIALS
+    PASSWORD = GRANT_TYPE_PASSWORD
+    DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
 
 
 class ResponseMode(models.TextChoices):
@@ -177,6 +191,17 @@ class ScopeMapping(PropertyMapping):
         verbose_name_plural = _("Scope Mappings")
 
 
+def default_grant_types() -> list[GrantType]:
+    return [
+        GrantType.AUTHORIZATION_CODE,
+        GrantType.HYBRID,
+        GrantType.IMPLICIT,
+        GrantType.CLIENT_CREDENTIALS,
+        GrantType.DEVICE_CODE,
+        GrantType.REFRESH_TOKEN,
+    ]
+
+
 class OAuth2Provider(WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
 
@@ -189,6 +214,9 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Confidential clients are capable of maintaining the confidentiality "
             "of their credentials. Public clients are incapable"
         ),
+    )
+    grant_types = ArrayField(
+        models.TextField(choices=GrantType.choices), default=default_grant_types
     )
     client_id = models.CharField(
         max_length=255,

@@ -225,7 +225,7 @@ class TokenError(OAuth2Error):
         ),
     }
 
-    def __init__(self, error):
+    def __init__(self, error: str):
         super().__init__()
         self.error = error
         self.description = self.errors[error]

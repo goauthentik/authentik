@@ -177,11 +177,14 @@ class OAuthAuthorizationParams:
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
         ]:
             self.grant_type = GrantType.HYBRID
-
         # Grant type validation.
         if not self.grant_type:
             LOGGER.warning("Invalid response type", type=self.response_type)
             raise AuthorizeError(self.redirect_uri, "unsupported_response_type", "", self.state)
+
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
 
         if self.response_mode not in ResponseMode.values:
             self.response_mode = ResponseMode.QUERY
