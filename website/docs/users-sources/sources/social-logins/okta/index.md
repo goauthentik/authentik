@@ -30,7 +30,7 @@ To integrate Okta with authentik you will need to create an App Integration in t
 
 ## authentik configuration
 
-To support the integration of Okta with authentik, you need to create a Okta OAuth source in authentik.
+To support the integration of Okta with authentik, you need to create an Okta OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
