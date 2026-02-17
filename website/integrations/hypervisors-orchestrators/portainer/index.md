@@ -109,11 +109,7 @@ We will also presume that two groups have been created in authentik: `Portainer 
 9. Add users to each of the groups that you have defined in your expression, as desired.
 
 :::info Application binding
-<<<<<<< HEAD
-Since we are configuring access to Portainer based on group membership, It is recommended that you configure a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
-=======
 Since we are configuring access to Portainer based on group membership, it is recommended that you configure a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
->>>>>>> e056dbdad (website/docs, integrations: fix language (#20338))
 :::
 
 ### Update your configuration in Portainer

@@ -54,11 +54,7 @@ To support the integration of FortiGate with authentik, you need to create an ap
 
 ## FortiGate Configuration
 
-<<<<<<< HEAD
-To integrate Fortigate with authentik, nagiate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
-=======
 To integrate FortiGate with authentik, navigate to `https://fortigate.company/ng/system/certificate` and import the certificate you configured in the previous section.
->>>>>>> e056dbdad (website/docs, integrations: fix language (#20338))
 
 Once that is done, navigate to `https://fortigate.company/fabric-connector/edit/security-fabric-connection` and select **Single Sign-On** to configure SAML authentication. You should see, under **Mode**, a toggle named **Service Provider (SP)**, toggle it to enable this authentication method.
 
