@@ -1,6 +1,18 @@
 #!/usr/bin/env node
 /**
  * @file Lints the package-lock.json file to ensure it is in sync with package.json.
+ *
+ * Usage:
+ *   lint-lockfile [options] [directory]
+ *
+ * Options:
+ *   --warn    Report issues as warnings instead of failing. The lockfile is
+ *             still regenerated on disk, but the process exits 0.
+ *
+ * Exit codes:
+ *   0  Lockfile is in sync (or --warn was passed)
+ *   1  Unexpected error
+ *   2  Lockfile drift detected
  */
 
 import * as assert from "node:assert/strict";
@@ -10,9 +22,11 @@ import { findPackageJSON } from "node:module";
 import * as path from "node:path";
 import { isDeepStrictEqual, promisify } from "node:util";
 
+//#region Utilities
+
 const execAsync = promisify(exec);
 
-const prefix = "(lint)";
+const prefix = "(lint:lockfile)";
 const logger = {
     info: console.info.bind(console, "INFO", prefix),
     error: console.error.bind(console, "ERROR", prefix),
@@ -20,40 +34,38 @@ const logger = {
 };
 
 /**
- * Find the nearest package.json and package-lock.json files starting from the given directory.
+ * Find the nearest directory containing both package.json and package-lock.json,
+ * starting from the given directory and walking upward.
  *
  * @param {string} start The directory to start searching from.
- * @returns {Promise<string>}
- * @throws {Error} If no package.json or package-lock.json file is found.
+ * @returns {Promise<string>} The path to the package-lock.json file.
+ * @throws {Error} If no co-located package.json and package-lock.json are found.
  */
-async function findNearestPackageJSONLockfile(start) {
+async function findNearestLockfile(start) {
     let currentDir = start;
 
     while (currentDir !== path.dirname(currentDir)) {
         const packageJSONPath = path.join(currentDir, "package.json");
-        const lockfileJSONPath = path.join(currentDir, "package-lock.json");
+        const lockfilePath = path.join(currentDir, "package-lock.json");
 
         try {
-            await Promise.all([fs.access(packageJSONPath), fs.access(lockfileJSONPath)]);
-
-            return lockfileJSONPath;
+            await Promise.all([fs.access(packageJSONPath), fs.access(lockfilePath)]);
+            return lockfilePath;
         } catch {
-            // Ignore and continue searching up the directory tree
+            // Continue searching up the directory tree
         }
 
         currentDir = path.dirname(currentDir);
     }
 
-    throw new Error(
-        "No package.json or package-lock.json file found in the current directory or any parent directories.",
-    );
+    throw new Error(`No co-located package.json and package-lock.json found above ${start}`);
 }
 
 /**
  * @param {string} jsonPath
  * @returns {Promise<Record<string, unknown>>}
  */
-function load(jsonPath) {
+function loadJSON(jsonPath) {
     return fs
         .readFile(jsonPath, "utf-8")
         .then(JSON.parse)
@@ -63,71 +75,92 @@ function load(jsonPath) {
 }
 
 /**
- * If Git is available, checks if the given file has uncommitted changes. If so, returns true. Otherwise, returns false.
+ * Checks whether the given file has uncommitted changes in git.
  *
  * @param {string} filePath
- * @returns {Promise<boolean>}
+ * @returns {Promise<{ clean: boolean, available: boolean }>}
  */
-async function checkIfClean(filePath) {
+async function gitStatus(filePath) {
     try {
         const { stdout } = await execAsync(`git status --porcelain ${filePath}`);
-
-        return !stdout.trim();
-    } catch (error) {
-        logger.warn("Failed to check if file is staged. Is Git available?", { error });
-
-        return true;
+        return { clean: !stdout.trim(), available: true };
+    } catch {
+        return { clean: false, available: false };
     }
 }
 
-const FIX_ARG = "--fix";
+/**
+ * @typedef {{
+ *   warnOnly: boolean;
+ *   cwd: string;
+ * }} Options
+ */
 
 /**
- *
- * @returns {Promise<string[]>} The list of issues detected.
+ * @param {string[]} argv
+ * @returns {Options}
  */
-async function run() {
-    let args = process.argv.slice(2);
-    let strictAssertions = true;
+function parseArgs(argv) {
+    const args = argv.slice(2);
+    let warnOnly = false;
+    /** @type {string[]} */
+    const positional = [];
 
-    if (args.includes(FIX_ARG)) {
-        strictAssertions = false;
-        args = args.filter((arg) => arg !== FIX_ARG);
-        logger.info("Issues will be reported but not treated as errors.");
+    for (const arg of args) {
+        if (arg === "--warn") {
+            warnOnly = true;
+        } else if (arg.startsWith("-")) {
+            logger.error(`Unknown option: ${arg}`);
+            process.exit(1);
+        } else {
+            positional.push(arg);
+        }
     }
 
-    /**
-     * @type {string[]}
-     */
-    let issues = [];
+    // `INIT_CWD` is present only if the script is run via npm.
+    const initCWD = process.env.INIT_CWD || process.cwd();
+
+    const cwd = (positional.length ? path.resolve(initCWD, positional[0]) : initCWD) + path.sep;
+
+    return { warnOnly, cwd };
+}
+
+//#endregion
+
+/**
+ * Exit code when lockfile drift is detected (distinct from general errors)
+ */
+const EXIT_DRIFT = 2;
+
+/**
+ * @param {Options} options
+ * @returns {Promise<string[]>} The list of issues detected.
+ */
+async function run({ warnOnly, cwd }) {
+    /** @type {string[]} */
+    const issues = [];
 
     /**
-     * @param {boolean} predicate
+     * Records an issue. In strict mode, throws immediately.
+     * In warn mode, collects the message for later reporting.
+     *
+     * @param {boolean} ok
      * @param {string} message
-     * @returns {void}
      */
-    const assertIfStrict = (predicate, message) => {
-        if (predicate) return;
+    const check = (ok, message) => {
+        if (ok) return;
 
-        if (!strictAssertions) {
+        if (warnOnly) {
             issues.push(message);
             return;
         }
 
-        return assert.fail(message);
+        assert.fail(message);
     };
 
-    let cwd;
+    logger.info(`Checking lockfile integrity in: ${cwd}`);
 
-    if (args.length >= 1) {
-        cwd = path.resolve(args[0]) + path.sep;
-    } else {
-        cwd = process.cwd() + path.sep;
-    }
-
-    logger.info(`Starting lockfile linting in directory: ${cwd}`);
-
-    logger.info("Finding nearest package.json and package-lock.json...");
+    // MARK: Locate files
 
     const resolvedPath = import.meta.resolve(cwd);
     const packageJSONPath = findPackageJSON(resolvedPath);
@@ -138,86 +171,92 @@ async function run() {
     );
 
     const packageDir = path.dirname(packageJSONPath);
+    const lockfilePath = await findNearestLockfile(packageDir);
+    const lockfileDir = path.dirname(lockfilePath);
+    const isWorkspace = lockfileDir !== packageDir;
 
-    logger.info("Finding nearest package-lock.json...");
-
-    const lockfileJSONPath = await findNearestPackageJSONLockfile(packageDir);
-    const lockfileDir = path.dirname(lockfileJSONPath);
-    const workspace = lockfileDir !== packageDir;
-
-    const initial = {
-        lockfile: await load(lockfileJSONPath),
-        package: await load(packageJSONPath),
+    const before = {
+        lockfile: await loadJSON(lockfilePath),
+        package: await loadJSON(packageJSONPath),
     };
 
-    logger.info(`(${initial.package.name}) package.json`, packageJSONPath);
+    logger.info(`package.json: ${packageJSONPath} (${before.package.name})`);
+    logger.info(`package-lock.json: ${lockfilePath}${isWorkspace ? " (workspace root)" : ""}`);
 
-    logger.info(
-        `(${initial.lockfile.name}) ${workspace ? "(workspace) " : ""}package-lock.json`,
-        lockfileJSONPath,
-    );
+    // MARK: Uncommitted changes
 
-    assertIfStrict(
-        await checkIfClean(packageJSONPath),
-        `package.json (${packageJSONPath}) has uncommitted changes`,
-    );
+    const packageStatus = await gitStatus(packageJSONPath);
+    const lockfileStatus = await gitStatus(lockfilePath);
 
-    assertIfStrict(
-        await checkIfClean(lockfileJSONPath),
-        `Lockfile (${lockfileJSONPath}) has uncommitted changes`,
-    );
+    if (!packageStatus.available || !lockfileStatus.available) {
+        logger.warn("Git is not available; skipping uncommitted change detection.");
+    } else {
+        check(packageStatus.clean, `package.json has uncommitted changes: ${packageJSONPath}`);
 
-    logger.info(`Running npm install for ${initial.lockfile.name}...`);
+        check(lockfileStatus.clean, `package-lock.json has uncommitted changes: ${lockfilePath}`);
+    }
+
+    // MARK: Regenerate
+
+    logger.info("Running npm install --package-lock-only...");
 
     await execAsync("npm install --package-lock-only", {
         cwd: lockfileDir,
     }).catch((cause) => {
-        throw new Error("Failed to run `npm install`", { cause });
+        throw new Error("npm install --package-lock-only failed", { cause });
     });
 
-    logger.info(`Finished npm install for ${initial.lockfile.name}`);
+    logger.info("npm install complete.");
 
-    const updated = {
-        lockfile: await load(lockfileJSONPath),
-        package: await load(packageJSONPath),
+    const after = {
+        lockfile: await loadJSON(lockfilePath),
+        package: await loadJSON(packageJSONPath),
     };
 
+    // MARK: Compare
+
     assert.ok(
-        isDeepStrictEqual(initial.package, updated.package),
-        `package.json (${packageJSONPath}) was unexpectedly modified during lockfile check`,
+        isDeepStrictEqual(before.package, after.package),
+        `package.json was unexpectedly modified during lockfile check: ${packageJSONPath}`,
     );
 
-    assertIfStrict(
-        isDeepStrictEqual(initial.lockfile, updated.lockfile),
-        `Lockfile (${lockfileJSONPath}) is not in sync with package.json`,
+    check(
+        isDeepStrictEqual(before.lockfile, after.lockfile),
+        `package-lock.json is out of sync with package.json`,
     );
 
     return issues;
 }
 
-run()
+const options = parseArgs(process.argv);
+
+run(options)
     .then((issues) => {
-        if (issues) {
-            logger.warn(
-                `⚠️ Completed with ${issues.length} issue(s). Please review the warnings and commit any necessary changes.`,
-            );
+        if (issues.length) {
+            logger.warn(`⚠️  ${issues.length} issue(s) detected:`);
 
             for (const issue of issues) {
-                logger.warn(`\t- ${issue}`);
+                logger.warn(`  - ${issue}`);
+            }
+
+            if (options.warnOnly) {
+                logger.warn(
+                    "The lockfile on disk has been regenerated. Review and commit the changes.",
+                );
+                process.exit(EXIT_DRIFT);
             }
         } else {
-            logger.info("✅ Lockfile is synchronized!");
+            logger.info("✅ Lockfile is in sync.");
         }
     })
     .catch((error) => {
         const message = error instanceof Error ? error.message : String(error);
-        const supplemental =
-            error instanceof Error && error.cause instanceof Error ? error.cause : null;
+        const cause = error instanceof Error && error.cause instanceof Error ? error.cause : null;
 
         logger.error(`❌ ${message}`);
 
-        if (supplemental) {
-            logger.error("Caused by:", supplemental);
+        if (cause) {
+            logger.error("Caused by:", cause);
         }
 
         process.exit(1);
