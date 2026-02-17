@@ -55,7 +55,11 @@ runs:
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
+<<<<<<< HEAD
         docker compose -f .github/actions/setup/docker-compose.yml up -d
+=======
+        docker compose -f .github/actions/setup/compose.yml up -d
+>>>>>>> e94352ba0 (ci: fix setup altering package-lock (#20348))
         cd web && npm ci
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
