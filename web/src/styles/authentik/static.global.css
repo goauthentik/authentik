@@ -73,14 +73,24 @@
     /* Gracefully degrade to the login max width if CSS size functions are not supported. */
     --ak-c-login__footer--MaxWidth: min(100dvw, var(--ak-c-login--MaxWidth));
 
-    --ak-c-login__footer-ColumnCount: 4;
-    --ak-c-login__footer-ColumnWidth: calc(
-        (var(--ak-c-login__footer--MaxWidth) / var(--ak-c-login__footer-ColumnCount)) -
+    --ak-c-login__footer--TrackMin: max-content;
+    --ak-c-login__footer--TrackWidth: minmax(
+        var(--ak-c-login__footer--TrackMin),
+        var(--ak-c-login__footer--TrackMax)
+    );
+
+    --ak-c-login__footer--ItemMaxWidth: calc(
+        var(--ak-c-login__footer--MaxWidth) - var(--ak-c-login__footer--ColumnGap)
+    );
+
+    --ak-c-login__footer--ColumnCount: 4;
+    --ak-c-login__footer--TrackMax: calc(
+        (var(--ak-c-login__footer--MaxWidth) / var(--ak-c-login__footer--ColumnCount)) -
             var(--ak-c-login__footer--ColumnGap)
     );
 
     @media (width <= 35rem) {
-        --ak-c-login__footer--Display: flex;
+        --ak-c-login__footer--TrackWidth: 1fr;
         --ak-c-login__footer__list-item--FlexBasis: 100%;
     }
 }
@@ -164,16 +174,28 @@
         place-items: center;
         display: var(--ak-c-login__footer--Display);
 
-        grid-template-columns: repeat(
-            auto-fit,
-            minmax(max-content, var(--ak-c-login__footer-ColumnWidth))
-        );
+        grid-template-columns: repeat(auto-fit, var(--ak-c-login__footer--TrackWidth));
+
+        grid-template-rows:
+            [header] max-content
+            [main] max-content
+            [footer] max-content;
     }
 
     [part="list-item"],
     &::part(list-item) {
         flex: 1 1 var(--ak-c-login__footer__list-item--FlexBasis, auto);
         text-align: center;
+        max-width: var(--ak-c-login__footer--ItemMaxWidth);
+
+        &[data-kind="text"] {
+            &[data-track-name="start"] {
+                grid-column: header / 1;
+            }
+            &[data-track-name="end"] {
+                grid-column: footer / 1;
+            }
+        }
     }
 
     [part="list-item-link"],
