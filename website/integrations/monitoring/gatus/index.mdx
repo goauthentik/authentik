@@ -48,20 +48,20 @@ To enable OIDC in Gatus, update your `config.yaml` file, typically found at `/co
 Gatus automatically updates its configuration approximately every 30 seconds. If the changes are not reflected, restart the instance to ensure the changes are applied.
 :::
 
-    ```yaml showLineNumbers title=".env"
-    OIDC_CLIENT_ID=<Your Client ID from authentik>
-    OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
-    ```
+```yaml showLineNumbers title=".env"
+OIDC_CLIENT_ID=<Your Client ID from authentik>
+OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
+```
 
-    ```yaml showLineNumbers title="config.yaml"
-    security:
-        oidc:
-            issuer-url: https://authentik.company/application/o/<application_slug>/
-            client-id: $\{OIDC_CLIENT_ID}
-            client-secret: $\{OIDC_CLIENT_SECRET}
-            redirect-url: https://gatus.company/authorization-code/callback
-            scopes: [openid]
-    ```
+```yaml showLineNumbers title="config.yaml"
+security:
+    oidc:
+        issuer-url: https://authentik.company/application/o/<application_slug>/
+        client-id: $\{OIDC_CLIENT_ID}
+        client-secret: $\{OIDC_CLIENT_SECRET}
+        redirect-url: https://gatus.company/authorization-code/callback
+        scopes: [openid]
+```
 
 ## Configuration verification
 

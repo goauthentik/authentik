@@ -92,7 +92,7 @@ dex.config: |
 
 ### Step 3 - Map the `ArgoCD Admins` group to ArgoCD's admin role
 
-In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there) :
+In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there):
 
 ```yaml
 policy.csv: |
@@ -103,4 +103,4 @@ policy.csv: |
 If you already had an "admin" group and thus didn't create the `ArgoCD Admins` one, just replace `ArgoCD Admins` with your existing group name.
 If you did not opt to create a read-only group, or chose to use one with a different name in authentik, rename or remove here accordingly.
 
-Apply all the modified manifests, and you should be able to login to ArgoCD both through the UI and the CLI.
+Apply all the modified manifests, and you should be able to log in to ArgoCD both through the UI and the CLI.

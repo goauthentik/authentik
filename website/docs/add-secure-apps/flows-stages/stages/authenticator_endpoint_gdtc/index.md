@@ -80,4 +80,4 @@ For detailed instructions, refer to Google documentation.
 
 4. Click **Finish**.
 
-After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the users' browser.
+After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the user's browser.

@@ -25,6 +25,12 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Komga with authentik, you need to create an application/provider pair in authentik.
 
+### Create an email verification scope mapping in authentik
+
+Komga requires the email scope to return a value of `email_verified: True`. As of [authentik 2025.10](/docs/releases/2025/v2025.10.md#default-oauth-scope-mappings) the default behavior is to return `email_verified: False`, so a custom scope mapping is required for Komga to allow authentication.
+
+Refer to [Email scope verification](/docs/add-secure-apps/providers/oauth2/index.mdx#email-scope-verification) for instructions on how to create the required custom scope mapping.
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
