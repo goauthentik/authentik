@@ -28,7 +28,6 @@ from prometheus_client import (
     multiprocess,
 )
 
-print(os.environ.get("PROMETHEUS_MULTIPROC_DIR"))
 registry = CollectorRegistry()
 multiprocess.MultiProcessCollector(registry)
 output = generate_latest(registry)

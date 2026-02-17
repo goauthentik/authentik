@@ -190,8 +190,6 @@ async fn main() -> Result<()> {
 
     #[cfg(any(feature = "server", feature = "worker"))]
     {
-        Python::initialize();
-
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
@@ -203,6 +201,8 @@ async fn main() -> Result<()> {
         }
 
         authentik_db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
+
+        Python::initialize();
     }
 
     match cli.command {
