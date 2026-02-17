@@ -64,7 +64,7 @@
     --ak-c-login__footer--PaddingBlock: var(--pf-global--spacer--md);
     --ak-c-login__footer--Color: var(--ak-global--BackgroundColorContrast--100);
 
-    --ak-c-login__footer--ColumnGap: var(--pf-global--spacer--2xl);
+    --ak-c-login__footer--ColumnGap: min(var(--pf-global--spacer--2xl), 2dvw);
     --ak-c-login__footer--RowGap: var(--pf-global--spacer--md);
 
     --ak-c-login__footer--Display: grid;
