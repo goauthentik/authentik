@@ -61,7 +61,6 @@ export class IdentificationPasskey implements ReactiveController {
 
         try {
             const publicKeyOptions = transformCredentialRequestOptions(passkey);
-            alert("Uh...");
 
             // Start the conditional WebAuthn request
             const credential = (await navigator.credentials.get({
