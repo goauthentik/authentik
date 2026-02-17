@@ -63,6 +63,26 @@
 
     --ak-c-login__footer--PaddingBlock: var(--pf-global--spacer--md);
     --ak-c-login__footer--Color: var(--ak-global--BackgroundColorContrast--100);
+
+    --ak-c-login__footer--ColumnGap: var(--pf-global--spacer--2xl);
+    --ak-c-login__footer--RowGap: var(--pf-global--spacer--md);
+
+    --ak-c-login__footer--Display: grid;
+
+    --ak-c-login__footer--MaxWidth: var(--ak-c-login--MaxWidth);
+    /* Gracefully degrade to the login max width if CSS size functions are not supported. */
+    --ak-c-login__footer--MaxWidth: min(100dvw, var(--ak-c-login--MaxWidth));
+
+    --ak-c-login__footer-ColumnCount: 4;
+    --ak-c-login__footer-ColumnWidth: calc(
+        (var(--ak-c-login__footer--MaxWidth) / var(--ak-c-login__footer-ColumnCount)) -
+            var(--ak-c-login__footer--ColumnGap)
+    );
+
+    @media (width <= 35rem) {
+        --ak-c-login__footer--Display: flex;
+        --ak-c-login__footer__list-item--FlexBasis: 100%;
+    }
 }
 
 [data-theme="dark"] .pf-c-login {
@@ -93,6 +113,9 @@
     --pf-c-login__main-footer-band--BackgroundColor: transparent;
 
     --pf-c-login__footer--c-list--xl--PaddingTop: 0;
+    --pf-c-login__footer--PaddingLeft: var(--pf-global--spacer--lg);
+    --pf-c-login__footer--PaddingRight: var(--pf-global--spacer--lg);
+
     --pf-c-login__container--PaddingLeft: 0 !important;
     --pf-c-login__container--PaddingRight: 0 !important;
 }
@@ -134,8 +157,23 @@
         --pf-c-list--m-inline--li--MarginRight: 0;
 
         justify-content: center;
-        column-gap: var(--pf-global--spacer--2xl);
-        row-gap: var(--pf-global--spacer--md);
+        column-gap: var(--ak-c-login__footer--ColumnGap);
+        row-gap: var(--ak-c-login__footer--RowGap);
+
+        max-width: var(--ak-c-login__footer--MaxWidth);
+        place-items: center;
+        display: var(--ak-c-login__footer--Display);
+
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(max-content, var(--ak-c-login__footer-ColumnWidth))
+        );
+    }
+
+    [part="list-item"],
+    &::part(list-item) {
+        flex: 1 1 var(--ak-c-login__footer__list-item--FlexBasis, auto);
+        text-align: center;
     }
 
     [part="list-item-link"],
