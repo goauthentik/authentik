@@ -2,13 +2,9 @@ import "#elements/Divider";
 import "#elements/EmptyState";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
-import "#flow/stages/captcha/CaptchaStage";
 
-import {
-    isConditionalMediationAvailable,
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "#common/helpers/webauthn";
+import { IdentificationCaptchas } from "./IdentificationCaptchas";
+import { IdentificationPasskey } from "./IdentificationPasskey";
 
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
@@ -20,7 +16,6 @@ import { AkRememberMeController } from "#flow/stages/identification/RememberMeCo
 import Styles from "#flow/stages/identification/styles.css";
 
 import {
-    CaptchaChallenge,
     FlowDesignationEnum,
     IdentificationChallenge,
     IdentificationChallengeResponseRequest,
@@ -34,8 +29,7 @@ import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -97,53 +91,27 @@ export class IdentificationStage extends BaseStage<
 
     #rememberMe = new AkRememberMeController(this);
 
+    #captcha: IdentificationCaptchas;
+
+    // eslint-disable-next-line no-unused-private-class-members
+    #passkey: IdentificationPasskey;
+
     //#region State
-
-    @state()
-    protected captchaToken = "";
-
-    @state()
-    protected captchaRefreshedAt = new Date();
-
-    @state()
-    protected captchaLoaded = false;
-
-    #captchaInputRef = createRef<HTMLInputElement>();
-
-    #tokenChangeListener = (token: string) => {
-        const input = this.#captchaInputRef.value;
-
-        if (!input) return;
-
-        input.value = token;
-    };
-
-    #captchaLoadListener = () => {
-        this.captchaLoaded = true;
-    };
-
-    // AbortController for conditional WebAuthn request
-    #passkeyAbortController: AbortController | null = null;
-
-    //#endregion
 
     //#region Lifecycle
 
+    constructor() {
+        super();
+        this.#captcha = new IdentificationCaptchas(this);
+        this.#passkey = new IdentificationPasskey(this);
+    }
+
     public updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
-
         if (changedProperties.has("challenge") && this.challenge) {
             this.#autoRedirect();
             this.#createHelperForm();
-            this.#startConditionalWebAuthn();
         }
-    }
-
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
-        // Abort any pending conditional WebAuthn request when component is removed
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = null;
     }
 
     //#endregion
@@ -163,65 +131,6 @@ export class IdentificationStage extends BaseStage<
 
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
-    }
-
-    /**
-     * Start a conditional WebAuthn request for passkey autofill.
-     * This allows users to select a passkey from the browser's autofill dropdown.
-     */
-    async #startConditionalWebAuthn(): Promise<void> {
-        // Check if passkey challenge is provided
-        // Note: passkeyChallenge is added dynamically and may not be in the generated types yet
-        const passkeyChallenge = (this.challenge as PasskeyChallenge)?.passkeyChallenge;
-        if (!passkeyChallenge) {
-            return;
-        }
-
-        // Check if browser supports conditional mediation
-        const isAvailable = await isConditionalMediationAvailable();
-        if (!isAvailable) {
-            console.debug("authentik/identification: Conditional mediation not available");
-            return;
-        }
-
-        // Abort any existing request
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = new AbortController();
-
-        try {
-            const publicKeyOptions = transformCredentialRequestOptions(passkeyChallenge);
-
-            // Start the conditional WebAuthn request
-            const credential = (await navigator.credentials.get({
-                publicKey: publicKeyOptions,
-                mediation: "conditional",
-                signal: this.#passkeyAbortController.signal,
-            })) as PublicKeyCredential | null;
-
-            if (!credential) {
-                console.debug("authentik/identification: No credential returned");
-                return;
-            }
-
-            // Transform and submit the passkey response
-            const transformedCredential = transformAssertionForServer(credential);
-
-            await this.host?.submit(
-                {
-                    passkey: transformedCredential,
-                },
-                {
-                    invisible: true,
-                },
-            );
-        } catch (error) {
-            if (error instanceof Error && error.name === "AbortError") {
-                // Request was aborted, this is expected when navigating away
-                console.debug("authentik/identification: Conditional WebAuthn aborted");
-                return;
-            }
-            console.warn("authentik/identification: Conditional WebAuthn failed", error);
-        }
     }
 
     //#region Helper Form
@@ -320,13 +229,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     protected override onSubmitFailure(): void {
-        const captchaInput = this.#captchaInputRef.value;
-
-        if (captchaInput) {
-            captchaInput.value = "";
-        }
-
-        this.captchaRefreshedAt = new Date();
+        this.#captcha.onFailure();
     }
 
     //#region Render
@@ -376,7 +279,7 @@ export class IdentificationStage extends BaseStage<
 
     renderRecoveryPhase() {
         const message = msg(
-            "Enter the email associated with your account, and we'll send you a link to reset your password.",
+            "Enter the email associated with your account, and we'll send you a link to reset your password."
         );
         return html` <p>${message}</p> `;
     }
@@ -422,34 +325,10 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    renderCaptchaStage(captchaChallenge: CaptchaChallenge) {
-        return html` <div class="captcha-container">
-            <ak-stage-captcha
-                .challenge=${captchaChallenge}
-                .onTokenChange=${this.#tokenChangeListener}
-                .onLoad=${this.#captchaLoadListener}
-                .refreshedAt=${this.captchaRefreshedAt}
-                embedded
-            >
-            </ak-stage-captcha>
-            <input
-                aria-hidden="true"
-                class="faux-input"
-                ${ref(this.#captchaInputRef)}
-                name="captchaToken"
-                type="text"
-                required
-                value=""
-            />
-        </div>`;
-    }
-
     renderSubmitButton(challenge: IdentificationChallenge) {
-        return html` <div class="pf-c-form__group ${challenge.captchaStage ? "" : "pf-m-action"}">
+        return html` <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
             <button
-                ?disabled=${challenge.captchaStage &&
-                challenge.captchaStage.interactive &&
-                !this.captchaLoaded}
+                ?disabled="${this.#captcha.pending}"
                 type="submit"
                 class="pf-c-button pf-m-primary pf-m-block"
             >
@@ -462,7 +341,7 @@ export class IdentificationStage extends BaseStage<
         if (!challenge.userFields || challenge.userFields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
-        const { passwordFields, captchaStage } = challenge;
+        const { passwordFields } = challenge;
         const recovery = challenge.flowDesignation === FlowDesignationEnum.Recovery;
 
         // prettier-ignore
@@ -471,7 +350,7 @@ export class IdentificationStage extends BaseStage<
             ${this.renderIdentityInput(challenge)}
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
             ${this.renderNonFieldErrors()}
-            ${captchaStage ? this.renderCaptchaStage(captchaStage) : nothing}
+            ${this.#captcha.render()}
             ${this.renderSubmitButton(challenge)}
         `;
     }
