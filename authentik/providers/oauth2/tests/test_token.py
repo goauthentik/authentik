@@ -39,6 +39,33 @@ class TestToken(OAuthTestCase):
         self.factory = RequestFactory()
         self.app = Application.objects.create(name=generate_id(), slug="test")
 
+    def test_invalid_grant_type(self):
+        """test request param"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://TestServer")],
+            signing_key=self.keypair,
+            grant_types=[],
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://TestServer",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.cause, "grant_type_not_configured")
+
     def test_request_auth_code(self):
         """test request param"""
         provider = OAuth2Provider.objects.create(

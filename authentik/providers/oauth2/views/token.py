@@ -164,7 +164,7 @@ class TokenParams:
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
         if self.grant_type not in self.provider.grant_types:
             LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
-            raise TokenError("invalid_grant")
+            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
 
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
             if self.provider.client_type == ClientType.CONFIDENTIAL and not compare_digest(
