@@ -26,7 +26,6 @@ This documentation lists only the settings that you need to change from their de
 :::info
 Looking to integrate authentik with your Cloudflare Dashboard? See our [integration guide](../../platforms/cloudflare/index.md) for more information.
 :::
-:::
 
 ## authentik configuration
 
@@ -62,7 +61,7 @@ To support the integration of Cloudflare Access with authentik, you need to crea
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Cloudflare Access, click the **Test** button found right next-to the **Save** button from the previous step.
+To confirm that authentik is properly configured with Cloudflare Access, click the **Test** button found right next to the **Save** button from the previous step.
 
 ## Resources
 

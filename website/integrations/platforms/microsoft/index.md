@@ -106,7 +106,7 @@ If MFA is configured in Microsoft365, then you also need to create a property ma
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the SAML provider that you created in the previous section.
-3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section. Before being used in the next section, you will need rename the file ending from `.pem` to `.cer`.
+3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section. Before it is used in the next section, you will need to rename the file ending from `.pem` to `.cer`.
 
 ## Microsoft365 configuration
 
@@ -182,7 +182,7 @@ New-MgDomainFederationConfiguration `
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address which is in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticated, redirected back to Microsoft and logged in. the [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address which is in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticeted, redirected back to Microsoft and logged in.
+To confirm that authentik is properly configured with Microsoft365, log out of your Microsoft account, then attempt to log back in by visiting [Microsoft 365 Portal](https://m365.cloud.microsoft/) and clicking **Sign In**. Enter an email address in your federated domain, then click **Next**. You should be redirected to authentik and, once authenticated, redirected back to Microsoft and logged in.
 
 ## References
 

@@ -6,7 +6,7 @@ title: Export configurations to blueprints
 
 To migrate existing configurations to blueprints, run `ak export_blueprint` within any authentik Worker container. This will output a blueprint for most currently created objects. Some objects will not be exported as they might have dependencies on other things.
 
-Exported blueprints don't use any of the YAML Tags, they just contain a list of entries as they are in the database.
+Exported blueprints don't use any of the YAML tags; they just contain a list of entries as they are in the database.
 
 Note that fields which are write-only (for example, OAuth Provider's Secret Key) will not be added to the blueprint, as the serialization logic from the API is used for blueprints.
 

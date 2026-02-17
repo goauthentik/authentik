@@ -121,7 +121,7 @@ Salesforce JIT provisioning requires specific SAML attributes to automatically c
     - **SAML Identity Type**: Select **Assertion contains the Federation ID from the User object**.
     - **SAML Identity Location**: Select **Identity is in the NameIdentifier element of the Subject statement**.
     - **Service Provider Initiated Request Binding**: `HTTP POST`
-    - **Identity Provider Login URL**: Enter the **SSO URL (Post)** from your authentik provider.`https://authentik.company/application/saml/<slug>/sso/binding/post/`
+    - **Identity Provider Login URL**: Enter the **SSO URL (Post)** from your authentik provider: `https://authentik.company/application/saml/<slug>/sso/binding/post/`
 3. Click **Save**.
 
 ### Enable Just-in-Time provisioning
@@ -195,7 +195,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 
 ## SCIM Provisioning _(optional)_
 
-You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers OAuth2 SCIM integration, which requires an enterprise authentik account. the Oauth2 SCIM integration, which requires an enterprise authentik account.
+You can configure SCIM provisioning to automatically sync users from authentik to Salesforce. This guide only covers OAuth2 SCIM integration, which requires an enterprise authentik account.
 
 ### Create SCIM property mappings
 
