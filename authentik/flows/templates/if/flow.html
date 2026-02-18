@@ -9,7 +9,15 @@
 {{ block.super }}
 <link rel="prefetch" href="{{ flow_background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
-<script data-id="shady-dom">ShadyDOM = { force: true };</script>
+{% comment %}
+    @see {@link web/types/webcomponents.d.ts} for type definitions.
+{% endcomment %}
+<script data-id="shady-dom">
+    "use strict";
+
+    window.ShadyDOM = window.ShadyDOM || {}
+    window.ShadyDOM.force = true
+</script>
 {% endif %}
 {% include "base/header_js.html" %}
 <script data-id="flow-config">
@@ -45,16 +53,11 @@
                             slug="{{ flow.slug }}"
                             class="pf-c-login"
                             data-layout="{{ flow.layout|default:'stacked' }}"
+                            loading
                         >
                             {% include "base/placeholder.html" %}
 
-                            <ak-brand-links
-                                slot="footer"
-                                exportparts="list:brand-links-list, list-item:brand-links-list-item"
-                                role="contentinfo"
-                                aria-label="{% trans 'Site footer' %}"
-                                class="pf-c-login__footer {% if flow.layout == 'stacked' %}pf-m-dark{% endif %}"
-                            ></ak-brand-links>
+                            <ak-brand-links name="flow-links" slot="footer"></ak-brand-links>
                         </ak-flow-executor>
                     </div>
                 </div>

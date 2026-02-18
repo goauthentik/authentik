@@ -104,6 +104,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     apt-get update && \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
@@ -119,18 +120,24 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     krb5-multidev libkrb5-dev heimdal-multidev libclang-dev \
     # xmlsec
     libltdl-dev && \
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    export RUST_TOOLCHAIN="$(awk -F'\"' '/^[[:space:]]*channel[[:space:]]*=/{print $2; exit}' rust-toolchain.toml)" && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain "${RUST_TOOLCHAIN}" && \
+    rustup default "${RUST_TOOLCHAIN}" && \
+    rustc --version && \
+    cargo --version
 
 ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec" \
     # https://github.com/rust-lang/rustup/issues/2949
     # Fixes issues where the rust version in the build cache is older than latest
     # and rustup tries to update it, which fails
-    RUSTUP_PERMIT_COPY_RENAME="true"
+    RUSTUP_PERMIT_COPY_RENAME="1"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
     --mount=type=bind,target=packages,src=packages \
-    --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
+    RUSTUP_TOOLCHAIN="$(awk -F'\"' '/^[[:space:]]*channel[[:space:]]*=/{print $2; exit}' rust-toolchain.toml)" \
     uv sync --frozen --no-install-project --no-dev
 
 # Stage 7: Run

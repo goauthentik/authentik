@@ -1,3 +1,10 @@
+/**
+ * @file Flow executor stage definitions.
+ *
+ * @remarks
+ * The following imports must be imported statically, as they define web components that are used in stage definitions below.
+ */
+
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/sources/telegram/TelegramLogin";
@@ -10,8 +17,11 @@ import type {
     FlowChallengeComponentName,
     PropVariant,
     StageModuleCallback,
-} from "./FlowExecutorStageFactory";
+} from "#flow/FlowExecutorStageFactory";
 
+/**
+ * A tuple representing the metadata for a stage entry in the stage mapping registry.
+ */
 // prettier-ignore
 export type StageEntry =
     | [token: FlowChallengeComponentName, tag: string, variant: PropVariant, import?: StageModuleCallback]
@@ -19,34 +29,38 @@ export type StageEntry =
     | [token: FlowChallengeComponentName, tag: string, import?: StageModuleCallback]
     | [token: FlowChallengeComponentName, import?: StageModuleCallback];
 
+/**
+ * A mapping of server-side stage tokens to client-side custom element tags, along with the variant
+ * of props they consume and an optional import callback for lazy-loading.
+ *
+ * @remarks
+ * The different ways a stage can be associated with its server-side component are listed in the
+ * type declaration above. The variants are meant to reduce the amount of information you have to
+ * provide:
+ *
+ * - If the server-side component and the client-side tag are the same, only provide the component.
+ * - Variants describe the attribute needs. There are only two variant: "standard" and "challenge."
+ *   The "challenge" variant is for components that immediately issue redirects. "standard" is the
+ *   default; you don't need to specify it.
+ * - If the stage needs to be live immediately, import it above. Otherwise, provide an import
+ *   function, following the examples already provided.
+ *
+ * Variants and Tags have a single strong differentiator: Tags refer to web components and so must
+ * always have a dash, whereas wariants are from a limited supply of names and do not have a dash.
+ * The StageFactory will not get confused. If you get confused, the type-checker will explain it.
+ *
+ * The resolution of the web component tag name is: tag supplied, tag received with import, tag
+ * derived from component name. THIS CAN FAIL: a preloaded stage with an incongruent and non- or
+ * incorrectly-specified tag will result in a stage that cannot be rendered. Pre-loaded stages must
+ * be tested carefully.
+ */
 // ,---.    |    |    ,   .              ,---.|                            |   |
 // |---|,---|,---|    |\  |,---.. . .    `---.|--- ,---.,---.,---.,---.    |---|,---.,---.,---.
 // |   ||   ||   |    | \ ||---'| | |        ||    ,---||   ||---'`---.    |   ||---'|    |---'
 // `   '`---'`---'    `  `'`---'`-'-'    `---'`---'`---^`---|`---'`---'    `   '`---'`    `---'
 //                                                      `---'
-// @remarks
-// The different ways a stage can be associated with its server-side component are listed in the
-// type declaration above. The variants are meant to reduce the amount of information you have to
-// provide:
-//
-// - If the server-side component and the client-side tag are the same, only provide the component.
-// - Variants describe the attribute needs. There are only two variant: "standard" and "challenge."
-//   The "challenge" variant is for components that immediately issue redirects. "standard" is the
-//   default; you don't need to specify it.
-// - If the stage needs to be live immediately, import it above. Otherwise, provide an import
-//   function, following the examples already provided.
-//
-// Variants and Tags have a single strong differentiator: Tags refer to web components and so must
-// always have a dash, whereas wariants are from a limited supply of names and do not have a dash.
-// The StageFactory will not get confused. If you get confused, the type-checker will explain it.
-//
-// The resolution of the web component tag name is: tag supplied, tag received with import, tag
-// derived from component name. THIS CAN FAIL: a preloaded stage with an incongruent and non- or
-// incorrectly-specified tag will result in a stage that cannot be rendered. Pre-loaded stages
-// (those without a StageModuleCallback) must be tested carefully.
-
 // prettier-ignore
-export const StageModules: StageEntry[] = [
+export const StageEntries: readonly StageEntry[] = [
     ["ak-provider-iframe-logout", () => import("#flow/providers/IFrameLogoutStage")],
     ["ak-provider-oauth2-device-code", () => import("#flow/providers/oauth2/DeviceCode")],
     ["ak-provider-oauth2-device-code-finish", () => import("#flow/providers/oauth2/DeviceCodeFinish")],
@@ -80,9 +94,3 @@ export const StageModules: StageEntry[] = [
     ["xak-flow-frame", "challenge"],
     ["xak-flow-redirect", "ak-stage-redirect"],
 ]
-
-// You don't see this imported to `FlowExecutor` because what the Executor actually uses is produced
-// by the builder. This is just an easy-to-read place to store each stage's server-side component
-// name and the metadata needed to associate it with the client-side operation.
-
-export default StageModules;

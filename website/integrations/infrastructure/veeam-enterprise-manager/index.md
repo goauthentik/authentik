@@ -21,13 +21,13 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
+You will need one or more existing groups in authentik to assign roles in Veeam Enterprise Manager.
 
 ## Veeam Enterprise Manager pre-configuration
 
 Log in to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
 
-Check the checkbox called "Enable SAML 2.0". Further down the site, click the "Download" button, to download the metadata.
+Check the checkbox called "Enable SAML 2.0". Further down the page, click the "Download" button to download the metadata.
 
 ## authentik configuration
 
@@ -42,7 +42,7 @@ To support the integration of Veeam Enterprise Manager with authentik, you need 
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - todo: saml metadata
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
