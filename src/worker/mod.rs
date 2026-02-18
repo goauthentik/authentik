@@ -1,3 +1,5 @@
+#![allow(unused)]
+#![allow(dead_code)]
 use std::{
     env,
     io::Write,
@@ -36,7 +38,7 @@ use tracing::{debug, error, info, warn};
 #[derive(Debug, FromArgs, PartialEq)]
 /// Run the authentik worker.
 #[argh(subcommand, name = "worker")]
-pub struct Cli {}
+pub(crate) struct Cli {}
 
 struct WorkerProcess {
     pid: Pid,
@@ -156,7 +158,7 @@ fn start_worker_processes(
             py,
             c_str!(include_str!(concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/src/worker_process.py"
+                "/src/worker/worker_process.py"
             ))),
             c_str!("worker_process.py"),
             c_str!("worker_process"),
@@ -213,7 +215,7 @@ fn watch_logs(mut out: impl Write, pipes: Vec<Py<PyAny>>, shutdown: Arc<AtomicBo
             py,
             c_str!(include_str!(concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/src/log_watcher.py"
+                "/src/worker/log_watcher.py"
             ))),
             c_str!("log_watcher.py"),
             c_str!("log_watcher"),
@@ -323,7 +325,7 @@ impl State {
 }
 
 #[tokio::main]
-pub async fn run(_cli: Cli) -> Result<()> {
+pub(crate) async fn run(_cli: Cli) -> Result<()> {
     // TODO: pyo3-logger
     let processes = 1;
     let threads = 1;
@@ -446,7 +448,7 @@ mod metrics {
     use tokio::sync::RwLock;
 
     use super::State;
-    use crate::AppError;
+    use crate::worker::AppError;
 
     async fn metrics_handler() -> Result<Response, AppError> {
         let metrics = tokio::task::spawn_blocking(|| {

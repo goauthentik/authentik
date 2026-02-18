@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/*"]
+members = ["."]
 resolver = "3"
 
 [workspace.package]
@@ -89,13 +89,6 @@ tracing = "0.1.44"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 
-authentik-config = { version = "0.0.0", path = "./crates/config" }
-authentik-db = { version = "0.0.0", path = "./crates/db" }
-authentik-lib = { version = "0.0.0", path = "./crates/lib" }
-authentik-proxy = { version = "0.0.0", path = "./crates/proxy" }
-authentik-tokio = { version = "0.0.0", path = "./crates/tokio" }
-authentik-worker = { version = "0.0.0", path = "./crates/worker" }
-
 # Because of the async runtime, we really want panics to cause an abort, otherwise
 # the binary can keep on running as a ghost
 [profile.dev]
@@ -155,35 +148,44 @@ license-file.workspace = true
 publish.workspace = true
 
 [features]
-default = ["server", "worker"]
-server = ["dep:authentik-db", "dep:pyo3"]
-worker = ["dep:authentik-worker", "dep:authentik-db", "dep:pyo3"]
+default = ["server", "worker", "proxy"]
+proxy = []
+server = ["dep:sqlx", "dep:pyo3"]
+worker = ["dep:sqlx", "dep:pyo3"]
 
 [dependencies]
 argh.workspace = true
+async-trait.workspace = true
 aws-lc-rs.workspace = true
 axum-server.workspace = true
 axum.workspace = true
 client-ip.workspace = true
 color-eyre.workspace = true
+config.workspace = true
 console-subscriber.workspace = true
 eyre.workspace = true
 forwarded-header-value.workspace = true
 futures.workspace = true
+glob.workspace = true
 http-body-util.workspace = true
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
+ipnet.workspace = true
 jsonwebtoken.workspace = true
 nix.workspace = true
+notify.workspace = true
 percent-encoding.workspace = true
+pin-project-lite.workspace = true
 pyo3 = { workspace = true, optional = true }
 rcgen.workspace = true
 rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-sqlx.workspace = true
+signal-hook.workspace = true
+sqlx = { workspace = true, optional = true }
 time.workspace = true
+thiserror.workspace = true
 tokio-rustls.workspace = true
 tokio-util.workspace = true
 tokio.workspace = true
@@ -192,13 +194,6 @@ tower.workspace = true
 tracing-error.workspace = true
 tracing-subscriber.workspace = true
 tracing.workspace = true
-
-authentik-config.workspace = true
-authentik-db = { workspace = true, optional = true }
-authentik-lib.workspace = true
-authentik-proxy.workspace = true
-authentik-tokio.workspace = true
-authentik-worker = { workspace = true, optional = true }
 
 [lints]
 workspace = true

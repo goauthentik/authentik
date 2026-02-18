@@ -1,10 +1,7 @@
-use axum::routing::any;
-use axum_server::Handle;
-use eyre::Result;
-use std::net::SocketAddr;
+use crate::axum::error::Result;
+use eyre::Report;
 
-use authentik_lib::error::Error;
-use axum::{Router, body::Body, http::StatusCode, response::Response};
+use axum::{body::Body, http::StatusCode, response::Response};
 use pyo3::{
     IntoPyObjectExt,
     ffi::c_str,
@@ -12,7 +9,7 @@ use pyo3::{
     types::{PyBytes, PyDict},
 };
 
-async fn metrics_handler() -> Result<Response, Error> {
+pub(super) async fn metrics_handler() -> Result<Response> {
     let metrics = tokio::task::spawn_blocking(|| {
         let metrics = Python::attach(|py| {
             let locals = PyDict::new(py);
@@ -43,9 +40,9 @@ output = generate_latest(registry)
                 .unwrap()
                 .as_bytes()
                 .to_owned();
-            Ok::<_, eyre::Error>(metrics)
+            Ok::<_, Report>(metrics)
         })?;
-        Ok::<_, eyre::Error>(metrics)
+        Ok::<_, Report>(metrics)
     })
     .await??;
     Ok(Response::builder()
@@ -53,21 +50,4 @@ output = generate_latest(registry)
         .header("Content-Type", "text/plain; version=1.0.0; charset=utf-8")
         .body(Body::from(metrics))
         .unwrap())
-}
-
-pub(super) fn build_router() -> Router {
-    Router::new().fallback(any(metrics_handler))
-}
-
-pub(super) async fn start_server(
-    router: Router,
-    addr: SocketAddr,
-    handle: Handle<SocketAddr>,
-) -> Result<()> {
-    axum_server::Server::bind(addr)
-        .handle(handle)
-        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
-        .await?;
-
-    Ok(())
 }

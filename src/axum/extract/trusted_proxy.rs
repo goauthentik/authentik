@@ -1,6 +1,6 @@
 use std::{convert::Infallible, net::SocketAddr};
 
-use authentik_config::get_config;
+use crate::config::get_config;
 use axum::{
     RequestPartsExt,
     extract::{ConnectInfo, FromRequestParts},

@@ -1,6 +1,6 @@
 use std::{str::FromStr, sync::OnceLock, time::Duration};
 
-use authentik_config::get_config;
+use crate::config::get_config;
 use eyre::Result;
 use sqlx::{
     PgPool,
@@ -58,7 +58,7 @@ async fn update_connect_opts_on_config_change(
     Ok(())
 }
 
-pub async fn init(
+pub(crate) async fn init(
     tasks: &mut JoinSet<Result<()>>,
     stop: CancellationToken,
     config_changed_rx: broadcast::Receiver<()>,
@@ -84,6 +84,6 @@ pub async fn init(
     Ok(())
 }
 
-pub fn get_db() -> &'static PgPool {
+pub(crate) fn get_db() -> &'static PgPool {
     DB.get().unwrap()
 }

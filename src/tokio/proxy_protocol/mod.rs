@@ -11,9 +11,9 @@ use eyre::{Result, eyre};
 use pin_project_lite::pin_project;
 use tokio::io::{AsyncBufRead, AsyncRead, AsyncReadExt, AsyncWrite, ReadBuf};
 
-use crate::proxy_protocol::header::{Error, Header};
+use crate::tokio::proxy_protocol::header::{Error, Header};
 
-pub mod header;
+pub(crate) mod header;
 mod utils;
 mod v1;
 mod v2;
@@ -31,7 +31,7 @@ pin_project! {
 }
 
 impl<S> ProxyProtocolStream<S> {
-    pub fn header(&self) -> Option<&Header<'static>> {
+    pub(crate) fn header(&self) -> Option<&Header<'static>> {
         self.header.as_ref()
     }
 
@@ -39,7 +39,8 @@ impl<S> ProxyProtocolStream<S> {
         self.project().stream
     }
 
-    pub fn try_into_stream(self) -> Result<S> {
+    #[expect(unused)]
+    pub(crate) fn try_into_stream(self) -> Result<S> {
         if self.remaining.is_empty() {
             Ok(self.stream)
         } else {
@@ -65,9 +66,10 @@ impl<S> Deref for ProxyProtocolStream<S> {
 }
 
 impl<S> ProxyProtocolStream<S>
-where S: AsyncRead + Unpin
+where
+    S: AsyncRead + Unpin,
 {
-    pub async fn new(mut stream: S) -> Result<Self, io::Error> {
+    pub(crate) async fn new(mut stream: S) -> Result<Self, io::Error> {
         let mut remaining = Vec::with_capacity(READ_BUFFER_LEN);
 
         loop {
@@ -106,7 +108,8 @@ where S: AsyncRead + Unpin
 }
 
 impl<S> AsyncRead for ProxyProtocolStream<S>
-where S: AsyncRead
+where
+    S: AsyncRead,
 {
     fn poll_read(
         self: Pin<&mut Self>,
@@ -129,7 +132,8 @@ where S: AsyncRead
 }
 
 impl<S> AsyncBufRead for ProxyProtocolStream<S>
-where S: AsyncBufRead
+where
+    S: AsyncBufRead,
 {
     fn poll_fill_buf(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<&[u8]>> {
         let this = self.project();
@@ -159,7 +163,8 @@ where S: AsyncBufRead
 }
 
 impl<S> AsyncWrite for ProxyProtocolStream<S>
-where S: AsyncWrite
+where
+    S: AsyncWrite,
 {
     fn poll_write(
         self: Pin<&mut Self>,

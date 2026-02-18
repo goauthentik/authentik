@@ -11,13 +11,12 @@ use tokio::{
 use tokio_util::sync::CancellationToken;
 use tracing::trace;
 
-pub mod schema;
+pub(crate) mod schema;
 mod source;
 
-pub use crate::schema::Config;
-use crate::source::AsyncFile;
+pub(crate) use schema::Config;
 
-static DEFAULT_CONFIG: &str = include_str!("../../../authentik/lib/default.yml");
+static DEFAULT_CONFIG: &str = include_str!("../../authentik/lib/default.yml");
 static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
 
 fn config_paths() -> Vec<PathBuf> {
@@ -67,7 +66,7 @@ impl Config {
                 config::File::from_str(DEFAULT_CONFIG, config::FileFormat::Yaml),
             );
         for path in config_paths {
-            builder = builder.add_async_source(AsyncFile {
+            builder = builder.add_async_source(source::AsyncFile {
                 name: path.clone(),
                 format: config::FileFormat::Yaml,
             });
@@ -139,13 +138,13 @@ impl Config {
     }
 }
 
-pub struct ConfigManager {
+pub(crate) struct ConfigManager {
     config: RwLock<Config>,
     config_paths: Vec<PathBuf>,
 }
 
 impl ConfigManager {
-    pub async fn init(
+    pub(crate) async fn init(
         tasks: &mut JoinSet<Result<()>>,
         stop: CancellationToken,
         config_changed_tx: broadcast::Sender<()>,
@@ -208,7 +207,7 @@ async fn watch_config(
     Ok(())
 }
 
-pub async fn get_config<'a>() -> RwLockReadGuard<'a, Config> {
+pub(crate) async fn get_config<'a>() -> RwLockReadGuard<'a, Config> {
     let manager = CONFIG_MANAGER.get().unwrap();
     manager.config.read().await
 }

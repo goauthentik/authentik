@@ -1,22 +1,30 @@
+use ::tokio::fs;
 use eyre::Report;
 use std::str::FromStr;
-use tokio::fs;
 
-use argh::FromArgs;
-use authentik_config::{ConfigManager, get_config};
-use eyre::Result;
-use eyre::eyre;
-use pyo3::Python;
-use tokio::{
+use crate::config::{ConfigManager, get_config};
+use ::tokio::{
     signal::unix::{Signal, SignalKind, signal},
     sync::broadcast,
     task::JoinSet,
 };
+use argh::FromArgs;
+use eyre::Result;
+use eyre::eyre;
+use pyo3::Python;
 use tokio_util::sync::CancellationToken;
 
 mod axum;
+mod config;
+#[cfg(any(feature = "server", feature = "proxy"))]
+mod db;
+mod metrics;
+#[cfg(any(feature = "server", feature = "proxy"))]
+mod proxy;
 #[cfg(feature = "server")]
 mod server;
+mod tokio;
+mod worker;
 
 struct SignalStreams {
     hup: Signal,
@@ -54,7 +62,7 @@ async fn watch_signals(
         mut term,
     } = streams;
     loop {
-        tokio::select! {
+        ::tokio::select! {
             _ = hup.recv() => tx.send(SignalKind::interrupt())?,
             _ = int.recv() => tx.send(SignalKind::interrupt())?,
             _ = quit.recv() => tx.send(SignalKind::interrupt())?,
@@ -79,7 +87,7 @@ enum Command {
     #[cfg(feature = "server")]
     Server(server::Cli),
     #[cfg(feature = "worker")]
-    Worker(authentik_worker::Cli),
+    Worker(worker::Cli),
 }
 
 async fn install_tracing() -> Result<()> {
@@ -141,7 +149,7 @@ async fn install_tracing() -> Result<()> {
     Ok(())
 }
 
-#[tokio::main]
+#[::tokio::main(crate = "::tokio")]
 async fn main() -> Result<()> {
     let mut tasks = JoinSet::new();
     let stop = CancellationToken::new();
@@ -204,7 +212,7 @@ async fn main() -> Result<()> {
             }
         }
 
-        authentik_db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
+        db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
 
         Python::initialize();
     }

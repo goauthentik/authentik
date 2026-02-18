@@ -4,7 +4,7 @@ use thiserror::Error;
 
 /// Protocol type
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
-pub enum Protocol {
+pub(crate) enum Protocol {
     /// Stream protocol (TCP)
     Stream,
     /// Datagram protocol (UDP)
@@ -13,13 +13,13 @@ pub enum Protocol {
 
 /// Address information from a PROXY protocol header
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct Address {
+pub(crate) struct Address {
     /// Protocol type
-    pub protocol: Protocol,
+    pub(crate) protocol: Protocol,
     /// Source address (of the actual client)
-    pub source: SocketAddr,
+    pub(crate) source: SocketAddr,
     /// Destination address (of the proxy)
-    pub destination: SocketAddr,
+    pub(crate) destination: SocketAddr,
 }
 
 macro_rules! tlv {
@@ -47,7 +47,7 @@ macro_rules! tlv_borrowed {
 }
 
 /// Iterator over PROXY protocol TLV fields
-pub struct Tlvs<'a> {
+pub(crate) struct Tlvs<'a> {
     buf: &'a [u8],
 }
 
@@ -86,7 +86,7 @@ impl<'a> Iterator for Tlvs<'a> {
 /// Non-recognized TLV fields are represented as [`Tlv::Custom`].
 #[non_exhaustive]
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub enum Tlv<'a> {
+pub(crate) enum Tlv<'a> {
     /// Application-Layer Protocol Negotiation (ALPN). It is a byte sequence defining the upper
     /// layer protocol in use over the connection. The most common use case will be to pass the
     /// exact copy of the ALPN extension of the Transport Layer Security (TLS) protocol as defined
@@ -213,7 +213,8 @@ impl<'a> Tlv<'a> {
         }
     }
 
-    pub fn into_owned(self) -> Tlv<'static> {
+    #[expect(unused)]
+    pub(crate) fn into_owned(self) -> Tlv<'static> {
         match self {
             Self::Alpn(v) => Tlv::Alpn(Cow::Owned(v.into_owned())),
             Self::Authority(v) => Tlv::Authority(Cow::Owned(v.into_owned())),
@@ -234,7 +235,7 @@ impl<'a> Tlv<'a> {
 
 /// SSL information from a PROXY protocol header
 #[derive(PartialEq, Eq, Clone)]
-pub struct SslInfo<'a>(u8, u32, Cow<'a, [u8]>);
+pub(crate) struct SslInfo<'a>(u8, u32, Cow<'a, [u8]>);
 
 impl<'a> SslInfo<'a> {
     /// Client connected over SSL/TLS
@@ -242,7 +243,7 @@ impl<'a> SslInfo<'a> {
     /// The PP2_CLIENT_SSL flag indicates that the client connected over SSL/TLS. When this field
     /// is present, the US-ASCII string representation of the TLS version is appended at the end of
     /// the field in the TLV format using the type PP2_SUBTYPE_SSL_VERSION.
-    pub fn client_ssl(&self) -> bool {
+    pub(crate) fn client_ssl(&self) -> bool {
         self.0 & 0x01 != 0
     }
 
@@ -250,7 +251,7 @@ impl<'a> SslInfo<'a> {
     ///
     /// PP2_CLIENT_CERT_CONN indicates that the client provided a certificate over the current
     /// connection.
-    pub fn client_cert_conn(&self) -> bool {
+    pub(crate) fn client_cert_conn(&self) -> bool {
         self.0 & 0x02 != 0
     }
 
@@ -258,7 +259,7 @@ impl<'a> SslInfo<'a> {
     ///
     /// PP2_CLIENT_CERT_SESS indicates that the client provided a certificate at least once over
     /// the TLS session this connection belongs to.
-    pub fn client_cert_sess(&self) -> bool {
+    pub(crate) fn client_cert_sess(&self) -> bool {
         self.0 & 0x04 != 0
     }
 
@@ -266,12 +267,12 @@ impl<'a> SslInfo<'a> {
     ///
     /// The verify field will be zero if the client presented a certificate and it was successfully
     /// verified, and non-zero otherwise.
-    pub fn verify(&self) -> u32 {
+    pub(crate) fn verify(&self) -> u32 {
         self.1
     }
 
     /// Iterator over all TLV (type-length-value) fields
-    pub fn tlvs(&self) -> Tlvs<'_> {
+    pub(crate) fn tlvs(&self) -> Tlvs<'_> {
         Tlvs { buf: &self.2 }
     }
 
@@ -280,40 +281,45 @@ impl<'a> SslInfo<'a> {
     /// SSL version
     ///
     /// See [`Tlv::SslVersion`] for more information.
-    pub fn version(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn version(&self) -> Option<&str> {
         tlv_borrowed!(self, SslVersion)
     }
 
     /// SSL CN
     ///
     /// See [`Tlv::SslCn`] for more information.
-    pub fn cn(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn cn(&self) -> Option<&str> {
         tlv_borrowed!(self, SslCn)
     }
 
     /// SSL cipher
     ///
     /// See [`Tlv::SslCipher`] for more information.
-    pub fn cipher(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn cipher(&self) -> Option<&str> {
         tlv_borrowed!(self, SslCipher)
     }
 
     /// SSL signature algorithm
     ///
     /// See [`Tlv::SslSigAlg`] for more information.
-    pub fn sig_alg(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn sig_alg(&self) -> Option<&str> {
         tlv_borrowed!(self, SslSigAlg)
     }
 
     /// SSL key algorithm
     ///
     /// See [`Tlv::SslKeyAlg`] for more information.
-    pub fn key_alg(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn key_alg(&self) -> Option<&str> {
         tlv_borrowed!(self, SslKeyAlg)
     }
 
     /// Returns an owned version of this struct
-    pub fn into_owned(self) -> SslInfo<'static> {
+    pub(crate) fn into_owned(self) -> SslInfo<'static> {
         SslInfo(self.0, self.1, Cow::Owned(self.2.into_owned()))
     }
 }
@@ -332,7 +338,7 @@ impl fmt::Debug for SslInfo<'_> {
 
 /// A PROXY protocol header
 #[derive(Default, PartialEq, Eq, Clone, Debug)]
-pub struct Header<'a>(pub(super) Option<Address>, pub(super) Cow<'a, [u8]>);
+pub(crate) struct Header<'a>(pub(super) Option<Address>, pub(super) Cow<'a, [u8]>);
 
 impl<'a> Header<'a> {
     /// Attempt to parse a PROXY protocol header from the given buffer
@@ -359,14 +365,14 @@ impl<'a> Header<'a> {
     /// If `None`, this indicates so-called "local" mode, where the connection is not proxied.
     /// This is usually the case when the connection is initiated by the proxy itself, e.g. for
     /// health checks.
-    pub fn proxied_address(&self) -> Option<&Address> {
+    pub(crate) fn proxied_address(&self) -> Option<&Address> {
         self.0.as_ref()
     }
 
     /// Iterator that yields all extension TLV (type-length-value) fields present in the header
     ///
     /// See [`Tlv`] for more information on the different types of TLV fields.
-    pub fn tlvs(&self) -> Tlvs<'_> {
+    pub(crate) fn tlvs(&self) -> Tlvs<'_> {
         Tlvs { buf: &self.1 }
     }
 
@@ -375,53 +381,58 @@ impl<'a> Header<'a> {
     /// Raw ALPN extension data
     ///
     /// See [`Tlv::Alpn`] for more information.
-    pub fn alpn(&self) -> Option<&[u8]> {
+    #[expect(unused)]
+    pub(crate) fn alpn(&self) -> Option<&[u8]> {
         tlv_borrowed!(self, Alpn)
     }
 
     /// Authority - typically the hostname of the client (SNI)
     ///
     /// See [`Tlv::Authority`] for more information.
-    pub fn authority(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn authority(&self) -> Option<&str> {
         tlv_borrowed!(self, Authority)
     }
 
     /// CRC32c checksum of the address information
     ///
     /// See [`Tlv::Crc32c`] for more information.
-    pub fn crc32c(&self) -> Option<u32> {
+    #[expect(unused)]
+    pub(crate) fn crc32c(&self) -> Option<u32> {
         tlv!(self, Crc32c)
     }
 
     /// Unique ID of the connection
     ///
     /// See [`Tlv::UniqueId`] for more information.
-    pub fn unique_id(&self) -> Option<&[u8]> {
+    #[expect(unused)]
+    pub(crate) fn unique_id(&self) -> Option<&[u8]> {
         tlv_borrowed!(self, UniqueId)
     }
 
     /// SSL information
     ///
     /// See [`Tlv::Ssl`] for more information.
-    pub fn ssl(&self) -> Option<SslInfo<'_>> {
+    pub(crate) fn ssl(&self) -> Option<SslInfo<'_>> {
         tlv!(self, Ssl)
     }
 
     /// Network namespace
     ///
     /// See [`Tlv::Netns`] for more information.
-    pub fn netns(&self) -> Option<&str> {
+    #[expect(unused)]
+    pub(crate) fn netns(&self) -> Option<&str> {
         tlv_borrowed!(self, Netns)
     }
 
     /// Returns an owned version of this struct
-    pub fn into_owned(self) -> Header<'static> {
+    pub(crate) fn into_owned(self) -> Header<'static> {
         Header(self.0, Cow::Owned(self.1.into_owned()))
     }
 }
 
 #[derive(Debug, PartialEq, Eq, Error)]
-pub enum Error {
+pub(crate) enum Error {
     #[error("The buffer is too short to contain a complete PROXY protocol header")]
     BufferTooShort,
     #[error("The PROXY protocol header is malformed")]

@@ -191,34 +191,36 @@ name = "authentik"
 version = "0.0.0"
 dependencies = [
  "argh",
- "authentik-config",
- "authentik-db",
- "authentik-lib",
- "authentik-proxy",
- "authentik-tokio",
- "authentik-worker",
+ "async-trait",
  "aws-lc-rs",
  "axum",
  "axum-server",
  "client-ip",
  "color-eyre",
+ "config",
  "console-subscriber",
  "eyre",
  "forwarded-header-value",
  "futures",
+ "glob",
  "http-body-util",
  "hyper-unix-socket",
  "hyper-util",
+ "ipnet",
  "jsonwebtoken",
  "nix 0.31.1",
+ "notify",
  "percent-encoding",
+ "pin-project-lite",
  "pyo3",
  "rcgen",
  "rustls",
  "sentry",
  "serde",
  "serde_json",
+ "signal-hook",
  "sqlx",
+ "thiserror 2.0.18",
  "time",
  "tokio",
  "tokio-rustls",
@@ -228,92 +230,6 @@ dependencies = [
  "tracing",
  "tracing-error",
  "tracing-subscriber",
-]
-
-[[package]]
-name = "authentik-config"
-version = "0.0.0"
-dependencies = [
- "async-trait",
- "config",
- "eyre",
- "glob",
- "ipnet",
- "notify",
- "serde",
- "serde_json",
- "tokio",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
-name = "authentik-db"
-version = "0.0.0"
-dependencies = [
- "authentik-config",
- "eyre",
- "sqlx",
- "tokio",
- "tokio-util",
- "tracing",
-]
-
-[[package]]
-name = "authentik-lib"
-version = "0.0.0"
-dependencies = [
- "axum",
- "eyre",
- "tracing",
-]
-
-[[package]]
-name = "authentik-proxy"
-version = "0.0.0"
-dependencies = [
- "argh",
- "authentik-config",
- "authentik-db",
- "axum",
- "axum-server",
- "eyre",
- "hyper-unix-socket",
- "hyper-util",
- "nix 0.31.1",
- "rcgen",
- "rustls",
- "sqlx",
- "time",
- "tokio",
- "tokio-util",
- "tower-http",
- "tracing",
-]
-
-[[package]]
-name = "authentik-tokio"
-version = "0.0.0"
-dependencies = [
- "eyre",
- "pin-project-lite",
- "thiserror 2.0.18",
- "tokio",
-]
-
-[[package]]
-name = "authentik-worker"
-version = "0.0.0"
-dependencies = [
- "argh",
- "axum",
- "axum-server",
- "eyre",
- "nix 0.31.1",
- "pyo3",
- "signal-hook",
- "tokio",
- "tracing",
 ]
 
 [[package]]

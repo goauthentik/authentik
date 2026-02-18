@@ -4,7 +4,7 @@ use std::{
 };
 
 use super::header::{Error, Header};
-use crate::proxy_protocol::{
+use super::{
     header::{Address, Protocol},
     utils::AddressFamily,
 };

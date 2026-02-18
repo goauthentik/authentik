@@ -1,4 +1,4 @@
-use authentik_config::get_config;
+use crate::config::get_config;
 use aws_lc_rs::digest;
 use axum::{
     Router,

@@ -1,6 +1,6 @@
 use std::{io, time::Duration};
 
-use authentik_tokio::proxy_protocol::{ProxyProtocolStream, header::Header};
+use crate::tokio::proxy_protocol::{ProxyProtocolStream, header::Header};
 use axum::{Extension, middleware::AddExtension};
 use axum_server::accept::{Accept, DefaultAcceptor};
 use futures::future::BoxFuture;

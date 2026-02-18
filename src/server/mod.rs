@@ -14,8 +14,8 @@ use crate::axum::{
     },
     extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
 };
+use crate::config::get_config;
 use argh::FromArgs;
-use authentik_config::get_config;
 use axum::{
     Extension, Router,
     body::Body,
@@ -63,7 +63,6 @@ use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, Tr
 use tracing::{Level, info};
 
 mod gunicorn;
-mod metrics;
 mod r#static;
 
 struct ServerState {
@@ -319,7 +318,7 @@ async fn build_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
 
     Router::new().fallback(any(|request: Request<Body>| async move {
         if let Some(proxy_router) = proxy_router
-            && authentik_proxy::can_handle(&request)
+            && crate::proxy::can_handle(&request)
         {
             proxy_router.oneshot(request).await
         } else {
@@ -434,7 +433,7 @@ pub(super) async fn run(
     let router = build_router(Arc::clone(&gunicorn_ready)).await;
     let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
 
-    let metrics_router = metrics::build_router();
+    let metrics_router = crate::metrics::build_router();
 
     let mut handles = Vec::with_capacity(
         config.listen.http.len() + config.listen.https.len() + config.listen.metrics.len(),
@@ -459,7 +458,7 @@ pub(super) async fn run(
 
     config.listen.metrics.iter().for_each(|addr| {
         let handle = Handle::new();
-        tasks.spawn(metrics::start_server(
+        tasks.spawn(crate::metrics::start_server(
             metrics_router.clone(),
             *addr,
             handle.clone(),
