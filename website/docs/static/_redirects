@@ -53,6 +53,10 @@
 /endpoint-devices/device-compliance/connectors              /endpoint-devices/device-compliance/connectors/index/ 301!
 #endregion
 
+#region Enterprise
+/enterprise/entsupport                                      /enterprise/enterprise-support/ 301!
+#endregion
+
 #region System Management
 /core/certificates                                          /sys-mgmt/certificates/ 301!
 /core/settings                                              /sys-mgmt/settings/ 301!

@@ -50,7 +50,11 @@ const items = [
             type: "doc",
             id: "enterprise/index",
         },
-        items: ["enterprise/get-started", "enterprise/manage-enterprise", "enterprise/entsupport"],
+        items: [
+            "enterprise/get-started",
+            "enterprise/manage-enterprise",
+            "enterprise/enterprise-support",
+        ],
     },
     {
         //#endregion
