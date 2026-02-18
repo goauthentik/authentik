@@ -73,7 +73,7 @@ export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
                           </div>
                       `
                     : nothing}
-            </ak-form-static>`
+            </ak-form-static>`,
     );
 };
 
