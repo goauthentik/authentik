@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use crate::recurse_directory;
 
-pub fn r#move(old_path: PathBuf, new_path: PathBuf) {
+pub(crate) fn r#move(old_path: PathBuf, new_path: PathBuf) {
     let is_dir = old_path.is_dir();
     if is_dir {
         let paths = recurse_directory(old_path.clone());

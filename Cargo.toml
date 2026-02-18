@@ -1,5 +1,5 @@
 [workspace]
-members = ["."]
+members = [".", "website/scripts/docsmg"]
 resolver = "3"
 
 [workspace.package]

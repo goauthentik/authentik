@@ -1,16 +1,17 @@
+use eyre::Result;
 use std::{fs::read_to_string, path::PathBuf};
 
-pub fn read_migrate_file(file: PathBuf) -> anyhow::Result<Vec<(PathBuf, PathBuf)>> {
+pub(crate) fn read_migrate_file(file: PathBuf) -> Result<Vec<(PathBuf, PathBuf)>> {
     let contents = read_to_string(file)?;
     let lines: Vec<String> = contents
         .split('\n')
         .map(|x| x.to_owned())
-        .filter(|x| x != "")
+        .filter(|x| !x.is_empty())
         .collect();
     let migrations = lines
         .iter()
         .filter_map(|x| x.split_once(" -> "))
-        .filter(|x| !(x.0 == x.1))
+        .filter(|x| x.0 != x.1)
         .map(|x| {
             (
                 x.0.parse().expect("a valid path"),
@@ -21,12 +22,12 @@ pub fn read_migrate_file(file: PathBuf) -> anyhow::Result<Vec<(PathBuf, PathBuf)
     Ok(migrations)
 }
 
-pub fn read_migrate_file_left_side(file: PathBuf) -> anyhow::Result<Vec<PathBuf>> {
+pub(crate) fn read_migrate_file_left_side(file: PathBuf) -> Result<Vec<PathBuf>> {
     let contents = read_to_string(file)?;
     let lines: Vec<String> = contents
         .split('\n')
         .map(|x| x.to_owned())
-        .filter(|x| x != "")
+        .filter(|x| !x.is_empty())
         .collect();
     let migrations = lines
         .iter()
