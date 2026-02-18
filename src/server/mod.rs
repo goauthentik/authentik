@@ -36,7 +36,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                 match signal {
                     Ok(signal) => {
                         if signal == SignalKind::user_defined1() {
-                            info!("gunicorn is marked ready for operation");
+                            info!("gunicorn notified us ready, marked ready for operation");
                             GUNICORN_READY.store(true, Ordering::Relaxed);
                         }
                     },
@@ -50,11 +50,11 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                 // On some platforms the SIGUSR1 can be missed.
                 // Fall back to probing the gunicorn unix socket and mark ready once it accepts connections.
                 if Gunicorn::is_socket_ready().await {
-                    info!("gunicorn socket is accepting connections, marking ready");
+                    info!("gunicorn socket is accepting connections, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(15)) => {
+            _ = tokio::time::sleep(Duration::from_secs(5)) => {
                 if !gunicorn.is_alive().await {
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }

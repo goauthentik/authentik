@@ -54,7 +54,7 @@ impl Gunicorn {
         let try_wait = self.0.try_wait();
         match try_wait {
             Ok(Some(code)) => {
-                warn!("gunicorn has exited unexpectedly with status {code}");
+                warn!("gunicorn has exited with status {code}");
                 false
             }
             Ok(None) => true,
