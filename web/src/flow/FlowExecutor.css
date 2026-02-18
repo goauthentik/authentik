@@ -1,6 +1,7 @@
 @import "../styles/authentik/components/Login/login.css";
 
-:host {
+:host,
+ak-flow-executor.style-scope {
     display: flex;
     min-height: 100dvh;
     flex-flow: column nowrap;
@@ -49,14 +50,14 @@
         }
     }
 
-    filter: var(--ak-global--background-contrast-Filter);
+    filter: var(--ak-global--BackgroundContrastFilter);
 
     grid-area: header;
 
     /* At least a third of the card cut-off is available. */
     @media (width <= 61.25rem) and (height <= 61.25rem) {
-        --ak-global--background-contrast-Filter: none;
-        --ak-c-flow-executor__locale-select--Color: var(--ak-global--background-contrast);
+        --ak-global--BackgroundContrastFilter: none;
+        --ak-c-flow-executor__locale-select--Color: var(--ak-c-login__main--Color);
 
         grid-area: main;
     }
@@ -79,7 +80,7 @@
 @media (min-width: 70rem) and (min-height: 17.5rem) {
     :host([data-layout^="sidebar"]),
     [data-layout^="sidebar"] /* Compatibility mode */ {
-        --ak-global--background-contrast-Filter: none !important;
+        --ak-global--BackgroundContrastFilter: none !important;
 
         [part="locale-select"] {
             --ak-c-flow-executor__locale-select--Color: inherit !important;
