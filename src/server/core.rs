@@ -29,7 +29,7 @@ use crate::{
     axum::{
         accept::tls::TlsState,
         error::Result,
-        extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
+        extract::{client_ip::ClientIP, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
     },
     config::get_config,
     server::gunicorn::GUNICORN_READY,
@@ -67,10 +67,13 @@ static STARTUP_RESPONSE_PLAIN: LazyLock<Response<String>> = LazyLock::new(|| {
         .unwrap()
 });
 
+const SERVER: HeaderName = HeaderName::from_static("server");
+const X_FORWARDED_CLIENT_CERT: HeaderName = HeaderName::from_static("x-forwarded-client-cert");
 const X_FORWARDED_FOR: HeaderName = HeaderName::from_static("x-forwarded-for");
 const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
+const X_POWERED_BY: HeaderName = HeaderName::from_static("x-powered-by");
 
-const FORWARD_IGNORED_HEADERS: [HeaderName; 7] = [
+const FORWARD_ALWAYS_REMOVED_HEADERS: [HeaderName; 7] = [
     HeaderName::from_static("forwarded"),
     HeaderName::from_static("host"),
     X_FORWARDED_FOR,
@@ -78,6 +81,11 @@ const FORWARD_IGNORED_HEADERS: [HeaderName; 7] = [
     X_FORWARDED_PROTO,
     HeaderName::from_static("x-forwarded-scheme"),
     HeaderName::from_static("x-real-ip"),
+];
+const FORWARD_REMOVED_HEADERS_IF_UNTRUSTED: [HeaderName; 3] = [
+    HeaderName::from_static("ssl-client-cert"), // nginx-ingress
+    HeaderName::from_static("x-forwarded-tls-client-cert"), // traefik
+    X_FORWARDED_CLIENT_CERT,                    // envoy
 ];
 
 fn startup_response(accept_header: &str) -> Response {
@@ -98,7 +106,8 @@ async fn forward_request(
     Host(host): Host,
     Scheme(scheme): Scheme,
     State(client): State<BackendClient>,
-    _tls_state: Option<Extension<TlsState>>,
+    TrustedProxy(trusted_proxy): TrustedProxy,
+    tls_state: Option<Extension<TlsState>>,
     mut req: Request,
 ) -> Result<Response> {
     // TODO: tls state
@@ -125,9 +134,15 @@ async fn forward_request(
         .unwrap();
     *req.uri_mut() = uri;
 
-    for header_name in FORWARD_IGNORED_HEADERS {
+    for header_name in FORWARD_ALWAYS_REMOVED_HEADERS {
         req.headers_mut().remove(header_name);
     }
+    if !trusted_proxy {
+        for header_name in FORWARD_REMOVED_HEADERS_IF_UNTRUSTED {
+            req.headers_mut().remove(header_name);
+        }
+    }
+
     req.headers_mut().insert(
         X_FORWARDED_FOR,
         HeaderValue::from_str(&client_ip.to_string())?,
@@ -137,9 +152,32 @@ async fn forward_request(
     req.headers_mut()
         .insert(X_FORWARDED_PROTO, HeaderValue::from_str(scheme.as_ref())?);
 
+    if let Some(tls_state) = tls_state
+        && let Some(peer_certificates) = &tls_state.peer_certificates
+    {
+        let xfcc = peer_certificates
+            .iter()
+            .map(|cert| {
+                let pem_encoded = pem::encode(&pem::Pem::new("CERTIFICATE", cert.as_ref()));
+                let url_encoded: String =
+                    url::form_urlencoded::byte_serialize(pem_encoded.as_bytes()).collect();
+                format!("Cert={url_encoded}")
+            })
+            .collect::<Vec<_>>()
+            .join(",");
+        req.headers_mut()
+            .insert("X_FORWARDED_CLIENT_CERT", HeaderValue::from_str(&xfcc)?);
+    }
+
     match client.request(req).await {
         Ok(res) => {
-            let (parts, body) = res.into_parts();
+            let (mut parts, body) = res.into_parts();
+
+            parts.headers.remove(SERVER);
+            parts
+                .headers
+                .insert(X_POWERED_BY, HeaderValue::from_str("authentik")?);
+
             Ok(Response::from_parts(
                 parts,
                 Body::from_stream(body.into_data_stream()),

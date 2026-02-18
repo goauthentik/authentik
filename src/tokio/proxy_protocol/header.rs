@@ -350,7 +350,7 @@ impl<'a> Header<'a> {
     ///
     /// This function will borrow the buffer for the lifetime of the returned header. If
     /// you need to keep the header around for longer than the buffer, use
-    /// [`ProxyHeader::into_owned`].
+    /// [`Header::into_owned`].
     pub(super) fn parse(buf: &'a [u8]) -> Result<(Self, usize), Error> {
         match buf.first() {
             Some(b'P') => super::v1::decode(buf),

@@ -39,6 +39,7 @@ hyper-util = "0.1.19"
 ipnet = { version = "2.11.0", features = ["serde"] }
 nix = { version = "0.31.0", features = ["signal"] }
 notify = "8.2.0"
+pem = "3.0.6"
 pin-project-lite = "0.2.16"
 pyo3 = "0.27.2"
 percent-encoding = "2.3.2"
@@ -88,6 +89,7 @@ tower-service = "0.3.3"
 tracing = "0.1.44"
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
+url = "2.5.8"
 
 # Because of the async runtime, we really want panics to cause an abort, otherwise
 # the binary can keep on running as a ghost
@@ -174,6 +176,7 @@ ipnet.workspace = true
 jsonwebtoken.workspace = true
 nix.workspace = true
 notify.workspace = true
+pem.workspace = true
 percent-encoding.workspace = true
 pin-project-lite.workspace = true
 pyo3 = { workspace = true, optional = true }
@@ -194,6 +197,7 @@ tower.workspace = true
 tracing-error.workspace = true
 tracing-subscriber.workspace = true
 tracing.workspace = true
+url.workspace = true
 
 [lints]
 workspace = true
