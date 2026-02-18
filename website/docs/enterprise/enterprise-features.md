@@ -68,7 +68,7 @@ This authenticator stage validates Chrome browsers and ChromeOS devices against 
 
 [Google Chrome Device Trust Authenticator Stage](../add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index.md)
 
-### Shared Signals Framework (ABM) support
+### Shared Signals Framework (SSF) support
 
 The SSF Provider enables authentik to transmit real-time security events (e.g., MFA changes, logouts) as Security Event Tokens to subscribed OIDC applications via secure webhooks.
 
