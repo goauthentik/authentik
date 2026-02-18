@@ -7,7 +7,7 @@ This page describes the Enterprise features that are available in the authentik 
 
 ## Enterprise vs Enterprise Plus
 
-Enterprise Plus differs in the following:
+Enterprise Plus differs from Enterprise in that Plus offers the following options:
 
 - Billing and purchase via invoice
 - Dedicated, customized support and SLAs
