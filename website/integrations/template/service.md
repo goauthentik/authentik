@@ -36,7 +36,7 @@ _Any specific info about this integration can go here._
     - **Choose a Provider type**: _If there is a specific provider type required, state that here._
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/chat-communication-collaboration/owncloud/index.md) for a complex requirements example._
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

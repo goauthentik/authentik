@@ -3,7 +3,8 @@
     width: 100%;
 }
 
-:host {
+:host,
+ak-flow-inspector.style-scope {
     background-color: var(--pf-c-notification-drawer--BackgroundColor);
     --pf-c-drawer__panel--BackgroundColor: var(--pf-global--BackgroundColor--150) !important;
 }

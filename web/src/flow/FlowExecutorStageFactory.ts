@@ -90,7 +90,7 @@ export class StageMapping {
     }
 
     /**
-     * Create a `StageMapping`, caching it by token for future use.
+     * Create a `StageMapping` from a `StageEntry`.
      */
     public static async from([token, ...rest]: StageEntry): Promise<StageMapping> {
         const last = rest.at(-1);
