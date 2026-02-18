@@ -42,6 +42,8 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
+    static shadowRootOptions: ShadowRootInit = BaseStage.shadowRootOptions;
+
     static styles: CSSResult[] = [
         PFLogin,
         PFAlert,

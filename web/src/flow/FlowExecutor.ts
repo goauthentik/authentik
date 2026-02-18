@@ -30,7 +30,8 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { BaseStage } from "#flow/stages/base";
+import type { StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
