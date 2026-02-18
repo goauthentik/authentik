@@ -15,18 +15,93 @@
 @import "#elements/locale/ak-locale-select.css";
 @import "#flow/FlowExecutor.css";
 
-.pf-c-login__main-body {
-    display: flex;
-    flex-flow: column;
+/**
+ * @file Static global styles for authentik.
+ *
+ * Similar the base/globals.css file, this file is only injected in server templates
+ * that may not have the full web component support.
+ * If you're deciding on where to put a style, prefer a more specific file
+ * to avoid unnecessarily increasing the global scope of the style.
+ */
 
-    .pf-c-form {
-        display: flex;
-        flex-flow: column;
-        flex: 1 1 auto;
-        justify-content: end;
-    }
+/* #region Custom login variables */
+
+:root {
+    --ak-c-login--PaddingMax: 8dvw;
+
+    --ak-c-login--spacer: clamp(
+        var(--pf-global--spacer--md),
+        var(--pf-global--spacer--2xl),
+        var(--ak-c-login--PaddingMax)
+    );
+
+    --ak-c-login--MaxWidth: 35rem;
+    --ak-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+    --ak-c-login__main--Color: var(--pf-global--Color--dark-100);
+
+    --ak-c-login__main--brand-PaddingMin: var(--pf-global--spacer--xs);
+    --ak-c-login__main--brand-PaddingIdeal: 5rem;
+    --ak-c-login__main--brand-PaddingMax: 15dvh;
+
+    --ak-c-login__main-ColumnWidth: minmax(
+        min(100%, var(--ak-c-login--MaxWidth)),
+        var(--ak-c-login--MaxWidth)
+    );
+
+    --ak-c-login__main-header-PaddingBlock: clamp(
+        var(--pf-global--spacer--xs),
+        6dvw,
+        var(--pf-global--spacer--lg)
+    );
+
+    --ak-c-login__main-header-PaddingInline: var(--ak-c-login--spacer);
+
+    --ak-c-login__main--footer-PaddingMin: var(--pf-global--spacer--xs);
+    --ak-c-login__main--footer-PaddingIdeal: 3rem;
+    --ak-c-login__main--footer-PaddingMax: 9dvh;
+    --ak-c-login__main--BoxShadow: var(--pf-global--BoxShadow--md);
+
+    --ak-c-login__footer--PaddingBlock: var(--pf-global--spacer--md);
+    --ak-c-login__footer--Color: var(--ak-global--BackgroundColorContrast--100);
 }
 
+[data-theme="dark"] .pf-c-login {
+    --ak-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--dark-100);
+}
+
+/* #endregion */
+
+/* #region PF4 Login */
+
+.pf-c-login {
+    --pf-c-login__main-header--PaddingTop: var(--ak-c-login__main-header-PaddingBlock);
+    --pf-c-login__main-header--PaddingBottom: var(--ak-c-login__main-header-PaddingBlock);
+    --pf-c-login__main-header--PaddingLeft: var(--ak-c-login__main-header-PaddingInline);
+    --pf-c-login__main-header--PaddingRight: var(--ak-c-login__main-header-PaddingInline);
+
+    --pf-c-login__main--BackgroundColor: var(--ak-c-login__main--BackgroundColor);
+
+    --pf-c-login__main-body--PaddingLeft: var(--ak-c-login--spacer);
+    --pf-c-login__main-body--PaddingRight: var(--ak-c-login--spacer);
+    --pf-c-login__main-body--PaddingBottom: 0;
+
+    --pf-c-login__main-footer--PaddingBottom: clamp(
+        var(--ak-c-login__main--footer-PaddingMin),
+        var(--ak-c-login__main--footer-PaddingIdeal),
+        var(--ak-c-login__main--footer-PaddingMax)
+    );
+    --pf-c-login__main-footer-band--BackgroundColor: transparent;
+
+    --pf-c-login__footer--c-list--xl--PaddingTop: 0;
+    --pf-c-login__container--PaddingLeft: 0 !important;
+    --pf-c-login__container--PaddingRight: 0 !important;
+}
+
+/* #endregion */
+
+/* #region Form */
+
+/* Fallback form controls with minimal runtime expectations. */
 .form-control-static {
     margin-top: var(--pf-global--spacer--sm);
     display: flex;
@@ -48,3 +123,25 @@
         line-height: var(--pf-global--spacer--xl);
     }
 }
+
+/* #endregion */
+
+/* #region Flow Links */
+
+[name="flow-links"] {
+    [part="list"],
+    &::part(list) {
+        --pf-c-list--m-inline--li--MarginRight: 0;
+
+        justify-content: center;
+        column-gap: var(--pf-global--spacer--2xl);
+        row-gap: var(--pf-global--spacer--md);
+    }
+
+    [part="list-item-link"],
+    &::part(list-item-link) {
+        color: unset;
+    }
+}
+
+/* #endregion */

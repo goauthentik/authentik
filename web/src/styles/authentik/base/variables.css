@@ -24,6 +24,7 @@
 /* #region authentik extensions */
 
 /* #region Root */
+
 :root {
     --ak-accent: #fd4b2d;
 
@@ -32,14 +33,19 @@
     --ak-dark-background-light: #1c1e21;
     --ak-dark-background-lighter: #2b2e33;
 
-    --ak-global--background-contrast: var(--pf-global--Color--100);
-    --ak-global--background-contrast-Filter: drop-shadow(
+    --ak-global--BackgroundColorContrast--100: var(--pf-global--Color--light-100);
+
+    --ak-global--BackgroundContrastFilter: drop-shadow(
         0 0 2px
             var(--ak-locale-select--ShadowBlendColor, var(--pf-global--BackgroundColor--dark-200))
     );
 
     /* Minimum width after which the sidebar becomes automatic */
     --ak-sidebar--minimum-auto-width: 80rem;
+}
+
+html[data-theme="dark"] {
+    --ak-global--BackgroundColorContrast--100: var(--pf-global--palette--black-150);
 }
 
 /* #endregion */

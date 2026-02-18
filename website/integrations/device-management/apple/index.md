@@ -60,7 +60,7 @@ as a federated identity provider controlled by authentik. When a user signs in w
 
 By the end of this integration, your users will be able to enroll their Apple devices using their authentik credentials.
 
-You'll need to have authentik instance running and accessible on an HTTPS domain, and an Apple Business Manager user with the role of Administrator or People Manager.
+You'll need to have an authentik instance running and accessible on an HTTPS domain, and an Apple Business Manager user with the role of Administrator or People Manager.
 
 :::warning Caveats
 

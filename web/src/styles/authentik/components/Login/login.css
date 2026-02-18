@@ -1,41 +1,39 @@
+/**
+ * @file Patternfly Login component overrides and customizations.
+ *
+ * These styles are not as simple as they may seem at first glance.
+ * The overlap between the concept of the login page, the flow executor,
+ * and Django-provided templates means that these styles need to be flexible.
+ *
+ * - The initial render of the login page is server-side rendered.
+ * - The use of ShadyDOM in the flow executor means that styles need to be compatible with both Shadow DOM and Light DOM contexts.
+ * - The layout must adapt for mobile, tablet, and desktop.
+ * - And dark and light themes must work while allowing for user provided style overrides.
+ * - These styles have a unique relationship with the styles in `FlowExecutor.css` and `static.global.css`.
+ *
+ * All that said, we generally follow Patternfly's structure, save for the mobile layout which is unique to our implementation.
+ */
+
 /* #region Login Component */
 
-/* compatibility-mode-fix */
-.pf-c-login.pf-c-login {
-    --ak-c-login--PaddingMax: 8dvw;
-    --ak-c-login--padding: clamp(
-        var(--pf-global--spacer--md),
-        var(--pf-global--spacer--2xl),
-        var(--ak-c-login--PaddingMax)
-    );
-
-    --ak-c-login__main--brand-PaddingMin: var(--pf-global--spacer--xs);
-    --ak-c-login__main--brand-PaddingIdeal: 5rem;
-    --ak-c-login__main--brand-PaddingMax: 15dvh;
-
-    --ak-c-login__footer--PaddingBlock: var(--pf-global--spacer--md);
-
-    --ak-c-login--MaxWidth: 35rem;
-
-    --ak-c-login__main-ColumnWidth: minmax(
-        min(100%, var(--ak-c-login--MaxWidth)),
-        var(--ak-c-login--MaxWidth)
-    );
-
-    --pf-c-login__main-body--PaddingBottom: 0;
-
-    --ak-c-login__main--footer-PaddingMin: var(--pf-global--spacer--xs);
-    --ak-c-login__main--footer-PaddingIdeal: 3rem;
-    --ak-c-login__main--footer-PaddingMax: 9dvh;
-
-    --pf-c-login__main-footer--PaddingBottom: clamp(
-        var(--ak-c-login__main--footer-PaddingMin),
-        var(--ak-c-login__main--footer-PaddingIdeal),
-        var(--ak-c-login__main--footer-PaddingMax)
-    );
-
-    --pf-c-login__main-footer-band--BackgroundColor: transparent;
-
+/**
+ * Take note, we avoid applying Patternfly styles to custom elements directly:
+ *
+ * ```html
+ * <ak-button class="pf-c-button pf-m-primary">Click me</ak-button>
+ * ```
+ *
+ * However, the flow executor requires that the `.pf-c-login` class be applied to the host element.
+ * This allows for some careful enhancements to the login page without depending on the Shadow DOM,
+ * with some caveats:
+ *
+ * - Custom variables should be defined in static.global.css and used here to allow the user to override them as needed.
+ * - The data-layout attribute is applied to this element and the .pf-c-login__main element,
+ *   allowing for some layout-specific styles to be applied.
+ * - The pf-c-login__footer is slotted into the flow executor, and requires a
+ *  delicate balance of inheriting styles from the login page while ensuring sufficient contrast against the background.
+ */
+.pf-c-login {
     flex: 1 1 auto;
 
     padding: 0;
@@ -63,7 +61,7 @@
     &::before {
         display: block;
         content: "";
-        background-color: var(--ak-c-login--BackgroundColorOverlay, transparent);
+        background-color: var(--ak-c-login--BackgroundColorOverlay, transparent) !important;
         z-index: -1;
         height: 100%;
         pointer-events: none;
@@ -81,7 +79,7 @@
     }
 
     @media (max-width: 35rem) or (max-height: 17.5rem) {
-        --ak-c-login--BackgroundColorOverlay: var(--pf-c-login__main--BackgroundColor);
+        --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
     }
 }
 
@@ -89,16 +87,11 @@
     grid-area: main;
 }
 
-[data-theme="dark"] .pf-c-login,
-:host([theme="dark"]) .pf-c-login {
-    --pf-c-login__main--BackgroundColor: var(--pf-global--BackgroundColor--100);
-}
-
 /* #region Page Header */
 
 .pf-c-login__header {
     grid-area: header;
-    padding-inline: calc(var(--ak-c-login--padding) / 2);
+    padding-inline: calc(var(--ak-c-login--spacer) / 2);
     align-self: start;
 
     display: grid;
@@ -107,7 +100,7 @@
 
 /* #endregion */
 
-/* #region Page Footer */
+/* #region Main Footer */
 
 /* compatibility-mode-fix */
 .pf-c-login__main-footer .pf-c-button__icon {
@@ -125,10 +118,6 @@
 /* #region Card Main */
 
 .pf-c-login__main {
-    --pf-c-login__container--PaddingLeft: 0 !important;
-    --pf-c-login__container--PaddingRight: 0 !important;
-    --ak-c-login__main--BoxShadow: var(--pf-global--BoxShadow--md);
-
     box-shadow: var(--ak-c-login__main--BoxShadow) !important;
 
     grid-area: main;
@@ -136,15 +125,34 @@
 
     position: relative;
     max-width: var(--ak-c-login--MaxWidth);
-    min-height: calc(var(--ak-c-login--MaxWidth) * 0.8);
+    min-height: var(--ak-c-login__main--MinHeight, unset);
 
     display: flex;
     flex-flow: column;
     justify-content: space-between;
 
-    .slotted-content {
+    slot[name="placeholder"] {
         position: relative;
         flex: 1 1 auto;
+    }
+
+    /**
+     * Note that the use of `slot` as attribute selector is intentional.
+     * We're checking for the presence of an element attempting to slot itself as the placeholder.
+     *
+     * This approach allows us to handle some of the lesser-intuitive combinations
+     * of whether we're in a shadow DOM and how to gracefully transition to a
+     * post-JavaScript state without any awkward repaints.
+
+     * We're also interested in whether the slot itself is within the main element,
+     * as it indicates that the placeholder content is slotted and a shadow DOM is present.
+     *
+     * This ensures the height remains consistent from the initial render,
+     * preventing layout shifts when the placeholder is replaced with the actual content.
+     */
+    &:has([slot="placeholder"]),
+    &:has(slot[name="placeholder"]) {
+        --ak-c-login__main--MinHeight: calc(var(--ak-c-login--MaxWidth) * 0.8);
     }
 
     @media (max-width: 35rem) or (max-height: 17.5rem) {
@@ -156,15 +164,6 @@
 
 /* #region Main Header */
 
-.pf-c-login__main-header {
-    padding-inline: var(--ak-c-login--padding);
-    padding-block: clamp(var(--pf-global--spacer--xs), 6dvw, var(--pf-global--spacer--lg));
-
-    .pf-c-title {
-        font-size: clamp(1rem, var(--pf-c-title--m-3xl--FontSize), 7dvw);
-    }
-}
-
 .pf-c-login__main-header.pf-c-brand {
     --ak-c-login__main-padding-block-start: clamp(
         var(--ak-c-login__main--brand-PaddingMin),
@@ -172,13 +171,13 @@
         var(--ak-c-login__main--brand-PaddingMax)
     );
 
-    padding-inline: calc(var(--ak-c-login--padding) / 4);
+    padding-inline: calc(var(--ak-c-login--spacer) / 4);
     padding-block-start: calc(
         var(--ak-c-login__main-padding-block-start) - var(--ak-c-login__footer--PaddingBlock)
     );
     padding-bottom: var(--pf-global--spacer--xs);
 
-    padding-block-end: calc(var(--ak-c-login--padding) / 2);
+    padding-block-end: calc(var(--ak-c-login--spacer) / 2);
 
     display: flex;
     justify-content: center;
@@ -203,7 +202,6 @@
 
 .pf-c-login__main-body {
     flex: 1 1 auto;
-    padding-inline: var(--ak-c-login--padding);
 }
 
 /* #endregion */
@@ -242,7 +240,7 @@
 /* #region Layout variations */
 
 .pf-c-login[data-layout$="frame_background"] {
-    --ak-c-login--BackgroundColorOverlay: var(--pf-c-login__main--BackgroundColor);
+    --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
 }
 
 .pf-c-login[data-layout^="sidebar_left"] {
@@ -292,18 +290,12 @@
 
     .pf-c-login[data-layout^="sidebar"] {
         --ak-c-login--MaxWidth: 36rem;
-        --ak-c-login--BackgroundColorOverlay: var(--pf-c-login__main--BackgroundColor);
+        --ak-c-login--BackgroundColorOverlay: var(--ak-c-login__main--BackgroundColor);
+        --ak-c-login__footer--Color: var(--ak-c-login__main--Color);
 
         .pf-c-login__main {
             height: 100%;
             justify-content: normal;
-        }
-
-        .pf-c-login__footer {
-            color: inherit;
-            flex: 1 1 auto;
-            justify-content: end;
-            width: 100%;
         }
     }
 
@@ -328,28 +320,51 @@
 
 /* #endregion */
 
+/* #region Page Footer */
+
+/**
+ * The footer must respect a few constraints to ensure it remains legible::after
+ *
+ * - The mobile layout should have the same background color as the login main content.
+ * - Aside from CSS variables footer styles should not be applied in the static.global.css file,
+ *   This may seem unnecessary, but PatternFly's own base styles for `pf-c-*` elements
+ *.  will override styles in an uphill battle against user overrides.
+ */
 .pf-c-login__footer {
-    --pf-global--Color--100: var(--pf-global--Color--light-100) !important;
-    grid-area: footer;
-    flex: 0 0 auto;
+    padding-block: var(--ak-c-login__footer--PaddingBlock);
+
     display: flex;
-    flex-direction: column;
-    align-self: end;
     justify-content: center;
-    padding-inline: var(--pf-global--spacer--xl) !important;
-    padding-block: var(--ak-c-login__footer--PaddingBlock) !important;
+    align-self: end;
+
+    flex: 0 0 auto;
     min-height: calc((var(--ak-c-login__footer--PaddingBlock) * 2) + 1rem);
     line-height: var(--pf-global--LineHeight--md);
     min-height: calc(
         (var(--ak-c-login__footer--PaddingBlock) * 2) + (var(--pf-global--LineHeight--md) * 1rem)
     );
 
+    color: var(--ak-c-login__footer--Color);
+
     @media (max-width: 35rem) {
-        color: var(--pf-global--Color--200);
+        --ak-c-login__footer--Color: var(--ak-c-login__main--Color);
     }
 
     @media (min-width: 35rem) and (min-height: 17.5rem) {
-        filter: var(--ak-global--background-contrast-Filter);
+        filter: var(--ak-global--BackgroundContrastFilter);
+    }
+}
+
+/**
+  * The dark modifier is used in stacked layout to ensure sufficient contrast against the darker background.
+  * This may appear unnecessary, but PF4's own login footer styles are not designed
+  * with our mobile layout in mind. this ensures that the footer remains legible
+  * even when the card is reduced in size and the background contrast is removed.
+  */
+.pf-c-login__footer {
+    @media (max-width: 35rem) {
+        --pf-global--Color--100: var(--pf-global--Color--dark-100) !important;
+        --pf-global--Color--200: var(--pf-global--Color--dark-200) !important;
     }
 }
 

@@ -43,7 +43,7 @@ In order to use GitHub Enterprise Server, SCIM must also be set up.
     - Set the **Audience** and **Issuer** to `https://github.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

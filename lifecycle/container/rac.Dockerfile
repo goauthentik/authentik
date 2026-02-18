@@ -31,7 +31,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
-FROM ghcr.io/goauthentik/guacd:v1.6.0-fips@sha256:1d99572b0260924149b8c923c021a32016f885fcea6d5cc8d58f718dfdc7a2dd
+FROM ghcr.io/goauthentik/guacd:v1.6.0-ak-p1-fips@sha256:0748e2a430ba39a4c837e0cf8886d831ff5e871875614190783d20b7755d0636
 
 ARG VERSION
 ARG GIT_BUILD_HASH

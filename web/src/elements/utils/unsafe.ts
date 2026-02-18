@@ -63,16 +63,19 @@ export function StrictUnsafe<T extends CustomElementTagName>(
     tagName: T,
     props?: LitPropertyRecord<HTMLElementTagNameMap[T]>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends AKElement>(
     tagName: string,
     props?: LitPropertyRecord<T>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends string>(
     tagName: string,
     props?: T extends CustomElementTagName
         ? LitPropertyRecord<HTMLElementTagNameMap[T]>
         : LitPropertyRecord<LitElement>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends string>(
     tagName: string,
     props?: T extends CustomElementTagName
@@ -105,10 +108,14 @@ export function StrictUnsafe<T extends string>(
 
         for (const [key, value] of Object.entries(props || {})) {
             const propDeclaration = elementProperties.get(key);
-
             if (propDeclaration) {
                 const prefix = getPrefix(propDeclaration.type, !propDeclaration.attribute);
-                filteredProps[`${prefix}${key}`] = value;
+                const name =
+                    "attribute" in propDeclaration && typeof propDeclaration.attribute === "string"
+                        ? propDeclaration.attribute
+                        : key;
+
+                filteredProps[`${prefix}${name}`] = value;
                 continue;
             }
 

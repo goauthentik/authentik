@@ -60,12 +60,12 @@ To support the integration of Uptime Kuma with authentik, you need to create an 
         ^/upload/<file>$
         ```
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Uptime Kuma configuration
 
-Disable auth from Uptime Kuma, go to `Settings` > `Advanced` > `Disable Auth`
+Disable auth in Uptime Kuma by going to `Settings` > `Advanced` > `Disable Auth`.
 
-To access the dashboard, open `https://uptime-kuma.company/dashboard`, this will start the login with authentik. You can also set this address as the Launch URL for the application.
+To access the dashboard, open `https://uptime-kuma.company/dashboard`. This will start the login with authentik. You can also set this address as the Launch URL for the application.
