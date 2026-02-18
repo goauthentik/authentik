@@ -19,26 +19,11 @@ use axum::{
     response::Response,
     routing::any,
 };
-use axum_server::{
-    Handle,
-    accept::DefaultAcceptor,
-    tls_rustls::{RustlsAcceptor, RustlsConfig},
-};
+use axum_server::{Handle, tls_rustls::RustlsConfig};
 use eyre::{Result, eyre};
 use http_body_util::BodyExt;
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
-use rcgen::{
-    Certificate, CertificateParams, DistinguishedName, DnType, ExtendedKeyUsagePurpose, KeyPair,
-    KeyUsagePurpose, PKCS_ECDSA_P256_SHA256, SanType, SignatureAlgorithm,
-};
-use rustls::{
-    ServerConfig,
-    crypto::aws_lc_rs::sign::any_supported_type,
-    pki_types::{CertificateDer, PrivateKeyDer},
-    server::{ClientHello, ResolvesServerCert},
-    sign::CertifiedKey,
-};
 use serde_json::json;
 use tokio::{
     signal::unix::SignalKind,
@@ -51,17 +36,16 @@ use tracing::{Level, info};
 use crate::{
     arbiter::{Arbiter, Tasks},
     axum::{
-        accept::{
-            proxy_protocol::ProxyProtocolAcceptor,
-            tls::{TlsAcceptor, TlsState},
-        },
+        accept::tls::TlsState,
         extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
     },
     config::get_config,
 };
 
 mod gunicorn;
+mod plain;
 mod r#static;
+mod tls;
 
 struct ServerState {
     gunicorn: gunicorn::Gunicorn,
@@ -319,106 +303,11 @@ async fn build_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
     }))
 }
 
-async fn run_server_plain(
-    router: Router,
-    addr: SocketAddr,
-    handle: Handle<SocketAddr>,
-) -> Result<()> {
-    axum_server::Server::bind(addr)
-        .acceptor(ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()))
-        .handle(handle)
-        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
-        .await?;
-
-    Ok(())
-}
-
-async fn run_server_tls(
-    router: Router,
-    addr: SocketAddr,
-    config: RustlsConfig,
-    handle: Handle<SocketAddr>,
-) -> Result<()> {
-    axum_server::Server::bind(addr)
-        .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config).acceptor(
-            ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()),
-        )))
-        .handle(handle)
-        .serve(router.into_make_service_with_connect_info::<SocketAddr>())
-        .await?;
-
-    Ok(())
-}
-
-fn generate_self_signed_cert(alg: &'static SignatureAlgorithm) -> Result<(Certificate, KeyPair)> {
-    let signing_key = KeyPair::generate_for(alg)?;
-
-    let mut params: CertificateParams = Default::default();
-    params.not_before = time::OffsetDateTime::now_utc();
-    params.not_after = time::OffsetDateTime::now_utc() + time::Duration::days(365);
-    params.distinguished_name = {
-        let mut dn = DistinguishedName::new();
-        dn.push(DnType::OrganizationName, "authentik");
-        dn.push(DnType::CommonName, "authentik default certificate");
-        dn
-    };
-    params.subject_alt_names = vec![SanType::DnsName("*".try_into().unwrap())];
-    params.key_usages = vec![
-        KeyUsagePurpose::DigitalSignature,
-        KeyUsagePurpose::KeyEncipherment,
-    ];
-    params.extended_key_usages = vec![ExtendedKeyUsagePurpose::ServerAuth];
-
-    let cert = params.self_signed(&signing_key)?;
-
-    Ok((cert, signing_key))
-}
-
-#[derive(Debug)]
-struct CertResolver {
-    fallback: Arc<CertifiedKey>,
-}
-
-impl CertResolver {
-    fn new() -> Result<Self> {
-        let (cert, keypair) = generate_self_signed_cert(&PKCS_ECDSA_P256_SHA256)?;
-
-        let cert_der = cert.der().to_vec();
-        let key_der = keypair.serialize_der();
-
-        let private_key =
-            PrivateKeyDer::try_from(key_der).map_err(|_| rcgen::Error::CouldNotParseKeyPair)?;
-        let signing_key =
-            any_supported_type(&private_key).map_err(|_| rcgen::Error::CouldNotParseKeyPair)?;
-
-        Ok(Self {
-            fallback: Arc::new(CertifiedKey::new(
-                vec![CertificateDer::from(cert_der)],
-                signing_key,
-            )),
-        })
-    }
-}
-
-impl ResolvesServerCert for CertResolver {
-    fn resolve(&self, _client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
-        Some(Arc::clone(&self.fallback))
-    }
-}
-
-fn make_tls_config() -> Result<ServerConfig> {
-    let resolver = CertResolver::new()?;
-    let config = ServerConfig::builder()
-        .with_no_client_auth()
-        .with_cert_resolver(Arc::new(resolver));
-    Ok(config)
-}
-
 pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
     let gunicorn_ready = Arc::new(AtomicBool::new(false));
     let config = get_config().await;
     let router = build_router(Arc::clone(&gunicorn_ready)).await;
-    let tls_config = RustlsConfig::from_config(Arc::new(make_tls_config()?));
+    let tls_config = RustlsConfig::from_config(Arc::new(tls::make_tls_config()?));
 
     let metrics_router = crate::metrics::build_router();
 
@@ -431,7 +320,11 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
         let res = tasks
             .build_task()
             .name(&format!("{}::run_server_plain({})", module_path!(), addr))
-            .spawn(run_server_plain(router.clone(), addr, handle.clone()))
+            .spawn(plain::run_server_plain(
+                router.clone(),
+                addr,
+                handle.clone(),
+            ))
             .map(|_| ());
         handles.push(handle);
         res
@@ -442,7 +335,7 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
         let res = tasks
             .build_task()
             .name(&format!("{}::run_server_tls({})", module_path!(), addr))
-            .spawn(run_server_tls(
+            .spawn(tls::run_server_tls(
                 router.clone(),
                 addr,
                 tls_config.clone(),
