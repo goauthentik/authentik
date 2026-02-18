@@ -202,8 +202,8 @@ mod tests {
         net::{IpAddr, Ipv4Addr, SocketAddr},
     };
 
+    use super::header::{Address, Protocol};
     use super::*;
-    use crate::proxy_protocol::header::{Address, Protocol};
 
     #[tokio::test]
     async fn test_parse() {
