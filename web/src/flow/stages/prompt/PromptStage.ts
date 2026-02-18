@@ -307,6 +307,8 @@ ${prompt.initialValue}</textarea
     }
 }
 
+export default PromptStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-prompt": PromptStage;
