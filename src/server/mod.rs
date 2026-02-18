@@ -7,14 +7,6 @@ use std::{
     time::Duration,
 };
 
-use crate::axum::{
-    accept::{
-        proxy_protocol::ProxyProtocolAcceptor,
-        tls::{TlsAcceptor, TlsState},
-    },
-    extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
-};
-use crate::config::get_config;
 use argh::FromArgs;
 use axum::{
     Extension, Router,
@@ -32,8 +24,7 @@ use axum_server::{
     accept::DefaultAcceptor,
     tls_rustls::{RustlsAcceptor, RustlsConfig},
 };
-use eyre::Result;
-use eyre::eyre;
+use eyre::{Result, eyre};
 use http_body_util::BodyExt;
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -51,16 +42,23 @@ use rustls::{
 use serde_json::json;
 use tokio::{
     signal::unix::SignalKind,
-    sync::{
-        RwLock,
-        broadcast::{self, error::RecvError},
-    },
-    task::JoinSet,
+    sync::{RwLock, broadcast::error::RecvError},
 };
-use tokio_util::sync::CancellationToken;
 use tower::ServiceExt;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::{Level, info};
+
+use crate::{
+    arbiter::{Arbiter, Tasks},
+    axum::{
+        accept::{
+            proxy_protocol::ProxyProtocolAcceptor,
+            tls::{TlsAcceptor, TlsState},
+        },
+        extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
+    },
+    config::get_config,
+};
 
 mod gunicorn;
 mod r#static;
@@ -104,41 +102,30 @@ async fn gunicorn_socket_ready() -> bool {
     tokio::net::UnixStream::connect(socket_path).await.is_ok()
 }
 
-async fn watch_gunicorn(
+async fn watch_server_and_gunicorn(
     state_lock: Arc<RwLock<ServerState>>,
-    stop: CancellationToken,
-    signals_tx: broadcast::Sender<SignalKind>,
+    arbiter: Arbiter,
     gunicorn_ready: Arc<AtomicBool>,
 ) -> Result<()> {
-    let mut signals_rx = signals_tx.subscribe();
+    let mut signals_rx = arbiter.signals_subscribe();
     loop {
         tokio::select! {
             signal = signals_rx.recv() => {
                 match signal {
                     Ok(signal) => {
-                        let mut state = state_lock.write().await;
-                        if signal == SignalKind::interrupt() {
-                            state.fast_shutdown().await?;
-                            return Ok(())
-                        } else if signal == SignalKind::terminate() {
-                            state.graceful_shutdown().await?;
-                            return Ok(())
-                        } else if signal == SignalKind::user_defined1()
-                        {
+                        if signal == SignalKind::user_defined1() {
                             info!("gunicorn is marked ready for operation");
                             gunicorn_ready.store(true, Ordering::Relaxed);
                         }
-                    }
+                    },
                     Err(RecvError::Lagged(_)) => continue,
                     Err(RecvError::Closed) => {
-                        let mut state = state_lock.write().await;
-                        state.fast_shutdown().await?;
-                        return Ok(());
+                        return Err(RecvError::Closed.into());
                     }
                 }
             },
             _ = tokio::time::sleep(Duration::from_secs(1)), if !gunicorn_ready.load(Ordering::Relaxed) => {
-                // On some platforms the SIGUSR1 readiness signal can be missed.
+                // On some platforms the SIGUSR1 can be missed.
                 // Fall back to probing the gunicorn unix socket and mark ready once it accepts connections.
                 if gunicorn_socket_ready().await {
                     info!("gunicorn socket is accepting connections, marking ready");
@@ -151,9 +138,14 @@ async fn watch_gunicorn(
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }
             },
-            _ = stop.cancelled() => {
+            _ = arbiter.fast_shutdown() => {
                 let mut state = state_lock.write().await;
                 state.fast_shutdown().await?;
+                return Ok(());
+            },
+            _ = arbiter.graceful_shutdown() => {
+                let mut state = state_lock.write().await;
+                state.graceful_shutdown().await?;
                 return Ok(());
             },
         }
@@ -327,7 +319,7 @@ async fn build_router(gunicorn_ready: Arc<AtomicBool>) -> Router {
     }))
 }
 
-async fn start_server_plain(
+async fn run_server_plain(
     router: Router,
     addr: SocketAddr,
     handle: Handle<SocketAddr>,
@@ -341,7 +333,7 @@ async fn start_server_plain(
     Ok(())
 }
 
-async fn start_server_tls(
+async fn run_server_tls(
     router: Router,
     addr: SocketAddr,
     config: RustlsConfig,
@@ -422,12 +414,7 @@ fn make_tls_config() -> Result<ServerConfig> {
     Ok(config)
 }
 
-pub(super) async fn run(
-    _cli: Cli,
-    tasks: &mut JoinSet<Result<()>>,
-    stop: CancellationToken,
-    signals_tx: broadcast::Sender<SignalKind>,
-) -> Result<()> {
+pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
     let gunicorn_ready = Arc::new(AtomicBool::new(false));
     let config = get_config().await;
     let router = build_router(Arc::clone(&gunicorn_ready)).await;
@@ -439,40 +426,58 @@ pub(super) async fn run(
         config.listen.http.len() + config.listen.https.len() + config.listen.metrics.len(),
     );
 
-    config.listen.http.iter().for_each(|addr| {
+    config.listen.http.iter().copied().try_for_each(|addr| {
         let handle = Handle::new();
-        tasks.spawn(start_server_plain(router.clone(), *addr, handle.clone()));
+        let res = tasks
+            .build_task()
+            .name(&format!("{}::run_server_plain({})", module_path!(), addr))
+            .spawn(run_server_plain(router.clone(), addr, handle.clone()))
+            .map(|_| ());
         handles.push(handle);
-    });
+        res
+    })?;
 
-    config.listen.https.iter().for_each(|addr| {
+    config.listen.https.iter().copied().try_for_each(|addr| {
         let handle = Handle::new();
-        tasks.spawn(start_server_tls(
-            router.clone(),
-            *addr,
-            tls_config.clone(),
-            handle.clone(),
-        ));
+        let res = tasks
+            .build_task()
+            .name(&format!("{}::run_server_tls({})", module_path!(), addr))
+            .spawn(run_server_tls(
+                router.clone(),
+                addr,
+                tls_config.clone(),
+                handle.clone(),
+            ))
+            .map(|_| ());
         handles.push(handle);
-    });
+        res
+    })?;
 
-    config.listen.metrics.iter().for_each(|addr| {
+    config.listen.metrics.iter().copied().try_for_each(|addr| {
         let handle = Handle::new();
-        tasks.spawn(crate::metrics::start_server(
-            metrics_router.clone(),
-            *addr,
-            handle.clone(),
-        ));
+        let res = tasks
+            .build_task()
+            .name(&format!("{}::metrics({})", module_path!(), addr))
+            .spawn(crate::metrics::start_server(
+                metrics_router.clone(),
+                addr,
+                handle.clone(),
+            ))
+            .map(|_| ());
         handles.push(handle);
-    });
+        res
+    })?;
 
     let state_lock = Arc::new(RwLock::new(ServerState::new(handles)?));
-    tasks.spawn(watch_gunicorn(
-        Arc::clone(&state_lock),
-        stop.clone(),
-        signals_tx,
-        gunicorn_ready,
-    ));
+    let arbiter = tasks.arbiter();
+    tasks
+        .build_task()
+        .name(&format!("{}::watch_server_and_gunicorn", module_path!()))
+        .spawn(watch_server_and_gunicorn(
+            Arc::clone(&state_lock),
+            arbiter,
+            gunicorn_ready,
+        ))?;
 
     Ok(())
 }

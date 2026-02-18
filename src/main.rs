@@ -1,19 +1,16 @@
-use ::tokio::fs;
-use eyre::Report;
 use std::str::FromStr;
 
-use crate::config::{ConfigManager, get_config};
-use ::tokio::{
-    signal::unix::{Signal, SignalKind, signal},
-    sync::broadcast,
-    task::JoinSet,
-};
+use ::tokio::{fs, sync::broadcast};
 use argh::FromArgs;
-use eyre::Result;
-use eyre::eyre;
+use eyre::{Result, eyre};
 use pyo3::Python;
-use tokio_util::sync::CancellationToken;
 
+use crate::{
+    arbiter::Tasks,
+    config::{ConfigManager, get_config},
+};
+
+mod arbiter;
 mod axum;
 mod config;
 #[cfg(any(feature = "server", feature = "proxy"))]
@@ -25,54 +22,6 @@ mod proxy;
 mod server;
 mod tokio;
 mod worker;
-
-struct SignalStreams {
-    hup: Signal,
-    int: Signal,
-    quit: Signal,
-    usr1: Signal,
-    usr2: Signal,
-    term: Signal,
-}
-
-impl SignalStreams {
-    fn new() -> Result<Self> {
-        Ok(Self {
-            hup: signal(SignalKind::hangup())?,
-            int: signal(SignalKind::interrupt())?,
-            quit: signal(SignalKind::quit())?,
-            usr1: signal(SignalKind::user_defined1())?,
-            usr2: signal(SignalKind::user_defined2())?,
-            term: signal(SignalKind::terminate())?,
-        })
-    }
-}
-
-async fn watch_signals(
-    streams: SignalStreams,
-    stop: CancellationToken,
-    tx: broadcast::Sender<SignalKind>,
-) -> Result<()> {
-    let SignalStreams {
-        mut hup,
-        mut int,
-        mut quit,
-        mut usr1,
-        mut usr2,
-        mut term,
-    } = streams;
-    loop {
-        ::tokio::select! {
-            _ = hup.recv() => tx.send(SignalKind::interrupt())?,
-            _ = int.recv() => tx.send(SignalKind::interrupt())?,
-            _ = quit.recv() => tx.send(SignalKind::interrupt())?,
-            _ = usr1.recv() => tx.send(SignalKind::user_defined1())?,
-            _ = usr2.recv() => tx.send(SignalKind::user_defined2())?,
-            _ = term.recv() => tx.send(SignalKind::terminate())?,
-            _ = stop.cancelled() => return Ok(()),
-        };
-    }
-}
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -151,13 +100,12 @@ async fn install_tracing() -> Result<()> {
 
 #[::tokio::main(crate = "::tokio")]
 async fn main() -> Result<()> {
-    let mut tasks = JoinSet::new();
-    let stop = CancellationToken::new();
+    color_eyre::install()?;
+
+    let mut tasks = Tasks::new()?;
 
     let (config_changed_tx, config_changed_rx) = broadcast::channel(100);
-
-    color_eyre::install()?;
-    ConfigManager::init(&mut tasks, stop.clone(), config_changed_tx.clone()).await?;
+    ConfigManager::init(&mut tasks, config_changed_tx.clone()).await?;
 
     rustls::crypto::aws_lc_rs::default_provider()
         .install_default()
@@ -193,13 +141,6 @@ async fn main() -> Result<()> {
     install_tracing().await?;
     let cli: Cli = argh::from_env();
 
-    let (signals_tx, _signals_rx) = broadcast::channel(10);
-    tasks.spawn(watch_signals(
-        SignalStreams::new()?,
-        stop.clone(),
-        signals_tx.clone(),
-    ));
-
     #[cfg(any(feature = "server", feature = "worker"))]
     {
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
@@ -212,7 +153,7 @@ async fn main() -> Result<()> {
             }
         }
 
-        db::init(&mut tasks, stop.clone(), config_changed_rx).await?;
+        db::init(&mut tasks, config_changed_rx).await?;
 
         Python::initialize();
     }
@@ -220,35 +161,17 @@ async fn main() -> Result<()> {
     match cli.command {
         #[cfg(feature = "server")]
         Command::Server(args) => {
-            server::run(args, &mut tasks, stop.clone(), signals_tx.clone()).await?;
+            server::run(args, &mut tasks).await?;
         }
         #[cfg(feature = "worker")]
         Command::Worker(_args) => todo!(),
     };
 
-    if let Some(result) = tasks.join_next().await {
-        stop.cancel();
+    let errors = tasks.run().await;
 
-        let mut errors = Vec::new();
-
-        match result {
-            Ok(Ok(_)) => {}
-            Ok(Err(err)) => errors.push(err),
-            Err(err) => errors.push(Report::new(err)),
-        }
-
-        while let Some(result) = tasks.join_next().await {
-            match result {
-                Ok(Ok(_)) => {}
-                Ok(Err(err)) => errors.push(err),
-                Err(err) => errors.push(Report::new(err)),
-            }
-        }
-
-        if !errors.is_empty() {
-            return Err(eyre!("Errors encountered: {:?}", errors));
-        }
+    if !errors.is_empty() {
+        Err(eyre!("Errors encountered: {:?}", errors))
+    } else {
+        Ok(())
     }
-
-    Ok(())
 }

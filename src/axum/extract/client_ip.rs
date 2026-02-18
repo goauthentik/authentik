@@ -17,8 +17,7 @@ use crate::axum::{
 pub(crate) struct ClientIP(pub IpAddr);
 
 impl<S> FromRequestParts<S> for ClientIP
-where
-    S: Send + Sync,
+where S: Send + Sync
 {
     type Rejection = (StatusCode, &'static str);
 
@@ -33,8 +32,7 @@ where
 }
 
 impl<S> OptionalFromRequestParts<S> for ClientIP
-where
-    S: Send + Sync,
+where S: Send + Sync
 {
     type Rejection = Infallible;
 

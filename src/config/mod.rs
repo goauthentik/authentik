@@ -6,15 +6,15 @@ use serde_json::{Map, Value};
 use tokio::{
     fs::read_to_string,
     sync::{RwLock, RwLockReadGuard, broadcast, mpsc},
-    task::JoinSet,
 };
-use tokio_util::sync::CancellationToken;
 use tracing::trace;
 
 pub(crate) mod schema;
 mod source;
 
 pub(crate) use schema::Config;
+
+use crate::arbiter::{Arbiter, Tasks};
 
 static DEFAULT_CONFIG: &str = include_str!("../../authentik/lib/default.yml");
 static CONFIG_MANAGER: OnceLock<ConfigManager> = OnceLock::new();
@@ -145,8 +145,7 @@ pub(crate) struct ConfigManager {
 
 impl ConfigManager {
     pub(crate) async fn init(
-        tasks: &mut JoinSet<Result<()>>,
-        stop: CancellationToken,
+        tasks: &mut Tasks,
         config_changed_tx: broadcast::Sender<()>,
     ) -> Result<()> {
         let config_paths = config_paths();
@@ -158,13 +157,17 @@ impl ConfigManager {
             config_paths,
         };
         CONFIG_MANAGER.get_or_init(|| manager);
-        tasks.spawn(watch_config(stop, watch_paths, config_changed_tx));
+        let arbiter = tasks.arbiter();
+        tasks
+            .build_task()
+            .name(&format!("{}::watch_config", module_path!()))
+            .spawn(watch_config(arbiter, watch_paths, config_changed_tx))?;
         Ok(())
     }
 }
 
 async fn watch_config(
-    stop: CancellationToken,
+    arbiter: Arbiter,
     watch_paths: Vec<PathBuf>,
     config_changed_tx: broadcast::Sender<()>,
 ) -> Result<()> {
@@ -200,7 +203,7 @@ async fn watch_config(
                     }
                 };
             },
-            _ = stop.cancelled() => break,
+            _ = arbiter.shutdown() => break,
         }
     }
 

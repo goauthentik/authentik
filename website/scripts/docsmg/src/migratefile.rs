@@ -1,5 +1,6 @@
-use eyre::Result;
 use std::{fs::read_to_string, path::PathBuf};
+
+use eyre::Result;
 
 pub(crate) fn read_migrate_file(file: PathBuf) -> Result<Vec<(PathBuf, PathBuf)>> {
     let contents = read_to_string(file)?;

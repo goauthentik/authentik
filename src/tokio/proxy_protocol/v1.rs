@@ -3,9 +3,8 @@ use std::{
     str::{FromStr, from_utf8},
 };
 
-use super::header::{Error, Header};
 use super::{
-    header::{Address, Protocol},
+    header::{Address, Error, Header, Protocol},
     utils::{AddressFamily, read_until},
 };
 

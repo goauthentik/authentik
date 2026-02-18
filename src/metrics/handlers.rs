@@ -1,13 +1,13 @@
-use crate::axum::error::Result;
-use eyre::Report;
-
 use axum::{body::Body, http::StatusCode, response::Response};
+use eyre::Report;
 use pyo3::{
     IntoPyObjectExt,
     ffi::c_str,
     prelude::*,
     types::{PyBytes, PyDict},
 };
+
+use crate::axum::error::Result;
 
 pub(super) async fn metrics_handler() -> Result<Response> {
     let metrics = tokio::task::spawn_blocking(|| {

@@ -1,5 +1,4 @@
 use std::process::Stdio;
-use tracing::warn;
 
 use eyre::Result;
 use nix::{
@@ -7,6 +6,7 @@ use nix::{
     unistd::Pid,
 };
 use tokio::process::{Child, Command};
+use tracing::warn;
 
 pub(super) struct Gunicorn(Child);
 
@@ -56,4 +56,3 @@ impl Gunicorn {
         }
     }
 }
-

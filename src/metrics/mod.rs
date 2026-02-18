@@ -1,8 +1,8 @@
-use eyre::Result;
 use std::net::SocketAddr;
 
 use axum::{Router, routing::any};
 use axum_server::Handle;
+use eyre::Result;
 
 mod handlers;
 

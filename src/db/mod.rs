@@ -1,14 +1,17 @@
 use std::{str::FromStr, sync::OnceLock, time::Duration};
 
-use crate::config::get_config;
 use eyre::Result;
 use sqlx::{
     PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
-use tokio::{sync::broadcast, task::JoinSet};
-use tokio_util::sync::CancellationToken;
+use tokio::sync::broadcast;
 use tracing::log::LevelFilter;
+
+use crate::{
+    arbiter::{Arbiter, Tasks},
+    config::get_config,
+};
 
 static DB: OnceLock<PgPool> = OnceLock::new();
 
@@ -39,7 +42,7 @@ async fn get_connect_opts() -> Result<PgConnectOptions> {
 }
 
 async fn update_connect_opts_on_config_change(
-    stop: CancellationToken,
+    arbiter: Arbiter,
     mut config_changed_rx: broadcast::Receiver<()>,
 ) -> Result<()> {
     loop {
@@ -51,7 +54,7 @@ async fn update_connect_opts_on_config_change(
                 let db = get_db();
                 db.set_connect_options(get_connect_opts().await?);
             },
-            _ = stop.cancelled() => break,
+            _ = arbiter.shutdown() => break,
         }
     }
 
@@ -59,8 +62,7 @@ async fn update_connect_opts_on_config_change(
 }
 
 pub(crate) async fn init(
-    tasks: &mut JoinSet<Result<()>>,
-    stop: CancellationToken,
+    tasks: &mut Tasks,
     config_changed_rx: broadcast::Receiver<()>,
 ) -> Result<()> {
     let options = get_connect_opts().await?;
@@ -76,10 +78,17 @@ pub(crate) async fn init(
     let pool = pool_options.connect_with(options).await?;
     DB.get_or_init(|| pool);
 
-    tasks.spawn(update_connect_opts_on_config_change(
-        stop,
-        config_changed_rx,
-    ));
+    let arbiter = tasks.arbiter();
+    tasks
+        .build_task()
+        .name(&format!(
+            "{}::update_connect_opts_on_config_change",
+            module_path!(),
+        ))
+        .spawn(update_connect_opts_on_config_change(
+            arbiter,
+            config_changed_rx,
+        ))?;
 
     Ok(())
 }

@@ -3,9 +3,8 @@ use std::{
     net::{Ipv4Addr, Ipv6Addr, SocketAddr},
 };
 
-use super::header::{Error, Header};
 use super::{
-    header::{Address, Protocol},
+    header::{Address, Error, Header, Protocol},
     utils::AddressFamily,
 };
 

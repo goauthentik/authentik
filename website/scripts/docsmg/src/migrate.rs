@@ -1,4 +1,3 @@
-use eyre::Result;
 use std::{
     collections::{HashMap, HashSet, VecDeque},
     ffi::OsStr,
@@ -8,6 +7,7 @@ use std::{
 };
 
 use colored::Colorize;
+use eyre::Result;
 use regex::{Captures, Regex};
 
 use crate::{
@@ -37,7 +37,7 @@ pub(crate) fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) 
     replace_links(migrate_path.clone(), files.clone());
     let successful_moves = move_files(quiet, migrate_path.clone(), files);
     add_redirects(successful_moves.clone(), migrate_path.clone());
-    //shorten_all_external_links(migrate_path);
+    // shorten_all_external_links(migrate_path);
     add_extra_dot_dot_to_expression_mdx(migrate_path.clone());
     let _ = Command::new("sh")
         .arg("-c")
@@ -73,7 +73,7 @@ pub(crate) fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf
         .map(|x| (x.1.clone(), x.0.clone()))
         .collect(); //switch files to reverse a migration
     remove_redirects(successful_moves, migrate_path.clone());
-    //shorten_all_external_links(migrate_path);
+    // shorten_all_external_links(migrate_path);
 }
 
 fn move_files(
@@ -195,8 +195,8 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             };
 
             let absolute_link = old_absolute_file.parent().unwrap().join(link_path.clone());
-            //let _ = fs::create_dir_all(absolute_link.parent().unwrap());
-            //let tmp_file = File::create_new(&absolute_link);
+            // let _ = fs::create_dir_all(absolute_link.parent().unwrap());
+            // let tmp_file = File::create_new(&absolute_link);
 
             let absolute_link = match absolute_link
                 .canonicalize()
@@ -230,7 +230,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 continue;
             };
             // delete file if it didn't already exist
-            //if tmp_file.is_ok() {
+            // if tmp_file.is_ok() {
             //    let _ = fs::remove_file(&absolute_link);
             //};
             capture_log.push_str(&format!("    oldalink: {}\n", absolute_link.display()));
@@ -301,7 +301,8 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             capture_log.push_str(&format!("    old link: {}\n", link));
             capture_log.push_str(&format!("    new link: {}\n", new_link));
             print!("{}", capture_log);
-            //println!("{} {} {}", absolute_file.display(), absolute_link.display(), new_link.display());
+            // println!("{} {} {}", absolute_file.display(), absolute_link.display(),
+            // new_link.display());
             let tmp_contents = contents.replace(&format!("({})", link), &format!("({})", new_link));
             if tmp_contents == contents {
                 println!("{}", "    nothing replaced".yellow());
@@ -328,13 +329,13 @@ fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to
     let captures: Vec<Captures> = re.captures_iter(&contents).collect();
     let mut changes = vec![];
     for capture in captures {
-        //let name = &capture["name"];
+        // let name = &capture["name"];
         let link = &capture["link"];
         if link.starts_with('#') || link.starts_with("http") {
             continue;
         }
         let link = PathBuf::from(link);
-        //println!("{} {}", move_from.display(), link.display());
+        // println!("{} {}", move_from.display(), link.display());
         let absolute_link = move_from
             .parent()
             .unwrap()
@@ -345,7 +346,9 @@ fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to
             let _ = fs::create_dir_all(move_to.parent().unwrap());
         }
         let tmp_file = File::create_new(move_to.clone());
-        //println!("{} {} {} {}", name, link.display(), absolute_link.display(), make_path_relative(absolute_link.clone(), move_to.canonicalize().unwrap().clone()).display());
+        // println!("{} {} {} {}", name, link.display(), absolute_link.display(),
+        // make_path_relative(absolute_link.clone(),
+        // move_to.canonicalize().unwrap().clone()).display());
         let new_link = make_path_relative(
             absolute_link.clone(),
             move_to.canonicalize().unwrap().clone(),
@@ -381,7 +384,7 @@ fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
         .map(|_| PathBuf::from(".."))
         .reduce(|acc, e| acc.join(e))
         .unwrap_or(PathBuf::from(""));
-    //println!("{}, {}", relative_to_components.len() - subdirs - 1, backouts.display());
+    // println!("{}, {}", relative_to_components.len() - subdirs - 1, backouts.display());
     let new_path = backouts.join(new_path);
     let new_path = if !new_path.to_string_lossy().to_string().starts_with('.') {
         PathBuf::from(".").join(new_path)

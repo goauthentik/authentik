@@ -1,6 +1,5 @@
 use std::{convert::Infallible, net::SocketAddr};
 
-use crate::config::get_config;
 use axum::{
     RequestPartsExt,
     extract::{ConnectInfo, FromRequestParts},
@@ -8,12 +7,13 @@ use axum::{
 };
 use tracing::trace;
 
+use crate::config::get_config;
+
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct TrustedProxy(pub bool);
 
 impl<S> FromRequestParts<S> for TrustedProxy
-where
-    S: Send + Sync,
+where S: Send + Sync
 {
     type Rejection = Infallible;
 

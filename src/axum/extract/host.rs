@@ -19,8 +19,7 @@ const X_FORWARDED_HOST: &str = "X-Forwarded-Host";
 pub(crate) struct Host(pub String);
 
 impl<S> FromRequestParts<S> for Host
-where
-    S: Send + Sync,
+where S: Send + Sync
 {
     type Rejection = (StatusCode, &'static str);
 
@@ -35,8 +34,7 @@ where
 }
 
 impl<S> OptionalFromRequestParts<S> for Host
-where
-    S: Send + Sync,
+where S: Send + Sync
 {
     type Rejection = Infallible;
 

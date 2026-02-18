@@ -1,4 +1,3 @@
-use crate::config::get_config;
 use aws_lc_rs::digest;
 use axum::{
     Router,
@@ -19,6 +18,8 @@ use tower_http::{
     compression::{CompressionLayer, predicate::SizeAbove},
     services::fs::ServeDir,
 };
+
+use crate::config::get_config;
 
 #[derive(Debug, Deserialize)]
 struct StorageClaims {
