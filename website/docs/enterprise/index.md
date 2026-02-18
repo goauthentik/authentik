@@ -4,7 +4,7 @@ title: Welcome to authentik Enterprise
 
 The Enterprise release of authentik provides all of the functionality that we have spent years building in our open source product, with a full support plan and an expanded feature set.
 
-Enterprise licenses can be purchased via our [Customer Portal](https://customers.goauthentik.io/). Alernatively, if you'd like to organize a call with our team to discuss your needs, contact us via hello@goauthentik.io.
+Enterprise licenses can be purchased via our [Customer Portal](https://customers.goauthentik.io/). Alternatively, if you'd like to organize a call with our team to discuss your needs, contact us via hello@goauthentik.io.
 
 Refer to our Enterprise documentation for further information:
 

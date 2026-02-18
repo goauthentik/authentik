@@ -27,9 +27,9 @@ Export authentik logs to a CSV file.
 
 ### Advanced queries
 
-Allows you to contstruct advanced queries to find specific event logs using syntax similar to DjangoQL.
+Allows you to construct advanced queries to find specific event logs using syntax similar to DjangoQL.
 
-[Advanced queries for event logs](../sys-mgmt/events/logging-events.mdx#tell-me-more)
+[Advanced queries for event logs](../sys-mgmt/events/logging-events.mdx#advanced-queries)
 
 ## Google Workspace integration
 
