@@ -3,7 +3,7 @@ title: Enterprise features
 description: "The extra features that are included in authentik Enterprise"
 ---
 
-This page describes the enterprise features that are available in the authentik [Enterprise plans](https://goauthentik.io/pricing/).
+This page describes the Enterprise features that are available in the authentik [Enterprise plans](https://goauthentik.io/pricing/).
 
 ## Enterprise vs Enterprise Plus
 
