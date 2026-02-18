@@ -47,8 +47,16 @@ export class InvitationWizardDetailsStep extends WizardPage {
     };
 
     validate(): void {
+        let validYaml = true;
+        try {
+            YAML.parse(this.fixedDataRaw);
+        } catch {
+            validYaml = false;
+        }
         this.host.isValid =
-            this.invitationName.length > 0 && this.invitationExpires.length > 0;
+            this.invitationName.length > 0 &&
+            this.invitationExpires.length > 0 &&
+            validYaml;
     }
 
     nextCallback = async (): Promise<boolean> => {
@@ -226,6 +234,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
                     .value=${this.fixedDataRaw}
                     @change=${(ev: CustomEvent) => {
                         this.fixedDataRaw = ev.detail.value;
+                        this.validate();
                     }}
                 >
                 </ak-codemirror>
