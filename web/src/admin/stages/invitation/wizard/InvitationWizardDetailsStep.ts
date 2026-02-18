@@ -2,13 +2,13 @@ import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
+import type { InvitationWizardState } from "./types";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { dateTimeLocal } from "#common/temporal";
 
 import type { WizardAction } from "#elements/wizard/Wizard";
 import { WizardPage } from "#elements/wizard/WizardPage";
-
-import type { InvitationWizardState } from "./types";
 
 import { FlowDesignationEnum, FlowsApi, StagesApi } from "@goauthentik/api";
 
@@ -32,9 +32,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
     invitationName = "";
 
     @state()
-    invitationExpires: string = dateTimeLocal(
-        new Date(Date.now() + 48 * 60 * 60 * 1000),
-    );
+    invitationExpires: string = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
 
     @state()
     fixedDataRaw = "{}";
@@ -54,9 +52,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
             validYaml = false;
         }
         this.host.isValid =
-            this.invitationName.length > 0 &&
-            this.invitationExpires.length > 0 &&
-            validYaml;
+            this.invitationName.length > 0 && this.invitationExpires.length > 0 && validYaml;
     }
 
     nextCallback = async (): Promise<boolean> => {
@@ -81,9 +77,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
             actions.push({
                 displayName: msg("Create invitation stage"),
                 run: async () => {
-                    const stage = await new StagesApi(
-                        DEFAULT_CONFIG,
-                    ).stagesInvitationStagesCreate({
+                    const stage = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
                         invitationStageRequest: {
                             name: wizardState.newStageName!,
                             continueFlowWithoutInvitation:
@@ -100,9 +94,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
             actions.push({
                 displayName: msg("Create enrollment flow"),
                 run: async () => {
-                    const flow = await new FlowsApi(
-                        DEFAULT_CONFIG,
-                    ).flowsInstancesCreate({
+                    const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesCreate({
                         flowRequest: {
                             name: wizardState.newFlowName!,
                             slug: wizardState.newFlowSlug!,
@@ -138,10 +130,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
         actions.push({
             displayName: msg("Create invitation"),
             run: async () => {
-                const flowPk =
-                    wizardState.createdFlowPk ||
-                    wizardState.selectedFlowPk ||
-                    undefined;
+                const flowPk = wizardState.createdFlowPk || wizardState.selectedFlowPk || undefined;
 
                 const invitation = await new StagesApi(
                     DEFAULT_CONFIG,
@@ -167,9 +156,7 @@ export class InvitationWizardDetailsStep extends WizardPage {
 
     override reset(): void {
         this.invitationName = "";
-        this.invitationExpires = dateTimeLocal(
-            new Date(Date.now() + 48 * 60 * 60 * 1000),
-        );
+        this.invitationExpires = dateTimeLocal(new Date(Date.now() + 48 * 60 * 60 * 1000));
         this.fixedDataRaw = "{}";
         this.singleUse = true;
     }

@@ -156,9 +156,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                 <span slot="submit">${msg("Create")}</span>
                 <span slot="header">${msg("Create Invitation")}</span>
                 <ak-invitation-form slot="form"> </ak-invitation-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Create")}
-                </button>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }

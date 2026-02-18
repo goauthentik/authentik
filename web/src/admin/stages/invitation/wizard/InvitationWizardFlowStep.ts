@@ -1,11 +1,11 @@
 import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 
+import type { InvitationWizardState } from "./types";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WizardPage } from "#elements/wizard/WizardPage";
-
-import type { InvitationWizardState } from "./types";
 
 import {
     FlowDesignationEnum,
@@ -211,9 +211,7 @@ export class InvitationWizardFlowStep extends WizardPage {
                         this.validate();
                     }}
                 />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Name for the new enrollment flow.")}
-                </p>
+                <p class="pf-c-form__helper-text">${msg("Name for the new enrollment flow.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow slug")} required>
                 <input
@@ -227,9 +225,7 @@ export class InvitationWizardFlowStep extends WizardPage {
                         this.validate();
                     }}
                 />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Visible in the URL.")}
-                </p>
+                <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Invitation stage name")} required>
                 <input
@@ -242,9 +238,7 @@ export class InvitationWizardFlowStep extends WizardPage {
                         this.validate();
                     }}
                 />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Name for the new invitation stage.")}
-                </p>
+                <p class="pf-c-form__helper-text">${msg("Name for the new invitation stage.")}</p>
             </ak-form-element-horizontal>
             <ak-switch-input
                 label=${msg("Continue flow without invitation")}
