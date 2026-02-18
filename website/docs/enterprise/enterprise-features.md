@@ -34,7 +34,7 @@ View recent events on both a world map view with pinpoints indicating where each
 
 #### Exporting logs
 
-Export authentik logs to a CSV file.
+You can export authentik event logs to a CSV file.
 
 [Export events](../sys-mgmt/events/logging-events.mdx#export-events)
 
