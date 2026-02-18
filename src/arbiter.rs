@@ -2,10 +2,13 @@
 //!
 //! Also manages signals sent to the main process.
 
+use std::{net::SocketAddr, sync::Arc, time::Duration};
+
+use axum_server::Handle;
 use eyre::{Report, Result};
 use tokio::{
     signal::unix::{Signal, SignalKind, signal},
-    sync::broadcast,
+    sync::{Mutex, broadcast},
     task::{JoinSet, join_set::Builder},
 };
 use tokio_util::sync::{CancellationToken, WaitForCancellationFuture};
@@ -50,12 +53,12 @@ async fn watch_signals(
     } = streams;
     loop {
         tokio::select! {
-            _ = hup.recv() => { arbiter.fast_shutdown.cancel(); },
-            _ = int.recv() => { arbiter.fast_shutdown.cancel(); },
-            _ = quit.recv() => { arbiter.fast_shutdown.cancel(); },
+            _ = hup.recv() => { arbiter.do_fast_shutdown().await; },
+            _ = int.recv() => { arbiter.do_fast_shutdown().await; },
+            _ = quit.recv() => { arbiter.do_fast_shutdown().await; },
             _ = usr1.recv() => { arbiter.signals_tx.send(SignalKind::user_defined1())?; },
             _ = usr2.recv() => { arbiter.signals_tx.send(SignalKind::user_defined2())?; },
-            _ = term.recv() => { arbiter.graceful_shutdown.cancel(); },
+            _ = term.recv() => { arbiter.do_graceful_shutdown().await; },
             _ = arbiter.shutdown() => return Ok(()),
         };
     }
@@ -91,16 +94,16 @@ impl Tasks {
         let mut errors = Vec::new();
 
         if let Some(result) = tasks.join_next().await {
-            arbiter.do_graceful_shutdown();
+            arbiter.do_graceful_shutdown().await;
 
             match result {
                 Ok(Ok(_)) => {}
                 Ok(Err(err)) => {
-                    arbiter.do_fast_shutdown();
+                    arbiter.do_fast_shutdown().await;
                     errors.push(err);
                 }
                 Err(err) => {
-                    arbiter.do_fast_shutdown();
+                    arbiter.do_fast_shutdown().await;
                     errors.push(Report::new(err));
                 }
             }
@@ -128,6 +131,9 @@ pub(crate) struct Arbiter {
     /// Token set when any shutdown is triggered.
     shutdown: CancellationToken,
 
+    /// Axum handles to manage
+    handles: Arc<Mutex<Vec<Handle<SocketAddr>>>>,
+
     /// Broadcaster of signals sent to the main process.
     signals_tx: broadcast::Sender<SignalKind>,
 }
@@ -140,6 +146,9 @@ impl Arbiter {
             graceful_shutdown: CancellationToken::new(),
             shutdown: CancellationToken::new(),
 
+            // 5 is http, https, metrics and a bit of room
+            handles: Arc::new(Mutex::new(Vec::with_capacity(5))),
+
             signals_tx,
         };
 
@@ -151,6 +160,10 @@ impl Arbiter {
             .spawn(watch_signals(streams, arbiter.clone(), signals_rx))?;
 
         Ok(arbiter)
+    }
+
+    pub(crate) async fn add_handle(&self, handle: Handle<SocketAddr>) {
+        self.handles.lock().await.push(handle);
     }
 
     /// Future that will complete when the application needs to shutdown immediately.
@@ -171,13 +184,24 @@ impl Arbiter {
     }
 
     /// Shutdown the application immediately.
-    pub(crate) fn do_fast_shutdown(&self) {
+    async fn do_fast_shutdown(&self) {
+        self.handles
+            .lock()
+            .await
+            .iter()
+            .for_each(|handle| handle.shutdown());
         self.fast_shutdown.cancel();
         self.shutdown.cancel();
     }
 
     /// Shutdown the application gracefully.
-    pub(crate) fn do_graceful_shutdown(&self) {
+    async fn do_graceful_shutdown(&self) {
+        self.handles
+            .lock()
+            .await
+            .iter()
+            // TODO: make configurable
+            .for_each(|handle| handle.graceful_shutdown(Some(Duration::from_secs(30))));
         self.graceful_shutdown.cancel();
         self.shutdown.cancel();
     }

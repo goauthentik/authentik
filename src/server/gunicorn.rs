@@ -1,12 +1,21 @@
 use std::process::Stdio;
+use std::sync::atomic::AtomicBool;
+use std::{env, path::PathBuf};
 
 use eyre::Result;
 use nix::{
     sys::signal::{Signal, kill},
     unistd::Pid,
 };
+use tokio::net::UnixStream;
 use tokio::process::{Child, Command};
 use tracing::warn;
+
+pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
+
+pub(super) fn gunicorn_socket_path() -> PathBuf {
+    env::temp_dir().join("authentik-core.sock")
+}
 
 pub(super) struct Gunicorn(Child);
 
@@ -54,5 +63,9 @@ impl Gunicorn {
                 true
             }
         }
+    }
+
+    pub(crate) async fn is_socket_ready() -> bool {
+        UnixStream::connect(gunicorn_socket_path()).await.is_ok()
     }
 }
