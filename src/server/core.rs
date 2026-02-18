@@ -1,4 +1,12 @@
-use std::{sync::atomic::Ordering, time::Duration};
+use axum::http::{
+    HeaderValue,
+    header::{ACCEPT, HOST},
+};
+use std::{
+    path::PathBuf,
+    sync::{LazyLock, atomic::Ordering},
+    time::Duration,
+};
 
 use axum::{
     Extension, Router,
@@ -20,111 +28,124 @@ use tracing::Level;
 use crate::{
     axum::{
         accept::tls::TlsState,
+        error::Result,
         extract::{client_ip::ClientIP, host::Host, scheme::Scheme},
     },
     config::get_config,
     server::gunicorn::GUNICORN_READY,
 };
 
-#[derive(Clone, Debug)]
-struct CoreRouterState {
-    client: Client<UnixSocketConnector<std::path::PathBuf>, Body>,
-}
+type BackendClient = Client<UnixSocketConnector<PathBuf>, Body>;
 
-fn startup_response(accept: &str) -> Response {
-    let mut response = Response::builder();
-    response = response.status(StatusCode::SERVICE_UNAVAILABLE);
+static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
+    Response::builder()
+        .status(StatusCode::SERVICE_UNAVAILABLE)
+        .header(RETRY_AFTER, "5")
+        .header(CONTENT_TYPE, "application/json")
+        .body(
+            json!({
+                "error": "authentik starting",
+            })
+            .to_string(),
+        )
+        .unwrap()
+});
 
-    if accept.contains("application/json") {
-        response = response.header(RETRY_AFTER, "5");
-        response = response.header(CONTENT_TYPE, "application/json");
-        response
-            .body(
-                json!({
-                    "error": "authentik starting",
-                })
-                .to_string()
-                .into(),
-            )
-            .unwrap()
-    } else if accept.contains("text/html") {
-        response = response.header(CONTENT_TYPE, "text/html");
-        response
-            .body(include_str!("../../web/dist/standalone/loading/startup.html").into())
-            .unwrap()
+static STARTUP_RESPONSE_HTML: LazyLock<Response<String>> = LazyLock::new(|| {
+    Response::builder()
+        .status(StatusCode::SERVICE_UNAVAILABLE)
+        .header(CONTENT_TYPE, "text/html")
+        .body(include_str!("../../web/dist/standalone/loading/startup.html").to_owned())
+        .unwrap()
+});
+
+static STARTUP_RESPONSE_PLAIN: LazyLock<Response<String>> = LazyLock::new(|| {
+    Response::builder()
+        .status(StatusCode::SERVICE_UNAVAILABLE)
+        .header(CONTENT_TYPE, "text/plain")
+        .body("authentik starting".to_owned())
+        .unwrap()
+});
+
+const X_FORWARDED_FOR: HeaderName = HeaderName::from_static("x-forwarded-for");
+const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
+
+const FORWARD_IGNORED_HEADERS: [HeaderName; 7] = [
+    HeaderName::from_static("forwarded"),
+    HeaderName::from_static("host"),
+    X_FORWARDED_FOR,
+    HeaderName::from_static("x-forwarded-host"),
+    X_FORWARDED_PROTO,
+    HeaderName::from_static("x-forwarded-scheme"),
+    HeaderName::from_static("x-real-ip"),
+];
+
+fn startup_response(accept_header: &str) -> Response {
+    let response = if accept_header.contains("application/json") {
+        STARTUP_RESPONSE_JSON.clone()
+    } else if accept_header.contains("text/html") {
+        STARTUP_RESPONSE_HTML.clone()
     } else {
-        response = response.header(CONTENT_TYPE, "text/plain");
-        response.body("authentik starting".into()).unwrap()
-    }
+        STARTUP_RESPONSE_PLAIN.clone()
+    };
+
+    let (parts, body) = response.into_parts();
+    Response::from_parts(parts, body.into())
 }
 
 async fn forward_request(
     ClientIP(client_ip): ClientIP,
     Host(host): Host,
     Scheme(scheme): Scheme,
-    State(state): State<CoreRouterState>,
+    State(client): State<BackendClient>,
     _tls_state: Option<Extension<TlsState>>,
-    req: Request,
-) -> Response {
+    mut req: Request,
+) -> Result<Response> {
     // TODO: tls state
-    let accept = req
+    let accept_header = req
         .headers()
-        .get("accept")
-        .map(|v| v.to_str().unwrap_or(""))
-        .unwrap_or("")
-        .to_owned();
+        .get(ACCEPT)
+        .map(|v| v.to_str().unwrap_or_default().to_owned())
+        .unwrap_or_default();
 
     if !GUNICORN_READY.load(Ordering::Relaxed) {
-        return startup_response(&accept);
+        return Ok(startup_response(&accept_header));
     }
-
-    let path_q = req.uri().path_and_query().map(|x| x.as_str()).unwrap_or("");
 
     let uri = Uri::builder()
         .scheme("http")
         .authority("localhost:8000")
-        .path_and_query(path_q)
+        .path_and_query(
+            req.uri()
+                .path_and_query()
+                .map(|x| x.as_str())
+                .unwrap_or_default(),
+        )
         .build()
         .unwrap();
+    *req.uri_mut() = uri;
 
-    let forward_req = {
-        let mut builder = Request::builder().method(req.method().clone()).uri(uri);
+    for header_name in FORWARD_IGNORED_HEADERS {
+        req.headers_mut().remove(header_name);
+    }
+    req.headers_mut().insert(
+        X_FORWARDED_FOR,
+        HeaderValue::from_str(&client_ip.to_string())?,
+    );
+    req.headers_mut()
+        .insert(HOST, HeaderValue::from_str(&host)?);
+    req.headers_mut()
+        .insert(X_FORWARDED_PROTO, HeaderValue::from_str(scheme.as_ref())?);
 
-        let ignore_headers = &[
-            HeaderName::from_static("forwarded"),
-            HeaderName::from_static("host"),
-            HeaderName::from_static("x-forwarded-for"),
-            HeaderName::from_static("x-forwarded-host"),
-            HeaderName::from_static("x-forwarded-proto"),
-            HeaderName::from_static("x-forwarded-scheme"),
-            HeaderName::from_static("x-real-ip"),
-        ];
-
-        for (key, value) in req.headers() {
-            if !ignore_headers.contains(key) {
-                builder = builder.header(key, value);
-            }
-        }
-        builder = builder.header("X-Forwarded-For", client_ip.to_string());
-        builder = builder.header("Host", host);
-        builder = builder.header("X-Forwarded-Proto", scheme.to_string());
-
-        let (_, body) = req.into_parts();
-        builder.body(body).unwrap()
-    };
-
-    match state.client.request(forward_req).await {
+    match client.request(req).await {
         Ok(res) => {
             let (parts, body) = res.into_parts();
-            let body = Body::from_stream(body.into_data_stream());
-
-            let mut response = Response::new(body);
-            *response.status_mut() = parts.status;
-            *response.version_mut() = parts.version;
-            *response.headers_mut() = parts.headers;
-            response
+            Ok(Response::from_parts(
+                parts,
+                Body::from_stream(body.into_data_stream()),
+            ))
         }
-        Err(_) => startup_response(&accept),
+        Err(_) => Ok(startup_response(&accept_header)),
     }
 }
 
@@ -136,9 +157,7 @@ async fn build_proxy_router() -> Router {
         .set_host(false)
         .build(connector);
 
-    let state = CoreRouterState { client };
-
-    Router::new().fallback(forward_request).with_state(state)
+    Router::new().fallback(forward_request).with_state(client)
 }
 
 // TODO: subpath
