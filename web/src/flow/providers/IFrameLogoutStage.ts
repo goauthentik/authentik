@@ -105,7 +105,7 @@ export class IFrameLogoutStage extends BaseStage<
         `,
     ];
 
-    public override firstUpdated(changedProperties: PropertyValues): void {
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
         super.firstUpdated(changedProperties);
 
         // Initialize status tracking
@@ -281,6 +281,8 @@ export class IFrameLogoutStage extends BaseStage<
         </ak-flow-card>`;
     }
 }
+
+export default IFrameLogoutStage;
 
 declare global {
     interface HTMLElementTagNameMap {

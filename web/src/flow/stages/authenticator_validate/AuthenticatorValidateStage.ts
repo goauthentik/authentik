@@ -313,6 +313,8 @@ export class AuthenticatorValidateStage
     }
 }
 
+export default AuthenticatorValidateStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-authenticator-validate": AuthenticatorValidateStage;
