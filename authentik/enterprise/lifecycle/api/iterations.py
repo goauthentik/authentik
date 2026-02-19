@@ -69,7 +69,7 @@ class LifecycleIterationSerializer(EnterpriseRequiredMixin, ModelSerializer):
         return admin_link_for_model(iteration.object)
 
     @extend_schema_field(DateTimeField())
-    def get_grace_period_end(self, iteration: LifecycleIteration) -> date:
+    def get_grace_period_end(self, iteration: LifecycleIteration) -> datetime:
         return start_of_day(
             iteration.opened_on + timedelta_from_string(iteration.rule.grace_period)
         )
