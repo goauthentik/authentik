@@ -69,7 +69,7 @@ To assign or remove _global_ permissions for a role:
     1. Select the permission(s) you'd like to remove.
     2. Click **Delete Object Permission**.
 
-### Assign `Can view Admin interface` permissions
+### Assign `Can access admin interface` permissions
 
 You can use a role to grant regular users, who are not superusers nor Admins, the right to view the Admin interface. This can be useful in scenarios where you have a team who needs to be able to create certain objects (flows, other users, etc) but who should not have _full_ access to the Admin interface.
 
