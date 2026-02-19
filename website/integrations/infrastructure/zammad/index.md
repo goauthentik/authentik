@@ -127,6 +127,8 @@ At the very top of the **Third-party Applications** page are a few additional se
 
 ## Configuration verification
 
+To ensure that authentik is correctly integrated with Zammad, log out of Zammad and then log back in by clicking the SAML or OIDC button on the login screen. The button will show the Display Name you specified above. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Zammad dashboard.
+
 ## Resources
 
 - [Zammad Admin Documentation - SAML](https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html)
