@@ -22,6 +22,24 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+## Configuration methods
+
+There are two ways to configure single sign-on for Zammad. You can configure it via SAML authentication or via OpenID Connect.
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+<Tabs
+defaultValue="saml"
+values={[
+{ label: "SAML", value: "saml" },
+{ label: "OIDC", value: "oidc" },
+]}
+
+>
+
+    <TabItem value="saml">
+
 ## authentik configuration
 
 To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
@@ -64,6 +82,48 @@ To configure Zammad's integration with authentik, go to **Settings** (the gear i
 - **IDP certificate fingerprint**: Leave this empty.
 - **Name Identifier Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
 - **Automatic account link on initial logon**: Enable this to automatically create Zammad users when they sign in using authentik for the first time.
+
+</TabItem>
+
+<TabItem value="oidc">
+## authentik configuration
+
+To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **Client type** to `Public`.
+    - Take note of the **Client ID** as it will be required later.
+    - Set the **Redirect URIs/Origins** to `Strict` / `https://zammad.company/auth/openid_connect/callback`.
+    - Select a **Signing Key**.
+    - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Zammad configuration
+
+To configure Zammad's integration with authentik, go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**. Next, activate the **Authentication via OpenID Connect** toggle and change the following fields:
+
+    - **Display name**: authentik
+    - **Identifier**: The **Client ID** from above
+    - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
+    - **PKCE**: Set to **yes**
+
+Click **Submit** to save the authentication settings.
+
+At the very top of the **Third-party Applications** page are a few additional settings:
+
+- **Automatic account link on initial logon**: Enable this to automatically link existing Zammad users when they sign in using authentik for the first time.
+
+</TabItem>
+</Tabs>
 
 ## Additional Resources
 
