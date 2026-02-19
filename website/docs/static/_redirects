@@ -28,6 +28,7 @@
 /add-secure-apps/providers/entra/setup-entra/               /add-secure-apps/providers/entra/configure-entra/ 301!
 /add-secure-apps/providers/entra/add-entra-provider/        /add-secure-apps/providers/entra/create-entra-provider/ 301!
 /add-secure-apps/providers/ldap/generic_setup/              /add-secure-apps/providers/ldap/create-ldap-provider/ 301!
+/add-secure-apps/providers/rac/how-to-rac/                  /add-secure-apps/providers/rac/create-rac-provider/ 301!
 #endregion
 
 #region Core
