@@ -905,6 +905,7 @@ const items = [
                 items: [
                     "developer-docs/docs/style-guide",
                     "developer-docs/docs/theming/index",
+                    "developer-docs/docs/writing-tutorials",
                     {
                         type: "category",
                         label: "Templates",
@@ -917,6 +918,7 @@ const items = [
                             "developer-docs/docs/templates/procedural",
                             "developer-docs/docs/templates/conceptual",
                             "developer-docs/docs/templates/reference",
+                            "developer-docs/docs/templates/tutorial-template",
                         ],
                     },
                 ],
