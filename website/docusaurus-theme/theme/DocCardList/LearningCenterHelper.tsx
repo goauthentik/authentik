@@ -1,7 +1,8 @@
 import CategoryNav from "../../components/LearningCenter/CategoryNav";
 import DifficultyFilter from "../../components/LearningCenter/DifficultyFilter";
 import FilterInput from "../../components/LearningCenter/FilterInput";
-import LearningPaths, { type LearningPathDef } from "../../components/LearningCenter/LearningPaths";
+import LearningPaths from "../../components/LearningCenter/LearningPaths";
+import type { LearningPathDef } from "../../components/LearningCenter/learningPathsConfig";
 import styles from "../../components/LearningCenter/styles.module.css";
 import { getCategoryDescription } from "../utils/categoryDescriptions";
 import type { LearningCenterResource } from "../utils/learningCenterUtils";
@@ -71,41 +72,41 @@ export function LearningCenterHelper({
         toggleCategory,
         selectedDifficulty,
         setDifficulty,
-        selectedLearningPath,
-        setLearningPath,
         filteredResources,
         availableCategories,
         availableDifficulties,
     } = useLearningCenterFilter(resources);
+    const hasLearningPaths = Boolean(learningPaths && learningPaths.length > 0);
 
     return (
         <div className={clsx(styles.learningCenter, className)}>
-            {learningPaths && learningPaths.length > 0 && (
-                <LearningPaths
-                    paths={learningPaths}
-                    resources={resources}
-                    selectedPath={selectedLearningPath}
-                    onSelectPath={setLearningPath}
-                />
-            )}
+            {hasLearningPaths ? (
+                <LearningPaths paths={learningPaths ?? []} resources={resources} />
+            ) : null}
 
-            <FilterInput value={filter} onChange={setFilter} onClear={clearFilter} />
+            <div className={styles.filterModeDivider} role="separator" aria-label="Browse filters">
+                <span className={styles.filterModeDividerText}>Browse by filters</span>
+            </div>
 
-            {availableCategories.length > 1 && (
-                <CategoryNav
-                    availableCategories={availableCategories}
-                    selectedCategories={selectedCategories}
-                    onToggleCategory={toggleCategory}
-                />
-            )}
+            <section className={styles.filterModeSection} aria-label="Browse by filters">
+                <FilterInput value={filter} onChange={setFilter} onClear={clearFilter} />
 
-            {availableDifficulties.length > 1 && (
-                <DifficultyFilter
-                    availableDifficulties={availableDifficulties}
-                    selectedDifficulty={selectedDifficulty}
-                    onSelectDifficulty={setDifficulty}
-                />
-            )}
+                {availableCategories.length > 1 && (
+                    <CategoryNav
+                        availableCategories={availableCategories}
+                        selectedCategories={selectedCategories}
+                        onToggleCategory={toggleCategory}
+                    />
+                )}
+
+                {availableDifficulties.length > 1 && (
+                    <DifficultyFilter
+                        availableDifficulties={availableDifficulties}
+                        selectedDifficulty={selectedDifficulty}
+                        onSelectDifficulty={setDifficulty}
+                    />
+                )}
+            </section>
 
             <CategoryDescriptions selectedCategories={selectedCategories} />
 

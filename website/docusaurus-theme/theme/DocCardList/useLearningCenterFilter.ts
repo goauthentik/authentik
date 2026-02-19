@@ -1,5 +1,6 @@
 import { groupByFirstLetter, type Grouped } from "../../components/LearningCenter/utils";
 import {
+    applyLearningCenterFilters,
     type DifficultyLevel,
     extractAvailableCategories,
     extractAvailableDifficulties,
@@ -48,7 +49,7 @@ export interface UseLearningCenterFilterResult {
 export function useLearningCenterFilter(
     resources: LearningCenterResource[],
 ): UseLearningCenterFilterResult {
-    const [filter, setFilter] = useState("");
+    const [filter, setFilterValue] = useState("");
     const [debouncedFilter, setDebouncedFilter] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | null>(null);
@@ -70,39 +71,12 @@ export function useLearningCenterFilter(
 
     // Apply filters based on current selections
     const filteredResources = useMemo(() => {
-        let result = resources;
-
-        // Text search filter (uses debounced value)
-        if (debouncedFilter) {
-            const lowerFilter = debouncedFilter.toLowerCase();
-            result = result.filter(
-                (resource) =>
-                    resource.resourceName.toLowerCase().includes(lowerFilter) ||
-                    resource.shortDescription.toLowerCase().includes(lowerFilter) ||
-                    (resource.longDescription &&
-                        resource.longDescription.toLowerCase().includes(lowerFilter)) ||
-                    resource.category.toLowerCase().includes(lowerFilter),
-            );
-        }
-
-        // Category filter
-        if (selectedCategories.length > 0) {
-            result = result.filter((resource) => selectedCategories.includes(resource.category));
-        }
-
-        // Difficulty filter
-        if (selectedDifficulty) {
-            result = result.filter((resource) => resource.difficulty === selectedDifficulty);
-        }
-
-        // Learning path filter (filters by learningPaths field)
-        if (selectedLearningPath) {
-            result = result.filter((resource) =>
-                resource.learningPaths.includes(selectedLearningPath),
-            );
-        }
-
-        return result;
+        return applyLearningCenterFilters(resources, {
+            query: debouncedFilter,
+            selectedCategories,
+            selectedDifficulty,
+            selectedLearningPath,
+        });
     }, [debouncedFilter, selectedCategories, selectedDifficulty, selectedLearningPath, resources]);
 
     // Pre-computed grouping for alphabetical navigation
@@ -118,7 +92,15 @@ export function useLearningCenterFilter(
         [resources],
     );
 
+    const setFilter = useCallback((value: string) => {
+        if (value.trim()) {
+            setSelectedLearningPath(null);
+        }
+        setFilterValue(value);
+    }, []);
+
     const toggleCategory = useCallback((category: string) => {
+        setSelectedLearningPath(null);
         setSelectedCategories((prev) => {
             if (prev.includes(category)) return prev.filter((c) => c !== category);
             return [...prev, category];
@@ -126,14 +108,21 @@ export function useLearningCenterFilter(
     }, []);
 
     const setDifficulty = useCallback((difficulty: DifficultyLevel | null) => {
+        setSelectedLearningPath(null);
         setSelectedDifficulty(difficulty);
     }, []);
 
     const setLearningPath = useCallback((pathTag: string | null) => {
         setSelectedLearningPath(pathTag);
+        if (pathTag !== null) {
+            setSelectedCategories([]);
+            setSelectedDifficulty(null);
+            setFilterValue("");
+            setDebouncedFilter("");
+        }
     }, []);
 
-    const clearFilter = useCallback(() => setFilter(""), []);
+    const clearFilter = useCallback(() => setFilterValue(""), []);
 
     return {
         filter,

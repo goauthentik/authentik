@@ -14,6 +14,7 @@ export { ViewToggle } from "./ViewToggle";
 export type { ViewMode, ViewToggleProps } from "./ViewToggle";
 
 export { LearningPaths } from "./LearningPaths";
-export type { LearningPathDef, LearningPathsProps } from "./LearningPaths";
+export type { LearningPathsProps } from "./LearningPaths";
+export type { LearningPathDef } from "./learningPathsConfig";
 
 export * from "./utils";
