@@ -12,6 +12,7 @@ use tokio::{
     task::{JoinSet, join_set::Builder},
 };
 use tokio_util::sync::{CancellationToken, WaitForCancellationFuture};
+use tracing::info;
 
 /// All the signal streams we watch for. We don't create those directly in [`watch_signals`]
 /// because that would prevent us from handling errors early.
@@ -53,12 +54,30 @@ async fn watch_signals(
     } = streams;
     loop {
         tokio::select! {
-            _ = hup.recv() => { arbiter.do_fast_shutdown().await; },
-            _ = int.recv() => { arbiter.do_fast_shutdown().await; },
-            _ = quit.recv() => { arbiter.do_fast_shutdown().await; },
-            _ = usr1.recv() => { arbiter.signals_tx.send(SignalKind::user_defined1())?; },
-            _ = usr2.recv() => { arbiter.signals_tx.send(SignalKind::user_defined2())?; },
-            _ = term.recv() => { arbiter.do_graceful_shutdown().await; },
+            _ = hup.recv() => {
+                info!("HUP received. Shutting down immediately.");
+                arbiter.do_fast_shutdown().await;
+            },
+            _ = int.recv() => {
+                info!("INT received. Shutting down immediately.");
+                arbiter.do_fast_shutdown().await;
+            },
+            _ = quit.recv() => {
+                info!("QUIT received. Shutting down immediately.");
+                arbiter.do_fast_shutdown().await;
+            },
+            _ = usr1.recv() => {
+                info!("URS1 received.");
+                arbiter.signals_tx.send(SignalKind::user_defined1())?;
+            },
+            _ = usr2.recv() => {
+                info!("USR2 received.");
+                arbiter.signals_tx.send(SignalKind::user_defined2())?;
+            },
+            _ = term.recv() => {
+                info!("TERM received. Shutting down gracefully.");
+                arbiter.do_graceful_shutdown().await;
+            },
             _ = arbiter.shutdown() => return Ok(()),
         };
     }

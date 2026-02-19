@@ -134,14 +134,6 @@ unreadable_literal = "warn"
 unseparated_literal_suffix = "warn"
 unwrap_used = "warn"
 
-[workspace.metadata.bacon]
-default_job = "run"
-
-[workspace.metadata.bacon.jobs.run]
-command = ["cargo", "run"]
-on_change_strategy = "kill_then_restart"
-kill = ["pkill", "-INT", "-P"]
-
 [package]
 name = "authentik"
 version = "0.0.0"

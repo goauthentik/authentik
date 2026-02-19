@@ -108,7 +108,7 @@ aws-cfn:
 	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
 run-server:  ## Run the main authentik server process
-	$(UV) run ak server
+	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak server
 
 run-worker:  ## Run the main authentik worker process
 	$(UV) run ak worker
