@@ -4,6 +4,9 @@ sidebar_label: Zammad
 support_level: community
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## What is Zammad
 
 > Zammad is a web-based, open source user support/ticketing solution.
@@ -24,10 +27,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## Configuration methods
 
-There are two ways to configure single sign-on for Zammad. You can configure it via SAML authentication or via OpenID Connect.
-
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
+There are two ways to configure single sign-on for Zammad; SAML or OIDC.
 
 <Tabs
 defaultValue="saml"
@@ -125,7 +125,9 @@ At the very top of the **Third-party Applications** page are a few additional se
 </TabItem>
 </Tabs>
 
-## Additional Resources
+## Configuration verification
 
-- https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html
-- https://community.zammad.org/t/saml-authentication-with-authentik-saml-login-url-and-auto-assign-permission/10876/3
+## Resources
+
+- [Zammad Admin Documentation - SAML](https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html)
+- [Zammad Admin Documentation - OpenID Connect](https://admin-docs.zammad.org/en/latest/settings/security/third-party/openid-connect.html)
