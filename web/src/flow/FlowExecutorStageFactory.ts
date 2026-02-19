@@ -98,20 +98,13 @@ export class StageMapping {
         const meta = (callback ? rest.slice(0, -1) : rest) as StageEntryMetadata;
 
         const init = match<StageEntryMetadata, StageMappingInit>(meta)
-            .with([], () => ({ token, variant: STANDARD }))
+            .with([], () => ({ token, variant: STANDARD, tag: token }))
             .with([PTag, PVariant], ([tag, variant]) => ({ token, variant, tag }))
             .with([PVariant], ([variant]) => ({ token, variant }))
             .with([PTag], ([tag]) => ({ token, variant: STANDARD, tag }))
             .exhaustive();
 
-        const tag = init.tag || (await callback?.().then(resolveStageTag));
-
-        if (!tag) {
-            throw new StageMappingError(
-                `Invalid stage entry for component ${token}: No tag or import callback provided.`,
-            );
-        }
-
+        const tag = init.tag || (await callback?.().then(resolveStageTag)) || token;
         return new StageMapping({ ...init, tag });
     }
 }
