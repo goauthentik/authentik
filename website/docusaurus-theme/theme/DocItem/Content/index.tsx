@@ -14,7 +14,9 @@ import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
 
 import { useSyntheticTitle } from "#hooks/title.ts";
+import { LearningCenterContent } from "#theme/DocItem/Content/LearningCenterContent.tsx";
 import { PreReleaseAdmonition } from "#theme/DocItem/Content/PreReleaseAdmonition.tsx";
+import { safeStringArrayExtract, safeStringExtract } from "#theme/utils/learningCenterUtils.ts";
 
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";
@@ -78,6 +80,15 @@ const BadgeGroup: React.FC<BadgesProps> = ({ badges }) => {
     );
 };
 
+/**
+ * Check if the current page is a learning center resource page
+ */
+function isLearningCenterPage(docId: string): boolean {
+    // Doc IDs can be like "core/learning-center/category-a/article-a"
+    // But not the index page
+    return /learning-center\/[^/]+\/[^/]+/.test(docId) && !docId.endsWith("/index");
+}
+
 const DocItemContent: React.FC<Props> = ({ children }) => {
     const syntheticTitle = useSyntheticTitle();
     const { frontMatter, metadata, contentTitle } = useDoc();
@@ -88,7 +99,25 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         authentik_version,
         authentik_enterprise,
         authentik_preview,
+        sidebar_custom_props,
     } = frontMatter;
+
+    // Extract learning center resource data from sidebar_custom_props
+    const customProps = sidebar_custom_props as Record<string, unknown> | undefined;
+    const isLearningCenter = isLearningCenterPage(id);
+
+    const learningCenterData =
+        isLearningCenter && customProps
+            ? {
+                  tags: safeStringArrayExtract(customProps.tags),
+                  shortDescription: safeStringExtract(customProps.shortDescription),
+                  difficulty: safeStringExtract(customProps.difficulty, "beginner") as
+                      | "beginner"
+                      | "intermediate"
+                      | "advanced",
+                  estimatedTime: safeStringExtract(customProps.estimatedTime),
+              }
+            : null;
 
     const preReleaseDoc = frontMatter.beta && metadata.id.startsWith("releases");
 
@@ -135,6 +164,15 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
             ) : null}
 
             {preReleaseDoc ? <PreReleaseAdmonition /> : null}
+
+            {learningCenterData && learningCenterData.shortDescription ? (
+                <LearningCenterContent
+                    tags={learningCenterData.tags}
+                    shortDescription={learningCenterData.shortDescription}
+                    difficulty={learningCenterData.difficulty}
+                    estimatedTime={learningCenterData.estimatedTime}
+                />
+            ) : null}
 
             <MDXContent>{children}</MDXContent>
         </div>

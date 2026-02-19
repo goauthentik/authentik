@@ -188,6 +188,94 @@ sidebar_custom_props:
 - Keep `shortDescription` to one sentence
 - In `longDescription`, you can use multiple paragraphs separated by blank lines
 
+## Developing the Learning Center
+
+The [authentik Learning Center](/core/learning-center/) provides tutorials, guides, and resources to help users learn authentik. Resources are organized by category and can be filtered by difficulty level, tags, and search.
+
+### Adding a new learning resource
+
+1. Identify or create the appropriate category directory in `website/docs/core/learning-center/` (e.g., `getting-started/`, `authentication/`).
+
+2. Create a new `.mdx` file in the category directory (e.g., `my-tutorial.mdx`).
+
+3. Add frontmatter with the required metadata:
+
+```mdx
+---
+title: My Tutorial Title
+sidebar_custom_props:
+    resourceName: My Tutorial Title
+    category: Getting Started
+    tags:
+        - OAuth2
+        - Beginner
+    shortDescription: Brief one-line description shown on the card.
+    longDescription: Optional detailed description for additional context.
+    difficulty: beginner
+    resourceType: tutorial
+    estimatedTime: 15 min
+---
+
+Your tutorial content goes here...
+```
+
+4. Write the tutorial content below the frontmatter. This content appears when users click through to the resource page.
+
+### Learning Center metadata fields
+
+- **`resourceName`** (required): The display name shown on resource cards
+- **`category`** (required): The category for grouping (must match the `_category_.json` label in the parent directory)
+- **`tags`** (required): Array of tags for filtering. Use relevant topic tags like:
+    - OAuth2
+    - SAML
+    - LDAP
+    - Flows
+    - Policies
+    - Installation
+- **`shortDescription`** (required): Concise summary displayed on resource cards
+- **`longDescription`** (optional): Extended description for additional context
+- **`difficulty`** (required): One of `beginner`, `intermediate`, or `advanced`
+- **`resourceType`** (required): One of `tutorial`, `guide`, `reference`, `video`, or `example`
+- **`estimatedTime`** (optional): Approximate time to complete (e.g., "15 min", "1 hour")
+
+### Adding a new category
+
+1. Create a new directory in `website/docs/core/learning-center/` (e.g., `my-category/`).
+
+2. Add a `_category_.json` file to define the category metadata:
+
+```json
+{
+    "label": "My Category",
+    "position": 4,
+    "description": "A detailed description of this category explaining what types of resources it contains and who it's intended for. This description is displayed when users select the category filter."
+}
+```
+
+3. Register the category in `website/docusaurus-theme/theme/utils/categoryDescriptions.ts` to enable the description display.
+
+4. Add resource files (`.mdx`) to the category directory.
+
+### Category metadata fields
+
+- **`label`** (required): The display name of the category shown in filter buttons and resource cards
+- **`position`** (required): The sort order of the category (lower numbers appear first)
+- **`description`** (required): A detailed description (2-4 sentences) explaining the category's contents and intended audience. This is displayed when users filter by the category.
+
+### Difficulty levels
+
+- **Beginner**: No prior authentik experience required
+- **Intermediate**: Basic authentik familiarity assumed
+- **Advanced**: Deep knowledge of authentik required
+
+### Resource types
+
+- **Tutorial**: Step-by-step walkthrough with hands-on exercises
+- **Guide**: Comprehensive topic coverage and best practices
+- **Reference**: Quick lookup information and specifications
+- **Video**: Video content (link to external video)
+- **Example**: Code samples and configuration examples
+
 ## Page routing and URLs
 
 Every documentation page you see on our website starts as a simple Markdown file in our repository. When you create or edit these files, our build system automatically transforms them into web pages with predictable URLs.
