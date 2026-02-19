@@ -35,7 +35,9 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_app_cache_key(user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False) -> str:
+def user_app_cache_key(
+    user_pk: str, page_number: int | None = None, only_with_launch_url: bool = False
+) -> str:
     """Cache key where application list for user is saved"""
     key = f"{CACHE_PREFIX}app_access/{user_pk}"
     if only_with_launch_url:
@@ -279,8 +281,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             # - No meta_launch_url AND no provider: no possible launch URL
             # - meta_launch_url="blank://blank": documented convention to hide from launcher
             queryset = queryset.exclude(
-                Q(meta_launch_url="", provider__isnull=True)
-                | Q(meta_launch_url="blank://blank")
+                Q(meta_launch_url="", provider__isnull=True) | Q(meta_launch_url="blank://blank")
             )
         paginator: Pagination = self.paginator
         paginated_apps = paginator.paginate_queryset(queryset, request)
@@ -307,7 +308,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
             allowed_applications = cache.get(
-                user_app_cache_key(self.request.user.pk, paginator.page.number, only_with_launch_url == "true")
+                user_app_cache_key(
+                    self.request.user.pk, paginator.page.number, only_with_launch_url == "true"
+                )
             )
             if allowed_applications:
                 # Re-fetch cached applications since pickled instances lose prefetched
@@ -317,7 +320,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 LOGGER.debug("Caching allowed application list", page=paginator.page.number)
                 allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
-                    user_app_cache_key(self.request.user.pk, paginator.page.number, only_with_launch_url == "true"),
+                    user_app_cache_key(
+                        self.request.user.pk, paginator.page.number, only_with_launch_url == "true"
+                    ),
                     allowed_applications,
                     timeout=86400,
                 )
