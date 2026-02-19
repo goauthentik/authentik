@@ -39,4 +39,4 @@ Follow this workflow to create and configure an SSF provider for an application:
     - **Backchannel Providers**: select the SSF provider that you created.
 4. Click **Create** to save the new application.
 
-The new application, with its OIDC provider and the backchannel SFF provider, should now appear in your application list.
+The new application, with its OIDC provider and the backchannel SSF provider, should now appear in your application list.

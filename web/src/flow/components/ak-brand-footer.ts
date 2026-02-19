@@ -6,27 +6,28 @@ import { AKElement } from "#elements/Base";
 import { FooterLink } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import PFList from "@patternfly/patternfly/components/List/list.css";
-
-const styles = css`
-    .pf-c-list a {
-        color: unset;
-    }
-    ul.pf-c-list.pf-m-inline {
-        justify-content: center;
-        padding: 0;
-        column-gap: var(--pf-global--spacer--xl);
-        row-gap: var(--pf-global--spacer--md);
-    }
-`;
-
+/**
+ * @part list - The list element containing the links
+ * @part list-item - Each item in the list, including the "Powered by authentik" item
+ * @part list-item-link - The link element for each item, if applicable
+ */
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
-    static styles = [PFList, styles];
+    /**
+     * Rendering in the light DOM ensures consistent styling across some of the
+     * more complex flow environments, such as...
+     *
+     * - When JavaScript is not available, such as on error pages.
+     * - During the initial loading of the page, before the web components are fully initialized.
+     * - After the flow executor has initialized, to avoid repaint issues.
+     */
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
 
     @property({ type: Array, attribute: false })
     public links: FooterLink[] = globalAK().brand.uiFooterLinks || [];
@@ -37,7 +38,9 @@ export class BrandLinks extends AKElement {
                 const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
 
                 if (link.href) {
-                    return html`<li><a href="${link.href}">${children}</a></li>`;
+                    return html`<li part="list-item">
+                        <a part="list-item-link" href=${link.href}>${children}</a>
+                    </li>`;
                 }
 
                 return html`<li part="list-item">

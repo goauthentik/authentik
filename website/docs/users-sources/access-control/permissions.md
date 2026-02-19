@@ -3,7 +3,7 @@ title: "About permissions"
 description: "Learn about global and object permissions in authentik."
 ---
 
-Permissions are the central components in all access control systems, the lowest-level components, the controlling pieces of access data. Permissions are assigned to (or removed from!) to define exactly WHO can do WHAT to WHICH part of the overall software system.
+Permissions are the central, lowest-level components in all access control systems. They are assigned (or removed) to define exactly WHO can do WHAT to WHICH part of the overall software system.
 
 :::info
 Note that global and object permissions only apply to objects within authentik, and not to who can access certain applications (which are access-controlled using [policies](../../customize/policies/index.md)).
@@ -20,7 +20,7 @@ A [role](../roles/index.md) is a collection of permissions. A user or a group ca
 - Example 3 (indirect group): Elaine is part of the group "Accounting", which has a parent group "Back office", which has a parent group "Employees". The group "Employees" has the role "Read-only", which has view permissions on all object types. So Elaine has the permission to view any object in authentik through indirect membership of the "Employees" group.
 
 :::info
-From 2025.12, authentik's access control is fully role-based. Before 2025.12, Admins could assign permissions to individual [users](../user/index.mdx). To mimic this behavior of "User permissions", an Admin can assign a user to role that has the required permissions.
+From 2025.12, authentik's access control is fully role-based. Before 2025.12, Admins could assign permissions to individual [users](../user/index.mdx). To mimic this behavior of "User permissions", an Admin can assign a user to a role that has the required permissions.
 :::
 
 There are two main types of permissions in authentik:

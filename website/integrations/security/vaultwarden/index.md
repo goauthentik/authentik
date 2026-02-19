@@ -59,7 +59,7 @@ Vaultwarden either requires the email scope to return a true value for whether t
             - Set **Access token validity** to more than 5 minutes.
             - Ensure the `offline_access` scope mapping is available by adding `authentik default OAuth Mapping: OpenID 'offline_access'` to the selected scopes.
             - Remove the `authentik default OAuth Mapping: OpenID 'email'` scope, and add the custom scope mapping you created above.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
