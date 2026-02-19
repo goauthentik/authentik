@@ -75,13 +75,17 @@ To support the integration of Zammad with authentik, you need to create an appli
 To configure Zammad's integration with authentik, go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**. Next, activate the **Authentication via SAML** toggle and change the following fields:
 
     - **Display name**: authentik
-    - **IDP SSO target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+    - **IDP SSO target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
     - **IDP single logout target URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
 
 - **IDP Certificate**: paste the contents of your certificate file.
 - **IDP certificate fingerprint**: Leave this empty.
 - **Name Identifier Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
 - **Automatic account link on initial logon**: Enable this to automatically create Zammad users when they sign in using authentik for the first time.
+
+:::info
+The **SSL verification** can fail when Zammad tries to connect to authentik directly, while accessing authentik in your browser works perfectly fine. You may have to disable the verification in order to save the configuration. See https://github.com/zammad/zammad/issues/5225 for details.
+:::
 
 </TabItem>
 
