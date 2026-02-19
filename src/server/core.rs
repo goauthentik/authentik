@@ -1,6 +1,9 @@
-use axum::http::{
-    HeaderValue,
-    header::{ACCEPT, HOST},
+use axum::{
+    http::{
+        HeaderValue,
+        header::{ACCEPT, HOST},
+    },
+    middleware::{Next, from_fn},
 };
 use std::{
     path::PathBuf,
@@ -169,13 +172,7 @@ async fn forward_request(
 
     match client.request(req).await {
         Ok(res) => {
-            let (mut parts, body) = res.into_parts();
-
-            parts.headers.remove(SERVER);
-            parts
-                .headers
-                .insert(X_POWERED_BY, HeaderValue::from_str("authentik")?);
-
+            let (parts, body) = res.into_parts();
             Ok(Response::from_parts(
                 parts,
                 Body::from_stream(body.into_data_stream()),
@@ -196,6 +193,15 @@ async fn build_proxy_router() -> Router {
     Router::new().fallback(forward_request).with_state(client)
 }
 
+async fn powered_by_middleware(request: Request, next: Next) -> Response {
+    let mut response = next.run(request).await;
+    response.headers_mut().remove(SERVER);
+    response
+        .headers_mut()
+        .insert(X_POWERED_BY, HeaderValue::from_static("authentik"));
+    response
+}
+
 // TODO: subpath
 pub(super) async fn build_router() -> Router {
     Router::new()
@@ -209,4 +215,5 @@ pub(super) async fn build_router() -> Router {
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         )
         .merge(build_proxy_router().await)
+        .layer(from_fn(powered_by_middleware))
 }
