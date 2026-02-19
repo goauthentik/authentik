@@ -210,8 +210,7 @@ export class FlowExecutor
             const next = qs.get("next");
             if (next) {
                 const url = new URL(next, window.location.origin);
-                // TODO: use correct base path
-                if (!url.pathname.startsWith("/if/flow")) {
+                if (url.origin !== window.location.origin) {
                     multiTabOrchestrateLeave();
                 }
                 window.location.assign(url);
