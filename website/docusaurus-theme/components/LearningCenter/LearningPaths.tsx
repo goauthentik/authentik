@@ -1,115 +1,76 @@
-import type {
-    DifficultyLevel,
-    LearningCenterResource,
+import {
+    getDifficultyLabel,
+    type LearningCenterResource,
 } from "../../theme/utils/learningCenterUtils";
+import type { LearningPathDef } from "./learningPathsConfig";
 import styles from "./styles.module.css";
 
+import Link from "@docusaurus/Link";
 import clsx from "clsx";
-import React from "react";
-
-/**
- * Definition for a learning path shown in the featured section
- */
-export interface LearningPathDef {
-    /** Display title for the learning path */
-    title: string;
-    /** Tag used to filter articles belonging to this path */
-    filterTag: string;
-    /** Difficulty level for display */
-    difficulty: DifficultyLevel;
-}
+import React, { useMemo } from "react";
 
 export interface LearningPathsProps {
     /** Learning path definitions */
     paths: LearningPathDef[];
     /** All available resources to calculate article counts */
     resources: LearningCenterResource[];
-    /** Currently selected learning path tag (if any) */
-    selectedPath: string | null;
-    /** Callback when a learning path is selected */
-    onSelectPath: (filterTag: string | null) => void;
 }
 
 /**
  * Displays the featured learning paths section at the top of the Learning Center.
  * Shows curated paths with difficulty levels and dynamically calculated article counts.
- * Clicking a path filters the articles below.
+ * Clicking a path opens a dedicated page for that learning track.
  */
-export const LearningPaths: React.FC<LearningPathsProps> = ({
-    paths,
-    resources,
-    selectedPath,
-    onSelectPath,
-}) => {
+export const LearningPaths: React.FC<LearningPathsProps> = ({ paths, resources }) => {
+    const articleCountsByPath = useMemo(() => {
+        const counts = new Map<string, number>();
+        resources.forEach((resource) => {
+            resource.learningPaths.forEach((tag) => {
+                counts.set(tag, (counts.get(tag) ?? 0) + 1);
+            });
+        });
+        return counts;
+    }, [resources]);
+
     if (paths.length === 0) return null;
-
-    // Calculate article counts for each path based on learningPaths field
-    const getArticleCount = (filterTag: string): number => {
-        return resources.filter((r) => r.learningPaths.includes(filterTag)).length;
-    };
-
-    const handlePathClick = (filterTag: string) => {
-        // Toggle: if already selected, deselect; otherwise select
-        if (selectedPath === filterTag) {
-            onSelectPath(null);
-        } else {
-            onSelectPath(filterTag);
-        }
-    };
 
     return (
         <div className={styles.learningPathsSection}>
-            <h2 className={styles.learningPathsTitle}>Learning Paths</h2>
-            <div className={styles.learningPathsList}>
+            <div className={styles.learningPathsHeader}>
+                <h2 className={styles.learningPathsTitle}>Learning paths</h2>
+            </div>
+            <div className={styles.learningPathsList} role="list" aria-label="Learning paths">
                 {paths.map((path) => {
-                    const articleCount = getArticleCount(path.filterTag);
-                    const isSelected = selectedPath === path.filterTag;
+                    const articleCount = articleCountsByPath.get(path.filterTag) ?? 0;
 
                     return (
-                        <div
+                        <Link
                             key={path.filterTag}
-                            className={clsx(
-                                styles.learningPathRow,
-                                isSelected && styles.learningPathRowSelected,
-                            )}
+                            to={`/core/learning-center/path/${path.filterTag}/`}
+                            className={styles.learningPathCardLink}
                         >
-                            <button
-                                type="button"
-                                className={clsx(
-                                    styles.learningPathLink,
-                                    isSelected && styles.learningPathLinkSelected,
-                                )}
-                                onClick={() => handlePathClick(path.filterTag)}
-                            >
-                                {path.title}
-                            </button>
-                            <div className={styles.learningPathMeta}>
-                                <span
-                                    className={clsx(
-                                        styles.learningPathBadge,
-                                        styles[`learningPathBadge-${path.difficulty}`],
-                                    )}
-                                >
-                                    {path.difficulty.charAt(0).toUpperCase() +
-                                        path.difficulty.slice(1)}
-                                </span>
-                                <span className={styles.learningPathCount}>
-                                    {articleCount} article{articleCount !== 1 ? "s" : ""}
-                                </span>
-                            </div>
-                        </div>
+                            <article className={styles.learningPathCard} role="listitem">
+                                <div className={styles.learningPathCardMain}>
+                                    <h3 className={styles.learningPathCardTitle}>{path.title}</h3>
+                                </div>
+                                <div className={styles.learningPathCardMetaColumn}>
+                                    <span
+                                        className={clsx(
+                                            styles.learningPathLevelBadge,
+                                            styles[`learningPathLevelBadge-${path.difficulty}`],
+                                        )}
+                                    >
+                                        {getDifficultyLabel(path.difficulty)}
+                                    </span>
+                                    <span className={styles.learningPathArticleCount}>
+                                        {articleCount} article{articleCount !== 1 ? "s" : ""}
+                                    </span>
+                                </div>
+                            </article>
+                        </Link>
                     );
                 })}
             </div>
-            {selectedPath && (
-                <button
-                    type="button"
-                    className={styles.clearPathButton}
-                    onClick={() => onSelectPath(null)}
-                >
-                    Clear path filter
-                </button>
-            )}
         </div>
     );
 };

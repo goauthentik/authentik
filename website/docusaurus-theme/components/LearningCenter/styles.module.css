@@ -11,134 +11,310 @@
     padding: 0;
 }
 
+.filterModeDivider {
+    position: relative;
+    margin: 0 0 0.75rem;
+    text-align: center;
+}
+
+.filterModeDivider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-top: 2px solid var(--ifm-color-emphasis-300);
+    transform: translateY(-50%);
+}
+
+.filterModeDividerText {
+    position: relative;
+    display: inline-block;
+    padding: 0.1rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    background: var(--ifm-background-color);
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.filterModeSection {
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 12px;
+    padding: 0.75rem 1rem 0.25rem;
+    margin-bottom: 1.5rem;
+    background: var(--ifm-color-emphasis-100);
+}
+
 /* Learning Paths Section */
 .learningPathsSection {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    margin-bottom: 0.65rem;
+    padding: 0;
+}
+
+.learningPathsHeader {
+    margin-bottom: 0.45rem;
 }
 
 .learningPathsTitle {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 1rem 0;
+    font-size: 1.45rem;
+    font-weight: 700;
+    margin: 0;
     color: var(--ifm-heading-color);
 }
 
 .learningPathsList {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.05rem;
 }
 
-.learningPathRow {
+.learningPathCardLink {
+    text-decoration: none;
+    color: inherit;
+    user-select: none;
+    cursor: pointer;
+}
+
+.learningPathCard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 0.55rem;
+    padding: 0.55rem 0.35rem 0.6rem;
+    background: transparent;
+    transition:
+        background-color 0.2s ease,
+        padding-left 0.2s ease;
+}
+
+.learningPathCardLink:hover .learningPathCard {
+    background-color: var(--ifm-color-emphasis-100);
+    padding-left: 0.6rem;
+}
+
+.learningPathCardLink:focus-visible .learningPathCard {
+    outline: 2px solid var(--ifm-color-primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.learningPathCardMain {
+    min-width: 0;
+    user-select: text;
+}
+
+.learningPathCardTitle {
+    margin: 0;
+    font-size: 1.12rem;
+    line-height: 1.35;
+    color: var(--ifm-color-primary);
+}
+
+.learningPathCardLink:hover .learningPathCardTitle,
+.learningPathCardLink:focus-visible .learningPathCardTitle {
+    color: var(--ifm-color-primary-dark);
+}
+
+.learningPathCardDescription {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ifm-color-emphasis-700);
+    max-width: 70ch;
+}
+
+.learningPathCardMetaColumn {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 0.45rem;
+    flex-direction: row;
+    justify-self: end;
+    white-space: nowrap;
+    margin-top: 0;
+    user-select: none;
 }
 
-.learningPathLink {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--ifm-color-primary);
+.learningPathLevelBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-400);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: var(--ifm-background-color);
+    user-select: none;
+}
+
+.learningPathLevelBadge-beginner {
+    color: var(--lc-difficulty-beginner);
+    border-color: color-mix(in srgb, var(--lc-difficulty-beginner) 45%, transparent);
+    background: transparent;
+}
+
+.learningPathLevelBadge-intermediate {
+    color: var(--lc-difficulty-intermediate);
+    border-color: color-mix(in srgb, var(--lc-difficulty-intermediate) 45%, transparent);
+    background: transparent;
+}
+
+.learningPathLevelBadge-advanced {
+    color: var(--lc-difficulty-advanced);
+    border-color: color-mix(in srgb, var(--lc-difficulty-advanced) 45%, transparent);
+    background: transparent;
+}
+
+.learningPathArticleCount {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.52rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    background: var(--ifm-color-emphasis-100);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--ifm-color-emphasis-600);
+    user-select: none;
+}
+
+.learningPathExperience {
+    margin-bottom: 1.5rem;
+}
+
+.pathBackLink {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 600;
     text-decoration: none;
-    padding: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    transition: color 0.2s ease;
+    color: var(--ifm-color-primary);
 }
 
-.learningPathLink:hover {
+.pathBackLink:hover {
     color: var(--ifm-color-primary-dark);
     text-decoration: underline;
 }
 
-.learningPathMeta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.learningPathBadge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: white;
-    border: 1px solid transparent;
-}
-
-.learningPathBadge-beginner {
-    background-color: transparent;
-    color: var(--lc-difficulty-beginner);
-    border-color: var(--lc-difficulty-beginner);
-}
-
-.learningPathBadge-intermediate {
-    background-color: transparent;
-    color: var(--lc-difficulty-intermediate);
-    border-color: var(--lc-difficulty-intermediate);
-}
-
-.learningPathBadge-advanced {
-    background-color: transparent;
-    color: var(--lc-difficulty-advanced);
-    border-color: var(--lc-difficulty-advanced);
-}
-
-.learningPathCount {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--ifm-color-emphasis-700);
+.pathHero {
     border: 1px solid var(--ifm-color-emphasis-300);
-    background-color: transparent;
+    border-radius: 16px;
+    padding: 1.4rem;
+    margin-bottom: 1.2rem;
+    background: linear-gradient(
+        170deg,
+        var(--ifm-color-emphasis-100) 0%,
+        var(--ifm-background-color) 70%
+    );
 }
 
-.learningPathRowSelected {
-    background-color: var(--ifm-color-emphasis-100);
-    border-radius: 8px;
-    padding: 0.5rem;
-    margin: -0.5rem;
-}
-
-.learningPathLinkSelected {
+.pathHeroEyebrow {
+    margin: 0;
+    font-size: 0.8rem;
     font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ifm-color-primary);
 }
 
-.clearPathButton {
+.pathHeroTitle {
+    margin: 0;
+    margin-top: 0.35rem;
+    color: var(--ifm-heading-color);
+    font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+    line-height: 1.2;
+}
+
+.pathHeroDescription {
+    margin: 0.75rem 0 0;
+    max-width: 72ch;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.pathHeroMeta {
     margin-top: 1rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-    background-color: transparent;
-    color: var(--ifm-color-emphasis-600);
-    font-weight: 500;
-    border: 1px solid var(--ifm-color-emphasis-300);
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: all 0.15s ease;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
 }
 
-.clearPathButton:hover {
-    background-color: var(--ifm-color-danger-contrast-background);
-    border-color: var(--ifm-color-danger);
-    color: var(--ifm-color-danger-dark);
+.pathHeroMetaItem {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    background: var(--ifm-background-color);
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.84rem;
+    font-weight: 600;
+    user-select: none;
+}
+
+.pathHeroMetaItemDifficulty-beginner {
+    color: var(--lc-difficulty-beginner);
+    border-color: color-mix(in srgb, var(--lc-difficulty-beginner) 45%, transparent);
+    background: transparent;
+}
+
+.pathHeroMetaItemDifficulty-intermediate {
+    color: var(--lc-difficulty-intermediate);
+    border-color: color-mix(in srgb, var(--lc-difficulty-intermediate) 45%, transparent);
+    background: transparent;
+}
+
+.pathHeroMetaItemDifficulty-advanced {
+    color: var(--lc-difficulty-advanced);
+    border-color: color-mix(in srgb, var(--lc-difficulty-advanced) 45%, transparent);
+    background: transparent;
+}
+
+.pathCurriculumSection {
+    margin-top: 1rem;
+}
+
+.pathCurriculumTitle {
+    margin: 0 0 1rem;
+    color: var(--ifm-heading-color);
+}
+
+.pathStepBadge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    margin: 0 0 0.75rem;
+    padding: 0.18rem 0.58rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    background: var(--ifm-color-emphasis-100);
+    color: var(--ifm-color-emphasis-800);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    user-select: none;
 }
 
 @media (max-width: 768px) {
-    .learningPathRow {
-        flex-direction: column;
-        align-items: flex-start;
+    .learningPathCard {
+        grid-template-columns: 1fr;
         gap: 0.5rem;
+    }
+
+    .learningPathCardMetaColumn {
+        align-items: center;
+        gap: 0.45rem;
+        justify-self: start;
+    }
+
+    .pathHero {
+        padding: 1rem;
     }
 }
 
@@ -188,10 +364,10 @@ html[data-theme="dark"] .sectionTitle {
 
 .filterInput {
     flex: 1;
-    min-width: 200px;
-    max-width: 400px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.95rem;
+    min-width: 280px;
+    max-width: 620px;
+    padding: 0.65rem 0.9rem;
+    font-size: 1rem;
     border: 1px solid var(--ifm-color-emphasis-300);
     border-radius: 6px;
     background-color: var(--ifm-background-color);
@@ -502,6 +678,7 @@ html[data-theme="dark"] .sectionTitle {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    user-select: none;
 }
 
 .categoryBadge {

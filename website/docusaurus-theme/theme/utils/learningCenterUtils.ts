@@ -35,6 +35,13 @@ export interface LearningCenterResource {
     relatedResources?: string[];
 }
 
+export interface LearningCenterFilterCriteria {
+    query?: string;
+    selectedCategories?: readonly string[];
+    selectedDifficulty?: DifficultyLevel | null;
+    selectedLearningPath?: string | null;
+}
+
 /**
  * Determines if the current path is within the learning center section
  */
@@ -55,7 +62,12 @@ export function isLearningCenterItem(item: PropSidebarItem | LearningCenterItem)
     // Check if it's a link with docId containing 'learning-center' (but not the index)
     if ("docId" in item) {
         const docId = item.docId || "";
-        if (docId.includes("learning-center") && !docId.endsWith("learning-center/index")) {
+        if (
+            docId.includes("learning-center") &&
+            !docId.endsWith("learning-center/index") &&
+            !docId.includes("/learning-center/path/") &&
+            !docId.includes("/learning-center/paths/")
+        ) {
             return true;
         }
     }
@@ -65,6 +77,8 @@ export function isLearningCenterItem(item: PropSidebarItem | LearningCenterItem)
         const href = item.href || "";
         if (
             href.includes("/learning-center/") &&
+            !href.includes("/learning-center/path/") &&
+            !href.includes("/learning-center/paths/") &&
             !href.endsWith("/learning-center") &&
             !href.endsWith("/learning-center/")
         ) {
@@ -145,7 +159,7 @@ export function shouldFilterFromSidebar(item: PropSidebarItem | LearningCenterIt
             item.items.length > 0 &&
             item.items.every((child) => {
                 if (child.type === "link") {
-                    return isLearningCenterItem(child);
+                    return shouldFilterFromSidebar(child);
                 }
                 if (child.type === "category") {
                     return shouldFilterFromSidebar(child);
@@ -174,6 +188,25 @@ export function safeStringArrayExtract(value: unknown): string[] {
     return Array.isArray(value)
         ? value.filter((tag): tag is string => typeof tag === "string")
         : [];
+}
+
+/**
+ * Extracts learning path values from metadata.
+ * `learningPaths` is canonical; `tags` remains a backward-compatible fallback.
+ */
+export function extractLearningPathsFromProps(
+    props: Record<string, unknown> | undefined,
+): string[] {
+    if (!props) {
+        return [];
+    }
+
+    const learningPaths = safeStringArrayExtract(props.learningPaths);
+    if (learningPaths.length > 0) {
+        return learningPaths;
+    }
+
+    return safeStringArrayExtract(props.tags);
 }
 
 /**
@@ -251,4 +284,47 @@ export function getResourceTypeLabel(type: ResourceType): string {
         example: "Example",
     };
     return labels[type];
+}
+
+/**
+ * Applies all learning center filters in a pure, testable way.
+ */
+export function applyLearningCenterFilters(
+    resources: readonly LearningCenterResource[],
+    criteria: LearningCenterFilterCriteria,
+): LearningCenterResource[] {
+    const {
+        query = "",
+        selectedCategories = [],
+        selectedDifficulty = null,
+        selectedLearningPath = null,
+    } = criteria;
+
+    let result = [...resources];
+
+    if (query) {
+        const lowerQuery = query.toLowerCase();
+        result = result.filter(
+            (resource) =>
+                resource.resourceName.toLowerCase().includes(lowerQuery) ||
+                resource.shortDescription.toLowerCase().includes(lowerQuery) ||
+                (resource.longDescription &&
+                    resource.longDescription.toLowerCase().includes(lowerQuery)) ||
+                resource.category.toLowerCase().includes(lowerQuery),
+        );
+    }
+
+    if (selectedCategories.length > 0) {
+        result = result.filter((resource) => selectedCategories.includes(resource.category));
+    }
+
+    if (selectedDifficulty) {
+        result = result.filter((resource) => resource.difficulty === selectedDifficulty);
+    }
+
+    if (selectedLearningPath) {
+        result = result.filter((resource) => resource.learningPaths.includes(selectedLearningPath));
+    }
+
+    return result;
 }

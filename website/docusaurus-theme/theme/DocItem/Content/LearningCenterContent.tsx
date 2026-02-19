@@ -9,7 +9,7 @@ import React from "react";
 export type DifficultyLevel = "beginner" | "intermediate" | "advanced";
 
 export interface LearningCenterContentProps {
-    tags?: string[];
+    learningPaths?: string[];
     shortDescription: string;
     difficulty: DifficultyLevel;
     estimatedTime?: string;
@@ -40,7 +40,7 @@ const ClockIcon: React.FC = () => (
 );
 
 export const LearningCenterContent: React.FC<LearningCenterContentProps> = ({
-    tags,
+    learningPaths,
     shortDescription,
     difficulty,
     estimatedTime,
@@ -51,25 +51,25 @@ export const LearningCenterContent: React.FC<LearningCenterContentProps> = ({
                 <span className={`${styles.difficultyBadge} ${styles[difficulty]}`}>
                     {difficultyLabels[difficulty]}
                 </span>
-                {estimatedTime && (
+                {estimatedTime ? (
                     <span className={styles.timeBadge}>
                         <ClockIcon />
                         {estimatedTime}
                     </span>
-                )}
+                ) : null}
             </div>
 
             <p className={styles.shortDescription}>{shortDescription}</p>
 
-            {tags && tags.length > 0 && (
+            {learningPaths && learningPaths.length > 0 ? (
                 <div className={styles.tags}>
-                    {tags.map((tag) => (
-                        <span key={tag} className={styles.tagChip}>
-                            {tag}
+                    {learningPaths.map((learningPath) => (
+                        <span key={learningPath} className={styles.tagChip}>
+                            {learningPath}
                         </span>
                     ))}
                 </div>
-            )}
+            ) : null}
         </div>
     );
 };

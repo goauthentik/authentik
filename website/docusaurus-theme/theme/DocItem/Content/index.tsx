@@ -16,7 +16,11 @@ import { VersionBadge } from "#components/VersionBadge.tsx";
 import { useSyntheticTitle } from "#hooks/title.ts";
 import { LearningCenterContent } from "#theme/DocItem/Content/LearningCenterContent.tsx";
 import { PreReleaseAdmonition } from "#theme/DocItem/Content/PreReleaseAdmonition.tsx";
-import { safeStringArrayExtract, safeStringExtract } from "#theme/utils/learningCenterUtils.ts";
+import {
+    extractLearningPathsFromProps,
+    safeDifficultyExtract,
+    safeStringExtract,
+} from "#theme/utils/learningCenterUtils.ts";
 
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";
@@ -109,12 +113,9 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
     const learningCenterData =
         isLearningCenter && customProps
             ? {
-                  tags: safeStringArrayExtract(customProps.tags),
+                  learningPaths: extractLearningPathsFromProps(customProps),
                   shortDescription: safeStringExtract(customProps.shortDescription),
-                  difficulty: safeStringExtract(customProps.difficulty, "beginner") as
-                      | "beginner"
-                      | "intermediate"
-                      | "advanced",
+                  difficulty: safeDifficultyExtract(customProps.difficulty),
                   estimatedTime: safeStringExtract(customProps.estimatedTime),
               }
             : null;
@@ -167,7 +168,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
             {learningCenterData && learningCenterData.shortDescription ? (
                 <LearningCenterContent
-                    tags={learningCenterData.tags}
+                    learningPaths={learningCenterData.learningPaths}
                     shortDescription={learningCenterData.shortDescription}
                     difficulty={learningCenterData.difficulty}
                     estimatedTime={learningCenterData.estimatedTime}

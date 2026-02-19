@@ -190,7 +190,16 @@ sidebar_custom_props:
 
 ## Developing the Learning Center
 
-The [authentik Learning Center](/core/learning-center/) provides tutorials, guides, and resources to help users learn authentik. Resources are organized by category and can be filtered by difficulty level, tags, and search.
+The [authentik Learning Center](/core/learning-center/) provides tutorials, guides, and resources to help users learn authentik.
+
+The current Learning Center UX has two distinct entry points:
+
+- **Learning paths**: curated tracks that open a dedicated path page (for focused, immersive reading).
+- **Browse by filters**: search, category, and experience-level filtering on the main Learning Center page.
+
+Learning paths are defined in:
+
+- `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts`
 
 ### Adding a new learning resource
 
@@ -206,9 +215,9 @@ title: My Tutorial Title
 sidebar_custom_props:
     resourceName: My Tutorial Title
     category: Getting Started
-    tags:
-        - OAuth2
-        - Beginner
+    learningPaths:
+        - getting-started
+        - fundamentals-flows
     shortDescription: Brief one-line description shown on the card.
     longDescription: Optional detailed description for additional context.
     difficulty: beginner
@@ -225,18 +234,49 @@ Your tutorial content goes here...
 
 - **`resourceName`** (required): The display name shown on resource cards
 - **`category`** (required): The category for grouping (must match the `_category_.json` label in the parent directory)
-- **`tags`** (required): Array of tags for filtering. Use relevant topic tags like:
-    - OAuth2
-    - SAML
-    - LDAP
-    - Flows
-    - Policies
-    - Installation
+- **`learningPaths`** (required): Array of learning path tags. Values must match `filterTag` entries in `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts`. Current examples:
+    - `getting-started`
+    - `users-sources`
+    - `security`
+    - `providers-protocols`
+    - `fundamentals-flows`
 - **`shortDescription`** (required): Concise summary displayed on resource cards
 - **`longDescription`** (optional): Extended description for additional context
 - **`difficulty`** (required): One of `beginner`, `intermediate`, or `advanced`
 - **`resourceType`** (required): One of `tutorial`, `guide`, `reference`, `video`, or `example`
 - **`estimatedTime`** (optional): Approximate time to complete (e.g., "15 min", "1 hour")
+
+### Adding a new learning path
+
+To create a new learning path end-to-end:
+
+1. Add a path definition in `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts` with:
+    - `title`
+    - `description`
+    - `filterTag`
+    - `difficulty`
+2. Add a dedicated path page at `website/docs/core/learning-center/path/<filterTag>.mdx`.
+3. Tag relevant resources by adding `<filterTag>` in each resource's `sidebar_custom_props.learningPaths` array.
+
+Path page template:
+
+```mdx
+---
+title: My Learning Path
+slug: /core/learning-center/path/my-learning-path
+hide_table_of_contents: true
+hide_title: true
+---
+
+import DocCardList from "@theme/DocCardList";
+
+<DocCardList />
+```
+
+Notes:
+
+- Path pages under `website/docs/core/learning-center/path/` are container pages. They should not include article metadata like `sidebar_custom_props`.
+- The path category label is defined in `website/docs/core/learning-center/path/_category_.json`.
 
 ### Adding a new category
 
