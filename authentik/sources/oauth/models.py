@@ -269,8 +269,9 @@ class OpenIDConnectOAuthSource(CreatableType, OAuthSource):
         verbose_name = _("OpenID OAuth Source")
         verbose_name_plural = _("OpenID OAuth Sources")
 
-class AdfsOAuthSource(CreatableType, OAuthSource):
-    """Login using a Generic ADFS compliant provider."""
+
+class ADFSOAuthSource(CreatableType, OAuthSource):
+    """Login using a Active Directory Federation Services provider."""
 
     class Meta:
         abstract = True
