@@ -1,3 +1,6 @@
+#![expect(clippy::allow_attributes_without_reason)]
+#![expect(clippy::unwrap_used)]
+
 use std::{fs, path::PathBuf};
 
 use clap::{Parser, Subcommand};
