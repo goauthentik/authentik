@@ -141,6 +141,8 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     }
 }
 
+export default ConsentStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-consent": ConsentStage;

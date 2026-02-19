@@ -40,6 +40,8 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
     }
 }
 
+export default EmailStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-email": EmailStage;
