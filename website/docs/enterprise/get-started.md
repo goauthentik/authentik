@@ -3,9 +3,9 @@ title: Get started with authentik Enterprise
 description: "How to get started with authentik Enterprise"
 ---
 
-## 1. Install authentik
-
 Installing authentik is exactly the same process for both the Enterprise version and our open source version. Enterprise features are enabled by installing a license.
+
+## 1. Install authentik
 
 If this is a fresh install, refer to our technical documentation for instructions on how to [install and configure authentik](../install-config/index.mdx).
 

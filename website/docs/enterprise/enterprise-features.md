@@ -70,7 +70,7 @@ This authenticator stage validates Chrome browsers and ChromeOS devices against 
 
 ### Shared Signals Framework (SSF) support
 
-The SSF Provider enables authentik to transmit real-time security events (e.g., MFA changes, logouts) as Security Event Tokens to subscribed OIDC applications via secure webhooks.
+The SSF Provider enables authentik to transmit real-time security events (e.g., MFA changes, logouts) as Security Event Tokens to subscribed OIDC applications via secure webhooks. Also allows for integration with Apple Business Manager (ABM).
 
 [Shared Signals Framework (SSF) Provider](../add-secure-apps/providers/ssf/index.md)
 
