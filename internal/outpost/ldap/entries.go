@@ -27,10 +27,10 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	})
 
 	if u.IsActive == nil {
-		u.IsActive = api.PtrBool(false)
+		u.IsActive = new(false)
 	}
 	if u.Email == nil {
-		u.Email = api.PtrString("")
+		u.Email = new("")
 	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
 		"ak-active":      {strings.ToUpper(strconv.FormatBool(*u.IsActive))},

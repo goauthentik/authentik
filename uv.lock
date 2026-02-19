@@ -367,7 +367,7 @@ requires-dist = [
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "packaging", specifier = "==26.0" },
     { name = "paramiko", specifier = "==4.0.0" },
-    { name = "psycopg", extras = ["c", "pool"], specifier = "==3.3.2" },
+    { name = "psycopg", extras = ["c", "pool"], specifier = "==3.3.3" },
     { name = "pydantic", specifier = "==2.12.5" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.11.0" },
@@ -381,7 +381,7 @@ requires-dist = [
     { name = "setproctitle", specifier = "==1.3.7" },
     { name = "structlog", specifier = "==25.5.0" },
     { name = "swagger-spec-validator", specifier = "==3.0.4" },
-    { name = "twilio", specifier = "==9.10.1" },
+    { name = "twilio", specifier = "==9.10.2" },
     { name = "ua-parser", specifier = "==1.0.1" },
     { name = "unidecode", specifier = "==1.4.0" },
     { name = "urllib3", specifier = "<3" },
@@ -2749,14 +2749,14 @@ wheels = [
 
 [[package]]
 name = "psycopg"
-version = "3.3.2"
+version = "3.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e0/1a/7d9ef4fdc13ef7f15b934c393edc97a35c281bb7d3c3329fbfcbe915a7c2/psycopg-3.3.2.tar.gz", hash = "sha256:707a67975ee214d200511177a6a80e56e654754c9afca06a7194ea6bbfde9ca7", size = 165630, upload-time = "2025-12-06T17:34:53.899Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/b6/379d0a960f8f435ec78720462fd94c4863e7a31237cf81bf76d0af5883bf/psycopg-3.3.3.tar.gz", hash = "sha256:5e9a47458b3c1583326513b2556a2a9473a1001a56c9efe9e587245b43148dd9", size = 165624, upload-time = "2026-02-18T16:52:16.546Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/51/2779ccdf9305981a06b21a6b27e8547c948d85c41c76ff434192784a4c93/psycopg-3.3.2-py3-none-any.whl", hash = "sha256:3e94bc5f4690247d734599af56e51bae8e0db8e4311ea413f801fef82b14a99b", size = 212774, upload-time = "2025-12-06T17:31:41.414Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/5b/181e2e3becb7672b502f0ed7f16ed7352aca7c109cfb94cf3878a9186db9/psycopg-3.3.3-py3-none-any.whl", hash = "sha256:f96525a72bcfade6584ab17e89de415ff360748c766f0106959144dcbb38c698", size = 212768, upload-time = "2026-02-18T16:46:27.365Z" },
 ]
 
 [package.optional-dependencies]
@@ -2769,9 +2769,9 @@ pool = [
 
 [[package]]
 name = "psycopg-c"
-version = "3.3.2"
+version = "3.3.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/48/f5/13c6bf88f6ccadc2930066cc5369cee431fc2c87a1ddb621fc27cfe7d8f3/psycopg_c-3.3.2.tar.gz", hash = "sha256:a65927731d394cc77bbf85d02d0311d7843616a4a627f3e816e94ad3a052ef83", size = 624077, upload-time = "2025-12-06T17:34:55.51Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/a0/8feb0ca8c7c20a8b9ac4d46b335ddd57e48e593b714262f006880f34fee5/psycopg_c-3.3.3.tar.gz", hash = "sha256:86ef6f4424348247828e83fb0882c9f8acb33e64d0a5ce66c1b4a5107ee73edd", size = 631965, upload-time = "2026-02-18T16:52:18.084Z" }
 
 [[package]]
 name = "psycopg-pool"
@@ -3563,7 +3563,7 @@ wheels = [
 
 [[package]]
 name = "twilio"
-version = "9.10.1"
+version = "9.10.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -3571,9 +3571,9 @@ dependencies = [
     { name = "pyjwt" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b8/f0/19a7e5e349b1dccd1c5da99fae7d274513bf315dc3fec86a11b6b0559fd4/twilio-9.10.1.tar.gz", hash = "sha256:0934e8360a2f249f683c82f427cd4f109a77737a368a9e71f8755395d250f458", size = 1618203, upload-time = "2026-02-05T12:50:46.242Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1c/a1/44cd8604eb69b1c5e7c0f07f0e4305b1884a3b75e23eb8d89350fe7bb982/twilio-9.10.2.tar.gz", hash = "sha256:f17d778870a7419a7278d5747b0e80a1c89e6f5ab14acf5456a004f8f2016bfa", size = 1618748, upload-time = "2026-02-18T04:40:44.279Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/cd/7ed6a38615e85e6d5821220afe750998ff28d35074c8f60ccc702b2bdc67/twilio-9.10.1-py2.py3-none-any.whl", hash = "sha256:14ecba426bea509c6422a139d5dc6b63c4e82271c665d0730f67db0225de5e1d", size = 2256299, upload-time = "2026-02-05T12:50:44.542Z" },
+    { url = "https://files.pythonhosted.org/packages/6c/ac/e1937f70544075f896bfcd6b23fa7c15cad945e4598bcfa7017b7c120ad8/twilio-9.10.2-py2.py3-none-any.whl", hash = "sha256:8722bb59bacf31fab5725d6f5d3fac2224265c669d38f653f53179165533da43", size = 2256481, upload-time = "2026-02-18T04:40:42.226Z" },
 ]
 
 [[package]]
