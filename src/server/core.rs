@@ -110,7 +110,6 @@ async fn forward_request(
     tls_state: Option<Extension<TlsState>>,
     mut req: Request,
 ) -> Result<Response> {
-    // TODO: tls state
     let accept_header = req
         .headers()
         .get(ACCEPT)

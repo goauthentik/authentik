@@ -27,6 +27,8 @@ async fn get_connect_opts() -> Result<PgConnectOptions> {
         .database(&config.postgresql.name)
         .ssl_mode(PgSslMode::from_str(&config.postgresql.sslmode)?)
         .options([
+            // TODO: don't set this here, set it as a hook when creating the connection that runs
+            // SET search_path = ..
             ("search_path", &config.postgresql.default_schema),
         ]);
     if let Some(sslrootcert) = &config.postgresql.sslrootcert {
