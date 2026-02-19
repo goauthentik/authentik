@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-14 00:16+0000\n"
+"POT-Creation-Date: 2026-02-17 00:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -554,6 +554,14 @@ msgstr ""
 #: authentik/core/templates/if/error.html
 #: authentik/policies/templates/policies/denied.html
 msgid "Go home"
+msgstr ""
+
+#: authentik/core/templates/login/base_full.html
+msgid "Site footer"
+msgstr ""
+
+#: authentik/core/templates/login/base_full.html
+msgid "Flow links"
 msgstr ""
 
 #: authentik/core/templates/login/base_full.html
@@ -1513,10 +1521,6 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
-msgstr ""
-
-#: authentik/flows/templates/if/flow.html
-msgid "Site footer"
 msgstr ""
 
 #: authentik/flows/views/executor.py

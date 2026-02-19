@@ -9071,10 +9071,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Select one of the options below to continue.</source>
   <target>选择以下选项之一以继续。</target>
 </trans-unit>
-<trans-unit id="s8cc0075913c67566">
-  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
-  <target>输入与您的账户关联的电子邮件地址，我们将会向您发送重置密码链接。</target>
-</trans-unit>
 <trans-unit id="s091d5407b5b32e84">
   <source>Or</source>
   <target>或者</target>
@@ -10884,6 +10880,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7c37f1acb9f97ea3">
   <source>Select the email template to use for sending invitations.</source>
+</trans-unit>
+<trans-unit id="sdd2ea73c24b40d5d">
+  <source>Site footer</source>
+</trans-unit>
+<trans-unit id="sf910cca0f06bbc31">
+  <source>Enter the email address or username associated with your account.</source>
 </trans-unit>
 </body>
 </file>

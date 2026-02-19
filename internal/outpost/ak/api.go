@@ -204,8 +204,8 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getEventPingArgs() map[string]interface{} {
-	args := map[string]interface{}{
+func (a *APIController) getEventPingArgs() map[string]any {
+	args := map[string]any{
 		"version":        constants.VERSION(),
 		"buildHash":      constants.BUILD(""),
 		"uuid":           a.instanceUUID.String(),

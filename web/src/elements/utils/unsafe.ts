@@ -8,7 +8,7 @@ import {
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { LitElement, nothing } from "lit";
+import { LitElement, nothing, PropertyDeclaration } from "lit";
 import { html as staticHTML, unsafeStatic } from "lit-html/static.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -35,21 +35,57 @@ export function isAKElementConstructor(input: CustomElementConstructor): input i
     return Object.prototype.isPrototypeOf.call(AKElement, input);
 }
 
-function getPrefix(type: unknown, isProperty: boolean) {
-    if (isProperty) {
-        return ".";
+export const Prefix = {
+    Property: ".",
+    BooleanAttribute: "?",
+    Attribute: "",
+} as const;
+
+export type Prefix = (typeof Prefix)[keyof typeof Prefix];
+
+/**
+ * Given a Lit property declaration, determine the appropriate prefix for rendering the property as either a property or an attribute, based on the declaration's type and attribute configuration.
+ *
+ * @param propDeclaration The Lit property declaration to analyze.
+ * @returns The determined prefix for rendering the property.
+ */
+function resolvePrefix<T extends PropertyDeclaration<unknown, unknown>>(
+    propDeclaration: T,
+): Prefix {
+    if (!propDeclaration.attribute) {
+        return Prefix.Property;
     }
 
-    switch (type) {
+    switch (propDeclaration.type) {
         case String:
-            return "";
+            return Prefix.Attribute;
         case Boolean:
-            return "?";
+            return Prefix.BooleanAttribute;
         default:
-            return ".";
+            return Prefix.Property;
     }
 }
 
+/**
+ * Given a Lit property declaration, a resolved prefix, and the original property key,
+ * determine the appropriate name to use for rendering the property,
+ * taking into account any custom attribute name specified in the declaration.
+ */
+function resolvePropertyName<T extends PropertyDeclaration<unknown, unknown>>(
+    propDeclaration: T,
+    prefix: Prefix,
+    key: string,
+): string {
+    if (prefix === Prefix.Property) {
+        return key;
+    }
+
+    if ("attribute" in propDeclaration && typeof propDeclaration.attribute === "string") {
+        return propDeclaration.attribute;
+    }
+
+    return key;
+}
 /**
  * Given a pre-registered custom element tag name and a record of properties,
  * render the element with the given properties applied.
@@ -63,16 +99,19 @@ export function StrictUnsafe<T extends CustomElementTagName>(
     tagName: T,
     props?: LitPropertyRecord<HTMLElementTagNameMap[T]>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends AKElement>(
     tagName: string,
     props?: LitPropertyRecord<T>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends string>(
     tagName: string,
     props?: T extends CustomElementTagName
         ? LitPropertyRecord<HTMLElementTagNameMap[T]>
         : LitPropertyRecord<LitElement>,
 ): SlottedTemplateResult;
+
 export function StrictUnsafe<T extends string>(
     tagName: string,
     props?: T extends CustomElementTagName
@@ -103,17 +142,20 @@ export function StrictUnsafe<T extends string>(
 
         const filteredProps: Record<string, unknown> = {};
 
-        for (const [key, value] of Object.entries(props || {})) {
-            const propDeclaration = elementProperties.get(key);
+        for (const [propName, propValue] of Object.entries(props || {})) {
+            const propDeclaration = elementProperties.get(propName);
 
             if (propDeclaration) {
-                const prefix = getPrefix(propDeclaration.type, !propDeclaration.attribute);
-                filteredProps[`${prefix}${key}`] = value;
+                const prefix = resolvePrefix(propDeclaration);
+                const name = resolvePropertyName(propDeclaration, prefix, propName);
+
+                filteredProps[`${prefix}${name}`] = propValue;
+
                 continue;
             }
 
-            if (observedAttributes.has(key) || key in ElementConstructor.prototype) {
-                filteredProps[key] = String(value);
+            if (observedAttributes.has(propName) || propName in ElementConstructor.prototype) {
+                filteredProps[propName] = String(propValue);
             }
         }
 
