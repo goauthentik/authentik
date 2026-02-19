@@ -192,7 +192,7 @@ async fn watch_config(
                 if res.is_none() {
                     break;
                 }
-                let manager = CONFIG_MANAGER.get().unwrap();
+                let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
                 if let Ok((new_config, _)) = Config::load(&manager.config_paths).await {
                     trace!("Configuration file changed, reloading");
                     let mut config = manager.config.write().await;
@@ -211,6 +211,8 @@ async fn watch_config(
 }
 
 pub(crate) async fn get_config<'a>() -> RwLockReadGuard<'a, Config> {
-    let manager = CONFIG_MANAGER.get().unwrap();
+    let manager = CONFIG_MANAGER
+        .get()
+        .expect("failed to get config, has it been initialized?");
     manager.config.read().await
 }

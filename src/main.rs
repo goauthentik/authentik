@@ -109,7 +109,7 @@ async fn main() -> Result<()> {
 
     rustls::crypto::aws_lc_rs::default_provider()
         .install_default()
-        .unwrap();
+        .expect("Failed to install rustls provider");
 
     let _sentry = if get_config().await.error_reporting.enabled {
         Some(sentry::init(sentry::ClientOptions {
@@ -119,7 +119,9 @@ async fn main() -> Result<()> {
                 .error_reporting
                 .sentry_dsn
                 .clone()
-                .map(|dsn| sentry::types::Dsn::from_str(&dsn).unwrap()),
+                .map(|dsn| {
+                    sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")
+                }),
             environment: Some(
                 get_config()
                     .await

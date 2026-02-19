@@ -94,5 +94,6 @@ pub(crate) async fn init(
 }
 
 pub(crate) fn get_db() -> &'static PgPool {
-    DB.get().unwrap()
+    DB.get()
+        .expect("failed to get db, has it been initialized?")
 }

@@ -1,5 +1,5 @@
-#![allow(unused)]
-#![allow(dead_code)]
+#![allow(unused, reason = "WIP")]
+#![allow(dead_code, reason = "WIP")]
 use std::{
     env,
     io::Write,
@@ -123,7 +123,7 @@ fn start_local_worker(
     Ok(())
 }
 
-#[allow(clippy::type_complexity)]
+#[expect(clippy::type_complexity, reason = "WIP")]
 fn make_pipes<'a>(
     py: Python<'a>,
 ) -> Result<(Py<PyAny>, Bound<'a, PyAny>, Py<PyAny>, Bound<'a, PyAny>)> {
@@ -147,7 +147,7 @@ fn make_pipes<'a>(
     ))
 }
 
-#[allow(clippy::type_complexity)]
+#[expect(clippy::type_complexity, reason = "WIP")]
 fn start_worker_processes(
     processes: usize,
     threads: usize,
@@ -477,7 +477,7 @@ output = generate_latest(registry)
                     .get_item("output")?
                     .unwrap_or(PyBytes::new(py, &[]).into_bound_py_any(py)?)
                     .cast::<PyBytes>()
-                    .unwrap()
+                    .expect("Failed to convert metrics")
                     .as_bytes()
                     .to_owned();
                 Ok::<_, eyre::Error>(metrics)
@@ -489,7 +489,7 @@ output = generate_latest(registry)
             .status(StatusCode::OK)
             .header("Content-Type", "text/plain; version=1.0.0; charset=utf-8")
             .body(Body::from(metrics))
-            .unwrap())
+            .expect("failed to create metrics response"))
     }
 
     pub(super) async fn run(state: Arc<RwLock<State>>) -> Result<()> {
@@ -529,7 +529,8 @@ mod worker_status {
 struct AppError(eyre::Error);
 
 impl<E> From<E> for AppError
-where E: Into<eyre::Error>
+where
+    E: Into<eyre::Error>,
 {
     fn from(err: E) -> Self {
         Self(err.into())

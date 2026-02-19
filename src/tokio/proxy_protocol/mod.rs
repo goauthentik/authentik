@@ -39,7 +39,7 @@ impl<S> ProxyProtocolStream<S> {
         self.project().stream
     }
 
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn try_into_stream(self) -> Result<S> {
         if self.remaining.is_empty() {
             Ok(self.stream)
@@ -66,7 +66,8 @@ impl<S> Deref for ProxyProtocolStream<S> {
 }
 
 impl<S> ProxyProtocolStream<S>
-where S: AsyncRead + Unpin
+where
+    S: AsyncRead + Unpin,
 {
     pub(crate) async fn new(mut stream: S) -> Result<Self, io::Error> {
         let mut remaining = Vec::with_capacity(READ_BUFFER_LEN);
@@ -107,7 +108,8 @@ where S: AsyncRead + Unpin
 }
 
 impl<S> AsyncRead for ProxyProtocolStream<S>
-where S: AsyncRead
+where
+    S: AsyncRead,
 {
     fn poll_read(
         self: Pin<&mut Self>,
@@ -130,7 +132,8 @@ where S: AsyncRead
 }
 
 impl<S> AsyncBufRead for ProxyProtocolStream<S>
-where S: AsyncBufRead
+where
+    S: AsyncBufRead,
 {
     fn poll_fill_buf(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<&[u8]>> {
         let this = self.project();
@@ -160,7 +163,8 @@ where S: AsyncBufRead
 }
 
 impl<S> AsyncWrite for ProxyProtocolStream<S>
-where S: AsyncWrite
+where
+    S: AsyncWrite,
 {
     fn poll_write(
         self: Pin<&mut Self>,

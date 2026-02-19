@@ -63,7 +63,7 @@ impl<'a> Iterator for Tlvs<'a> {
         match self
             .buf
             .get(1..3)
-            .map(|s| u16::from_be_bytes(s.try_into().unwrap()) as usize)
+            .map(|s| u16::from_be_bytes(s.try_into().expect("infallible")) as usize)
         {
             Some(u) if u + 3 <= self.buf.len() => {
                 let (ret, new) = self.buf.split_at(3 + u);
@@ -213,7 +213,7 @@ impl<'a> Tlv<'a> {
         }
     }
 
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn into_owned(self) -> Tlv<'static> {
         match self {
             Self::Alpn(v) => Tlv::Alpn(Cow::Owned(v.into_owned())),
@@ -281,7 +281,7 @@ impl<'a> SslInfo<'a> {
     /// SSL version
     ///
     /// See [`Tlv::SslVersion`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn version(&self) -> Option<&str> {
         tlv_borrowed!(self, SslVersion)
     }
@@ -289,7 +289,7 @@ impl<'a> SslInfo<'a> {
     /// SSL CN
     ///
     /// See [`Tlv::SslCn`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn cn(&self) -> Option<&str> {
         tlv_borrowed!(self, SslCn)
     }
@@ -297,7 +297,7 @@ impl<'a> SslInfo<'a> {
     /// SSL cipher
     ///
     /// See [`Tlv::SslCipher`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn cipher(&self) -> Option<&str> {
         tlv_borrowed!(self, SslCipher)
     }
@@ -305,7 +305,7 @@ impl<'a> SslInfo<'a> {
     /// SSL signature algorithm
     ///
     /// See [`Tlv::SslSigAlg`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn sig_alg(&self) -> Option<&str> {
         tlv_borrowed!(self, SslSigAlg)
     }
@@ -313,7 +313,7 @@ impl<'a> SslInfo<'a> {
     /// SSL key algorithm
     ///
     /// See [`Tlv::SslKeyAlg`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn key_alg(&self) -> Option<&str> {
         tlv_borrowed!(self, SslKeyAlg)
     }
@@ -381,7 +381,7 @@ impl<'a> Header<'a> {
     /// Raw ALPN extension data
     ///
     /// See [`Tlv::Alpn`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn alpn(&self) -> Option<&[u8]> {
         tlv_borrowed!(self, Alpn)
     }
@@ -389,7 +389,7 @@ impl<'a> Header<'a> {
     /// Authority - typically the hostname of the client (SNI)
     ///
     /// See [`Tlv::Authority`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn authority(&self) -> Option<&str> {
         tlv_borrowed!(self, Authority)
     }
@@ -397,7 +397,7 @@ impl<'a> Header<'a> {
     /// CRC32c checksum of the address information
     ///
     /// See [`Tlv::Crc32c`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn crc32c(&self) -> Option<u32> {
         tlv!(self, Crc32c)
     }
@@ -405,7 +405,7 @@ impl<'a> Header<'a> {
     /// Unique ID of the connection
     ///
     /// See [`Tlv::UniqueId`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn unique_id(&self) -> Option<&[u8]> {
         tlv_borrowed!(self, UniqueId)
     }
@@ -420,7 +420,7 @@ impl<'a> Header<'a> {
     /// Network namespace
     ///
     /// See [`Tlv::Netns`] for more information.
-    #[expect(unused)]
+    #[expect(unused, reason = "Left here if we extract this to a public library")]
     pub(crate) fn netns(&self) -> Option<&str> {
         tlv_borrowed!(self, Netns)
     }

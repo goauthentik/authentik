@@ -3,11 +3,11 @@ use axum::{
     Router,
     extract::{Query, Request, State},
     http::{
-        StatusCode,
-        header::{self, CONTENT_SECURITY_POLICY},
+        HeaderValue, StatusCode,
+        header::{CACHE_CONTROL, CONTENT_SECURITY_POLICY, VARY},
     },
     middleware::{self, Next},
-    response::Response,
+    response::{IntoResponse, Response},
     routing::any,
 };
 use jsonwebtoken::{Algorithm, DecodingKey, Validation, decode, decode_header};
@@ -115,10 +115,7 @@ async fn storage_middleware(
     next: Next,
 ) -> Response {
     if !is_storage_token_valid(config.usage, &get_config().await.secret_key, &request) {
-        return Response::builder()
-            .status(StatusCode::NOT_FOUND)
-            .body("404 page not found\n".into())
-            .unwrap();
+        return (StatusCode::NOT_FOUND, "404 page not found\n").into_response();
     }
 
     let mut response = next.run(request).await;
@@ -127,9 +124,7 @@ async fn storage_middleware(
         // Since media is user-controlled, better be safe
         response.headers_mut().insert(
             CONTENT_SECURITY_POLICY,
-            "default-src 'none'; style-src 'unsafe-inline'; sandbox"
-                .parse()
-                .unwrap(),
+            HeaderValue::from_static("default-src 'none'; style-src 'unsafe-inline'; sandbox"),
         );
     }
 
@@ -140,16 +135,16 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
     let mut response = next.run(request).await;
 
     response.headers_mut().insert(
-        header::CACHE_CONTROL,
-        "public, no-transform".parse().unwrap(),
+        CACHE_CONTROL,
+        HeaderValue::from_static("public, no-transform"),
     );
     response.headers_mut().insert(
         "X-authentik-version",
-        env!("CARGO_PKG_VERSION").parse().unwrap(),
+        HeaderValue::from_static(env!("CARGO_PKG_VERSION")),
     );
     response
         .headers_mut()
-        .insert(header::VARY, "X-authentik-version, Etag".parse().unwrap());
+        .insert(VARY, HeaderValue::from_static("X-authentik-version, Etag"));
 
     // TODO: etag
 

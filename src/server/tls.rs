@@ -50,7 +50,7 @@ fn generate_self_signed_cert(alg: &'static SignatureAlgorithm) -> Result<(Certif
         dn.push(DnType::CommonName, "authentik default certificate");
         dn
     };
-    params.subject_alt_names = vec![SanType::DnsName("*".try_into().unwrap())];
+    params.subject_alt_names = vec![SanType::DnsName("*".try_into()?)];
     params.key_usages = vec![
         KeyUsagePurpose::DigitalSignature,
         KeyUsagePurpose::KeyEncipherment,

@@ -37,7 +37,7 @@ output = generate_latest(registry)
                 .get_item("output")?
                 .unwrap_or(PyBytes::new(py, &[]).into_bound_py_any(py)?)
                 .cast::<PyBytes>()
-                .unwrap()
+                .expect("failed to create metrics")
                 .as_bytes()
                 .to_owned();
             Ok::<_, Report>(metrics)
@@ -49,5 +49,5 @@ output = generate_latest(registry)
         .status(StatusCode::OK)
         .header("Content-Type", "text/plain; version=1.0.0; charset=utf-8")
         .body(Body::from(metrics))
-        .unwrap())
+        .expect("failed to build metrics response"))
 }

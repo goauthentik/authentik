@@ -48,7 +48,7 @@ static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
             })
             .to_string(),
         )
-        .unwrap()
+        .expect("infallible")
 });
 
 static STARTUP_RESPONSE_HTML: LazyLock<Response<String>> = LazyLock::new(|| {
@@ -56,7 +56,7 @@ static STARTUP_RESPONSE_HTML: LazyLock<Response<String>> = LazyLock::new(|| {
         .status(StatusCode::SERVICE_UNAVAILABLE)
         .header(CONTENT_TYPE, "text/html")
         .body(include_str!("../../web/dist/standalone/loading/startup.html").to_owned())
-        .unwrap()
+        .expect("infallible")
 });
 
 static STARTUP_RESPONSE_PLAIN: LazyLock<Response<String>> = LazyLock::new(|| {
@@ -64,7 +64,7 @@ static STARTUP_RESPONSE_PLAIN: LazyLock<Response<String>> = LazyLock::new(|| {
         .status(StatusCode::SERVICE_UNAVAILABLE)
         .header(CONTENT_TYPE, "text/plain")
         .body("authentik starting".to_owned())
-        .unwrap()
+        .expect("infallible")
 });
 
 const SERVER: HeaderName = HeaderName::from_static("server");
@@ -130,8 +130,7 @@ async fn forward_request(
                 .map(|x| x.as_str())
                 .unwrap_or_default(),
         )
-        .build()
-        .unwrap();
+        .build()?;
     *req.uri_mut() = uri;
 
     for header_name in FORWARD_ALWAYS_REMOVED_HEADERS {

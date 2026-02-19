@@ -113,11 +113,14 @@ unused_qualifications = "warn"
 unescaped_backticks = "warn"
 
 [workspace.lints.clippy]
+allow_attributes = "warn"
+allow_attributes_without_reason = "warn"
 branches_sharing_code = "warn"
 cloned_instead_of_copied = "warn"
 dbg_macro = "warn"
 disallowed_types = "warn"
 empty_line_after_outer_attr = "warn"
+ignore_without_reason = "warn"
 inefficient_to_string = "warn"
 macro_use_imports = "warn"
 map_flatten = "warn"
@@ -129,6 +132,7 @@ str_to_string = "warn"
 todo = "warn"
 unreadable_literal = "warn"
 unseparated_literal_suffix = "warn"
+unwrap_used = "warn"
 
 [workspace.metadata.bacon]
 default_job = "run"
