@@ -199,7 +199,8 @@ export class FlowExecutor
             document.title = "continued";
             if (
                 this.#challenge?.component === "ak-stage-identification" &&
-                this.#challenge.applicationPreLaunch
+                this.#challenge.applicationPreLaunch &&
+                this.#challenge.applicationPreLaunch !== "blank://blank"
             ) {
                 multiTabOrchestrateLeave();
                 window.location.assign(this.#challenge.applicationPreLaunch);
@@ -213,7 +214,7 @@ export class FlowExecutor
                 if (!url.pathname.startsWith("/if/flow")) {
                     multiTabOrchestrateLeave();
                 }
-                window.location.assign(qs.get("next")!);
+                window.location.assign(url);
             }
         });
     }
@@ -248,7 +249,7 @@ export class FlowExecutor
         }
 
         console.debug("authentik/ws: Reloading after session authenticated event");
-        // window.location.reload();
+        window.location.reload();
     };
 
     public disconnectedCallback(): void {
