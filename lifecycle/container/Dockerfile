@@ -80,7 +80,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 # Stage 4: Download uv
 FROM ghcr.io/astral-sh/uv:0.10.4@sha256:4cac394b6b72846f8a85a7a0e577c6d61d4e17fe2ccee65d9451a8b3c9efb4ac AS uv
 # Stage 5: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.2-slim-trixie-fips@sha256:46c0658052e43ad303da39e461ad106c499a03fabd3512d05ff586e506507242 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.3-slim-trixie-fips@sha256:c2726911d327b377501adb6c1ca9ba6b9bde8feb09bc8787cd358413784fe39f AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
