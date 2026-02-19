@@ -1,6 +1,7 @@
 import "./styles.css";
 
 import { isGlossaryItem } from "../utils/glossaryUtils";
+import { shouldFilterFromSidebar as shouldFilterLearningCenterItem } from "../utils/learningCenterUtils";
 
 import { VersionPicker } from "#components/VersionPicker/index.tsx";
 
@@ -39,7 +40,9 @@ const DocSidebarItems = ({ items, ...props }: DocSidebarItemsProps): JSX.Element
         <DocSidebarItemsExpandedStateProvider>
             {includeVersionPicker ? <VersionPicker /> : null}
             {visibleItems.map((item, index) => {
-                if (isGlossaryItem(item)) {
+                // Filter out glossary and learning center items from sidebar
+                // They appear on their respective pages instead
+                if (isGlossaryItem(item) || shouldFilterLearningCenterItem(item)) {
                     return null;
                 }
 
