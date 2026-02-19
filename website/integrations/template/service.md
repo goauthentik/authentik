@@ -54,7 +54,7 @@ Template sentence that you can typically use here: "To confirm that authentik is
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
 
-## References
+## Resources
 
 List the external sources (official docs, community articles, blogs, videos) that were used to create this guide.
 
