@@ -7,12 +7,11 @@ This page describes the Enterprise features that are available in the authentik 
 
 ## Enterprise vs Enterprise Plus
 
-Enterprise Plus differs from Enterprise in that Plus offers the following options:
+The Enterprise release of authentik is available in two tiers: Enterprise and Enterprise+.
 
-- Billing and purchase via invoice
-- Dedicated, customized support and SLAs
-- Volume discounts at thousands of users
-- FIPS compliance for FedRAMP requirements
+Enterprise builds on authentik's open-source foundation with enterprise-grade features and ticket-based support.
+
+Enterprise+ is designed to provide the best overall end-user experience while mitigating risk and delivering the fastest time-to-value. It includes everything in Enterprise, plus onboarding best practices, dedicated support channels (Slack and/or scheduled video calls for complex issues) with SLA-backed response times, volume discounts, and support for FIPS-compliant deployments to meet FedRAMP-aligned requirements. It also supports billing and purchase via invoice.
 
 Both Enterprise and Enterprise Plus plans include all the following features:
 
