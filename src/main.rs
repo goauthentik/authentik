@@ -59,6 +59,7 @@ async fn install_tracing() -> Result<()> {
         filter_layer
     };
 
+    // TODO: refine this to match Python
     if get_config().await.debug {
         let console_layer = console_subscriber::ConsoleLayer::builder()
             .server_addr(get_config().await.listen.debug)

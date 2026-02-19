@@ -54,7 +54,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                     GUNICORN_READY.store(true, Ordering::Relaxed);
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(5)) => {
+            _ = tokio::time::sleep(Duration::from_secs(1)) => {
                 if !gunicorn.is_alive().await {
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }

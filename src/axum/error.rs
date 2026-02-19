@@ -6,10 +6,11 @@ use eyre::Report;
 use tracing::warn;
 
 #[derive(Debug)]
-pub(crate) struct AppError(Report);
+pub(crate) struct AppError(pub(crate) Report);
 
 impl<E> From<E> for AppError
-where E: Into<Report>
+where
+    E: Into<Report>,
 {
     fn from(err: E) -> Self {
         Self(err.into())

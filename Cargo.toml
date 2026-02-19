@@ -75,6 +75,7 @@ thiserror = "2.0.18"
 time = "0.3.45"
 tokio = { version = "1.49.0", features = ["full"] }
 tokio-rustls = "0.26.4"
+tokio-tungstenite = "0.28.0"
 tokio-util = "0.7.18"
 tower = "0.5.3"
 tower-http = { version = "0.6.8", features = [
@@ -168,6 +169,7 @@ glob.workspace = true
 http-body-util.workspace = true
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
+hyper.workspace = true
 ipnet.workspace = true
 jsonwebtoken.workspace = true
 nix.workspace = true
@@ -186,6 +188,7 @@ sqlx = { workspace = true, optional = true }
 time.workspace = true
 thiserror.workspace = true
 tokio-rustls.workspace = true
+tokio-tungstenite.workspace = true
 tokio-util.workspace = true
 tokio.workspace = true
 tower-http.workspace = true

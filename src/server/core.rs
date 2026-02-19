@@ -35,7 +35,10 @@ use crate::{
         extract::{client_ip::ClientIP, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
     },
     config::get_config,
-    server::gunicorn::GUNICORN_READY,
+    server::{
+        core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
+        gunicorn::GUNICORN_READY,
+    },
 };
 
 type BackendClient = Client<UnixSocketConnector<PathBuf>, Body>;
@@ -111,9 +114,9 @@ async fn forward_request(
     State(client): State<BackendClient>,
     TrustedProxy(trusted_proxy): TrustedProxy,
     tls_state: Option<Extension<TlsState>>,
-    mut req: Request,
+    mut request: Request,
 ) -> Result<Response> {
-    let accept_header = req
+    let accept_header = request
         .headers()
         .get(ACCEPT)
         .map(|v| v.to_str().unwrap_or_default().to_owned())
@@ -127,31 +130,38 @@ async fn forward_request(
         .scheme("http")
         .authority("localhost:8000")
         .path_and_query(
-            req.uri()
+            request
+                .uri()
                 .path_and_query()
                 .map(|x| x.as_str())
                 .unwrap_or_default(),
         )
         .build()?;
-    *req.uri_mut() = uri;
+    *request.uri_mut() = uri;
 
     for header_name in FORWARD_ALWAYS_REMOVED_HEADERS {
-        req.headers_mut().remove(header_name);
+        request.headers_mut().remove(header_name);
     }
     if !trusted_proxy {
         for header_name in FORWARD_REMOVED_HEADERS_IF_UNTRUSTED {
-            req.headers_mut().remove(header_name);
+            request.headers_mut().remove(header_name);
         }
     }
 
-    req.headers_mut().insert(
+    request.headers_mut().insert(
         X_FORWARDED_FOR,
         HeaderValue::from_str(&client_ip.to_string())?,
     );
-    req.headers_mut()
+    request
+        .headers_mut()
         .insert(HOST, HeaderValue::from_str(&host)?);
-    req.headers_mut()
+    request
+        .headers_mut()
         .insert(X_FORWARDED_PROTO, HeaderValue::from_str(scheme.as_ref())?);
+
+    if is_websocket_upgrade(request.headers()) {
+        return handle_websocket_upgrade(request).await;
+    }
 
     if let Some(tls_state) = tls_state
         && let Some(peer_certificates) = &tls_state.peer_certificates
@@ -166,11 +176,12 @@ async fn forward_request(
             })
             .collect::<Vec<_>>()
             .join(",");
-        req.headers_mut()
+        request
+            .headers_mut()
             .insert("X_FORWARDED_CLIENT_CERT", HeaderValue::from_str(&xfcc)?);
     }
 
-    match client.request(req).await {
+    match client.request(request).await {
         Ok(res) => {
             let (parts, body) = res.into_parts();
             Ok(Response::from_parts(
@@ -216,4 +227,197 @@ pub(super) async fn build_router() -> Router {
         )
         .merge(build_proxy_router().await)
         .layer(from_fn(powered_by_middleware))
+}
+
+mod websockets {
+    use crate::{
+        axum::error::{AppError, Result},
+        server::gunicorn::gunicorn_socket_path,
+    };
+    use axum::{
+        body::Body,
+        extract::Request,
+        http::{
+            HeaderMap, HeaderValue, StatusCode,
+            header::{
+                CONNECTION, SEC_WEBSOCKET_ACCEPT, SEC_WEBSOCKET_KEY, SEC_WEBSOCKET_VERSION, UPGRADE,
+            },
+        },
+        response::{IntoResponse, Response},
+    };
+    use futures::{SinkExt, StreamExt};
+    use hyper_util::rt::TokioIo;
+    use tokio::{net::UnixStream, sync::mpsc};
+    use tokio_tungstenite::{
+        WebSocketStream, client_async,
+        tungstenite::{Message, handshake::derive_accept_key, protocol::Role},
+    };
+    use tracing::debug;
+    use tracing::trace;
+    use tracing::warn;
+
+    pub(super) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
+        let has_upgrade = headers
+            .get(UPGRADE)
+            .and_then(|v| v.to_str().ok())
+            .map(|v| v.eq_ignore_ascii_case("websocket"))
+            .unwrap_or(false);
+
+        let has_connection = headers
+            .get(CONNECTION)
+            .and_then(|v| v.to_str().ok())
+            .map(|v| {
+                v.split(',')
+                    .any(|part| part.trim().eq_ignore_ascii_case("upgrade"))
+            })
+            .unwrap_or(false);
+
+        let has_websocket_key = headers.contains_key(SEC_WEBSOCKET_KEY);
+        let has_websocket_version = headers.contains_key(SEC_WEBSOCKET_VERSION);
+
+        has_upgrade && has_connection && has_websocket_key && has_websocket_version
+    }
+
+    pub(super) async fn handle_websocket_upgrade(request: Request) -> Result<Response> {
+        let ws_key = match request
+            .headers()
+            .get(SEC_WEBSOCKET_KEY)
+            .and_then(|key| key.to_str().ok())
+        {
+            Some(key) => key,
+            None => return Ok((StatusCode::BAD_REQUEST, "").into_response()),
+        };
+
+        let ws_accept = derive_accept_key(ws_key.as_bytes());
+
+        let path_q = request
+            .uri()
+            .path_and_query()
+            .map(|x| x.as_str())
+            .unwrap_or_default();
+        let uri = format!("ws://localhost:8000{path_q}");
+
+        let mut ws_request =
+            tokio_tungstenite::tungstenite::handshake::client::Request::builder().uri(uri);
+        for (k, v) in request.headers() {
+            ws_request = ws_request.header(k.as_str(), v);
+        }
+        let ws_request = ws_request.body(())?;
+
+        let response = Response::builder()
+            .status(StatusCode::SWITCHING_PROTOCOLS)
+            .header(UPGRADE, "websocket")
+            .header(CONNECTION, "upgrade")
+            .header(SEC_WEBSOCKET_ACCEPT, ws_accept)
+            .body(Body::empty())?;
+
+        tokio::spawn(async move {
+            if let Err(err) = handle_websocket_connection(request, ws_request).await {
+                warn!("WebSocket connection error: {}", err.0);
+            }
+        });
+
+        Ok(response)
+    }
+
+    async fn handle_websocket_connection(
+        request: Request,
+        ws_request: tokio_tungstenite::tungstenite::handshake::client::Request,
+    ) -> Result<()> {
+        let upgraded = hyper::upgrade::on(request).await?;
+        let io = TokioIo::new(upgraded);
+        let client_ws = WebSocketStream::from_raw_socket(io, Role::Server, None).await;
+
+        let mut upstream_ws = {
+            let stream = UnixStream::connect(gunicorn_socket_path()).await?;
+            let (ws_stream, _) = client_async(ws_request, stream).await?;
+            ws_stream
+        };
+
+        let (mut client_sender, mut client_receiver) = client_ws.split();
+        let (mut upstream_sender, mut upstream_receiver) = upstream_ws.split();
+
+        let (close_tx, mut close_rx) = mpsc::channel::<()>(1);
+        let close_tx_upstream = close_tx.clone();
+
+        let client_to_upstream = tokio::spawn(async move {
+            let mut client_closed = false;
+            while let Some(msg) = client_receiver.next().await {
+                let msg = msg?;
+                match msg {
+                    Message::Close(_) => {
+                        if !client_closed {
+                            upstream_sender.send(Message::Close(None)).await?;
+                            close_tx.send(()).await.ok();
+                            client_closed = true;
+                            break;
+                        }
+                    }
+                    msg @ Message::Binary(_)
+                    | msg @ Message::Text(_)
+                    | msg @ Message::Ping(_)
+                    | msg @ Message::Pong(_) => {
+                        if !client_closed {
+                            upstream_sender.send(msg).await?;
+                        }
+                    }
+                    Message::Frame(_) => {}
+                }
+            }
+            if !client_closed {
+                upstream_sender.send(Message::Close(None)).await?;
+                close_tx.send(()).await.ok();
+            }
+            Ok::<_, AppError>(())
+        });
+
+        let upstream_to_client = tokio::spawn(async move {
+            let mut upstream_closed = false;
+            while let Some(msg) = upstream_receiver.next().await {
+                let msg = msg?;
+                match msg {
+                    Message::Close(_) => {
+                        if !upstream_closed {
+                            client_sender.send(Message::Close(None)).await?;
+                            close_tx_upstream.send(()).await.ok();
+                            upstream_closed = true;
+                            break;
+                        }
+                    }
+                    msg @ Message::Binary(_)
+                    | msg @ Message::Text(_)
+                    | msg @ Message::Ping(_)
+                    | msg @ Message::Pong(_) => {
+                        if !upstream_closed {
+                            client_sender.send(msg).await?;
+                        }
+                    }
+                    Message::Frame(_) => {}
+                }
+            }
+            if !upstream_closed {
+                client_sender.send(Message::Close(None)).await?;
+                close_tx_upstream.send(()).await.ok();
+            }
+            Ok::<_, AppError>(())
+        });
+
+        tokio::select! {
+            _ = close_rx.recv() => {
+                trace!("WebSocket connection closed gracefully");
+            },
+            res = client_to_upstream => {
+                if let Err(err) = res {
+                    debug!("Client to upstream task failed: {:?}", err);
+                }
+            }
+            res = upstream_to_client => {
+                if let Err(err) = res {
+                    debug!("Upstream to client task failed: {:?}", err);
+                }
+            }
+        }
+
+        Ok(())
+    }
 }
