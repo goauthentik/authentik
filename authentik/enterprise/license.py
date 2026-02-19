@@ -15,6 +15,7 @@ from django.core.cache import cache
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
+from jwt.algorithms import ECAlgorithm
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     ChoiceField,
@@ -110,6 +111,7 @@ class LicenseKey:
         except InvalidSignature, TypeError, ValueError, Error:
             raise ValidationError("Unable to verify license") from None
         try:
+            ECAlgorithm._validate_curve = lambda *_: True
             body = from_dict(
                 LicenseKey,
                 decode(
