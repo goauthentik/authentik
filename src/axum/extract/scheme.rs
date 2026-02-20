@@ -35,14 +35,14 @@ where S: Send + Sync
         if is_trusted {
             if let Some(proto) = parts.headers.get(X_FORWARDED_PROTO)
                 && let Ok(proto) = proto.to_str()
-                && let Ok(scheme) = proto.try_into()
+                && let Ok(scheme) = proto.to_lowercase().as_str().try_into()
             {
                 return Ok(Self(scheme));
             }
 
             if let Some(proto) = parts.headers.get(X_FORWARDED_SCHEME)
                 && let Ok(proto) = proto.to_str()
-                && let Ok(scheme) = proto.try_into()
+                && let Ok(scheme) = proto.to_lowercase().as_str().try_into()
             {
                 return Ok(Self(scheme));
             }
@@ -76,5 +76,177 @@ where S: Send + Sync
         } else {
             Ok(Self(http::uri::Scheme::HTTP))
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use axum::{body::Body, http::Request};
+
+    use super::*;
+
+    #[tokio::test]
+    async fn x_forwarded_proto_trusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-proto", "https")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("scheme extraction should succeed").0,
+            http::uri::Scheme::HTTPS,
+        );
+    }
+
+    #[tokio::test]
+    async fn x_forwarded_scheme_trusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-scheme", "https")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("scheme extraction should succeed").0,
+            http::uri::Scheme::HTTPS,
+        );
+    }
+
+    #[tokio::test]
+    async fn forwarded_header_trusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("forwarded", "proto=https")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTPS,
+        );
+    }
+
+    #[tokio::test]
+    async fn x_forwarded_proto_untrusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-proto", "https")
+            .extension(TrustedProxy(false))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTP,
+        );
+    }
+
+    #[tokio::test]
+    async fn scheme_from_tls_state() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .extension(TlsState {
+                peer_certificates: None,
+            })
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTPS,
+        );
+    }
+
+    #[tokio::test]
+    async fn scheme_defaults_to_http() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTP,
+        );
+    }
+
+    #[tokio::test]
+    async fn priority_order() {
+        // Test that X-Forwarded-Proto takes priority over other headers when trusted
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-proto", "http")
+            .header("x-forwarded-scheme", "https")
+            .header("forwarded", "proto=https")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        // Should use X-Forwarded-Proto (http) since it has highest priority
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTP,
+        );
+    }
+
+    #[tokio::test]
+    async fn multiple_forwarded_stanzas() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("forwarded", "proto=http, proto=https")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTP,
+        );
+    }
+
+    #[tokio::test]
+    async fn test_scheme_case_insensitive() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-proto", "HTTPS")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result = Scheme::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Scheme extraction should succeed").0,
+            http::uri::Scheme::HTTPS,
+        );
     }
 }

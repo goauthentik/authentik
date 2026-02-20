@@ -82,3 +82,181 @@ where S: Send + Sync
         Ok(None)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use axum::{body::Body, http::Request};
+
+    use super::*;
+
+    #[tokio::test]
+    async fn host_header() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("host", "example.com:8080")
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "example.com:8080",
+        );
+    }
+
+    #[tokio::test]
+    async fn from_uri() {
+        let req = Request::builder()
+            .uri("http://example.com:8080/path")
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn x_forwarded_host_trusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-host", "forwarded.example.com")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "forwarded.example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn forwarded_header_trusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("forwarded", "host=forwarded.example.com")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "forwarded.example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn forwarded_host_untrusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-host", "malicious.example.com")
+            .extension(TrustedProxy(false))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn forwarded_header_untrusted() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("forwarded", "host=malicious.example.com")
+            .extension(TrustedProxy(false))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn priority_order() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-host", "x-forwarded.example.com")
+            .header("forwarded", "host=forwarded.example.com")
+            .header("host", "host-header.example.com")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "x-forwarded.example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn no_host_found() {
+        let req = Request::builder()
+            .uri("/path")
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_err());
+        assert_eq!(
+            result.expect_err("Should fail when no host found").0,
+            StatusCode::BAD_REQUEST,
+        );
+    }
+
+    #[tokio::test]
+    async fn multiple_forwarded_stanzas() {
+        let req = Request::builder()
+            .uri("http://example.com/path")
+            .header(
+                "forwarded",
+                "host=first.example.com, host=second.example.com",
+            )
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request");
+
+        let result =
+            <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed").0,
+            "first.example.com",
+        );
+    }
+}

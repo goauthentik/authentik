@@ -12,7 +12,7 @@ use tokio::{
     task::{JoinSet, join_set::Builder},
 };
 use tokio_util::sync::{CancellationToken, WaitForCancellationFuture};
-use tracing::{info, trace};
+use tracing::info;
 
 /// All the signal streams we watch for. We don't create those directly in [`watch_signals`]
 /// because that would prevent us from handling errors early.
