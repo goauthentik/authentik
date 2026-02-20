@@ -9,6 +9,14 @@ Your Entra ID tenant must be configured before you [create a Entra ID provider](
 
 This involves creating an app registration, generating a secret, and configuring the required API permissions.
 
+:::warning Custom email domain
+The Entra ID provider verifies whether the email domain of each user is available in Entra ID.
+
+The email domain must be [configured as a custom email domain in Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/domains-manage#add-custom-domain-names-to-your-microsoft-entra-organization), otherwise user provisioning will fail.
+
+Alternatively, users can be provisioned with the default onmicrosoft domain of the Entra ID tenant: `@<tenant name>.onmicrosoft.com`. A modified version of `authentik default Microsoft Entra Mapping: User` property mapping can be used to automatically convert any unavailable domains to the default onmicrosoft domain. See [Email conversion](./create-entra-provider.md#email-conversion) for more information.
+:::
+
 ## Configuring you Entra ID tenant
 
 1. Log in to the [Entra ID admin center](https://entra.microsoft.com).
@@ -30,7 +38,6 @@ This involves creating an app registration, generating a secret, and configuring
     - `Group.Create`
     - `Group.ReadWrite.All`
     - `GroupMember.ReadWrite.All`
-    - `User.Read`
     - `User.ReadWrite.All`
 12. Click **Add permissions**.
 13. Under **Configured permissions**, click **Grant admin consent for default directory**.
