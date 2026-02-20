@@ -176,13 +176,15 @@ When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environ
 
 ## Troubleshooting
 
-- If you can't login anymore or the authentication flow repeats (perhaps due to an incorrectly configured stage or a failed flow import), you can create a recovery key by running this command in your terminal:
+### Recovery key
+
+If you can't login anymore or the authentication flow repeats (perhaps due to an incorrectly configured stage or a failed flow import), you can create a recovery key by running this command in your terminal:
 
 `uv run ak create_recovery_key 10 akadmin`
 
 Copy the generated recovery key and paste it into the URL, after the domain. For example:
 
-`http://localhost:9000//recovery/use-token/ChFk2nJKJKJKY9OdIc8yv6RCgpGYp5vfGkurdndBhR6qm6DlHHoJoWDdlvLu0/`
+`http://localhost:9000//recovery/use-token/ChFk2nJKJKJKY9OdIc8yv6RCgpGYp5rdndBhR6qHoHoJoWDdlvLuvU/`
 
 ## End-to-End (E2E) Setup
 
