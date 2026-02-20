@@ -51,7 +51,7 @@ To create an Entra ID provider in authentik, you must have already [configured E
 
 When the default `authentik default Microsoft Entra Mapping: User` property mapping is used, authentik checks whether each user's email domain is verified in your Entra ID tenant.
 
-In which case you must configure each user's email domain as a [verified custom domain in Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/domains-manage#add-custom-domain-names-to-your-microsoft-entra-organization); otherwise, provisioning fails. The tenant's default onmicrosoft.com domain (e.g., `@<tenant name>.onmicrosoft.com`), is considered a verified domain.
+In which case, you must configure each user's email domain as a [verified custom domain in Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/domains-manage#add-custom-domain-names-to-your-microsoft-entra-organization); otherwise, provisioning fails. The tenant's default `onmicrosoft.com` domain (e.g., `@<tenant name>.onmicrosoft.com`), is considered a verified domain.
 
 ### Email-verified-users
 
