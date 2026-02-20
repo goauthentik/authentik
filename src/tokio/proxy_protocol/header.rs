@@ -1,6 +1,7 @@
 use std::{borrow::Cow, fmt, net::SocketAddr, str::from_utf8};
 
 use thiserror::Error;
+use tracing::instrument;
 
 /// Protocol type
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
@@ -351,6 +352,7 @@ impl<'a> Header<'a> {
     /// This function will borrow the buffer for the lifetime of the returned header. If
     /// you need to keep the header around for longer than the buffer, use
     /// [`Header::into_owned`].
+    #[instrument(skip_all)]
     pub(super) fn parse(buf: &'a [u8]) -> Result<(Self, usize), Error> {
         match buf.first() {
             Some(b'P') => super::v1::decode(buf),
@@ -502,7 +504,7 @@ mod tests {
 
     #[test]
     fn test_parse_proxy_header_v1() {
-        let (res, consumed) = Header::parse(V1_TCPV4).unwrap();
+        let (res, consumed) = Header::parse(V1_TCPV4).expect("failed to parse");
         assert_eq!(consumed, V1_TCPV4.len());
         assert_eq!(
             res.0,
@@ -514,7 +516,7 @@ mod tests {
         );
         assert_eq!(res.1, vec![0; 0]);
 
-        let (res, consumed) = Header::parse(V1_TCPV6).unwrap();
+        let (res, consumed) = Header::parse(V1_TCPV6).expect("failed to parse");
         assert_eq!(consumed, V1_TCPV6.len());
         assert_eq!(
             res.0,
@@ -535,11 +537,11 @@ mod tests {
 
     #[test]
     fn test_parse_proxy_header_v2() {
-        let (res, consumed) = Header::parse(V2_LOCAL).unwrap();
+        let (res, consumed) = Header::parse(V2_LOCAL).expect("failed to parse");
         assert_eq!(consumed, V2_LOCAL.len());
         assert_eq!(res.0, None);
 
-        let (res, consumed) = Header::parse(V2_TCPV4).unwrap();
+        let (res, consumed) = Header::parse(V2_TCPV4).expect("failed to parse");
         assert_eq!(consumed, V2_TCPV4.len());
         assert_eq!(
             res.0,
@@ -551,7 +553,7 @@ mod tests {
         );
         assert_eq!(res.1, vec![0; 0]);
 
-        let (res, consumed) = Header::parse(V2_TCPV6).unwrap();
+        let (res, consumed) = Header::parse(V2_TCPV6).expect("failed to parse");
         assert_eq!(consumed, V2_TCPV6.len());
         assert_eq!(
             res.0,
@@ -572,13 +574,16 @@ mod tests {
 
     #[test]
     fn test_parse_proxy_header_v2_with_tlvs() {
-        let (res, _) = Header::parse(V2_TCPV4_TLV).unwrap();
+        let (res, _) = Header::parse(V2_TCPV4_TLV).expect("failed to parse");
 
         let mut fields = res.tlvs();
         assert_eq!(fields.next(), Some(Ok(Tlv::Crc32c(0xd399_d8d8))));
         assert_eq!(fields.next(), Some(Ok(Tlv::UniqueId(b"1234"[..].into()))));
 
-        let ssl = fields.next().unwrap().unwrap();
+        let ssl = fields
+            .next()
+            .expect("next tlv missing")
+            .expect("tlv parsing failed");
         let ssl = match ssl {
             Tlv::Ssl(ssl) => ssl,
             _ => panic!("expected SSL TLV"),

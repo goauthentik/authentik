@@ -9,7 +9,7 @@ use tokio::{
     net::UnixStream,
     process::{Child, Command},
 };
-use tracing::warn;
+use tracing::{info, trace, warn};
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
@@ -21,6 +21,7 @@ pub(super) struct Gunicorn(Child);
 
 impl Gunicorn {
     pub(super) fn new() -> Result<Self> {
+        info!("starting gunicorn");
         Ok(Self(
             Command::new("gunicorn")
                 .args([
@@ -35,6 +36,10 @@ impl Gunicorn {
     }
 
     async fn shutdown(&mut self, signal: Signal) -> Result<()> {
+        trace!(
+            signal = signal.as_str(),
+            "sending shutdown signal to gunicorn"
+        );
         if let Some(id) = self.0.id() {
             kill(Pid::from_raw(id as i32), signal)?;
         }
@@ -43,10 +48,12 @@ impl Gunicorn {
     }
 
     pub(super) async fn graceful_shutdown(&mut self) -> Result<()> {
+        info!("gracefully shutting down gunicorn");
         self.shutdown(Signal::SIGTERM).await
     }
 
     pub(super) async fn fast_shutdown(&mut self) -> Result<()> {
+        info!("immediately shutting down gunicorn");
         self.shutdown(Signal::SIGINT).await
     }
 
@@ -66,6 +73,8 @@ impl Gunicorn {
     }
 
     pub(crate) async fn is_socket_ready() -> bool {
-        UnixStream::connect(gunicorn_socket_path()).await.is_ok()
+        let result = UnixStream::connect(gunicorn_socket_path()).await;
+        trace!("checking if gunicorn is ready: {result:?}");
+        result.is_ok()
     }
 }

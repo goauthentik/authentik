@@ -75,7 +75,17 @@ log:
   http_headers:
     - User-Agent
   rust_log:
-    - hyper_util::client::legacy::pool=warn
+    "console_subscriber": info
+    "hyper_util::client::legacy::pool": warn
+    "mio": info
+    "notify": info
+    "sqlx": info
+    "sqlx_postgres": info
+    "tokio": info
+    "runtime": info
+    "runtime::resource::poll_op": info
+    "runtime::resource::state_update": info
+    "runtime::resource::async_op": info
 
 sessions:
   unauthenticated_age: days=1

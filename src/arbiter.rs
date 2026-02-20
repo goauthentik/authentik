@@ -12,7 +12,7 @@ use tokio::{
     task::{JoinSet, join_set::Builder},
 };
 use tokio_util::sync::{CancellationToken, WaitForCancellationFuture};
-use tracing::info;
+use tracing::{info, trace};
 
 /// All the signal streams we watch for. We don't create those directly in [`watch_signals`]
 /// because that would prevent us from handling errors early.
@@ -44,6 +44,7 @@ async fn watch_signals(
     arbiter: Arbiter,
     _signals_rx: broadcast::Receiver<SignalKind>,
 ) -> Result<()> {
+    info!("starting signals watcher");
     let SignalStreams {
         mut hup,
         mut int,
@@ -55,19 +56,19 @@ async fn watch_signals(
     loop {
         tokio::select! {
             _ = hup.recv() => {
-                info!("HUP received. Shutting down immediately.");
+                info!("signal HUP received");
                 arbiter.do_fast_shutdown().await;
             },
             _ = int.recv() => {
-                info!("INT received. Shutting down immediately.");
+                info!("signal INT received");
                 arbiter.do_fast_shutdown().await;
             },
             _ = quit.recv() => {
-                info!("QUIT received. Shutting down immediately.");
+                info!("signal QUIT received");
                 arbiter.do_fast_shutdown().await;
             },
             _ = usr1.recv() => {
-                info!("URS1 received.");
+                info!("signal URS1 received");
                 arbiter.signals_tx.send(SignalKind::user_defined1())?;
             },
             _ = usr2.recv() => {
@@ -75,10 +76,13 @@ async fn watch_signals(
                 arbiter.signals_tx.send(SignalKind::user_defined2())?;
             },
             _ = term.recv() => {
-                info!("TERM received. Shutting down gracefully.");
+                info!("signal TERM received");
                 arbiter.do_graceful_shutdown().await;
             },
-            _ = arbiter.shutdown() => return Ok(()),
+            _ = arbiter.shutdown() => {
+                info!("stopping signals watcher");
+                return Ok(());
+            }
         };
     }
 }
@@ -204,23 +208,27 @@ impl Arbiter {
 
     /// Shutdown the application immediately.
     async fn do_fast_shutdown(&self) {
+        info!("arbiter has been told to shutdown immediately");
         self.handles
             .lock()
             .await
             .iter()
             .for_each(|handle| handle.shutdown());
+        info!("all webservers have been shutdown, shutting down the other tasks immediately");
         self.fast_shutdown.cancel();
         self.shutdown.cancel();
     }
 
     /// Shutdown the application gracefully.
     async fn do_graceful_shutdown(&self) {
+        info!("arbiter has been told to shutdown gracefully");
         self.handles
             .lock()
             .await
             .iter()
             // TODO: make configurable
             .for_each(|handle| handle.graceful_shutdown(Some(Duration::from_secs(30))));
+        info!("all webservers have been shutdown, shutting down the other tasks gracefully");
         self.graceful_shutdown.cancel();
         self.shutdown.cancel();
     }

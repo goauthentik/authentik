@@ -9,7 +9,7 @@ use axum_server::{Handle, tls_rustls::RustlsConfig};
 use eyre::{Result, eyre};
 use tokio::{signal::unix::SignalKind, sync::broadcast::error::RecvError};
 use tower::ServiceExt;
-use tracing::info;
+use tracing::{info, warn};
 
 use crate::{
     arbiter::{Arbiter, Tasks},
@@ -29,6 +29,7 @@ mod tls;
 pub(super) struct Cli {}
 
 async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> {
+    info!("starting gunicorn watcher");
     let mut signals_rx = arbiter.signals_subscribe();
     loop {
         tokio::select! {
@@ -42,6 +43,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                     },
                     Err(RecvError::Lagged(_)) => continue,
                     Err(RecvError::Closed) => {
+                        warn!("error receiving signals");
                         return Err(RecvError::Closed.into());
                     }
                 }

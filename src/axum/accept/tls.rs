@@ -4,6 +4,7 @@ use futures::future::BoxFuture;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio_rustls::{rustls::pki_types::CertificateDer, server::TlsStream};
 use tower::Layer;
+use tracing::instrument;
 
 #[derive(Clone, Debug)]
 pub(crate) struct TlsState {
@@ -34,6 +35,7 @@ where
     type Service = AddExtension<A::Service, TlsState>;
     type Stream = TlsStream<A::Stream>;
 
+    #[instrument(skip_all)]
     fn accept(&self, stream: I, service: S) -> Self::Future {
         let acceptor = self.inner.clone();
 

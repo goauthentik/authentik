@@ -6,6 +6,7 @@ use axum::{
     http::{self, header::FORWARDED, request::Parts},
 };
 use forwarded_header_value::{ForwardedHeaderValue, Protocol};
+use tracing::instrument;
 
 use crate::axum::{
     accept::{proxy_protocol::ProxyProtocolState, tls::TlsState},
@@ -23,6 +24,7 @@ where S: Send + Sync
 {
     type Rejection = Infallible;
 
+    #[instrument(skip_all)]
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
         let is_trusted = parts
             .extract::<TrustedProxy>()

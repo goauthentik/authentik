@@ -18,6 +18,7 @@ use rustls::{
     server::{ClientHello, ResolvesServerCert},
     sign::CertifiedKey,
 };
+use tracing::info;
 
 use crate::axum::accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor};
 
@@ -27,6 +28,7 @@ pub(super) async fn run_server_tls(
     config: RustlsConfig,
     handle: Handle<SocketAddr>,
 ) -> Result<()> {
+    info!(addr = addr.to_string(), "starting tls server");
     axum_server::Server::bind(addr)
         .acceptor(TlsAcceptor::new(RustlsAcceptor::new(config).acceptor(
             ProxyProtocolAcceptor::new().acceptor(DefaultAcceptor::new()),

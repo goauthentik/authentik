@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use ::tokio::sync::broadcast;
+use ::tracing::{error, info, trace};
 use argh::FromArgs;
 use eyre::{Result, eyre};
 use pyo3::Python;
@@ -18,6 +19,7 @@ mod proxy;
 #[cfg(feature = "server")]
 mod server;
 mod tokio;
+mod tracing;
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -35,63 +37,8 @@ enum Command {
     Proxy(proxy::Cli),
 }
 
-fn install_tracing() -> Result<()> {
-    use tracing_error::ErrorLayer;
-    use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
-
-    let config = config::get();
-
-    let default = format!("{},postgres=info", config.log_level);
-    let filter_layer = EnvFilter::builder()
-        .with_default_directive(config.log_level.parse().expect("Invalid log_level"))
-        .parse(default)?;
-    let filter_layer = if !config.log.rust_log.is_empty() {
-        filter_layer.add_directive(config.log.rust_log.join(",").parse()?)
-    } else {
-        filter_layer
-    };
-
-    // TODO: refine this to match Python
-    if config.debug {
-        let console_layer = console_subscriber::ConsoleLayer::builder()
-            .server_addr(config.listen.debug)
-            .spawn();
-        tracing_subscriber::registry()
-            .with(console_layer)
-            .with(filter_layer)
-            .with(
-                fmt::layer()
-                    .compact()
-                    .with_thread_ids(true)
-                    .with_thread_names(true)
-                    .with_file(true)
-                    .with_line_number(true)
-                    .with_writer(std::io::stderr),
-            )
-            .with(ErrorLayer::default())
-            .with(sentry::integrations::tracing::layer())
-            .init();
-    } else {
-        tracing_subscriber::registry()
-            .with(filter_layer)
-            .with(
-                fmt::layer()
-                    .json()
-                    .with_thread_ids(true)
-                    .with_thread_names(true)
-                    .with_file(true)
-                    .with_line_number(true)
-                    .with_writer(std::io::stderr),
-            )
-            .with(ErrorLayer::default())
-            .with(sentry::integrations::tracing::layer())
-            .init();
-    }
-
-    Ok(())
-}
-
 fn install_sentry() -> sentry::ClientInitGuard {
+    trace!("setting up sentry");
     let config = config::get();
     sentry::init(sentry::ClientOptions {
         // TODO: refine a bit more
@@ -109,10 +56,14 @@ fn install_sentry() -> sentry::ClientInitGuard {
     })
 }
 
-#[::tokio::main(crate = "::tokio")]
-async fn main() -> Result<()> {
+fn main() -> Result<()> {
+    let tracing_crude = tracing::install_crude();
+    info!(version = env!("CARGO_PKG_VERSION"), "authentik is starting");
+
+    trace!("installing error formatting");
     color_eyre::install()?;
 
+    trace!("installing rustls crypto provider");
     rustls::crypto::aws_lc_rs::default_provider()
         .install_default()
         .expect("Failed to install rustls provider");
@@ -129,9 +80,17 @@ async fn main() -> Result<()> {
             unsafe {
                 std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
             }
+            trace!(
+                env = std::env::var("PROMETHEUS_MULTIPROC_DIR").unwrap_or_default(),
+                "setting PROMETHEUS_MULTIPROC_DIR"
+            );
+        } else {
+            trace!("PROMETHEUS_MULTIPROC_DIR already set");
         }
 
+        trace!("initializing Python");
         Python::initialize();
+        trace!("Python initialized");
     }
 
     ::tokio::runtime::Builder::new_multi_thread()
@@ -143,7 +102,8 @@ async fn main() -> Result<()> {
             let (config_changed_tx, config_changed_rx) = broadcast::channel(100);
             ConfigManager::init(&mut tasks, config_changed_tx.clone()).await?;
 
-            install_tracing()?;
+            tracing::install()?;
+            drop(tracing_crude);
 
             let _sentry = if config::get().error_reporting.enabled {
                 Some(install_sentry())
@@ -168,8 +128,10 @@ async fn main() -> Result<()> {
             let errors = tasks.run().await;
 
             if !errors.is_empty() {
+                error!("authentik encountered errors: {:?}", errors);
                 Err(eyre!("Errors encountered: {:?}", errors))
             } else {
+                info!("authentik exiting");
                 Ok(())
             }
         })

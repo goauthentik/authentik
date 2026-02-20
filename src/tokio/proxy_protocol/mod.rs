@@ -10,6 +10,7 @@ use std::{
 use eyre::{Result, eyre};
 use pin_project_lite::pin_project;
 use tokio::io::{AsyncBufRead, AsyncRead, AsyncReadExt, AsyncWrite, ReadBuf};
+use tracing::instrument;
 
 use crate::tokio::proxy_protocol::header::{Error, Header};
 
@@ -68,6 +69,7 @@ impl<S> Deref for ProxyProtocolStream<S> {
 impl<S> ProxyProtocolStream<S>
 where S: AsyncRead + Unpin
 {
+    #[instrument(skip_all)]
     pub(crate) async fn new(mut stream: S) -> Result<Self, io::Error> {
         let mut remaining = Vec::with_capacity(READ_BUFFER_LEN);
 
@@ -109,6 +111,7 @@ where S: AsyncRead + Unpin
 impl<S> AsyncRead for ProxyProtocolStream<S>
 where S: AsyncRead
 {
+    #[instrument(skip_all)]
     fn poll_read(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -132,6 +135,7 @@ where S: AsyncRead
 impl<S> AsyncBufRead for ProxyProtocolStream<S>
 where S: AsyncBufRead
 {
+    #[instrument(skip_all)]
     fn poll_fill_buf(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<io::Result<&[u8]>> {
         let this = self.project();
 
@@ -142,6 +146,7 @@ where S: AsyncBufRead
         this.stream.poll_fill_buf(cx)
     }
 
+    #[instrument(skip_all)]
     fn consume(self: Pin<&mut Self>, amt: usize) {
         let this = self.project();
 
@@ -212,7 +217,9 @@ mod tests {
 
         let mut stream = Cursor::new(&buf);
 
-        let mut proxied = ProxyProtocolStream::new(&mut stream).await.unwrap();
+        let mut proxied = ProxyProtocolStream::new(&mut stream)
+            .await
+            .expect("failed to create stream");
         assert_eq!(
             proxied.header(),
             Some(Header(
@@ -229,7 +236,7 @@ mod tests {
         let mut buf = Vec::new();
         AsyncReadExt::read_to_end(&mut proxied, &mut buf)
             .await
-            .unwrap();
+            .expect("failed to read from stream");
         assert_eq!(buf.len(), 1024 - header.len());
         assert!(buf.into_iter().all(|b| b == 255));
     }

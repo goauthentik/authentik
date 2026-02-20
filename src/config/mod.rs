@@ -12,7 +12,7 @@ use tokio::{
     fs::read_to_string,
     sync::{broadcast, mpsc},
 };
-use tracing::trace;
+use tracing::{info, warn};
 
 pub(crate) mod schema;
 mod source;
@@ -153,6 +153,7 @@ impl ConfigManager {
         tasks: &mut Tasks,
         config_changed_tx: broadcast::Sender<()>,
     ) -> Result<()> {
+        info!("loading config");
         let config_paths = config_paths();
         let mut watch_paths = config_paths.clone();
         let (config, other_paths) = Config::load(&config_paths).await?;
@@ -167,6 +168,7 @@ impl ConfigManager {
             .build_task()
             .name(&format!("{}::watch_config", module_path!()))
             .spawn(watch_config(arbiter, watch_paths, config_changed_tx))?;
+        info!("config loaded");
         Ok(())
     }
 }
@@ -187,28 +189,39 @@ async fn watch_config(
         },
         notify::Config::default(),
     )?;
-    for path in watch_paths {
+    for path in &watch_paths {
         watcher.watch(path.as_ref(), notify::RecursiveMode::NonRecursive)?;
     }
+
+    info!("config file watcher started on paths: {:?}", watch_paths);
 
     loop {
         tokio::select! {
             res = rx.recv() => {
+                info!("a configuration file changed, reloading config");
                 if res.is_none() {
                     break;
                 }
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
-                if let Ok((new_config, _)) = Config::load(&manager.config_paths).await {
-                    trace!("Configuration file changed, reloading");
-                    manager.config.store(Arc::new(new_config));
-                    if config_changed_tx.send(()).is_err() {
-                        break;
+                match Config::load(&manager.config_paths).await {
+                    Ok((new_config, _)) => {
+                        info!("configuration reloaded");
+                        manager.config.store(Arc::new(new_config));
+                        if let Err(err) = config_changed_tx.send(()) {
+                            warn!("failed to notify of config change, aborting: {err:?}");
+                            break;
+                        }
                     }
-                };
+                    Err(err) => {
+                        warn!("failed to reload config, continuing with previous config: {err:?}");
+                    }
+                }
             },
             _ = arbiter.shutdown() => break,
         }
     }
+
+    info!("stopping config file watcher");
 
     Ok(())
 }

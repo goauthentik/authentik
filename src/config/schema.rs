@@ -1,4 +1,4 @@
-use std::{net::SocketAddr, path::PathBuf};
+use std::{collections::HashMap, net::SocketAddr, path::PathBuf};
 
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
@@ -78,7 +78,7 @@ pub(crate) struct ListenConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct LogConfig {
     pub(crate) http_headers: Vec<String>,
-    pub(crate) rust_log: Vec<String>,
+    pub(crate) rust_log: HashMap<String, String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

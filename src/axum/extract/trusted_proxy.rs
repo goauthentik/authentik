@@ -5,7 +5,7 @@ use axum::{
     extract::{ConnectInfo, FromRequestParts},
     http::request::Parts,
 };
-use tracing::trace;
+use tracing::{instrument, trace};
 
 use crate::config;
 
@@ -17,6 +17,7 @@ where S: Send + Sync
 {
     type Rejection = Infallible;
 
+    #[instrument(skip_all)]
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
         if let Some(res) = parts.extensions.get::<Self>() {
             return Ok(*res);

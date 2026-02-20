@@ -6,7 +6,7 @@ use sqlx::{
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
 use tokio::sync::broadcast;
-use tracing::log::LevelFilter;
+use tracing::{info, log::LevelFilter, trace};
 
 use crate::{
     arbiter::{Arbiter, Tasks},
@@ -47,12 +47,15 @@ async fn update_connect_opts_on_config_change(
     arbiter: Arbiter,
     mut config_changed_rx: broadcast::Receiver<()>,
 ) -> Result<()> {
+    info!("starting database watcher for config changes");
     loop {
         tokio::select! {
             res = config_changed_rx.recv() => {
-                if res.is_err() {
+                if let Err(err) = res {
+                    trace!("error receiving config changes: {err:?}");
                     break;
                 }
+                trace!("config change recevied, refreshing database connection options");
                 let db = get_db();
                 db.set_connect_options(get_connect_opts().await?);
             },
@@ -60,6 +63,7 @@ async fn update_connect_opts_on_config_change(
         }
     }
 
+    info!("stopping database watcher for config changes");
     Ok(())
 }
 
@@ -67,6 +71,7 @@ pub(crate) async fn init(
     tasks: &mut Tasks,
     config_changed_rx: broadcast::Receiver<()>,
 ) -> Result<()> {
+    info!("initializing database pool");
     let options = get_connect_opts().await?;
     let config = config::get();
 
@@ -92,6 +97,7 @@ pub(crate) async fn init(
             config_changed_rx,
         ))?;
 
+    info!("database pool initialized");
     Ok(())
 }
 

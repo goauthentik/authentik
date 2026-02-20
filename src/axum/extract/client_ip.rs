@@ -8,6 +8,7 @@ use axum::{
     extract::{ConnectInfo, FromRequestParts, OptionalFromRequestParts},
     http::{StatusCode, request::Parts},
 };
+use tracing::instrument;
 
 use crate::axum::{
     accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy,
@@ -36,6 +37,7 @@ where S: Send + Sync
 {
     type Rejection = Infallible;
 
+    #[instrument(skip_all)]
     async fn from_request_parts(
         parts: &mut Parts,
         _state: &S,

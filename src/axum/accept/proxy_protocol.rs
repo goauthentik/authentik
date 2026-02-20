@@ -5,6 +5,7 @@ use axum_server::accept::{Accept, DefaultAcceptor};
 use futures::future::BoxFuture;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tower::Layer;
+use tracing::instrument;
 
 use crate::tokio::proxy_protocol::{ProxyProtocolStream, header::Header};
 
@@ -65,6 +66,7 @@ where
     type Service = AddExtension<A::Service, ProxyProtocolState>;
     type Stream = ProxyProtocolStream<A::Stream>;
 
+    #[instrument(skip_all)]
     fn accept(&self, stream: I, service: S) -> Self::Future {
         let acceptor = self.inner.clone();
 
