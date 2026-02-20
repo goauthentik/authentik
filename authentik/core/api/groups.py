@@ -278,7 +278,8 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         ]
 
     def get_queryset(self):
-        base_qs = Group.objects.all().prefetch_related("roles")
+        # Always prefetch parents and children since their PKs are always serialized
+        base_qs = Group.objects.all().prefetch_related("roles", "parents", "children")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
             # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation
@@ -293,12 +294,6 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             base_qs = base_qs.prefetch_related(
                 Prefetch("users", queryset=User.objects.all().only("id"))
             )
-
-        if self.serializer_class(context={"request": self.request})._should_include_children:
-            base_qs = base_qs.prefetch_related("children")
-
-        if self.serializer_class(context={"request": self.request})._should_include_parents:
-            base_qs = base_qs.prefetch_related("parents")
 
         return base_qs
 
