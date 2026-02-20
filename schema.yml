@@ -33843,6 +33843,8 @@ components:
           readOnly: true
         snapshot_expiry:
           type: string
+        ephemeral_device_expiry:
+          type: string
         auth_session_duration:
           type: string
         auth_terminate_session_on_expiry:
@@ -33891,6 +33893,9 @@ components:
         enabled:
           type: boolean
         snapshot_expiry:
+          type: string
+          minLength: 1
+        ephemeral_device_expiry:
           type: string
           minLength: 1
         auth_session_duration:
@@ -38296,6 +38301,9 @@ components:
         device_name:
           type: string
           minLength: 1
+        ephemeral:
+          type: boolean
+          default: false
       required:
       - device_name
       - device_serial
@@ -47110,6 +47118,9 @@ components:
         enabled:
           type: boolean
         snapshot_expiry:
+          type: string
+          minLength: 1
+        ephemeral_device_expiry:
           type: string
           minLength: 1
         auth_session_duration:

@@ -6304,6 +6304,11 @@
                     "minLength": 1,
                     "title": "Snapshot expiry"
                 },
+                "ephemeral_device_expiry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Ephemeral device expiry"
+                },
                 "auth_session_duration": {
                     "type": "string",
                     "minLength": 1,

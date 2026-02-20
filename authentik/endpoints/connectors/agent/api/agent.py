@@ -75,6 +75,7 @@ class EnrollSerializer(PassiveSerializer):
 
     device_serial = CharField(required=True)
     device_name = CharField(required=True)
+    ephemeral = BooleanField(default=False)
 
 
 class AgentTokenResponseSerializer(PassiveSerializer):
