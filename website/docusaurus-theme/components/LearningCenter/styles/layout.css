@@ -1,0 +1,92 @@
+.learningCenter {
+    margin: 0;
+    padding: 0;
+}
+
+.filterModeDivider {
+    position: relative;
+    margin: 0 0 0.75rem;
+    text-align: center;
+}
+
+.filterModeDivider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    border-top: 2px solid var(--lc-border-muted);
+    transform: translateY(-50%);
+}
+
+.filterModeDividerText {
+    position: relative;
+    display: inline-block;
+    padding: 0.1rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--lc-border-muted);
+    background: var(--lc-surface-base);
+    color: var(--lc-text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.filterModeSection {
+    border: 1px solid var(--lc-border-muted);
+    border-radius: 12px;
+    padding: 0.75rem 1rem 0.25rem;
+    margin-bottom: 1.5rem;
+    background: var(--lc-surface-muted);
+}
+
+.resourceList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.section {
+    padding-top: 0;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    color: var(--ifm-color-primary);
+    border-bottom: 2px solid var(--lc-border-muted);
+    position: sticky;
+    top: var(--ifm-navbar-height, 60px);
+    z-index: 10;
+    background-color: var(--lc-sticky-bg);
+}
+
+.resourceGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.noResults {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    color: var(--lc-text-muted);
+    border: 1px dashed var(--lc-border-muted);
+    border-radius: 8px;
+    background: transparent;
+}
+
+.noResults p {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .resourceGrid {
+        grid-template-columns: 1fr;
+    }
+}

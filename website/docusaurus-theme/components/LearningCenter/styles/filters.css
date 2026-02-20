@@ -1,0 +1,282 @@
+/* Filter input */
+.filter {
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.filterInput {
+    flex: 1;
+    min-width: 280px;
+    max-width: 620px;
+    padding: 0.65rem 0.9rem;
+    font-size: 1rem;
+    border: 1px solid var(--lc-border-muted);
+    border-radius: 6px;
+    background-color: var(--lc-surface-base);
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.filterInput:focus {
+    outline: none;
+    border-color: var(--ifm-color-primary);
+    box-shadow: 0 0 0 3px var(--ifm-color-primary-lightest);
+}
+
+.filterInput::placeholder {
+    color: var(--ifm-color-emphasis-500);
+}
+
+/* View toggle */
+.viewToggleContainer {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.viewTogglePrompt {
+    margin: 0;
+    font-weight: 500;
+}
+
+.viewToggle {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: var(--lc-text-muted);
+    border: 1px solid var(--lc-border-muted);
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 0.9rem;
+}
+
+.viewToggle:hover {
+    background-color: var(--lc-surface-muted);
+    border-color: var(--ifm-color-emphasis-400);
+}
+
+.viewToggleActive {
+    background-color: var(--ifm-color-primary);
+    border-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.viewToggleActive:hover {
+    background-color: var(--ifm-color-primary-dark);
+    border-color: var(--ifm-color-primary-dark);
+}
+
+/* Category navigation */
+.categoryNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    align-items: center;
+}
+
+.navLabel {
+    font-weight: 700;
+    margin-right: 0.5rem;
+    color: var(--lc-text-muted);
+}
+
+.categoryButton {
+    padding: 0.4rem 0.875rem;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--lc-text-muted);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid var(--lc-border-muted);
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.categoryButton:hover {
+    background-color: var(--lc-surface-muted);
+    border-color: var(--ifm-color-emphasis-400);
+    color: var(--ifm-color-emphasis-900);
+    transform: translateY(-1px);
+}
+
+.categoryButton.active {
+    background-color: var(--ifm-color-primary);
+    border-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.categoryButton.active:hover {
+    background-color: var(--ifm-color-primary-dark);
+    border-color: var(--ifm-color-primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Category descriptions */
+.categoryDescriptions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.categoryDescriptionText {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    background-color: var(--lc-surface-muted);
+    border-radius: 8px;
+    border-left: 4px solid var(--lc-category-accent);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--lc-text-muted);
+}
+
+/* Difficulty filter */
+.difficultyFilter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    align-items: center;
+}
+
+.difficultyButton {
+    padding: 0.4rem 0.875rem;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--lc-text-muted);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid var(--lc-border-muted);
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.difficultyButton:hover {
+    background-color: var(--lc-surface-muted);
+    border-color: var(--ifm-color-emphasis-400);
+}
+
+.difficultyButton.active {
+    background-color: var(--ifm-color-primary);
+    border-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.difficultyButton.active:hover {
+    background-color: var(--ifm-color-primary-dark);
+    border-color: var(--ifm-color-primary-dark);
+}
+
+/* Difficulty level accents */
+.difficulty-beginner {
+    border-color: var(--lc-difficulty-beginner);
+}
+
+.difficulty-beginner.active {
+    background-color: var(--lc-difficulty-beginner);
+    border-color: var(--lc-difficulty-beginner);
+}
+
+.difficulty-intermediate {
+    border-color: var(--lc-difficulty-intermediate);
+}
+
+.difficulty-intermediate.active {
+    background-color: var(--lc-difficulty-intermediate);
+    border-color: var(--lc-difficulty-intermediate);
+}
+
+.difficulty-advanced {
+    border-color: var(--lc-difficulty-advanced);
+}
+
+.difficulty-advanced.active {
+    background-color: var(--lc-difficulty-advanced);
+    border-color: var(--lc-difficulty-advanced);
+}
+
+/* Alpha navigation */
+.alphaNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem 0;
+}
+
+.alphaNavLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 6px;
+    border: 1px solid var(--lc-border-muted);
+    color: var(--ifm-color-emphasis-800);
+    text-decoration: none;
+    font-weight: 600;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.alphaNavLink:hover,
+.alphaNavLink:focus-visible {
+    background: var(--ifm-color-emphasis-200);
+    color: var(--ifm-color-emphasis-900);
+    border-color: var(--ifm-color-emphasis-400);
+}
+
+/* Shared clear button */
+.clearButton {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    background-color: transparent;
+    color: var(--lc-text-subtle);
+    font-weight: 500;
+    border: 1px solid var(--lc-border-muted);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.clearButton:hover {
+    background-color: var(--ifm-color-danger-contrast-background);
+    border-color: var(--ifm-color-danger);
+    color: var(--ifm-color-danger-dark);
+}
+
+@media (max-width: 768px) {
+    .filterInput {
+        max-width: none;
+    }
+
+    .viewToggleContainer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .viewToggle {
+        width: 100%;
+    }
+
+    .categoryNav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .difficultyFilter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
