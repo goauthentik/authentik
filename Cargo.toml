@@ -148,10 +148,9 @@ license-file.workspace = true
 publish.workspace = true
 
 [features]
-default = ["server", "worker", "proxy"]
+default = ["server", "proxy"]
 proxy = []
 server = ["dep:sqlx", "dep:pyo3"]
-worker = ["dep:sqlx", "dep:pyo3"]
 
 [dependencies]
 arc-swap.workspace = true

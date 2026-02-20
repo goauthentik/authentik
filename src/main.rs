@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use ::tokio::{fs, sync::broadcast};
+use ::tokio::sync::broadcast;
 use argh::FromArgs;
 use eyre::{Result, eyre};
 use pyo3::Python;
@@ -10,7 +10,7 @@ use crate::{arbiter::Tasks, config::ConfigManager};
 mod arbiter;
 mod axum;
 mod config;
-#[cfg(any(feature = "server", feature = "proxy"))]
+#[cfg(feature = "server")]
 mod db;
 mod metrics;
 #[cfg(any(feature = "server", feature = "proxy"))]
@@ -18,7 +18,6 @@ mod proxy;
 #[cfg(feature = "server")]
 mod server;
 mod tokio;
-mod worker;
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -32,11 +31,11 @@ struct Cli {
 enum Command {
     #[cfg(feature = "server")]
     Server(server::Cli),
-    #[cfg(feature = "worker")]
-    Worker(worker::Cli),
+    #[cfg(feature = "proxy")]
+    Proxy(proxy::Cli),
 }
 
-async fn install_tracing() -> Result<()> {
+fn install_tracing() -> Result<()> {
     use tracing_error::ErrorLayer;
     use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
@@ -114,55 +113,64 @@ fn install_sentry() -> sentry::ClientInitGuard {
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let mut tasks = Tasks::new()?;
-
-    let (config_changed_tx, config_changed_rx) = broadcast::channel(100);
-    ConfigManager::init(&mut tasks, config_changed_tx.clone()).await?;
-
     rustls::crypto::aws_lc_rs::default_provider()
         .install_default()
         .expect("Failed to install rustls provider");
 
-    let _sentry = if config::get().error_reporting.enabled {
-        Some(install_sentry())
-    } else {
-        None
-    };
-
-    install_tracing().await?;
     let cli: Cli = argh::from_env();
 
-    #[cfg(any(feature = "server", feature = "worker"))]
+    #[cfg(feature = "server")]
     {
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
-            fs::create_dir_all(&dir).await?;
+            std::fs::create_dir_all(&dir)?;
             // SAFETY: there is only one thread at this point, so this is safe.
             unsafe {
                 std::env::set_var("PROMETHEUS_MULTIPROC_DIR", dir);
             }
         }
 
-        db::init(&mut tasks, config_changed_rx).await?;
-
         Python::initialize();
     }
 
-    match cli.command {
-        #[cfg(feature = "server")]
-        Command::Server(args) => {
-            server::run(args, &mut tasks).await?;
-        }
-        #[cfg(feature = "worker")]
-        Command::Worker(_args) => todo!(),
-    };
+    ::tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()?
+        .block_on(async {
+            let mut tasks = Tasks::new()?;
 
-    let errors = tasks.run().await;
+            let (config_changed_tx, config_changed_rx) = broadcast::channel(100);
+            ConfigManager::init(&mut tasks, config_changed_tx.clone()).await?;
 
-    if !errors.is_empty() {
-        Err(eyre!("Errors encountered: {:?}", errors))
-    } else {
-        Ok(())
-    }
+            install_tracing()?;
+
+            let _sentry = if config::get().error_reporting.enabled {
+                Some(install_sentry())
+            } else {
+                None
+            };
+
+            #[cfg(feature = "server")]
+            {
+                db::init(&mut tasks, config_changed_rx).await?;
+            }
+
+            match cli.command {
+                #[cfg(feature = "server")]
+                Command::Server(args) => {
+                    server::run(args, &mut tasks).await?;
+                }
+                #[cfg(feature = "proxy")]
+                Command::Proxy(_args) => todo!(),
+            };
+
+            let errors = tasks.run().await;
+
+            if !errors.is_empty() {
+                Err(eyre!("Errors encountered: {:?}", errors))
+            } else {
+                Ok(())
+            }
+        })
 }
