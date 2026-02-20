@@ -13,7 +13,7 @@ use tracing::info;
 
 use crate::{
     arbiter::{Arbiter, Tasks},
-    config::get_config,
+    config,
     server::gunicorn::{GUNICORN_READY, Gunicorn},
 };
 
@@ -87,6 +87,7 @@ async fn build_router() -> Router {
 }
 
 pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
+    let config = config::get();
     let arbiter = tasks.arbiter();
 
     let gunicorn = Gunicorn::new()?;
@@ -96,7 +97,7 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
 
     let metrics_router = crate::metrics::build_router();
 
-    for addr in get_config().await.listen.http.iter().copied() {
+    for addr in config.listen.http.iter().copied() {
         let handle = Handle::new();
         arbiter.add_handle(handle.clone()).await;
         tasks
@@ -105,7 +106,7 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
             .spawn(plain::run_server_plain(router.clone(), addr, handle))?;
     }
 
-    for addr in get_config().await.listen.https.iter().copied() {
+    for addr in config.listen.https.iter().copied() {
         let handle = Handle::new();
         arbiter.add_handle(handle.clone()).await;
         tasks
@@ -119,7 +120,7 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
             ))?;
     }
 
-    for addr in get_config().await.listen.metrics.iter().copied() {
+    for addr in config.listen.metrics.iter().copied() {
         let handle = Handle::new();
         arbiter.add_handle(handle.clone()).await;
         tasks

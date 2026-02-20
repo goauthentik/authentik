@@ -5,10 +5,7 @@ use argh::FromArgs;
 use eyre::{Result, eyre};
 use pyo3::Python;
 
-use crate::{
-    arbiter::Tasks,
-    config::{ConfigManager, get_config},
-};
+use crate::{arbiter::Tasks, config::ConfigManager};
 
 mod arbiter;
 mod axum;
@@ -43,26 +40,22 @@ async fn install_tracing() -> Result<()> {
     use tracing_error::ErrorLayer;
     use tracing_subscriber::{filter::EnvFilter, fmt, prelude::*};
 
-    let default = format!("{},postgres=info", get_config().await.log_level);
+    let config = config::get();
+
+    let default = format!("{},postgres=info", config.log_level);
     let filter_layer = EnvFilter::builder()
-        .with_default_directive(
-            get_config()
-                .await
-                .log_level
-                .parse()
-                .expect("Invalid log_level"),
-        )
+        .with_default_directive(config.log_level.parse().expect("Invalid log_level"))
         .parse(default)?;
-    let filter_layer = if !get_config().await.log.rust_log.is_empty() {
-        filter_layer.add_directive(get_config().await.log.rust_log.join(",").parse()?)
+    let filter_layer = if !config.log.rust_log.is_empty() {
+        filter_layer.add_directive(config.log.rust_log.join(",").parse()?)
     } else {
         filter_layer
     };
 
     // TODO: refine this to match Python
-    if get_config().await.debug {
+    if config.debug {
         let console_layer = console_subscriber::ConsoleLayer::builder()
-            .server_addr(get_config().await.listen.debug)
+            .server_addr(config.listen.debug)
             .spawn();
         tracing_subscriber::registry()
             .with(console_layer)
@@ -99,6 +92,24 @@ async fn install_tracing() -> Result<()> {
     Ok(())
 }
 
+fn install_sentry() -> sentry::ClientInitGuard {
+    let config = config::get();
+    sentry::init(sentry::ClientOptions {
+        // TODO: refine a bit more
+        dsn: config
+            .error_reporting
+            .sentry_dsn
+            .clone()
+            .map(|dsn| sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")),
+        environment: Some(config.error_reporting.environment.clone().into()),
+        attach_stacktrace: true,
+        send_default_pii: config.error_reporting.send_pii,
+        sample_rate: config.error_reporting.sample_rate,
+        traces_sample_rate: config.error_reporting.sample_rate,
+        ..sentry::ClientOptions::default()
+    })
+}
+
 #[::tokio::main(crate = "::tokio")]
 async fn main() -> Result<()> {
     color_eyre::install()?;
@@ -112,31 +123,8 @@ async fn main() -> Result<()> {
         .install_default()
         .expect("Failed to install rustls provider");
 
-    let _sentry = if get_config().await.error_reporting.enabled {
-        Some(sentry::init(sentry::ClientOptions {
-            // TODO: refine a bit more
-            dsn: get_config()
-                .await
-                .error_reporting
-                .sentry_dsn
-                .clone()
-                .map(|dsn| {
-                    sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")
-                }),
-            environment: Some(
-                get_config()
-                    .await
-                    .error_reporting
-                    .environment
-                    .clone()
-                    .into(),
-            ),
-            attach_stacktrace: true,
-            send_default_pii: get_config().await.error_reporting.send_pii,
-            sample_rate: get_config().await.error_reporting.sample_rate,
-            traces_sample_rate: get_config().await.error_reporting.sample_rate,
-            ..sentry::ClientOptions::default()
-        }))
+    let _sentry = if config::get().error_reporting.enabled {
+        Some(install_sentry())
     } else {
         None
     };

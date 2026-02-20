@@ -7,7 +7,7 @@ use axum::{
 };
 use tracing::trace;
 
-use crate::config::get_config;
+use crate::config;
 
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct TrustedProxy(pub bool);
@@ -25,7 +25,7 @@ where S: Send + Sync
         let mut res = Self(false);
 
         if let Ok(ConnectInfo(addr)) = parts.extract::<ConnectInfo<SocketAddr>>().await {
-            let trusted_proxy_cidrs = &get_config().await.listen.trusted_proxy_cidrs;
+            let trusted_proxy_cidrs = &config::get().listen.trusted_proxy_cidrs;
 
             for trusted_net in trusted_proxy_cidrs {
                 if trusted_net.contains(&addr.ip()) {

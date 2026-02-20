@@ -1,8 +1,8 @@
-use eyre::Result;
 use std::net::SocketAddr;
 
 use axum::Router;
 use axum_server::{Handle, accept::DefaultAcceptor};
+use eyre::Result;
 
 use crate::axum::accept::proxy_protocol::ProxyProtocolAcceptor;
 

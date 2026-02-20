@@ -10,13 +10,13 @@ use tracing::log::LevelFilter;
 
 use crate::{
     arbiter::{Arbiter, Tasks},
-    config::get_config,
+    config,
 };
 
 static DB: OnceLock<PgPool> = OnceLock::new();
 
 async fn get_connect_opts() -> Result<PgConnectOptions> {
-    let config = get_config().await;
+    let config = config::get();
     let mut opts = PgConnectOptions::new()
         // TODO: get this from the mode
         .application_name("authentik")
@@ -68,7 +68,7 @@ pub(crate) async fn init(
     config_changed_rx: broadcast::Receiver<()>,
 ) -> Result<()> {
     let options = get_connect_opts().await?;
-    let config = get_config().await;
+    let config = config::get();
 
     let pool_options = PgPoolOptions::new()
         .min_connections(1)

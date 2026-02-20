@@ -19,7 +19,7 @@ use tower_http::{
     services::fs::ServeDir,
 };
 
-use crate::config::get_config;
+use crate::config;
 
 #[derive(Debug, Deserialize)]
 struct StorageClaims {
@@ -114,7 +114,7 @@ async fn storage_middleware(
     request: Request,
     next: Next,
 ) -> Response {
-    if !is_storage_token_valid(config.usage, &get_config().await.secret_key, &request) {
+    if !is_storage_token_valid(config.usage, &config::get().secret_key, &request) {
         return (StatusCode::NOT_FOUND, "404 page not found\n").into_response();
     }
 
@@ -152,7 +152,7 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
 }
 
 pub(crate) async fn build_router() -> Router {
-    let config = get_config().await;
+    let config = config::get();
 
     let mut router = Router::new().layer(middleware::from_fn(static_header_middleware));
 

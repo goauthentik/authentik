@@ -1,14 +1,14 @@
-use std::process::Stdio;
-use std::sync::atomic::AtomicBool;
-use std::{env, path::PathBuf};
+use std::{env, path::PathBuf, process::Stdio, sync::atomic::AtomicBool};
 
 use eyre::Result;
 use nix::{
     sys::signal::{Signal, kill},
     unistd::Pid,
 };
-use tokio::net::UnixStream;
-use tokio::process::{Child, Command};
+use tokio::{
+    net::UnixStream,
+    process::{Child, Command},
+};
 use tracing::warn;
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);

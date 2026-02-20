@@ -1,11 +1,16 @@
-use std::{env, fs, path::PathBuf, sync::OnceLock};
+use std::{
+    env, fs,
+    path::PathBuf,
+    sync::{Arc, OnceLock},
+};
 
+use arc_swap::{ArcSwap, Guard};
 use eyre::Result;
 use notify::{RecommendedWatcher, Watcher};
 use serde_json::{Map, Value};
 use tokio::{
     fs::read_to_string,
-    sync::{RwLock, RwLockReadGuard, broadcast, mpsc},
+    sync::{broadcast, mpsc},
 };
 use tracing::trace;
 
@@ -139,7 +144,7 @@ impl Config {
 }
 
 pub(crate) struct ConfigManager {
-    config: RwLock<Config>,
+    config: ArcSwap<Config>,
     config_paths: Vec<PathBuf>,
 }
 
@@ -153,7 +158,7 @@ impl ConfigManager {
         let (config, other_paths) = Config::load(&config_paths).await?;
         watch_paths.extend(other_paths);
         let manager = Self {
-            config: RwLock::new(config),
+            config: ArcSwap::from_pointee(config),
             config_paths,
         };
         CONFIG_MANAGER.get_or_init(|| manager);
@@ -195,9 +200,7 @@ async fn watch_config(
                 let manager = CONFIG_MANAGER.get().expect("failed to get config, has it been initialized?");
                 if let Ok((new_config, _)) = Config::load(&manager.config_paths).await {
                     trace!("Configuration file changed, reloading");
-                    let mut config = manager.config.write().await;
-                    *config = new_config;
-                    drop(config);
+                    manager.config.store(Arc::new(new_config));
                     if config_changed_tx.send(()).is_err() {
                         break;
                     }
@@ -210,9 +213,9 @@ async fn watch_config(
     Ok(())
 }
 
-pub(crate) async fn get_config<'a>() -> RwLockReadGuard<'a, Config> {
+pub(crate) fn get() -> Guard<Arc<Config>> {
     let manager = CONFIG_MANAGER
         .get()
         .expect("failed to get config, has it been initialized?");
-    manager.config.read().await
+    manager.config.load()
 }

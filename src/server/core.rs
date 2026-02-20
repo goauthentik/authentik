@@ -1,10 +1,3 @@
-use axum::{
-    http::{
-        HeaderValue,
-        header::{ACCEPT, HOST},
-    },
-    middleware::{Next, from_fn},
-};
 use std::{
     path::PathBuf,
     sync::{LazyLock, atomic::Ordering},
@@ -16,9 +9,10 @@ use axum::{
     body::Body,
     extract::{Request, State},
     http::{
-        HeaderName, StatusCode, Uri,
-        header::{CONTENT_TYPE, RETRY_AFTER},
+        HeaderName, HeaderValue, StatusCode, Uri,
+        header::{ACCEPT, CONTENT_TYPE, HOST, RETRY_AFTER},
     },
+    middleware::{Next, from_fn},
     response::Response,
 };
 use http_body_util::BodyExt;
@@ -34,7 +28,7 @@ use crate::{
         error::Result,
         extract::{client_ip::ClientIP, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
     },
-    config::get_config,
+    config,
     server::{
         core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
         gunicorn::GUNICORN_READY,
@@ -194,10 +188,11 @@ async fn forward_request(
 }
 
 async fn build_proxy_router() -> Router {
+    let config = config::get();
     let connector = UnixSocketConnector::new(super::gunicorn::gunicorn_socket_path());
     let client = Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
-        .pool_max_idle_per_host(get_config().await.web.workers * get_config().await.web.threads)
+        .pool_max_idle_per_host(config.web.workers * config.web.threads)
         .set_host(false)
         .build(connector);
 
@@ -230,10 +225,6 @@ pub(super) async fn build_router() -> Router {
 }
 
 mod websockets {
-    use crate::{
-        axum::error::{AppError, Result},
-        server::gunicorn::gunicorn_socket_path,
-    };
     use axum::{
         body::Body,
         extract::Request,
@@ -252,9 +243,12 @@ mod websockets {
         WebSocketStream, client_async,
         tungstenite::{Message, handshake::derive_accept_key, protocol::Role},
     };
-    use tracing::debug;
-    use tracing::trace;
-    use tracing::warn;
+    use tracing::{debug, trace, warn};
+
+    use crate::{
+        axum::error::{AppError, Result},
+        server::gunicorn::gunicorn_socket_path,
+    };
 
     pub(super) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
         let has_upgrade = headers
@@ -328,7 +322,7 @@ mod websockets {
         let io = TokioIo::new(upgraded);
         let client_ws = WebSocketStream::from_raw_socket(io, Role::Server, None).await;
 
-        let mut upstream_ws = {
+        let upstream_ws = {
             let stream = UnixStream::connect(gunicorn_socket_path()).await?;
             let (ws_stream, _) = client_async(ws_request, stream).await?;
             ws_stream
