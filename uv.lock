@@ -401,7 +401,7 @@ dev = [
     { name = "bpython", specifier = "==0.26" },
     { name = "codespell", specifier = "==2.4.1" },
     { name = "colorama", specifier = "==0.4.6" },
-    { name = "constructs", specifier = "==10.5.0" },
+    { name = "constructs", specifier = "==10.5.1" },
     { name = "coverage", extras = ["toml"], specifier = "==7.13.4" },
     { name = "daphne", specifier = "==4.2.1" },
     { name = "debugpy", specifier = "==1.8.20" },
@@ -856,16 +856,16 @@ wheels = [
 
 [[package]]
 name = "constructs"
-version = "10.5.0"
+version = "10.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jsii" },
     { name = "publication" },
     { name = "typeguard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/35/e3/29744d401eb6597701cba93dbedee08450a6e8412718091b986e48502e49/constructs-10.5.0.tar.gz", hash = "sha256:88d23b10361c0a8b4896f6bed66693a0f4c61f0aa4247eb33a34a4ed12e67aaf", size = 68010, upload-time = "2026-02-17T09:48:08.71Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/df/a7/1d87d7327aaa8662f7525b064b6c0524e4b3985092840e6a568f5eb4a7d6/constructs-10.5.1.tar.gz", hash = "sha256:c0e90bb2b9c2782f292017820b91714321cb78393c8965c9362b0b624bfaf23b", size = 68165, upload-time = "2026-02-19T09:56:32.925Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4c/0a/8141f766828dc6f249bf08d4e3bb4a65018ff7a8c5caf3c5f3f46f90d8e7/constructs-10.5.0-py3-none-any.whl", hash = "sha256:01e613161f087f0432c24824a1ba4e8a3084f5af4c7fcd852c8e94bfc0110ab5", size = 66172, upload-time = "2026-02-17T09:48:07.218Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/20/dff420181946bcaba48dba3f0c11db202c8441eda927f281ad78912cf777/constructs-10.5.1-py3-none-any.whl", hash = "sha256:fc5c14f6b2770c8542a43e298aa29b63dee4b18701763e8c0fdce202624c3a7c", size = 66344, upload-time = "2026-02-19T09:56:31.311Z" },
 ]
 
 [[package]]
