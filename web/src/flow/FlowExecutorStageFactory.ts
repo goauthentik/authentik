@@ -104,14 +104,7 @@ export class StageMapping {
             .with([PTag], ([tag]) => ({ token, variant: STANDARD, tag }))
             .exhaustive();
 
-        const tag = init.tag || (await callback?.().then(resolveStageTag));
-
-        if (!tag) {
-            throw new StageMappingError(
-                `Invalid stage entry for component ${token}: No tag or import callback provided.`,
-            );
-        }
-
+        const tag = init.tag || (await callback?.().then(resolveStageTag)) || token;
         return new StageMapping({ ...init, tag });
     }
 }
