@@ -48,7 +48,6 @@ export class StageMappingError extends TypeError {
 function resolveStageTag(module: ResolvedDefaultESModule<BaseStageConstructor>): string {
     const StageConstructor = module.default;
     const tag = window.customElements.getName(StageConstructor);
-
     if (!tag) {
         const error = new StageMappingError(
             `Failed to load module: No client stage found for component`,
@@ -98,7 +97,7 @@ export class StageMapping {
         const meta = (callback ? rest.slice(0, -1) : rest) as StageEntryMetadata;
 
         const init = match<StageEntryMetadata, StageMappingInit>(meta)
-            .with([], () => ({ token, variant: STANDARD, tag: token }))
+            .with([], () => ({ token, variant: STANDARD }))
             .with([PTag, PVariant], ([tag, variant]) => ({ token, variant, tag }))
             .with([PVariant], ([variant]) => ({ token, variant }))
             .with([PTag], ([tag]) => ({ token, variant: STANDARD, tag }))
