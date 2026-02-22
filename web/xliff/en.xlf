@@ -6776,9 +6776,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
 </trans-unit>
-<trans-unit id="s8cc0075913c67566">
-  <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
-</trans-unit>
 <trans-unit id="s091d5407b5b32e84">
   <source>Or</source>
 </trans-unit>
@@ -8269,6 +8266,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7c37f1acb9f97ea3">
   <source>Select the email template to use for sending invitations.</source>
+</trans-unit>
+<trans-unit id="sdd2ea73c24b40d5d">
+  <source>Site footer</source>
+</trans-unit>
+<trans-unit id="sf910cca0f06bbc31">
+  <source>Enter the email address or username associated with your account.</source>
 </trans-unit>
 </body>
 </file>

@@ -40,13 +40,13 @@ To support the integration of Portainer with authentik, you need to create an ap
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://portainer.company/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Portainer configuration
 
-1. Login to Portainer as a user with administrative privileges.
+1. Log in to Portainer as a user with administrative privileges.
 2. Navigate to **Settings** > **Authentication**.
 3. Under **Authentication method**, select **OAuth**, and under **Provider** select **Custom**.
 4. Under **OAuth Configuration**, enter the following values:
@@ -109,12 +109,12 @@ We will also presume that two groups have been created in authentik: `Portainer 
 9. Add users to each of the groups that you have defined in your expression, as desired.
 
 :::info Application binding
-Since we are configuring access to Portainer based on group membership, It is recommended that you configure a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
+Since we are configuring access to Portainer based on group membership, it is recommended that you configure a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) for the application in authentik such that access is restricted to these groups.
 :::
 
 ### Update your configuration in Portainer
 
-1. Login to Portainer as a user with administrative privileges.
+1. Log in to Portainer as a user with administrative privileges.
 2. Navigate to **Settings** > **Authentication**.
 3. Under **Team Membership**, toggle **Automatic team membership** to **ON**, and complete configuration as follows:
     - **Claim name**: `groups`

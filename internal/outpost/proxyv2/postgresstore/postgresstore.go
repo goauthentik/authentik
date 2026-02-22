@@ -226,7 +226,7 @@ func parseConnOptions(encoded string) (map[string]string, error) {
 	}
 
 	// Parse JSON
-	var opts map[string]interface{}
+	var opts map[string]any
 	if err := json.Unmarshal(decoded, &opts); err != nil {
 		return nil, fmt.Errorf("invalid JSON: %w", err)
 	}
@@ -473,7 +473,7 @@ func (s *PostgresStore) Close() error {
 // save writes session to PostgreSQL
 func (s *PostgresStore) save(ctx context.Context, session *sessions.Session) error {
 	// Convert session.Values (map[interface{}]interface{}) to map[string]interface{} for JSON marshaling
-	stringKeyedValues := make(map[string]interface{})
+	stringKeyedValues := make(map[string]any)
 	for k, v := range session.Values {
 		if key, ok := k.(string); ok {
 			stringKeyedValues[key] = v
@@ -489,7 +489,7 @@ func (s *PostgresStore) save(ctx context.Context, session *sessions.Session) err
 	// Extract user ID from claims if it exists
 	var userID *uuid.UUID
 	if claims, hasClaims := session.Values[constants.SessionClaims]; hasClaims {
-		if claimsMap, ok := claims.(map[string]interface{}); ok {
+		if claimsMap, ok := claims.(map[string]any); ok {
 			if sub, exists := claimsMap["sub"]; exists {
 				if subStr, ok := sub.(string); ok {
 					if parsedUUID, err := uuid.Parse(subStr); err == nil {
@@ -539,14 +539,14 @@ func (s *PostgresStore) load(ctx context.Context, session *sessions.Session) err
 	// Deserialize session data from JSON
 	if proxySession.SessionData != "" {
 		// First unmarshal to map[string]interface{}
-		var stringKeyedValues map[string]interface{}
+		var stringKeyedValues map[string]any
 		err = json.Unmarshal([]byte(proxySession.SessionData), &stringKeyedValues)
 		if err != nil {
 			return fmt.Errorf("failed to unmarshal session data: %w", err)
 		}
 
 		// Convert back to map[interface{}]interface{} for gorilla/sessions compatibility
-		session.Values = make(map[interface{}]interface{})
+		session.Values = make(map[any]any)
 		for k, v := range stringKeyedValues {
 			session.Values[k] = v
 		}
@@ -595,7 +595,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 			continue
 		}
 
-		var sessionData map[string]interface{}
+		var sessionData map[string]any
 		if err := json.Unmarshal([]byte(session.SessionData), &sessionData); err != nil {
 			continue
 		}
@@ -605,7 +605,7 @@ func (s *PostgresStore) LogoutSessions(ctx context.Context, filter func(c types.
 			continue
 		}
 
-		claimsMap, ok := claimsData.(map[string]interface{})
+		claimsMap, ok := claimsData.(map[string]any)
 		if !ok {
 			continue
 		}

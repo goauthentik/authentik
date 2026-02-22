@@ -4,7 +4,7 @@ title: Flows
 
 Flows are a major component in authentik. In conjunction with stages and [policies](../../../customize/policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
 
-There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/examples/default_flows.md) or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface, Terraform, or via the API.
+There are over a dozen default, out-of-the-box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/examples/default_flows.md) or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface, Terraform, or via the API.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
@@ -78,9 +78,9 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 **Behavior settings**:
 
-- **Compatibility mode**: Toggle this option on to increase compatibility with password managers and mobile devices. Password managers like [1Password](https://1password.com/), for example, don't need this setting to be enabled, when accessing the flow from a desktop browser. However accessing the flow from a mobile device might necessitate this setting to be enabled.
+- **Compatibility mode**: Toggle this option on to increase compatibility with password managers and mobile devices. Password managers like [1Password](https://1password.com/), for example, don't need this setting to be enabled when accessing the flow from a desktop browser. However, accessing the flow from a mobile device might necessitate this setting to be enabled.
 
-    The technical reasons for this settings' existence is due to the JavaScript libraries we're using for the default flow interface. These interfaces are implemented using [Lit](https://lit.dev/), which is a modern web development library. It uses a web standard called ["Shadow DOMs"](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM), which makes encapsulating styles simpler. Due to differences in Browser APIs, many password managers are not compatible with this technology.
+    The technical reason for this setting's existence is the JavaScript libraries we're using for the default flow interface. These interfaces are implemented using [Lit](https://lit.dev/), which is a modern web development library. It uses a web standard called ["Shadow DOMs"](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM), which makes encapsulating styles simpler. Due to differences in Browser APIs, many password managers are not compatible with this technology.
 
     When the compatibility mode is enabled, authentik uses a polyfill which emulates the Shadow DOM APIs without actually using the feature, and instead a traditional DOM is rendered. This increases support for password managers, especially on mobile devices.
 
