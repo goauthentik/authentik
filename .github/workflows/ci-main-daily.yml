@@ -26,7 +26,8 @@ jobs:
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"
-          mkdir -p $dir
-          cd $dir
-          wget https://${{ matrix.version }}.goauthentik.io/docker-compose.yml
-          ${current}/scripts/test_docker.sh
+          mkdir -p "${dir}"
+          mkdir -p "${dir}/lifecycle/container"
+          cd "${dir}"
+          wget "https://${{ matrix.version }}.goauthentik.io/docker-compose.yml"
+          "${current}/scripts/test_docker.sh"
