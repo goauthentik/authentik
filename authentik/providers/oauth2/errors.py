@@ -7,7 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.views import bad_request_message
-from authentik.providers.oauth2.models import GrantTypes, RedirectURI
+from authentik.providers.oauth2.models import GrantType, RedirectURI
 
 
 class OAuth2Error(SentryIgnoredException):
@@ -182,7 +182,7 @@ class AuthorizeError(OAuth2Error):
         # See:
         # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
         fragment_or_query = (
-            "#" if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID] else "?"
+            "#" if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID] else "?"
         )
 
         uri = (
@@ -225,7 +225,7 @@ class TokenError(OAuth2Error):
         ),
     }
 
-    def __init__(self, error):
+    def __init__(self, error: str):
         super().__init__()
         self.error = error
         self.description = self.errors[error]

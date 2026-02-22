@@ -39,6 +39,21 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             reverse("authentik_providers_oauth2:device"),
         )
         self.assertEqual(res.status_code, 400)
+
+    def test_backchannel_invalid_no_grant(self):
+        """Test backchannel"""
+        self.provider.grant_types = []
+        self.provider.save()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            data={
+                "client_id": "test",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_backchannel_invalid_no_app(self):
+        """Test backchannel"""
         # test without application
         self.application.provider = None
         self.application.save()

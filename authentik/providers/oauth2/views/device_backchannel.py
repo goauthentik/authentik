@@ -15,7 +15,7 @@ from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import DeviceCodeError
-from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
+from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider
 from authentik.providers.oauth2.utils import TokenResponse
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
@@ -42,6 +42,8 @@ class DeviceView(View):
             _ = provider.application
         except Application.DoesNotExist:
             raise DeviceCodeError("invalid_client") from None
+        if GrantType.DEVICE_CODE not in provider.grant_types:
+            raise DeviceCodeError("invalid_client")
         self.provider = provider
         self.client_id = client_id
         self.scopes = self.request.POST.get("scope", "").split(" ")

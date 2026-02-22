@@ -13,7 +13,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURI,
@@ -114,7 +114,7 @@ class TesOAuth2Revoke(OAuthTestCase):
 
     def test_revoke_public(self):
         """Test revoke public client"""
-        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.client_type = ClientType.PUBLIC
         self.provider.save()
         token: AccessToken = AccessToken.objects.create(
             provider=self.provider,

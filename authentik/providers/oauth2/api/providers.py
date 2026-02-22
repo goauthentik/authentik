@@ -61,6 +61,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         fields = ProviderSerializer.Meta.fields + [
             "authorization_flow",
             "client_type",
+            "grant_types",
             "client_id",
             "client_secret",
             "access_code_validity",

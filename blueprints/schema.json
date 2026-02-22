@@ -9843,6 +9843,23 @@
                     "title": "Client Type",
                     "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
                 },
+                "grant_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "authorization_code",
+                            "implicit",
+                            "hybrid",
+                            "refresh_token",
+                            "client_credentials",
+                            "password",
+                            "urn:ietf:params:oauth:grant-type:device_code"
+                        ],
+                        "title": "Grant types"
+                    },
+                    "title": "Grant types"
+                },
                 "client_id": {
                     "type": "string",
                     "maxLength": 255,

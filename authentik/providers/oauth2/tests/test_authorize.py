@@ -21,7 +21,7 @@ from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, Red
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    GrantTypes,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -39,6 +39,27 @@ class TestAuthorize(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()
+
+    def test_disallowed_grant_type(self):
+        """Test with disallowed grant type"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            grant_types=[],
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
+        )
+        with self.assertRaises(AuthorizeError) as cm:
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "code",
+                    "client_id": "test",
+                    "redirect_uri": "http://local.invalid/Foo",
+                },
+            )
+            OAuthAuthorizationParams.from_request(request)
+        self.assertEqual(cm.exception.error, "invalid_request")
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
@@ -246,7 +267,7 @@ class TestAuthorize(OAuthTestCase):
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).grant_type,
-            GrantTypes.AUTHORIZATION_CODE,
+            GrantType.AUTHORIZATION_CODE,
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).redirect_uri,
@@ -265,7 +286,7 @@ class TestAuthorize(OAuthTestCase):
         )
         self.assertEqual(
             OAuthAuthorizationParams.from_request(request).grant_type,
-            GrantTypes.IMPLICIT,
+            GrantType.IMPLICIT,
         )
         # Implicit without openid scope
         with self.assertRaises(AuthorizeError) as cm:
@@ -280,7 +301,7 @@ class TestAuthorize(OAuthTestCase):
             )
             self.assertEqual(
                 OAuthAuthorizationParams.from_request(request).grant_type,
-                GrantTypes.IMPLICIT,
+                GrantType.IMPLICIT,
             )
         request = self.factory.get(
             "/",
@@ -293,7 +314,7 @@ class TestAuthorize(OAuthTestCase):
             },
         )
         self.assertEqual(
-            OAuthAuthorizationParams.from_request(request).grant_type, GrantTypes.HYBRID
+            OAuthAuthorizationParams.from_request(request).grant_type, GrantType.HYBRID
         )
         with self.assertRaises(AuthorizeError) as cm:
             request = self.factory.get(
