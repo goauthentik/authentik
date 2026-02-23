@@ -633,6 +633,27 @@ Configure the path under which authentik is served. For example to access authen
 
 Defaults to `/`.
 
+### `AUTHENTIK_WEB__TIMEOUT_HTTP_READ_HEADER`
+
+### `AUTHENTIK_WEB__TIMEOUT_HTTP_READ`
+
+### `AUTHENTIK_WEB__TIMEOUT_HTTP_WRITE`
+
+### `AUTHENTIK_WEB__TIMEOUT_HTTP_IDLE`
+
+Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". Defaults are:
+
+- HTTP Read (Header): `5s`
+- HTTP Read: `30s`
+- HTTP Write: `60s`
+- HTTP Idle: `120s`
+
+### `AUTHENTIK_WEB__PATH`
+
+Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
+
+Defaults to `/`.
+
 ## System settings
 
 Additional [system settings](../../sys-mgmt/settings.md) are configurable using the Admin interface, under **System** > **Settings** or using the API.
