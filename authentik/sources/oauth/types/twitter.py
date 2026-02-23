@@ -16,7 +16,7 @@ class TwitterOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": ["users.read", "tweet.read"],
+            "scope": ["users.read", "tweet.read", "users.email"],
         }
 
 
@@ -40,13 +40,13 @@ class TwitterType(SourceType):
 
     authorization_url = "https://twitter.com/i/oauth2/authorize"
     access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec
-    profile_url = "https://api.twitter.com/2/users/me"
+    profile_url = "https://api.twitter.com/2/users/me?user.fields=confirmed_email"
     pkce = PKCEMethod.S256
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         data = info.get("data", {})
         return {
             "username": data.get("username"),
-            "email": None,
+            "email": data.get("confirmed_email"),
             "name": data.get("name"),
         }
