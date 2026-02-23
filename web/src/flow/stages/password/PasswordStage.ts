@@ -82,6 +82,8 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
     }
 }
 
+export default PasswordStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-password": PasswordStage;
