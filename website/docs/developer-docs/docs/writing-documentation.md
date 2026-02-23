@@ -79,7 +79,7 @@ Run the following command to install or update the build tools for both the tech
 make docs-install
 ```
 
-Installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+This command installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
 
 :::tip
 If you encounter build check fails or issues with your local build even after running `make docs-install`, you might need to run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
