@@ -42,6 +42,16 @@ jobs:
         uses: ./.github/actions/setup
       - name: run job
         run: uv run make ci-${{ matrix.job }}
+  test-gen-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: generate schema
+        run: make migrate gen-build
+      - name: ensure schema is up-to-date
+        run: git diff --exit-code -- schema.yml blueprints/schema.json
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -160,7 +170,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@92086f6be054225fa813e0a4b13787fc9088faab # v1.13.0
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
@@ -277,6 +287,7 @@ jobs:
     if: always()
     needs:
       - lint
+      - test-gen-build
       - test-migrations
       - test-migrations-from-stable
       - test-unittest

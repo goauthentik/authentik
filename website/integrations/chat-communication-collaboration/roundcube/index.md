@@ -15,7 +15,7 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `roudcube.company` is the FQDN of the Roundcube installation.
+- `roundcube.company` is the FQDN of the Roundcube installation.
 
 :::info
 Roundcube is often used alongside Postfix and Dovecot. Postfix sends/receives email (SMTP), Dovecot stores/retrieves mail (IMAP/POP3), and Roundcube acts as a webmail client.
@@ -63,7 +63,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
     - Select any available signing key.
     - Under **Advanced protocol settings**:
         - Under **Scopes**, add `dovecotprofile` and `authentik default OAuth Mapping: OpenID 'offline_access'` to the list of selected scopes.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

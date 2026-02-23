@@ -230,7 +230,7 @@ const items = [
                             id: "add-secure-apps/providers/rac/index",
                         },
                         items: [
-                            "add-secure-apps/providers/rac/how-to-rac",
+                            "add-secure-apps/providers/rac/create-rac-provider",
                             "add-secure-apps/providers/rac/rac-public-key",
                             "add-secure-apps/providers/rac/rac_credentials_prompt",
                         ],
@@ -257,6 +257,15 @@ const items = [
                             id: "add-secure-apps/providers/ssf/index",
                         },
                         items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
+                    },
+                    {
+                        type: "category",
+                        label: "WS-Federation Provider",
+                        link: {
+                            type: "doc",
+                            id: "add-secure-apps/providers/wsfed/index",
+                        },
+                        items: ["add-secure-apps/providers/wsfed/create-wsfed-provider"],
                     },
                 ],
             },
@@ -616,7 +625,9 @@ const items = [
                                 ],
                             },
                             "users-sources/sources/social-logins/mailcow/index",
+                            "users-sources/sources/social-logins/okta/index",
                             "users-sources/sources/social-logins/plex/index",
+                            "users-sources/sources/social-logins/shibboleth/index",
                             "users-sources/sources/social-logins/telegram/index",
                             "users-sources/sources/social-logins/twitch/index",
                             "users-sources/sources/social-logins/twitter/index",
@@ -636,7 +647,16 @@ const items = [
         collapsed: true,
         items: [
             "sys-mgmt/background-tasks",
-            "sys-mgmt/brands",
+            {
+                type: "category",
+                label: "Brands",
+                collapsed: true,
+                link: {
+                    id: "sys-mgmt/brands/index",
+                    type: "doc",
+                },
+                items: ["sys-mgmt/brands/index", "sys-mgmt/brands/custom-css"],
+            },
             {
                 //#endregion
 
@@ -675,6 +695,7 @@ const items = [
             "sys-mgmt/settings",
             "sys-mgmt/service-accounts",
             "sys-mgmt/data-exports",
+            "sys-mgmt/object-lifecycle-management",
         ],
     },
     {

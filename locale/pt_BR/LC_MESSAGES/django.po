@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-28 00:13+0000\n"
+"POT-Creation-Date: 2026-02-10 19:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Ariel Amaral, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/authentik/teams/119923/pt_BR/)\n"
@@ -34,12 +34,12 @@ msgid "File name cannot be empty"
 msgstr "O nome do arquivo não pode estar vazio"
 
 #: authentik/admin/files/validation.py
+#, python-format
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
-"hyphens (-), underscores (_), and forward slashes (/)"
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
 msgstr ""
-"O nome do arquivo pode conter apenas letras (a-z, A-Z), números (0-9), "
-"pontos (.), hífens (-), underline (_) e barras (/)"
 
 #: authentik/admin/files/validation.py
 msgid "File name cannot contain duplicate /"
@@ -200,6 +200,35 @@ msgstr "Brand"
 msgid "Brands"
 msgstr "Brand"
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "Com base no ID do usuário com hash"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "Com base no ID do usuário"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "Com base no UUID do usuário"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "Com base no nome de usuário"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr "Com base no e-mail do usuário. Isso é recomendado sobre o método UPN."
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"Com base no UPN do usuário, só funciona se o usuário tiver um atributo 'upn'"
+" definido. Use este método somente se você tiver diferentes domínios UPN e "
+"Mail."
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "O usuário não tem acesso ao aplicativo."
@@ -233,6 +262,34 @@ msgid "No empty segments in user path allowed."
 msgstr "Não são permitidos segmentos vazios no caminho do usuário."
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr "Um usuário/grupo com estes detalhes já existe"
 
@@ -243,6 +300,14 @@ msgstr "Falha ao criar usuário"
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
 msgstr "Ocorreu um erro desconhecido"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
@@ -309,14 +374,6 @@ msgstr "Redefinir senha"
 #: authentik/core/models.py
 msgid "Can impersonate other users"
 msgstr "Pode representar outros usuários"
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr "Pode atribuir permissões a usuários"
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
-msgstr "Pode remover permissões de usuários"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
@@ -555,7 +612,9 @@ msgstr "Ir para casa"
 msgid "Powered by authentik"
 msgstr "Powered by authentik"
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -578,6 +637,14 @@ msgstr "rsa"
 msgid "ecdsa"
 msgstr "ecdsa"
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr "Ed25519"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr "Ed448"
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr "RSA"
@@ -589,14 +656,6 @@ msgstr "Curva Elíptica"
 #: authentik/crypto/models.py
 msgid "DSA"
 msgstr "DSA"
-
-#: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr "Ed25519"
-
-#: authentik/crypto/models.py
-msgid "Ed448"
-msgstr "Ed448"
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
@@ -710,6 +769,16 @@ msgstr "Nonce Apple"
 msgid "Apple Nonces"
 msgstr "Nonces Apple"
 
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+
 #: authentik/endpoints/models.py
 msgid "Device"
 msgstr "Dispositivo"
@@ -769,6 +838,95 @@ msgstr "Enterprise é necessário para criar/atualizar esse objeto."
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to use this endpoint."
 msgstr "Enterprise é necessário para usar este endpoint."
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Configurar cabeçalhos adicionais a serem enviados. O mapeamento deve "
+"retornar um dicionário de pares chave-valor"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Only one type-wide rule for each object type is allowed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to validate lifecycle rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License"
@@ -892,6 +1050,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -962,6 +1130,16 @@ msgstr ""
 "provedor Microsoft Entra."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
 msgstr ""
 "Sincronizar um registro relacionado (associações) do provedor Microsoft "
@@ -1027,6 +1205,21 @@ msgstr "Despachar eventos SSF."
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
 msgstr "Enviar um evento SSF."
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "Redirecionando para {app}..."
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Export"
@@ -1158,14 +1351,6 @@ msgid ""
 msgstr ""
 "Personalize o corpo do pedido. O mapeamento deve retornar dados que sejam "
 "serializáveis em JSON."
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
-msgstr ""
-"Configurar cabeçalhos adicionais a serem enviados. O mapeamento deve "
-"retornar um dicionário de pares chave-valor"
 
 #: authentik/events/models.py
 msgid "Severity"
@@ -1940,35 +2125,6 @@ msgstr "Pesquisar diretório LDAP completo"
 msgid "Invalid Regex Pattern: {url}"
 msgstr "Padrão Regex inválido: {url}"
 
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr "Com base no ID do usuário com hash"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr "Com base no ID do usuário"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr "Com base no UUID do usuário"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr "Com base no nome de usuário"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "Com base no e-mail do usuário. Isso é recomendado sobre o método UPN."
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-"Com base no UPN do usuário, só funciona se o usuário tiver um atributo 'upn'"
-" definido. Use este método somente se você tiver diferentes domínios UPN e "
-"Mail."
-
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
 msgstr "Confidencial"
@@ -2245,12 +2401,6 @@ msgstr ""
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr "Gerenciar notificações de logout back-channel enviadas via sinal"
 
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
-msgstr "Redirecionando para {app}..."
-
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr "Código inválido"
@@ -2459,6 +2609,10 @@ msgid ""
 msgstr ""
 "Com um par de chaves de assinatura selecionado, pelo menos uma das opções "
 "'Assinar assertion' e 'Assinar Response' deve ser selecionada."
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -2745,6 +2899,10 @@ msgid "Salesforce"
 msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "URL base para solicitações SCIM, geralmente termina em /v2"
 
@@ -2811,6 +2969,14 @@ msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr ""
 "Despachar sincronizações para um registro direto (usuário, grupo) do "
 "provedor SCIM."
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
