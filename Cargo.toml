@@ -42,6 +42,7 @@ nix = { version = "0.31.1", features = ["signal"] }
 notify = "8.2.0"
 pem = "3.0.6"
 pin-project-lite = "0.2.16"
+prometheus-client = "0.24.0"
 pyo3 = "0.27.2"
 percent-encoding = "2.3.2"
 rcgen = { version = "0.14.7", default-features = false, features = [
@@ -179,6 +180,7 @@ notify.workspace = true
 pem.workspace = true
 percent-encoding.workspace = true
 pin-project-lite.workspace = true
+prometheus-client.workspace = true
 pyo3 = { workspace = true, optional = true }
 rcgen.workspace = true
 rustls.workspace = true

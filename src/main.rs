@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use ::tracing::{error, info, trace};
 use argh::FromArgs;
+use axum_server::Handle;
 use eyre::{Result, eyre};
 use pyo3::Python;
 
@@ -96,6 +97,8 @@ fn main() -> Result<()> {
         .enable_all()
         .build()?
         .block_on(async {
+            metrics::init();
+
             let mut tasks = Tasks::new()?;
 
             ConfigManager::init(&mut tasks).await?;
@@ -122,6 +125,20 @@ fn main() -> Result<()> {
                 #[cfg(feature = "proxy")]
                 Command::Proxy(_args) => todo!(),
             };
+
+            let metrics_router = metrics::build_router();
+            for addr in config::get().listen.metrics.iter().copied() {
+                let handle = Handle::new();
+                tasks.arbiter().add_handle(handle.clone()).await;
+                tasks
+                    .build_task()
+                    .name(&format!(
+                        "{}::metrics::run_server({})",
+                        module_path!(),
+                        addr
+                    ))
+                    .spawn(metrics::run_server(metrics_router.clone(), addr, handle))?;
+            }
 
             let errors = tasks.run().await;
 

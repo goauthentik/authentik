@@ -163,15 +163,15 @@ pub(crate) struct Arbiter {
     config_changed_tx: watch::Sender<()>,
     _config_changed_rx: watch::Receiver<()>,
     /// Watcher for gunicorn ready event
-    gunicorn_ready_tx: watch::Sender<bool>,
-    _gunicorn_ready_rx: watch::Receiver<bool>,
+    gunicorn_ready_tx: watch::Sender<()>,
+    _gunicorn_ready_rx: watch::Receiver<()>,
 }
 
 impl Arbiter {
     fn new(tasks: &mut JoinSet<Result<()>>) -> Result<Self> {
         let (signals_tx, signals_rx) = broadcast::channel(10);
         let (config_changed_tx, _config_changed_rx) = watch::channel(());
-        let (gunicorn_ready_tx, _gunicorn_ready_rx) = watch::channel(false);
+        let (gunicorn_ready_tx, _gunicorn_ready_rx) = watch::channel(());
         let arbiter = Self {
             fast_shutdown: CancellationToken::new(),
             graceful_shutdown: CancellationToken::new(),
@@ -263,13 +263,13 @@ impl Arbiter {
     }
 
     /// Send a value on the gunicorn ready watch channel
-    pub(crate) fn gunicorn_ready_send(&self, value: bool) -> Result<()> {
+    pub(crate) fn gunicorn_ready_send(&self, value: ()) -> Result<()> {
         self.gunicorn_ready_tx.send(value)?;
         Ok(())
     }
 
     /// Create a new [`watch::Receiver`] to listen for gunicorn ready event.
-    pub(crate) fn gunicorn_ready_subscribe(&self) -> watch::Receiver<bool> {
+    pub(crate) fn gunicorn_ready_subscribe(&self) -> watch::Receiver<()> {
         self.gunicorn_ready_tx.subscribe()
     }
 }

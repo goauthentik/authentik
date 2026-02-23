@@ -39,7 +39,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                         if signal == SignalKind::user_defined1() {
                             info!("gunicorn notified us ready, marked ready for operation");
                             GUNICORN_READY.store(true, Ordering::Relaxed);
-                            arbiter.gunicorn_ready_send(true)?;
+                            arbiter.gunicorn_ready_send(())?;
                         }
                     },
                     Err(RecvError::Lagged(_)) => continue,
@@ -55,7 +55,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                 if Gunicorn::is_socket_ready().await {
                     info!("gunicorn socket is accepting connections, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
-                    arbiter.gunicorn_ready_send(true)?;
+                    arbiter.gunicorn_ready_send(())?;
                 }
             },
             _ = tokio::time::sleep(Duration::from_secs(5)) => {
@@ -99,14 +99,16 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
     let router = build_router().await;
     let tls_config = RustlsConfig::from_config(Arc::new(tls::make_tls_config()?));
 
-    let metrics_router = crate::metrics::build_router();
-
     for addr in config.listen.http.iter().copied() {
         let handle = Handle::new();
         arbiter.add_handle(handle.clone()).await;
         tasks
             .build_task()
-            .name(&format!("{}::run_server_plain({})", module_path!(), addr))
+            .name(&format!(
+                "{}::plain::run_server_plain({})",
+                module_path!(),
+                addr
+            ))
             .spawn(plain::run_server_plain(router.clone(), addr, handle))?;
     }
 
@@ -115,24 +117,15 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
         arbiter.add_handle(handle.clone()).await;
         tasks
             .build_task()
-            .name(&format!("{}::run_server_tls({})", module_path!(), addr))
+            .name(&format!(
+                "{}::tls::run_server_tls({})",
+                module_path!(),
+                addr
+            ))
             .spawn(tls::run_server_tls(
                 router.clone(),
                 addr,
                 tls_config.clone(),
-                handle,
-            ))?;
-    }
-
-    for addr in config.listen.metrics.iter().copied() {
-        let handle = Handle::new();
-        arbiter.add_handle(handle.clone()).await;
-        tasks
-            .build_task()
-            .name(&format!("{}::metrics({})", module_path!(), addr))
-            .spawn(crate::metrics::start_server(
-                metrics_router.clone(),
-                addr,
                 handle,
             ))?;
     }
