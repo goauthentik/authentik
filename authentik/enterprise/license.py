@@ -116,8 +116,8 @@ class LicenseKey:
             # a key of curve `secp384r1`. Starting with version 2.11.0, pyjwt enforces the spec, see
             # https://github.com/jpadilla/pyjwt/commit/5b8622773358e56d3d3c0a9acf404809ff34433a
             # New licenses are generated with `algorithm="ES384"` and signed with `secp384r1`.
-            # The last license will run out by March 2026.
-            # TODO: remove this in March 2026.
+            # The last license will run out by March 2027.
+            # TODO: remove this in March 2027.
             ECAlgorithm._validate_curve = lambda *_: True
             body = from_dict(
                 LicenseKey,
