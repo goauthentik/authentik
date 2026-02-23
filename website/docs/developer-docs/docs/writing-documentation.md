@@ -89,7 +89,7 @@ If you have the [full development environment](../setup/full-dev-environment.mdx
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation (https://docs.goauthentik.io/docs/):
 
- -    For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
+- For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
   Otherwise, the new page will not appear in the table of contents to the left.
 
 - Always be sure to run the `make docs` command on your local branch _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authentik repo, and also check on the build status of your PR after you create it.
