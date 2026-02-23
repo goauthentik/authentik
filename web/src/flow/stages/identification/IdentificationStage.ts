@@ -365,13 +365,15 @@ export class IdentificationStage extends BaseStage<
         const enrollmentItem = enrollUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
                   ${msg("Need an account?")}
-                  <a href="${enrollUrl}">${msg("Sign up.")}</a>
+                  <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
               </div>`
             : null;
 
         const recoveryItem = recoveryUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
-                  <a href="${recoveryUrl}">${msg("Forgot username or password?")}</a>
+                  <a href="${recoveryUrl}" ouiaId="recovery"
+                      >${msg("Forgot username or password?")}</a
+                  >
               </div>`
             : null;
 
@@ -509,6 +511,7 @@ export class IdentificationStage extends BaseStage<
                     ? html`<a
                           href=${this.challenge.passwordlessUrl}
                           class="pf-c-button pf-m-secondary pf-m-block"
+                          ouiaId="passwordless"
                       >
                           ${msg("Use a security key")}
                       </a> `
