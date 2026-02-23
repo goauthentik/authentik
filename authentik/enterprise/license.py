@@ -110,6 +110,7 @@ class LicenseKey:
             intermediate.verify_directly_issued_by(get_licensing_key())
         except InvalidSignature, TypeError, ValueError, Error:
             raise ValidationError("Unable to verify license") from None
+        _validate_curve_original = ECAlgorithm._validate_curve
         try:
             ECAlgorithm._validate_curve = lambda *_: True
             body = from_dict(
@@ -127,6 +128,8 @@ class LicenseKey:
             if unverified["aud"] != get_license_aud():
                 raise ValidationError("Invalid Install ID in license") from None
             raise ValidationError("Unable to verify license") from None
+        finally:
+            ECAlgorithm._validate_curve = _validate_curve_original
         return body
 
     @staticmethod
