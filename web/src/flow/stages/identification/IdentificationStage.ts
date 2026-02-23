@@ -479,7 +479,7 @@ export class IdentificationStage extends BaseStage<
     renderPasswordlessUrl(passwordlessUrl: string) {
         return html`<ak-divider>${msg("Or")}</ak-divider>
             <a
-                name="passwordless"
+                ouiaId="passwordless"
                 href=${passwordlessUrl}
                 class="pf-c-button pf-m-secondary pf-m-block"
             >
@@ -503,12 +503,12 @@ export class IdentificationStage extends BaseStage<
             ${enrollUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
-                      <a name="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
+                      <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
                   </div>`
                 : nothing}
             ${recoveryUrl
                 ? html`<div class="pf-c-login__main-footer-band-item">
-                      <a name="recovery" href="${recoveryUrl}"
+                      <a href="${recoveryUrl}" ouiaId="recovery"
                           >${msg("Forgot username or password?")}</a
                       >
                   </div>`

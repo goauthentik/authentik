@@ -25,6 +25,17 @@ client_id=application_client_id&
 scope=openid email my-other-scope
 ```
 
+Alternatively the client id may be sent via the HTTP Authorization header:
+
+```http
+POST /application/o/device/ HTTP/1.1
+Host: authentik.company
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer YXBwbGljYXRpb25fY2xpZW50X2lkOg==
+
+scope=openid email my-other-scope
+```
+
 The response contains the following fields:
 
 - `device_code`: Device code, which is the code kept on the device

@@ -23,7 +23,7 @@ import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent } from "#flow/events";
-import { StageMappings } from "#flow/FlowExecutorStageFactory";
+import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
 import type { StageHost, SubmitOptions } from "#flow/types";
 
@@ -35,17 +35,17 @@ import {
     FlowErrorChallenge,
     FlowLayoutEnum,
     FlowsApi,
-    ShellChallenge,
 } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
 import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, render } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { until } from "lit/directives/until.js";
 import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
@@ -62,6 +62,18 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
  *
  * @attr {string} slug - The slug of the flow to execute.
  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
+ *
+ * @part main - The main container for the flow content.
+ * @part content - The container for the stage content.
+ * @part content-iframe - The iframe element when using a frame background layout.
+ * @part footer - The footer container.
+ * @part locale-select - The locale select component.
+ * @part branding - The branding element, used for the background image in some layouts.
+ * @part loading-overlay - The loading overlay element.
+ * @part challenge-additional-actions - Container in stages which have additional actions.
+ * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
+ * @part locale-select-label - The label of the locale select component.
+ * @part locale-select-select - The select element of the locale select component.
  */
 @customElement("ak-flow-executor")
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
@@ -237,15 +249,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         if (changedProperties.has("flowInfo") || changedProperties.has("activeTheme")) {
             this.#synchronizeFlowInfo();
         }
-
-        const previous = Array.from(this.children).find((el) =>
-            el.matches('[slot="slotted-dialog"]'),
-        );
-        (previous as Element | undefined)?.remove();
-
-        if (this.challenge) {
-            this.renderChallenge(this.challenge);
-        }
     }
 
     //#endregion
@@ -298,22 +301,22 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Render Challenge
 
     protected async renderChallenge(challenge: ChallengeTypes) {
-        const { component } = challenge;
-
-        const createMapping = StageMappings.get(component);
+        const stageEntry = StageMapping.registry.get(challenge.component);
 
         // The special cases!
-        if (!createMapping) {
-            if (component === "xak-flow-shell") {
-                return html`${unsafeHTML((challenge as ShellChallenge).body)}`;
+        if (!stageEntry) {
+            if (challenge.component === "xak-flow-shell") {
+                return html`${unsafeHTML(challenge.body)}`;
             }
 
-            return html`Invalid native challenge element`;
+            return this.renderChallengeError(
+                `No stage found for component: ${challenge.component}`,
+            );
         }
 
         const challengeProps: LitPropertyRecord<BaseStage<NonNullable<typeof challenge>, object>> =
             {
-                ".challenge": challenge!,
+                ".challenge": challenge,
                 ".host": this,
             };
 
@@ -322,21 +325,39 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             exportparts: exportParts(["additional-actions", "footer-band"], "challenge"),
         };
 
-        const mapping = createMapping();
+        let mapping: StageMapping;
 
-        const tag = await mapping.tag;
+        try {
+            mapping = await StageMapping.from(stageEntry);
+        } catch (error: unknown) {
+            return this.renderChallengeError(error);
+        }
+
+        const { tag, variant } = mapping;
 
         const props = spread(
-            match(mapping.variant)
+            match(variant)
                 .with("challenge", () => challengeProps)
                 .with("standard", () => ({ ...challengeProps, ...litParts }))
                 .exhaustive(),
         );
 
-        render(
-            staticHTML`<${unsafeStatic(tag)} ${props} slot="slotted-dialog"></${unsafeStatic(tag)}>`,
-            this,
-        );
+        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+    }
+
+    protected renderChallengeError(error: unknown): SlottedTemplateResult {
+        const detail = pluckErrorDetail(error);
+
+        // eslint-disable-next-line no-console
+        console.trace(error);
+
+        const errorChallenge: FlowErrorChallenge = {
+            component: "ak-stage-flow-error",
+            error: detail,
+            requestId: "",
+        };
+
+        return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
     }
 
     //#endregion
@@ -344,7 +365,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Render
 
     protected renderLoading(): SlottedTemplateResult {
-        return html`<slot class="slotted-content" name="placeholder"></slot>`;
+        return html`<slot name="placeholder"></slot>`;
     }
 
     protected renderFrameBackground(): SlottedTemplateResult {
@@ -373,8 +394,23 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         });
     }
 
+    protected renderFooter(): SlottedTemplateResult {
+        return guard([this.layout], () => {
+            return html`<footer
+                aria-label=${msg("Site footer")}
+                name="site-footer"
+                part="footer"
+                class="pf-c-login__footer ${this.layout === FlowLayoutEnum.Stacked
+                    ? "pf-m-dark"
+                    : ""}"
+            >
+                <slot name="footer"></slot>
+            </footer>`;
+        });
+    }
+
     protected override render(): SlottedTemplateResult {
-        const { component } = this.challenge || {};
+        const { challenge, loading } = this;
 
         return html`<ak-locale-select
                 part="locale-select"
@@ -400,16 +436,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                         themedUrls: this.brandingLogoThemedUrls,
                     })}
                 </div>
-                ${this.loading && this.challenge
-                    ? html`<ak-loading-overlay></ak-loading-overlay>`
-                    : nothing}
-                ${component
-                    ? html`<div part="slotted-dialog">
-                          <slot name="slotted-dialog" value=${component}></slot>
-                      </div>`
-                    : html`<slot class="slotted-content" name="placeholder"></slot>`}
+                ${loading && challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
+                ${guard([challenge], () => {
+                    return challenge?.component
+                        ? until(this.renderChallenge(challenge))
+                        : this.renderLoading();
+                })}
             </main>
-            <slot name="footer"></slot>`;
+            ${this.renderFooter()}`;
     }
 
     //#endregion

@@ -61,7 +61,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
         - **Send HTTP-Basic Authentication**: enabled
         - **HTTP-Basic Username Key**: `tautulli_user`
         - **HTTP-Basic Password Key**: `tautulli_password`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -79,7 +79,7 @@ Optionally, you can use the built-in authentik embedded outpost:
 
 ## Tautulli configuration
 
-To configure basic authentication, set the following variables in the `config.ini` file of you Tautulli deployment:
+To configure basic authentication, set the following variables in the `config.ini` file of your Tautulli deployment:
 
 ```yaml title="config.ini"
 http_basic_auth = 1
