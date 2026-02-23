@@ -39,6 +39,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                         if signal == SignalKind::user_defined1() {
                             info!("gunicorn notified us ready, marked ready for operation");
                             GUNICORN_READY.store(true, Ordering::Relaxed);
+                            arbiter.gunicorn_ready_send(true)?;
                         }
                     },
                     Err(RecvError::Lagged(_)) => continue,
@@ -54,9 +55,10 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                 if Gunicorn::is_socket_ready().await {
                     info!("gunicorn socket is accepting connections, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
+                    arbiter.gunicorn_ready_send(true)?;
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(1)) => {
+            _ = tokio::time::sleep(Duration::from_secs(5)) => {
                 if !gunicorn.is_alive().await {
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }

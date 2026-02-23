@@ -62,15 +62,16 @@ sentry = { version = "0.46.2", default-features = false, features = [
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 serde_yaml_ng = "0.10.0"
-signal-hook = "0.4.3"
 sqlx = { version = "0.8.6", default-features = false, features = [
   "runtime-tokio",
   "tls-rustls-aws-lc-rs",
   "postgres",
+  "derive",
   "macros",
-  "chrono",
-  "json",
   "uuid",
+  "chrono",
+  "ipnet",
+  "json",
 ] }
 thiserror = "2.0.18"
 time = "0.3.47"
@@ -91,6 +92,7 @@ tower-service = "0.3.3"
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
 url = "2.5.8"
+uuid = { version = "1.21.0", features = ["v4"] }
 
 # Because of the async runtime, we really want panics to cause an abort, otherwise
 # the binary can keep on running as a ghost
@@ -183,7 +185,6 @@ rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-signal-hook.workspace = true
 sqlx = { workspace = true, optional = true }
 time.workspace = true
 thiserror.workspace = true
@@ -196,6 +197,7 @@ tower.workspace = true
 tracing-subscriber.workspace = true
 tracing.workspace = true
 url.workspace = true
+uuid.workspace = true
 
 [lints]
 workspace = true

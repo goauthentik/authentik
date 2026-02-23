@@ -1,6 +1,5 @@
 use std::str::FromStr;
 
-use ::tokio::sync::broadcast;
 use ::tracing::{error, info, trace};
 use argh::FromArgs;
 use eyre::{Result, eyre};
@@ -99,8 +98,7 @@ fn main() -> Result<()> {
         .block_on(async {
             let mut tasks = Tasks::new()?;
 
-            let (config_changed_tx, config_changed_rx) = broadcast::channel(100);
-            ConfigManager::init(&mut tasks, config_changed_tx.clone()).await?;
+            ConfigManager::init(&mut tasks).await?;
 
             tracing::install()?;
             drop(tracing_crude);
@@ -113,7 +111,7 @@ fn main() -> Result<()> {
 
             #[cfg(feature = "server")]
             {
-                db::init(&mut tasks, config_changed_rx).await?;
+                db::init(&mut tasks).await?;
             }
 
             match cli.command {

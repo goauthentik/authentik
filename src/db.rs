@@ -5,7 +5,6 @@ use sqlx::{
     PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
-use tokio::sync::broadcast;
 use tracing::{info, log::LevelFilter, trace};
 
 use crate::{
@@ -43,20 +42,18 @@ async fn get_connect_opts() -> Result<PgConnectOptions> {
     Ok(opts)
 }
 
-async fn update_connect_opts_on_config_change(
-    arbiter: Arbiter,
-    mut config_changed_rx: broadcast::Receiver<()>,
-) -> Result<()> {
+async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
+    let mut config_changed_rx = arbiter.config_changed_subscribe();
     info!("starting database watcher for config changes");
     loop {
         tokio::select! {
-            res = config_changed_rx.recv() => {
+            res = config_changed_rx.changed() => {
                 if let Err(err) = res {
                     trace!("error receiving config changes: {err:?}");
                     break;
                 }
                 trace!("config change recevied, refreshing database connection options");
-                let db = get_db();
+                let db = get();
                 db.set_connect_options(get_connect_opts().await?);
             },
             _ = arbiter.shutdown() => break,
@@ -67,10 +64,7 @@ async fn update_connect_opts_on_config_change(
     Ok(())
 }
 
-pub(crate) async fn init(
-    tasks: &mut Tasks,
-    config_changed_rx: broadcast::Receiver<()>,
-) -> Result<()> {
+pub(crate) async fn init(tasks: &mut Tasks) -> Result<()> {
     info!("initializing database pool");
     let options = get_connect_opts().await?;
     let config = config::get();
@@ -92,16 +86,13 @@ pub(crate) async fn init(
             "{}::update_connect_opts_on_config_change",
             module_path!(),
         ))
-        .spawn(update_connect_opts_on_config_change(
-            arbiter,
-            config_changed_rx,
-        ))?;
+        .spawn(update_connect_opts_on_config_change(arbiter))?;
 
     info!("database pool initialized");
     Ok(())
 }
 
-pub(crate) fn get_db() -> &'static PgPool {
+pub(crate) fn get() -> &'static PgPool {
     DB.get()
         .expect("failed to get db, has it been initialized?")
 }

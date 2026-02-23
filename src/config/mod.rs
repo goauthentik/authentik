@@ -8,10 +8,7 @@ use arc_swap::{ArcSwap, Guard};
 use eyre::Result;
 use notify::{RecommendedWatcher, Watcher};
 use serde_json::{Map, Value};
-use tokio::{
-    fs::read_to_string,
-    sync::{broadcast, mpsc},
-};
+use tokio::{fs::read_to_string, sync::mpsc};
 use tracing::{info, warn};
 
 pub(crate) mod schema;
@@ -149,10 +146,7 @@ pub(crate) struct ConfigManager {
 }
 
 impl ConfigManager {
-    pub(crate) async fn init(
-        tasks: &mut Tasks,
-        config_changed_tx: broadcast::Sender<()>,
-    ) -> Result<()> {
+    pub(crate) async fn init(tasks: &mut Tasks) -> Result<()> {
         info!("loading config");
         let config_paths = config_paths();
         let mut watch_paths = config_paths.clone();
@@ -167,17 +161,13 @@ impl ConfigManager {
         tasks
             .build_task()
             .name(&format!("{}::watch_config", module_path!()))
-            .spawn(watch_config(arbiter, watch_paths, config_changed_tx))?;
+            .spawn(watch_config(arbiter, watch_paths))?;
         info!("config loaded");
         Ok(())
     }
 }
 
-async fn watch_config(
-    arbiter: Arbiter,
-    watch_paths: Vec<PathBuf>,
-    config_changed_tx: broadcast::Sender<()>,
-) -> Result<()> {
+async fn watch_config(arbiter: Arbiter, watch_paths: Vec<PathBuf>) -> Result<()> {
     let (tx, mut rx) = mpsc::channel(100);
     let mut watcher = RecommendedWatcher::new(
         move |res: notify::Result<notify::Event>| {
@@ -207,7 +197,7 @@ async fn watch_config(
                     Ok((new_config, _)) => {
                         info!("configuration reloaded");
                         manager.config.store(Arc::new(new_config));
-                        if let Err(err) = config_changed_tx.send(()) {
+                        if let Err(err) = arbiter.config_changed_send(()) {
                             warn!("failed to notify of config change, aborting: {err:?}");
                             break;
                         }

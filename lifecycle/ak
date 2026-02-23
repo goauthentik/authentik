@@ -79,9 +79,11 @@ if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; the
 fi
 
 if [[ "$1" == "server" ]]; then
+    wait_for_db
     set_mode "server"
     run_authentik server
 elif [[ "$1" == "worker" ]]; then
+    wait_for_db
     set_mode "worker"
     shift
     # If we have bootstrap credentials set, run bootstrap tasks outside of main server
