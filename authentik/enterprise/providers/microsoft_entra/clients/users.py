@@ -78,7 +78,8 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
         microsoft_user = self.to_schema(user, None)
-        self.check_email_valid(microsoft_user.user_principal_name)
+        if microsoft_user.user_principal_name:
+            self.check_email_valid(microsoft_user.user_principal_name)
         with transaction.atomic():
             try:
                 response = self._request(self.client.users.post(microsoft_user))
@@ -118,7 +119,8 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     def update(self, user: User, connection: MicrosoftEntraProviderUser):
         """Update existing user"""
         microsoft_user = self.to_schema(user, connection)
-        self.check_email_valid(microsoft_user.user_principal_name)
+        if microsoft_user.user_principal_name:
+            self.check_email_valid(microsoft_user.user_principal_name)
         response = self._request(
             self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
         )
