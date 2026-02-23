@@ -1,5 +1,6 @@
 """Device backchannel tests"""
 
+from base64 import b64encode
 from json import loads
 
 from django.urls import reverse
@@ -26,7 +27,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             provider=self.provider,
         )
 
-    def test_backchannel_invalid(self):
+    def test_backchannel_invalid_client_id_via_post_body(self):
         """Test backchannel"""
         res = self.client.post(
             reverse("authentik_providers_oauth2:device"),
@@ -50,13 +51,47 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
         )
         self.assertEqual(res.status_code, 400)
 
-    def test_backchannel(self):
+    def test_backchannel_client_id_via_post_body(self):
         """Test backchannel"""
         res = self.client.post(
             reverse("authentik_providers_oauth2:device"),
             data={
                 "client_id": self.provider.client_id,
             },
+        )
+        self.assertEqual(res.status_code, 200)
+        body = loads(res.content.decode())
+        self.assertEqual(body["expires_in"], 60)
+
+    def test_backchannel_invalid_client_id_via_auth_header(self):
+        """Test backchannel"""
+        creds = b64encode(b"foo:").decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            HTTP_AUTHORIZATION=f"Basic {creds}",
+        )
+        self.assertEqual(res.status_code, 400)
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+        )
+        self.assertEqual(res.status_code, 400)
+        # test without application
+        self.application.provider = None
+        self.application.save()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            data={
+                "client_id": "test",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_backchannel_client_id_via_auth_header(self):
+        """Test backchannel"""
+        creds = b64encode(f"{self.provider.client_id}:".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            HTTP_AUTHORIZATION=f"Basic {creds}",
         )
         self.assertEqual(res.status_code, 200)
         body = loads(res.content.decode())
