@@ -77,6 +77,8 @@ class PolicyResult:
 
     log_messages: list[LogEvent] | None
 
+    _exec_time: int | None
+
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing
         self.messages = messages
