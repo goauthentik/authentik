@@ -82,14 +82,14 @@ make docs-install
 This command installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
 
 :::tip
-If you encounter build check fails or issues with your local build even after running `make docs-install`, you might need to run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
+If you have the [full development environment](../setup/full-dev-environment.mdx) installed you can run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
 :::
 
 ## Writing or modifying technical docs
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation (https://docs.goauthentik.io/docs/):
 
-- For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
+ -    For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
   Otherwise, the new page will not appear in the table of contents to the left.
 
 - Always be sure to run the `make docs` command on your local branch _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authentik repo, and also check on the build status of your PR after you create it.
