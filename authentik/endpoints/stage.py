@@ -1,4 +1,4 @@
-from authentik.endpoints.models import EndpointStage
+from authentik.endpoints.models import EndpointStage, StageMode
 from authentik.flows.stage import StageView
 
 PLAN_CONTEXT_ENDPOINT_CONNECTOR = "endpoint_connector"
@@ -16,7 +16,11 @@ class EndpointStageView(StageView):
     def dispatch(self, request, *args, **kwargs):
         inner = self._get_inner()
         if inner is None:
-            return self.executor.stage_ok()
+            stage: EndpointStage = self.executor.current_stage
+            if stage.mode == StageMode.OPTIONAL:
+                return self.executor.stage_ok()
+            else:
+                return self.executor.stage_invalid("Invalid stage configuration")
         return inner.dispatch(request, *args, **kwargs)
 
     def cleanup(self):
