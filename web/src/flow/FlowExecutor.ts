@@ -360,6 +360,21 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
     }
 
+    protected renderChallengeError(error: unknown): SlottedTemplateResult {
+        const detail = pluckErrorDetail(error);
+
+        // eslint-disable-next-line no-console
+        console.trace(error);
+
+        const errorChallenge: FlowErrorChallenge = {
+            component: "ak-stage-flow-error",
+            error: detail,
+            requestId: "",
+        };
+
+        return html`<ak-stage-flow-error .challenge=${errorChallenge}></ak-stage-flow-error>`;
+    }
+
     //#endregion
 
     //#region Render

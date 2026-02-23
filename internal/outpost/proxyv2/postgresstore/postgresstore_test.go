@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"slices"
 	"testing"
 	"time"
 
@@ -89,7 +90,7 @@ func TestPostgresStore_Save(t *testing.T) {
 
 	// Set up session claims
 	userID := uuid.New()
-	claims := map[string]interface{}{
+	claims := map[string]any{
 		"sub":                userID.String(),
 		"email":              "test@example.com",
 		"preferred_username": "testuser",
@@ -108,11 +109,11 @@ func TestPostgresStore_Save(t *testing.T) {
 	assert.Equal(t, userID, *savedSession.UserID)
 
 	// Verify session data contains claims
-	var sessionData map[string]interface{}
+	var sessionData map[string]any
 	err = json.Unmarshal([]byte(savedSession.SessionData), &sessionData)
 	assert.NoError(t, err)
 
-	claimsData, ok := sessionData[constants.SessionClaims].(map[string]interface{})
+	claimsData, ok := sessionData[constants.SessionClaims].(map[string]any)
 	assert.True(t, ok)
 	assert.Equal(t, "test@example.com", claimsData["email"])
 	assert.Equal(t, "testuser", claimsData["preferred_username"])
@@ -128,8 +129,8 @@ func TestPostgresStore_Load(t *testing.T) {
 	userID := uuid.New()
 	sessionKey := "test_session_123"
 
-	sessionData := map[string]interface{}{
-		constants.SessionClaims: map[string]interface{}{
+	sessionData := map[string]any{
+		constants.SessionClaims: map[string]any{
 			"sub":                userID.String(),
 			"email":              "test@example.com",
 			"preferred_username": "testuser",
@@ -158,7 +159,7 @@ func TestPostgresStore_Load(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Verify claims were loaded correctly
-	claims, ok := session.Values[constants.SessionClaims].(map[string]interface{})
+	claims, ok := session.Values[constants.SessionClaims].(map[string]any)
 	assert.True(t, ok)
 	assert.Equal(t, userID.String(), claims["sub"])
 	assert.Equal(t, "test@example.com", claims["email"])
@@ -209,7 +210,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 			UUID:       uuid.New(),
 			SessionKey: "test_session_user1_1",
 			UserID:     &user1,
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"sub":   user1.String(),
 				"email": "user1@example.com",
 			}),
@@ -218,7 +219,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 			UUID:       uuid.New(),
 			SessionKey: "test_session_user1_2",
 			UserID:     &user1,
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"sub":   user1.String(),
 				"email": "user1@example.com",
 			}),
@@ -227,7 +228,7 @@ func TestPostgresStore_LogoutSessions_ByUserID(t *testing.T) {
 			UUID:       uuid.New(),
 			SessionKey: "test_session_user2_1",
 			UserID:     &user2,
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"sub":   user2.String(),
 				"email": "user2@example.com",
 			}),
@@ -267,21 +268,21 @@ func TestPostgresStore_LogoutSessions_ByEmail(t *testing.T) {
 		{
 			UUID:       uuid.New(),
 			SessionKey: "test_session_admin_1",
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"email": "admin@example.com",
 			}),
 		},
 		{
 			UUID:       uuid.New(),
 			SessionKey: "test_session_admin_2",
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"email": "admin@example.com",
 			}),
 		},
 		{
 			UUID:       uuid.New(),
 			SessionKey: "test_session_user_1",
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"email": "user@example.com",
 			}),
 		},
@@ -308,10 +309,10 @@ func TestPostgresStore_LogoutSessions_ByEmail(t *testing.T) {
 	err = db.Where("session_key LIKE 'test_%'").First(&remaining).Error
 	assert.NoError(t, err)
 
-	var sessionData map[string]interface{}
+	var sessionData map[string]any
 	err = json.Unmarshal([]byte(remaining.SessionData), &sessionData)
 	require.NoError(t, err)
-	claims := sessionData[constants.SessionClaims].(map[string]interface{})
+	claims := sessionData[constants.SessionClaims].(map[string]any)
 	assert.Equal(t, "user@example.com", claims["email"])
 }
 
@@ -325,25 +326,25 @@ func TestPostgresStore_LogoutSessions_WithGroups(t *testing.T) {
 		{
 			UUID:       uuid.New(),
 			SessionKey: "test_session_admin_user",
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"email":  "admin@example.com",
-				"groups": []interface{}{"admin", "user"},
+				"groups": []any{"admin", "user"},
 			}),
 		},
 		{
 			UUID:       uuid.New(),
 			SessionKey: "test_session_regular_user",
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"email":  "user@example.com",
-				"groups": []interface{}{"user"},
+				"groups": []any{"user"},
 			}),
 		},
 		{
 			UUID:       uuid.New(),
 			SessionKey: "test_session_guest",
-			SessionData: createSessionData(t, map[string]interface{}{
+			SessionData: createSessionData(t, map[string]any{
 				"email":  "guest@example.com",
-				"groups": []interface{}{"guest"},
+				"groups": []any{"guest"},
 			}),
 		},
 	}
@@ -356,12 +357,7 @@ func TestPostgresStore_LogoutSessions_WithGroups(t *testing.T) {
 	// Logout all sessions that have "admin" group
 	ctx := context.Background()
 	err := store.LogoutSessions(ctx, func(c types.Claims) bool {
-		for _, group := range c.Groups {
-			if group == "admin" {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(c.Groups, "admin")
 	})
 	assert.NoError(t, err)
 
@@ -376,10 +372,10 @@ func TestPostgresStore_LogoutSessions_WithGroups(t *testing.T) {
 	assert.NoError(t, err)
 
 	for _, session := range remainingSessions {
-		var sessionData map[string]interface{}
+		var sessionData map[string]any
 		err := json.Unmarshal([]byte(session.SessionData), &sessionData)
 		require.NoError(t, err)
-		claims := sessionData[constants.SessionClaims].(map[string]interface{})
+		claims := sessionData[constants.SessionClaims].(map[string]any)
 		assert.NotEqual(t, "admin@example.com", claims["email"])
 	}
 }
@@ -391,8 +387,8 @@ func TestPostgresStore_LoadExpiredSession(t *testing.T) {
 	store := NewTestStore(db, pool)
 	// Create an expired session
 	sessionKey := "test_expired_load"
-	expiredData := map[string]interface{}{
-		constants.SessionClaims: map[string]interface{}{
+	expiredData := map[string]any{
+		constants.SessionClaims: map[string]any{
 			"sub": "test-user",
 		},
 	}
@@ -432,7 +428,7 @@ func TestPostgresStore_ConcurrentSessionAccess(t *testing.T) {
 	const numGoroutines = 10
 	done := make(chan error, numGoroutines)
 
-	for i := 0; i < numGoroutines; i++ {
+	for i := range numGoroutines {
 		go func(id int) {
 			// Each goroutine creates its own unique session
 			req := httptest.NewRequest("GET", "/", nil)
@@ -473,7 +469,7 @@ func TestPostgresStore_ConcurrentSessionAccess(t *testing.T) {
 	}
 
 	// Wait for all goroutines to complete
-	for i := 0; i < numGoroutines; i++ {
+	for range numGoroutines {
 		err := <-done
 		assert.NoError(t, err)
 	}
@@ -942,7 +938,7 @@ func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
 	const numConcurrentOps = 20
 	done := make(chan error, numConcurrentOps)
 
-	for i := 0; i < numConcurrentOps; i++ {
+	for i := range numConcurrentOps {
 		go func(id int) {
 			req := httptest.NewRequest("GET", "/", nil)
 			w := httptest.NewRecorder()
@@ -960,7 +956,7 @@ func TestPostgresStore_ConnectionPoolSettings(t *testing.T) {
 	}
 
 	// Collect results
-	for i := 0; i < numConcurrentOps; i++ {
+	for i := range numConcurrentOps {
 		err := <-done
 		assert.NoError(t, err, "Concurrent operation %d should succeed", i)
 	}
@@ -1182,8 +1178,8 @@ func TestBuildConnConfig_Base64JSONConnOptions(t *testing.T) {
 }
 
 // Helper function to create session data JSON
-func createSessionData(t *testing.T, claims map[string]interface{}) string {
-	sessionData := map[string]interface{}{
+func createSessionData(t *testing.T, claims map[string]any) string {
+	sessionData := map[string]any{
 		constants.SessionClaims: claims,
 	}
 	sessionDataJSON, err := json.Marshal(sessionData)

@@ -40,7 +40,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@28b28f6e4e9e3d997beb9dce86cfd8cf0ce7c7f6 # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
+        uses: tj-actions/changed-files@7dee1b0c1557f278e5c7dc244927139d78c0e22a # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json

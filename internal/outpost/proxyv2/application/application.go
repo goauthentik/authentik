@@ -250,7 +250,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 
 	if *p.SkipPathRegex != "" {
 		a.UnauthenticatedRegex = make([]*regexp.Regexp, 0)
-		for _, regex := range strings.Split(*p.SkipPathRegex, "\n") {
+		for regex := range strings.SplitSeq(*p.SkipPathRegex, "\n") {
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
