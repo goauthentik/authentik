@@ -137,7 +137,7 @@ export class IdentificationStage extends BaseStage<
 
     //#region Lifecycle
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge) {
@@ -147,7 +147,7 @@ export class IdentificationStage extends BaseStage<
         }
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         // Abort any pending conditional WebAuthn request when component is removed
         this.#passkeyAbortController?.abort();
@@ -342,18 +342,18 @@ export class IdentificationStage extends BaseStage<
         this.captchaRefreshedAt = new Date();
     }
 
-    dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
+    #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
         if (!this.host) return;
         this.host.challenge = challenge;
     };
 
-    renderRecoveryMessage() {
+    protected renderRecoveryMessage() {
         return html`
             <p>${msg("Enter the email address or username associated with your account.")}</p>
         `;
     }
 
-    renderUidField(
+    protected renderUidField(
         id: string,
         type: string,
         label: string,
@@ -374,7 +374,7 @@ export class IdentificationStage extends BaseStage<
         />`;
     }
 
-    renderPasswordFields(challenge: IdentificationChallenge) {
+    protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
         return html`
             <ak-flow-input-password
@@ -388,7 +388,7 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    renderCaptcha(captchaChallenge: CaptchaChallenge) {
+    protected renderCaptcha(captchaChallenge: CaptchaChallenge) {
         return html`
             <div class="captcha-container">
                 <ak-stage-captcha
@@ -412,7 +412,7 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    renderInput(challenge: IdentificationChallenge) {
+    protected renderInput(challenge: IdentificationChallenge) {
         const {
             captchaStage,
             flowDesignation,
@@ -463,11 +463,11 @@ export class IdentificationStage extends BaseStage<
             ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
     }
 
-    renderPrelude(prelude: string) {
+    protected renderPrelude(prelude: string) {
         return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
     }
 
-    renderPasswordlessUrl(url: string) {
+    protected renderPasswordlessUrl(url: string) {
         return html`<a
             href=${url}
             class="pf-c-button pf-m-secondary pf-m-block"
@@ -478,13 +478,13 @@ export class IdentificationStage extends BaseStage<
     }
 
     //#region Render
-    renderDefaultSource(source: LoginSource, showLabels: boolean) {
+    protected renderDefaultSource(source: LoginSource, showLabels: boolean) {
         const { name, iconUrl, challenge } = source;
 
         const icon = renderSourceIcon(name, iconUrl);
         return html`<button
             type="button"
-            @click=${() => this.dispatchChallengeToHost(challenge)}
+            @click=${() => this.#dispatchChallengeToHost(challenge)}
             part="source-item"
             name=${`source-${kebabCase(name)}`}
             class="pf-c-button source-button"
@@ -495,12 +495,12 @@ export class IdentificationStage extends BaseStage<
         </button>`;
     }
 
-    renderPromotedSource(source: LoginSource) {
+    protected renderPromotedSource(source: LoginSource) {
         const { name, challenge } = source;
 
         return html`<button
             type="button"
-            @click=${() => this.dispatchChallengeToHost(challenge)}
+            @click=${() => this.#dispatchChallengeToHost(challenge)}
             part="source-item source-item-promoted"
             name=${`source-${kebabCase(name)}`}
             class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
@@ -510,13 +510,13 @@ export class IdentificationStage extends BaseStage<
         </button>`;
     }
 
-    renderLoginSource(source: LoginSource, showLabels: boolean) {
+    protected renderLoginSource(source: LoginSource, showLabels: boolean) {
         return source.promoted
             ? this.renderPromotedSource(source)
             : this.renderDefaultSource(source, showLabels);
     }
 
-    renderLoginSources(sources: LoginSource[], showLabels: boolean) {
+    protected renderLoginSources(sources: LoginSource[], showLabels: boolean) {
         return html`<fieldset
             slot="footer"
             part="source-list"
@@ -533,7 +533,7 @@ export class IdentificationStage extends BaseStage<
         </fieldset> `;
     }
 
-    renderIdentificationStage(challenge: IdentificationChallenge) {
+    protected renderIdentificationStage(challenge: IdentificationChallenge) {
         const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
 
         return html`
@@ -546,7 +546,7 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
+    protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
         if (!(enrollUrl || recoveryUrl)) {
             return nothing;
         }
@@ -573,7 +573,7 @@ export class IdentificationStage extends BaseStage<
         </fieldset>`;
     }
 
-    render() {
+    public override render() {
         const { challenge } = this;
         const { enrollUrl, recoveryUrl } = challenge ?? {};
         const hasFooter = !!enrollUrl || !!recoveryUrl;
