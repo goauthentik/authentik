@@ -13,7 +13,6 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 enum GuacClientState {
     IDLE = 0,
@@ -49,7 +48,7 @@ const RECONNECT_ATTEMPTS = 5;
 export class RacInterface extends WithBrandConfig(Interface) {
     static styles: CSSResult[] = [
         // ---
-        PFBase,
+
         PFPage,
         PFContent,
         Styles,

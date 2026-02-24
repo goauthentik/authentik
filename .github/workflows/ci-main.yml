@@ -37,15 +37,25 @@ jobs:
           - mypy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
         run: uv run make ci-${{ matrix.job }}
+  test-gen-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: generate schema
+        run: make migrate gen-build
+      - name: ensure schema is up-to-date
+        run: git diff --exit-code -- schema.yml blueprints/schema.json
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -71,7 +81,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 0
       - name: checkout stable
@@ -84,7 +94,7 @@ jobs:
           # Current version family based on
           current_version_family=$(cat internal/constants/VERSION | grep -vE -- 'rc[0-9]+$' || true)
           if [[ -n $current_version_family ]]; then
-              prev_stable=$current_version_family
+              prev_stable="version/${current_version_family}"
           fi
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
@@ -136,7 +146,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -156,11 +166,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@92086f6be054225fa813e0a4b13787fc9088faab # v1.13.0
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
@@ -187,21 +197,25 @@ jobs:
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
+          - name: ws-fed
+            glob: tests/e2e/test_provider_ws_fed*
           - name: radius
             glob: tests/e2e/test_provider_radius*
           - name: scim
             glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
+          - name: endpoints
+            glob: tests/e2e/test_endpoints_*
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
       - id: cache-web
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
@@ -221,10 +235,59 @@ jobs:
         if: ${{ always() }}
         with:
           flags: e2e
+  test-openid-conformance:
+    name: test-openid-conformance (${{ matrix.job.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: basic
+            glob: tests/openid_conformance/test_basic.py
+          - name: implicit
+            glob: tests/openid_conformance/test_implicit.py
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: Setup e2e env (chrome, etc)
+        run: |
+          docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - name: Setup conformance suite
+        run: |
+          docker compose -f tests/openid_conformance/compose.yml up -d --quiet-pull
+      - id: cache-web
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
+        with:
+          path: web/dist
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+      - name: prepare web ui
+        if: steps.cache-web.outputs.cache-hit != 'true'
+        working-directory: web
+        run: |
+          npm ci
+          make -C .. gen-client-ts
+          npm run build
+          npm run build:sfe
+      - name: run conformance
+        run: |
+          uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage xml
+      - uses: ./.github/actions/test-results
+        if: ${{ always() }}
+        with:
+          flags: conformance
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: conformance-certification-${{ matrix.job.name }}
+          path: tests/openid_conformance/exports/
   ci-core-mark:
     if: always()
     needs:
       - lint
+      - test-gen-build
       - test-migrations
       - test-migrations-from-stable
       - test-unittest
@@ -260,7 +323,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: prepare variables

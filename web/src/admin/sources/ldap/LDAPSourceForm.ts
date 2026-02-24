@@ -77,7 +77,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -405,7 +405,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-radio-input
                         label=${msg("Outgoing sync trigger mode")}
                         required
-                        name="type"
+                        name="syncOutgoingTriggerMode"
                         .value=${this.instance?.syncOutgoingTriggerMode}
                         .options=${createSyncOutgoingTriggerModeOptions}
                     >

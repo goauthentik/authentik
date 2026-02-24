@@ -20,13 +20,16 @@ html {
 }
 
 .sbdocs.sbdocs-preview {
-    background: var(--ak-docs-preview-background, #fff) !important;
+    background: var(
+        --ak-global--background-image,
+        var(--ak-docs-preview-background, , #fff)
+    ) !important;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --ak-base-background: hsl(260 26% 5%);
-        --ak-docs-preview-background: #18191a;
+        --ak-docs-preview-background: var(--ak-global--background-image, #18191a);
     }
 
     .sb-preparing-docs {
@@ -35,6 +38,25 @@ html {
             filter: invert(1);
         }
     }
+}
+
+.docs-story::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: local;
+    background-image: none;
+    z-index: 0;
+    background-image: var(--ak-global--background-image, none);
+}
+
+.sb-main-fullscreen::before {
+    display: none !important;
 }
 
 .sbdocs > h1,

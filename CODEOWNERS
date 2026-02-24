@@ -16,10 +16,8 @@ go.sum                                  @goauthentik/backend
 # Infrastructure
 .github/                                @goauthentik/infrastructure
 lifecycle/aws/                          @goauthentik/infrastructure
-Dockerfile                              @goauthentik/infrastructure
-*Dockerfile                             @goauthentik/infrastructure
+lifecycle/container/                    @goauthentik/infrastructure
 .dockerignore                           @goauthentik/infrastructure
-docker-compose.yml                      @goauthentik/infrastructure
 Makefile                                @goauthentik/infrastructure
 .editorconfig                           @goauthentik/infrastructure
 CODEOWNERS                              @goauthentik/infrastructure
@@ -40,7 +38,7 @@ packages/tsconfig                       @goauthentik/frontend
 # Web
 web/                                    @goauthentik/frontend
 # Locale
-locale/                                 @goauthentik/backend @goauthentik/frontend
+/locale/                                @goauthentik/backend @goauthentik/frontend
 web/xliff/                              @goauthentik/backend @goauthentik/frontend
 # Docs
 website/                                @goauthentik/docs

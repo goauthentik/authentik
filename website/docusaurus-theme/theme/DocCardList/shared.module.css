@@ -115,6 +115,18 @@
     border: 1px solid var(--ifm-color-primary-light);
 }
 
+.searchHighlight {
+    background-color: rgba(253, 79, 0, 0.15);
+    color: inherit;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+    border-bottom: 2px solid var(--ifm-color-primary);
+}
+
+[data-theme="dark"] .searchHighlight {
+    background-color: rgba(253, 79, 0, 0.25);
+}
+
 @media (max-width: 768px) {
     .glossaryShort {
         font-size: 1rem;

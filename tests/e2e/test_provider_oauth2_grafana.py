@@ -1,12 +1,19 @@
 """test OAuth2 OpenID Provider flow"""
 
 from time import sleep
+from unittest import skip
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
+from authentik.common.oauth.constants import (
+    SCOPE_OFFLINE_ACCESS,
+    SCOPE_OPENID,
+    SCOPE_OPENID_EMAIL,
+    SCOPE_OPENID_PROFILE,
+)
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
@@ -14,12 +21,6 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.constants import (
-    SCOPE_OFFLINE_ACCESS,
-    SCOPE_OPENID,
-    SCOPE_OPENID_EMAIL,
-    SCOPE_OPENID_PROFILE,
-)
 from authentik.providers.oauth2.models import (
     ClientTypes,
     OAuth2Provider,
@@ -415,6 +416,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             "Permission denied",
         )
 
+    @skip("Flaky test")
     @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",

@@ -116,7 +116,7 @@ If you have any questions or comments about this advisory:
 
 - Check with the original reporter that the fix works as intended
 - Wait for GitHub to assign a CVE
-- Announce the release of the vulnerability via Mailing list and discord
+- Announce the release of the vulnerability via mailing list and Discord
 
 <details>
 <summary>Mailing list template</summary>
@@ -179,7 +179,7 @@ Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https:/
 
 Edit:
 
-Advisory for for CVE-2022-xxxxx has been published here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
+Advisory for CVE-2022-xxxxx has been published here https://github.com/goauthentik/authentik/security/advisories/GHSA-mjfw-54m5-fvjf
 
 The fixed versions 2022.10.3 and 2022.11.3 are available here: https://github.com/goauthentik/authentik/releases
 ```

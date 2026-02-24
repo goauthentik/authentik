@@ -6,7 +6,9 @@ import { deepmerge } from "deepmerge-ts";
 
 export const DefaultBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
+    brandingLogoThemedUrls: null,
     brandingFavicon: "/static/dist/assets/icons/icon.png",
+    brandingFaviconThemedUrls: null,
     brandingTitle: "authentik",
     brandingCustomCss: "",
     uiFooterLinks: [],
@@ -17,6 +19,7 @@ export const DefaultBrand = {
         policiesBufferedAccessView: false,
         flowsRefreshOthers: false,
         coreDefaultAppAccess: true,
+        enterpriseAuditIncludeExpandedDiff: false,
     },
 } as const satisfies CurrentBrand;
 

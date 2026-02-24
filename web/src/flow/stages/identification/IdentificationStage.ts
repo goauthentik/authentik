@@ -42,7 +42,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export const PasswordManagerPrefill: {
     password?: string;
@@ -60,7 +59,6 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallengeResponseRequest
 > {
     static styles: CSSResult[] = [
-        PFBase,
         PFAlert,
         PFInputGroup,
         PFLogin,
@@ -119,7 +117,7 @@ export class IdentificationStage extends BaseStage<
     public updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
-        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+        if (changedProperties.has("challenge") && this.challenge) {
             this.#autoRedirect();
             this.#createHelperForm();
             this.#startConditionalWebAuthn();
@@ -245,7 +243,7 @@ export class IdentificationStage extends BaseStage<
             this.#form.appendChild(username);
         }
         // Only add the password field when we don't already show a password field
-        if (!compatMode && !this.challenge.passwordFields) {
+        if (!compatMode && !this.challenge?.passwordFields) {
             const password = document.createElement("input");
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
@@ -307,11 +305,11 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
-    onSubmitSuccess(): void {
+    protected override onSubmitSuccess(): void {
         this.#form?.remove();
     }
 
-    onSubmitFailure(): void {
+    protected override onSubmitFailure(): void {
         const captchaInput = this.#captchaInputRef.value;
 
         if (captchaInput) {
@@ -357,7 +355,7 @@ export class IdentificationStage extends BaseStage<
             aria-label=${msg(str`Continue with ${source.name}`)}
         >
             <span class="pf-c-button__icon pf-m-start">${icon}</span>
-            ${this.challenge.showSourceLabels ? source.name : ""}
+            ${this.challenge?.showSourceLabels ? source.name : ""}
         </button>`;
     }
 
@@ -367,13 +365,13 @@ export class IdentificationStage extends BaseStage<
         const enrollmentItem = enrollUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
                   ${msg("Need an account?")}
-                  <a name="enroll" href="${enrollUrl}">${msg("Sign up.")}</a>
+                  <a href="${enrollUrl}" ouiaId="enroll">${msg("Sign up.")}</a>
               </div>`
             : null;
 
         const recoveryItem = recoveryUrl
             ? html`<div class="pf-c-login__main-footer-band-item">
-                  <a name="recovery" href="${recoveryUrl}"
+                  <a href="${recoveryUrl}" ouiaId="recovery"
                       >${msg("Forgot username or password?")}</a
                   >
               </div>`
@@ -417,13 +415,13 @@ export class IdentificationStage extends BaseStage<
             }
         )?.passkeyChallenge;
         // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete = passkeyChallenge ? "username webauthn" : "username";
+        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
 
         return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
                 ? html`
                       <p>
                           ${msg(
-                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
+                              "Enter the email address or username associated with your account.",
                           )}
                       </p>
                   `
@@ -435,11 +433,13 @@ export class IdentificationStage extends BaseStage<
                     type=${type}
                     name="uidField"
                     placeholder=${label}
-                    autofocus=""
+                    autofocus
                     autocomplete=${autocomplete}
                     spellcheck="false"
                     class="pf-c-form-control"
-                    value=${this.#rememberMe?.username ?? ""}
+                    value=${this.#rememberMe?.username ??
+                    this.challenge.pendingUserIdentifier ??
+                    ""}
                     required
                 />
                 ${this.#rememberMe.render()}
@@ -450,7 +450,6 @@ export class IdentificationStage extends BaseStage<
                       <ak-flow-input-password
                           label=${msg("Password")}
                           input-id="ak-stage-identification-password"
-                          required
                           class="pf-c-form__group"
                           .errors=${this.challenge?.responseErrors?.password}
                           ?allow-show-password=${this.challenge.allowShowPassword}
@@ -502,23 +501,23 @@ export class IdentificationStage extends BaseStage<
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge} part="flow-card">
             <form class="pf-c-form" @submit=${this.submitForm}>
-                ${this.challenge.applicationPre
+                ${this.challenge?.applicationPre
                     ? html`<p>
                           ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
                       </p>`
                     : nothing}
                 ${this.renderInput()}
-                ${this.challenge.passwordlessUrl
+                ${this.challenge?.passwordlessUrl
                     ? html`<a
-                          name="passwordless"
                           href=${this.challenge.passwordlessUrl}
                           class="pf-c-button pf-m-secondary pf-m-block"
+                          ouiaId="passwordless"
                       >
                           ${msg("Use a security key")}
                       </a> `
                     : nothing}
             </form>
-            ${this.challenge.sources?.length
+            ${this.challenge?.sources?.length
                 ? html`<fieldset
                       slot="footer"
                       part="source-list"
@@ -547,6 +546,8 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 }
+
+export default IdentificationStage;
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -1,3 +1,4 @@
+import "#admin/common/ak-flow-search/ak-flow-search";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#components/ak-switch-input";
@@ -51,7 +52,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input

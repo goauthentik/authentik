@@ -38,7 +38,7 @@ export CLOUDFLARE_API_TOKEN=<your_api_token>
 export CLOUDFLARE_ACCOUNT_ID=<your_account_id>
 ```
 
-5. Create the SSO connector with the following command:
+6. Create the SSO connector with the following command:
 
 ```sh
 curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors" \
@@ -68,15 +68,15 @@ An example of a successful response:
 }
 ```
 
-6. Copy the `code` value and create a DNS TXT record containing it at the apex of your email domain.
+7. Copy the `code` value and create a DNS TXT record containing it at the apex of your email domain.
 
-7. Next, export your connector ID:
+8. Next, export your connector ID:
 
 ```sh
 export CLOUDFLARE_SSO_CONNECTOR_ID=<your_sso_connector_id>
 ```
 
-8. After the DNS record has propagated, enable the connector with the following command:
+9. After the DNS record has propagated, enable the connector with the following command:
 
 ```sh
 curl "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/sso_connectors/$CLOUDFLARE_SSO_CONNECTOR_ID" \

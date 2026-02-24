@@ -40,7 +40,7 @@ To support the integration of Zulip with authentik, you need to create an applic
     - Set the **SLS Binding** to `Redirect`.
     - Set the **Logout Method** to `Front-channel (Iframe)`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -82,7 +82,7 @@ The certificate file name must match the idp identifier name you set in the conf
 Remember to restart Zulip.
 :::
 
-## Additional Resources
+## Resources
 
 Please refer to the following for further information:
 

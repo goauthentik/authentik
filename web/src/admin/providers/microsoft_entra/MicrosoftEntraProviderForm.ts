@@ -1,3 +1,4 @@
+import "#components/ak-radio-input";
 import "#components/ak-hidden-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
@@ -52,7 +53,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">
                 <input
                     type="text"

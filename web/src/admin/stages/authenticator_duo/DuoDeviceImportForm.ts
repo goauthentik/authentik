@@ -43,7 +43,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
             : nothing}

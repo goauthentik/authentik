@@ -5,6 +5,7 @@
         "cs-CZ",
         "de-DE",
         "en",
+        "en-XA",
         "es-ES",
         "fi-FI",
         "fr-FR",
@@ -17,8 +18,7 @@
         "ru-RU",
         "tr-TR",
         "zh-Hans",
-        "zh-Hant",
-        "pseudo-LOCALE"
+        "zh-Hant"
     ],
     "tsConfig": "./tsconfig.json",
     "output": {

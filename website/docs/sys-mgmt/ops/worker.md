@@ -29,7 +29,7 @@ When a task throws an exception, the worker will automatically try to re-run the
 
 ### Time limits
 
-All tasks have a time limit. If running a task takes longer than than limit, the task is cancelled and marked as failed. The default time limit is configurable with [`AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`](../../install-config/configuration/configuration.mdx#authentik_worker__task_default_time_limit). Some tasks override that time limit for specific purposes, like synchronization.
+All tasks have a time limit. If running a task takes longer than that limit, the task is cancelled and marked as failed. The default time limit is configurable with [`AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`](../../install-config/configuration/configuration.mdx#authentik_worker__task_default_time_limit). Some tasks override that time limit for specific purposes, like synchronization.
 
 ## Manage the worker
 

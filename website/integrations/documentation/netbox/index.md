@@ -36,7 +36,7 @@ To support the integration of NetBox with authentik, you need to create an appli
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://netbox.company/oauth/complete/oidc/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -141,7 +141,7 @@ def remove_groups(response, user, backend, *args, **kwargs):
 
 
 def set_roles(response, user, backend, *args, **kwargs):
-    # Remove Roles temporary
+    # Remove Roles temporarily
     user.is_superuser = False
     user.is_staff = False
     try:

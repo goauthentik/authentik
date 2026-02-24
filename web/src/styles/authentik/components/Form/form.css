@@ -158,15 +158,6 @@ fieldset {
 :host([theme="dark"]) {
     /* #region Inputs */
 
-    optgroup,
-    option {
-        color: var(--ak-dark-foreground);
-    }
-    select[multiple] optgroup:checked,
-    select[multiple] option:checked {
-        color: var(--ak-dark-background);
-    }
-
     .pf-c-input-group:not(:has(.pf-c-switch)) {
         --pf-c-input-group--BackgroundColor: transparent;
 

@@ -35,7 +35,7 @@ To support the integration of Papra with authentik, you need to create an applic
         - Note the **Client ID**, **Client Secret**, and **Slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://papra.company/api/auth/oauth2/callback/authentik`.
         - Select any available signing key.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -53,7 +53,7 @@ The JSON needs to be inline (single line) because various `.env` parsers, such a
 
 ## Configuration verification
 
-To verify the integration with Papra, log out and attempt to log back in using the **Log in with authentik** button. You should be redirected to the authenik login page. Once authenticated, you should be redirected to the Papra dashboard.
+To verify the integration with Papra, log out and attempt to log back in using the **Log in with authentik** button. You should be redirected to the authentik login page. Once authenticated, you should be redirected to the Papra dashboard.
 
 ## Resources
 

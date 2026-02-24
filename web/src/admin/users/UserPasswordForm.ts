@@ -39,7 +39,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
      *
      * Still, we can at least hint at our preferred behavior...
      */
-    public override autocomplete: AutoFill = "off";
+    public override autocomplete: Exclude<AutoFillBase, ""> = "off";
 
     //#endregion
 
@@ -56,7 +56,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
 
     //#region Render
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.username
                 ? html`<input
                       hidden

@@ -63,8 +63,21 @@ class TestConnectorAuthIA(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    @patch(
+        "authentik.enterprise.license.LicenseKey.validate",
+        MagicMock(
+            return_value=LicenseKey(
+                aud="",
+                exp=expiry_valid,
+                name=generate_id(),
+                internal_users=100,
+                external_users=100,
+            )
+        ),
+    )
     @reconcile_app("authentik_crypto")
     def test_auth_ia_fulfill(self):
+        License.objects.create(key=generate_id())
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("authentik_api:agentconnector-auth-ia"),

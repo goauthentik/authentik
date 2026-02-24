@@ -57,3 +57,19 @@ export function randomString(len: number, charset: string): string {
 
     return chars.join("");
 }
+
+export function assertEveryPresent<T>(
+    input: (T | null | undefined)[],
+    errorMessage: string,
+): asserts input is T[] {
+    if (!Array.isArray(input)) {
+        console.debug("Input is not an array", input);
+        throw TypeError(errorMessage);
+    }
+
+    const index = input.findIndex((item) => item === null || typeof item === "undefined");
+    if (index !== -1) {
+        console.debug(`Item at index ${index} is null or undefined`, input);
+        throw new TypeError(errorMessage);
+    }
+}

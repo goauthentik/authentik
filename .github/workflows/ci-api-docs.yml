@@ -21,7 +21,7 @@ jobs:
         command:
           - prettier-check
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Install Dependencies
         working-directory: website/
         run: npm ci
@@ -32,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: website/package.json
           cache: "npm"
@@ -41,7 +41,7 @@ jobs:
       - working-directory: website/
         name: Install Dependencies
         run: npm ci
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v4
+      - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
         with:
           path: |
             ${{ github.workspace }}/website/api/.docusaurus
@@ -66,12 +66,12 @@ jobs:
       - lint
       - build
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v5
         with:
           name: api-docs
           path: website/api/build
-      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v5
+      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
         with:
           node-version-file: website/package.json
           cache: "npm"

@@ -8,7 +8,6 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * @element ak-dual-select-controls
@@ -20,7 +19,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-dual-select-controls")
 export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventType>(AKElement) {
     static styles = [
-        PFBase,
         PFButton,
         css`
             :host {

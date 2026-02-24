@@ -40,7 +40,7 @@ To support the integration of Writefreely with authentik, you need to create an 
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://writefreely.company/oauth/callback/generic`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -99,6 +99,6 @@ If your usernames in authentik and WriteFreely are different, you might need to 
 
 To link the accounts, first log into Writefreely with local credentials, and then navigate to **Customize -->Account Settings**. In the option "Linked Accounts", click on "authentik".
 
-## Additional Resources
+## Resources
 
 - https://writefreely.org/docs/latest/admin/config

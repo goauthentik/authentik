@@ -1,3 +1,4 @@
+import "#elements/forms/Radio";
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-file-search-input";
 import "#components/ak-slug-input";
@@ -140,7 +141,7 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

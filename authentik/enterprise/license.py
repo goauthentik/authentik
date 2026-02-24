@@ -15,6 +15,7 @@ from django.core.cache import cache
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
+from jwt.algorithms import ECAlgorithm
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     ChoiceField,
@@ -93,7 +94,7 @@ class LicenseKey:
     license_flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
-    def validate(jwt: str, check_expiry=True) -> "LicenseKey":
+    def validate(jwt: str, check_expiry=True) -> LicenseKey:
         """Validate the license from a given JWT"""
         try:
             headers = get_unverified_header(jwt)
@@ -107,15 +108,22 @@ class LicenseKey:
             intermediate = load_der_x509_certificate(b64decode(x5c[1]))
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
-        except (InvalidSignature, TypeError, ValueError, Error):
+        except InvalidSignature, TypeError, ValueError, Error:
             raise ValidationError("Unable to verify license") from None
+        _validate_curve_original = ECAlgorithm._validate_curve
         try:
+            # authentik's license are generated with `algorithm="ES512"` and signed with
+            # a key of curve `secp384r1`. Starting with version 2.11.0, pyjwt enforces the spec, see
+            # https://github.com/jpadilla/pyjwt/commit/5b8622773358e56d3d3c0a9acf404809ff34433a
+            # authentik will change its license generation to `algorithm="ES384"` in 2026.
+            # TODO: remove this when the last incompatible license runs out.
+            ECAlgorithm._validate_curve = lambda *_: True
             body = from_dict(
                 LicenseKey,
                 decode(
                     jwt,
                     our_cert.public_key(),
-                    algorithms=["ES512"],
+                    algorithms=["ES384", "ES512"],
                     audience=get_license_aud(),
                     options={"verify_exp": check_expiry, "verify_signature": check_expiry},
                 ),
@@ -125,10 +133,12 @@ class LicenseKey:
             if unverified["aud"] != get_license_aud():
                 raise ValidationError("Invalid Install ID in license") from None
             raise ValidationError("Unable to verify license") from None
+        finally:
+            ECAlgorithm._validate_curve = _validate_curve_original
         return body
 
     @staticmethod
-    def get_total() -> "LicenseKey":
+    def get_total() -> LicenseKey:
         """Get a summarized version of all (not expired) licenses"""
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in License.objects.all():

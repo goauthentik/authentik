@@ -4,24 +4,6 @@ import { createDocumentTemplate } from "#elements/utils/iframe";
 
 import { html, TemplateResult } from "lit";
 
-/**
- * Mapping of captcha provider names to their respective JS API global.
- */
-export const CaptchaProvider = {
-    reCAPTCHA: "grecaptcha",
-    hCaptcha: "hcaptcha",
-    Turnstile: "turnstile",
-} as const satisfies Record<string, string>;
-
-export type CaptchaProvider = (typeof CaptchaProvider)[keyof typeof CaptchaProvider];
-
-export interface CaptchaHandler {
-    interactive(): TemplateResult;
-    execute(): Promise<void>;
-    refreshInteractive(): Promise<void>;
-    refresh(): Promise<void>;
-}
-
 const ThemeColor = {
     dark: "#18191a",
     light: "#ffffff",
@@ -41,7 +23,7 @@ export function themeMeta(theme: ResolvedUITheme) {
 }
 
 export interface IFrameTemplateInit {
-    challengeURL: string;
+    challengeURL: URL | string;
     theme: ResolvedUITheme;
 }
 
@@ -108,7 +90,7 @@ export function iframeTemplate(
                 }
             </style>
             ${children}
-            <script onload="loadListener()" src="${challengeURL}"></script>
+            <script onload="loadListener()" src="${challengeURL.toString()}"></script>
         `,
     });
 }

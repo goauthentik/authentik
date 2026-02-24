@@ -9,6 +9,7 @@
 
 /**
  * @typedef {object} AKReleaseFrontMatter
+ * @property {boolean} [beta] Whether the release is a beta.
  * @property {boolean} [draft] Whether the release is a draft.
  * @property {boolean} [unlisted] Whether the release is unlisted.
  */

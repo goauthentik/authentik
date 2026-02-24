@@ -2,6 +2,8 @@ import { globalAK } from "#common/global";
 
 import { readInterfaceRouteParam } from "#elements/router/utils";
 
+import { ConsoleLogger } from "#logger/browser";
+
 import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
 
 import {
@@ -29,6 +31,7 @@ function beforeSend(
     if (!hint) {
         return event;
     }
+
     if (hint.originalException instanceof SentryIgnoredError) {
         return null;
     }
@@ -38,6 +41,7 @@ function beforeSend(
     ) {
         return null;
     }
+
     return event;
 }
 
@@ -49,21 +53,27 @@ export function configureSentry(): void {
         return;
     }
 
-    const integrations: Integration[] = [
-        browserTracingIntegration({
-            // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
-            instrumentNavigation: false,
-            instrumentPageLoad: false,
-            traceFetch: false,
-        }),
-    ];
+    const logger = ConsoleLogger.prefix("sentry");
+
+    const integrations: Integration[] =
+        process.env.NODE_ENV === "production"
+            ? [
+                  browserTracingIntegration({
+                      // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
+                      instrumentNavigation: false,
+                      instrumentPageLoad: false,
+                      traceFetch: false,
+                  }),
+              ]
+            : [];
 
     if (debug) {
-        console.debug("authentik/config: Enabled Sentry Spotlight");
+        logger.debug("Enabled Spotlight");
         integrations.push(spotlightBrowserIntegration());
     }
 
     init({
+        enabled: process.env.NODE_ENV !== "production",
         dsn: cfg.errorReporting.sentryDsn,
         ignoreErrors: [
             /network/gi,
@@ -76,7 +86,10 @@ export function configureSentry(): void {
             /MutationObserver.observe/gi,
             /NS_ERROR_FAILURE/gi,
         ],
-        release: `authentik@${import.meta.env.AK_VERSION}`,
+        release:
+            process.env.NODE_ENV === "production"
+                ? `authentik@${import.meta.env.AK_VERSION}`
+                : undefined,
         integrations,
         tracePropagationTargets: [window.location.origin],
         tracesSampleRate: debug ? 1.0 : cfg.errorReporting.tracesSampleRate,
@@ -90,5 +103,5 @@ export function configureSentry(): void {
         setTag(TAG_SENTRY_COMPONENT, `web/${readInterfaceRouteParam()}`);
     }
 
-    console.debug("authentik/config: Sentry enabled.");
+    logger.debug("Initialized!");
 }

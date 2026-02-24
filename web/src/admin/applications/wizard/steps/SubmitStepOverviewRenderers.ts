@@ -1,3 +1,5 @@
+import "#components/ak-status-label";
+
 import { OneOfProvider } from "../types.js";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";

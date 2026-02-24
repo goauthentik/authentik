@@ -86,7 +86,7 @@ class TelegramSource(Source):
         )
 
     @property
-    def property_mapping_type(self) -> "type[PropertyMapping]":
+    def property_mapping_type(self) -> type[PropertyMapping]:
         return TelegramSourcePropertyMapping
 
     def get_base_user_properties(

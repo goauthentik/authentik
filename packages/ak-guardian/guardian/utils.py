@@ -11,17 +11,43 @@ import time
 from math import ceil
 from typing import Any
 
-from django.apps import apps as django_apps
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model, QuerySet
 
 from guardian.conf import settings as guardian_settings
 from guardian.exceptions import InvalidIdentity
 
 logger = logging.getLogger(__name__)
+
+
+def get_content_type(obj: Model | type[Model]) -> ContentType:
+    return ContentType.objects.get_for_model(obj)
+
+
+def get_role_obj_perms_model() -> type[Model]:
+    from guardian.models import RoleObjectPermission
+
+    return RoleObjectPermission
+
+
+def get_role_model_perms_model() -> type[Model]:
+    from guardian.models import RoleModelPermission
+
+    return RoleModelPermission
+
+
+def get_group_model() -> type[Model]:
+    app_name, model_name = guardian_settings.group_model_label.split(".", 1)
+    return apps.get_model(app_name, model_name)
+
+
+def get_role_model() -> type[Model]:
+    app_name, model_name = guardian_settings.role_model_label.split(".", 1)
+    return apps.get_model(app_name, model_name)
 
 
 def _get_anonymous_user_cached() -> Any:
@@ -102,13 +128,14 @@ def get_identity(identity: Model) -> tuple[Any | None, Any | None, Any | None]:
     if isinstance(identity, AnonymousUser):
         identity = get_anonymous_user()
 
-    group_model = get_group_obj_perms_model().group.field.related_model
-    role_model = get_role_obj_perms_model().role.field.related_model
+    user_model = get_user_model()
+    group_model = get_group_model()
+    role_model = get_role_model()
 
     # get identity from queryset model type
     if isinstance(identity, QuerySet):
         identity_model_type = identity.model
-        if identity_model_type == get_user_model():
+        if identity_model_type == user_model:
             return identity, None, None
         elif identity_model_type == group_model:
             return None, identity, None
@@ -116,14 +143,14 @@ def get_identity(identity: Model) -> tuple[Any | None, Any | None, Any | None]:
             return None, None, identity
 
     # get identity from the first element in the list
-    if isinstance(identity, list) and isinstance(identity[0], get_user_model()):
+    if isinstance(identity, list) and isinstance(identity[0], user_model):
         return identity, None, None
     if isinstance(identity, list) and isinstance(identity[0], group_model):
         return None, identity, None
     if isinstance(identity, list) and isinstance(identity[0], role_model):
         return None, None, identity
 
-    if isinstance(identity, get_user_model()):
+    if isinstance(identity, user_model):
         return identity, None, None
     if isinstance(identity, group_model):
         return None, identity, None
@@ -133,101 +160,6 @@ def get_identity(identity: Model) -> tuple[Any | None, Any | None, Any | None]:
     raise InvalidIdentity(
         f"User/AnonymousUser or Group or Role instance is required (got {identity})"
     )
-
-
-def get_obj_perm_model_by_conf(setting_name: str) -> type[Model]:
-    """Return the model that matches the guardian settings.
-
-    Parameters:
-        setting_name (str): The name of the setting to get the model from.
-
-    Returns:
-        The model class that matches the guardian settings.
-
-    Raises:
-        ImproperlyConfigured: If the setting value is not an installed model or
-            does not follow the format 'app_label.model_name'.
-    """
-    setting_value: str = getattr(guardian_settings, setting_name)
-    try:
-        return django_apps.get_model(setting_value, require_ready=False)  # type: ignore
-    except ValueError as e:
-        raise ImproperlyConfigured(
-            f"{setting_value} must be of the form 'app_label.model_name'"
-        ) from e
-    except LookupError as e:
-        raise ImproperlyConfigured(
-            f"{setting_name} refers to model '{setting_value}' that has not been installed"
-        ) from e
-
-
-def get_obj_perms_model(
-    obj: Model | None, base_cls: type[Model], generic_cls: type[Model]
-) -> type[Model]:
-    """Return the matching object permission model for the obj class.
-
-    Defaults to returning the generic object permission when no direct foreignkey is defined, or
-    obj is None.
-    """
-    # Default to the generic object permission model
-    # when None obj is provided
-    if obj is None:
-        return generic_cls
-
-    if isinstance(obj, Model):
-        obj = obj.__class__
-
-    return generic_cls
-
-
-def get_user_obj_perms_model(obj: Model | None = None) -> type[Model]:
-    """Returns model class that connects given `obj` and User class.
-
-    If obj is not specified, then the user generic object permission model
-    that is returned is determined by the guardian settings for 'USER_OBJ_PERMS_MODEL'.
-    """
-    from guardian.models import UserObjectPermissionBase
-
-    UserObjectPermission = get_obj_perm_model_by_conf("USER_OBJ_PERMS_MODEL")
-    return get_obj_perms_model(obj, UserObjectPermissionBase, UserObjectPermission)
-
-
-def get_group_obj_perms_model(obj: Model | None = None) -> type[Model]:
-    """Returns model class that connects given `obj` and Group class.
-
-    If obj is not specified, then the group generic object permission model
-    that is returned is determined by the guardian settings for 'GROUP_OBJ_PERMS_MODEL'.
-    """
-    from guardian.models import GroupObjectPermissionBase
-
-    GroupObjectPermission = get_obj_perm_model_by_conf("GROUP_OBJ_PERMS_MODEL")
-    return get_obj_perms_model(obj, GroupObjectPermissionBase, GroupObjectPermission)
-
-
-def get_role_obj_perms_model(obj: Model | None = None) -> type[Model]:
-    """Returns model class that connects given `obj` and Role class.
-
-    If obj is not specified, then the role generic object permission model
-    that is returned is determined by the guardian settings for 'ROLE_OBJ_PERMS_MODEL'.
-    """
-    from guardian.models import RoleObjectPermissionBase
-
-    RoleObjectPermission = get_obj_perm_model_by_conf("ROLE_OBJ_PERMS_MODEL")
-    return get_obj_perms_model(obj, RoleObjectPermissionBase, RoleObjectPermission)
-
-
-def get_role_model_perms_model() -> type[Model]:
-    """Returns model class that connects the given Role class."""
-    from guardian.models import RoleModelPermission
-
-    return RoleModelPermission
-
-
-def evict_obj_perms_cache(obj: Any) -> bool:
-    if hasattr(obj, "_guardian_perms_cache"):
-        delattr(obj, "_guardian_perms_cache")
-        return True
-    return False
 
 
 def clean_orphan_obj_perms(  # noqa: PLR0915

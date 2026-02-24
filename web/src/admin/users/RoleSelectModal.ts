@@ -49,7 +49,9 @@ export class RoleSelectModal extends TableModal<Role> {
     renderModalInner(): SlottedTemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg("Assign User to Groups")}</h1>
+                    <h1 class="pf-c-title pf-m-2xl">
+                        ${msg("Select roles to attach to the user")}
+                    </h1>
                 </div>
             </section>
             <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>

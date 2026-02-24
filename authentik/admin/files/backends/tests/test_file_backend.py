@@ -165,3 +165,31 @@ class TestFileBackend(FileTestFileBackendMixin, TestCase):
     def test_file_exists_false(self):
         """Test file_exists returns False for nonexistent file"""
         self.assertFalse(self.backend.file_exists("does_not_exist.txt"))
+
+    def test_themed_urls_without_theme_variable(self):
+        """Test themed_urls returns None when filename has no %(theme)s"""
+        file_name = "logo.png"
+        result = self.backend.themed_urls(file_name)
+        self.assertIsNone(result)
+
+    def test_themed_urls_with_theme_variable(self):
+        """Test themed_urls returns dict of URLs for each theme"""
+        file_name = "logo-%(theme)s.png"
+        result = self.backend.themed_urls(file_name)
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("light", result)
+        self.assertIn("dark", result)
+
+        # Check URLs contain the substituted theme
+        self.assertIn("logo-light.png", result["light"])
+        self.assertIn("logo-dark.png", result["dark"])
+
+    def test_themed_urls_multiple_theme_variables(self):
+        """Test themed_urls with multiple %(theme)s in path"""
+        file_name = "%(theme)s/logo-%(theme)s.svg"
+        result = self.backend.themed_urls(file_name)
+
+        self.assertIsInstance(result, dict)
+        self.assertIn("light/logo-light.svg", result["light"])
+        self.assertIn("dark/logo-dark.svg", result["dark"])

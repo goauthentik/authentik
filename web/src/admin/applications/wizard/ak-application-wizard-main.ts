@@ -7,16 +7,17 @@ import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
 
 import { applicationWizardProvidersContext } from "./ContextIdentity.js";
-import { providerTypeRenderers } from "./steps/ProviderChoices.js";
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { assertEveryPresent } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 
 import { WizardUpdateEvent } from "#components/ak-wizard/events";
 
-import { ProvidersApi, ProxyMode } from "@goauthentik/api";
+import type { TypeCreate } from "@goauthentik/api";
+import { ProviderModelEnum, ProvidersApi, ProxyMode } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
 import { html } from "lit";
@@ -31,6 +32,21 @@ const freshWizardState = (): ApplicationWizardState => ({
     bindings: [],
     errors: {},
 });
+
+type ExtractProviderName<T extends string> = T extends `${string}.${infer Name}` ? Name : never;
+
+type ProviderModelNameEnum = ExtractProviderName<ProviderModelEnum> | "samlproviderimportmodel";
+
+export const providerTypePriority: ProviderModelNameEnum[] = [
+    "oauth2provider",
+    "samlprovider",
+    "samlproviderimportmodel",
+    "racprovider",
+    "proxyprovider",
+    "radiusprovider",
+    "ldapprovider",
+    "scimprovider",
+];
 
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
@@ -50,21 +66,17 @@ export class AkApplicationWizardMain extends AKElement {
     connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
-            const wizardReadyProviders = Object.keys(providerTypeRenderers);
-            this.wizardProviderProvider.setValue(
-                providerTypes
-                    .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
-                    .map((providerType) => ({
-                        ...providerType,
-                        renderer: providerTypeRenderers[providerType.modelName].render,
-                    }))
-                    .sort(
-                        (a, b) =>
-                            providerTypeRenderers[a.modelName].order -
-                            providerTypeRenderers[b.modelName].order,
-                    )
-                    .reverse(),
+            const providerNameToProviderMap = new Map(
+                providerTypes.map((providerType) => [providerType.modelName, providerType]),
             );
+            const providersInOrder = providerTypePriority.map((name) =>
+                providerNameToProviderMap.get(name),
+            );
+            assertEveryPresent<TypeCreate>(
+                providersInOrder,
+                "Provider priority list includes name for which no provider model was returned.",
+            );
+            this.wizardProviderProvider.setValue(providersInOrder);
         });
     }
 
@@ -108,5 +120,11 @@ export class AkApplicationWizardMain extends AKElement {
                 .wizard=${this.wizard}
             ></ak-application-wizard-submit-step>
         </ak-wizard-steps>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-main": AkApplicationWizardMain;
     }
 }

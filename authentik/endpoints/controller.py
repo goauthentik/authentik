@@ -5,6 +5,8 @@ from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
 from authentik.lib.sentry import SentryIgnoredException
 
+MERGED_VENDOR = "goauthentik.io/@merged"
+
 
 class EnrollmentMethods(models.TextChoices):
     # Automatically enrolled through user action
@@ -27,6 +29,10 @@ class BaseController[T: "Connector"]:
     def __init__(self, connector: T) -> None:
         self.connector = connector
         self.logger = get_logger().bind(connector=connector.name)
+
+    @staticmethod
+    def vendor_identifier() -> str:
+        raise NotImplementedError
 
     def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
         return []

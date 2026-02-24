@@ -20,6 +20,10 @@ export default defineConfig({
             "./assets/pficon": join(patternflyPath, "assets", "pficon"),
         },
     },
+    optimizeDeps: {
+        // Fixes dependency resolution issue associated with `npm link`ed packages.
+        include: ["@goauthentik/api"],
+    },
     plugins: [
         // ---
         inlineCSSPlugin(),

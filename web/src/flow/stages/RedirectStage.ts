@@ -1,30 +1,27 @@
 import "#flow/components/ak-flow-card";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { BaseStage } from "#flow/stages/base";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
-    @property({ type: Boolean })
-    promptUser = false;
-
     @state()
     startedRedirect = false;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFLogin,
         PFForm,
         PFButton,
@@ -38,12 +35,23 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     ];
 
     getURL(): string {
-        return new URL(this.challenge.to, document.baseURI).toString();
+        return new URL(this.challenge?.to || "", document.baseURI).toString();
     }
 
-    firstUpdated(changed: PropertyValues<this>): void {
-        super.firstUpdated(changed);
+    // The current implementation expects the button and the stage to share the same DOM context,
+    // and the same rootNode. If that changes, this will need to be updated.
+    get promptUser() {
+        return !!(this.getRootNode() as Element | undefined)?.querySelector(
+            "ak-flow-inspector-button",
+        )?.open;
+    }
 
+    updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (!changed.has("challenge")) {
+            return;
+        }
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
@@ -58,9 +66,10 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
-            this.challenge.to,
+            this.challenge?.to,
         );
-        window.location.assign(this.challenge.to);
+
+        window.location.assign(this.challenge?.to || "");
         this.startedRedirect = true;
     }
 
@@ -80,15 +89,20 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
-    render(): TemplateResult {
+    protected render(): SlottedTemplateResult {
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }
+
+        if (!this.challenge) {
+            return nothing;
+        }
+
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
                 <fieldset class="pf-c-form__group pf-m-action">
@@ -108,6 +122,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         </ak-flow-card>`;
     }
 }
+
+export default RedirectStage;
 
 declare global {
     interface HTMLElementTagNameMap {

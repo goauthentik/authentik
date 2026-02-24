@@ -20,7 +20,7 @@ The following placeholders are used in this guide:
   it is just the components of your base DN. For example, if
   `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
   might be `ldap.goauthentik.io`.
-- `ldap.searchGroup` is the "Search Group" that can can see all
+- `ldap.searchGroup` is the "Search Group" that can see all
   users and groups in authentik.
 - `qnap.serviceAccount` is a service account created in authentik
 - `qnap.serviceAccountToken` is the service account token generated
@@ -30,7 +30,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create an LDAP Provider if you don't already have one setup.
+Create an LDAP Provider if you don't already have one set up.
 This guide assumes you will be running with TLS. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
 
 Remember the `ldap.baseDN` you have configured for the provider as you'll
@@ -140,6 +140,7 @@ base                        ${ldap.baseDN}
 uri                         ldaps://${ldap.domain}/
 ssl                         on
 rootbinddn                  cn=${qnap.serviceAccount},ou=users,${ldap.baseDN}
+# authentik has no memberUid therefore switch to
 nss_schema                  rfc2307bis
 
 # remap object classes to authentik ones
@@ -152,7 +153,7 @@ nss_map_objectclass         posixGroup      group
 nss_map_attribute           uid             cn
 # map displayName information into comments field
 nss_map_attribute           gecos           displayName
-# see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
+# see https://ldapwiki.com/wiki/Wiki.jsp?page=GroupOfUniqueNames%20vs%20groupOfNames
 nss_map_attribute           uniqueMember    member
 
 # configure scope per search filter

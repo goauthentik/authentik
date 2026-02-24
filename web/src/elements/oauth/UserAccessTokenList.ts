@@ -58,7 +58,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Access Tokens(s)")}
+            object-label=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensUsedByList({

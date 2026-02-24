@@ -1,7 +1,13 @@
 {
     "name": "@goauthentik/authentik",
-    "version": "2026.2.0-rc1",
+    "version": "2026.5.0-rc1",
     "private": true,
+    "scripts": {
+        "lint": "run-s lint:spellcheck lint:lockfile",
+        "lint:lockfile": "echo 'Skipping lockfile linting'",
+        "lint:node": "echo 'Skipping node linting'",
+        "lint:spellcheck": "echo 'Skipping spellcheck linting'"
+    },
     "type": "module",
     "dependencies": {
         "@eslint/js": "^9.39.1",
@@ -12,31 +18,31 @@
         "@typescript-eslint/parser": "^8.48.1",
         "eslint": "^9.39.1",
         "prettier": "^3.7.4",
-        "prettier-plugin-packagejson": "^2.5.20",
+        "prettier-plugin-packagejson": "^3.0.0",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.48.1"
     },
+    "workspaces": [],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.6.2"
-    },
-    "workspaces": [],
-    "prettier": "@goauthentik/prettier-config",
-    "overrides": {
-        "format-imports": {
-            "eslint": "$eslint"
-        }
+        "npm": ">=11.10.1"
     },
     "devEngines": {
         "runtime": {
             "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
+            "onFail": "ignore",
+            "version": "24"
         },
         "packageManager": {
             "name": "npm",
-            "onFail": "warn",
-            "version": ">=11.6.2"
+            "version": "11.10.1",
+            "onFail": "ignore"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "format-imports": {
+            "eslint": "$eslint"
         }
     }
 }

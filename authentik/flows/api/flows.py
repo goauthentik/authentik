@@ -22,6 +22,7 @@ from authentik.core.api.utils import (
     LinkSerializer,
     ModelSerializer,
     PassiveSerializer,
+    ThemedUrlsSerializer,
 )
 from authentik.events.logs import LogEventSerializer
 from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
@@ -47,6 +48,7 @@ class FlowSerializer(ModelSerializer):
     """Flow Serializer"""
 
     background_url = ReadOnlyField()
+    background_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
 
     cache_count = SerializerMethodField()
     export_url = SerializerMethodField()
@@ -70,6 +72,7 @@ class FlowSerializer(ModelSerializer):
             "designation",
             "background",
             "background_url",
+            "background_themed_urls",
             "stages",
             "policies",
             "cache_count",

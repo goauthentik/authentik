@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Calibre-Web with authentik, you need to create an application/provider pair and a correspdonding group in authentik.
+To support the integration of Calibre-Web with authentik, you need to create an application/provider pair and a corresponding group in authentik.
 
 ### Create an application and provider in authentik
 
@@ -36,7 +36,7 @@ To support the integration of Calibre-Web with authentik, you need to create an 
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name) and set the authorization flow to use for this provider.
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -52,7 +52,7 @@ Create a group that will grant access to Calibre-Web.
 
 ### Add users to the group
 
-Add the user that require access to the newly created group.
+Add the users that require access to the newly created group.
 
 1. Navigate to **Directory** > **Groups** and click on the name of the group (e.g. `Calibre-Web`) that was just created.
 

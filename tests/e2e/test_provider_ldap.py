@@ -43,7 +43,9 @@ class TestProviderLDAP(SeleniumTestCase):
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
             search_mode=APIAccessMode.CACHED,
         )
-        self.user.assign_perms_to_managed_role("search_full_directory", ldap)
+        self.user.assign_perms_to_managed_role(
+            "authentik_providers_ldap.search_full_directory", ldap
+        )
         # we need to create an application to actually access the ldap
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=ldap)
         outpost: Outpost = Outpost.objects.create(
@@ -300,7 +302,7 @@ class TestProviderLDAP(SeleniumTestCase):
                     "gidNumber": 2000 + self.user.pk,
                     "memberOf": [
                         f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                        for group in self.user.ak_groups.all()
+                        for group in self.user.groups.all()
                     ],
                     "homeDirectory": f"/home/{self.user.username}",
                     "ak-active": True,
@@ -381,7 +383,7 @@ class TestProviderLDAP(SeleniumTestCase):
                     "gidNumber": 2000 + user.pk,
                     "memberOf": [
                         f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                        for group in user.ak_groups.all()
+                        for group in user.groups.all()
                     ],
                     "homeDirectory": f"/home/{user.username}",
                     "ak-active": True,

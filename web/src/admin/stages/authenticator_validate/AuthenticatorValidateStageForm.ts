@@ -1,3 +1,4 @@
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/Alert";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
@@ -73,7 +74,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const authenticators = [
             [DeviceClassesEnum.Static, msg("Static Tokens")],
             [DeviceClassesEnum.Totp, msg("TOTP Authenticators")],

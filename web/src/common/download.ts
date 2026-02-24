@@ -1,23 +1,32 @@
-import { MessageLevel } from "#common/messages";
+/**
+ * @file Download utility functions.
+ */
 
-import { showMessage } from "#elements/messages/MessageContainer";
+export interface DownloadInit extends BlobPropertyBag {
+    content: BlobPart | BlobPart[];
+    filename: string;
+}
 
-import { msg, str } from "@lit/localize";
+/**
+ * Download a file directly from the frontend.
+ *
+ * @remarks
+ * This function must be called from a user-interaction event handler
+ * as it uses an `<a>` element behind the scenes.
+ */
+export function downloadFile({ content, filename, ...options }: DownloadInit): void {
+    const blob = new Blob(Array.isArray(content) ? content : [content], options);
 
-// Download a file directly from the frontend. Must be called from a user-interaction event handler
-// as this uses an <a> element behind the scenes.
-export function downloadFile(content: string, filename: string, mime: string) {
-    const blob = new Blob([content], { type: mime });
-    const url = window.URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
+
     a.style.display = "none";
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
+
     a.click();
-    window.URL.revokeObjectURL(url);
-    showMessage({
-        level: MessageLevel.info,
-        message: msg(str`Successfully downloaded ${filename}!`),
-    });
+
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
 }

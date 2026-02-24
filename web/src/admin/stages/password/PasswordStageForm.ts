@@ -1,3 +1,4 @@
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -53,7 +54,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const backends = [
             {
                 name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,

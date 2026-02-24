@@ -41,7 +41,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",

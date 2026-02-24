@@ -50,7 +50,7 @@ export class PromptListPage extends TablePage<Prompt> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Prompt(s)")}
+            object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Prompt) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({

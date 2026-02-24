@@ -16,7 +16,7 @@ You can also bookmark the direct link to your Requests page, using the following
 
 > https://customers.goauthentik.io/l/support
 
-You can also always reach out to us via email, using hello@goauthentik.io email address.
+You can also always reach out to us via email, using the hello@goauthentik.io email address.
 
 ### Product version support
 
