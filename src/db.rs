@@ -96,3 +96,45 @@ pub(crate) fn get() -> &'static PgPool {
     DB.get()
         .expect("failed to get db, has it been initialized?")
 }
+
+pub(crate) async fn ensure_required_tables_exist() -> Result<bool> {
+    let required_tables = [
+        "authentik_brands_brand",
+        "authentik_brands_brand_client_certificates",
+        "authentik_crypto_certificatekeypair",
+    ];
+
+    let placeholders = required_tables
+        .iter()
+        .enumerate()
+        .map(|(i, _)| format!("${}", i + 1))
+        .collect::<Vec<_>>()
+        .join(", ");
+
+    let query_str = format!(
+        "SELECT COUNT(*) FROM information_schema.tables WHERE table_name IN ({})",
+        placeholders
+    );
+
+    let query = {
+        let mut query = sqlx::query_scalar::<_, i64>(&query_str);
+        for table in required_tables {
+            query = query.bind(table);
+        }
+        query
+    };
+
+    let count: i64 = query.fetch_one(get()).await?;
+    let expected = required_tables.len() as i64;
+
+    Ok(count >= expected)
+}
+
+pub(crate) async fn wait_for_required_tables() {
+    loop {
+        if let Ok(true) = ensure_required_tables_exist().await {
+            break;
+        }
+        tokio::time::sleep(Duration::from_secs(1)).await;
+    }
+}

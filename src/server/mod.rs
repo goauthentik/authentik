@@ -3,6 +3,7 @@ use std::{
     time::Duration,
 };
 
+use arc_swap::{ArcSwap, ArcSwapOption};
 use argh::FromArgs;
 use axum::{Router, body::Body, extract::Request, routing::any};
 use axum_server::{Handle, tls_rustls::RustlsConfig};
@@ -109,7 +110,10 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
     let gunicorn = Gunicorn::new()?;
 
     let router = build_router().await;
-    let tls_config = RustlsConfig::from_config(Arc::new(tls::make_tls_config()?));
+    let tls_config = RustlsConfig::from_config(Arc::new(tls::make_tls_config(
+        core::tls::init(tasks).await?,
+        Arc::new(ArcSwapOption::empty()),
+    )?));
 
     for addr in config.listen.http.iter().copied() {
         let handle = Handle::new();

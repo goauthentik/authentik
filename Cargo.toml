@@ -53,6 +53,7 @@ rcgen = { version = "0.14.7", default-features = false, features = [
   "fips",
 ] }
 rustls = { version = "0.23.36", features = ["fips"] }
+rustls-pemfile = "2.2.0"
 sentry = { version = "0.46.2", default-features = false, features = [
   "backtrace",
   "contexts",
@@ -190,6 +191,7 @@ pyo3 = { workspace = true, optional = true }
 rand.workspace = true
 rcgen.workspace = true
 rustls.workspace = true
+rustls-pemfile.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
