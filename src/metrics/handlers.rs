@@ -1,28 +1,32 @@
-use axum::{body::Body, http::StatusCode, response::Response};
-use prometheus_client::encoding::text::encode;
-use tokio::task::spawn_blocking;
+use std::sync::Arc;
 
-use crate::axum::error::Result;
+use axum::{body::Body, extract::State, http::StatusCode, response::Response};
 
-pub(super) async fn metrics_handler() -> Result<Response> {
-    let mut metrics = String::new();
+#[cfg(feature = "core")]
+use crate::mode;
+use crate::{axum::error::Result, metrics::AppState};
 
-    let registry = super::REGISTRY
-        .get()
-        .expect("failed to get registry, has it been initialized?")
-        .read()
-        .await;
-    encode(&mut metrics, &registry)?;
+pub(super) async fn metrics_handler(State(state): State<Arc<AppState>>) -> Result<Response> {
+    let mut metrics = Vec::new();
+    state.prometheus.render_to_write(&mut metrics)?;
 
-    if metrics == "# EOF\n" {
-        metrics = String::new();
-    }
+    #[cfg(feature = "core")]
+    if mode::get() == mode::Mode::Server {
+        use axum::http::Request;
+        use axum::http::header::{AUTHORIZATION, HOST};
 
-    #[cfg(feature = "server")]
-    {
-        metrics.push_str(&String::from_utf8(
-            spawn_blocking(python::get_python_metrics).await??,
-        )?);
+        state
+            .core_client
+            .request(
+                Request::builder()
+                    .method("GET")
+                    .uri("http://localhost:8000/-/metrics/")
+                    .header(HOST, "localhost")
+                    .header(AUTHORIZATION, format!("Bearer {}", state.metrics_key))
+                    .body(Body::from(""))?,
+            )
+            .await?;
+        metrics.extend(tokio::task::spawn_blocking(python::get_python_metrics).await??);
     }
 
     Ok(Response::builder()
@@ -31,7 +35,7 @@ pub(super) async fn metrics_handler() -> Result<Response> {
         .body(Body::from(metrics))?)
 }
 
-#[cfg(feature = "server")]
+#[cfg(feature = "core")]
 mod python {
     use eyre::{Report, Result};
     use pyo3::{

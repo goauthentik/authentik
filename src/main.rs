@@ -2,21 +2,20 @@ use std::str::FromStr;
 
 use ::tracing::{error, info, trace};
 use argh::FromArgs;
-use axum_server::Handle;
 use eyre::{Result, eyre};
-use pyo3::Python;
 
 use crate::{arbiter::Tasks, config::ConfigManager};
 
 mod arbiter;
 mod axum;
 mod config;
-#[cfg(feature = "server")]
+#[cfg(feature = "core")]
 mod db;
 mod metrics;
-#[cfg(any(feature = "server", feature = "proxy"))]
+mod mode;
+#[cfg(feature = "proxy")]
 mod proxy;
-#[cfg(feature = "server")]
+#[cfg(feature = "core")]
 mod server;
 mod tokio;
 mod tracing;
@@ -31,7 +30,7 @@ struct Cli {
 #[derive(Debug, FromArgs, PartialEq)]
 #[argh(subcommand)]
 enum Command {
-    #[cfg(feature = "server")]
+    #[cfg(feature = "core")]
     Server(server::Cli),
     #[cfg(feature = "proxy")]
     Proxy(proxy::Cli),
@@ -70,8 +69,15 @@ fn main() -> Result<()> {
 
     let cli: Cli = argh::from_env();
 
-    #[cfg(feature = "server")]
-    {
+    match &cli.command {
+        #[cfg(feature = "core")]
+        Command::Server(_) => mode::set(mode::Mode::Server),
+        #[cfg(feature = "proxy")]
+        Command::Proxy(_) => mode::set(mode::Mode::Proxy),
+    };
+
+    #[cfg(feature = "core")]
+    if mode::get() == mode::Mode::Server {
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
@@ -89,7 +95,7 @@ fn main() -> Result<()> {
         }
 
         trace!("initializing Python");
-        Python::initialize();
+        pyo3::Python::initialize();
         trace!("Python initialized");
     }
 
@@ -97,8 +103,6 @@ fn main() -> Result<()> {
         .enable_all()
         .build()?
         .block_on(async {
-            metrics::init();
-
             let mut tasks = Tasks::new()?;
 
             ConfigManager::init(&mut tasks).await?;
@@ -112,33 +116,21 @@ fn main() -> Result<()> {
                 None
             };
 
-            #[cfg(feature = "server")]
-            {
+            metrics::run(&mut tasks).await?;
+
+            #[cfg(feature = "core")]
+            if mode::get() == mode::Mode::Server {
                 db::init(&mut tasks).await?;
             }
 
             match cli.command {
-                #[cfg(feature = "server")]
+                #[cfg(feature = "core")]
                 Command::Server(args) => {
                     server::run(args, &mut tasks).await?;
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(_args) => todo!(),
             };
-
-            let metrics_router = metrics::build_router();
-            for addr in config::get().listen.metrics.iter().copied() {
-                let handle = Handle::new();
-                tasks.arbiter().add_handle(handle.clone()).await;
-                tasks
-                    .build_task()
-                    .name(&format!(
-                        "{}::metrics::run_server({})",
-                        module_path!(),
-                        addr
-                    ))
-                    .spawn(metrics::run_server(metrics_router.clone(), addr, handle))?;
-            }
 
             let errors = tasks.run().await;
 

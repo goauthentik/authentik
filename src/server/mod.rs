@@ -7,7 +7,7 @@ use argh::FromArgs;
 use axum::{Router, body::Body, extract::Request, routing::any};
 use axum_server::{Handle, tls_rustls::RustlsConfig};
 use eyre::{Result, eyre};
-use tokio::{signal::unix::SignalKind, sync::broadcast::error::RecvError};
+use tokio::{signal::unix::SignalKind, sync::broadcast::error::RecvError, time::Instant};
 use tower::ServiceExt;
 use tracing::{info, warn};
 
@@ -17,7 +17,7 @@ use crate::{
     server::gunicorn::{GUNICORN_READY, Gunicorn},
 };
 
-mod core;
+pub(crate) mod core;
 mod gunicorn;
 mod plain;
 mod r#static;
@@ -80,12 +80,24 @@ async fn build_router() -> Router {
     let proxy_router: Option<Router> = None;
 
     Router::new().fallback(any(|request: Request<Body>| async move {
+        metrics::describe_histogram!(
+            "authentik_main_request_duration",
+            metrics::Unit::Seconds,
+            "API request latencies in seconds"
+        );
+        let now = Instant::now();
         if let Some(proxy_router) = proxy_router
             && crate::proxy::can_handle(&request)
         {
-            proxy_router.oneshot(request).await
+            let res = proxy_router.oneshot(request).await;
+            metrics::histogram!("authentik_main_request_duration", "dest" => "embedded_outpost")
+                .record(now.elapsed());
+            res
         } else {
-            core_router.oneshot(request).await
+            let res = core_router.oneshot(request).await;
+            metrics::histogram!("authentik_main_request_duration", "dest" => "core")
+                .record(now.elapsed());
+            res
         }
     }))
 }

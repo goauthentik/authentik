@@ -35,7 +35,7 @@ use crate::{
     },
 };
 
-type BackendClient = Client<UnixSocketConnector<PathBuf>, Body>;
+pub(crate) type CoreClient = Client<UnixSocketConnector<PathBuf>, Body>;
 
 static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
     Response::builder()
@@ -105,7 +105,7 @@ async fn forward_request(
     ClientIP(client_ip): ClientIP,
     Host(host): Host,
     Scheme(scheme): Scheme,
-    State(client): State<BackendClient>,
+    State(client): State<CoreClient>,
     TrustedProxy(trusted_proxy): TrustedProxy,
     tls_state: Option<Extension<TlsState>>,
     mut request: Request,
@@ -187,14 +187,18 @@ async fn forward_request(
     }
 }
 
-async fn build_proxy_router() -> Router {
+pub(crate) fn build_client() -> CoreClient {
     let config = config::get();
     let connector = UnixSocketConnector::new(super::gunicorn::gunicorn_socket_path());
-    let client = Client::builder(TokioExecutor::new())
+    Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
         .pool_max_idle_per_host(config.web.workers * config.web.threads)
         .set_host(false)
-        .build(connector);
+        .build(connector)
+}
+
+async fn build_proxy_router() -> Router {
+    let client = build_client();
 
     Router::new().fallback(forward_request).with_state(client)
 }

@@ -38,6 +38,8 @@ hyper = "1.8.1"
 hyper-unix-socket = "0.3.0"
 hyper-util = "0.1.20"
 ipnet = { version = "2.11.0", features = ["serde"] }
+metrics = "0.24.3"
+metrics-exporter-prometheus = { version = "0.18.1", default-features = false }
 nix = { version = "0.31.1", features = ["signal"] }
 notify = "8.2.0"
 pem = "3.0.6"
@@ -45,6 +47,7 @@ pin-project-lite = "0.2.16"
 prometheus-client = "0.24.0"
 pyo3 = "0.27.2"
 percent-encoding = "2.3.2"
+rand = "0.10.0"
 rcgen = { version = "0.14.7", default-features = false, features = [
   "aws_lc_rs",
   "fips",
@@ -74,6 +77,7 @@ sqlx = { version = "0.8.6", default-features = false, features = [
   "ipnet",
   "json",
 ] }
+tempfile = "3.25.0"
 thiserror = "2.0.18"
 time = "0.3.47"
 tokio = { version = "1.49.0", features = ["full"] }
@@ -150,9 +154,9 @@ license-file.workspace = true
 publish.workspace = true
 
 [features]
-default = ["server", "proxy"]
+default = ["core", "proxy"]
 proxy = []
-server = ["dep:sqlx", "dep:pyo3"]
+core = ["proxy", "dep:sqlx", "dep:pyo3"]
 
 [dependencies]
 arc-swap.workspace = true
@@ -175,19 +179,22 @@ hyper-util.workspace = true
 hyper.workspace = true
 ipnet.workspace = true
 jsonwebtoken.workspace = true
+metrics.workspace = true
+metrics-exporter-prometheus.workspace = true
 nix.workspace = true
 notify.workspace = true
 pem.workspace = true
 percent-encoding.workspace = true
 pin-project-lite.workspace = true
-prometheus-client.workspace = true
 pyo3 = { workspace = true, optional = true }
+rand.workspace = true
 rcgen.workspace = true
 rustls.workspace = true
 sentry.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sqlx = { workspace = true, optional = true }
+tempfile.workspace = true
 time.workspace = true
 thiserror.workspace = true
 tokio-rustls.workspace = true

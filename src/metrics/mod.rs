@@ -1,50 +1,112 @@
-use std::{
-    net::SocketAddr,
-    sync::{Arc, OnceLock},
-};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 
+#[cfg(feature = "core")]
+use crate::server::core;
 use axum::{Router, routing::any};
 use axum_server::Handle;
 use eyre::Result;
-use prometheus_client::registry::{Metric, Registry};
-use tokio::sync::RwLock;
+use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use tracing::info;
+
+use crate::{
+    arbiter::{Arbiter, Tasks},
+    config,
+};
 
 mod handlers;
 
-static REGISTRY: OnceLock<Arc<RwLock<Registry>>> = OnceLock::new();
-
-pub(super) fn init() {
-    REGISTRY.get_or_init(|| Arc::new(RwLock::new(Registry::default())));
+struct AppState {
+    prometheus: PrometheusHandle,
+    #[cfg(feature = "core")]
+    core_client: core::CoreClient,
+    #[cfg(feature = "core")]
+    metrics_key: String,
+    #[cfg(feature = "core")]
+    _metrics_file: tempfile::NamedTempFile,
 }
 
-pub(super) async fn register<N: Into<String>, H: Into<String>>(
-    name: N,
-    help: H,
-    metric: impl Metric,
-) {
-    REGISTRY
-        .get()
-        .expect("failed to get registry, has it been initialized?")
-        .write()
-        .await
-        .register(name, help, metric);
+impl AppState {
+    async fn new() -> Result<Self> {
+        let prometheus = PrometheusBuilder::new()
+            .with_recommended_naming(true)
+            .install_recorder()?;
+        #[cfg(not(feature = "core"))]
+        {
+            Ok(Self { prometheus })
+        }
+        #[cfg(feature = "core")]
+        {
+            use rand::distr::SampleString;
+            use std::fs::Permissions;
+            use std::os::unix::fs::PermissionsExt;
+
+            let metrics_key = rand::distr::Alphanumeric.sample_string(&mut rand::rng(), 64);
+            let metrics_file = tempfile::Builder::new()
+                .prefix("authentik-core-metrics")
+                .suffix(".key")
+                .rand_bytes(0)
+                .permissions(Permissions::from_mode(0o600))
+                .tempfile()?;
+            tokio::fs::write(&metrics_file, &metrics_key).await?;
+            Ok(Self {
+                prometheus,
+                core_client: core::build_client(),
+                metrics_key,
+                _metrics_file: metrics_file,
+            })
+        }
+    }
 }
 
-pub(super) fn build_router() -> Router {
-    Router::new().fallback(any(handlers::metrics_handler))
+async fn run_upkeep(arbiter: Arbiter, state: Arc<AppState>) -> Result<()> {
+    loop {
+        tokio::select! {
+            _ = tokio::time::sleep(Duration::from_secs(5)) => {
+                state.prometheus.run_upkeep();
+            },
+            _ = arbiter.shutdown() => return Ok(())
+        }
+    }
 }
 
-pub(super) async fn run_server(
-    router: Router,
-    addr: SocketAddr,
-    handle: Handle<SocketAddr>,
-) -> Result<()> {
+fn build_router(state: Arc<AppState>) -> Router {
+    Router::new()
+        .fallback(any(handlers::metrics_handler))
+        .with_state(state)
+}
+
+async fn run_server(router: Router, addr: SocketAddr, handle: Handle<SocketAddr>) -> Result<()> {
     info!(addr = addr.to_string(), "starting metrics server");
     axum_server::Server::bind(addr)
         .handle(handle)
         .serve(router.into_make_service_with_connect_info::<SocketAddr>())
         .await?;
+
+    Ok(())
+}
+
+pub(super) async fn run(tasks: &mut Tasks) -> Result<()> {
+    let arbiter = tasks.arbiter();
+    let state = Arc::new(AppState::new().await?);
+    let router = build_router(state.clone());
+
+    tasks
+        .build_task()
+        .name(&format!("{}::metrics::run_upkeep", module_path!(),))
+        .spawn(run_upkeep(arbiter.clone(), state.clone()))?;
+
+    for addr in config::get().listen.metrics.iter().copied() {
+        let handle = Handle::new();
+        arbiter.add_handle(handle.clone()).await;
+        tasks
+            .build_task()
+            .name(&format!(
+                "{}::metrics::run_server({})",
+                module_path!(),
+                addr
+            ))
+            .spawn(run_server(router.clone(), addr, handle))?;
+    }
 
     Ok(())
 }

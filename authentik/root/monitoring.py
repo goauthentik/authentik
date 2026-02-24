@@ -10,7 +10,6 @@ from django.db.utils import OperationalError
 from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
-from django_prometheus.exports import ExportToDjangoView
 
 monitoring_set = Signal()
 
@@ -28,10 +27,10 @@ class MetricsView(View):
         auth_header = request.META.get("HTTP_AUTHORIZATION", "")
         auth_type, _, given_credentials = auth_header.partition(" ")
         authed = auth_type == "Bearer" and compare_digest(given_credentials, self.monitoring_key)
-        if not authed and not settings.DEBUG:
+        if not authed:
             return HttpResponse(status=401)
         monitoring_set.send_robust(self)
-        return ExportToDjangoView(request)
+        return HttpResponse(status=204)
 
 
 class LiveView(View):
