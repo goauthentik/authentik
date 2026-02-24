@@ -32,6 +32,6 @@ The license, its user limit, and expiry date are then displayed.
 
 ## 4. Accessing support
 
-Enterprise authentik provides dedicated support for subscriptions over $1000 per year, with a Support center where you can open and track tickets.
+authentik Enterprise provides dedicated support for subscriptions over $1000 per year, with a Support center where you can open and track tickets.
 
 To learn about our Support center, see [Enterprise support](./enterprise-support.md).

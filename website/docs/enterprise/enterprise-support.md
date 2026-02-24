@@ -3,7 +3,7 @@ title: Enterprise support
 description: "How to access authentik Enterprise support"
 ---
 
-authentik Enterprise provides dedicated support, with a Support center where you can open and track tickets.
+authentik Enterprise provides dedicated support for subscriptions over $1000 per year, with a Support center where you can open and track tickets.
 
 ## Managing tickets
 
@@ -11,7 +11,7 @@ To access the Support center, log in to the [Customer Portal](https://customers.
 
 Alternatively, you can access the Support center directly via: [https://customers.goauthentik.io/l/support](https://customers.goauthentik.io/l/support)
 
-You can also always reach out to us via email: hello@goauthentik.io
+You can also always reach out to us via [email](mailto:hello@goauthentik.io).
 
 ## Product version support
 
