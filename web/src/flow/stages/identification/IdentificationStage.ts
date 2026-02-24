@@ -33,7 +33,7 @@ import { kebabCase } from "change-case";
 import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -50,7 +50,9 @@ type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
     passkeyChallenge?: PublicKeyCredentialRequestOptions;
 };
 
-type IdentificationFooter = Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">;
+type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
+
+type EmptyString = string | null | undefined;
 
 export const PasswordManagerPrefill: {
     password?: string;
@@ -67,6 +69,12 @@ const UI_FIELDS: { [key: string]: string } = {
     [UserFieldsEnum.Email]: msg("Email"),
     [UserFieldsEnum.Upn]: msg("UPN"),
 };
+
+const sortLoginSources = (a: LoginSource, b: LoginSource) =>
+    match([!!a.promoted, !!b.promoted])
+        .with([true, false], () => -1)
+        .with([false, true], () => 1)
+        .otherwise(() => 0);
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage<
@@ -95,7 +103,7 @@ export class IdentificationStage extends BaseStage<
 
     #form?: HTMLFormElement;
 
-    #rememberMe = new AkRememberMeController(this);
+    private rememberMe = new AkRememberMeController(this);
 
     //#region State
 
@@ -172,7 +180,12 @@ export class IdentificationStage extends BaseStage<
     async #startConditionalWebAuthn(): Promise<void> {
         // Check if passkey challenge is provided
         // Note: passkeyChallenge is added dynamically and may not be in the generated types yet
-        const passkeyChallenge = (this.challenge as PasskeyChallenge)?.passkeyChallenge;
+        const passkeyChallenge = (
+            this.challenge as IdentificationChallenge & {
+                passkeyChallenge?: PublicKeyCredentialRequestOptions;
+            }
+        )?.passkeyChallenge;
+
         if (!passkeyChallenge) {
             return;
         }
@@ -329,166 +342,210 @@ export class IdentificationStage extends BaseStage<
         this.captchaRefreshedAt = new Date();
     }
 
-    //#region Render
-
-    renderApplicationPre(applicationPre: string) {
-        return html`<p>${msg(str`Login to continue to ${applicationPre}.`)}</p>`;
-    }
-
     dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
         if (!this.host) return;
         this.host.challenge = challenge;
     };
 
-    renderDefaultSource(source: LoginSource, showLabels: boolean) {
-        const icon = renderSourceIcon(source.name, source.iconUrl);
-        return html`<button
-            type="button"
-            @click=${() => this.dispatchChallengeToHost(source.challenge)}
-            part="source-item"
-            name=${`source-${kebabCase(source.name)}`}
-            class="pf-c-button source-button"
-            aria-label=${msg(str`Continue with ${source.name}`)}
-        >
-            <span class="pf-c-button__icon pf-m-start">${icon}</span>
-            ${showLabels ? source.name : ""}
-        </button>`;
+    renderRecoveryMessage() {
+        return html`
+            <p>${msg("Enter the email address or username associated with your account.")}</p>
+        `;
     }
 
-    renderPromotedSource(source: LoginSource) {
-        return html`<button
-            type="button"
-            @click=${() => this.dispatchChallengeToHost(source.challenge)}
-            part="source-item source-item-promoted"
-            name=${`source-${kebabCase(source.name)}`}
-            class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
-            aria-label=${msg(str`Continue with ${source.name}`)}
-        >
-            ${msg(str`Continue with ${source.name}`)}
-        </button>`;
-    }
-
-    renderSource(source: LoginSource, showLabels: boolean) {
-        return source.promoted
-            ? this.renderPromotedSource(source)
-            : this.renderDefaultSource(source, showLabels);
-    }
-
-    renderRecoveryPhase() {
-        const message = msg(
-            "Enter the email associated with your account, and we'll send you a link to reset your password.",
-        );
-        return html` <p>${message}</p> `;
-    }
-
-    renderIdentityInput(challenge: IdentificationChallenge) {
-        const fields = (challenge.userFields || []).sort();
-        const type =
-            fields.includes(UserFieldsEnum.Email) && fields.length === 1 ? "email" : "text";
-        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
-        const passkeyChallenge = (challenge as PasskeyChallenge)?.passkeyChallenge;
-        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
-
-        return html`<div class="pf-c-form__group">
-            ${AKLabel({ required: true, htmlFor: this.inputID }, label)}
-            <input
-                id=${this.inputID}
-                type=${type}
-                name="uidField"
-                placeholder=${label}
-                autofocus
-                autocomplete=${autocomplete}
-                spellcheck="false"
-                class="pf-c-form-control"
-                value=${this.#rememberMe?.username ?? challenge.pendingUserIdentifier ?? ""}
-                required
-            />
-            ${this.#rememberMe.render()}
-            ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
-        </div>`;
+    renderUidField(
+        id: string,
+        type: string,
+        label: string,
+        username: EmptyString,
+        autocomplete: string,
+    ) {
+        return html`<input
+            id=${id}
+            type=${type}
+            name="uidField"
+            placeholder=${label}
+            autofocus
+            autocomplete=${autocomplete}
+            spellcheck="false"
+            class="pf-c-form-control"
+            value=${username ?? ""}
+            required
+        />`;
     }
 
     renderPasswordFields(challenge: IdentificationChallenge) {
+        const { allowShowPassword } = challenge;
         return html`
             <ak-flow-input-password
                 label=${msg("Password")}
                 input-id="ak-stage-identification-password"
-                required
                 class="pf-c-form__group"
                 .errors=${challenge.responseErrors?.password}
-                ?allow-show-password=${challenge.allowShowPassword}
+                ?allow-show-password=${allowShowPassword}
                 prefill=${PasswordManagerPrefill.password ?? ""}
             ></ak-flow-input-password>
         `;
     }
 
-    renderCaptchaStage(captchaChallenge: CaptchaChallenge) {
-        return html` <div class="captcha-container">
-            <ak-stage-captcha
-                .challenge=${captchaChallenge}
-                .onTokenChange=${this.#tokenChangeListener}
-                .onLoad=${this.#captchaLoadListener}
-                .refreshedAt=${this.captchaRefreshedAt}
-                embedded
-            >
-            </ak-stage-captcha>
-            <input
-                aria-hidden="true"
-                class="faux-input"
-                ${ref(this.#captchaInputRef)}
-                name="captchaToken"
-                type="text"
-                required
-                value=""
-            />
-        </div>`;
-    }
-
-    renderSubmitButton(challenge: IdentificationChallenge) {
-        return html` <div class="pf-c-form__group ${challenge.captchaStage ? "" : "pf-m-action"}">
-            <button
-                ?disabled=${challenge.captchaStage &&
-                challenge.captchaStage.interactive &&
-                !this.captchaLoaded}
-                type="submit"
-                class="pf-c-button pf-m-primary pf-m-block"
-            >
-                ${challenge.primaryAction}
-            </button>
-        </div>`;
-    }
-
-    renderInput(challenge: IdentificationChallenge): TemplateResult {
-        if (!challenge.userFields || challenge.userFields.length === 0) {
-            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
-        }
-        const { passwordFields, captchaStage } = challenge;
-        const recovery = challenge.flowDesignation === FlowDesignationEnum.Recovery;
-
-        // prettier-ignore
+    renderCaptcha(captchaChallenge: CaptchaChallenge) {
         return html`
-            ${recovery ? this.renderRecoveryPhase() : nothing}
-            ${this.renderIdentityInput(challenge)}
-            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
-            ${this.renderNonFieldErrors()}
-            ${captchaStage ? this.renderCaptchaStage(captchaStage) : nothing}
-            ${this.renderSubmitButton(challenge)}
+            <div class="captcha-container">
+                <ak-stage-captcha
+                    .challenge=${captchaChallenge}
+                    .onTokenChange=${this.#tokenChangeListener}
+                    .onLoad=${this.#captchaLoadListener}
+                    .refreshedAt=${this.captchaRefreshedAt}
+                    embedded
+                >
+                </ak-stage-captcha>
+                <input
+                    aria-hidden="true"
+                    class="faux-input"
+                    ${ref(this.#captchaInputRef)}
+                    name="captchaToken"
+                    type="text"
+                    required
+                    value=""
+                />
+            </div>
         `;
     }
 
-    renderPasswordlessUrl(passwordlessUrl: string) {
-        return html`<ak-divider>${msg("Or")}</ak-divider>
-            <a
-                ouiaId="passwordless"
-                href=${passwordlessUrl}
-                class="pf-c-button pf-m-secondary pf-m-block"
-            >
-                ${msg("Use a security key")}
-            </a> `;
+    renderInput(challenge: IdentificationChallenge) {
+        const {
+            captchaStage,
+            flowDesignation,
+            passkeyChallenge,
+            passwordFields,
+            passwordlessUrl,
+            pendingUserIdentifier,
+            primaryAction,
+            userFields,
+        } = challenge as PasskeyChallenge;
+
+        const fields = (userFields || []).sort();
+        if (fields.length === 0) {
+            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
+        }
+
+        const { inputID, rememberMe, captchaLoaded } = this;
+
+        const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
+        const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
+        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+        const username = rememberMe.username ?? pendingUserIdentifier;
+        const captchaPending = captchaStage && captchaStage.interactive && !captchaLoaded;
+
+        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
+
+        return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: inputID }, label)}
+                ${this.renderUidField(inputID, type, label, username, autocomplete)}
+                ${rememberMe.render()}
+                ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
+            </div>
+            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
+            ${this.renderNonFieldErrors()}
+            ${captchaStage ? this.renderCaptcha(captchaStage) : nothing}
+
+            <div class="pf-c-form__group ${captchaStage ? "" : "pf-m-action"}">
+                <button
+                    ?disabled=${captchaPending}
+                    type="submit"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                >
+                    ${primaryAction}
+                </button>
+            </div>
+            ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
     }
 
-    // These have the same type, and can be supplied out-of-order. Passing them in by name prevents
-    // mis-ordering.
+    renderPrelude(prelude: string) {
+        return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
+    }
+
+    renderPasswordlessUrl(url: string) {
+        return html`<a
+            href=${url}
+            class="pf-c-button pf-m-secondary pf-m-block"
+            ouiaId="passwordless"
+        >
+            ${msg("Use a security key")}
+        </a> `;
+    }
+
+    //#region Render
+    renderDefaultSource(source: LoginSource, showLabels: boolean) {
+        const { name, iconUrl, challenge } = source;
+
+        const icon = renderSourceIcon(name, iconUrl);
+        return html`<button
+            type="button"
+            @click=${() => this.dispatchChallengeToHost(challenge)}
+            part="source-item"
+            name=${`source-${kebabCase(name)}`}
+            class="pf-c-button source-button"
+            aria-label=${msg(str`Continue with ${name}`)}
+        >
+            <span class="pf-c-button__icon pf-m-start">${icon}</span>
+            ${showLabels ? name : ""}
+        </button>`;
+    }
+
+    renderPromotedSource(source: LoginSource) {
+        const { name, challenge } = source;
+
+        return html`<button
+            type="button"
+            @click=${() => this.dispatchChallengeToHost(challenge)}
+            part="source-item source-item-promoted"
+            name=${`source-${kebabCase(name)}`}
+            class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
+            aria-label=${msg(str`Continue with ${name}`)}
+        >
+            ${msg(str`Continue with ${name}`)}
+        </button>`;
+    }
+
+    renderLoginSource(source: LoginSource, showLabels: boolean) {
+        return source.promoted
+            ? this.renderPromotedSource(source)
+            : this.renderDefaultSource(source, showLabels);
+    }
+
+    renderLoginSources(sources: LoginSource[], showLabels: boolean) {
+        return html`<fieldset
+            slot="footer"
+            part="source-list"
+            role="group"
+            name="login-sources"
+            class="pf-c-form__group"
+        >
+            <legend class="sr-only">${msg("Login sources")}</legend>
+            ${repeat(
+                [...sources].sort(sortLoginSources),
+                (source, idx) => source.name + idx,
+                (source) => this.renderLoginSource(source, showLabels),
+            )}
+        </fieldset> `;
+    }
+
+    renderIdentificationStage(challenge: IdentificationChallenge) {
+        const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
+
+        return html`
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
+                ${this.renderInput(challenge)}
+                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+            </form>
+            ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
+        `;
+    }
+
     renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
         if (!(enrollUrl || recoveryUrl)) {
             return nothing;
@@ -516,63 +573,15 @@ export class IdentificationStage extends BaseStage<
         </fieldset>`;
     }
 
-    renderLoginSources(sources: LoginSource[], showLabels: boolean) {
-        const key = ({ name }: LoginSource, idx: number) => `${name}${idx}`;
-        const content = (source: LoginSource) => this.renderSource(source, showLabels);
-        const promoted = (a: LoginSource) => !!a.promoted;
-
-        // Sort promoted sources to show up first
-        const sortby = (a: LoginSource, b: LoginSource) =>
-            match([promoted(a), promoted(b)])
-                .with([true, false], () => -1)
-                .with([false, true], () => 1)
-                .otherwise(() => 0);
-
-        const sortedSources = [...sources].sort(sortby);
-
-        return html`<fieldset
-            slot="footer"
-            part="source-list"
-            role="group"
-            name="login-sources"
-            class="pf-c-form__group"
-        >
-            <legend class="sr-only">${msg("Login sources")}</legend>
-            ${repeat(sortedSources, key, content)}
-        </fieldset> `;
-    }
-
-    renderIdentificationStage(challenge: IdentificationChallenge) {
-        const {
-            passwordlessUrl,
-            applicationPre,
-            sources,
-            showSourceLabels,
-            enrollUrl,
-            recoveryUrl,
-        } = challenge;
-        const hasSources = !!sources?.length;
+    render() {
+        const { challenge } = this;
+        const { enrollUrl, recoveryUrl } = challenge ?? {};
         const hasFooter = !!enrollUrl || !!recoveryUrl;
 
-        // prettier-ignore
         return html`<ak-flow-card .challenge=${challenge} part="flow-card">
-            <form class="pf-c-form" @submit=${this.submitForm}>
-                ${applicationPre ? this.renderApplicationPre(applicationPre) : nothing}
-                ${this.renderInput(challenge)}
-                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
-            </form>
-            ${hasSources ? this.renderLoginSources(sources, showSourceLabels) : nothing}
-            ${hasFooter ? this.renderFooter({ enrollUrl, recoveryUrl}) : nothing }
+            ${challenge ? this.renderIdentificationStage(challenge) : nothing}
+            ${hasFooter ? this.renderFooter({ enrollUrl, recoveryUrl }) : nothing}
         </ak-flow-card>`;
-    }
-
-    render() {
-        if (!this.challenge) {
-            console.warn("Identification stage called with empty challenge");
-            return nothing;
-        }
-
-        return this.renderIdentificationStage(this.challenge);
     }
 
     //#endregion
