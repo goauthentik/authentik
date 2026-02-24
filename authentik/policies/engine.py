@@ -185,6 +185,16 @@ class PolicyEngine:
                 # Only call .recv() if no result is saved, otherwise we just deadlock here
                 if not proc_info.result:
                     proc_info.result = proc_info.connection.recv()
+                if proc_info.result and proc_info.result._exec_time:
+                    HIST_POLICIES_EXECUTION_TIME.labels(
+                        binding_order=proc_info.binding.order,
+                        binding_target_type=proc_info.binding.target_type,
+                        binding_target_name=proc_info.binding.target_name,
+                        object_type=(
+                            class_to_path(self.request.obj.__class__) if self.request.obj else ""
+                        ),
+                        mode="execute_process",
+                    ).observe(proc_info.result._exec_time)
             return self
 
     @property
