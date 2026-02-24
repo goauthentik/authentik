@@ -3,7 +3,7 @@ title: User interface overview
 sidebar_label: User interface
 ---
 
-Administrators for an authentik instance work primarily in the Admin interface; this is where administrators create new users and groups, add applications, .
+Administrators for an authentik instance work primarily in the Admin interface; this is where administrators create new users and groups, add applications, and manage system settings.
 
 End-users, who are accessing their applications via authentik for their daily tasks, typically only access the User interface. (There are exceptions; some end-users have [permissins to also access the Admin interface](https://docs.goauthentik.io/users-sources/access-control/manage_permissions/#assign-can-view-admin-interface-permissions), and some end-users never go to the User interface, but rather [log directly into their application](https://docs.goauthentik.io/brands/#external-user-settings) and login using authentik behind the scenes.)
 
@@ -21,12 +21,12 @@ words here... one can delete sessions even the current one which logs them out..
 
 ## Consent
 
-“related to the stage. operating modes: you have an auth flow, about to loginto grafana, with OAuth the app can request account info.. profile and email address … if you have a consent stage, it pops up and says Hey, the app is asking for the data, do you want to share this info…? If Yes, click Continue. In this stage there are three modes: 1) always require (the  user will see message and consent by cliing continue 2) Permanent: saves fact that you clicked on Continue, creates a Consent object with alink to the user and to the app,, and stores which data (but not value), Expiring: means you have to click Continue anytime after the expiry date stage set in stage as Duration.
+“related to the stage. operating modes: you have an auth flow, about to loginto grafana, with OAuth the app can request account info.. profile and email address … if you have a consent stage, it pops up and says Hey, the app is asking for the data, do you want to share this info…? If Yes, click Continue. In this stage there are three modes: 1) always require (the user will see message and consent by cliing continue 2) Permanent: saves fact that you clicked on Continue, creates a Consent object with alink to the user and to the app,, and stores which data (but not value), Expiring: means you have to click Continue anytime after the expiry date stage set in stage as Duration.
 
 So an end-user could delete a consent, which is same as it expires.
 
 - in a custom flow you could add a consent stage as a key in a policy
-- Default when you do the above (no app is linked no auth is processed) the default mode is Always required.”also side use case.. OAuth can tell the IdP to re-authorize… our  system auto-creates a Consent stage and add it to memory to the authz flow… only  if there isn;t already one…
+- Default when you do the above (no app is linked no auth is processed) the default mode is Always required.”also side use case.. OAuth can tell the IdP to re-authorize… our system auto-creates a Consent stage and add it to memory to the authz flow… only if there isn;t already one…
 - OIDC has a value called consent
 
 ## MFA Devices
@@ -35,10 +35,10 @@ words here about how to add one
 
 ## Connected services
 
-Ask Jens for some examples... where would it have to be configured in the Admin interface
+If an authentik administrator adds a [source](../sources/index.md) to the instance, such as GitHub or Entra ID, then users will see a list of those sources here and can choose to log in using credentials from that source. Note that SCIM and LDAP sources cannot be used
 
 ## Tokens and App passwords
 
-Ask Jens for some examples... where would it have to be configured in the Admin interface
+Users can create a token to use for API access (for example, in a curl request), or an App password that can be used as a secondary form of authentication in situations where 2FA is configured for the application that the user is logging in to.)
 
-
+TODO: research "LDAP limitation with 2FA"
