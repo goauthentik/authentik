@@ -12,6 +12,9 @@ on:
       - main
       - version-*
 
+env:
+  NPM_VERSION: "11.10.0"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -37,9 +40,10 @@ jobs:
           node-version-file: ${{ matrix.project }}/package.json
           cache: "npm"
           cache-dependency-path: ${{ matrix.project }}/package-lock.json
+      - name: Install NPM
+        run: npm install -g npm@${{ env.NPM_VERSION }}
       - working-directory: ${{ matrix.project }}/
-        run: |
-          npm ci
+        run: npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: Lint
@@ -54,6 +58,8 @@ jobs:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
+      - name: Install npm
+        run: npm install -g npm@${{ env.NPM_VERSION }}
       - working-directory: web/
         run: npm ci
       - name: Generate API
@@ -61,6 +67,7 @@ jobs:
       - name: build
         working-directory: web/
         run: npm run build
+
   ci-web-mark:
     if: always()
     needs:
@@ -71,6 +78,7 @@ jobs:
       - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+
   test:
     needs:
       - ci-web-mark
@@ -82,6 +90,8 @@ jobs:
           node-version-file: web/package.json
           cache: "npm"
           cache-dependency-path: web/package-lock.json
+      - name: Install NPM
+        run: npm install -g npm@${{ env.NPM_VERSION }}
       - working-directory: web/
         run: npm ci
       - name: Generate API

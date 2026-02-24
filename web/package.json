@@ -13,7 +13,7 @@
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:lockfile": "wireit",
+        "lint:lockfile": "../scripts/lint-lockfile.mjs",
         "lint:types": "wireit",
         "lint-check": "eslint --max-warnings 0 .",
         "lit-analyse": "wireit",
@@ -262,11 +262,6 @@
                 "build-locales"
             ]
         },
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
-        },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
@@ -318,6 +313,18 @@
         },
         "rapidoc": {
             "@apitools/openapi-parser": "0.0.37"
+        }
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "onFail": "warn",
+            "version": ">=11.6.2"
         }
     }
 }

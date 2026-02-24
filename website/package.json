@@ -11,7 +11,7 @@
         "docusaurus": "docusaurus",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
-        "lint:lockfile": "echo 'Skipping lockfile linting'",
+        "lint:lockfile": "../scripts/lint-lockfile.mjs",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "start": "npm start -w docs",
