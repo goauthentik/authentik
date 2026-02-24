@@ -496,6 +496,7 @@ const items = [
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
                     "users-sources/user/password_reset_on_login",
+                    "users-sources/user/user-interface",
                 ],
             },
             {
