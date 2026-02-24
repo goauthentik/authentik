@@ -58,7 +58,7 @@ sudo apt update
 sudo apt install authentik-cli authentik-agent authentik-sysd
 ```
 
-4. To allow incoming auth
+4. _(optional)_ If you plan to enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), you will need to install two additional packages:
 
 ```sh
 sudo apt install libnss-authentik libpam-authentik
@@ -100,7 +100,7 @@ EOF
 sudo yum install -y authentik-cli authentik-agent authentik-sysd
 ```
 
-3. To allow incoming auth
+3. _(optional)_ If you plan to enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), you will need to install two additional packages:
 
 ```sh
 sudo yum install -y libnss-authentik libpam-authentik
