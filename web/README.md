@@ -24,7 +24,7 @@ The three contexts corresponds to objects in the API's `model` section, so let's
   password.
 - The current `SessionUser`, the person logged in: username, display name, and various states.
   (Note: the authentik server permits administrators to "impersonate" any other user in order to
-  debug their authentikation experience. If impersonation is active, the `user` field reflects that
+  debug their authentication experience. If impersonation is active, the `user` field reflects that
   user, but it also includes a field, `original`, with the administrator's information.)
 
 (There is a fourth context object, Version, but its use is limited to displaying version information

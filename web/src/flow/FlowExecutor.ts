@@ -70,11 +70,24 @@ interface SubmitFlowMessage {
 }
 
 /**
- * An executor for authentik flows.
- *
- * @attr {string} slug - The slug of the flow to execute.
- * @prop {ChallengeTypes | null} challenge - The current challenge to render.
- */
+  * An executor for authentik flows.
+  *
+  * @attr {string} slug - The slug of the flow to execute.
+  * @prop {ChallengeTypes | null} challenge - The current challenge to render.
+- *
+- * @part main - The main container for the flow content.
+- * @part content - The container for the stage content.
+- * @part content-iframe - The iframe element when using a frame background layout.
+- * @part footer - The footer container.
+- * @part locale-select - The locale select component.
+- * @part branding - The branding element, used for the background image in some layouts.
+- * @part loading-overlay - The loading overlay element.
+- * @part challenge-additional-actions - Container in stages which have additional actions.
+- * @part challenge-footer-band - Container for the stage footer, used for additional actions in some stages.
+- * @part locale-select-label - The label of the locale select component.
+- * @part locale-select-select - The select element of the locale select component.
+  */
+
 @customElement("ak-flow-executor")
 export class FlowExecutor extends WithBrandConfig(Interface) implements StageHost {
     public static readonly DefaultLayout: FlowLayoutEnum =

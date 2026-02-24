@@ -42,7 +42,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     /* The array of key/value pairs that are in the selected list. ALL of them. */
     @property({ type: Array })
-    readonly selected: DualSelectPair[] = [];
+    public selected: DualSelectPair[] = [];
 
     //#endregion
 

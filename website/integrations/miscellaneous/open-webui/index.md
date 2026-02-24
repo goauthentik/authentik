@@ -37,13 +37,13 @@ To support the integration of Open WebUI with authentik, you need to create an a
     - Set a `Strict` redirect URI to `https://openwebui.company/oauth/oidc/callback`.
     - Select any available signing key.
     - Make sure to leave the **Encryption Key** field empty.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Open WebUI configuration
 
-To configure authentik with Open WebUI, you must add the following environment variables to your OpenWebUI deployment:
+To configure authentik with Open WebUI, you must add the following environment variables to your Open WebUI deployment:
 
 :::warning
 `WEBUI_URL` is a persistent configuration setting and must be set before enabling SSO. Changing it later requires either disabling persistent configuration or updating it in the Admin panel. More information can be found in the [Open WebUI documentation](https://docs.openwebui.com/getting-started/env-configuration/#important-note-on-persistentconfig-environment-variables).
@@ -74,10 +74,10 @@ Then restart Open WebUI to apply the changes.
 - If you successfully return to the Open WebUI, the login is working correctly.
 
 :::info
-Users are automatically created, but an administrator must update their role to at least **User** via the WebGUI.
-To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company`/admin/users).
+Users are automatically created, but an administrator must update their role to at least **User** via the Web UI.
+To do so, log in as an administrator and access the **Admin Panel** (URL: `https://openwebui.company/admin/users`).
 Click on the user whose role should be increased from **Pending** to at least **User**.
-More details on how to administer Open WebUI can be found here `https://docs.openwebui.com/`.
+More details on how to administer Open WebUI can be found here: `https://docs.openwebui.com/`.
 :::
 
 ## References

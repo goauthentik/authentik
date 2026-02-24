@@ -12,6 +12,9 @@ import type {
     StageModuleCallback,
 } from "./FlowExecutorStageFactory";
 
+/**
+ * The tuple variants representing the metadata for a stage entry in the stage mapping registry.
+ */
 // prettier-ignore
 export type StageEntry =
     | [token: FlowChallengeComponentName, tag: string, variant: PropVariant, import?: StageModuleCallback]

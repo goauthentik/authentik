@@ -44,19 +44,24 @@
                                 {% endblock %}
                             </div>
                         </main>
-                        <footer aria-label="Site footer" class="pf-c-login__footer pf-m-dark">
-                            <ul class="pf-c-list pf-m-inline">
-                                {% for link in footer_links %}
-                                <li>
-                                    <a href="{{ link.href }}">{{ link.name }}</a>
-                                </li>
-                                {% endfor %}
-                                <li>
-                                    <span>
-                                        {% trans 'Powered by authentik' %}
-                                    </span>
-                                </li>
-                            </ul>
+                        <footer
+                            name="site-footer"
+                            aria-label="{% trans 'Site footer' %}"
+                            class="pf-c-login__footer pf-m-dark">
+                            <div name="flow-links" aria-label="{% trans 'Flow links' %}">
+                                <ul class="pf-c-list pf-m-inline" part="list">
+                                    {% for link in footer_links %}
+                                    <li part="list-item">
+                                        <a part="list-item-link" href="{{ link.href }}">{{ link.name }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    <li part="list-item">
+                                        <span>
+                                            {% trans 'Powered by authentik' %}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
                         </footer>
                     </div>
                 </div>

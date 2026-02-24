@@ -56,10 +56,10 @@ func TestForwardHandleEnvoy_Single_Claims(t *testing.T) {
 	s.Values[constants.SessionClaims] = types.Claims{
 		Sub: "foo",
 		Proxy: &types.ProxyClaims{
-			UserAttributes: map[string]interface{}{
+			UserAttributes: map[string]any{
 				"username": "foo",
 				"password": "bar",
-				"additionalHeaders": map[string]interface{}{
+				"additionalHeaders": map[string]any{
 					"foo": "bar",
 				},
 			},
@@ -92,7 +92,7 @@ func TestForwardHandleEnvoy_Single_Claims(t *testing.T) {
 func TestForwardHandleEnvoy_Domain_Header(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
-	a.proxyConfig.CookieDomain = api.PtrString("foo")
+	a.proxyConfig.CookieDomain = new("foo")
 	a.proxyConfig.ExternalHost = "http://auth.test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "http:///app", nil)
 	req.Host = "test.goauthentik.io"
