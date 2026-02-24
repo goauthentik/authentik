@@ -8,7 +8,7 @@ import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "#admin/admin-overview/charts/OutpostStatusChart";
 import "#admin/admin-overview/charts/SyncStatusChart";
-import "#elements/cards/AggregatePromiseCard";
+import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
 
 import { formatUserDisplayName } from "#common/users";

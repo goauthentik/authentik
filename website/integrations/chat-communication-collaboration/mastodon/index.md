@@ -68,7 +68,7 @@ OIDC_SECURITY_ASSUME_EMAIL_IS_VERIFIED=true
 
 Restart mastodon-web.service
 
-## Additional Resources
+## Resources
 
 - https://github.com/mastodon/mastodon/pull/16221
 - https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42

@@ -153,7 +153,7 @@ Configure Snipe-IT SAML settings by going to settings (the gear icon), and selec
 
 All other field can be left blank.
 
-## Additional Resources
+## Resources
 
 - https://snipe-it.readme.io/docs/ldap-sync-login
 - https://snipe-it.readme.io/docs/saml
