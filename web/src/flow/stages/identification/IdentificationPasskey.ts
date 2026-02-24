@@ -1,4 +1,4 @@
-import { type IdentificationStage } from "./IdentificationStage";
+import { type IdentificationHost } from "./IdentificationStage";
 
 import {
     isConditionalMediationAvailable,
@@ -8,22 +8,16 @@ import {
 
 import { IdentificationChallenge } from "@goauthentik/api";
 
-import { ReactiveController, type ReactiveControllerHost } from "lit";
+import { ReactiveController } from "lit";
 
 type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
     passkeyChallenge?: PublicKeyCredentialRequestOptions;
 };
 
-type PasskeyHost = IdentificationStage & ReactiveControllerHost;
-
 export class IdentificationPasskey implements ReactiveController {
     public passkey: PublicKeyCredentialRequestOptions | null = null;
-    public host: IdentificationStage;
 
-    constructor(host: PasskeyHost) {
-        this.host = host;
-        host.addController(this);
-    }
+    constructor(private host: IdentificationHost) {}
 
     #passkeyAbortController: AbortController | null = null;
 

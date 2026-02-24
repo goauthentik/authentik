@@ -1,26 +1,20 @@
 import "#flow/stages/captcha/CaptchaStage";
 
-import { type IdentificationStage } from "./IdentificationStage";
+import type { IdentificationHost } from "./IdentificationStage";
 
 import { CaptchaChallenge } from "@goauthentik/api";
 
-import { html, nothing, ReactiveController, type ReactiveControllerHost } from "lit";
+import { html, nothing, ReactiveController } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
 
-type CaptchaHost = IdentificationStage & ReactiveControllerHost;
-
 export class IdentificationCaptchas implements ReactiveController {
-    challenge: CaptchaChallenge | null = null;
-    host: IdentificationStage;
+    private challenge: CaptchaChallenge | null = null;
 
     protected token = "";
     protected loaded = false;
     protected refreshedAt = new Date();
 
-    constructor(host: CaptchaHost) {
-        this.host = host;
-        host.addController(this);
-    }
+    constructor(private host: IdentificationHost) {}
 
     public hostUpdate() {
         if (this.challenge !== this.host.challenge?.captchaStage) {
