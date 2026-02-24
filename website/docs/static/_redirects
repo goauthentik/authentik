@@ -29,6 +29,7 @@
 /add-secure-apps/providers/entra/add-entra-provider/        /add-secure-apps/providers/entra/create-entra-provider/ 301!
 /add-secure-apps/providers/ldap/generic_setup/              /add-secure-apps/providers/ldap/create-ldap-provider/ 301!
 /add-secure-apps/providers/rac/how-to-rac/                  /add-secure-apps/providers/rac/create-rac-provider/ 301!
+/providers                                                  /add-secure-apps/providers/ 301!
 #endregion
 
 #region Core
@@ -51,6 +52,10 @@
 #region Endpoint Devices
 /endpoint-devices/device-authentication/*                   /endpoint-devices/authentik-agent/device-authentication/:splat 301!
 /endpoint-devices/device-compliance/connectors              /endpoint-devices/device-compliance/connectors/index/ 301!
+#endregion
+
+#region Enterprise
+/enterprise/entsupport                                      /enterprise/enterprise-support/ 301!
 #endregion
 
 #region System Management

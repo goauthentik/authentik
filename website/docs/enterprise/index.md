@@ -8,6 +8,6 @@ Refer to our Enterprise documentation for information about creating and managin
 
 - [Get started with Enterprise](./get-started.md)
 - [Manage your Enterprise account](./manage-enterprise.mdx)
-- [Support for Enterprise accounts](./entsupport.md)
+- [Support for Enterprise accounts](./enterprise-support.md)
 
 Our standard technical documentation covers how to configure, customize, and use authentik, whether the open source version that we have built our reputation on or our Enterprise version with dedicated support.

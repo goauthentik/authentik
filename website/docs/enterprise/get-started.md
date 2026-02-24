@@ -21,7 +21,7 @@ To open the Customer Portal and buy a license, go to the Admin interface and in 
 
 Alternatively you can open a new browser window and go directly to the [Customer Portal](https://customers.goauthentik.io/). If you do not yet have an authentik account, there is a [Sign up link](https://customers.goauthentik.io/signup) on the Customer Portal login page.
 
-In the Customer Portal you [define your organization](./manage-enterprise.mdx#create-an-organization) and its members, manage your [licenses](./manage-enterprise.mdx#license-management) and [billing](./manage-enterprise.mdx#manage-billing), and access our [Support center](./entsupport.md).
+In the Customer Portal you [define your organization](./manage-enterprise.mdx#create-an-organization) and its members, manage your [licenses](./manage-enterprise.mdx#license-management) and [billing](./manage-enterprise.mdx#manage-billing), and access our [Support center](./enterprise-support.md).
 
 :::info
 A license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
@@ -35,4 +35,4 @@ Enterprise authentik provides dedicated support, with a Support center where you
 Access to the Support center and the ticketing system requires a licensed instance of authentik.
 :::
 
-To learn about our Support center, see ["Enterprise support"](./entsupport.md).
+To learn about our Support center, see ["Enterprise support"](./enterprise-support.md).
