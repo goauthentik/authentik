@@ -34,7 +34,7 @@ class TestPolicyEngine(TestCase):
             name=generate_id(), expression="{{ 0/0 }}"
         )
         self.group_member = Group.objects.create(name=generate_id())
-        self.user.groups.add(self.group_member)
+        self.user.ak_groups.add(self.group_member)
         self.group_non_member = Group.objects.create(name=generate_id())
 
     def test_engine_empty(self):
