@@ -98,8 +98,8 @@ RADIUS Message-Authenticator validation is the process of verifying the integrit
 
 Although the issue is currently theoretical, correctly authenticated RADIUS messages may be rejected, causing authentication failures and a potential denial-of-service.
 
-_Improvement:_ This was intiially [fixed](https://github.com/goauthentik/authentik/pull/17855) but later reverted; we're testing our RADIUS implementation with different clients to resolve the underlying bug that required the fix to be reverted.
+_Improvement:_ This was initially [fixed](https://github.com/goauthentik/authentik/pull/17855) but later reverted; we're testing our RADIUS implementation with different clients to resolve the underlying bug that required the fix to be reverted.
 
 ## Conclusion
 
-We encourage an open and ongoing communication with our users and community. For more information abut our security stance, read our Security Policy, Hardening authentik, and our other security-related documentation. If you have any questions or feedback you can reach us on GitHub, Discord, or via email to hello@goauthentik.io. Please follow our [security policy](https://docs.goauthentik.io/security/policy/#reporting-a-vulnerability) for reporting any security concerns or vulnerabilities.
+We encourage an open and ongoing communication with our users and community. For more information abut our security stance, read our [Security Policy](https://docs.goauthentik.io/security/policy), [Hardening authentik](https://docs.goauthentik.io/security/security-hardening/), and our other security-related documentation. If you have any questions or feedback you can reach us on [GitHub](https://github.com/goauthentik/authentik/), [Discord](https://discord.com/invite/jg33eMhnj6), or via [email](mailto:hello@goauthentik.io). Please follow our [security policy](https://docs.goauthentik.io/security/policy/#reporting-a-vulnerability) for reporting any security concerns or vulnerabilities.
