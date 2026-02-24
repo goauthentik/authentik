@@ -38,7 +38,7 @@ class TestSPInitiatedSLOViews(TestCase):
             invalidation_flow=self.invalidation_flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
         )
@@ -88,7 +88,7 @@ class TestSPInitiatedSLOViews(TestCase):
         # Verify logout request was stored in plan context
         self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
         logout_request = view.plan_context["authentik/providers/saml/logout_request"]
-        self.assertEqual(logout_request.issuer, self.provider.issuer)
+        self.assertEqual(logout_request.issuer, self.provider.issuer_override)
         self.assertEqual(logout_request.session_index, "test-session-123")
 
     def test_redirect_view_handles_logout_response_with_relay_state(self):
@@ -225,7 +225,7 @@ class TestSPInitiatedSLOViews(TestCase):
         # Verify logout request was stored in plan context
         self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
         logout_request = view.plan_context["authentik/providers/saml/logout_request"]
-        self.assertEqual(logout_request.issuer, self.provider.issuer)
+        self.assertEqual(logout_request.issuer, self.provider.issuer_override)
         self.assertEqual(logout_request.session_index, "test-session-123")
 
     def test_post_view_handles_logout_response_with_relay_state(self):
@@ -392,7 +392,7 @@ class TestSPInitiatedSLOViews(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
             sls_url="https://sp2.example.com/sls",
-            issuer="https://idp2.example.com",
+            issuer_override="https://idp2.example.com",
             invalidation_flow=None,  # No invalidation flow
         )
 

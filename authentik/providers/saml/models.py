@@ -77,7 +77,7 @@ class SAMLProvider(Provider):
             "no audience restriction will be added."
         ),
     )
-    issuer = models.TextField(
+    issuer_override = models.TextField(
         blank=True,
         default="",
         help_text=_(

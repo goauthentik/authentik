@@ -428,9 +428,9 @@ export function renderForm({
                 ></ak-text-input>
                 <ak-text-input
                     label=${msg("EntityID/Issuer override")}
-                    name="issuer"
-                    value="${ifDefined(provider.issuer ?? undefined)}"
-                    .errorMessages=${errors.issuer}
+                    name="issuerOverride"
+                    value="${ifDefined(provider.issuerOverride ?? undefined)}"
+                    .errorMessages=${errors.issuerOverride}
                     help=${msg(
                         "Sets a custom EntityID/Issuer to override the authentik generated default.",
                     )}

@@ -353,7 +353,7 @@ export class SAMLProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.issuer}
+                                        ${this.provider.issuerOverride}
                                     </div>
                                 </dd>
                             </div>

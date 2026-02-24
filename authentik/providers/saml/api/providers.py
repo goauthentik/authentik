@@ -88,8 +88,8 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     def get_url_issuer(self, instance: SAMLProvider) -> str:
         """Get Issuer/EntityID URL"""
-        if instance.issuer:
-            return instance.issuer
+        if instance.issuer_override:
+            return instance.issuer_override
         if "request" not in self._context:
             return "authentik"
         request: HttpRequest = self._context["request"]._request
@@ -216,7 +216,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "acs_url",
             "sls_url",
             "audience",
-            "issuer",
+            "issuer_override",
             "assertion_valid_not_before",
             "assertion_valid_not_on_or_after",
             "session_valid_not_on_or_after",

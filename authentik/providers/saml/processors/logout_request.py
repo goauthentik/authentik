@@ -65,8 +65,8 @@ class LogoutRequestProcessor:
         """Get issuer value from session, with fallback to provider"""
         if self.issuer:
             return self.issuer
-        if self.provider.issuer:
-            return self.provider.issuer
+        if self.provider.issuer_override:
+            return self.provider.issuer_override
         return "authentik"
 
     def get_issuer(self) -> Element:

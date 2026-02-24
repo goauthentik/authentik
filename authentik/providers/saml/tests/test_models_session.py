@@ -32,7 +32,7 @@ class TestSAMLSessionModel(TestCase):
             name="test-provider",
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
         )
 
         # Create another provider for testing
@@ -40,7 +40,7 @@ class TestSAMLSessionModel(TestCase):
             name="test-provider-2",
             authorization_flow=self.flow,
             acs_url="https://sp2.example.com/acs",
-            issuer="https://idp2.example.com",
+            issuer_override="https://idp2.example.com",
         )
 
         # Create a session first (using authentik's custom Session model)

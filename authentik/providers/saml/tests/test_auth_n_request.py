@@ -324,7 +324,7 @@ class TestAuthNRequest(TestCase):
             authorization_flow=create_test_flow(),
             acs_url="https://10.120.20.200/saml-sp/SAML2/POST",
             audience="https://10.120.20.200/saml-sp/SAML2/POST",
-            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer_override="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=static_keypair,
             verification_kp=static_keypair,
         )
@@ -345,7 +345,7 @@ class TestAuthNRequest(TestCase):
                 "saml/acs/2d737f96-55fb-4035-953e-5e24134eb778"
             ),
             audience="https://10.120.20.200/saml-sp/SAML2/POST",
-            issuer="https://10.120.20.200/saml-sp/SAML2/POST",
+            issuer_override="https://10.120.20.200/saml-sp/SAML2/POST",
             signing_kp=create_test_cert(),
         )
         parsed_request = AuthNRequestParser(provider).parse(POST_REQUEST)

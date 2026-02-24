@@ -142,8 +142,8 @@ class AssertionProcessor:
     def _get_issuer_value(self) -> str:
         """Get issuer value, with fallback to generated URL if empty"""
         # If user has set an override issuer, use it
-        if self.provider.issuer:
-            return self.provider.issuer
+        if self.provider.issuer_override:
+            return self.provider.issuer_override
 
         return self.http_request.build_absolute_uri(
             reverse(

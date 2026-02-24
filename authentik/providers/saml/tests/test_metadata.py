@@ -85,7 +85,7 @@ class TestServiceProviderMetadataParser(TestCase):
         metadata = ServiceProviderMetadataParser().parse(load_fixture("fixtures/simple.xml"))
         provider = metadata.to_provider("test", self.flow, self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/saml/acs")
-        self.assertEqual(provider.issuer, "http://localhost:8080/saml/metadata")
+        self.assertEqual(provider.issuer_override, "http://localhost:8080/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.EMAIL)
         self.assertEqual(
@@ -99,7 +99,7 @@ class TestServiceProviderMetadataParser(TestCase):
         metadata = ServiceProviderMetadataParser().parse(load_fixture("fixtures/cert.xml"))
         provider = metadata.to_provider("test", self.flow, self.flow)
         self.assertEqual(provider.acs_url, "http://localhost:8080/apps/user_saml/saml/acs")
-        self.assertEqual(provider.issuer, "http://localhost:8080/apps/user_saml/saml/metadata")
+        self.assertEqual(provider.issuer_override, "http://localhost:8080/apps/user_saml/saml/metadata")
         self.assertEqual(provider.sp_binding, SAMLBindings.POST)
         self.assertEqual(
             provider.verification_kp.certificate_data, load_fixture("fixtures/cert.pem")
