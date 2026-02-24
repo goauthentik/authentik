@@ -4,7 +4,7 @@ In September of 2025, we had a pentest conducted by [Include Security](https://i
 
 > IncludeSec performed a security assessment of Authentik Security's Web Apps, APIs, Deployment Config, Servers, & ETL. The assessment team performed a 8 day effort spanning from September 4, 2025 – September 15, 2025, using a Standard Grey Box assessment methodology.
 
-View the full report of our original [test]() and the [retest results](), completed in January/February 2026.
+View the full report of our original [test](https://goauthentik.io/resources/includesec-Q3-2025-Multi-Report.pdf) and the [retest results](https://goauthentik.io/resources/includesec-Q3-2025-Multi-Remediation-Report.pdf), completed in January/February 2026.
 
 ## Summary of findings
 
