@@ -3,7 +3,7 @@ title: Enterprise support
 description: "How to access authentik Enterprise support"
 ---
 
-authentik Enterprise provides dedicated support for subscriptions over $1000 per year, with a Support center where you can open and track tickets.
+authentik Enterprise provides dedicated support for subscriptions over US$1000 per year, with a Support center where you can open and track tickets.
 
 ## Managing tickets
 
