@@ -99,6 +99,8 @@ export class IdentificationStage extends BaseStage<
     @property({ type: String, attribute: "input-id" })
     public inputID = "ak-identifier-input";
 
+    //#region Internal State and Controllers
+
     #form?: HTMLFormElement;
 
     private rememberMe = new AkRememberMeController(this);
@@ -107,11 +109,12 @@ export class IdentificationStage extends BaseStage<
 
     // These are all reactive and on the reactive side, so it's okay that they're never
     // "read" by this class; their mere existence
-    // eslint-disable-next-line no-unused-private-class-members
+
     #passkey: IdentificationPasskey;
 
-    // eslint-disable-next-line no-unused-private-class-members
     #autoredirect: IdentificationAutoRedirect;
+
+    //#region Lifecycle
 
     constructor() {
         super();
@@ -131,7 +134,9 @@ export class IdentificationStage extends BaseStage<
         }
     }
 
-    //#region Helper Form
+    //#endregion
+
+    //#region Compatibility Mode Helpers
 
     #createHelperForm(): void {
         const compatMode = "ShadyDOM" in window;
@@ -222,6 +227,8 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
+    //#region EventHandlers
+
     protected override onSubmitSuccess(): void {
         this.#form?.remove();
     }
@@ -234,6 +241,78 @@ export class IdentificationStage extends BaseStage<
         if (!this.host) return;
         this.host.challenge = challenge;
     };
+
+    //#endregion
+
+    //#region Rendering
+
+    public override render() {
+        const { challenge } = this;
+        const { enrollUrl, recoveryUrl } = challenge ?? {};
+        const hasFooter = !!enrollUrl || !!recoveryUrl;
+
+        return html`<ak-flow-card .challenge=${challenge} part="flow-card">
+            ${challenge ? this.renderIdentificationStage(challenge) : nothing}
+            ${hasFooter ? this.renderFooter({ enrollUrl, recoveryUrl }) : nothing}
+        </ak-flow-card>`;
+    }
+
+    protected renderIdentificationStage(challenge: IdentificationChallenge) {
+        const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
+
+        return html`
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
+                ${this.renderInput(challenge)}
+                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
+            </form>
+            ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
+        `;
+    }
+
+    protected renderPrelude(prelude: string) {
+        return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
+    }
+
+    protected renderInput(challenge: IdentificationChallenge) {
+        const {
+            flowDesignation,
+            passkeyChallenge,
+            passwordFields,
+            passwordlessUrl,
+            pendingUserIdentifier,
+            primaryAction,
+            userFields,
+        } = challenge as PasskeyChallenge;
+
+        const fields = (userFields || []).sort();
+        if (fields.length === 0) {
+            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
+        }
+
+        const { inputID, rememberMe } = this;
+        const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
+        const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
+        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+        const username = rememberMe.username ?? pendingUserIdentifier;
+
+        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
+        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
+
+        // prettier-ignore
+        return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: inputID }, label)}
+                ${this.renderUidField(inputID, type, label, username, autocomplete)}
+                ${rememberMe.render()}
+                ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
+            </div>
+            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
+            ${this.renderNonFieldErrors()}
+            ${this.#captcha.render()}
+            ${this.renderSubmitButton(primaryAction)}
+            ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
+    }
 
     protected renderRecoveryMessage() {
         return html`
@@ -276,57 +355,16 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    protected renderInput(challenge: IdentificationChallenge) {
-        const {
-            flowDesignation,
-            passkeyChallenge,
-            passwordFields,
-            passwordlessUrl,
-            pendingUserIdentifier,
-            primaryAction,
-            userFields,
-        } = challenge as PasskeyChallenge;
-
-        const fields = (userFields || []).sort();
-        if (fields.length === 0) {
-            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
-        }
-
-        const { inputID, rememberMe } = this;
-
-        const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
-        const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
-        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
-        const username = rememberMe.username ?? pendingUserIdentifier;
-
-        // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
-        const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
-
-        // prettier-ignore
-        return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
-            <div class="pf-c-form__group">
-                ${AKLabel({ required: true, htmlFor: inputID }, label)}
-                ${this.renderUidField(inputID, type, label, username, autocomplete)}
-                ${rememberMe.render()}
-                ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
-            </div>
-            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
-            ${this.renderNonFieldErrors()}
-            ${this.#captcha.render()}
-            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
-                <button
-                    ?disabled=${this.#captcha.pending}
-                    type="submit"
-                    class="pf-c-button pf-m-primary pf-m-block"
-                >
-                    ${primaryAction}
-                </button>
-            </div>
-            ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
-    }
-
-    protected renderPrelude(prelude: string) {
-        return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
+    protected renderSubmitButton(primaryAction: string) {
+        return html`<div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
+            <button
+                ?disabled=${this.#captcha.pending}
+                type="submit"
+                class="pf-c-button pf-m-primary pf-m-block"
+            >
+                ${primaryAction}
+            </button>
+        </div>`;
     }
 
     protected renderPasswordlessUrl(url: string) {
@@ -337,45 +375,6 @@ export class IdentificationStage extends BaseStage<
         >
             ${msg("Use a security key")}
         </a> `;
-    }
-
-    //#region Render
-    protected renderDefaultSource(source: LoginSource, showLabels: boolean) {
-        const { name, iconUrl, challenge } = source;
-
-        const icon = renderSourceIcon(name, iconUrl);
-        return html`<button
-            type="button"
-            @click=${() => this.#dispatchChallengeToHost(challenge)}
-            part="source-item"
-            name=${`source-${kebabCase(name)}`}
-            class="pf-c-button source-button"
-            aria-label=${msg(str`Continue with ${name}`)}
-        >
-            <span class="pf-c-button__icon pf-m-start">${icon}</span>
-            ${showLabels ? name : ""}
-        </button>`;
-    }
-
-    protected renderPromotedSource(source: LoginSource) {
-        const { name, challenge } = source;
-
-        return html`<button
-            type="button"
-            @click=${() => this.#dispatchChallengeToHost(challenge)}
-            part="source-item source-item-promoted"
-            name=${`source-${kebabCase(name)}`}
-            class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
-            aria-label=${msg(str`Continue with ${name}`)}
-        >
-            ${msg(str`Continue with ${name}`)}
-        </button>`;
-    }
-
-    protected renderLoginSource(source: LoginSource, showLabels: boolean) {
-        return source.promoted
-            ? this.renderPromotedSource(source)
-            : this.renderDefaultSource(source, showLabels);
     }
 
     protected renderLoginSources(sources: LoginSource[], showLabels: boolean) {
@@ -395,17 +394,42 @@ export class IdentificationStage extends BaseStage<
         </fieldset> `;
     }
 
-    protected renderIdentificationStage(challenge: IdentificationChallenge) {
-        const { applicationPre, passwordlessUrl, showSourceLabels, sources = [] } = challenge;
+    protected renderLoginSource(source: LoginSource, showLabels: boolean) {
+        return source.promoted
+            ? this.renderPromotedSource(source)
+            : this.renderDefaultSource(source, showLabels);
+    }
 
-        return html`
-            <form class="pf-c-form" @submit=${this.submitForm}>
-                ${applicationPre ? this.renderPrelude(applicationPre) : nothing}
-                ${this.renderInput(challenge)}
-                ${passwordlessUrl ? this.renderPasswordlessUrl(passwordlessUrl) : nothing}
-            </form>
-            ${sources.length ? this.renderLoginSources(sources, showSourceLabels) : nothing}
-        `;
+    protected renderPromotedSource(source: LoginSource) {
+        const { name, challenge } = source;
+
+        return html`<button
+            type="button"
+            @click=${() => this.#dispatchChallengeToHost(challenge)}
+            part="source-item source-item-promoted"
+            name=${`source-${kebabCase(name)}`}
+            class="pf-c-button pf-m-primary pf-m-block source-button source-button-promoted"
+            aria-label=${msg(str`Continue with ${name}`)}
+        >
+            ${msg(str`Continue with ${name}`)}
+        </button>`;
+    }
+
+    protected renderDefaultSource(source: LoginSource, showLabels: boolean) {
+        const { name, iconUrl, challenge } = source;
+
+        const icon = renderSourceIcon(name, iconUrl);
+        return html`<button
+            type="button"
+            @click=${() => this.#dispatchChallengeToHost(challenge)}
+            part="source-item"
+            name=${`source-${kebabCase(name)}`}
+            class="pf-c-button source-button"
+            aria-label=${msg(str`Continue with ${name}`)}
+        >
+            <span class="pf-c-button__icon pf-m-start">${icon}</span>
+            ${showLabels ? name : ""}
+        </button>`;
     }
 
     protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
@@ -433,17 +457,6 @@ export class IdentificationStage extends BaseStage<
                   </div>`
                 : nothing}
         </fieldset>`;
-    }
-
-    public override render() {
-        const { challenge } = this;
-        const { enrollUrl, recoveryUrl } = challenge ?? {};
-        const hasFooter = !!enrollUrl || !!recoveryUrl;
-
-        return html`<ak-flow-card .challenge=${challenge} part="flow-card">
-            ${challenge ? this.renderIdentificationStage(challenge) : nothing}
-            ${hasFooter ? this.renderFooter({ enrollUrl, recoveryUrl }) : nothing}
-        </ak-flow-card>`;
     }
 
     //#endregion
