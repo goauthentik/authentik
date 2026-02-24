@@ -1,0 +1,33 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 3576.
+#	http://www.ietf.org/rfc/rfc3576.txt
+#
+#	$Id$
+#
+ATTRIBUTE	Error-Cause				101	integer
+
+#	Service Types
+
+VALUE	Service-Type			Authorize-Only		17
+
+#	Error causes
+
+VALUE	Error-Cause			Residual-Context-Removed 201
+VALUE	Error-Cause			Invalid-EAP-Packet	202
+VALUE	Error-Cause			Unsupported-Attribute	401
+VALUE	Error-Cause			Missing-Attribute	402
+VALUE	Error-Cause			NAS-Identification-Mismatch 403
+VALUE	Error-Cause			Invalid-Request		404
+VALUE	Error-Cause			Unsupported-Service	405
+VALUE	Error-Cause			Unsupported-Extension	406
+VALUE	Error-Cause			Administratively-Prohibited 501
+VALUE	Error-Cause			Proxy-Request-Not-Routable 502
+VALUE	Error-Cause			Session-Context-Not-Found 503
+VALUE	Error-Cause			Session-Context-Not-Removable 504
+VALUE	Error-Cause			Proxy-Processing-Error	505
+VALUE	Error-Cause			Resources-Unavailable	506
+VALUE	Error-Cause			Request-Initiated	507
