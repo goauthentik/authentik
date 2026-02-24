@@ -81,7 +81,7 @@ SSO_SIGNUPS_MATCH_EMAIL=true # Match first SSO login to existing account by emai
 
 Then restart Vaultwarden to apply the changes.
 
-## References
+## Resources
 
 - [Vaultwarden Wiki - SSO using OpenID Connect](https://github.com/dani-garcia/vaultwarden/wiki/Enabling-SSO-support-using-OpenId-Connect)
 

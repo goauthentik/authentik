@@ -80,6 +80,6 @@ Click on the user whose role should be increased from **Pending** to at least **
 More details on how to administer Open WebUI can be found here: `https://docs.openwebui.com/`.
 :::
 
-## References
+## Resources
 
 - [Open WebUI Documentation - Federated Authentication Support](https://docs.openwebui.com/features/sso/)
