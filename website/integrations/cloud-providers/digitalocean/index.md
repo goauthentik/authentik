@@ -90,7 +90,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 3. Click **Edit**, expand **UI Settings**, and set **Launch URL** to the **SSO sign-in URL** copied from the DigitalOcean control panel.
 4. Click **Update**.
 
-## References
+## Resources
 
 - [DigitalOcean Documentation - How to Configure Single Sign-On for Teams](https://docs.digitalocean.com/platform/teams/how-to/configure-sso/)
 

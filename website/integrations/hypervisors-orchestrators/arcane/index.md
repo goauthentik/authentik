@@ -76,7 +76,7 @@ OIDC_SCOPES="openid email profile"
 
 Then restart Arcane to apply the changes.
 
-## References
+## Resources
 
 - [Arcane Docs - OIDC Single Sign-On](https://getarcane.app/docs/configuration/sso)
 
