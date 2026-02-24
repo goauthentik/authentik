@@ -1,6 +1,6 @@
 ---
 title: Enterprise features
-description: "Features which are included in authentik Enterprise"
+description: "Features included in authentik Enterprise"
 ---
 
 This page describes the Enterprise features that are available in the authentik [Enterprise plans](https://goauthentik.io/pricing/).
@@ -9,9 +9,9 @@ This page describes the Enterprise features that are available in the authentik 
 
 The Enterprise release of authentik is available in two tiers: Enterprise and Enterprise Plus.
 
-Enterprise builds on authentik's open-source foundation with enterprise-grade features and ticket-based support.
+Enterprise builds on authentik's open-source foundation with additional enterprise-focused features and integrations as well as ticket-based support.
 
-Enterprise Plus is designed to provide the best overall end-user experience while mitigating risk and delivering the fastest time-to-value. It includes everything in Enterprise, plus onboarding best practices, dedicated support channels (Slack and/or scheduled video calls for complex issues) with SLA-backed response times, volume discounts, and support for FIPS-compliant deployments to meet FedRAMP-aligned requirements. It also supports billing and purchase via invoice.
+Enterprise Plus includes everything in Enterprise, plus dedicated support channels (Slack and/or scheduled calls), assistance with onboarding best practices, SLA-backed response times, volume discounts for large teams, and auditable FIPS-compliant deployments to meet FedRAMP requirements. It also supports billing and purchase via invoice.
 
 Both Enterprise and Enterprise Plus plans include all the following features:
 

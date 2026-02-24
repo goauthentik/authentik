@@ -14,7 +14,7 @@ If this is a fresh install, refer to our technical documentation for instruction
 
 ## 2. Purchase an Enterprise license
 
-An authentik Enterprise license can be purchased via our [Customer Portal](https://customers.goauthentik.io/). Alternatively, contact us via hello@goauthentik.io to organize a call to discuss customized licensing, a trial, or your specific needs.
+An authentik Enterprise license can be purchased via our [Customer Portal](https://customers.goauthentik.io/). Alternatively, contact us via hello@goauthentik.io or schedule a call via our [pricing page](https://goauthentik.io/pricing/) to discuss customized licensing, a trial, or your specific needs.
 
 Authentik licenses are linked to a specific authentik deployment based on its Installation ID. You can obtain your Installation ID by first logging in to the Admin interface of your authentik deployment. Then, navigate to **Enterprise** > **Licenses** where your installation ID is displayed.
 

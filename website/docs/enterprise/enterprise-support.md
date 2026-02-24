@@ -11,7 +11,7 @@ To access the Support center, log in to the [Customer Portal](https://customers.
 
 Alternatively, you can access the Support center directly via: [https://customers.goauthentik.io/l/support](https://customers.goauthentik.io/l/support)
 
-You can also always reach out to us via [email](mailto:hello@goauthentik.io).
+You can also always reach out to us via hello@goauthentik.io.
 
 ## Product version support
 
