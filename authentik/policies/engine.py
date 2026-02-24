@@ -132,9 +132,14 @@ class PolicyEngine:
             # If we didn't find any static bindings, do nothing
             return
         self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
-        if matched_bindings.get("passing", 0) > 0:
-            # Any passing static binding -> passing
-            passing = True
+        if self.mode == PolicyEngineMode.MODE_ANY:
+            if matched_bindings.get("passing", 0) > 0:
+                # Any passing static binding -> passing
+                passing = True
+        elif self.mode == PolicyEngineMode.MODE_ALL:
+            if matched_bindings.get("passing", 0) == matched_bindings["total"]:
+                # All static bindings are passing -> passing
+                passing = True
         elif matched_bindings["total"] > 0 and matched_bindings.get("passing", 0) < 1:
             # No matching static bindings but at least one is configured -> not passing
             passing = False
