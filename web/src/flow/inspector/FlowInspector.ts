@@ -8,7 +8,7 @@ import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
-import Styles from "#flow/FlowInspector.css";
+import Styles from "#flow/inspector/FlowInspector.css";
 
 import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
