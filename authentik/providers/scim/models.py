@@ -12,6 +12,7 @@ from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
@@ -193,13 +194,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             # Filter users by their access to the backchannel application if an application is set
             # This handles both policy bindings and group_filters
             if self.backchannel_application:
-                base = base.filter(
-                    pk__in=[
-                        user.pk
-                        for user in base
-                        if PolicyEngine(self.backchannel_application, user, None).build().passing
-                    ]
-                )
+                pks = []
+                for user in base:
+                    engine = PolicyEngine(self.backchannel_application, user, None)
+                    engine.empty_result = AppAccessWithoutBindings.get()
+                    engine.build()
+                    if engine.passing:
+                        pks.append(user.pk)
+                base = base.filter(pk__in=pks)
             return base.order_by("pk")
 
         if type == Group:
