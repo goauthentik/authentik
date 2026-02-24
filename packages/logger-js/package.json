@@ -36,7 +36,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
-        "@goauthentik/eslint-config": "../eslint-config",
+        "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
         "@types/node": "^25.0.0",
         "@typescript-eslint/eslint-plugin": "^8.49.0",
@@ -74,16 +74,15 @@
         "runtime": {
             "name": "node",
             "version": ">=24",
-            "onFail": "warn"
+            "onFail": "ignore"
         },
         "packageManager": {
             "name": "npm",
             "version": ">=11.10.1",
-            "onFail": "warn"
+            "onFail": "ignore"
         }
     },
-    "packageManager": "npm@11.10.1+sha512.c286afb98d8e803150d4afed07d407b14b96f7cf6729fbec29337f879a86c92fb7f8186f5cdfc30364cdcf1e7af496857d3aab113e5b110347c1584593e53582",
-    "prettier": "./index.js",
+    "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "format-imports": {
             "eslint": "$eslint"
