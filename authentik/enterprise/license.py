@@ -110,12 +110,21 @@ class LicenseKey:
         except (InvalidSignature, TypeError, ValueError, Error):
             raise ValidationError("Unable to verify license") from None
         try:
+<<<<<<< HEAD
+=======
+            # authentik's license are generated with `algorithm="ES512"` and signed with
+            # a key of curve `secp384r1`. Starting with version 2.11.0, pyjwt enforces the spec, see
+            # https://github.com/jpadilla/pyjwt/commit/5b8622773358e56d3d3c0a9acf404809ff34433a
+            # authentik will change its license generation to `algorithm="ES384"` in 2026.
+            # TODO: remove this when the last incompatible license runs out.
+            ECAlgorithm._validate_curve = lambda *_: True
+>>>>>>> a5df6820c (enterprise: add `ES384` to enterprise license algorithms (#20507))
             body = from_dict(
                 LicenseKey,
                 decode(
                     jwt,
                     our_cert.public_key(),
-                    algorithms=["ES512"],
+                    algorithms=["ES384", "ES512"],
                     audience=get_license_aud(),
                     options={"verify_exp": check_expiry, "verify_signature": check_expiry},
                 ),
