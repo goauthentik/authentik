@@ -69,7 +69,7 @@ def _check_app_access(stream: Stream, event_data: dict) -> bool:
     if not user:
         return True
     engine = PolicyEngine(stream.provider.backchannel_application, user)
-    engine.empty_result = AppAccessWithoutBindings().get()
+    engine.empty_result = AppAccessWithoutBindings.get()
     engine.use_cache = False
     engine.build()
     return engine.passing

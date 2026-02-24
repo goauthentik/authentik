@@ -164,7 +164,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             request.user = user
         for application in paginated_apps:
             engine = PolicyEngine(application, request.user, request)
-            engine.empty_result = AppAccessWithoutBindings().get()
+            engine.empty_result = AppAccessWithoutBindings.get()
             engine.build()
             if engine.passing:
                 applications.append(application)
@@ -222,7 +222,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             if not for_user:
                 raise ValidationError({"for_user": "User not found"})
         engine = PolicyEngine(application, for_user, request)
-        engine.empty_result = AppAccessWithoutBindings().get()
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         with capture_logs() as logs:
             engine.build()

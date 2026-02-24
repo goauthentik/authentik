@@ -154,7 +154,7 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         provider = get_object_or_404(LDAPProvider, pk=pk)
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
         engine = PolicyEngine(application, request.user, request)
-        engine.empty_result = AppAccessWithoutBindings().get()
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         engine.build()
         result = engine.result
