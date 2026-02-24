@@ -49,10 +49,6 @@
         "lightningcss-linux-arm64-gnu": "1.30.2",
         "lightningcss-linux-x64-gnu": "1.30.2"
     },
-    "engines": {
-        "node": ">=24",
-        "npm": ">=11.6.2"
-    },
     "workspaces": [
         "vendored/*",
         "docusaurus-theme",
@@ -60,6 +56,22 @@
         "integrations",
         "docs"
     ],
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "error",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.6.2",
+            "onFail": "warn"
+        }
+    },
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/api-docs": {
@@ -93,18 +105,6 @@
         "postman-code-generators": {
             "detect-package-manager": "file:./vendored/detect-package-manager",
             "shelljs": "0.10.0"
-        }
-    },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "onFail": "error",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.6.2",
-            "onFail": "warn"
         }
     }
 }
