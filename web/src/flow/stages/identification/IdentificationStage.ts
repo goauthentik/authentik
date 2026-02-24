@@ -109,7 +109,8 @@ export class IdentificationStage extends BaseStage<
     #captcha: IdentificationCaptchas;
 
     // These are all reactive and on the reactive side, so it's okay that they're never
-    // "read" by this class; their mere existence
+    // "read" by this class; their mere existence is sufficient to generate the behavior
+    // we expect from them.
 
     #passkey: IdentificationPasskey;
 
