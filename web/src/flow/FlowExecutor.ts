@@ -22,10 +22,14 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
-import { AKFlowAdvanceEvent } from "#flow/events";
+import {
+    AKFlowAdvanceEvent,
+    AKFlowSubmitRequest,
+    AKFlowUpdateChallengeRequest,
+} from "#flow/events";
 import { StageMappings } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
-import type { StageHost, SubmitOptions } from "#flow/types";
+import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -56,6 +60,14 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 /// <reference types="../../types/lit.d.ts" />
+
+type FlowComponent = FlowChallengeResponseRequest["component"];
+
+interface SubmitFlowMessage {
+    source?: string;
+    context?: string;
+    message: string;
+}
 
 /**
  * An executor for authentik flows.
@@ -112,6 +124,27 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         return this.challenge?.flowInfo ?? null;
     }
 
+    //#region Event Handlers
+
+    handleMessage = (event: MessageEvent<SubmitFlowMessage>) => {
+        const { message, context, source } = event.data;
+        if (source === "goauthentik.io" && context === "flow-executor" && message === "submit") {
+            this.submit({} as FlowChallengeResponseRequest);
+        }
+    };
+
+    handleChallengeRequest = (event: AKFlowUpdateChallengeRequest) => {
+        this.challenge = event.challenge;
+    };
+
+    handleSubordinateSubmit = (event: AKFlowSubmitRequest) => {
+        // prettier-ignore
+        const { request: { payload, options } } = event;
+        this.submit(payload, options);
+    };
+
+    //#endregion
+
     //#region Lifecycle
 
     constructor() {
@@ -123,20 +156,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
         this.#api = new FlowsApi(DEFAULT_CONFIG);
 
-        window.addEventListener("message", (event) => {
-            const msg: {
-                source?: string;
-                context?: string;
-                message: string;
-            } = event.data;
+        window.addEventListener("message", this.handleMessage);
+        window.addEventListener(
+            AKFlowUpdateChallengeRequest.eventName,
+            this.handleChallengeRequest,
+        );
 
-            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
-                return;
-            }
-            if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest);
-            }
-        });
+        window.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
 
     /**
@@ -174,7 +200,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-
         WebsocketClient.close();
     }
 
@@ -253,7 +278,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     //#region Public Methods
 
     public submit = async (
-        payload?: FlowChallengeResponseRequest,
+        payload?: FlowChallengeResponseRequestBody,
         options?: SubmitOptions,
     ): Promise<boolean> => {
         if (!payload) throw new Error("No payload provided");
@@ -269,7 +294,11 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             throw new Error("No flow slug provided");
         }
 
-        payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
+        // This order is deliberate; the executor always specifies the component token.
+        const flowChallengeResponseRequest = {
+            ...payload,
+            component: this.challenge.component as FlowComponent,
+        } as FlowChallengeResponseRequest;
 
         if (!options?.invisible) {
             this.loading = true;
@@ -279,7 +308,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
             .flowsExecutorSolve({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
-                flowChallengeResponseRequest: payload,
+                flowChallengeResponseRequest,
             })
             .then((challenge) => {
                 window.dispatchEvent(new AKFlowAdvanceEvent());

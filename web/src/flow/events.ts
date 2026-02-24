@@ -2,6 +2,10 @@
  * @file Flow event utilities.
  */
 
+import type { FlowChallengeResponseRequestBody, SubmitOptions, SubmitRequest } from "#flow/types";
+
+import { ChallengeTypes } from "@goauthentik/api";
+
 //#region Flow Inspector
 
 /**
@@ -37,16 +41,6 @@ export class AKFlowInspectorChangeEvent extends Event {
     //#endregion
 }
 
-declare global {
-    interface WindowEventMap {
-        [AKFlowInspectorChangeEvent.eventName]: AKFlowInspectorChangeEvent;
-    }
-}
-
-//#endregion
-
-//#region Flow Inspector
-
 /**
  * Event dispatched when the state of the interface drawers changes.
  */
@@ -58,9 +52,41 @@ export class AKFlowAdvanceEvent extends Event {
     }
 }
 
+/**
+ *
+ */
+export class AKFlowUpdateChallengeRequest extends Event {
+    public static readonly eventName = "ak-flow-update-challenge";
+    public challenge: ChallengeTypes;
+
+    constructor(challenge: ChallengeTypes) {
+        super(AKFlowUpdateChallengeRequest.eventName, { bubbles: true, composed: true });
+        this.challenge = challenge;
+    }
+}
+
+export class AKFlowSubmitRequest extends Event {
+    public static readonly eventName = "ak-flow-submit-request";
+    public readonly request: SubmitRequest;
+
+    constructor(
+        payload: FlowChallengeResponseRequestBody,
+        options: SubmitOptions = { invisible: false },
+    ) {
+        super(AKFlowSubmitRequest.eventName, { bubbles: true, composed: true });
+        this.request = {
+            payload,
+            options,
+        };
+    }
+}
+
 declare global {
     interface WindowEventMap {
+        [AKFlowInspectorChangeEvent.eventName]: AKFlowInspectorChangeEvent;
         [AKFlowAdvanceEvent.eventName]: AKFlowAdvanceEvent;
+        [AKFlowUpdateChallengeRequest.eventName]: AKFlowUpdateChallengeRequest;
+        [AKFlowSubmitRequest.eventName]: AKFlowSubmitRequest;
     }
 }
 

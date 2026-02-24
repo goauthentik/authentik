@@ -6,6 +6,8 @@ import {
     transformCredentialRequestOptions,
 } from "#common/helpers/webauthn";
 
+import { AKFlowSubmitRequest } from "#flow/events";
+
 import { IdentificationChallenge } from "@goauthentik/api";
 
 import { ReactiveController } from "lit";
@@ -19,7 +21,7 @@ export class IdentificationPasskey implements ReactiveController {
 
     constructor(private host: IdentificationHost) {}
 
-    #passkeyAbortController: AbortController | null = null;
+    #abortController: AbortController | null = null;
 
     //#endregion
 
@@ -33,15 +35,17 @@ export class IdentificationPasskey implements ReactiveController {
     }
 
     public hostDisconnected() {
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = null;
+        this.#abortController?.abort();
+        this.#abortController = null;
     }
 
     /**
      * Start a conditional WebAuthn request for passkey autofill.
      * This allows users to select a passkey from the browser's autofill dropdown.
      */
-    async #startConditionalWebAuthn(passkey: PublicKeyCredentialRequestOptions): Promise<void> {
+    async #startConditionalWebAuthn(
+        passkeyRequestOptions: PublicKeyCredentialRequestOptions,
+    ): Promise<void> {
         // Check if browser supports conditional mediation
         const isAvailable = await isConditionalMediationAvailable();
         if (!isAvailable) {
@@ -50,17 +54,18 @@ export class IdentificationPasskey implements ReactiveController {
         }
 
         // Abort any existing request
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = new AbortController();
+        this.#abortController?.abort();
+        this.#abortController = new AbortController();
+        const { signal } = this.#abortController;
 
         try {
-            const publicKeyOptions = transformCredentialRequestOptions(passkey);
+            const publicKey = transformCredentialRequestOptions(passkeyRequestOptions);
 
             // Start the conditional WebAuthn request
             const credential = (await navigator.credentials.get({
-                publicKey: publicKeyOptions,
+                publicKey,
                 mediation: "conditional",
-                signal: this.#passkeyAbortController.signal,
+                signal,
             })) as PublicKeyCredential | null;
 
             if (!credential) {
@@ -69,16 +74,8 @@ export class IdentificationPasskey implements ReactiveController {
             }
 
             // Transform and submit the passkey response
-            const transformedCredential = transformAssertionForServer(credential);
-
-            await this.host.host?.submit(
-                {
-                    passkey: transformedCredential,
-                },
-                {
-                    invisible: true,
-                },
-            );
+            const passkey = transformAssertionForServer(credential);
+            this.host.dispatchEvent(new AKFlowSubmitRequest({ passkey }, { invisible: true }));
         } catch (error) {
             if (error instanceof Error && error.name === "AbortError") {
                 // Request was aborted, this is expected when navigating away

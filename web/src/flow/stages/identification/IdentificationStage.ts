@@ -13,6 +13,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { renderSourceIcon } from "#admin/sources/utils";
 
+import { AKFlowUpdateChallengeRequest } from "#flow/events";
 import { BaseStage } from "#flow/stages/base";
 import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
 import Styles from "#flow/stages/identification/styles.css";
@@ -239,7 +240,7 @@ export class IdentificationStage extends BaseStage<
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
         if (!this.host) return;
-        this.host.challenge = challenge;
+        this.dispatchEvent(new AKFlowUpdateChallengeRequest(challenge));
     };
 
     //#endregion
