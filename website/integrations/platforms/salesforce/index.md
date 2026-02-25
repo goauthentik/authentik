@@ -161,7 +161,7 @@ You can configure Salesforce as an OAuth source to allow users to log in to auth
 If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth authentication:
 
 1. Navigate to **Setup** > **External Client App Manager**.
-2. Find your Connected App and click on it.
+2. Find your Connected App and open it.
 3. Click **Edit Policies**.
 4. Under **Client Credentials Flow**:
     - Set **Run As** to an admin user that has permissions to manage users.
@@ -170,7 +170,7 @@ If you plan to use [SCIM provisioning](#scim-provisioning-optional) with OAuth a
 #### Get the Consumer Key and Secret
 
 1. Navigate to **Setup** > **External Client App Manager**.
-2. Find your Connected App and click on it.
+2. Find your Connected App and open it.
 3. Under **Settings** > **OAuth Settings**, click **Consumer Key and Secret**.
 4. Copy the **Consumer Key** and **Consumer Secret**.
 
