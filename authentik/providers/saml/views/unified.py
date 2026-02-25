@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.common.saml.constants import NS_MAP
+from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.providers.saml.views.flows import (
@@ -65,6 +66,10 @@ class SAMLUnifiedView(View):
 
     def dispatch(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Route the request based on SAML message type."""
+        # ak user was not logged in, redirected to login, and is back w POST payload in session
+        if SESSION_KEY_POST in request.session:
+            return self._delegate_to_sso(request, application_slug, is_post_binding=True)
+
         # Determine binding from HTTP method
         is_post_binding = request.method == "POST"
         data = request.POST if is_post_binding else request.GET
