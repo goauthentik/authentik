@@ -1,13 +1,13 @@
-import type { IdentificationStage } from "./IdentificationStage.js";
-
 import { getCookie } from "#common/utils";
+
+import type { IdentificationStage } from "#flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing, ReactiveController, ReactiveControllerHost } from "lit";
 
 type RememberMeHost = ReactiveControllerHost & IdentificationStage;
 
-export class AkRememberMeController implements ReactiveController {
+export class RememberMe implements ReactiveController {
     static styles = [
         css`
             .remember-me-switch {
@@ -150,3 +150,5 @@ export class AkRememberMeController implements ReactiveController {
             : nothing;
     }
 }
+
+export default RememberMe;

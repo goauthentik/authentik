@@ -16,7 +16,8 @@ import { AKLabel } from "#components/ak-label";
 import { renderSourceIcon } from "#admin/sources/utils";
 
 import { BaseStage } from "#flow/stages/base";
-import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
+import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
+import RememberMe from "#flow/stages/identification/controllers/RememberMeController";
 import Styles from "#flow/stages/identification/styles.css";
 
 import {
@@ -33,7 +34,7 @@ import { kebabCase } from "change-case";
 import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -51,6 +52,8 @@ type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
 };
 
 type IdentificationFooter = Partial<Pick<IdentificationChallenge, "enrollUrl" | "recoveryUrl">>;
+
+export type IdentificationHost = IdentificationStage & ReactiveControllerHost;
 
 type EmptyString = string | null | undefined;
 
@@ -81,7 +84,7 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    static styles = [
         PFAlert,
         PFInputGroup,
         PFLogin,
@@ -89,7 +92,7 @@ export class IdentificationStage extends BaseStage<
         PFFormControl,
         PFTitle,
         PFButton,
-        ...AkRememberMeController.styles,
+        ...RememberMe.styles,
         Styles,
     ];
 
@@ -103,7 +106,8 @@ export class IdentificationStage extends BaseStage<
 
     #form?: HTMLFormElement;
 
-    private rememberMe = new AkRememberMeController(this);
+    private rememberMe = new RememberMe(this);
+    private autoRedirect = new AutoRedirect(this);
 
     //#region State
 
@@ -120,9 +124,7 @@ export class IdentificationStage extends BaseStage<
 
     #tokenChangeListener = (token: string) => {
         const input = this.#captchaInputRef.value;
-
         if (!input) return;
-
         input.value = token;
     };
 
@@ -137,11 +139,16 @@ export class IdentificationStage extends BaseStage<
 
     //#region Lifecycle
 
+    constructor() {
+        super();
+        this.addController(this.rememberMe);
+        this.addController(this.autoRedirect);
+    }
+
     public override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge) {
-            this.#autoRedirect();
             this.#createHelperForm();
             this.#startConditionalWebAuthn();
         }
@@ -155,23 +162,6 @@ export class IdentificationStage extends BaseStage<
     }
 
     //#endregion
-
-    #autoRedirect(): void {
-        if (!this.challenge) return;
-        // We only want to auto-redirect to a source if there's only one source.
-        if (this.challenge.sources?.length !== 1) return;
-
-        // And we also only do an auto-redirect if no user fields are select
-        // meaning that without the auto-redirect the user would only have the option
-        // to manually click on the source button
-        if ((this.challenge.userFields || []).length !== 0) return;
-
-        // We also don't want to auto-redirect if there's a passwordless URL configured
-        if (this.challenge.passwordlessUrl) return;
-
-        const source = this.challenge.sources[0];
-        this.host.challenge = source.challenge;
-    }
 
     /**
      * Start a conditional WebAuthn request for passkey autofill.
