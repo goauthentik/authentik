@@ -368,7 +368,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    groups = models.ManyToManyField("Group", related_name="users")
+    groups = models.ManyToManyField("Group", related_name="users", through="GroupMembership")
     roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
     password_change_date = models.DateTimeField(auto_now_add=True)
 
@@ -1149,6 +1149,15 @@ class ExpiringModel(models.Model):
         if not self.expiring:
             return False
         return now() > self.expires
+
+
+class GroupMembership(ExpiringModel, AttributesMixin):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Group membership between {self.user_id} and {self.group_id}"
 
 
 class TokenIntents(models.TextChoices):
