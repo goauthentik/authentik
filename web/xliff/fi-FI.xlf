@@ -8886,10 +8886,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>You may close this page now.</source>
   <target>Voit sulkea tämän sivun nyt.</target>
 </trans-unit>
-<trans-unit id="sf8c76d5fb408de7b">
-  <source>You're about to be redirect to the following URL.</source>
-  <target>Sinut ohjataan seuraavaan URL-osoitteeseen.</target>
-</trans-unit>
 <trans-unit id="s197420b40df164f8">
   <source>Follow redirect</source>
   <target>Seuraa uudelleenohjausta</target>
@@ -10606,6 +10602,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+</trans-unit>
+<trans-unit id="s6e858c4c4c3b6b76">
+  <source>You're about to be redirected to the following URL.</source>
 </trans-unit>
 </body>
 </file>
