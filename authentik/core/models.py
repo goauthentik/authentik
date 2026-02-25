@@ -1152,9 +1152,13 @@ class ExpiringModel(models.Model):
 
 
 class GroupMembership(ExpiringModel, AttributesMixin):
-
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Group Membership")
+        verbose_name_plural = _("Group Memberships")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Group membership between {self.user_id} and {self.group_id}"

@@ -92,7 +92,6 @@ export class GroupForm extends ModelForm<Group, string> {
                 patchedGroupRequest: data,
             });
         }
-        data.users = [];
         return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
             groupRequest: data,
         });

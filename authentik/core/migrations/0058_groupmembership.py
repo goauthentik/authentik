@@ -54,6 +54,8 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
+                "verbose_name": "Group Membership",
+                "verbose_name_plural": "Group Memberships",
                 "abstract": False,
                 "indexes": [
                     models.Index(fields=["expires"], name="authentik_c_expires_a2bb46_idx"),
