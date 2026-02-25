@@ -64,6 +64,8 @@ export class PasswordStage extends BaseStage<
     }
 }
 
+export default PasswordStage;
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-stage-user-login": PasswordStage;

@@ -123,7 +123,7 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    Arbitrary `libpq` parameter keywords for the database connection. A list of parameter keywords can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
     - Parameters passed with this setting will override those passed with other settings.
     - These parameters are not applied to read replicas.
     - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
@@ -154,9 +154,9 @@ Additionally, you can set arbitrary connection parameters on all read replicas w
 
 - `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    Arbitrary `libpq` parameter keywords for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
     - Parameters passed with this setting will override those passed with other settings.
-    - Parameter key words should be formatted as a base64-encoded JSON dictionary.
+    - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
 
 ### Using a PostgreSQL Connection Pooler
 
@@ -429,7 +429,7 @@ Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) set
 
 #### `AUTHENTIK_STORAGE__MEDIA__S3__[...]`
 
-Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
+Overrides [`AUTHENTIK_STORAGE__S3__[...]`](#s3-storage-backend-settings) settings.
 
 These settings affect where media files are stored. Those files include applications and sources icons. By default, they use the same storage settings as the main storage configuration. S3 storage is also supported.
 
@@ -632,6 +632,26 @@ Defaults to 4.
 Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
+
+### `AUTHENTIK_WEB__TIMEOUT_HTTP`
+
+Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ_HEADER`
+
+Defaults to `5s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ`
+
+Defaults to `30s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_WRITE`
+
+Defaults to `60s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_IDLE`
+
+Defaults to `120s`
 
 ## System settings
 

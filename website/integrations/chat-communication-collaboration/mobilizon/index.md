@@ -36,7 +36,7 @@ To support the integration of Mobilizon with authentik, you need to create an ap
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://mobilizon.company/auth/keycloak/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -68,6 +68,6 @@ config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
 
 Restart mobilizon.service
 
-## Additional Resources
+## Resources
 
 - https://docs.mobilizon.org/3.%20System%20administration/configure/auth/#oauth

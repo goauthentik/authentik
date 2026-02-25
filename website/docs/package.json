@@ -27,7 +27,7 @@
         "@iconify-json/fluent-mdl2": "^1.2.1",
         "@iconify-json/mdi": "^1.2.3",
         "@mdx-js/react": "^3.1.1",
-        "@types/react": "^19.2.7",
+        "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "prism-react-renderer": "^2.4.1",
         "react": "^19.2.0",

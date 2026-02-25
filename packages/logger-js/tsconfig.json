@@ -1,0 +1,14 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "lib": ["ESNext"],
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "checkJs": true,
+        "emitDeclarationOnly": true
+    },
+    "exclude": [
+        // ---
+        "**/out/**/*"
+    ]
+}

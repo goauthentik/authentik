@@ -105,7 +105,7 @@ For example, you can create a binding for a specific group, and then [bind that 
 Flow-stage bindings can have policy bindings bound to them; this can be used to conditionally run or skip stages within a flow. There are two settings in a flow-stage binding that configure _when_ these policies are executed:
 
 - **Evaluate when flow is planned**
-  Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case,user-specific attributes are only available if the user is already authentiticated before beginning the flow.
+  Policies are evaluated when authentik creates a flow plan that contains a reference to all of the stages that the user will need to go through to complete the flow. In this case,user-specific attributes are only available if the user is already authenticated before beginning the flow.
 
 - **Evaluate when the stage is run**
   Policies bound to a flow-stage binding are evaluated before the stage is run (i.e after the flow has started but before the stage is reached in the flow). Therefore the context with which policy bindings to the flow-stage binding are evaluated reflects the current state of the flow.

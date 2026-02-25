@@ -112,7 +112,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
                     slot: "form",
-                    instancePk: item.pk,
+                    instancePk: item.policyObj?.pk,
                     actionLabel: msg("Update"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",

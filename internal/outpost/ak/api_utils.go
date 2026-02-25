@@ -38,7 +38,7 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 	if opts.Logger == nil {
 		opts.Logger = log.NewEntry(log.StandardLogger())
 	}
-	var bfreq, cfreq interface{}
+	var bfreq, cfreq any
 	fetchOffset := func(page int32) (Tres, error) {
 		bfreq = req.Page(page)
 		cfreq = bfreq.(PaginatorRequest[Treq, Tres]).PageSize(int32(opts.PageSize))

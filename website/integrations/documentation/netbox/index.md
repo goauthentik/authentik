@@ -36,14 +36,14 @@ To support the integration of NetBox with authentik, you need to create an appli
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://netbox.company/oauth/complete/oidc/`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## NetBox
 
 :::info
-This setup was tested and developed with NetBox Docker. For a non-Docker installation, the Docker part must be disabled and the non-docker part must be used.
+This setup was tested and developed with NetBox Docker. For a non-Docker installation, disable the Docker section and use the non-Docker section.
 :::
 
 The following Docker env vars are required for the configuration.
@@ -61,7 +61,7 @@ SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
 LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
-The Netbox configuration needs to be extended, for this you can create a new file in the configuration folder, for example `authentik.py`.
+To extend the NetBox configuration, create a new file in the configuration folder (for example, `authentik.py`).
 
 ```py
 from os import environ
@@ -79,7 +79,7 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 
 #############
-# non Docker
+# non-Docker
 #############
 
 # NetBox settings
@@ -87,23 +87,23 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 #REMOTE_AUTH_BACKEND = 'social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth configuration
-#SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<Application
+#SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<application_slug>/'
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/
+#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
 ### Groups
 
-To manage groups in NetBox custom social auth pipelines are required. To create them you have to create the `custom_pipeline.py` file in the NetBox directory with the following content.
+To manage groups in NetBox, custom social auth pipelines are required. Create a `custom_pipeline.py` file in the NetBox directory with the following content.
 
 :::info
-From Netbox version 4.0.0 Netbox add the custom `Group` models. The following code is compatible with Netbox 4.0.0 and above. For Netbox versions below 4.0.0, the import statement and group adding / deleting of user lines must be changed.
+Starting with NetBox 4.0.0, NetBox adds custom `Group` models. The following code is compatible with NetBox 4.0.0 and later. For NetBox versions earlier than 4.0.0, update the import statement and the lines that add or remove user groups.
 :::
 
 ```python
-# from django.contrib.auth.models import Group # For Netbox < 4.0.0
-from netbox.authentication import Group # For Netbox >= 4.0.0
+# from django.contrib.auth.models import Group # For NetBox < 4.0.0
+from netbox.authentication import Group # For NetBox >= 4.0.0
 
 class AuthFailed(Exception):
     pass
@@ -114,30 +114,30 @@ def add_groups(response, user, backend, *args, **kwargs):
     except KeyError:
         pass
 
-    # Add all groups from oAuth token
+    # Add all groups from OAuth token
     for group in groups:
         group, created = Group.objects.get_or_create(name=group)
-        # group.user_set.add(user) # For Netbox < 4.0.0
-        user.groups.add(group) # For Netbox >= 4.0.0
+        # group.user_set.add(user) # For NetBox < 4.0.0
+        user.groups.add(group) # For NetBox >= 4.0.0
 
 def remove_groups(response, user, backend, *args, **kwargs):
     try:
         groups = response['groups']
     except KeyError:
-        # Remove all groups if no groups in oAuth token
+        # Remove all groups if no groups in OAuth token
         user.groups.clear()
         pass
 
-    # Get all groups of user
+    # Get all groups for user
     user_groups = [item.name for item in user.groups.all()]
-    # Get groups of user which are not part of oAuth token
+    # Get user groups that are not part of the OAuth token
     delete_groups = list(set(user_groups) - set(groups))
 
-    # Delete non oAuth token groups
+    # Delete groups not included in the OAuth token
     for delete_group in delete_groups:
         group = Group.objects.get(name=delete_group)
-        # group.user_set.remove(user) # For Netbox < 4.0.0
-        user.groups.remove(group) # For Netbox >= 4.0.0
+        # group.user_set.remove(user) # For NetBox < 4.0.0
+        user.groups.remove(group) # For NetBox >= 4.0.0
 
 
 def set_roles(response, user, backend, *args, **kwargs):
@@ -152,15 +152,17 @@ def set_roles(response, user, backend, *args, **kwargs):
         user.save()
         pass
 
-    # Set roles is role (superuser or staff) is in groups
+    # Set roles when role groups (superuser or staff) are present
     user.is_superuser = True if 'superusers' in groups else False
     user.is_staff = True if 'staff' in groups else False
     user.save()
 ```
 
-The path of the file in the Official Docker image is: `/opt/netbox/netbox/netbox/custom_pipeline.py`
+The path of the file in the official Docker image is `/opt/netbox/netbox/netbox/custom_pipeline.py`.
 
-To enable the pipelines, add the pipelines section to the netbox configuration file from above
+After creating or updating this file, restart NetBox so pipeline changes are loaded.
+
+To enable the pipelines, add the pipeline section to the NetBox configuration file you created above.
 
 ```python
 SOCIAL_AUTH_PIPELINE = (
@@ -226,11 +228,11 @@ SOCIAL_AUTH_PIPELINE = (
 
 ### Roles
 
-In netbox, there are two special user roles `superuser` and `staff`. To set them, add your users to the `superusers` or `staff` group in authentik.
+In NetBox, there are two special user roles: `superuser` and `staff`. To set them, add your users to the `superusers` or `staff` group in authentik.
 
 To use custom group names, the following scope mapping example can be used. In the example, the group `netbox_admins` is used for the `superusers` and the group `netbox_staff` for the `staff` users.
 
-Name: `Netbox roles`
+Name: `NetBox roles`
 Scope name: `roles`
 
 Expression:

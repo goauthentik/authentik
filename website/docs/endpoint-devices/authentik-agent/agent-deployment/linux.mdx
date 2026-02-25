@@ -2,6 +2,7 @@
 title: Deploy authentik Agent on Linux
 sidebar_label: Linux
 tags: [authentik Agent, linux, deploy, packages]
+authentik_version: "2025.12.0"
 ---
 
 import TabItem from "@theme/TabItem";
@@ -57,7 +58,13 @@ sudo apt update
 sudo apt install authentik-cli authentik-agent authentik-sysd
 ```
 
-4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
+4. _(optional)_ If you plan to enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), you will need to install two additional packages:
+
+```sh
+sudo apt install libnss-authentik libpam-authentik
+```
+
+5. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
 
     You should see a response that starts with: `authentik CLI v<version_number>`
 
@@ -93,7 +100,13 @@ EOF
 sudo yum install -y authentik-cli authentik-agent authentik-sysd
 ```
 
-3. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
+3. _(optional)_ If you plan to enable [SSH server authentication and local device login](#enable-device-compliance-ssh-server-authentication-and-local-device-login), you will need to install two additional packages:
+
+```sh
+sudo yum install -y libnss-authentik libpam-authentik
+```
+
+4. Confirm that the authentik Agent is installed by opening a terminal window and entering the following command: `ak`
 
     You should see a response that starts with: `authentik CLI v<version_number>`
 
@@ -125,13 +138,13 @@ sudo ak-sysd domains join <deployment_name> --authentik-url https://authentik.co
 2. You will be prompted to enter your [enrollment token](#create-an-enrollment-token).
 3. Once provided, the device will be enrolled with your authentik deployment and should appear on the [Devices page](../../manage-devices.mdx) after a [check-in](../../device-compliance/device-reporting.md) is completed.
 
-### Local device login on non-Debian systems
+### Configure device login on non-Debian systems
 
 On non-Debian Linux distributions, you currently need to manually configure NSS and PAM:
 
-1. Edit `etc/nsswitch.conf` to include `authentik` for `passwd`, `group`, and `shadow`:
+1. Edit `/etc/nsswitch.conf` to include `authentik` for `passwd`, `group`, and `shadow`:
 
-```bash title="etc/nsswitch.conf"
+```bash title="/etc/nsswitch.conf"
 ...
 passwd:         files systemd authentik
 group:          files systemd authentik
@@ -140,15 +153,15 @@ gshadow:        files systemd
 ...
 ```
 
-2. Edit the following two files in the `etc/pam.d/` directory. The order matters, both of these lines should be located above `pam_unix` in the respective files.
+2. Edit the following two files in the `/etc/pam.d/` directory. The order matters, both of these lines should be located above `pam_unix` in the respective files.
 
-```bash title="etc/pam.d/common-auth"
+```bash title="/etc/pam.d/common-auth"
 ...
 auth    [success=2 default=ignore]      pam_authentik.so
 ...
 ```
 
-```bash title="etc/pam.d/common-session"
+```bash title="/etc/pam.d/common-session"
 ...
 session required                        pam_authentik.so
 ...
@@ -176,7 +189,7 @@ ak version
 
 ## Logging
 
-authentik Agent logs are available via the system journal (`systemd`) or `syslog`, depending on the distribution.
+authentik Agent logs are available via the systemd journal (`journalctl`) or `syslog`, depending on the distribution.
 
 ## Reporting issues
 
