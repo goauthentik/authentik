@@ -2733,12 +2733,8 @@ paths:
   /core/applications/:
     get:
       operationId: core_applications_list
-      description: Custom list method that checks Policy based access instead of guardian
+      description: Application Viewset
       parameters:
-      - in: query
-        name: for_user
-        schema:
-          type: integer
       - in: query
         name: group
         schema:
@@ -2756,10 +2752,6 @@ paths:
         schema:
           type: string
       - $ref: '#/components/parameters/QueryName'
-      - in: query
-        name: only_with_launch_url
-        schema:
-          type: boolean
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -2768,10 +2760,6 @@ paths:
         name: slug
         schema:
           type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - core
       security:
@@ -2972,6 +2960,59 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/accessible/:
+    get:
+      operationId: core_applications_accessible_list
+      description: Get applications accessible for user
+      parameters:
+      - in: query
+        name: for_user
+        schema:
+          type: integer
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - in: query
+        name: only_with_launch_url
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
