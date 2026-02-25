@@ -1,0 +1,94 @@
+{
+    "name": "@goauthentik/logger-js",
+    "version": "1.0.0",
+    "description": "Pino-based logger configuration for Authentik",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/logger-js"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./out/index.d.ts",
+            "node": "./lib/node.js",
+            "import": "./index.js",
+            "browser": "./lib/browser.js"
+        },
+        "./browser": {
+            "types": "./out/lib/browser.d.ts",
+            "import": "./lib/browser.js"
+        },
+        "./node": {
+            "types": "./out/lib/node.d.ts",
+            "import": "./lib/node.js"
+        }
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.3",
+        "@goauthentik/prettier-config": "../prettier-config",
+        "@goauthentik/tsconfig": "../tsconfig",
+        "@types/node": "^25.3.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
+        "eslint": "^9.39.3",
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.2",
+        "prettier": "^3.8.1",
+        "prettier-plugin-packagejson": "^3.0.0",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.56.1"
+    },
+    "peerDependencies": {
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.2"
+    },
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "out/**/*"
+    ],
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.10.1"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "ignore"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.10.1",
+            "onFail": "ignore"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "format-imports": {
+            "eslint": "$eslint"
+        }
+    },
+    "peerDependenciesMeta": {
+        "pino": {
+            "optional": true
+        },
+        "pino-pretty": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
