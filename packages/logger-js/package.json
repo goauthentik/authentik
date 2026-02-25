@@ -35,31 +35,23 @@
         }
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.1",
+        "@eslint/js": "^9.39.3",
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.0.0",
-        "@typescript-eslint/eslint-plugin": "^8.49.0",
-        "@typescript-eslint/parser": "^8.49.0",
+        "@types/node": "^25.3.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
+        "eslint": "^9.39.3",
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.2",
-        "eslint": "^9.39.1",
         "prettier": "^3.8.1",
         "prettier-plugin-packagejson": "^3.0.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.49.0"
+        "typescript-eslint": "^8.56.1"
     },
     "peerDependencies": {
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.2"
-    },
-    "peerDependenciesMeta": {
-        "pino": {
-            "optional": true
-        },
-        "pino-pretty": {
-            "optional": true
-        }
     },
     "files": [
         "./index.js",
@@ -86,6 +78,14 @@
     "overrides": {
         "format-imports": {
             "eslint": "$eslint"
+        }
+    },
+    "peerDependenciesMeta": {
+        "pino": {
+            "optional": true
+        },
+        "pino-pretty": {
+            "optional": true
         }
     },
     "publishConfig": {
