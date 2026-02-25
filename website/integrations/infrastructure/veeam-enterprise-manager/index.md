@@ -41,14 +41,9 @@ To support the integration of Veeam Enterprise Manager with authentik, you need 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-<<<<<<< HEAD
-    - todo: saml metadata
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
-=======
     - Click **Import** and upload the metadata XML downloaded from Veeam Enterprise Manager during pre-configuration.
     - Confirm the imported **ACS URL**, **Issuer**, and **Service Provider Binding** values match your Veeam Enterprise Manager deployment.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
->>>>>>> 4c8916add (docs: fix typos and wording in docs and integrations (#20550))
 
 3. Click **Submit** to save the new application and provider.
 
