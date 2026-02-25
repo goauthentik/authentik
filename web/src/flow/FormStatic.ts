@@ -9,6 +9,7 @@ import { StageChallengeLike } from "#flow/types";
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { guard } from "lit/directives/guard.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
@@ -60,19 +61,25 @@ export interface FlowUserDetailsProps {
 
 export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
     const { pendingUserAvatar, pendingUser, flowInfo } = challenge || {};
-    return html`<ak-form-static
-        class="pf-c-form__group"
-        avatar=${ifPresent(pendingUserAvatar)}
-        username=${ifPresent(pendingUser)}
-    >
-        ${flowInfo?.cancelUrl
-            ? html`
-                  <div slot="link">
-                      <a href=${flowInfo.cancelUrl}>${msg("Not you?")}</a>
-                  </div>
-              `
-            : nothing}
-    </ak-form-static>`;
+    const cancelUrl = flowInfo?.cancelUrl ?? null;
+
+    return guard(
+        [pendingUserAvatar, pendingUser, cancelUrl],
+        () =>
+            html`<ak-form-static
+                class="pf-c-form__group"
+                avatar=${ifPresent(pendingUserAvatar)}
+                username=${ifPresent(pendingUser)}
+            >
+                ${cancelUrl
+                    ? html`
+                          <div slot="link">
+                              <a href=${cancelUrl}>${msg("Not you?")}</a>
+                          </div>
+                      `
+                    : nothing}
+            </ak-form-static>`,
+    );
 };
 
 declare global {

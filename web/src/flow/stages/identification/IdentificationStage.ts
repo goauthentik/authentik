@@ -435,6 +435,8 @@ export class IdentificationStage extends BaseStage<
     }
 
     protected renderFooter({ enrollUrl, recoveryUrl }: IdentificationFooter) {
+        // The `hasFooter` check in `IdentificationStage.render()` makes this superfluous.
+        // But leave it here as a check.
         if (!(enrollUrl || recoveryUrl)) {
             return nothing;
         }
