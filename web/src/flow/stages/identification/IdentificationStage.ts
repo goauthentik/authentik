@@ -503,7 +503,7 @@ export class IdentificationStage extends BaseStage<
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge?.applicationPre
                     ? html`<p>
-                          ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
+                          ${msg(str`Log in to continue to ${this.challenge.applicationPre}.`)}
                       </p>`
                     : nothing}
                 ${this.renderInput()}
