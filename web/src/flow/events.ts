@@ -1,3 +1,5 @@
+import type { FlowChallengeResponseRequestBody, SubmitOptions, SubmitRequest } from "#flow/types";
+
 import { ChallengeTypes } from "@goauthentik/api";
 
 /**
@@ -62,6 +64,22 @@ export class AKFlowUpdateChallengeRequest extends Event {
     constructor(challenge: ChallengeTypes) {
         super(AKFlowUpdateChallengeRequest.eventName, { bubbles: true, composed: true });
         this.challenge = challenge;
+    }
+}
+
+export class AKFlowSubmitRequest extends Event {
+    public static readonly eventName = "ak-flow-submit-request";
+    public readonly request: SubmitRequest;
+
+    constructor(
+        payload: FlowChallengeResponseRequestBody,
+        options: SubmitOptions = { invisible: false },
+    ) {
+        super(AKFlowSubmitRequest.eventName, { bubbles: true, composed: true });
+        this.request = {
+            payload,
+            options,
+        };
     }
 }
 

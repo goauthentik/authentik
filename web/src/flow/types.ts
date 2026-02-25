@@ -15,6 +15,7 @@ import type {
     ChallengeTypes,
     ConsentChallenge,
     CurrentBrand,
+    FlowChallengeResponseRequest,
     PasswordChallenge,
     SessionEndChallenge,
     UserLoginChallenge,
@@ -56,6 +57,19 @@ export type StageChallengeLike = Partial<
 
 export interface SubmitOptions {
     invisible: boolean;
+}
+
+// Make the "component" field optional, since the Executor controls what component type is being
+// manipulated.
+type PartialComponent<T> = T extends { component: infer C } & infer Rest
+    ? { component?: C } & Omit<Rest, "component">
+    : never;
+
+export type FlowChallengeResponseRequestBody = PartialComponent<FlowChallengeResponseRequest>;
+
+export interface SubmitRequest {
+    payload: FlowChallengeResponseRequestBody;
+    options: SubmitOptions;
 }
 
 export interface StageHost {
