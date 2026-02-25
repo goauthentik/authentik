@@ -102,7 +102,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
                 <fieldset class="pf-c-form__group pf-m-action">

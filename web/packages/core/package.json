@@ -9,6 +9,7 @@
     },
     "main": "index.js",
     "type": "module",
+    "types": "./out/index.d.ts",
     "exports": {
         "./package.json": "./package.json",
         "./*/browser": {
@@ -52,6 +53,5 @@
     "engines": {
         "node": ">=24",
         "npm": ">=11.6.2"
-    },
-    "types": "./out/index.d.ts"
+    }
 }

@@ -252,7 +252,7 @@ Salesforce requires specific SCIM attributes that are not included in the defaul
 4. In the **Backchannel Providers** field, select the SCIM provider you created.
 5. Click **Update** to save the application.
 
-## References
+## Resources
 
 - [Salesforce Help - Configure SSO with Salesforce as a SAML Service Provider](https://help.salesforce.com/s/articleView?id=sf.sso_saml.htm&type=5)
 - [Salesforce Help - Just-in-Time SAML Assertion Fields for Salesforce](https://help.salesforce.com/s/articleView?id=sf.sso_jit_requirements.htm&type=5)

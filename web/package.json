@@ -101,8 +101,8 @@
         "@goauthentik/api": "^2026.2.0-rc1-1770744803",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.4.0",
-        "@goauthentik/eslint-config": "^1.2.0",
-        "@goauthentik/prettier-config": "^3.3.1",
+        "@goauthentik/eslint-config": "^1.2.1",
+        "@goauthentik/prettier-config": "^3.4.0",
         "@goauthentik/tsconfig": "^1.0.5",
         "@hcaptcha/types": "^1.1.0",
         "@lit/context": "^1.1.6",
@@ -152,7 +152,7 @@
         "globals": "^17.3.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
-        "knip": "^5.84.1",
+        "knip": "^5.85.0",
         "lex": "^2025.11.0",
         "lit": "^3.3.2",
         "lit-analyzer": "^2.0.3",
@@ -161,11 +161,13 @@
         "md-front-matter": "^1.0.4",
         "mermaid": "^11.12.3",
         "node-domexception": "^2025.11.0",
+        "npm": "^11.10.1",
         "npm-run-all": "^4.1.5",
         "pino": "^10.3.1",
         "pino-pretty": "^13.1.2",
         "playwright": "^1.58.2",
         "prettier": "^3.8.1",
+        "prettier-plugin-packagejson": "^3.0.0",
         "pseudolocale": "^2.2.0",
         "rapidoc": "^9.3.8",
         "react": "^19.2.4",
@@ -202,6 +204,9 @@
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
         "chromedriver": "^145.0.3"
     },
+    "workspaces": [
+        "./packages/*"
+    ],
     "wireit": {
         "build": {
             "#comment": [
@@ -275,8 +280,7 @@
             "dependencies": [
                 "lint",
                 "lint:types",
-                "lint:components",
-                "lint:lockfile"
+                "lint:components"
             ]
         },
         "storybook:build": {
@@ -299,13 +303,26 @@
         "node": ">=24",
         "npm": ">=11.6.2"
     },
-    "workspaces": [
-        "./packages/*"
-    ],
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": "11.10.1",
+            "onFail": "warn"
+        }
+    },
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
             "esbuild": "$esbuild"
+        },
+        "@goauthentik/prettier-config": {
+            "prettier": "$prettier",
+            "prettier-plugin-packagejson": "$prettier-plugin-packagejson"
         },
         "@mrmarble/djangoql-completion": {
             "lex": "$lex"

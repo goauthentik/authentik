@@ -10,8 +10,8 @@
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
         "lint": "eslint --fix .",
-        "lint-check": "eslint --max-warnings 0 .",
         "lint:lockfile": "echo 'Skipping lockfile linting'",
+        "lint-check": "eslint --max-warnings 0 .",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "start": "npm start -w docs",
@@ -19,8 +19,8 @@
     },
     "dependencies": {
         "@eslint/js": "^9.39.1",
-        "@goauthentik/eslint-config": "^1.1.1",
-        "@goauthentik/prettier-config": "^3.2.1",
+        "@goauthentik/eslint-config": "^1.2.1",
+        "@goauthentik/prettier-config": "^3.4.0",
         "@goauthentik/tsconfig": "^1.0.5",
         "@types/node": "^25.0.0",
         "@typescript-eslint/eslint-plugin": "^8.48.0",
@@ -31,8 +31,8 @@
         "netlify-redirect-parser": "^14.4.0",
         "npm-run-all": "^4.1.5",
         "postman-code-generators": "2.1.0",
-        "prettier": "^3.7.3",
-        "prettier-plugin-packagejson": "^2.5.20",
+        "prettier": "^3.8.1",
+        "prettier-plugin-packagejson": "^3.0.0",
         "typescript-eslint": "^8.48.0"
     },
     "optionalDependencies": {
@@ -49,10 +49,6 @@
         "lightningcss-linux-arm64-gnu": "1.30.2",
         "lightningcss-linux-x64-gnu": "1.30.2"
     },
-    "engines": {
-        "node": ">=24",
-        "npm": ">=11.6.2"
-    },
     "workspaces": [
         "vendored/*",
         "docusaurus-theme",
@@ -60,6 +56,22 @@
         "integrations",
         "docs"
     ],
+    "engines": {
+        "node": ">=24",
+        "npm": ">=11.6.2"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "error",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.6.2",
+            "onFail": "warn"
+        }
+    },
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/api-docs": {
@@ -76,6 +88,10 @@
                 }
             }
         },
+        "@goauthentik/prettier-config": {
+            "prettier": "$prettier",
+            "prettier-plugin-packagejson": "$prettier-plugin-packagejson"
+        },
         "docusaurus-theme-openapi-docs": {
             "postman-code-generators": {
                 ".": "^1.10.1",
@@ -89,18 +105,6 @@
         "postman-code-generators": {
             "detect-package-manager": "file:./vendored/detect-package-manager",
             "shelljs": "0.10.0"
-        }
-    },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "onFail": "error",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "onFail": "warn",
-            "version": ">=11.6.2"
         }
     }
 }

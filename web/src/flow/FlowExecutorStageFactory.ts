@@ -12,7 +12,7 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 
-import StageModules, { StageEntry } from "#flow/FlowExecutorStages";
+import StageModules, { type StageEntry } from "#flow/FlowExecutorStages";
 import type { FlowChallengeComponentName, StageModuleCallback } from "#flow/types";
 
 import { match, P } from "ts-pattern";
