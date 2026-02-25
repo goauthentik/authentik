@@ -633,6 +633,26 @@ Configure the path under which authentik is served. For example to access authen
 
 Defaults to `/`.
 
+### `AUTHENTIK_WEB__TIMEOUT_HTTP`
+
+Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ_HEADER`
+
+Defaults to `5s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ`
+
+Defaults to `30s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_WRITE`
+
+Defaults to `60s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_IDLE`
+
+Defaults to `120s`
+
 ## System settings
 
 Additional settings are configurable using the Admin interface, under **System** > **Settings** or using the API.
