@@ -174,12 +174,12 @@ From the authentik Admin Dashboard:
 
 ##### Update SharePoint farm properties
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments
+- Read all script comments
 
 :::
 
@@ -214,7 +214,7 @@ $f.Farm.Update()
 
 Update the SharePoint farm to accept OAuth authentication over HTTP.
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
@@ -225,12 +225,12 @@ $c.update()
 
 #### Create SharePoint authentication provider
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments.
+- Read all script comments.
 
 :::
 
@@ -277,14 +277,14 @@ From the Central Administration opened as a Farm Administrator:
 1. Open the **Application Management > Manage web applications** page.
 2. Select your web application `sp.webAppURL`.
 3. Click **Authentication Providers** from the ribbon bar.
-4. According to your environment, click on the target zone such as "Default".
-5. Update the authentication provider form as following:
+4. Click the target zone for your environment, such as "Default".
+5. Update the authentication provider form as follows:
     - Check **Trusted Identity Provider**
     - Check the newly created provider named `sp.issuerName`
     - (Optional) Set **Custom Sign In Page**: /\_trust/default.aspx
 6. Click **Save**.
 
-Repeat all steps for each target web applications that matches with `auth.providerRedirectURI`.
+Repeat these steps for each target web application that matches `auth.providerRedirectURI`.
 
 ## (Optional) SharePoint enhancements
 
@@ -300,12 +300,12 @@ Objectives:
 
 ### Step 1: Assign LDAPCP as claim provider for the identity token issuer
 
-The following PowerShell script must be updated according to your environment and executed as **Farm Admin account** with **elevated privileges** on a SharePoint Server.
+Update the following PowerShell script for your environment, then run it on a SharePoint Server as a **Farm Admin account** with **elevated privileges**.
 
 :::caution
 
 - Update placeholders
-- Read all script's comments
+- Read all script comments
 
 :::
 

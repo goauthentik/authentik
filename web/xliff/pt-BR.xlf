@@ -8866,10 +8866,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
   <source>You may close this page now.</source>
   <target>Você pode fechar esta página agora.</target>
 </trans-unit>
-<trans-unit id="sf8c76d5fb408de7b">
-  <source>You're about to be redirect to the following URL.</source>
-  <target>Você está prestes a ser redirecionado para a seguinte URL.</target>
-</trans-unit>
 <trans-unit id="s197420b40df164f8">
   <source>Follow redirect</source>
   <target>Seguir redirecionamento</target>
@@ -10579,6 +10575,9 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+</trans-unit>
+<trans-unit id="s6e858c4c4c3b6b76">
+  <source>You're about to be redirected to the following URL.</source>
 </trans-unit>
 </body>
 </file>
