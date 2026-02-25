@@ -174,21 +174,25 @@ jobs:
         if: "${{ inputs.release_reason == 'feature' }}"
         run: |
           changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}"
+          reason="{{ inputs.release_reason }}"
           jq \
             --arg version "${{ inputs.version }}" \
             --arg changelog "See ${changelog_url}" \
             --arg changelog_url "${changelog_url}" \
-            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url' version.json > version.new.json
+            --arg reason "${reason}" \
+            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url | .stable.reason = $reason' version.json > version.new.json
           mv version.new.json version.json
       - name: Bump version
         if: "${{ inputs.release_reason != 'feature' }}"
         run: |
           changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version}} | sed 's/\.//g')"
+          reason="{{ inputs.release_reason }}"
           jq \
             --arg version "${{ inputs.version }}" \
             --arg changelog "See ${changelog_url}" \
             --arg changelog_url "${changelog_url}" \
-            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url' version.json > version.new.json
+            --arg reason "${reason}" \
+            '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url | .stable.reason = $reason' version.json > version.new.json
           mv version.new.json version.json
       - name: Create pull request
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v7
