@@ -7,14 +7,13 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
-from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import (
     THRESHOLD_READ_ONLY_WEEKS,
     License,
     LicenseUsage,
     LicenseUsageStatus,
 )
-from authentik.enterprise.tests.test_license import expiry_valid
+from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import (
     FlowDesignation,
     FlowStageBinding,
@@ -30,18 +29,7 @@ from authentik.stages.user_login.models import UserLoginStage
 class TestReadOnly(FlowTestCase):
     """Test read_only"""
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -56,7 +44,6 @@ class TestReadOnly(FlowTestCase):
     )
     def test_login(self):
         """Test flow, ensure login is still possible with read only mode"""
-        License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
             internal_user_count=100,
             external_user_count=100,
@@ -115,18 +102,7 @@ class TestReadOnly(FlowTestCase):
         response = self.client.post(exec_url, {"password": user.username}, follow=True)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test(create_key=False)
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -163,18 +139,7 @@ class TestReadOnly(FlowTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -189,7 +154,6 @@ class TestReadOnly(FlowTestCase):
     )
     def test_manage_flows(self):
         """Test flow"""
-        License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
             internal_user_count=100,
             external_user_count=100,
@@ -216,18 +180,7 @@ class TestReadOnly(FlowTestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
+    @enterprise_test()
     @patch(
         "authentik.enterprise.license.LicenseKey.get_internal_user_count",
         MagicMock(return_value=1000),
@@ -242,7 +195,6 @@ class TestReadOnly(FlowTestCase):
     )
     def test_manage_users(self):
         """Test that managing users is still possible"""
-        License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
             internal_user_count=100,
             external_user_count=100,
