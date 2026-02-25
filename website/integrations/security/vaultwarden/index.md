@@ -65,7 +65,7 @@ Vaultwarden either requires the email scope to return a true value for whether t
 
 ## Vaultwarden configuration
 
-To configure authentik with Vaultwarden, you must add the following environment variables to your Vaultwarden deployment:
+To configure Vaultwarden to use authentik, add the following environment variables to your Vaultwarden deployment:
 
 ```yaml
 SSO_ENABLED=true
