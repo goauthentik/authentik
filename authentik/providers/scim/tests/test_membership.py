@@ -532,6 +532,7 @@ class SCIMMembershipTests(TestCase):
                 "https://localhost/Groups",
                 json={
                     "id": group_scim_id,
+                    "displayName": group.name,
                 },
             )
 
@@ -608,7 +609,10 @@ class SCIMMembershipTests(TestCase):
             )
             mocker.get(
                 f"https://localhost/Groups/{group_scim_id}",
-                json={},
+                json={
+                    "id": group_scim_id,
+                    "displayName": group.name,
+                },
             )
 
             group.name = "newname" + group.name
@@ -639,7 +643,7 @@ class SCIMMembershipTests(TestCase):
                     "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                     "Operations": [
                         {
-                            "op": "replace",
+                            "op": "add",
                             "path": "externalId",
                             "value": str(group.pk),
                         }
