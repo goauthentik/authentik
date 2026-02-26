@@ -7,12 +7,12 @@ import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 
+import { buildAdminCommandPaletteActions } from "./AdminCommandPalette.js";
 import {
     createAdminSidebarEnterpriseEntries,
     createAdminSidebarEntries,
     renderSidebarItems,
 } from "./AdminSidebar.js";
-import { buildAdminCommandPaletteActions } from "./AdminCommandPalette.js";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
@@ -161,72 +161,71 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
         const includeEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
         const sidebarEntries = createAdminSidebarEntries();
-        const enterpriseSidebarEntries = includeEnterprise ? createAdminSidebarEnterpriseEntries() : [];
+        const enterpriseSidebarEntries = includeEnterprise
+            ? createAdminSidebarEnterpriseEntries()
+            : [];
         const paletteActions = buildAdminCommandPaletteActions({
             sidebarEntries,
             enterpriseSidebarEntries,
             includeEnterprise,
         });
 
-        return html`<ak-admin-command-palette
-                .actions=${paletteActions}
-            ></ak-admin-command-palette>
+        return html`<ak-admin-command-palette .actions=${paletteActions}></ak-admin-command-palette>
             <div class="pf-c-page">
-            <ak-page-navbar>
-                <button
-                    slot="toggle"
-                    aria-controls="global-nav"
-                    class="pf-c-button pf-m-plain"
-                    @click=${this.toggleSidebar}
-                    aria-label=${this.sidebarOpen
-                        ? msg("Collapse navigation")
-                        : msg("Expand navigation")}
-                    aria-expanded=${this.sidebarOpen ? "true" : "false"}
-                >
-                    <i aria-hidden="true" class="fas fa-bars"></i>
-                </button>
+                <ak-page-navbar>
+                    <button
+                        slot="toggle"
+                        aria-controls="global-nav"
+                        class="pf-c-button pf-m-plain"
+                        @click=${this.toggleSidebar}
+                        aria-label=${this.sidebarOpen
+                            ? msg("Collapse navigation")
+                            : msg("Expand navigation")}
+                        aria-expanded=${this.sidebarOpen ? "true" : "false"}
+                    >
+                        <i aria-hidden="true" class="fas fa-bars"></i>
+                    </button>
 
-                <ak-version-banner></ak-version-banner>
-                <ak-enterprise-status interface="admin"></ak-enterprise-status>
-            </ak-page-navbar>
+                    <ak-version-banner></ak-version-banner>
+                    <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                </ak-page-navbar>
 
-            <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                >${renderSidebarItems(sidebarEntries)}
-                ${includeEnterprise ? renderSidebarItems(enterpriseSidebarEntries) : nothing}
-            </ak-sidebar>
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                    >${renderSidebarItems(sidebarEntries)}
+                    ${includeEnterprise ? renderSidebarItems(enterpriseSidebarEntries) : nothing}
+                </ak-sidebar>
 
-            <div class="pf-c-page__drawer">
-                <div class="pf-c-drawer ${classMap(drawerClasses)}">
-                    <div class="pf-c-drawer__main">
-                        <div class="pf-c-drawer__content">
-                            <div class="pf-c-drawer__body">
-                                <ak-router-outlet
-                                    role="presentation"
-                                    class="pf-c-page__main"
-                                    tabindex="-1"
-                                    id="main-content"
-                                    default-url="/administration/overview"
-                                    .routes=${ROUTES}
-                                    @ak-route-change=${this.routeChangeListener}
-                                >
-                                </ak-router-outlet>
+                <div class="pf-c-page__drawer">
+                    <div class="pf-c-drawer ${classMap(drawerClasses)}">
+                        <div class="pf-c-drawer__main">
+                            <div class="pf-c-drawer__content">
+                                <div class="pf-c-drawer__body">
+                                    <ak-router-outlet
+                                        role="presentation"
+                                        class="pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        default-url="/administration/overview"
+                                        .routes=${ROUTES}
+                                        @ak-route-change=${this.routeChangeListener}
+                                    >
+                                    </ak-router-outlet>
+                                </div>
                             </div>
+                            ${renderNotificationDrawerPanel(this.drawer)}
+                            <ak-about-modal></ak-about-modal>
                         </div>
-                        ${renderNotificationDrawerPanel(this.drawer)}
-                        <ak-about-modal></ak-about-modal>
                     </div>
-                </div>
 
-                <div
-                    class="pf-c-page__sidebar-backdrop"
-                    aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
-                    @click=${this.toggleSidebar}
-                    role="button"
-                    tabindex="0"
-                ></div>
-            </div>
-        </div>
-        `;
+                    <div
+                        class="pf-c-page__sidebar-backdrop"
+                        aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
+                        @click=${this.toggleSidebar}
+                        role="button"
+                        tabindex="0"
+                    ></div>
+                </div>
+            </div> `;
     }
 
     //#endregion

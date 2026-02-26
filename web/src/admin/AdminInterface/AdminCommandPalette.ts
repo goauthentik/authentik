@@ -1,8 +1,8 @@
+import type { SidebarEntry } from "./AdminSidebar.js";
+
 import { navigate } from "#elements/router/RouterOutlet";
 
 import { msg } from "@lit/localize";
-
-import type { SidebarEntry } from "./AdminSidebar.js";
 
 export interface CommandPaletteAction {
     id: string;
