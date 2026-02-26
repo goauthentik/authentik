@@ -19,9 +19,9 @@
     },
     "dependencies": {
         "@eslint/js": "^9.39.3",
-        "@goauthentik/eslint-config": "^1.2.1",
-        "@goauthentik/prettier-config": "^3.4.0",
-        "@goauthentik/tsconfig": "^1.0.5",
+        "@goauthentik/eslint-config": "../packages/eslint-config",
+        "@goauthentik/prettier-config": "../packages/prettier-config",
+        "@goauthentik/tsconfig": "../packages/tsconfig",
         "@types/node": "^25.3.0",
         "@typescript-eslint/eslint-plugin": "^8.56.1",
         "@typescript-eslint/parser": "^8.56.1",
@@ -58,7 +58,7 @@
     ],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.6.2"
+        "npm": ">=11.10.1"
     },
     "devEngines": {
         "runtime": {
