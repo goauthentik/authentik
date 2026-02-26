@@ -41,6 +41,21 @@ from authentik.providers.saml.views.flows import (
 LOGGER = get_logger()
 
 
+def _is_safe_relay_state(relay_state: str, request: HttpRequest) -> bool:
+    """Validate that a relay_state URL is a safe redirect destination.
+
+    Only allows redirects to the relay_state stored in the session's flow plan
+    context, which was set server-side by authentik when initiating the SLO chain.
+    """
+    if SESSION_KEY_PLAN in request.session:
+        plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        stored_relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)
+        if stored_relay_state and relay_state == stored_relay_state:
+            return True
+
+    return False
+
+
 class SPInitiatedSLOView(PolicyAccessView):
     """Handle SP-initiated SAML Single Logout requests"""
 
@@ -203,10 +218,15 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.GET:
             relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
-            if relay_state:
+            if relay_state and _is_safe_relay_state(relay_state, request):
                 return redirect(relay_state)
+            elif relay_state:
+                LOGGER.warning(
+                    "Rejected unsafe relay_state in SAML logout response",
+                    relay_state=relay_state,
+                )
 
-            # No RelayState provided, try to get return URL from plan context
+            # No valid RelayState provided, try to get return URL from plan context
             if SESSION_KEY_PLAN in request.session:
                 plan: FlowPlan = request.session[SESSION_KEY_PLAN]
                 relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)
@@ -254,10 +274,15 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
         # IDP SLO, so we want to redirect to our next provider
         if REQUEST_KEY_SAML_RESPONSE in request.POST:
             relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
-            if relay_state:
+            if relay_state and _is_safe_relay_state(relay_state, request):
                 return redirect(relay_state)
+            elif relay_state:
+                LOGGER.warning(
+                    "Rejected unsafe relay_state in SAML logout response",
+                    relay_state=relay_state,
+                )
 
-            # No RelayState provided, try to get return URL from plan context
+            # No valid RelayState provided, try to get return URL from plan context
             if SESSION_KEY_PLAN in request.session:
                 plan: FlowPlan = request.session[SESSION_KEY_PLAN]
                 relay_state = plan.context.get(PLAN_CONTEXT_SAML_RELAY_STATE)

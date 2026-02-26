@@ -94,7 +94,7 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(logout_request.session_index, "test-session-123")
 
     def test_redirect_view_handles_logout_response_with_relay_state(self):
-        """Test that redirect view handles logout response with RelayState"""
+        """Test that redirect view handles logout response with RelayState matching plan context"""
         # Use raw URL (no encoding needed)
         relay_state = "https://idp.example.com/flow/return"
 
@@ -106,19 +106,22 @@ class TestSPInitiatedSLOViews(TestCase):
                 "RelayState": relay_state,
             },
         )
-        request.session = {}
+        # Add plan context with matching relay_state (as authentik would set server-side)
+        plan = FlowPlan(flow_pk="test-flow")
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+        request.session = {SESSION_KEY_PLAN: plan}
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingRedirectView()
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to relay state URL
+        # Should redirect to relay state URL (validated against plan context)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, relay_state)
 
-    def test_redirect_view_handles_logout_response_plain_relay_state(self):
-        """Test that redirect view handles logout response with plain RelayState"""
+    def test_redirect_view_rejects_unvalidated_relay_state(self):
+        """Test that redirect view rejects relay_state not matching plan context or provider SLS"""
         relay_state = "https://sp.example.com/plain"
 
         # Create request with SAML logout response
@@ -136,9 +139,9 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to plain relay state
+        # Should reject unsafe relay_state and redirect to root
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, relay_state)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
     def test_redirect_view_handles_logout_response_no_relay_state_with_plan_context(self):
         """Test that redirect view uses plan context fallback when no RelayState"""
@@ -231,7 +234,7 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(logout_request.session_index, "test-session-123")
 
     def test_post_view_handles_logout_response_with_relay_state(self):
-        """Test that POST view handles logout response with RelayState"""
+        """Test that POST view handles logout response with RelayState matching plan context"""
         # Use raw URL (no encoding needed)
         relay_state = "https://idp.example.com/flow/return"
 
@@ -243,14 +246,17 @@ class TestSPInitiatedSLOViews(TestCase):
                 "RelayState": relay_state,
             },
         )
-        request.session = {}
+        # Add plan context with matching relay_state (as authentik would set server-side)
+        plan = FlowPlan(flow_pk="test-flow")
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+        request.session = {SESSION_KEY_PLAN: plan}
         request.brand = self.brand
 
         view = SPInitiatedSLOBindingPOSTView()
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should redirect to relay state URL
+        # Should redirect to relay state URL (validated against plan context)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, relay_state)
 
@@ -419,7 +425,7 @@ class TestSPInitiatedSLOViews(TestCase):
             view.resolve_provider_application()
 
     def test_relay_state_decoding_failure(self):
-        """Test handling of RelayState that's a path"""
+        """Test handling of RelayState that's an arbitrary path (rejected as unsafe)"""
         # Create request with relay state that is a path
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
@@ -435,9 +441,98 @@ class TestSPInitiatedSLOViews(TestCase):
         view.setup(request, application_slug=self.application.slug)
         response = view.dispatch(request, application_slug=self.application.slug)
 
-        # Should treat it as plain URL and redirect to it
+        # Should reject unsafe relay_state and redirect to root
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/some/invalid/path")
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
+    def test_redirect_view_blocks_external_relay_state(self):
+        """Test that redirect view blocks redirect to external malicious URL"""
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+                "RelayState": "https://evil.com/phishing",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should reject and redirect to root
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
+    def test_redirect_view_allows_relay_state_matching_plan_context(self):
+        """Test that redirect view allows relay_state matching plan context"""
+        relay_state = "https://authentik.example.com/if/flow/logout/"
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+                "RelayState": relay_state,
+            },
+        )
+        plan = FlowPlan(flow_pk="test-flow")
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = relay_state
+        request.session = {SESSION_KEY_PLAN: plan}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should allow redirect matching plan context
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, relay_state)
+
+    def test_redirect_view_unsafe_relay_state_falls_through_to_plan_context(self):
+        """Test that unsafe relay_state falls through to plan context redirect"""
+        plan_relay_state = "https://authentik.example.com/if/flow/logout/"
+
+        request = self.factory.get(
+            f"/slo/redirect/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+                "RelayState": "https://evil.com/phishing",
+            },
+        )
+        plan = FlowPlan(flow_pk="test-flow")
+        plan.context[PLAN_CONTEXT_SAML_RELAY_STATE] = plan_relay_state
+        request.session = {SESSION_KEY_PLAN: plan}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingRedirectView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should fall through to plan context value
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, plan_relay_state)
+
+    def test_post_view_blocks_external_relay_state(self):
+        """Test that POST view blocks redirect to external malicious URL"""
+        request = self.factory.post(
+            f"/slo/post/{self.application.slug}/",
+            {
+                "SAMLResponse": "dummy-response",
+                "RelayState": "https://evil.com/phishing",
+            },
+        )
+        request.session = {}
+        request.brand = self.brand
+
+        view = SPInitiatedSLOBindingPOSTView()
+        view.setup(request, application_slug=self.application.slug)
+        response = view.dispatch(request, application_slug=self.application.slug)
+
+        # Should reject and redirect to root
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+
 
 
 class TestSPInitiatedSLOLogoutMethods(TestCase):
