@@ -11,11 +11,14 @@ import { repeat } from "lit/directives/repeat.js";
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
 // commonplace and singular enough to merit its own handler.
+// `icon` (position 4) is a FontAwesome class name (e.g. "fa-cog") used by the command palette;
+// it is not rendered by the sidebar itself.
 export type SidebarEntry = [
     path: string | null,
     label: string,
     attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
-    children?: SidebarEntry[],
+    children?: SidebarEntry[] | null,
+    icon?: string,
 ];
 
 /**
@@ -57,25 +60,29 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Dashboards"), { "?expanded": true }, [
         ["/administration/overview", msg("Overview")],
         ["/administration/dashboard/users", msg("User Statistics")],
-        ["/administration/system-tasks", msg("System Tasks")]]
+        ["/administration/system-tasks", msg("System Tasks")]],
+        "fa-chart-bar",
     ],
     [null, msg("Applications"), null, [
         ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
-        ["/outpost/outposts", msg("Outposts")]]
+        ["/outpost/outposts", msg("Outposts")]],
+        "fa-puzzle-piece",
     ],
     [null, msg("Endpoint Devices"), null, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
         ["/endpoints/groups", msg("Device access groups")],
         ["/endpoints/connectors", msg("Connectors"), [`^/endpoints/connectors/(?<uuid>${UUID_REGEX})$`]],
-    ]],
+        ], "fa-mobile-alt",
+    ],
     [null, msg("Events"), null, [
         ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
         ["/events/rules", msg("Notification Rules")],
         ["/events/transports", msg("Notification Transports")],
         ["/events/lifecycle-rules", msg("Lifecycle Rules"), {enterprise:true}],
         ["/events/lifecycle-reviews", msg("Reviews"), {enterprise:true}],
-        ["/events/exports", msg("Data Exports"), {enterprise:true}]]
+        ["/events/exports", msg("Data Exports"), {enterprise:true}]],
+        "fa-stream",
     ],
     [null, msg("Customization"), null, [
         ["/policy/policies", msg("Policies")],
@@ -83,11 +90,13 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/blueprints/instances", msg("Blueprints")],
         ["/files", msg("Files")],
         ["/policy/reputation", msg("Reputation scores")]],
+        "fa-paint-brush",
     ],
     [null, msg("Flows and Stages"), null, [
         ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],
         ["/flow/stages", msg("Stages")],
-        ["/flow/stages/prompts", msg("Prompts")]]
+        ["/flow/stages/prompts", msg("Prompts")]],
+        "fa-project-diagram",
     ],
     [null, msg("Directory"), null, [
         ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
@@ -96,13 +105,15 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/identity/initial-permissions", msg("Initial Permissions"), [`^/identity/initial-permissions/(?<id>${ID_REGEX})$`]],
         ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
         ["/core/tokens", msg("Tokens and App passwords")],
-        ["/flow/stages/invitations", msg("Invitations")]]
+        ["/flow/stages/invitations", msg("Invitations")]],
+        "fa-address-book",
     ],
     [null, msg("System"), null, [
         ["/core/brands", msg("Brands")],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
-        ["/admin/settings", msg("Settings")]]
+        ["/admin/settings", msg("Settings")]],
+        "fa-cog",
     ],
 ];
 
@@ -110,5 +121,5 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
 export const createAdminSidebarEnterpriseEntries = (): readonly SidebarEntry[] => [
     [null, msg("Enterprise"), null, [
         ["/enterprise/licenses", msg("Licenses"), null]
-    ],
-]]
+    ], "fa-building"],
+]

@@ -1,4 +1,5 @@
 import "#admin/AdminInterface/AboutModal";
+import "#admin/AdminInterface/AkAdminCommandPalette";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
@@ -11,6 +12,7 @@ import {
     createAdminSidebarEntries,
     renderSidebarItems,
 } from "./AdminSidebar.js";
+import { buildAdminCommandPaletteActions } from "./AdminCommandPalette.js";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { configureSentry } from "#common/sentry/index";
@@ -157,7 +159,19 @@ export class AdminInterface extends WithCapabilitiesConfig(
             "pf-m-collapsed": openDrawerCount === 0,
         };
 
-        return html`<div class="pf-c-page">
+        const includeEnterprise = this.can(CapabilitiesEnum.IsEnterprise);
+        const sidebarEntries = createAdminSidebarEntries();
+        const enterpriseSidebarEntries = includeEnterprise ? createAdminSidebarEnterpriseEntries() : [];
+        const paletteActions = buildAdminCommandPaletteActions({
+            sidebarEntries,
+            enterpriseSidebarEntries,
+            includeEnterprise,
+        });
+
+        return html`<ak-admin-command-palette
+                .actions=${paletteActions}
+            ></ak-admin-command-palette>
+            <div class="pf-c-page">
             <ak-page-navbar>
                 <button
                     slot="toggle"
@@ -177,10 +191,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
             </ak-page-navbar>
 
             <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                >${renderSidebarItems(createAdminSidebarEntries())}
-                ${this.can(CapabilitiesEnum.IsEnterprise)
-                    ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
-                    : nothing}
+                >${renderSidebarItems(sidebarEntries)}
+                ${includeEnterprise ? renderSidebarItems(enterpriseSidebarEntries) : nothing}
             </ak-sidebar>
 
             <div class="pf-c-page__drawer">
@@ -213,7 +225,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
                     tabindex="0"
                 ></div>
             </div>
-        </div>`;
+        </div>
+        `;
     }
 
     //#endregion
