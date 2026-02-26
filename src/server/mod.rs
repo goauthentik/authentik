@@ -110,10 +110,12 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
     let gunicorn = Gunicorn::new()?;
 
     let router = build_router().await;
-    let tls_config = RustlsConfig::from_config(Arc::new(tls::make_tls_config(
-        core::tls::init(tasks).await?,
-        Arc::new(ArcSwapOption::empty()),
-    )?));
+    let tls_config = tls::make_initial_tls_config()?;
+
+    tasks
+        .build_task()
+        .name(&format!("{}::tls::watch_tls_config", module_path!(),))
+        .spawn(tls::watch_tls_config(arbiter.clone(), tls_config.clone()))?;
 
     for addr in config.listen.http.iter().copied() {
         let handle = Handle::new();
