@@ -301,7 +301,7 @@
     },
     "engines": {
         "node": ">=24",
-        "npm": ">=11.6.2"
+        "npm": ">=11.10.1"
     },
     "devEngines": {
         "runtime": {
@@ -311,10 +311,11 @@
         },
         "packageManager": {
             "name": "npm",
-            "version": "11.10.1",
+            "version": ">=11.10.1",
             "onFail": "warn"
         }
     },
+    "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
