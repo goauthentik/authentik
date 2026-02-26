@@ -1,12 +1,14 @@
 import type { CommandPaletteAction } from "./AdminCommandPalette.js";
 
 import { AKElement } from "#elements/Base";
+
 import Styles from "#admin/AdminInterface/AkAdminCommandPalette.css" with { type: "bundled-text" };
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 @customElement("ak-admin-command-palette")
@@ -56,16 +58,20 @@ export class AkAdminCommandPalette extends AKElement {
         this.#abortController?.abort();
     }
 
-    public override willUpdate(changed: PropertyValues<this>): void {
+    public override willUpdate(changed: PropertyValues): void {
         super.willUpdate(changed);
 
         if (changed.has("_open") && this._open) {
             this._query = "";
             this._selectedIndex = 0;
         }
+
+        if (this._selectedIndex >= this.filteredActions.length) {
+            this._selectedIndex = Math.max(this.filteredActions.length - 1, 0);
+        }
     }
 
-    public override updated(changed: PropertyValues<this>): void {
+    public override updated(changed: PropertyValues): void {
         super.updated(changed);
 
         if (!changed.has("_open")) return;
@@ -82,8 +88,7 @@ export class AkAdminCommandPalette extends AKElement {
         if (!this._query) return this.actions;
         const q = this._query.toLowerCase();
         return this.actions.filter(
-            (a) =>
-                a.title.toLowerCase().includes(q) || a.section?.toLowerCase().includes(q),
+            (a) => a.title.toLowerCase().includes(q) || a.section?.toLowerCase().includes(q),
         );
     }
 
@@ -93,12 +98,20 @@ export class AkAdminCommandPalette extends AKElement {
         switch (event.key) {
             case "ArrowDown": {
                 event.preventDefault();
+                if (items.length === 0) {
+                    this._selectedIndex = 0;
+                    break;
+                }
                 this._selectedIndex = Math.min(this._selectedIndex + 1, items.length - 1);
                 this.#scrollSelectedIntoView();
                 break;
             }
             case "ArrowUp": {
                 event.preventDefault();
+                if (items.length === 0) {
+                    this._selectedIndex = 0;
+                    break;
+                }
                 this._selectedIndex = Math.max(this._selectedIndex - 1, 0);
                 this.#scrollSelectedIntoView();
                 break;
@@ -131,6 +144,10 @@ export class AkAdminCommandPalette extends AKElement {
         this._query = (event.target as HTMLInputElement).value;
         this._selectedIndex = 0;
     };
+
+    #actionOptionId(index: number): string {
+        return `ak-admin-command-option-${index}`;
+    }
 
     // Clicking on the <dialog> element itself means the backdrop was clicked
     #handleDialogClick = (event: MouseEvent) => {
@@ -179,7 +196,8 @@ export class AkAdminCommandPalette extends AKElement {
             const isSelected = index === this._selectedIndex;
             const currentIndex = index;
             return html`<li
-                class=${classMap({ action: true, "is-selected": isSelected })}
+                id=${this.#actionOptionId(index)}
+                class=${classMap({ "action": true, "is-selected": isSelected })}
                 role="option"
                 aria-selected=${isSelected ? "true" : "false"}
                 @click=${() => {
@@ -202,9 +220,7 @@ export class AkAdminCommandPalette extends AKElement {
         }
 
         for (const [section, sectionActions] of sections) {
-            result.push(
-                html`<li class="section-label" role="presentation">${section}</li>`,
-            );
+            result.push(html`<li class="section-label" role="presentation">${section}</li>`);
             for (const action of sectionActions) {
                 result.push(renderItem(action, globalIndex++));
             }
@@ -214,6 +230,11 @@ export class AkAdminCommandPalette extends AKElement {
     }
 
     protected override render() {
+        const activeDescendantId =
+            this.filteredActions[this._selectedIndex] !== undefined
+                ? this.#actionOptionId(this._selectedIndex)
+                : undefined;
+
         return html`
             <dialog
                 aria-label=${msg("Command palette")}
@@ -255,11 +276,21 @@ export class AkAdminCommandPalette extends AKElement {
                         @input=${this.#handleInput}
                         placeholder=${msg("Search admin pages...")}
                         aria-label=${msg("Search admin pages")}
+                        role="combobox"
+                        aria-controls="ak-admin-command-palette-results"
+                        aria-expanded=${this._open ? "true" : "false"}
+                        aria-activedescendant=${ifDefined(activeDescendantId)}
+                        aria-autocomplete="list"
                         autocomplete="off"
                         spellcheck="false"
                     />
                 </div>
-                <ul class="list" role="listbox" aria-label=${msg("Command palette results")}>
+                <ul
+                    id="ak-admin-command-palette-results"
+                    class="list"
+                    role="listbox"
+                    aria-label=${msg("Command palette results")}
+                >
                     ${this.#renderActions()}
                 </ul>
                 <div class="footer">
