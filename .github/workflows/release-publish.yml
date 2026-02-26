@@ -87,11 +87,9 @@ jobs:
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
+          working-directory: web
       - name: Set up QEMU
         uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
       - name: Set up Docker Buildx
@@ -155,15 +153,9 @@ jobs:
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - name: Install web dependencies
-        working-directory: web/
-        run: |
-          npm ci
+          working-directory: web
       - name: Generate API Clients
         run: |
           make gen-client-ts
