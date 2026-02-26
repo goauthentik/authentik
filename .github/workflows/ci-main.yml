@@ -87,8 +87,13 @@ jobs:
       - name: checkout stable
         run: |
           set -e -o pipefail
+
           cp -R .github ..
           cp -R scripts ..
+
+          mkdir -p ../packages
+          cp -R packages/logger-js ../packages/logger-js
+
           # Previous stable tag
           prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
           # Current version family based on
@@ -96,10 +101,13 @@ jobs:
           if [[ -n $current_version_family ]]; then
               prev_stable="version/${current_version_family}"
           fi
+
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
-          rm -rf .github/ scripts/
+
+          rm -rf .github/ scripts/ packages/logger-js/
           mv ../.github ../scripts .
+          mv ../packages/logger-js ./packages/
       - name: Setup authentik env (stable)
         uses: ./.github/actions/setup
         with:
@@ -214,6 +222,7 @@ jobs:
       - name: Setup e2e env (chrome, etc)
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - uses: ./.github/actions/setup-node
       - id: cache-web
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v4
         with:
@@ -221,12 +230,11 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
-        working-directory: web
         run: |
-          npm ci
-          make -C .. gen-client-ts
-          npm run build
-          npm run build:sfe
+          make node-install
+          make gen-client-ts
+          corepack npm run build --prefix web
+          corepack npm run build:sfe --prefix web
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
@@ -264,12 +272,10 @@ jobs:
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
-        working-directory: web
         run: |
-          npm ci
-          make -C .. gen-client-ts
-          npm run build
-          npm run build:sfe
+          make gen-client-ts
+          corepack npm run build --prefix web
+          corepack npm run build:sfe --prefix web
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}

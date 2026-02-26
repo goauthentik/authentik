@@ -15,52 +15,34 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        command:
-          - lint
-          - lint:lockfile
-          - tsc
-          - prettier-check
-        project:
-          - web
-        include:
-          - command: tsc
-            project: web
-          - command: lit-analyse
-            project: web
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: ${{ matrix.project }}/package.json
-          cache: "npm"
-          cache-dependency-path: ${{ matrix.project }}/package-lock.json
-      - working-directory: ${{ matrix.project }}/
-        run: |
-          npm ci
+          working-directory: web
       - name: Generate API
         run: make gen-client-ts
       - name: Lint
-        working-directory: ${{ matrix.project }}/
-        run: npm run ${{ matrix.command }}
+        run: corepack npm run lint --prefix web
+      - name: Check types
+        run: corepack npm run tsc --prefix web
+      - name: Check formatting
+        run: corepack npm run prettier-check --prefix web
+      - name: Lit analyse
+        run: corepack npm run lit-analyse --prefix web
+
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
-        run: npm ci
+          working-directory: web
       - name: Generate API
         run: make gen-client-ts
       - name: build
         working-directory: web/
-        run: npm run build
+        run: corepack npm run build
   ci-web-mark:
     if: always()
     needs:
@@ -77,15 +59,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
-        run: npm ci
+          working-directory: web
       - name: Generate API
         run: make gen-client-ts
       - name: test
         working-directory: web/
-        run: npm run test || exit 0
+        run: corepack npm run test || exit 0
