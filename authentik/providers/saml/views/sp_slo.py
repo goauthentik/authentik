@@ -9,6 +9,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.common.saml.parsers.logout_response import LogoutResponseParser
 from authentik.common.saml.parsers.verify import (
     verify_detached_signature,
@@ -23,7 +24,6 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.iframe_logout import IframeLogoutStageView
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import (
     SAMLBindings,
     SAMLLogoutMethods,
@@ -215,11 +215,9 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
 
             # Resolve provider for signature verification
             try:
-                application = Application.objects.get(
-                    slug=kwargs.get("application_slug", "")
-                )
+                application = Application.objects.get(slug=kwargs.get("application_slug", ""))
                 provider = SAMLProvider.objects.get(pk=application.provider_id)
-            except (Application.DoesNotExist, SAMLProvider.DoesNotExist):
+            except Application.DoesNotExist, SAMLProvider.DoesNotExist:
                 return redirect("authentik_core:root-redirect")
 
             # Parse and verify LogoutResponse
@@ -306,11 +304,9 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
 
             # Resolve provider for signature verification
             try:
-                application = Application.objects.get(
-                    slug=kwargs.get("application_slug", "")
-                )
+                application = Application.objects.get(slug=kwargs.get("application_slug", ""))
                 provider = SAMLProvider.objects.get(pk=application.provider_id)
-            except (Application.DoesNotExist, SAMLProvider.DoesNotExist):
+            except Application.DoesNotExist, SAMLProvider.DoesNotExist:
                 return redirect("authentik_core:root-redirect")
 
             # Parse and verify LogoutResponse

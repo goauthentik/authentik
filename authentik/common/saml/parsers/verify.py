@@ -6,15 +6,11 @@ from urllib.parse import quote_plus
 import xmlsec
 
 from authentik.common.saml.constants import (
-    DSA_SHA1,
     NS_MAP,
-    RSA_SHA1,
-    RSA_SHA256,
-    RSA_SHA384,
-    RSA_SHA512,
+    SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
     "Verification Certificate configured, but message is not signed."
@@ -84,14 +80,7 @@ def verify_detached_signature(
     )
     dsig_ctx.key = key
 
-    sign_algorithm_transform_map = {
-        DSA_SHA1: xmlsec.constants.TransformDsaSha1,
-        RSA_SHA1: xmlsec.constants.TransformRsaSha1,
-        RSA_SHA256: xmlsec.constants.TransformRsaSha256,
-        RSA_SHA384: xmlsec.constants.TransformRsaSha384,
-        RSA_SHA512: xmlsec.constants.TransformRsaSha512,
-    }
-    sign_algorithm_transform = sign_algorithm_transform_map.get(
+    sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
         sig_alg, xmlsec.constants.TransformRsaSha1
     )
 

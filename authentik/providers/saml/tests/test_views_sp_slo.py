@@ -7,11 +7,11 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from authentik.common.saml.constants import SAML_NAME_ID_FORMAT_EMAIL
+from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_brand, create_test_cert, create_test_flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequest

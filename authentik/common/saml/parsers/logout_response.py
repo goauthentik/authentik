@@ -8,9 +8,9 @@ from dataclasses import dataclass
 from defusedxml import ElementTree
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL, SAML_STATUS_SUCCESS
-from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.processors.authn_request_parser import ERROR_CANNOT_DECODE_REQUEST
-from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
+from authentik.common.saml.exceptions import CannotHandleAssertion
+
+ERROR_CANNOT_DECODE_RESPONSE = "Cannot decode SAML response."
 
 
 @dataclass(slots=True)
@@ -61,23 +61,23 @@ class LogoutResponseParser:
         """Validate and parse raw response with enveloped signature (POST binding)."""
         try:
             decoded_xml = b64decode(saml_response.encode())
-        except (UnicodeDecodeError, binascii.Error):
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+        except UnicodeDecodeError, binascii.Error:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
         return self._parse_xml(decoded_xml, relay_state)
 
-    def parse_detached(
-        self, saml_response: str, relay_state: str | None = None
-    ) -> LogoutResponse:
+    def parse_detached(self, saml_response: str, relay_state: str | None = None) -> LogoutResponse:
         """Validate and parse raw response with detached signature (Redirect binding)."""
         try:
-            decoded_xml = decode_base64_and_inflate(saml_response)
-        except (UnicodeDecodeError, binascii.Error, zlib.error):
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_REQUEST) from None
+            decoded_data = b64decode(saml_response)
+            try:
+                decoded_xml = zlib.decompress(decoded_data, -15).decode("utf-8")
+            except zlib.error:
+                decoded_xml = decoded_data.decode("utf-8")
+        except UnicodeDecodeError, binascii.Error, zlib.error:
+            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def verify_status(self, response: LogoutResponse):
         """Verify that the LogoutResponse has a successful status."""
         if response.status != SAML_STATUS_SUCCESS:
-            raise CannotHandleAssertion(
-                f"LogoutResponse status is not success: {response.status}"
-            )
+            raise CannotHandleAssertion(f"LogoutResponse status is not success: {response.status}")
