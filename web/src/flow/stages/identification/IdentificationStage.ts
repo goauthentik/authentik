@@ -4,12 +4,6 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
-import {
-    isConditionalMediationAvailable,
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "#common/helpers/webauthn";
-
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -19,6 +13,7 @@ import { BaseStage } from "#flow/stages/base";
 import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
 import CaptchaController from "#flow/stages/identification/controllers/CaptchaController";
 import RememberMe from "#flow/stages/identification/controllers/RememberMeController";
+import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
 import Styles from "#flow/stages/identification/styles.css";
 
 import {
@@ -108,9 +103,7 @@ export class IdentificationStage extends BaseStage<
     private rememberMe = new RememberMe(this);
     private autoRedirect = new AutoRedirect(this);
     private captcha = new CaptchaController(this);
-
-    // AbortController for conditional WebAuthn request
-    #passkeyAbortController: AbortController | null = null;
+    private webauthn = new WebauthnController(this);
 
     //#endregion
 
@@ -121,89 +114,17 @@ export class IdentificationStage extends BaseStage<
         this.addController(this.rememberMe);
         this.addController(this.autoRedirect);
         this.addController(this.captcha);
+        this.addController(this.webauthn);
     }
 
     public override updated(changedProperties: PropertyValues<this>) {
         super.updated(changedProperties);
-
         if (changedProperties.has("challenge") && this.challenge) {
             this.#createHelperForm();
-            this.#startConditionalWebAuthn();
         }
-    }
-
-    public override disconnectedCallback(): void {
-        super.disconnectedCallback();
-        // Abort any pending conditional WebAuthn request when component is removed
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = null;
     }
 
     //#endregion
-
-    /**
-     * Start a conditional WebAuthn request for passkey autofill.
-     * This allows users to select a passkey from the browser's autofill dropdown.
-     */
-    async #startConditionalWebAuthn(): Promise<void> {
-        // Check if passkey challenge is provided
-        // Note: passkeyChallenge is added dynamically and may not be in the generated types yet
-        const passkeyChallenge = (
-            this.challenge as IdentificationChallenge & {
-                passkeyChallenge?: PublicKeyCredentialRequestOptions;
-            }
-        )?.passkeyChallenge;
-
-        if (!passkeyChallenge) {
-            return;
-        }
-
-        // Check if browser supports conditional mediation
-        const isAvailable = await isConditionalMediationAvailable();
-        if (!isAvailable) {
-            console.debug("authentik/identification: Conditional mediation not available");
-            return;
-        }
-
-        // Abort any existing request
-        this.#passkeyAbortController?.abort();
-        this.#passkeyAbortController = new AbortController();
-
-        try {
-            const publicKeyOptions = transformCredentialRequestOptions(passkeyChallenge);
-
-            // Start the conditional WebAuthn request
-            const credential = (await navigator.credentials.get({
-                publicKey: publicKeyOptions,
-                mediation: "conditional",
-                signal: this.#passkeyAbortController.signal,
-            })) as PublicKeyCredential | null;
-
-            if (!credential) {
-                console.debug("authentik/identification: No credential returned");
-                return;
-            }
-
-            // Transform and submit the passkey response
-            const transformedCredential = transformAssertionForServer(credential);
-
-            await this.host?.submit(
-                {
-                    passkey: transformedCredential,
-                },
-                {
-                    invisible: true,
-                },
-            );
-        } catch (error) {
-            if (error instanceof Error && error.name === "AbortError") {
-                // Request was aborted, this is expected when navigating away
-                console.debug("authentik/identification: Conditional WebAuthn aborted");
-                return;
-            }
-            console.warn("authentik/identification: Conditional WebAuthn failed", error);
-        }
-    }
 
     //#region Helper Form
 

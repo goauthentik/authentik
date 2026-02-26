@@ -15,7 +15,7 @@ type PasskeyChallenge = Omit<IdentificationChallenge, "passkeyChallenge"> & {
     passkeyChallenge?: PublicKeyCredentialRequestOptions;
 };
 
-export class WebauthnIdentificationController implements ReactiveController {
+export class WebauthnController implements ReactiveController {
     public passkey: PublicKeyCredentialRequestOptions | null = null;
 
     constructor(private host: IdentificationHost) {}
@@ -85,3 +85,5 @@ export class WebauthnIdentificationController implements ReactiveController {
         }
     }
 }
+
+export default WebauthnController;

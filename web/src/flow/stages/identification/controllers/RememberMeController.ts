@@ -22,11 +22,33 @@ export class RememberMe implements ReactiveController {
 
     rememberingUsername: boolean = false;
 
-    constructor(private host: RememberMeHost) {
-        this.trackRememberMe = this.trackRememberMe.bind(this);
-        this.toggleRememberMe = this.toggleRememberMe.bind(this);
-        this.host.addController(this);
-    }
+    trackRememberMe = () => {
+        if (!this.usernameField || this.usernameField.value === undefined) {
+            return;
+        }
+        this.username = this.usernameField.value;
+        localStorage?.setItem("authentik-remember-me-user", this.username);
+    };
+
+    // When active, save current details and record every keystroke to the username.
+    // When inactive, clear all fields and remove keystroke recorder.
+    toggleRememberMe = () => {
+        if (!this.rememberMeToggle || !this.rememberMeToggle.checked) {
+            localStorage?.removeItem("authentik-remember-me-user");
+            localStorage?.removeItem("authentik-remember-me-session");
+            this.username = undefined;
+            this.usernameField?.removeEventListener("keyup", this.trackRememberMe);
+            return;
+        }
+        if (!this.usernameField) {
+            return;
+        }
+        localStorage?.setItem("authentik-remember-me-user", this.usernameField.value);
+        localStorage?.setItem("authentik-remember-me-session", this.localSession);
+        this.usernameField.addEventListener("keyup", this.trackRememberMe);
+    };
+
+    constructor(private host: RememberMeHost) {}
 
     // Record a stable token that we can use between requests to track if we've
     // been here before.  If we can't, clear out the username.
@@ -107,32 +129,6 @@ export class RememberMe implements ReactiveController {
         if (this.isEnabled && this.canAutoSubmit) {
             this.submitButton?.click();
         }
-    }
-
-    trackRememberMe() {
-        if (!this.usernameField || this.usernameField.value === undefined) {
-            return;
-        }
-        this.username = this.usernameField.value;
-        localStorage?.setItem("authentik-remember-me-user", this.username);
-    }
-
-    // When active, save current details and record every keystroke to the username.
-    // When inactive, clear all fields and remove keystroke recorder.
-    toggleRememberMe() {
-        if (!this.rememberMeToggle || !this.rememberMeToggle.checked) {
-            localStorage?.removeItem("authentik-remember-me-user");
-            localStorage?.removeItem("authentik-remember-me-session");
-            this.username = undefined;
-            this.usernameField?.removeEventListener("keyup", this.trackRememberMe);
-            return;
-        }
-        if (!this.usernameField) {
-            return;
-        }
-        localStorage?.setItem("authentik-remember-me-user", this.usernameField.value);
-        localStorage?.setItem("authentik-remember-me-session", this.localSession);
-        this.usernameField.addEventListener("keyup", this.trackRememberMe);
     }
 
     render() {
