@@ -111,6 +111,8 @@ export class IdentificationStage extends BaseStage<
 
     constructor() {
         super();
+        // We _define and instantiate_ these fields above, then _read_ them here, and that satisfies
+        // the lint pass that there are no unused private fields.
         this.addController(this.rememberMe);
         this.addController(this.autoRedirect);
         this.addController(this.captcha);

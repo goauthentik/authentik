@@ -29,7 +29,12 @@ import {
 } from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
 import { BaseStage } from "#flow/stages/base";
-import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
+import type {
+    ExecutorMessage,
+    FlowChallengeResponseRequestBody,
+    StageHost,
+    SubmitOptions,
+} from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -130,6 +135,14 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //region Live event handlers
 
+    handleExecutorMessage = (event: MessageEvent<ExecutorMessage>) => {
+        const { source, context, message } = event.data;
+
+        if (source !== "goauthentik.io" && context !== "flow-executor" && message === "submit") {
+            this.submit({} as FlowChallengeResponseRequest);
+        }
+    };
+
     handleChallengeRequest = (event: AKFlowUpdateChallengeRequest) => {
         this.challenge = event.challenge;
     };
@@ -153,20 +166,9 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
         this.#api = new FlowsApi(DEFAULT_CONFIG);
 
-        window.addEventListener("message", (event) => {
-            const msg: {
-                source?: string;
-                context?: string;
-                message: string;
-            } = event.data;
-
-            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
-                return;
-            }
-            if (msg.message === "submit") {
-                this.submit({} as FlowChallengeResponseRequest);
-            }
-        });
+        window.addEventListener("message", this.handleExecutorMessage);
+        this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
+        this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
 
     /**

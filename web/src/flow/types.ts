@@ -83,11 +83,18 @@ export interface StageHost {
 }
 
 export interface IBaseStage<Tin extends StageChallengeLike, Tout = never>
-    extends HTMLElement, ReactiveControllerHost {
+    extends HTMLElement,
+        ReactiveControllerHost {
     host?: StageHost;
     challenge: Tin | null;
     submitForm: (event?: SubmitEvent, defaults?: Tout) => Promise<boolean>;
     reset?(): void;
+}
+
+export interface ExecutorMessage {
+    source?: string;
+    context?: string;
+    message: string;
 }
 
 export type BaseStageConstructor<

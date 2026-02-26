@@ -89,6 +89,10 @@ declare global {
     interface WindowEventMap {
         [AKFlowAdvanceEvent.eventName]: AKFlowAdvanceEvent;
         [AKFlowInspectorChangeEvent.eventName]: AKFlowInspectorChangeEvent;
+    }
+
+    interface HTMLElementEventMap {
+        [AKFlowSubmitRequest.eventName]: AKFlowSubmitRequest;
         [AKFlowUpdateChallengeRequest.eventName]: AKFlowUpdateChallengeRequest;
     }
 }
