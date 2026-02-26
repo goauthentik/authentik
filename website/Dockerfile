@@ -4,7 +4,10 @@ ENV NODE_ENV=production
 
 WORKDIR /work/website
 
-RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
+RUN --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
+    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
+    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
+    --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
     --mount=type=bind,target=/work/website/vendored/detect-package-manager,src=./website/vendored/detect-package-manager \
     --mount=type=bind,target=/work/website/docusaurus-theme/package.json,src=./website/docusaurus-theme/package.json \
