@@ -44,8 +44,7 @@ LOGGER = get_logger()
 def _is_safe_relay_state(relay_state: str, request: HttpRequest) -> bool:
     """Validate that a relay_state URL is a safe redirect destination.
 
-    Only allows redirects to the relay_state stored in the session's flow plan
-    context, which was set server-side by authentik when initiating the SLO chain.
+    Only allows redirects to the relay_state stored in the session's flow plan context.
     """
     if SESSION_KEY_PLAN in request.session:
         plan: FlowPlan = request.session[SESSION_KEY_PLAN]

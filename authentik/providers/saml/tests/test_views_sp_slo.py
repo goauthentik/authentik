@@ -534,7 +534,6 @@ class TestSPInitiatedSLOViews(TestCase):
         self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
 
 
-
 class TestSPInitiatedSLOLogoutMethods(TestCase):
     """Test SP-initiated SAML SLO logout method branching"""
 
