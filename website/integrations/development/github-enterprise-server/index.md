@@ -43,7 +43,7 @@ In order to use GitHub Enterprise Server, SCIM must also be set up.
     - Set the **Audience** and **Issuer** to `https://github.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available **Signing certificate**. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -78,7 +78,7 @@ Once the appliance has saved the settings and reloaded the services, you should 
 
 This section only applies if you have taken the steps prior to prepare the instance for SCIM enablement.
 
-After enabling SAML, log into your initial administrator account again. Click the user portrait in tee top right, click _Enterprise settings_, click _Settigs_ in the left-hand sidebar, click _Authentication security_. On this page you have to check _Enable SCIM configuration_ and press _Save_. After which you should get a message reading _SCIM Enabled_.
+After enabling SAML, log into your initial administrator account again. Click the user portrait in tee top right, click _Enterprise settings_, click _Settings_ in the left-hand sidebar, click _Authentication security_. On this page you have to check _Enable SCIM configuration_ and press _Save_. After which you should get a message reading _SCIM Enabled_.
 
 Before we create a SCIM provider, we have to create a new Property Mapping. In authentik, go to _Customization_, then _Property Mappings_. Here, click _Create_, select _SCIM Provider Mapping_. Name the mapping something memorable and paste the following code in the _Expression_ field:
 
@@ -111,4 +111,4 @@ Create a new SCIM provider with the following parameters:
 
 Go back to your GitHub Enterprise Server Application created in the first step and add your new SCIM provider in the _Backchannel Providers_ field, then click the _Update_ button.
 
-You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioend by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.
+You should now be ready to assign users to your _GitHub Users_ and _GitHub Admins_ groups, which will be provisioned by the SCIM provisioner. If you do not see your users being provisioned, go to your SCIM provider and click the _Run sync again_ option. A few seconds later, you should see results of the SCIM sync.

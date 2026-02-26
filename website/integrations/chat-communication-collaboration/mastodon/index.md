@@ -36,7 +36,7 @@ To support the integration of Mastodon with authentik, you need to create an app
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://mastodon.company/auth/auth/openid_connect/callback`.
     - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -68,7 +68,7 @@ OIDC_SECURITY_ASSUME_EMAIL_IS_VERIFIED=true
 
 Restart mastodon-web.service
 
-## Additional Resources
+## Resources
 
 - https://github.com/mastodon/mastodon/pull/16221
 - https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42

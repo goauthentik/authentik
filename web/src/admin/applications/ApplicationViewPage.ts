@@ -4,6 +4,7 @@ import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/events/ObjectChangelog";
 import "#elements/AppIcon";
 import "#elements/EmptyState";
@@ -14,11 +15,13 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 
 import {
     Application,
+    ContentTypeEnum,
     CoreApi,
     OutpostsApi,
     RbacPermissionsAssignedByRolesListModelEnum,
@@ -39,7 +42,7 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-application-view")
-export class ApplicationViewPage extends AKElement {
+export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     static styles: CSSResult[] = [
         PFList,
         PFBanner,
@@ -400,6 +403,7 @@ export class ApplicationViewPage extends AKElement {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
@@ -408,6 +412,18 @@ export class ApplicationViewPage extends AKElement {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplication}
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.hasEnterpriseLicense
+                    ? html`<ak-object-lifecycle-page
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-lifecycle"
+                          id="page-lifecycle"
+                          aria-label=${msg("Lifecycle")}
+                          model=${ContentTypeEnum.AuthentikCoreApplication}
+                          object-pk=${this.application.pk}
+                      ></ak-object-lifecycle-page>`
+                    : nothing}
             </ak-tabs>
         </main>`;
     }

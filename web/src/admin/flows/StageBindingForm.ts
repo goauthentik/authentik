@@ -52,11 +52,14 @@ function createInvalidResponseOptions(): RadioOption<InvalidResponseActionEnum>[
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
+    async load() {
+        this.defaultOrder = await this.getOrder();
+    }
+
     async loadInstance(pk: string): Promise<FlowStageBinding> {
         const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
-        this.defaultOrder = await this.getOrder();
         return binding;
     }
 

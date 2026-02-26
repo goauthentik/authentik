@@ -15,6 +15,9 @@ from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
+from django_dramatiq_postgres.middleware import (
+    _MetricsHandler as BaseMetricsHandler,
+)
 from dramatiq import Worker
 from dramatiq.broker import Broker
 from dramatiq.message import Message
@@ -28,6 +31,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
+from authentik.root.monitoring import monitoring_set
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.models import Task, TaskLog, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
@@ -279,10 +283,16 @@ class WorkerStatusMiddleware(Middleware):
                 sleep(30)
 
 
+class _MetricsHandler(BaseMetricsHandler):
+    def do_GET(self) -> None:
+        monitoring_set.send_robust(self)
+        return super().do_GET()
+
+
 class MetricsMiddleware(BaseMetricsMiddleware):
     thread: Thread | None
+    handler_class = _MetricsHandler
 
-    @property
     def forks(self) -> list[Callable[[], None]]:
         return []
 

@@ -112,7 +112,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             return html`<ak-forms-modal>
                 ${StrictUnsafe<CustomFormElementTagName>(item.policyObj?.component, {
                     slot: "form",
-                    instancePk: item.pk,
+                    instancePk: item.policyObj?.pk,
                     actionLabel: msg("Update"),
                     headline: msg(str`Update ${item.policyObj?.name}`, {
                         id: "form.headline.update",
@@ -148,7 +148,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Policy binding(s)")}
+            object-label=${msg("Policy binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: PolicyBinding) => {
                 return [

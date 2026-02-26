@@ -47,7 +47,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-interface SAMLPreviewAttribute {
+export interface SAMLPreviewAttribute {
     attributes: {
         Name: string;
         Value: string[];
@@ -269,6 +269,7 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

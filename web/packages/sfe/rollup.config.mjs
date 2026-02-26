@@ -16,7 +16,7 @@ export async function createConfig() {
     const { resolvePackage, MonoRepoRoot } = await import("@goauthentik/core/paths/node");
 
     const distDirectory = join(MonoRepoRoot, "web", "dist", "sfe");
-    const bootstrapDirectory = resolvePackage("bootstrap", import.meta);
+    const packageDirectory = resolvePackage("@goauthentik/web-sfe", import.meta);
 
     /**
      * @type {Plugin} A plugin to copy static assets.
@@ -26,15 +26,10 @@ export async function createConfig() {
         buildEnd: async () => {
             console.log("Copying static assets...");
 
-            const bootstrapCSSFilePath = join(
-                bootstrapDirectory,
-                "dist",
-                "css",
-                "bootstrap.min.css",
-            );
+            const bootstrapCSSFilePath = join(packageDirectory, "vendored", "bootstrap");
 
             await fs.mkdir(distDirectory, { recursive: true });
-            await fs.copyFile(bootstrapCSSFilePath, join(distDirectory, "bootstrap.min.css"));
+            await fs.cp(bootstrapCSSFilePath, distDirectory, { recursive: true });
         },
     };
 

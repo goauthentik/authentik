@@ -10,6 +10,7 @@ import { dateToUTC } from "#common/temporal";
 
 import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
@@ -118,7 +119,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
                 const valueAsNumber = inputElement.valueAsNumber;
                 return assignValue(
                     inputElement,
-                    isNaN(valueAsNumber) ? null : dateToUTC(new Date(valueAsNumber)),
+                    isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
                     json,
                 );
             }
@@ -129,7 +130,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
                 const date = new Date(inputElement.value);
                 return assignValue(
                     inputElement,
-                    isNaN(date.getTime()) ? null : dateToUTC(date),
+                    isNaN(date.getTime()) ? undefined : dateToUTC(date),
                     json,
                 );
             }
@@ -202,12 +203,12 @@ function reportInvalidFields(
  * @class Form
  *
  * @slot - Where the form goes if `renderForm()` returns undefined.
- * @fires eventname - description
+ * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
+ * @fires ak-submitted - Dispatched when the form is submitted.
  *
  * @csspart partname - description
- */
-
-/* TODO:
+ *
+ * @todo
  *
  * 1. Specialization: Separate this component into three different classes:
  *    - The base class
@@ -217,8 +218,6 @@ function reportInvalidFields(
  *    Consider refactoring serializeForm() so that the conversions are on
  *    the input types, rather than here. (i.e. "Polymorphism is better than
  *    switch.")
- *
- *
  */
 export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
@@ -243,7 +242,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     @property({ type: String })
     public headline?: string;
 
-    @property({ type: String })
+    @property({ type: String, attribute: "action-label" })
     public actionLabel?: string;
 
     //#endregion
@@ -357,7 +356,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     /**
      * Convert the elements of the form to JSON.[4]
      */
-    protected serialize(): T | undefined {
+    protected serialize(): T | null {
         const elements = this.shadowRoot?.querySelectorAll("ak-form-element-horizontal");
 
         if (!elements) {
@@ -375,7 +374,21 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     public submit = (event: SubmitEvent): Promise<unknown | false> => {
         event.preventDefault();
 
-        const data = this.serialize();
+        let data: T | null;
+
+        try {
+            data = this.serialize();
+        } catch (error) {
+            console.error("authentik/forms: An error occurred while serializing the form.", error);
+
+            showMessage({
+                level: MessageLevel.error,
+                message: msg("An unknown error occurred while submitting the form."),
+                description: pluckErrorDetail(error),
+            });
+
+            return Promise.resolve(false);
+        }
 
         if (!data) return Promise.resolve(false);
 
@@ -395,6 +408,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                         composed: true,
                     }),
                 );
+
+                this.dispatchEvent(new AKFormSubmittedEvent(response));
 
                 return response;
             })
@@ -456,6 +471,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
             id="form"
             class="pf-c-form pf-m-horizontal"
             autocomplete=${ifDefined(this.autocomplete)}
+            method="dialog"
             @submit=${this.submit}
         >
             ${inline}
@@ -527,12 +543,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 return nothing;
             }
 
-            return html`<fieldset class="pf-c-modal-box__footer">
+            return html`<fieldset part="form-actions" class="pf-c-card__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <button
                     type="submit"
                     form="form"
                     class="pf-c-button pf-m-primary"
+                    part="submit-button"
+                    formmethod="dialog"
                     aria-description=${msg("Submit action")}
                 >
                     ${this.actionLabel || msg("Submit")}

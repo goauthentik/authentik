@@ -11,7 +11,7 @@ support_level: community
 > -- https://en.wikipedia.org/wiki/WordPress
 
 :::info
-There are many different plugins for WordPress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic Client" version 3.8.5 by Jonathan Daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the WordPress Plugin gallery.
+There are many different plugins for WordPress that allow you to set up SSO using different authentication methods. This tutorial uses the "OpenID Connect Generic Client" plugin, version 3.8.5, by Jonathan Daggerhart. This plugin uses OpenID/OAuth2 and is free without paywalls or subscriptions at the time of writing. The plugin is available for free in the WordPress Plugin Directory.
 :::
 
 ## Preparation
@@ -41,23 +41,23 @@ To support the integration of WordPress with authentik, you need to create an ap
     - Set a `Strict` redirect URI to `https://wp.company/wp-admin/admin-ajax.php?action=openid-connect-authorize`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add `offline_access` to the list of selected scopes.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## WordPress configuration
 
 :::info
-Assumption is being made that you have successfully downloaded and activated the required plugin "OpenID Connect Generic Client" by Jonathan Daggerhart
+This guide assumes that you have successfully downloaded and activated the required "OpenID Connect Generic Client" plugin by Jonathan Daggerhart.
 :::
 
-In WordPress, under _Settings_, Select _OpenID Connect Client_
+In WordPress, under _Settings_, select _OpenID Connect Client_.
 
 :::info
 Only settings that have been modified from default have been listed.
 :::
 
-- Login Type: OpenID Connect Button on Login (This option display a button to login using OpenID as well as local WP login)
+- Login Type: OpenID Connect Button on Login (This option displays a button to log in using OpenID as well as local WP login)
 - Client ID: Client ID from step 1
 - Client Secret: Client Secret from step 1
 - OpenID Scope: `email profile openid offline_access`
@@ -71,7 +71,7 @@ Make sure to include the _offline_access_ scope to ensure refresh tokens are gen
 :::
 
 :::info
-Review each setting and choose the ones that you require for your installation. Examples of popular settings are _Link Existing Users_, _Create user if does not exist_, and _Enforce Privacy_
+Review each setting and choose the ones you require for your installation. Examples of popular settings are _Link Existing Users_, _Create user if does not exist_, and _Enforce Privacy_.
 :::
 
 ### Step 3 - authentik

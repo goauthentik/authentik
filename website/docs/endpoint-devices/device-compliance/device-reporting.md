@@ -11,9 +11,10 @@ tags:
         check-in,
         facts,
     ]
+authentik_version: "2025.12.0"
 ---
 
-Endpoint Devices registered with authentik via a connector, such as the [authentik Agent](./connectors.md#authentik-agent) connector, regularly [check-in](#device-check-in) with authentik and report their [device facts](#device-facts).
+Endpoint Devices registered with authentik via a [connector](./connectors/index.mdx), such as the [authentik Agent](./connectors/authentik-agent.md) connector, regularly [check-in](#device-check-in) with authentik and report their [device facts](#device-facts).
 
 These facts are shown on the [Devices](../manage-devices.mdx) page and are also accessible to policies and can be used to make policy decisions. See [Device Compliance Policy](./device-compliance-policy.md) for more details.
 
@@ -37,7 +38,7 @@ For an example of the facts provided for a Linux device, see [here](./facts-linu
 
 ## Endpoint devices in event logs
 
-Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.md). For example:
+Authentication events involving endpoint devices are included in the [event logs](../../sys-mgmt/events/logging-events.mdx). For example:
 
 ![Example of device authentication event](device-event-example.png)
 
@@ -49,4 +50,4 @@ To search for event logs matching a specific endpoint device:
 2. Navigate to **Events** > **Logs**.
 3. In the search bar, enter: `context.device.name = "<device_name>"`
 
-For more information on searching the events logs, see [Logging events](../../sys-mgmt/events/logging-events.md).
+For more information on searching the events logs, see [Logging events](../../sys-mgmt/events/logging-events.mdx).

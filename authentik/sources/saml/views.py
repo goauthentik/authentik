@@ -4,6 +4,7 @@ from urllib.parse import parse_qsl, urlparse, urlunparse
 
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import SuspiciousOperation
 from django.http import Http404, HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
@@ -37,7 +38,9 @@ from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSI
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
     InvalidSignature,
+    MismatchedRequestID,
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
@@ -156,7 +159,15 @@ class ACSView(View):
         processor = ResponseProcessor(source, request)
         try:
             processor.parse()
-        except (InvalidSignature, MissingSAMLResponse, VerificationError) as exc:
+        except (
+            InvalidEncryption,
+            InvalidSignature,
+            MismatchedRequestID,
+            MissingSAMLResponse,
+            SuspiciousOperation,
+            VerificationError,
+            ValueError,
+        ) as exc:
             return bad_request_message(request, str(exc))
 
         try:

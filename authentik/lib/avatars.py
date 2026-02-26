@@ -10,7 +10,7 @@ from django.core.cache import cache
 from django.http import HttpRequest, HttpResponseNotFound
 from django.templatetags.static import static
 from lxml import etree  # nosec
-from lxml.etree import Element, SubElement  # nosec
+from lxml.etree import Element, SubElement, _Element  # nosec
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
 from authentik.lib.utils.dict import get_path_from_dict
@@ -109,7 +109,7 @@ def generate_avatar_from_name(
     shape = "circle" if rounded else "rect"
     font_weight = "600" if bold else "400"
 
-    root_element: Element = Element(f"{{{SVG_XML_NS}}}svg", nsmap=SVG_NS_MAP)
+    root_element: _Element = Element(f"{{{SVG_XML_NS}}}svg", nsmap=SVG_NS_MAP)
     root_element.attrib["width"] = f"{size}px"
     root_element.attrib["height"] = f"{size}px"
     root_element.attrib["viewBox"] = f"0 0 {size} {size}"

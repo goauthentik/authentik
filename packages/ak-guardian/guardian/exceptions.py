@@ -16,12 +16,6 @@ class InvalidIdentity(GuardianError):
     pass
 
 
-class ObjectNotPersisted(GuardianError):
-    """Raised when the object has not been saved to the database."""
-
-    pass
-
-
 class WrongAppError(GuardianError):
     """Raised when the app name for a permission is incorrect."""
 
@@ -30,11 +24,5 @@ class WrongAppError(GuardianError):
 
 class MixedContentTypeError(GuardianError):
     """Raised when content type for the provided permissions and/or class do not match."""
-
-    pass
-
-
-class MultipleIdentityAndObjectError(GuardianError):
-    """Raised when an operation is attempted on both user/group and object."""
 
     pass

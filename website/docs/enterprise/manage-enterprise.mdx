@@ -1,157 +1,149 @@
 ---
-title: Manage your Enterprise account
+title: Manage Enterprise licensing
+description: "The authentik Customer Portal to manage accounts and licenses"
+toc_max_heading_level: 5
 ---
+
+The authentik [Customer Portal](https://customers.goauthentik.io/) allows you to purchase Enterprise licenses, control which users are able to access your licenses, and manage your billing information.
 
 ## Organization management
 
-Your organization defines the members, their roles, the licenses associated with the organization, and account management for billing, payment methods, and invoice history.
+Your organization defines users, their roles, and billing information (including payments and invoices).
 
 ### Create an Organization
 
 1. To create a new organization, log in to the [Customer Portal](https://customers.goauthentik.io/).
-
 2. On the **My organizations** page, click **Create an organization**.
-
 3. Specify the organization's name and notification email address, and then click **Create**.
 
-    Your new organization page displays.
-
-:::info
-If you need to delete an organization, open a ticket in the Support center.
+:::info Deleting an organization
+If you need to delete an organization, contact us via hello@goauthentik.io.
 :::
 
-### Add/remove members of an organization
+### Add/remove users of an organization
 
-In the Customer Portal you can remove members and invite new members to the organization. When you invite new members, you can specify the role for the new member.
+In the Customer Portal, you can invite new users to your organization and remove existing ones. Users can have either of the following roles:
 
 - **Member**: can view licenses, including the license key.
 - **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
 
 1. To manage membership in an organization, log in to the [Customer Portal](https://customers.goauthentik.io/).
-
-2. On the **My organizations** page, click the name of the organization you want to edit membership in.
-
-    Your organization page displays.
+2. On the **My organizations** page, click the name of the organization whose membership you want to edit.
     - To remove a member, scroll down to the **Membership** area and then click **Remove** beside the name of the member.
 
-    - To invite a new member, scroll down to the **Pending invitations** area, and enter the email address for the person, select the role, and then click **Invite**.
+    - To invite a new member, scroll down to the **Pending invitations** area, enter the email address for the new member, select their role, and then click **Invite**.
 
     A message appears that the invitation has been sent. When the recipient accepts the invitation by clicking a link in the email, they will be added to the organization.
 
 ## License management
 
-Note that a license is associated with a specific Organization in the Customer Portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
+Authentik licenses are linked to a specific authentik deployment based on its Installation ID. You can obtain your Installation ID by first logging in to the Admin interface of your authentik deployment. Then, navigate to **Enterprise** > **Licenses** where your installation ID is displayed.
 
-### Buy a license
+A license covers a specified number of users, however additional users can be added to a license. Alternatively, additional licenses can be purchased for the same deployment.
+
+### Purchase a license
 
 :::info
 [Learn more](#about-users-and-licenses) about **internal** and **external** users, and how we forecast the number of users.
 :::
 
-1. To get a license key, log in to your authentik account with your administrator credentials, and then click **Admin interface** in the upper right.
+1. To purchase a license, log in to the [Customer Portal](https://customers.goauthentik.io/). If you have not already created an Organization (nor been invited to join one), you are first prompted to [create an organization](#create-an-organization).
+2. Select the Organization you wish to purchase a license for.
+3. Click **Purchase license**.
+4. Select the number of Internal and External users that the license should cover.
+5. Provide the **Installation ID** of your authentik deployment. This is available in the **Enterprise** > **License** section of the Admin interface.
+6. Optionally, change the license name. This is how the license is identififed in the customer portal and Admin interface.
+7. Click **Continue** to display the checkout page. Provide your payment details and click **Pay and subscribe**.
 
-2. On the **Admin interface**, navigate to **Enterprise → Licenses** in the left menu, and then click **Go to Customer Portal** under the **Get a license** section. Alternatively you can open a new browser window and go directly to the [Customer Portal](https://customers.goauthentik.io).
+When payment is complete, you are redirected to the **My organizations** page, where you should see a message saying "Successful purchase. Your license will appear here once we've validated your payment. If it doesn't, please contact us."
 
-3. Log in to the Customer Portal.
+When ready, the license displays on the organization's page.
 
-    In the Customer Portal, if you have not already created an Organization (nor been invited to join one), you are first prompted to create an organization.
+#### Retrieve your license key
 
-4. On the **My organizations** page, click **Create an organization**.
+8. To retrieve your license key, click on **Details** beside the license name and copy the key.
 
-5. Specify the organization's name and notification email address, and then click **Create**.
+### Install a license
 
-    Your new organization page displays.
-
-6. Click **Purchase license**, and then on the **Purchase a license** page, review the pricing plans and (optionally) change the name of the license. The name is simply a nickname, a convenient way to label the license.
-
-7. Click **Continue** to display the checkout page. Select the number of users, provide your payment information, and then click **Subscribe**.
-
-    When payment verification is complete, you are redirected to the **My organizations** page, where you should see a message saying "Successful purchase. Your license will appear here once we've validated your payment. If it doesn't, please contact us."
-
-    When ready, the license displays on the organization's page.
-
-:::info
-If you access the checkout page directly from the Customer Portal, and not through the admin interface, you are prompted to provide the Install ID for your authentik installation. This ID can be found in the Admin interface on the **Licenses** page; click **Install** to view the **Install ID** number.
-:::
-
-8. To retrieve your license key, click on **Details** beside the license name and copy the key to your clipboard.
-
-9. Go back to the Admin interface, navigate to **Enterprise > Licenses** page, click on **Install**, paste the key, and then click **Install**.
-
-#### License verification
-
-To verify that the license was successfully installed, confirm that the expiry date on the **Enterprise --> Licenses** page displays a date one year later.
-
-### How to view your license key
-
-You can view the list of licenses that are applied to your organization on either the Admin interface, on the **Enterprise > Licenses** page, or in the Customer Portal, under your organization's page.
+1. Log in to the authentik Admin interface as an administrator.
+2. Navigate to **Enterprise** > **Licenses**.
+3. Click **Install**, paste the license key, and then click **Install**.
+   The license, its user limit, and expiry date are then displayed.
 
 ### Update your license
 
-If you purchase a new license, or receive a new one due to a change in the number of users, you will need to remove the old license and add the new one. To do so open the Admin interface, navigate to **Enterprise > Licenses** page, click on **Install**, paste the new key, and then click **Install**.
+If you purchase a new license, or receive a new one due to a change in the number of users, you will need to remove the old license and add the new one. To do so, log in to the Admin interface, navigate to **Enterprise** > **Licenses**, click on **Install**, paste the new key, and then click **Install**.
 
-### About the license expiry date
+### Checking license expiry date
 
-The **Enterprise > Licenses** page shows your current licenses' **Cumulative license expiry**. Expiry date calculation works by verifying the individual expiry date for all valid licenses and then picking the lowest expiry date. After the date of the earliest expiring license, all calculations will be updated without that license, by selecting the next earliest date.
+A license's expiry date can be checked via the Customer Portal or the Admin interface.
+
+#### via the Customer Portal
+
+1. Log in to the [Customer Portal](https://customers.goauthentik.io/).
+2. Click **More** on the Organization that owns the license.
+3. All licenses along with their expiry dates are listed.
+
+#### via the Admin interface
+
+1. Log in to the Admin interface of your authentik deployment.
+2. Navigate to **Enterprise** > **Licenses**.
+3. All installed licenses are displayed along with their expiry date.
+
+## About users and licenses
+
+License usage is calculated based on total user counts that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users.
+
+:::info
+Accounts that are disabled, as well as service accounts, are excluded from the license user count.
+:::
+
+### Internal vs external users
+
+An **internal** user is typically a team member, such as a company employee, who is granted access to the full Enterprise feature set. This includes the ability to view and use the **My Applications** and **User Settings** pages.
+
+An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer. External users can't access the **My Applications** and **User Settings** pages. Instead, external users are typically authenticated and then redirected to log directly into their [default application](../sys-mgmt/brands/index.md#external-user-settings).
 
 ### License violation notifications
 
-The following events occur when a license expires or the internal/external user count is over the licensed user count for the time period below.
+The following events occur when a license expires or the internal/external user count is over the licensed user count:
 
-    - After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
-    - After another 2 weeks, users get a warning banner
+    - After 2 weeks administrators see a warning banner in the Admin interface
+    - After another 2 weeks, all users see a warning banner
     - After another 2 weeks, the authentik Enterprise instance becomes "read-only"
 
     When an authentik instance is in read-only mode, the following actions are still possible:
 
     - Users can authenticate and authorize applications
     - Licenses can be modified
-    - Users can be modified/deleted:ak-version[2024.10.5]
+    - Users can be modified/deleted
 
-    After the violation is corrected (either the user count returns to be within the limits of the license or the license is renewed), authentik will return to the standard read-write mode and the notification will disappear.
+    After the violation is corrected (license is renewed or user count is lowered), authentik will return to the standard read-write mode and the notification will disappear.
 
-### About users and licenses
+### How to increase user counts
 
-License usage is calculated based on total user counts that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users. Internal and external users are counted based on the total number of users of the respective type saved in authentik.
+There are two ways to increase your user counts.
 
-:::info
-Accounts that are disabled, as well as service accounts, are excluded from the license user count.
-:::
+1. Purchase an additional license and install it on the authentik deployment, in which case the total user count of all your licenses is the maximum number of users. However, this means that your licensing renewals will not happen at the same date.
 
-#### Internal vs external users
-
-An **internal** user is typically a team member, such as a company employee, who is granted access to the full Enterprise feature set. This includes the ability to view and use the **My Applications** and **User Settings** pages.
-
-An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer. External users can't access the **My Applications** and **User Settings** pages. Instead, external users are typically authenticated and then redirected to log directly into their [default application](../sys-mgmt/brands.md#external-user-settings).
-
-### Upgrade the number of users in a license
-
-There are two ways to update the number of users in a license.
-
-You can either purchase a new license and enter it in the same authentik instance as the other one, in which case the total number of users in all your licenses is used to calculate the maximum number of users. However, this means that your licensing renewals will not happen at the same date.
-
-The second way is to [open a support ticket](./entsupport.md) with us and we'll upgrade the number of users in your license. You'll be charged the prorated amount for the remaining time until the next license renewal.
-
-### Cancel your subscription
-
-To cancel your subscription, access the [billing management interface](#manage-billing), choose the subscription to cancel, and click "Cancel subscription".
-
-Once a subscription is canceled, the associated license will still be valid until the end of the billing period, but it will not be automatically renewed.
+2. The second way is to [open a support ticket](./enterprise-support.md) with us to upgrade the number of users in your license. You'll be charged the prorated amount for the remaining time until the next license renewal.
 
 ## Manage Billing
 
 Billing is based on each individual organization.
 
-1. To manage your billing, go to the [Customer Portal](https://customers.goauthentik.io) and navigate to **Organizations > My organizations**.
-
+1. To manage your billing, log in to the [Customer Portal](https://customers.goauthentik.io) and navigate to **Organizations** > **My organizations**.
 2. Select the organization for which you want to manage billing.
-
-    The organization detail page displays.
-
 3. Click **Manage Billing** in the top left of the page.
 
     On the billing page you can:
     - update your account information (address, name, phone number, and tax ID)
     - add a payment method
     - view your invoice and payment history
-    - cancel your license subscriptions
+    - cancel your subscriptions
+
+### Cancel your subscription
+
+To cancel your subscription, access the [billing management interface](#manage-billing), choose the subscription to cancel, and click **Cancel subscription**.
+
+Once a subscription is canceled, the associated license will be valid until the end of the billing period, but it will not be automatically renewed.

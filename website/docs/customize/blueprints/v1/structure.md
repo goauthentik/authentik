@@ -6,7 +6,7 @@ Blueprints are YAML files, which can use some additional tags to ease blueprint 
 
 The blueprint schema is available under `https://goauthentik.io/blueprints/schema.json`. It is also possible to target a specific version's blueprint schema by using `https://version-2023-4.goauthentik.io/blueprints/schema.json`.
 
-To use the schema with Visual Studio code and the YAML extension, add this comment at the top of your blueprint files:
+To use the schema with Visual Studio Code and the YAML extension, add this comment at the top of your blueprint files:
 
 ```yaml
 # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json

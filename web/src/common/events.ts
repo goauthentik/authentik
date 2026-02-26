@@ -22,6 +22,13 @@ export class AKEnterpriseRefreshEvent extends Event {
     }
 }
 
+declare global {
+    interface WindowEventMap {
+        [AKRefreshEvent.eventName]: AKRefreshEvent;
+        [AKEnterpriseRefreshEvent.eventName]: AKEnterpriseRefreshEvent;
+    }
+}
+
 export interface EventUser {
     pk: number;
     email?: string;

@@ -77,7 +77,7 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
         const disabled = !this.selectedElements.length;
         const count = this.selectedElements.length;
         return html`<ak-forms-delete-bulk
-            objectLabel=${count === 1 ? msg("file") : msg("files")}
+            object-label=${count === 1 ? msg("file") : msg("files")}
             .objects=${this.selectedElements}
             .metadata=${(item: FileItem) => {
                 return [

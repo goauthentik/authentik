@@ -16,10 +16,14 @@ from rest_framework.viewsets import ViewSet
 from authentik.api.validation import validate
 from authentik.core.api.users import ParamUserSerializer
 from authentik.core.api.utils import MetaNameSerializer
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+
+try:
+    from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
+except ModuleNotFoundError:
+    EndpointDevice = None
 
 
 class DeviceSerializer(MetaNameSerializer):
@@ -43,7 +47,7 @@ class DeviceSerializer(MetaNameSerializer):
         """Get extra description"""
         if isinstance(instance, WebAuthnDevice):
             return instance.device_type.description if instance.device_type else None
-        if isinstance(instance, EndpointDevice):
+        if EndpointDevice and isinstance(instance, EndpointDevice):
             return instance.data.get("deviceSignals", {}).get("deviceModel")
         return None
 
@@ -51,7 +55,7 @@ class DeviceSerializer(MetaNameSerializer):
         """Get external Device ID"""
         if isinstance(instance, WebAuthnDevice):
             return instance.device_type.aaguid if instance.device_type else None
-        if isinstance(instance, EndpointDevice):
+        if EndpointDevice and isinstance(instance, EndpointDevice):
             return instance.data.get("deviceSignals", {}).get("deviceModel")
         return None
 

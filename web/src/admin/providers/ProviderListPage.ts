@@ -10,6 +10,7 @@ import "#admin/providers/radius/RadiusProviderForm";
 import "#admin/providers/saml/SAMLProviderForm";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/ssf/SSFProviderFormPage";
+import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -67,7 +68,7 @@ export class ProviderListPage extends TablePage<Provider> {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Provider(s)")}
+            object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({

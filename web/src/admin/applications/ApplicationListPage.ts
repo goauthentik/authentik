@@ -94,7 +94,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application(s)")}
+            object-label=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({

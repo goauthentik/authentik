@@ -53,13 +53,13 @@ func TestPostgresStore_SessionLifecycle(t *testing.T) {
 	userID := uuid.New()
 	sessionKey := "test_session_" + uuid.New().String()
 
-	sessionData := map[string]interface{}{
-		constants.SessionClaims: map[string]interface{}{
+	sessionData := map[string]any{
+		constants.SessionClaims: map[string]any{
 			"sub":                userID.String(),
 			"email":              "test@example.com",
 			"preferred_username": "testuser",
 			"custom_claim":       "custom_value",
-			"groups":             []interface{}{"admin", "user"},
+			"groups":             []any{"admin", "user"},
 		},
 	}
 	sessionDataJSON, err := json.Marshal(sessionData)
@@ -89,11 +89,11 @@ func TestPostgresStore_SessionLifecycle(t *testing.T) {
 	assert.Equal(t, userID, *retrievedSession.UserID)
 
 	// Parse session data
-	var parsedData map[string]interface{}
+	var parsedData map[string]any
 	err = json.Unmarshal([]byte(retrievedSession.SessionData), &parsedData)
 	require.NoError(t, err)
 
-	claims, ok := parsedData[constants.SessionClaims].(map[string]interface{})
+	claims, ok := parsedData[constants.SessionClaims].(map[string]any)
 	assert.True(t, ok)
 	assert.Equal(t, "test@example.com", claims["email"])
 	assert.Equal(t, "testuser", claims["preferred_username"])
@@ -109,8 +109,8 @@ func TestPostgresStore_LogoutSessions(t *testing.T) {
 	user2 := uuid.New()
 
 	createSessionData := func(userID uuid.UUID, email string) string {
-		sessionData := map[string]interface{}{
-			constants.SessionClaims: map[string]interface{}{
+		sessionData := map[string]any{
+			constants.SessionClaims: map[string]any{
 				"sub":   userID.String(),
 				"email": email,
 			},
@@ -229,13 +229,13 @@ func TestPostgresStore_SessionClaims(t *testing.T) {
 
 	// Create session with complex claims
 	userID := uuid.New()
-	sessionData := map[string]interface{}{
-		constants.SessionClaims: map[string]interface{}{
+	sessionData := map[string]any{
+		constants.SessionClaims: map[string]any{
 			"sub":                userID.String(),
 			"email":              "test@example.com",
 			"preferred_username": "testuser",
-			"groups":             []interface{}{"admin", "user"},
-			"entitlements":       []interface{}{"read", "write"},
+			"groups":             []any{"admin", "user"},
+			"entitlements":       []any{"read", "write"},
 			"custom_field":       "custom_value",
 		},
 	}
@@ -261,24 +261,24 @@ func TestPostgresStore_SessionClaims(t *testing.T) {
 	assert.Equal(t, userID, *retrieved.UserID)
 
 	// Parse and verify session data
-	var parsedData map[string]interface{}
+	var parsedData map[string]any
 	err = json.Unmarshal([]byte(retrieved.SessionData), &parsedData)
 	require.NoError(t, err)
 
-	claims, ok := parsedData[constants.SessionClaims].(map[string]interface{})
+	claims, ok := parsedData[constants.SessionClaims].(map[string]any)
 	assert.True(t, ok)
 	assert.Equal(t, "test@example.com", claims["email"])
 	assert.Equal(t, "testuser", claims["preferred_username"])
 	assert.Equal(t, "custom_value", claims["custom_field"])
 
 	// Verify groups array
-	groups, ok := claims["groups"].([]interface{})
+	groups, ok := claims["groups"].([]any)
 	assert.True(t, ok)
 	assert.Contains(t, groups, "admin")
 	assert.Contains(t, groups, "user")
 
 	// Verify entitlements array
-	entitlements, ok := claims["entitlements"].([]interface{})
+	entitlements, ok := claims["entitlements"].([]any)
 	assert.True(t, ok)
 	assert.Contains(t, entitlements, "read")
 	assert.Contains(t, entitlements, "write")

@@ -112,6 +112,7 @@ class EventAction(models.TextChoices):
     SYSTEM_EXCEPTION = "system_exception"
 
     CONFIGURATION_ERROR = "configuration_error"
+    CONFIGURATION_WARNING = "configuration_warning"
 
     MODEL_CREATED = "model_created"
     MODEL_UPDATED = "model_updated"
@@ -121,6 +122,11 @@ class EventAction(models.TextChoices):
     UPDATE_AVAILABLE = "update_available"
 
     EXPORT_READY = "export_ready"
+
+    REVIEW_INITIATED = "review_initiated"
+    REVIEW_OVERDUE = "review_overdue"
+    REVIEW_ATTESTED = "review_attested"
+    REVIEW_COMPLETED = "review_completed"
 
     CUSTOM_PREFIX = "custom_"
 
