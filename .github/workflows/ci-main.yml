@@ -73,7 +73,8 @@ jobs:
       - name: generate API clients
         run: make gen-clients
       - name: ensure schema is up-to-date
-        run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
+        run: git diff --exit-code -- schema.yml blueprints/schema.json
+          packages/client-go packages/client-rust packages/client-ts
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -91,7 +92,8 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{
+      matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -101,7 +103,7 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [ 1, 2, 3, 4, 5 ]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
@@ -109,8 +111,13 @@ jobs:
       - name: checkout stable
         run: |
           set -e -o pipefail
+
           cp -R .github ..
           cp -R scripts ..
+
+          mkdir -p ../packages
+          cp -R packages/logger-js ../packages/logger-js
+
           # Previous stable tag
           prev_stable=$(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
           # Current version family based on
@@ -118,10 +125,13 @@ jobs:
           if [[ -n $current_version_family ]]; then
               prev_stable="version/${current_version_family}"
           fi
+
           echo "::notice::Checking out ${prev_stable} as stable version..."
           git checkout ${prev_stable}
-          rm -rf .github/ scripts/
+
+          rm -rf .github/ scripts/ packages/logger-js/
           mv ../.github ../scripts .
+          mv ../packages/logger-js ./packages/
       - name: Setup authentik env (stable)
         uses: ./.github/actions/setup
         with:
@@ -169,7 +179,7 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [ 1, 2, 3, 4, 5 ]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
       - name: Setup authentik env
@@ -252,19 +262,22 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
+      - uses: ./.github/actions/setup-node
       - id: cache-web
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json',
+            'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
-        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
+        if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles,
+          'selenium')
         working-directory: web
         run: |
-          npm ci
-          npm run build
-          npm run build:sfe
+          corepack npm ci
+          corepack npm run build
+          corepack npm run build:sfe
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
@@ -302,14 +315,14 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**',
+            'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
-        working-directory: web
         run: |
-          npm ci
-          npm run build
-          npm run build:sfe
+          corepack npm ci --prefix web
+          corepack npm run build --prefix web
+          corepack npm run build:sfe --prefix web
       - name: run conformance
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
@@ -375,7 +388,9 @@ jobs:
     uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
     with:
-      image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
+      image_name: ${{ github.repository == 'goauthentik/authentik-internal' &&
+        'ghcr.io/goauthentik/internal-server' ||
+        'ghcr.io/goauthentik/dev-server' }}
       release: false
   pr-comment:
     needs:

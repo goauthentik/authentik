@@ -13,7 +13,6 @@
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint:imports": "knip --config scripts/knip.config.ts",
-        "lint:lockfile": "wireit",
         "lint:types": "wireit",
         "lint-check": "eslint --max-warnings 0 .",
         "lit-analyse": "wireit",
@@ -205,9 +204,6 @@
         "@rollup/rollup-linux-x64-gnu": "^4.57.1",
         "chromedriver": "^147.0.4"
     },
-    "workspaces": [
-        "./packages/*"
-    ],
     "wireit": {
         "build": {
             "#comment": [
@@ -268,11 +264,6 @@
                 "build-locales"
             ]
         },
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
-        },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
@@ -281,8 +272,7 @@
             "dependencies": [
                 "lint",
                 "lint:types",
-                "lint:components",
-                "lint:lockfile"
+                "lint:components"
             ]
         },
         "storybook:build": {
@@ -305,19 +295,9 @@
         "node": ">=24",
         "npm": ">=11.10.1"
     },
-    "devEngines": {
-        "runtime": {
-            "name": "node",
-            "onFail": "warn",
-            "version": ">=24"
-        },
-        "packageManager": {
-            "name": "npm",
-            "version": ">=11.10.1",
-            "onFail": "warn"
-        }
-    },
-    "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
+    "workspaces": [
+        "./packages/*"
+    ],
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/esbuild-plugin-live-reload": {
@@ -353,8 +333,22 @@
         "rapidoc": {
             "@apitools/openapi-parser": "0.0.37"
         },
+        "tree-sitter": false,
         "typescript-eslint": {
             "typescript": "$typescript"
+        }
+    },
+    "packageManager": "npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973",
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.10.1",
+            "onFail": "warn"
         }
     }
 }

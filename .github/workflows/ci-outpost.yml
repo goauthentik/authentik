@@ -114,8 +114,11 @@ jobs:
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: linux/amd64,linux/arm64
           context: .
-          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type
+            }}:buildcache
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' &&
+            format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max',
+            matrix.type) || '' }}
       - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
@@ -136,8 +139,8 @@ jobs:
           - ldap
           - radius
           - rac
-        goos: [linux]
-        goarch: [amd64, arm64]
+        goos: [ linux ]
+        goarch: [ amd64, arm64 ]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
@@ -145,16 +148,11 @@ jobs:
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: web/package.json
-          cache: "npm"
-          cache-dependency-path: web/package-lock.json
+          working-directory: web
       - name: Build web
-        working-directory: web/
-        run: |
-          npm ci
-          npm run build-proxy
+        run: corepack npm run build-proxy --prefix web
       - name: Build outpost
         run: |
           set -x
