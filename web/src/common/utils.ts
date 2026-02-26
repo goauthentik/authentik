@@ -73,3 +73,16 @@ export function assertEveryPresent<T>(
         throw new TypeError(errorMessage);
     }
 }
+
+const isFullUrlRe = new RegExp("://");
+const isHttpRe = new RegExp("http(s?)://");
+const isAuthentikSpecialRe = new RegExp("goauthentik.io://");
+const isNotFullUrl = (url: string) => !isFullUrlRe.test(url);
+const isHttp = (url: string) => isHttpRe.test(url);
+const isAuthentikSpecial = (url: string) => isAuthentikSpecialRe.test(url);
+
+export function isLaunchUrlValid(url: string | null | undefined): url is string {
+    return Boolean(typeof url === "string" &&
+        url &&
+        (isHttp(url) || isNotFullUrl(url) || isAuthentikSpecial(url)));
+}
