@@ -1,5 +1,6 @@
 import sys
 from argparse import Namespace
+from multiprocessing import set_start_method
 from typing import Any
 
 from django.apps.registry import apps
@@ -69,7 +70,7 @@ class Command(BaseCommand):
             args.pid_file = pid_file
 
         args.verbose = verbosity - 1
-
+        set_start_method("fork")
         connections.close_all()
         sys.exit(main(args))  # type: ignore[no-untyped-call]
 
