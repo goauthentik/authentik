@@ -6,16 +6,22 @@ WORKDIR /work
 
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
+    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
+    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
+    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
-    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
-    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     node ./scripts/node/setup-corepack.mjs --force && \
+    corepack npm ci \
     node ./scripts/node/lint-runtime.mjs ./website
 
-WORKDIR /work/website
-
-RUN --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
+RUN --mount=type=bind,target=/work/package.json,src=./package.json \
+    --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
+    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
     --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
     --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
     --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
@@ -26,7 +32,9 @@ RUN --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
     --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    corepack npm ci --workspaces --include-workspace-root
+    corepack npm ci --workspaces --include-workspace-root --prefix ./website
+
+WORKDIR /work/website
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
