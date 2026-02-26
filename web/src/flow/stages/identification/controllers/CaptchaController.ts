@@ -7,7 +7,7 @@ import { CaptchaChallenge } from "@goauthentik/api";
 import { html, nothing, ReactiveController } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
 
-export class IdentificationCaptchas implements ReactiveController {
+export class CaptchaController implements ReactiveController {
     private challenge: CaptchaChallenge | null = null;
 
     protected token = "";
@@ -78,3 +78,5 @@ export class IdentificationCaptchas implements ReactiveController {
         return this.challenge ? this.#renderCaptchaStage(this.challenge) : nothing;
     }
 }
+
+export default CaptchaController;

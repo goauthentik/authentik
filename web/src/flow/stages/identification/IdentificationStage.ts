@@ -17,11 +17,11 @@ import { renderSourceIcon } from "#admin/sources/utils";
 
 import { BaseStage } from "#flow/stages/base";
 import AutoRedirect from "#flow/stages/identification/controllers/AutoRedirectController";
+import CaptchaController from "#flow/stages/identification/controllers/CaptchaController";
 import RememberMe from "#flow/stages/identification/controllers/RememberMeController";
 import Styles from "#flow/stages/identification/styles.css";
 
 import {
-    CaptchaChallenge,
     FlowDesignationEnum,
     IdentificationChallenge,
     IdentificationChallengeResponseRequest,
@@ -35,8 +35,7 @@ import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
+import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -108,29 +107,7 @@ export class IdentificationStage extends BaseStage<
 
     private rememberMe = new RememberMe(this);
     private autoRedirect = new AutoRedirect(this);
-
-    //#region State
-
-    @state()
-    protected captchaToken = "";
-
-    @state()
-    protected captchaRefreshedAt = new Date();
-
-    @state()
-    protected captchaLoaded = false;
-
-    #captchaInputRef = createRef<HTMLInputElement>();
-
-    #tokenChangeListener = (token: string) => {
-        const input = this.#captchaInputRef.value;
-        if (!input) return;
-        input.value = token;
-    };
-
-    #captchaLoadListener = () => {
-        this.captchaLoaded = true;
-    };
+    private captcha = new CaptchaController(this);
 
     // AbortController for conditional WebAuthn request
     #passkeyAbortController: AbortController | null = null;
@@ -143,6 +120,7 @@ export class IdentificationStage extends BaseStage<
         super();
         this.addController(this.rememberMe);
         this.addController(this.autoRedirect);
+        this.addController(this.captcha);
     }
 
     public override updated(changedProperties: PropertyValues<this>) {
@@ -323,13 +301,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     protected override onSubmitFailure(): void {
-        const captchaInput = this.#captchaInputRef.value;
-
-        if (captchaInput) {
-            captchaInput.value = "";
-        }
-
-        this.captchaRefreshedAt = new Date();
+        this.captcha.onFailure();
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
@@ -378,33 +350,8 @@ export class IdentificationStage extends BaseStage<
         `;
     }
 
-    protected renderCaptcha(captchaChallenge: CaptchaChallenge) {
-        return html`
-            <div class="captcha-container">
-                <ak-stage-captcha
-                    .challenge=${captchaChallenge}
-                    .onTokenChange=${this.#tokenChangeListener}
-                    .onLoad=${this.#captchaLoadListener}
-                    .refreshedAt=${this.captchaRefreshedAt}
-                    embedded
-                >
-                </ak-stage-captcha>
-                <input
-                    aria-hidden="true"
-                    class="faux-input"
-                    ${ref(this.#captchaInputRef)}
-                    name="captchaToken"
-                    type="text"
-                    required
-                    value=""
-                />
-            </div>
-        `;
-    }
-
     protected renderInput(challenge: IdentificationChallenge) {
         const {
-            captchaStage,
             flowDesignation,
             passkeyChallenge,
             passwordFields,
@@ -419,17 +366,17 @@ export class IdentificationStage extends BaseStage<
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
 
-        const { inputID, rememberMe, captchaLoaded } = this;
+        const { inputID, rememberMe } = this;
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
         const username = rememberMe.username ?? pendingUserIdentifier;
-        const captchaPending = captchaStage && captchaStage.interactive && !captchaLoaded;
 
         // When passkey is enabled, add "webauthn" to autocomplete to enable passkey autofill
         const autocomplete: AutoFill = passkeyChallenge ? "username webauthn" : "username";
 
+        // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
             <div class="pf-c-form__group">
                 ${AKLabel({ required: true, htmlFor: inputID }, label)}
@@ -438,12 +385,11 @@ export class IdentificationStage extends BaseStage<
                 ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
             </div>
             ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
-            ${this.renderNonFieldErrors()}
-            ${captchaStage ? this.renderCaptcha(captchaStage) : nothing}
-
-            <div class="pf-c-form__group ${captchaStage ? "" : "pf-m-action"}">
+            ${this.renderNonFieldErrors()} 
+            ${this.captcha.render()}
+            <div class="pf-c-form__group ${this.captcha.live ? "" : "pf-m-action"}">
                 <button
-                    ?disabled=${captchaPending}
+                    ?disabled=${this.captcha.pending}
                     type="submit"
                     class="pf-c-button pf-m-primary pf-m-block"
                 >
