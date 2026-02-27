@@ -262,7 +262,7 @@ class WorkerStatusMiddleware(Middleware):
 
     def after_worker_boot(self, broker: Broker, worker: Worker):
         self.thread_event = TEvent()
-        self.thread = Thread(target=WorkerStatusMiddleware.run, args=(self.thread_event))
+        self.thread = Thread(target=WorkerStatusMiddleware.run, args=(self.thread_event,))
         self.thread.start()
 
     def before_worker_shutdown(self, broker: Broker, worker: Worker):
