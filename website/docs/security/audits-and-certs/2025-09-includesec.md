@@ -50,8 +50,7 @@ _Response:_ By design, prompt inputs can be configured to have placeholder value
 
 ### M1: Anti-Brute-Force Mechanisms Bypassed via Race conditions
 
-_Issue:_ The anti-brute-force mechanism could be bypassed by triggering a race
-condition using the default-authentication-flow given enough time and no WAF/other filtering in place.
+_Issue:_ The anti-brute-force mechanism could be bypassed by triggering a race condition using the default-authentication-flow given enough time and no WAF/other filtering in place.
 
 _Improvement:_ In 2025.12, we [replaced](https://github.com/goauthentik/authentik/pull/18643) session-based login attempt retries to rely instead on the reputation scores.
 
@@ -65,8 +64,7 @@ _Fix:_ We [improved](https://github.com/goauthentik/authentik/pull/18076) the Ap
 
 ### L1: FROM Tags in Dockerfiles Enable Supply-Chain Takeover (Internal: Low) - Closed
 
-_Issue:_ Our container build process used Dockerfiles containing unpinned tags, allowing a possible supply chain attack from an attacker with control of
-the referenced repository who could repoint the tag to a different image.
+_Issue:_ Our container build process used Dockerfiles containing unpinned tags, allowing a possible supply chain attack from an attacker with control of the referenced repository who could repoint the tag to a different image.
 
 _Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17795) to use hashes for Dockerfile `FROM` calls.
 
