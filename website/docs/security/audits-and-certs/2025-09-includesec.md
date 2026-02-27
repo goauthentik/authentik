@@ -80,7 +80,7 @@ _Improvement:_ We [replaced](https://github.com/goauthentik/authentik/pull/18883
 
 ### L3: [Server] Shell Command Execution Did Not Use Absolute Path (Internal: Low) - Closed
 
-_Issue:_ authentik called openssl based on its name without specifying an absolute paths, which could lead to path hijacking.
+_Issue:_ authentik called OpenSSL based on its binary name without specifying an absolute path, which could lead to path hijacking.
 
 _Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17856) to use the full path to openssl.
 
