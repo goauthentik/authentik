@@ -312,6 +312,7 @@ class MetricsMiddleware(BaseMetricsMiddleware):
     thread: HTTPServerThread | None
     handler_class = _MetricsHandler
 
+    @property
     def forks(self) -> list[Callable[[], None]]:
         return []
 
