@@ -32,7 +32,7 @@ dependencies = [
   "drf-orjson-renderer==1.8.0",
   "drf-spectacular==0.28.0",
   "dumb-init==1.2.5.post1",
-  "duo-client==5.5.0",
+  "duo-client==5.6.1",
   "fido2==2.1.1",
   "geoip2==5.2.0",
   "geopy==2.4.1",
