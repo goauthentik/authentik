@@ -295,6 +295,7 @@ class WorkerStatusMiddleware(Middleware):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
             while not event.is_set():
+                status.refresh_from_db()
                 old_last_seen = status.last_seen
                 status.last_seen = now()
                 if old_last_seen != status.last_seen:
