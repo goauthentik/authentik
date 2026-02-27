@@ -89,6 +89,7 @@ def use_test_broker():
                 **Conf().result_backend_kwargs,
             )
         broker.add_middleware(middleware)
+
     broker.start()
     set_broker(broker)
     return broker
