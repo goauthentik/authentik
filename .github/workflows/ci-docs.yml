@@ -24,46 +24,34 @@ jobs:
           - prettier-check
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - name: Install dependencies
-        working-directory: website/
-        run: npm ci
+      - uses: ./.github/actions/setup-node
+        with:
+          working-directory: website
       - name: Lint
-        working-directory: website/
-        run: npm run ${{ matrix.command }}
+        run: corepack npm run ${{ matrix.command }} --prefix website
   build-docs:
     runs-on: ubuntu-latest
     env:
       NODE_ENV: production
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: ./.github/actions/setup-node
+        name: Setup Node.js
         with:
-          node-version-file: website/package.json
-          cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
-        name: Install Dependencies
-        run: npm ci
+          working-directory: website
       - name: Build Documentation via Docusaurus
-        working-directory: website/
-        run: npm run build
+        run: corepack npm run build --prefix website
   build-integrations:
     runs-on: ubuntu-latest
     env:
       NODE_ENV: production
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: website/package.json
-          cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
-        name: Install Dependencies
-        run: npm ci
+          working-directory: website
       - name: Build Integrations via Docusaurus
-        working-directory: website/
-        run: npm run build -w integrations
+        run: corepack npm run build -w integrations --prefix website
   build-container:
     runs-on: ubuntu-latest
     permissions:

@@ -1,0 +1,81 @@
+name: "Setup Node.js and NPM"
+description: "Sets up Node.js with a specific NPM version via Corepack"
+inputs:
+  working-directory:
+    description: "Path to the working directory containing the package.json file"
+    required: false
+    default: "."
+  dependencies:
+    required: false
+    description: "List of dependencies to setup"
+    default: "monorepo,working-directory"
+  node-version-file:
+    description: "Path to file containing the Node.js version"
+    required: false
+    default: "package.json"
+  cache-dependency-path:
+    description: "Path to dependency lock file for caching"
+    required: false
+    default: "package-lock.json"
+  cache:
+    description: "Package manager to cache"
+    default: "npm"
+  registry-url:
+    description: "npm registry URL"
+    default: "https://registry.npmjs.org"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js (Corepack bootstrap)
+      uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v4
+      with:
+        node-version-file: ${{ inputs.node-version-file }}
+        registry-url: ${{ inputs.registry-url }}
+        # The setup-node action will attempt to create a cache using a version of
+        # npm that may not be compatible with the range specified in package.json.
+        # This can be enabled **after** corepack is installed and the correct npm version is available.
+        package-manager-cache: false
+    - name: Install Corepack
+      working-directory: ${{ github.workspace}}
+      shell: bash
+      run: | #shell
+        node ./scripts/node/lint-runtime.mjs
+        node ./scripts/node/setup-corepack.mjs --force
+        corepack enable
+    - name: Lint Node.js and NPM versions
+      shell: bash
+      run: node ./scripts/node/lint-runtime.mjs
+    - name: Setup Node.js (Monorepo Root)
+      uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v4
+      with:
+        node-version-file: ${{ inputs.node-version-file }}
+        cache: ${{ inputs.cache }}
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+        registry-url: ${{ inputs.registry-url }}
+    - name: Install monorepo dependencies
+      if: ${{ contains(inputs.dependencies, 'monorepo') }}
+      shell: bash
+      run: | #shell
+        node ./scripts/node/lint-lockfile.mjs
+        corepack npm ci
+    - name: Setup Node.js (Working Directory)
+      if: ${{ contains(inputs.dependencies, 'working-directory') }}
+      uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v4
+      with:
+        node-version-file: ${{ inputs.working-directory }}/${{ inputs.node-version-file }}
+        cache: ${{ inputs.cache }}
+        cache-dependency-path: ${{ inputs.working-directory }}/${{ inputs.cache-dependency-path }}
+        registry-url: ${{ inputs.registry-url }}
+
+    - name: Install working directory dependencies
+      if: ${{ contains(inputs.dependencies, 'working-directory') }}
+      shell: bash
+      run: | # shell
+        corepack install
+
+        echo "node version: $(node --version)"
+        echo "npm version: $(corepack npm --version)"
+
+        node ./scripts/node/lint-lockfile.mjs ${{ inputs.working-directory }}
+        corepack npm ci --prefix ${{ inputs.working-directory }}

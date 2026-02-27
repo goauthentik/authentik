@@ -4,17 +4,23 @@ ENV NODE_ENV=production
 
 WORKDIR /work
 
-# TODO: Use setup-corepack.mjs
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
-    npm install --force -g corepack@latest && \
-    corepack install -g npm@11.11.0+sha512.f36811c4aae1fde639527368ae44c571d050006a608d67a191f195a801a52637a312d259186254aa3a3799b05335b7390539cf28656d18f0591a1125ba35f973 && \
-    corepack enable
-
-WORKDIR /work/website
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
+    --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
+    --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
+    --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
+    --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
+    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
+    node ./scripts/node/setup-corepack.mjs --force && \
+    corepack npm ci \
+    node ./scripts/node/lint-runtime.mjs ./website
 
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/package-lock.json,src=./package-lock.json \
+    --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
+    --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
     --mount=type=bind,target=/work/packages/tsconfig/,src=./packages/tsconfig/ \
     --mount=type=bind,target=/work/packages/eslint-config/,src=./packages/eslint-config/ \
     --mount=type=bind,target=/work/packages/prettier-config/,src=./packages/prettier-config/ \
@@ -26,7 +32,9 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
     --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    corepack npm ci --workspaces --include-workspace-root
+    corepack npm ci --workspaces --include-workspace-root --prefix ./website
+
+WORKDIR /work/website
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
@@ -34,7 +42,7 @@ COPY ./schema.yml /work/
 COPY ./lifecycle/container/compose.yml /work/lifecycle/container/
 COPY ./SECURITY.md /work/
 
-RUN corepack npm run build
+RUN corepack npm run build -w docs
 
 FROM docker.io/library/nginx:1.29-trixie@sha256:0d1b1f0656a7cb1e2e8135bb1ea99d889ee5d3345fc20388da3f555ad77cf2dc
 

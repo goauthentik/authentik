@@ -35,22 +35,19 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
         with:
           fetch-depth: 2
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: ./.github/actions/setup-node
         with:
-          node-version-file: ${{ matrix.package }}/package.json
-          registry-url: "https://registry.npmjs.org"
+          working-directory: ${{ matrix.package }}
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@7dee1b0c1557f278e5c7dc244927139d78c0e22a # 24d32ffd492484c1d75e0c0b894501ddb9d30d62
         with:
           files: |
             ${{ matrix.package }}/package.json
-      - name: Install Dependencies
-        run: npm ci
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: ${{ matrix.package }}
         run: |
-          npm ci
-          npm run build
-          npm publish
+          corepack npm ci
+          corepack npm run build
+          corepack npm publish

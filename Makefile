@@ -102,8 +102,9 @@ migrate: ## Run the Authentik Django server's migrations
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
-aws-cfn:
-	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
+aws-cfn: node-install
+	corepack npm install --prefix lifecycle/aws
+	$(UV) run corepack npm run aws-cfn --prefix lifecycle/aws
 
 run-server:  ## Run the main authentik server process
 	$(UV) run ak server
@@ -122,7 +123,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
+install: node-install web-install core-install  ## Install all requires dependencies for `node`, `web` and `core`
 
 dev-drop-db:
 	$(eval pg_user := $(shell $(UV) run python -m authentik.lib.config postgresql.user 2>/dev/null))
@@ -207,9 +208,9 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 
-	cd ${PWD}/${GEN_API_TS} && npm i
-	cd ${PWD}/${GEN_API_TS} && npm link
-	cd ${PWD}/web && npm link @goauthentik/api
+	cd ${PWD}/${GEN_API_TS} && corepack npm install
+	cd ${PWD}/${GEN_API_TS} && corepack npm link
+	cd ${PWD}/web && corepack npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	mkdir -p ${PWD}/${GEN_API_PY}
@@ -234,38 +235,46 @@ gen: gen-build gen-client-ts
 #########################
 
 node-install:  ## Install the necessary libraries to build Node.js packages
-	npm ci
-	npm ci --prefix web
+	node ./scripts/node/setup-corepack.mjs
+	node ./scripts/node/lint-runtime.mjs
+
+	node ./scripts/node/lint-runtime.mjs
 
 #########################
 ## Web
 #########################
 
-web-build: node-install  ## Build the Authentik UI
-	npm run --prefix web build
+web-install: ## Install the necessary libraries to build the Authentik UI
+	node ./scripts/node/lint-runtime.mjs web
+
+	corepack npm ci
+	corepack npm ci --prefix web
+
+web-build:  ## Build the Authentik UI
+	corepack npm run --prefix web build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-test: ## Run tests for the Authentik UI
-	npm run --prefix web test
+	corepack npm run --prefix web test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	npm run --prefix web watch
+	corepack npm run --prefix web watch
 web-storybook-watch:  ## Build and run the storybook documentation server
-	npm run --prefix web storybook
+	corepack npm run --prefix web storybook
 
 web-lint-fix:
-	npm run --prefix web prettier
+	corepack npm run --prefix web prettier
 
 web-lint:
-	npm run --prefix web lint
-	npm run --prefix web lit-analyse
+	corepack npm run --prefix web lint
+	corepack npm run --prefix web lit-analyse
 
 web-check-compile:
-	npm run --prefix web tsc
+	corepack npm run --prefix web tsc
 
 web-i18n-extract:
-	npm run --prefix web extract-locales
+	corepack npm run --prefix web extract-locales
 
 #########################
 ## Docs
@@ -273,35 +282,40 @@ web-i18n-extract:
 
 docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-docs-install:
-	npm ci --prefix website
+docs-install: node-install  ## Install the necessary libraries to build the Authentik documentation
+	node ./scripts/node/lint-runtime.mjs
+
+	corepack npm ci
+
+	corepack npm ci --prefix website
 
 docs-lint-fix: lint-codespell
-	npm run --prefix website prettier
+	corepack npm run --prefix website prettier
 
 docs-build:
-	npm run --prefix website build
+	node ./scripts/node/lint-runtime.mjs website
+	corepack npm run --prefix website build
 
 docs-watch:  ## Build and watch the topics documentation
-	npm run --prefix website start
+	corepack npm run --prefix website start
 
 integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
 
 integrations-build:
-	npm run --prefix website -w integrations build
+	corepack npm run --prefix website -w integrations build
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	npm run --prefix website -w integrations start
+	corepack npm run --prefix website -w integrations start
 
 docs-api-build:
-	npm run --prefix website -w api build
+	corepack npm run --prefix website -w api build
 
 docs-api-watch:  ## Build and watch the API documentation
-	npm run --prefix website -w api build:api
-	npm run --prefix website -w api start
+	corepack npm run --prefix website -w api build:api
+	corepack npm run --prefix website -w api start
 
 docs-api-clean: ## Clean generated API documentation
-	npm run --prefix website -w api build:api:clean
+	corepack npm run --prefix website -w api build:api:clean
 
 #########################
 ## Docker
