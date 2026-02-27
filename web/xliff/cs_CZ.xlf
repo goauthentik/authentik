@@ -4,69 +4,41 @@
 <!-- #region Locales -->
 <trans-unit id="en">
   <source>English</source>
-</trans-unit>
-<trans-unit id="pseudo-LOCALE">
-  <source>Pseudolocale</source>
-</trans-unit>
-<trans-unit id="cs-CZ">
-  <source>Czech</source>
-</trans-unit>
-<trans-unit id="de-DE">
-  <source>German</source>
-</trans-unit>
-<trans-unit id="es-ES">
-  <source>Spanish</source>
-</trans-unit>
-<trans-unit id="fi-FI">
-  <source>Finnish</source>
-</trans-unit>
-<trans-unit id="fr-FR">
-  <source>French</source>
-</trans-unit>
-<trans-unit id="it-IT">
-  <source>Italian</source>
+  <target>Angličtina</target>
 </trans-unit>
 <trans-unit id="ja-JP">
   <source>Japanese</source>
+  <target>Japonština</target>
 </trans-unit>
 <trans-unit id="ko-KR">
   <source>Korean</source>
-</trans-unit>
-<trans-unit id="nl-NL">
-  <source>Dutch</source>
-</trans-unit>
-<trans-unit id="pl-PL">
-  <source>Polish</source>
-</trans-unit>
-<trans-unit id="pt-BR">
-  <source>Portuguese</source>
-</trans-unit>
-<trans-unit id="ru-RU">
-  <source>Russian</source>
-</trans-unit>
-<trans-unit id="tr-TR">
-  <source>Turkish</source>
+  <target>Korejština</target>
 </trans-unit>
 <trans-unit id="zh-Hans">
-  <source>Chinese Simplified</source>
+  <source>Chinese (Simplified)</source>
+  <target>Čínština (zjednodušená)</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
-  <source>Chinese Traditional</source>
+  <source>Chinese (Traditional)</source>
+  <target>Čínština (tradiční)</target>
 </trans-unit>
 <!-- #endregion -->
 
 <!-- #region Locale selector  -->
 <trans-unit id="locale-auto-detect-option">
   <source>Auto-detect</source>
+  <target>Rozpoznat</target>
   <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
 </trans-unit>
 <trans-unit id="language-selector-label">
   <source>Select language</source>
+  <target>Vyberte jazyk</target>
   <note from="lit-localize">Label for the language selection dropdown</note>
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
-  <source><x id="0" equiv-text="${localeLabel}"/> (<x id="1" equiv-text="${translatedLabel}"/>)</source>
-  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses. The first placeholder is the localized language name, the second is the native language name.</note>
+  <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <target><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</target>
+  <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
 
@@ -89,18 +61,6 @@
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
   <target>Stavové zprávy</target>
-</trans-unit>
-<trans-unit id="s364c4f177a2f8322">
-  <source>Open API drawer</source>
-  <target>Otevřít API panel</target>
-</trans-unit>
-<trans-unit id="sba65ae54d6585c1a">
-  <source>Unread notifications</source>
-  <target>Nepřečtená oznámení</target>
-</trans-unit>
-<trans-unit id="s9ba989e69344ff29">
-  <source>Open Notification drawer</source>
-  <target>Otevřít panel oznámení</target>
 </trans-unit>
 <trans-unit id="s9d8b8aa2b404c2c8">
   <source>Settings</source>
@@ -511,15 +471,19 @@
 </trans-unit>
 <trans-unit id="s482bc55a78891ef7">
   <source>A code has been sent to your address: <x id="0" equiv-text="${email}"/></source>
+  <target>Na vaši emailovou adresu <x id="0" equiv-text="${email}"/> byl odeslán kód</target>
 </trans-unit>
 <trans-unit id="s5afa3fc77ce8d94d">
   <source>A code has been sent to your email address.</source>
+  <target>Na vaši emailovou adresu byl odeslán kód.</target>
 </trans-unit>
 <trans-unit id="s37f47fa981493c3b">
   <source>A one-time use code has been sent to you via SMS text message.</source>
+  <target>Na vaše telefonní číslo byla odeslána SMS zpráva s jednorázovým kódem.</target>
 </trans-unit>
 <trans-unit id="sc92a7248dba5f388">
   <source>Open your authenticator app to retrieve a one-time use code.</source>
+  <target>Otevřete aplikaci dvoufázového ověření k získání jednorázového ověřovacího kódu.</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
@@ -551,6 +515,7 @@
 </trans-unit>
 <trans-unit id="s3633ffed92acaecb">
   <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+  <target><x id="0" equiv-text="${this.label || &quot;&quot;}"/> stránkování</target>
 </trans-unit>
 <trans-unit id="s04c5a637328c9b67">
   <source><x id="0" equiv-text="${startIndex}"/> - <x id="1" equiv-text="${endIndex}"/> of <x id="2" equiv-text="${pageCount}"/></source>
@@ -585,6 +550,7 @@
 </trans-unit>
 <trans-unit id="sf6e7447df476939f">
   <source>Query input</source>
+  <target>Dotaz</target>
 </trans-unit>
 <trans-unit id="s5638954badbd5b21">
   <source>Table Search</source>
@@ -596,6 +562,7 @@
 </trans-unit>
 <trans-unit id="sd9b15395dd103f80">
   <source>Sort by &quot;<x id="0" equiv-text="${label}"/>&quot;</source>
+  <target>Řadit dle &amp;quot;<x id="0" equiv-text="${label}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s7bc8c327f1f7c82c">
   <source>No objects found.</source>
@@ -607,6 +574,7 @@
 </trans-unit>
 <trans-unit id="s7dd64bb0c1fa8e87">
   <source>Select &quot;<x id="0" equiv-text="${rowLabel}"/>&quot; row</source>
+  <target>Vybrat řádku &amp;quot;<x id="0" equiv-text="${rowLabel}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sd26f670ca5d5b0c6">
   <source>Collapse row</source>
@@ -626,9 +594,11 @@
 </trans-unit>
 <trans-unit id="sd09354b0220a13ce">
   <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+  <target>Vybrat všechny řádky na stránce (vybráno <x id="0" equiv-text="${selectedCount}"/> z <x id="1" equiv-text="${pageItemCount}"/>)</target>
 </trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
+  <target>Naposledy obnoveno</target>
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
@@ -640,6 +610,7 @@
 </trans-unit>
 <trans-unit id="s15a7e4227737b7c4">
   <source>Column actions</source>
+  <target>Akce sloupce</target>
 </trans-unit>
 <trans-unit id="sa65e7bc7ddd3484d">
   <source>Anonymous user</source>
@@ -647,8 +618,7 @@
 </trans-unit>
 <trans-unit id="sc35581d9c1cd67ff">
   <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
-  <target>Jménem
-        <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
+  <target>Jménem <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></target>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
@@ -684,6 +654,7 @@
 </trans-unit>
 <trans-unit id="sd2fa988f1774cfde">
   <source>System Status</source>
+  <target>Stav systému</target>
 </trans-unit>
 <trans-unit id="s113c05ef9996ca4b">
   <source>Embedded outpost is not configured correctly.</source>
@@ -749,9 +720,11 @@
 </trans-unit>
 <trans-unit id="s66f26fdcbe2101eb">
   <source>Chart</source>
+  <target>Graf</target>
 </trans-unit>
 <trans-unit id="s7b58d033cc5112ab">
   <source>Event volume chart</source>
+  <target>Graf množství událostí</target>
 </trans-unit>
 <trans-unit id="s11bc220e8fa9d797">
   <source>Authorizations</source>
@@ -771,6 +744,7 @@
 </trans-unit>
 <trans-unit id="s0914f91b3f985f0f">
   <source>Synchronization status chart</source>
+  <target>Graf statusu synchronizace</target>
 </trans-unit>
 <trans-unit id="s477de089b505a6ea">
   <source>SCIM Provider</source>
@@ -806,6 +780,7 @@
 </trans-unit>
 <trans-unit id="s3f01dbc864d2a8b9">
   <source>Outpost status chart</source>
+  <target>Graf statusu outpostů</target>
 </trans-unit>
 <trans-unit id="sfeb82261bcf99edd">
   <source>Healthy outposts</source>
@@ -1021,18 +996,17 @@
   <source>No form found</source>
   <target>Nenalezen žádný formulář</target>
 </trans-unit>
-<trans-unit id="s059358bf402de018">
-  <source>Element inside the form slot is not a Form</source>
-  <target>Prvek uvnitř formulářového slotu není formulář.</target>
-</trans-unit>
 <trans-unit id="s7f073c746d0f6324">
   <source>Form actions</source>
+  <target>Akce formuláře</target>
 </trans-unit>
 <trans-unit id="sfd81bd296e2f7585">
   <source>Submit action</source>
+  <target>Potvrdit akci</target>
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
+  <target>Zrušit akci</target>
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
@@ -1060,7 +1034,7 @@
 </trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
-  <target>Oprávnění bylo úspěšně přiřazeno.</target>
+  <target>Oprávnění bylo úspěšně přiděleno.</target>
 </trans-unit>
 <trans-unit id="sca7fed2bef53cb99">
   <source>Role</source>
@@ -1068,11 +1042,11 @@
 </trans-unit>
 <trans-unit id="sc92c1a54034e21cc">
   <source>Assign</source>
-  <target>Přiřadit</target>
+  <target>Přidělit</target>
 </trans-unit>
 <trans-unit id="scd84d10ee9137070">
   <source>Assign permission to role</source>
-  <target>Přiřadit oprávnění k roli</target>
+  <target>Přidělit oprávnění k roli</target>
 </trans-unit>
 <trans-unit id="sb923723d27df40ba">
   <source>Permission(s)</source>
@@ -1092,7 +1066,7 @@
 </trans-unit>
 <trans-unit id="s0ca04e397298bc43">
   <source>Select permissions to assign</source>
-  <target>Vyberte oprávnění k přiřazení</target>
+  <target>Vyberte oprávnění k přidělení</target>
 </trans-unit>
 <trans-unit id="sf9aee319a006c9b4">
   <source>Add</source>
@@ -1108,6 +1082,7 @@
 </trans-unit>
 <trans-unit id="s7753c012594cc69e">
   <source>Assigned to role</source>
+  <target>Přiděleno k roli</target>
 </trans-unit>
 <trans-unit id="s67e136af8fc1107b">
   <source>Assign permission</source>
@@ -1123,15 +1098,15 @@
 </trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
-  <target>Přiřazená globální oprávnění</target>
+  <target>Přidělená globální oprávnění</target>
 </trans-unit>
 <trans-unit id="s8f85a0e678846080">
   <source>Assigned object permissions</source>
-  <target>Přiřazená oprávnění objektu</target>
+  <target>Přidělená oprávnění objektu</target>
 </trans-unit>
 <trans-unit id="s17032e57ba222d2f">
   <source>Permissions assigned to this role which affect all object instances of a given type.</source>
-  <target>Oprávnění přiřazená této roli, která ovlivňují všechny instance objektů daného typu.</target>
+  <target>Oprávnění přidělená této roli, která ovlivňují všechny instance objektů daného typu.</target>
 </trans-unit>
 <trans-unit id="s5e8250fb85d64c23">
   <source>Close</source>
@@ -1139,6 +1114,7 @@
 </trans-unit>
 <trans-unit id="sc08c153234510246">
   <source>Update &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; Permissions</source>
+  <target>Upravit oprávnění &amp;quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s6d25eef21a9e76ba">
   <source>Open &quot;<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>&quot; permissions modal</source>
@@ -1178,15 +1154,19 @@
 </trans-unit>
 <trans-unit id="s94f08f46277af7d6">
   <source>Running tasks</source>
+  <target>Probíhající úlohy</target>
 </trans-unit>
 <trans-unit id="s8b551364b894d1ee">
   <source>Queued tasks</source>
+  <target>Úlohy čekající na zpracování</target>
 </trans-unit>
 <trans-unit id="s2139d19009989a19">
   <source>Successful tasks</source>
+  <target>Dokončené úlohy</target>
 </trans-unit>
 <trans-unit id="s0787cd9eab5aa6e3">
   <source>Error tasks</source>
+  <target>Úlohy skončené chybou</target>
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
@@ -1198,9 +1178,11 @@
 </trans-unit>
 <trans-unit id="s84fb675fb17d4455">
   <source>Retries</source>
+  <target>Opakování</target>
 </trans-unit>
 <trans-unit id="s1d300a2f13c19ab4">
   <source>Planned execution time</source>
+  <target>Plánovaný čas spuštění</target>
 </trans-unit>
 <trans-unit id="sb91d1be10eb2c7da">
   <source>Last updated</source>
@@ -1216,6 +1198,7 @@
 </trans-unit>
 <trans-unit id="sa3242c7021e01280">
   <source>Row Actions</source>
+  <target>Akce řádku</target>
 </trans-unit>
 <trans-unit id="s911c2c952e64b223">
   <source>Show only standalone tasks</source>
@@ -1295,9 +1278,11 @@
 </trans-unit>
 <trans-unit id="s56e7ff6cc2abeb0d">
   <source>Wizard steps</source>
+  <target>Kroky průvodce</target>
 </trans-unit>
 <trans-unit id="s04e09c193d15e4b4">
   <source>Wizard navigation</source>
+  <target>Navigace průvodce</target>
 </trans-unit>
 <trans-unit id="s0c9670f429e74283">
   <source>New application</source>
@@ -1329,12 +1314,15 @@
 </trans-unit>
 <trans-unit id="s0268ce9f2abb84de">
   <source>Configure the Application</source>
+  <target>Konfigurovat aplikaci</target>
 </trans-unit>
 <trans-unit id="s07b0bf005510fe29">
   <source>Type an application name...</source>
+  <target>Napište jméno aplikace...</target>
 </trans-unit>
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
+  <target>Jméno aplikace</target>
 </trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
@@ -1374,6 +1362,7 @@
 </trans-unit>
 <trans-unit id="s71e967b36e080e3c">
   <source>https://...</source>
+  <target>https://...</target>
 </trans-unit>
 <trans-unit id="s992f8d1a776e763c">
   <source>If left empty, authentik will try to extract the launch URL based on the selected provider.</source>
@@ -1500,12 +1489,15 @@
 </trans-unit>
 <trans-unit id="s48a2e97afd62c35e">
   <source>Close wizard</source>
+  <target>Zavřít průvodce</target>
 </trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
+  <target>NEPOJMENOVÁNO</target>
 </trans-unit>
 <trans-unit id="s74b47e964bb82e5f">
   <source>Wizard content</source>
+  <target>Obsah průvodce</target>
 </trans-unit>
 <trans-unit id="sad59707375956ad2">
   <source>Finish</source>
@@ -1627,18 +1619,6 @@
   <source>Selected options</source>
   <target>Vybrané možnosti</target>
 </trans-unit>
-<trans-unit id="sd429eba21dd59f44">
-  <source><x id="0" equiv-text="${availableCount}"/> item(s) marked to add.</source>
-  <target><x id="0" equiv-text="${availableCount}"/> položka(y) označené k přidání.</target>
-</trans-unit>
-<trans-unit id="s4abfe4e0d0665fd1">
-  <source><x id="0" equiv-text="${selectedTotal}"/> item(s) selected.</source>
-  <target>Vybráno <x id="0" equiv-text="${selectedTotal}"/> položek.</target>
-</trans-unit>
-<trans-unit id="s56b3d54118c34b2f">
-  <source><x id="0" equiv-text="${selectedCount}"/> item(s) marked to remove.</source>
-  <target><x id="0" equiv-text="${selectedCount}"/> položka(y) označené ke smazání.</target>
-</trans-unit>
 <trans-unit id="s4127b943d6826b8b">
   <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
   <target>Hledání <x id="0" equiv-text="${this.availableLabel}"/>...</target>
@@ -1713,6 +1693,7 @@
 </trans-unit>
 <trans-unit id="s96dc816b1d1c3be0">
   <source>Type a provider name...</source>
+  <target>Napište název poskytovatele...</target>
 </trans-unit>
 <trans-unit id="se5973e7c8ba0fc71">
   <source>Bind mode</source>
@@ -1824,15 +1805,19 @@
 </trans-unit>
 <trans-unit id="sa3056b3252b4b52c">
   <source>Back-channel</source>
+  <target>Back-channel</target>
 </trans-unit>
 <trans-unit id="saa3d821fc889a636">
   <source>Server-to-server logout notifications</source>
+  <target>Oznámení o odhlášení server-server</target>
 </trans-unit>
 <trans-unit id="s9f448d01a0354e8e">
   <source>Front-channel</source>
+  <target>Front-channel</target>
 </trans-unit>
 <trans-unit id="s83ba71823baf9a51">
   <source>Browser iframe logout notifications</source>
+  <target>Oznámení o odhlášení v iframe prohlížeče</target>
 </trans-unit>
 <trans-unit id="sccc47f82044453f9">
   <source>Based on the User's hashed ID</source>
@@ -1916,15 +1901,19 @@
 </trans-unit>
 <trans-unit id="s145480489b87a109">
   <source>Logout URI</source>
+  <target>URI pro odhlášení</target>
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+  <target>URI pro zaslání oznámení při odhlášení uživatele. Vyžadováno pro funkcionalitu odhlášení protokolu OpenID Connect.</target>
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
+  <target>Metoda odhlášení</target>
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+  <target>Metoda odhlášení určuje, jak je URI pro odhlášení voláno – back-channel (server-server) nebo front-channel (ifame v prohlížeči).</target>
 </trans-unit>
 <trans-unit id="s55787f4dfcdce52b">
   <source>Signing Key</source>
@@ -1932,6 +1921,7 @@
 </trans-unit>
 <trans-unit id="s9139b576e9944704">
   <source>Select a signing key...</source>
+  <target>Vyberte podepisovací klíč...</target>
 </trans-unit>
 <trans-unit id="sc6c57419ad3a01a8">
   <source>Key used to sign the tokens.</source>
@@ -1947,6 +1937,7 @@
 </trans-unit>
 <trans-unit id="s91675ea72a0ebe3e">
   <source>Select an authentication flow...</source>
+  <target>Vyberte autentizační tok...</target>
 </trans-unit>
 <trans-unit id="sa72a3bd1e7e89926">
   <source>Flow used when a user access this provider and is not authenticated.</source>
@@ -1994,9 +1985,11 @@
 </trans-unit>
 <trans-unit id="s3e80c199c9e45456">
   <source>Refresh Token threshold</source>
+  <target>Hranice obnovení tokenu</target>
 </trans-unit>
 <trans-unit id="sdff424992223a264">
   <source>When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.</source>
+  <target>Pokud je při obnovování refresh tokenu vypršení tokenu pod touto hranicí, refresh token bude obnoven. Refresh token bude vždy obnoven při nastavení seconds=0.</target>
 </trans-unit>
 <trans-unit id="s2e3ef41a0edd8608">
   <source>Scopes</source>
@@ -2024,9 +2017,11 @@
 </trans-unit>
 <trans-unit id="sbdab4eb1812adc78">
   <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+  <target>Klíč používaný k šifrování tokenů. Povolte pouze pokud aplikace využívající tohoto poskytovatele podporuje JWE tokeny.</target>
 </trans-unit>
 <trans-unit id="s998fea0fa7bb4188">
   <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+  <target>Authentik pro šifrování podporuje pouze RSA-OAEP-256.</target>
 </trans-unit>
 <trans-unit id="s26bf2730430efbea">
   <source>Subject mode</source>
@@ -2154,6 +2149,7 @@
 </trans-unit>
 <trans-unit id="sd144a9315e8f87c1">
   <source>http(s)://...</source>
+  <target>http(s)://...</target>
 </trans-unit>
 <trans-unit id="sf05e384059a0a7c1">
   <source>Upstream host that the requests are forwarded to.</source>
@@ -2205,6 +2201,7 @@
 </trans-unit>
 <trans-unit id="sf8633bb541bfb123">
   <source>domain.tld</source>
+  <target>doména.tld</target>
 </trans-unit>
 <trans-unit id="s211b75e868072162">
   <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
@@ -2304,6 +2301,7 @@
 </trans-unit>
 <trans-unit id="sd5746b2550ac4852">
   <source>Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.</source>
+  <target>Certifikát používaný pro EAP-TLS. Vyžaduje Mutual TLS Stage v autentižačním toku.</target>
 </trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
@@ -2335,27 +2333,35 @@
 </trans-unit>
 <trans-unit id="sa4bd902fbc432ab8">
   <source>Sign logout requests</source>
+  <target>Podepisovat požadavky na odhlášení</target>
 </trans-unit>
 <trans-unit id="sb1e6dc6d91ce352e">
   <source>When enabled, SAML logout requests will be signed.</source>
+  <target>Pokud je povoleno, SAML požadavky na odhlášení budou podepisovány.</target>
 </trans-unit>
 <trans-unit id="sd1ab93a011b2f1f5">
   <source>Front-channel (Iframe)</source>
+  <target>Front-channel (Iframe)</target>
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
+  <target>Front-channel (Nativní)</target>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
+  <target>Back-channel (POST)</target>
 </trans-unit>
 <trans-unit id="s7f7be294b1bef506">
   <source>SLS Binding</source>
+  <target>Vazby SLS</target>
 </trans-unit>
 <trans-unit id="s9104cd1063aa6a4a">
   <source>Determines how authentik sends the logout response back to the Service Provider.</source>
+  <target>Určuje, jak authentik posílá odhlašovací odpověď zpět poskytovateli služeb.</target>
 </trans-unit>
 <trans-unit id="sd1fba3c745c016a8">
   <source>Method to use for logout when SLS URL is configured.</source>
+  <target>Metoda použitá pro odhlášení, pokud je nastavené SLS URL.</target>
 </trans-unit>
 <trans-unit id="s11204eeb1e27ea8f">
   <source>ACS URL</source>
@@ -2375,6 +2381,7 @@
 </trans-unit>
 <trans-unit id="sd4fd64791f73d37b">
   <source>Also known as Entity ID.</source>
+  <target>Také známé jako EntityID.</target>
 </trans-unit>
 <trans-unit id="sd5a4b41c6c883b03">
   <source>Audience</source>
@@ -2382,9 +2389,11 @@
 </trans-unit>
 <trans-unit id="sc71892084574cf32">
   <source>SLS URL</source>
+  <target>SLS URL</target>
 </trans-unit>
 <trans-unit id="s21658078c6fdf964">
   <source>Optional Single Logout Service URL to send logout responses to. If not set, no logout response will be sent.</source>
+  <target>Nepovinná URL Single Logout Service, kam se pošle odpověď na odhlášení. Pokud není vyplněno, odpověď na odhlášení nebude poslána.</target>
 </trans-unit>
 <trans-unit id="sc741d9ebe07ad103">
   <source>Signing Certificate</source>
@@ -2512,18 +2521,23 @@
 </trans-unit>
 <trans-unit id="seb250c3885733522">
   <source>Token to authenticate with.</source>
+  <target>Token pro autentizaci</target>
 </trans-unit>
 <trans-unit id="scdafec223d3840e9">
   <source>OAuth Source</source>
+  <target>Zdroj OAuth</target>
 </trans-unit>
 <trans-unit id="s2111b3384e12349c">
   <source>Specify OAuth source used for authentication.</source>
+  <target>Specifikujte zdroj OAuth pro autentizaci.</target>
 </trans-unit>
 <trans-unit id="s1876401267e31dd0">
   <source>OAuth Parameters</source>
+  <target>Parametry OAuth</target>
 </trans-unit>
 <trans-unit id="sc5ca1b55a5391535">
   <source>Additional OAuth parameters, such as grant_type.</source>
+  <target>Dodatečné parametry OAuth, například grant_type</target>
 </trans-unit>
 <trans-unit id="sb21f33b039c86322">
   <source>SCIM base url, usually ends in /v2.</source>
@@ -2535,9 +2549,11 @@
 </trans-unit>
 <trans-unit id="s6e4af789dec357dc">
   <source>Authentication Mode</source>
+  <target>Autentizační mód</target>
 </trans-unit>
 <trans-unit id="s24d7ac2fc280ca5e">
   <source>Authenticate SCIM requests using a static token.</source>
+  <target>Autentizovat SCIM požadavky pomocí statického tokenu.</target>
 </trans-unit>
 <trans-unit id="s0e1641692e0dac94">
   <source>OAuth</source>
@@ -2545,6 +2561,7 @@
 </trans-unit>
 <trans-unit id="s1c34cb0a4cccc041">
   <source>Authenticate SCIM requests using OAuth.</source>
+  <target>Autentizovat SCIM požadavky pomocí OAuth.</target>
 </trans-unit>
 <trans-unit id="s3483d693c72e412e">
   <source>Compatibility Mode</source>
@@ -2576,9 +2593,11 @@
 </trans-unit>
 <trans-unit id="s2ce58eab7841b342">
   <source>Salesforce</source>
+  <target>Salesforce</target>
 </trans-unit>
 <trans-unit id="s7392b5925a4803af">
   <source>Altered behavior for usage with Salesforce.</source>
+  <target>Změněné chování pro použití se Salesforce.</target>
 </trans-unit>
 <trans-unit id="s054cb3c0a84eefe5">
   <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
@@ -2634,18 +2653,23 @@
 </trans-unit>
 <trans-unit id="s25afe36fa73d2e5b">
   <source>Sync settings</source>
+  <target>Synchronizovat nastavení</target>
 </trans-unit>
 <trans-unit id="s2c859e13e182be6b">
   <source>Page size</source>
+  <target>Velikost stránky</target>
 </trans-unit>
 <trans-unit id="sb984354bb46c8bed">
   <source>Controls the number of objects synced in a single task.</source>
+  <target>Určuje počet objektů synchronizovaných během jedné úlohy.</target>
 </trans-unit>
 <trans-unit id="sc24408fbc7ff26b5">
   <source>Page timeout</source>
+  <target>Časový limit stránky</target>
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
+  <target>Časový limit synchronizace jedné stránky.</target>
 </trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
@@ -2810,6 +2834,7 @@
 </trans-unit>
 <trans-unit id="sf397c39bda7abfc6">
   <source>Open the wizard to create a new provider.</source>
+  <target>Otevřete průvodce pro vytvoření nového poskytovatele.</target>
 </trans-unit>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
@@ -2956,12 +2981,11 @@
   <target>Poskytovatel není přiřazen žádné aplikaci.</target>
 </trans-unit>
 <trans-unit id="sc9175cb129fdc306">
-  <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
-  <target>Aktualizovat
-        <x id="0" equiv-text="${item.verboseName}"/></target>
+  <source>Update <x id="0" equiv-text="${this.objectLabel}"/></source>
 </trans-unit>
 <trans-unit id="sfbb87c9ced1fde54">
   <source>Edit &quot;<x id="0" equiv-text="${item.name}"/>&quot; provider</source>
+  <target>Upravit poskytovatele &amp;quot;<x id="0" equiv-text="${item.name}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
   <source>Successfully triggered sync.</source>
@@ -3304,6 +3328,7 @@
 </trans-unit>
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
+  <target>Hostname/IP pro připojení. Volitelně specifikujte port.</target>
 </trans-unit>
 <trans-unit id="sc39f6abf0daedb0f">
   <source>Maximum concurrent connections</source>
@@ -3319,12 +3344,15 @@
 </trans-unit>
 <trans-unit id="s1ec022562e3d515b">
   <source>Search for users by username or display name...</source>
+  <target>Filtrujte uživatele pomocí uživatelského jména nebo zobrazovaného jména...</target>
 </trans-unit>
 <trans-unit id="s65f6a2f5e2b848e1">
   <source>Search Users</source>
+  <target>Hledat uživatele</target>
 </trans-unit>
 <trans-unit id="sd416adae573583d5">
   <source>Select Users</source>
+  <target>Vybrat uživatele</target>
 </trans-unit>
 <trans-unit id="sa45a194b58837e4f">
   <source>Active</source>
@@ -3340,9 +3368,11 @@
 </trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
+  <target>Vybrat uživatele</target>
 </trans-unit>
 <trans-unit id="sb85774dc5d18ff0f">
   <source>Confirm</source>
+  <target>Potvrdit</target>
 </trans-unit>
 <trans-unit id="s75d5ff5dd8d3c6d2">
   <source>Successfully updated group.</source>
@@ -3354,15 +3384,19 @@
 </trans-unit>
 <trans-unit id="s9436f1bf4400f6a6">
   <source>Type a group name...</source>
+  <target>Napište jméno skupiny...</target>
 </trans-unit>
 <trans-unit id="s2d9356347ff7c77f">
   <source>Group Name</source>
+  <target>Jméno skupiny</target>
 </trans-unit>
 <trans-unit id="sf45dac7c571f18bd">
   <source>Superuser Privileges</source>
+  <target>Práva správce</target>
 </trans-unit>
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
+  <target>Uživatelé přidaní do této skupiny budou správci.</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -3395,10 +3429,6 @@
 <trans-unit id="s1bf56ee106e9e711">
   <source>Successfully created binding.</source>
   <target>Vazba byla úspěšně vytvořena.</target>
-</trans-unit>
-<trans-unit id="s81a45c4fd11e8e1a">
-  <source>Don't pass</source>
-  <target>Nepovolit</target>
 </trans-unit>
 <trans-unit id="s95b73e0f4e47eb9a">
   <source>Result used when policy execution fails.</source>
@@ -3738,9 +3768,11 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="sb3087c7347bed341">
   <source>Company employees with access to the full enterprise feature set.</source>
+  <target>Zaměstnanci společnosti s přístupem k plné sadě funkcí Enterprise.</target>
 </trans-unit>
 <trans-unit id="sc7266f960c466de6">
   <source>External consultants or B2C customers without access to enterprise features.</source>
+  <target>Externí konzultanti nebo B2C zákazníci bez přístupu k Enterprise funkcím.</target>
 </trans-unit>
 <trans-unit id="sf4ad4d9f8a5c868b">
   <source>Machine-to-machine authentication or other automations.</source>
@@ -3754,6 +3786,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s67ba000e66cdbd0d">
   <source>Type a username for the user...</source>
+  <target>Zadejte uživatelské jméno pro uživatele…</target>
 </trans-unit>
 <trans-unit id="s7819072445baceee">
   <source>The user's primary identifier used for authentication. 150 characters or fewer.</source>
@@ -3780,6 +3813,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s1e2e135dac5ba993">
   <source>Email Address</source>
+  <target>E-mailová adresa</target>
 </trans-unit>
 <trans-unit id="s9fd0516c9193c73e">
   <source>Type an optional email address...</source>
@@ -4135,7 +4169,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s64330d6dc06337c9">
   <source>Loading application...</source>
-  <target>Načítání aplikací...</target>
+  <target>Načítání aplikace…</target>
 </trans-unit>
 <trans-unit id="sea2f00b34b385a43">
   <source>Successfully updated device.</source>
@@ -4163,9 +4197,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sf96a86df0756bc7b">
   <source>Afterwards, select the enrollment token you want to use:</source>
 </trans-unit>
-<trans-unit id="s13b4cf044a01dde2">
-  <source>Then download the configuration to deploy the authentik Agent</source>
-</trans-unit>
 <trans-unit id="s12f523a52b843ea2">
   <source>macOS</source>
 </trans-unit>
@@ -4177,6 +4208,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s3624e780118ae113">
   <source>No connectors configured. Navigate to connectors in the sidebar and create a connector.</source>
+  <target>Nejsou nastaveny žádné konektory. Přejděte do konektorů v postranním panelu a vytvořte konektor.</target>
 </trans-unit>
 <trans-unit id="s8f26d4f086cc1323">
   <source>Unix</source>
@@ -4198,24 +4230,31 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s150cf10289852e4a">
   <source>Endpoint Devices are in preview.</source>
+  <target>Koncová zařízení jsou v náhledu.</target>
 </trans-unit>
 <trans-unit id="s672b3d1982f585fa">
   <source>Total devices</source>
+  <target>Celkový počet zařízení</target>
 </trans-unit>
 <trans-unit id="sf3a81f931deb9f96">
   <source>Total count of devices across all groups</source>
+  <target>Celkový počet zařízení ve všech skupinách</target>
 </trans-unit>
 <trans-unit id="sd4566519aa4dbd8e">
   <source>Unreachable devices</source>
+  <target>Nedostupná zařízení</target>
 </trans-unit>
 <trans-unit id="sf1580fcb88cbcfd8">
   <source>Devices that authentik hasn't received information about in 24h.</source>
+  <target>Zařízení, o kterých authentik neobdržel informace během posledních 24h</target>
 </trans-unit>
 <trans-unit id="s303ef08d87cd21fd">
   <source>Outdated agents</source>
+  <target>Zastaralí agenti</target>
 </trans-unit>
 <trans-unit id="s0a5821461d41f627">
   <source>Devices running an outdated version of an agent</source>
+  <target>Zařízení s zastaralou verzí agenta</target>
 </trans-unit>
 <trans-unit id="sabb56f74492e7e96">
   <source>Update Device</source>
@@ -4229,6 +4268,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s6d4cc88f2426efaf">
   <source>Loading device...</source>
+  <target>Načítání zařízení…</target>
 </trans-unit>
 <trans-unit id="s2addf9fd0d89ba11">
   <source>Device details</source>
@@ -4264,24 +4304,11 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
 </trans-unit>
-<trans-unit id="s76ea179414f2b2a5">
-  <source>Disk size</source>
-</trans-unit>
-<trans-unit id="s25e7a078391a3ec3">
-  <source>Disk usage</source>
-</trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
 </trans-unit>
 <trans-unit id="sfdd447bcde2c13ba">
   <source>Processes</source>
-</trans-unit>
-<trans-unit id="s09810653c832e935">
-  <source>Click to change value</source>
-  <target>Klikněte pro změnu hodnoty</target>
-</trans-unit>
-<trans-unit id="s6a087e34edeadc1f">
-  <source>Connector name...</source>
 </trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
@@ -4304,6 +4331,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="sf4372a571ffb02cd">
   <source>Refresh interval</source>
+  <target>Obnovit interval</target>
 </trans-unit>
 <trans-unit id="s3f009bda38b93134">
   <source>Interval how frequently the agent tries to update its config.</source>
@@ -4328,9 +4356,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
-</trans-unit>
-<trans-unit id="s58d0ed0cc064ec4f">
-  <source>Update Connector</source>
+  <target>Konektory</target>
 </trans-unit>
 <trans-unit id="s06b8c7e7fb99c1d8">
   <source>Connector(s)</source>
@@ -4347,27 +4373,12 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Expires on</source>
   <target>Expiruje v</target>
 </trans-unit>
-<trans-unit id="sb7fe62e7073eb6c9">
-  <source>Token name...</source>
-</trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
   <target>Expirující</target>
-</trans-unit>
-<trans-unit id="safcc54b2aedb1a17">
-  <source>If this is selected, the token will expire. Upon expiration, the token will be rotated.</source>
-  <target>Pokud je tato možnost vybrána, platnost tokenu vyprší. Po expiraci bude token automaticky obměněn.</target>
-</trans-unit>
-<trans-unit id="sdc5690be4a342985">
-  <source>The token has been copied to your clipboard</source>
-  <target>Token byl zkopírován do schránky</target>
-</trans-unit>
-<trans-unit id="s7f3edfee24690c9f">
-  <source>The token was displayed because authentik does not have permission to write to the clipboard</source>
-  <target>Token byl zobrazen, protože authentik nemá oprávnění zapisovat do schránky</target>
 </trans-unit>
 <trans-unit id="sf71dba2c30283a54">
   <source>Expires?</source>
@@ -4379,9 +4390,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
-</trans-unit>
-<trans-unit id="sc522b30adb9ff289">
-  <source>Update Enrollment token</source>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -4401,9 +4409,11 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s3a38fceae14534dd">
   <source>Device access groups</source>
+  <target>Přístup skupin zařízení</target>
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
+  <target>Vytvořte skupiny zařízení pro správu přístupu.</target>
 </trans-unit>
 <trans-unit id="s505d8b43d0ead2be">
   <source>Create Device Group</source>
@@ -4516,14 +4526,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s6d225d9e74dfff6f">
   <source>Heimdal kadmin</source>
   <target>Heimdal kadmin</target>
-</trans-unit>
-<trans-unit id="sc9e494c8346b7cb5">
-  <source>Other</source>
-  <target>Jiné</target>
-</trans-unit>
-<trans-unit id="sbf6c78047e8ec8f8">
-  <source>Other type of kadmin</source>
-  <target>Jiný typ kadmin</target>
 </trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
@@ -5494,8 +5496,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="se16ac750b81fa93d">
   <source>Assigned to <x id="0" equiv-text="${item.boundTo}"/> object(s).</source>
-  <target>Přiřazeno k
-        <x id="0" equiv-text="${item.boundTo}"/>objektu(ům).</target>
+  <target>Přiřazeno k<x id="0" equiv-text="${item.boundTo}"/>objektu(ům).</target>
 </trans-unit>
 <trans-unit id="s5a48d5171e1a1522">
   <source>Warning: Policy is not assigned.</source>
@@ -5651,10 +5652,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Successfully updated password.</source>
   <target>Heslo byl úspěšně aktualizováno.</target>
 </trans-unit>
-<trans-unit id="se5498954255620b4">
-  <source>Successfully sent email.</source>
-  <target>Email byl úspěšně odeslán.</target>
-</trans-unit>
 <trans-unit id="s44ea4e9a81ce730d">
   <source>Email stage</source>
   <target>Krok e-mailu</target>
@@ -5719,20 +5716,11 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <target>Aktualizovat heslo</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
-  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
-  <target>Aktualizovat heslo uživatele <x id="0" equiv-text="${item.name || item.username}"/></target>
+  <source>Update <x id="0" equiv-text="${user.name || user.username}"/>'s password</source>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
   <target>Nastavit heslo</target>
-</trans-unit>
-<trans-unit id="s0ae3395d8f48e624">
-  <source>Successfully generated recovery link</source>
-  <target>Odkaz k obnovení úspěšně vytvořen</target>
-</trans-unit>
-<trans-unit id="sb69119c9f0547bed">
-  <source>Copy recovery link</source>
-  <target>Kopírovat odkaz pro obnovení</target>
 </trans-unit>
 <trans-unit id="s7fa236d26b798301">
   <source>Send link</source>
@@ -5745,14 +5733,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s03fd2c252ad7972a">
   <source>Email recovery link</source>
   <target>Odkaz pro obnovení e-mailu</target>
-</trans-unit>
-<trans-unit id="sd7fa99e4d82b374a">
-  <source>Recovery link cannot be emailed, user has no email address saved.</source>
-  <target>Odkaz pro obnovení nemůže být odeslán emailem, protože uživatel nemá nastavenou emailovou adresu.</target>
-</trans-unit>
-<trans-unit id="sa9d13ce9e83aac17">
-  <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
-  <target>Chcete-li uživateli umožnit přímo resetovat své heslo, nakonfigurujte tok obnovení na aktuálně aktivní značce.</target>
 </trans-unit>
 <trans-unit id="sac6c67e92bd30229">
   <source>Assign Additional Users</source>
@@ -5767,6 +5747,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="sf6aec5a09661fe61">
   <source>Add new user</source>
+  <target>Přidat nového uživatele</target>
 </trans-unit>
 <trans-unit id="s53ad3455d9523b54">
   <source>Create User</source>
@@ -5787,9 +5768,11 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="sc47c8364ef524c1d">
   <source>New Service Account</source>
+  <target>Nový servisní účet</target>
 </trans-unit>
 <trans-unit id="s384699f614f39071">
   <source>New service account...</source>
+  <target>Nový servisní účet...</target>
 </trans-unit>
 <trans-unit id="sc744f3691efe310d">
   <source>Hide service-accounts</source>
@@ -5826,12 +5809,9 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Root</source>
   <target>Root</target>
 </trans-unit>
-<trans-unit id="saf6097bfa25205b8">
-  <source>A copy of this recovery link has been placed in your clipboard</source>
-  <target>Kopie tohoto odkazu pro obnovení byla umístěna do vaší schránky</target>
-</trans-unit>
 <trans-unit id="s3ef09dfdd0568b6e">
   <source>Search by username, email, etc...</source>
+  <target> Filtrujte pomocí uživatelského jména, emailu, atd....</target>
 </trans-unit>
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
@@ -5842,6 +5822,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s7c6c86d9a97ed706">
   <source>Show deactivated users</source>
+  <target>Zobrazit deaktivované uživatele</target>
 </trans-unit>
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
@@ -5850,10 +5831,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s895514dda9cb9c94">
   <source>Create recovery link</source>
   <target>Vytvořit odkaz pro obnovení</target>
-</trans-unit>
-<trans-unit id="sb53d0b77abef2316">
-  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
-  <target>Chcete-li uživateli umožnit přímo resetovat heslo, nakonfigurujte tok obnovení na aktuálně aktivní značce.</target>
 </trans-unit>
 <trans-unit id="s94055b4eb957dc8f">
   <source>User folders</source>
@@ -6020,18 +5997,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="sd2122c514f0778b5">
   <source>Allow the user to log in and use this system</source>
   <target>Povolit uživateli přihlášení a používání tohoto systému</target>
-</trans-unit>
-<trans-unit id="se28b5f3fcadaeeb1">
-  <source>Enter a new password for this user</source>
-  <target>Vložit nové heslo tohoto uživatele</target>
-</trans-unit>
-<trans-unit id="s6f5bb31e2733ecd5">
-  <source>Create a link for this user to reset their password</source>
-  <target>Vytvořit odkaz pomocí kterého si tento uživatel může obnovit heslo</target>
-</trans-unit>
-<trans-unit id="se5c795faf2c07514">
-  <source>Create Recovery Link</source>
-  <target>Vytvořit odkaz pro obnovení</target>
 </trans-unit>
 <trans-unit id="s5c18cae48b93138c">
   <source>Sessions</source>
@@ -6235,10 +6200,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s81ecf2d4386b8e84">
   <source>Continue</source>
   <target>Pokračovat</target>
-</trans-unit>
-<trans-unit id="sc7524ea24eeeb019">
-  <source>Failed to preview prompt</source>
-  <target>Nepodařilo se zobrazit náhled výzvy</target>
 </trans-unit>
 <trans-unit id="s8b2b2a43fcf688a3">
   <source>Successfully updated prompt.</source>
@@ -6550,7 +6511,7 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 </trans-unit>
 <trans-unit id="s503217f10ebdc63e">
   <source>Loading templates...</source>
-  <target>Načítám šablony...</target>
+  <target>Načítání šablon…</target>
 </trans-unit>
 <trans-unit id="s6891d230751dd7bf">
   <source>Template used for the verification email.</source>
@@ -6655,10 +6616,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s4aacc4e0277c1042">
   <source>Token length</source>
   <target>Délka tokenu</target>
-</trans-unit>
-<trans-unit id="s6931695c4f563bc4">
-  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
-  <target>Délka jednotlivých generovaných tokenů. Může být zvýšena pro zlepšení zabezpečení.</target>
 </trans-unit>
 <trans-unit id="sc5a4711395ffb043">
   <source>Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).</source>
@@ -6923,14 +6880,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
 <trans-unit id="s9e9c8d99f4c26baf">
   <source>When a user returns from the email successfully, their account will be activated.</source>
   <target>Když se uživatel úspěšně vrátí z e-mailu, jeho účet bude aktivován.</target>
-</trans-unit>
-<trans-unit id="s618d4e53f455c834">
-  <source>Use global settings</source>
-  <target>Použít globální nastavení</target>
-</trans-unit>
-<trans-unit id="sae1e1a59d22609c4">
-  <source>When enabled, global Email connection settings will be used and connection settings below will be ignored.</source>
-  <target>Když je povoleno, budou použita globální nastavení e-mailového spojení a níže uvedená nastavení spojení budou ignorována.</target>
 </trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
@@ -7872,10 +7821,6 @@ neprojde, když jedna nebo obě z vybraných možností jsou rovny nebo nad prah
   <source>Send notification to event user</source>
   <target>Zasílat oznámení původci události</target>
 </trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Pokud je povoleno, oznámení se kromě uživatelů ve skupině výše odešle také původci události. Uživatel, který událost vyvolal, je vždy prvním příjemcem; pokud má být oznámení doručeno pouze jednou, je třeba v transportu notifikací zapnout volbu ‘Poslat jednou’.</target>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
   <target>Transporty</target>
@@ -8065,10 +8010,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Local</source>
   <target>Místní</target>
 </trans-unit>
-<trans-unit id="sc1231049879b8d33">
-  <source>If enabled, use the local connection. Required Docker socket/Kubernetes Integration.</source>
-  <target>Pokud je povoleno, použije se místní připojení. Vyžaduje Docker socket/Kubernetes integraci.</target>
-</trans-unit>
 <trans-unit id="s13de04774ff0f210">
   <source>Docker URL</source>
   <target>Docker URL</target>
@@ -8192,10 +8133,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s4b5af7736aedd6c1">
   <source>Private key available?</source>
   <target>Soukromý klíč k dispozici?</target>
-</trans-unit>
-<trans-unit id="s1d6e16d86961c782">
-  <source>Certificate-Key Pair(s)</source>
-  <target>Pár(y) certifikát-klíč</target>
 </trans-unit>
 <trans-unit id="sc1ce2f758935ff48">
   <source>Managed by authentik</source>
@@ -8692,6 +8629,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+  <target> Koncová zařízení</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -8759,6 +8697,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf6707428adeba590">
   <source>API drawer</source>
+  <target>Panel API</target>
 </trans-unit>
 <trans-unit id="s32a3efa23718e713">
   <source>API Requests</source>
@@ -8770,6 +8709,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf3b5b13c6b55eb4c">
   <source>Close API drawer</source>
+  <target>Zavřít panel API</target>
 </trans-unit>
 <trans-unit id="sfa991acd65f738bf">
   <source>View details for <x id="0" equiv-text="${label}"/></source>
@@ -8789,21 +8729,9 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>You don't have any notifications currently.</source>
   <target>Aktuálně nemáte žádná upozornění.</target>
 </trans-unit>
-<trans-unit id="sc0064c91ad2aa90b">
-  <source>Notification drawer</source>
-</trans-unit>
 <trans-unit id="s5be3c6d61cd9182f">
   <source>Notifications</source>
   <target>Oznámení</target>
-</trans-unit>
-<trans-unit id="sa3438c7bb4e9cce8">
-  <source><x id="0" equiv-text="${this.unread}"/> unread</source>
-  <target>
-        <x id="0" equiv-text="${this.unread}"/>nepřečtených</target>
-</trans-unit>
-<trans-unit id="s8cda828dac449ea5">
-  <source>Clear all</source>
-  <target>Vymazat vše</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
@@ -8876,12 +8804,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s15d6fabebb4ef2d8">
   <source>User information</source>
-</trans-unit>
-<trans-unit id="s4607a8246d0d6265">
-  <source>Avatar for <x id="0" equiv-text="${this.user}"/></source>
-</trans-unit>
-<trans-unit id="sb0dbcf3bb1127907">
-  <source>User avatar</source>
 </trans-unit>
 <trans-unit id="s9bd9ba84819493d4">
   <source>Something went wrong! Please try again later.</source>
@@ -9008,8 +8930,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s670ad066cc0e50a3">
   <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-  <target>Přihlášte se pro pokračování na
-        <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</target>
+  <target>Přihlaste se pro pokračování na <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</target>
 </trans-unit>
 <trans-unit id="se5fd752dbbc3cd28">
   <source>Use a security key</source>
@@ -9035,8 +8956,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Aplikace vyžaduje následující nová oprávnění:</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
-  <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
-  <target>Název kroku: <x id="0" equiv-text="${this.challenge.name}"/></target>
+  <source>Stage name: <x id="0" equiv-text="${this.challenge?.name}"/></source>
 </trans-unit>
 <trans-unit id="sbd19064fc3f405c1">
   <source>Check your Inbox for a verification email.</source>
@@ -9051,10 +8971,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s6db67c7681b8be6e">
   <source>Copy time-based one-time password configuration</source>
-</trans-unit>
-<trans-unit id="sdc323c6af4ae9f01">
-  <source>Successfully copied TOTP Config.</source>
-  <target>Úspěšně zkopírováno nastavení TOTP.</target>
 </trans-unit>
 <trans-unit id="s43e859bf711e3599">
   <source>Copy TOTP Config</source>
@@ -9166,14 +9082,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Receive a push notification on your device.</source>
   <target>Na své zařízení obdržíte push notifikaci.</target>
 </trans-unit>
-<trans-unit id="s16bc281dce5685e8">
-  <source>Authenticator</source>
-  <target>Autentikátor</target>
-</trans-unit>
-<trans-unit id="sdefec5401bf67eba">
-  <source>Use a security key to prove your identity.</source>
-  <target>Použijte bezpečnostní klíč k prokázání své identity.</target>
-</trans-unit>
 <trans-unit id="sd6a025d66f2637d1">
   <source>Traditional authenticator</source>
   <target>Tradiční autentikátor</target>
@@ -9234,20 +9142,17 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <target>Vaše zařízení bylo úspěšně ověřeno.</target>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
-  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
-  <target>Odhlásili jste se z <x id="0" equiv-text="${this.challenge.applicationName}"/>. Můžete se vrátit na přehled a spustit jinou aplikaci nebo se odhlásit z účtu authentik.</target>
+  <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
   <target>Vrátit se na přehled</target>
 </trans-unit>
 <trans-unit id="sdb749e793de55478">
-  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
-  <target>Odhlásit se z <x id="0" equiv-text="${this.challenge.brandName}"/></target>
+  <source>Log out of <x id="0" equiv-text="${challenge.brandName}"/></source>
 </trans-unit>
 <trans-unit id="s521681ed1d5ff814">
-  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
-  <target>Přihlásit se zpět do <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
+  <source>Log back into <x id="0" equiv-text="${challenge.applicationName}"/></source>
 </trans-unit>
 <trans-unit id="s78869b8b2bc26d0d">
   <source>SAML Provider</source>
@@ -9351,6 +9256,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
+  <target>Upravit aplikaci…</target>
 </trans-unit>
 <trans-unit id="s3fb39fc45e840f78">
   <source>Refer to documentation</source>
@@ -9373,22 +9279,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
+  <target>Vyhledat aplikaci podle názvu...</target>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
   <target>Hledání nevrátilo žádné výsledky.</target>
-</trans-unit>
-<trans-unit id="sa4fb160e26323b02">
-  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-</trans-unit>
-<trans-unit id="s8a9abf934b0dc89d">
-  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
-</trans-unit>
-<trans-unit id="sb1d445efd39638d4">
-  <source><x id="0" equiv-text="${count}"/> application available</source>
-</trans-unit>
-<trans-unit id="sddbc2a3be190464b">
-  <source><x id="0" equiv-text="${count}"/> applications available</source>
 </trans-unit>
 <trans-unit id="s2656433a3b1f7e86">
   <source>My applications</source>
@@ -9440,10 +9335,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Edit device</source>
   <target>Upravit zařízení</target>
 </trans-unit>
-<trans-unit id="s3a135682bd30bdbb">
-  <source>Create App password</source>
-  <target>Vytvořit heslo aplikace</target>
-</trans-unit>
 <trans-unit id="s2e6c714bb95c18a3">
   <source>User settings</source>
 </trans-unit>
@@ -9485,12 +9376,14 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+  <target>Vyberte z nahraných souborů nebo zadejte ikonu Font Awesome (fa://fa-icon-name) nebo URL.</target>
 </trans-unit>
 <trans-unit id="s87616130c08b117c">
   <source>This type is deprecated.</source>
 </trans-unit>
 <trans-unit id="s40f4c2223ce87751">
   <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+  <target>Nejsou nastaveny žádné konektory. Přejděte do konektorů v postranním panelu a vytvořte konektor.</target>
 </trans-unit>
 <trans-unit id="s70c2cd89201ecca9">
   <source>Home directory</source>
@@ -9518,6 +9411,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="se0a747f4db08e87f">
   <source>Configure how devices connect with authentik and ingest external device data.</source>
+  <target>Nastavte způsob připojení zařízení k autentizaci a načítání dat z externích zařízení.</target>
 </trans-unit>
 <trans-unit id="s114f2b310ef163ff">
   <source>Stage which associates the currently used device with the current session.</source>
@@ -9537,9 +9431,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
 </trans-unit>
-<trans-unit id="s506c7d2e87f6770e">
-  <source>Filename can only contain letters, numbers, dots, hyphens, and underscores</source>
-</trans-unit>
 <trans-unit id="s3a3d5b2575cd32ea">
   <source>File uploaded successfully</source>
 </trans-unit>
@@ -9554,6 +9445,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>Soubory</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
@@ -9563,6 +9455,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s69f800801812a5f0">
   <source>files</source>
+  <target>soubory</target>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
@@ -9584,33 +9477,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s89a2859207d766fe">
   <source>JWTs signed by the selected providers can be used to authenticate to devices.</source>
-</trans-unit>
-<trans-unit id="s18b4f9093a0008b3">
-  <source>the reCAPTCHA admin console</source>
-</trans-unit>
-<trans-unit id="s200b0a3b5133280d">
-  <source>Google Cloud reCAPTCHA Enterprise</source>
-</trans-unit>
-<trans-unit id="sa31bb688b2e7b492">
-  <source>the hCaptcha dashboard</source>
-</trans-unit>
-<trans-unit id="s678ebab4940155c3">
-  <source>the Cloudflare dashboard</source>
-</trans-unit>
-<trans-unit id="h67148561b42485e7">
-  <source>Site key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
-</trans-unit>
-<trans-unit id="sc57fbc2c02769dc5">
-  <source>Site key from your CAPTCHA provider.</source>
-</trans-unit>
-<trans-unit id="h98bbd5c4c133577c">
-  <source>Secret key from your CAPTCHA provider. Get keys from <x id="0" equiv-text="${anchor}"/></source>
-</trans-unit>
-<trans-unit id="s2ca00d57e90d053e">
-  <source>Secret key from your CAPTCHA provider.</source>
-</trans-unit>
-<trans-unit id="s77c1f57b676529ff">
-  <source>Select a CAPTCHA provider. URLs and settings will be automatically configured, but can be customized below.</source>
 </trans-unit>
 <trans-unit id="s988e1dfd2b962e4f">
   <source>Score Configuration</source>
@@ -9672,11 +9538,9 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
 </trans-unit>
-<trans-unit id="s184c3b30bebb2dd8">
-  <source>Assign role permissions</source>
-</trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
+  <target>Smazat oprávnění k objektu</target>
 </trans-unit>
 <trans-unit id="s78aa910bcb26034d">
   <source>Global and object permission</source>
@@ -9686,27 +9550,33 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="scf9ebad133d2d561">
   <source>Object permission</source>
+  <target>Oprávnění objektu</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
+  <target>Oprávnění k tomuto objektu</target>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
+  <target>Oprávnění přiřazená této roli, která ovlivňují konkrétní instance objektů.</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>Dostupné skupiny</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>Vybrané skupiny</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>Uživatel aktualizován.</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
@@ -9716,9 +9586,10 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>Uživatel vytvořen.</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
-  <source>Successfully downloaded <x id="0" equiv-text="${filename}"/>!</source>
+  <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
@@ -9728,12 +9599,15 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
+  <target>Je primární uživatel</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
+  <target>Primární</target>
 </trans-unit>
 <trans-unit id="sc67ff7b2278e81e4">
   <source>Remove User(s)</source>
+  <target>Odstranit uživatele</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
@@ -9744,62 +9618,60 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role &quot;<x id="0" equiv-text="${this.targetRole.name}"/>&quot;.</source>
 </trans-unit>
-<trans-unit id="sa373520de40e9d44">
-  <source>Assign User to Groups</source>
-</trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
+  <target>Uživatel byl úspěšně přidán do role(í).</target>
 </trans-unit>
 <trans-unit id="s78daaa3ef4325cac">
   <source>Roles to add</source>
+  <target>Role k přidání</target>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
+  <target>Přdat roli</target>
 </trans-unit>
 <trans-unit id="sd8b8f59ad30971f7">
   <source>Remove from Role(s)</source>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+  <target>Opravdu chcete odstranit uživatele <x id="0" equiv-text="${this.targetUser?.username}"/> z následujících rolí?</target>
 </trans-unit>
 <trans-unit id="sf4ed596f6b160b84">
   <source>Add Role</source>
 </trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
+  <target>Přidat k existující roli</target>
 </trans-unit>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
+  <target>Přidat novou roli</target>
 </trans-unit>
 <trans-unit id="s3b4ad8abf4f08c35">
   <source>Hide managed roles</source>
+  <target>Skrýt spravované role</target>
 </trans-unit>
 <trans-unit id="sb5e95aaacac5d929">
   <source>Bind existing Stage</source>
+  <target>Připojit existující Krok</target>
 </trans-unit>
 <trans-unit id="s7dcfe418b8d601f6">
   <source>Flags allow you to enable new functionality and behaviour in authentik early.</source>
-</trans-unit>
-<trans-unit id="sbaeb8266aac13639">
-  <source>Buffer PolicyAccessVew requests</source>
+  <target>Příznaky vám umožňují včas aktivovat nové funkce a chování v authentiku.</target>
 </trans-unit>
 <trans-unit id="se20d0be2cece3841">
   <source>When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.</source>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
+  <target>Obnovit ostatní karty toku po ověření</target>
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
-</trans-unit>
-<trans-unit id="scdeb093efb1ac2f2">
-  <source>Data export requested successfully</source>
-</trans-unit>
-<trans-unit id="se5a360179bd5937e">
-  <source>You will receive a notification once the data is ready</source>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
@@ -9815,9 +9687,11 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="s2d119c0d85bde088">
   <source>Creation date</source>
+  <target>Datum vytvoření</target>
 </trans-unit>
 <trans-unit id="s5033dab8c17f05f2">
   <source>Completed</source>
+  <target>Dokončeno</target>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
@@ -9857,6 +9731,750 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+</trans-unit>
+<trans-unit id="sed44880a52f72a08">
+  <source>Passkey settings</source>
+</trans-unit>
+<trans-unit id="sf65cb435d6ca1d01">
+  <source>WebAuthn Authenticator Validation Stage</source>
+</trans-unit>
+<trans-unit id="s05a4cbce470ede73">
+  <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+</trans-unit>
+<trans-unit id="s51610dc462a5a034">
+  <source>Pagination: default page size</source>
+  <target>Stránkování: výchozí velikost stránky</target>
+</trans-unit>
+<trans-unit id="s05d8a93b0de05ad4">
+  <source>Default page size for API requests not specifying a page size.</source>
+  <target>Výchozí velikost stránky pro API požadavky, které nespecifikují velikost stránky.</target>
+</trans-unit>
+<trans-unit id="s41dac4f4d7caffa7">
+  <source>Pagination: maximum page size</source>
+  <target>Stránkování: maximální velikost stránky</target>
+</trans-unit>
+<trans-unit id="s567c5a6e42cc5036">
+  <source>Maximum page size for API requests.</source>
+  <target>Maximální velikost stránky pro API požadavky.</target>
+</trans-unit>
+<trans-unit id="sed1058bca1c065f7">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport. If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s9864bd5cd7bb4bd0">
+  <source>Local connection</source>
+</trans-unit>
+<trans-unit id="s4a3f19ff6e510c37">
+  <source>Requires Docker socket/Kubernetes Integration.</source>
+</trans-unit>
+<trans-unit id="s46a03121a2c260ea">
+  <source>Buffer PolicyAccessView requests</source>
+  <target>Vyrovnávací paměť PolicyAccessView požadavků</target>
+</trans-unit>
+<trans-unit id="s361e9d929ee925e6">
+  <source>Assign Object Permission</source>
+  <target>Přidělit oprávnění k objektu</target>
+</trans-unit>
+<trans-unit id="s5f6ad947b4824e40">
+  <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
+</trans-unit>
+<trans-unit id="s523337424b694d5c">
+  <source>Device Access Group</source>
+</trans-unit>
+<trans-unit id="s7642bf28cf8f476c">
+  <source>Select a device access group to be added to upon enrollment.</source>
+</trans-unit>
+<trans-unit id="h30bbf18fbf87fa57">
+  <source>To create a data export, navigate to
+                            <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
+                            <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="s54af3ec70642782c">
+  <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
+</trans-unit>
+<trans-unit id="sb3be65525dd1f92c">
+  <source>Assign object permissions to role</source>
+  <target>Přidělit oprávnění objektů k roli</target>
+</trans-unit>
+<trans-unit id="sbcd108b66363075c">
+  <source>Device access group</source>
+</trans-unit>
+<trans-unit id="s325acae04cdcac57">
+  <source>Primary disk size</source>
+</trans-unit>
+<trans-unit id="sb4a957846c89fca1">
+  <source>Primary disk usage</source>
+</trans-unit>
+<trans-unit id="s7b68229d885a34d3">
+  <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+</trans-unit>
+<trans-unit id="s284f44964466ef38">
+  <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+</trans-unit>
+<trans-unit id="s01f8cd92a0204da2">
+  <source>Data exports are not available as storage for reports is not configured.</source>
+</trans-unit>
+<trans-unit id="s7afef158aada7389">
+  <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+</trans-unit>
+<trans-unit id="sa8d2689c8fdfea22">
+  <source>Successfully requested data export</source>
+</trans-unit>
+<trans-unit id="s7e2ef0e26e7f5e6f">
+  <source>Failed to export data</source>
+</trans-unit>
+<trans-unit id="sc6991f3e377938fb">
+  <source>Start export</source>
+</trans-unit>
+<trans-unit id="sd69873a0783f8e39">
+  <source>Export data</source>
+</trans-unit>
+<trans-unit id="en-XA">
+  <source>English (Pseudo-Accents)</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+  <target>Dokončeno</target>
+</trans-unit>
+<trans-unit id="s3ec4da71c1a62754">
+  <source>Queued</source>
+</trans-unit>
+<trans-unit id="sd32298bb7d36024d">
+  <source>Configured file backend does not support file management.</source>
+</trans-unit>
+<trans-unit id="s4f1e04b9b4cb96ae">
+  <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+</trans-unit>
+<trans-unit id="s3a46b5964b3ecfac">
+  <source>View details...</source>
+</trans-unit>
+<trans-unit id="s6cbf6cd401ea3336">
+  <source>Type a connector name...</source>
+</trans-unit>
+<trans-unit id="s04be2edfb0d2218a">
+  <source>Type a name for the token...</source>
+</trans-unit>
+<trans-unit id="s84e29a714db544e9">
+  <source>Update Enrollment Token</source>
+  <target>Aktualizovat token zápisu</target>
+</trans-unit>
+<trans-unit id="s5a7055a44dc83b1e">
+  <source>Type a unique identifier...</source>
+</trans-unit>
+<trans-unit id="sdfe787aeeebbfbf1">
+  <source>Type a token description...</source>
+</trans-unit>
+<trans-unit id="sd7c52e2ce408c542">
+  <source>Integrations synced in the last 12 hours.</source>
+</trans-unit>
+<trans-unit id="table-loading-bar-label">
+  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
+  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
+</trans-unit>
+<trans-unit id="sb6650552aaaf5da0">
+  <source>Assigned Roles</source>
+  <target>Přiřazené role</target>
+</trans-unit>
+<trans-unit id="s5cbf3cbb4cf38b05">
+  <source>All Roles</source>
+  <target>Všechny role</target>
+</trans-unit>
+<trans-unit id="s6a850cd00064d6e6">
+  <source>Inherited from parent group</source>
+</trans-unit>
+<trans-unit id="sd9e3b91f8d62cb04">
+  <source>Inherited from group</source>
+</trans-unit>
+<trans-unit id="s3d8c389ca77b97e1">
+  <source>Inherited</source>
+</trans-unit>
+<trans-unit id="s01730bc068a6cf07">
+  <source>Select roles to attach to the user</source>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-api-requests">
+  <source>Toggle API requests drawer</source>
+</trans-unit>
+<trans-unit id="s355e4737a0286070">
+  <source>API Drawer</source>
+  <target>Přihrádka API</target>
+</trans-unit>
+<trans-unit id="drawer-toggle-button-notifications">
+  <source>Toggle notifications drawer</source>
+  <target>Přepnout oznamovací panel</target>
+</trans-unit>
+<trans-unit id="drawer-invoker-tooltip-notifications">
+  <source>Notification Drawer</source>
+  <target>Oznamovací panel</target>
+</trans-unit>
+<trans-unit id="s5fa7f18dcfc98131">
+  <source>Failed to fetch notifications.</source>
+</trans-unit>
+<trans-unit id="notification-drawer-clear-all">
+  <source>Clear all notifications</source>
+</trans-unit>
+<trans-unit id="notification-drawer-close">
+  <source>Close notification drawer</source>
+  <target>Zavřít oznamovací panel</target>
+</trans-unit>
+<trans-unit id="s54e4d61fc46a14be">
+  <source>No MFA devices enrolled.</source>
+  <target>Není zapsáno žádné MFA zařízení.</target>
+</trans-unit>
+<trans-unit id="s227aacd5a7fc6f50">
+  <source>User Tokens</source>
+</trans-unit>
+<trans-unit id="sea858aeacf6ae9b0">
+  <source>No User Tokens enrolled.</source>
+  <target>Není zapsán žádný uživatelský token.</target>
+</trans-unit>
+<trans-unit id="notification-unread-count">
+  <source><x id="0" equiv-text="${unreadCount}"/> unread</source>
+  <note from="lit-localize">Indicates the number of unread notifications in the notification drawer</note>
+</trans-unit>
+<trans-unit id="s42636dae6e29892e">
+  <source>Agent version: <x id="0" equiv-text="${vendorData.agent_version ?? &quot;-&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s6dd24e14615f1369">
+  <source>Warning: Flow imports are blueprint files, which may contain objects other than flows (such as users, policies, etc).</source>
+</trans-unit>
+<trans-unit id="sa6cd3315b7c53ab7">
+  <source>You should only import files from trusted sources and review blueprints before importing them.</source>
+</trans-unit>
+<trans-unit id="sd8309fdcb0478b0f">
+  <source>The length of the individual generated tokens. Can be set to a maximum of 100 characters.</source>
+</trans-unit>
+<trans-unit id="s382600808211cf23">
+  <source>Close sidebar</source>
+</trans-unit>
+<trans-unit id="sce4fb29c933410a5">
+  <source>Open sidebar</source>
+</trans-unit>
+<trans-unit id="s180feee6454499fa">
+  <source>Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="avatar.alt-text-for-user">
+  <source>Avatar for <x id="0" equiv-text="${this.username}"/></source>
+  <target>Avatar pro <x id="0" equiv-text="${this.username}"/></target>
+</trans-unit>
+<trans-unit id="avatar.alt-text">
+  <source>User avatar</source>
+</trans-unit>
+<trans-unit id="flow.navigation.go-back">
+  <source>Go back</source>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent-to-address">
+  <source>A verification token has been sent to your configured email address: <x id="0" equiv-text="${email}"/></source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's configured email address.</note>
+</trans-unit>
+<trans-unit id="stage.authenticator.email.sent">
+  <source>A verification token has been sent to your email address.</source>
+  <note from="lit-localize">Displayed when a verification token has been sent to the user's email address.</note>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular-with-query">
+  <source><x id="0" equiv-text="${count}"/> application found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural-with-query">
+  <source><x id="0" equiv-text="${count}"/> applications found for &quot;<x id="1" equiv-text="${query}"/>&quot;</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-singular">
+  <source><x id="0" equiv-text="${count}"/> application available</source>
+</trans-unit>
+<trans-unit id="user.library.application-count-plural">
+  <source><x id="0" equiv-text="${count}"/> applications available</source>
+</trans-unit>
+<trans-unit id="user.library.search.type-to-filter-hint">
+  <source>Type to filter applications</source>
+  <note from="lit-localize">Screen reader hint to inform the user they can filter the application list by typing</note>
+</trans-unit>
+<trans-unit id="user.library.search.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="user.library.application-count.enter-to-open-hint">
+  <source>Press Enter to open <x id="0" equiv-text="${this.selectedApp.name}"/></source>
+  <note from="lit-localize">Screen reader hint to inform the user they can open the selected application by pressing Enter</note>
+</trans-unit>
+<trans-unit id="library.application.card.aria-label">
+  <source>Open &quot;<x id="0" equiv-text="${application.name}"/>&quot;</source>
+  <note from="lit-localize">Screen reader label for the application card</note>
+</trans-unit>
+<trans-unit id="sc1e9c9bab6765c74">
+  <source>Active Sessions</source>
+</trans-unit>
+<trans-unit id="s83991563e9d607ac">
+  <source>Successfully revoked <x id="0" equiv-text="${this.revokedCount}"/> session(s) for <x id="1" equiv-text="${this.users.length}"/> user(s)</source>
+</trans-unit>
+<trans-unit id="s4b004192e4d6ab2e">
+  <source>Failed to revoke sessions: <x id="0" equiv-text="${e.toString()}"/></source>
+</trans-unit>
+<trans-unit id="sb458ffb37cbde768">
+  <source>Revoke Sessions</source>
+</trans-unit>
+<trans-unit id="s1bd2d0f088b75b92">
+  <source>Are you sure you want to revoke all sessions for <x id="0" equiv-text="${this.users.length}"/> user(s)?</source>
+</trans-unit>
+<trans-unit id="s5c5e74eabcb9eba1">
+  <source>This will force the selected users to re-authenticate on all their devices.</source>
+</trans-unit>
+<trans-unit id="scd909e0bc55fc548">
+  <source>Security key</source>
+</trans-unit>
+<trans-unit id="sd0de938d9c37ad5f">
+  <source>Use a Passkey or security key to prove your identity.</source>
+</trans-unit>
+<trans-unit id="s856c15d3387d1ac7">
+  <source>Include additional data in Audit logs</source>
+</trans-unit>
+<trans-unit id="sf432a1157155369f">
+  <source>When enabled, additional data about objects added/removed is saved in the audit log. May reduce performance in certain requests.</source>
+</trans-unit>
+<trans-unit id="s6173e24ed3ba956e">
+  <source>Successfully updated Fleet connector.</source>
+</trans-unit>
+<trans-unit id="sc9b84fdc2119ed1f">
+  <source>Successfully created Fleet connector.</source>
+</trans-unit>
+<trans-unit id="s6a087e34edeadc1f">
+  <source>Connector name...</source>
+</trans-unit>
+<trans-unit id="sc8a067f02f4cf520">
+  <source>Fleet settings</source>
+</trans-unit>
+<trans-unit id="sd5434d21a084c48f">
+  <source>Fleet Server URL</source>
+</trans-unit>
+<trans-unit id="s10320a36724d7e1a">
+  <source>Fleet API Token</source>
+</trans-unit>
+<trans-unit id="s4f0d6329461ac269">
+  <source>Map users</source>
+</trans-unit>
+<trans-unit id="s0770384b6d1e7075">
+  <source>When enabled, users detected by Fleet will be mapped in authentik, granting them access to the device.</source>
+</trans-unit>
+<trans-unit id="s140417fe6bad13ab">
+  <source>Map teams to device access group</source>
+</trans-unit>
+<trans-unit id="sa8383f7f7ff1a62e">
+  <source>When enabled, Fleet teams will be mapped to Device access groups. Missing device access groups are automatically created. Devices assigned to a different group are not re-assigned</source>
+</trans-unit>
+<trans-unit id="sfec0c302ab140e30">
+  <source>Software</source>
+</trans-unit>
+<trans-unit id="sf4cea728c240ee6b">
+  <source>Paste your license key...</source>
+</trans-unit>
+<trans-unit id="form.headline.update">
+  <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
+</trans-unit>
+<trans-unit id="s5f404525692ee652">
+  <source>You can select from popular providers with preset configurations or choose a custom setup to specify your own endpoints and keys.</source>
+</trans-unit>
+<trans-unit id="sb275cc802634f93d">
+  <source>Paste your CAPTCHA public key...</source>
+</trans-unit>
+<trans-unit id="s69a0bed6319d085a">
+  <source>Secret Key</source>
+</trans-unit>
+<trans-unit id="s4cbbb47ef050cd0e">
+  <source>Paste your CAPTCHA secret key...</source>
+</trans-unit>
+<trans-unit id="s896c7fc0f9277a74">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="s1baea28d44c34fef">
+  <source>Type a stage name...</source>
+</trans-unit>
+<trans-unit id="sdd8bef43fcac336d">
+  <source>The unique name used internally to identify the stage.</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-v2">
+  <source>Google reCAPTCHA v2</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha.admin-console">
+  <source>reCAPTCHA admin console</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-v3">
+  <source>Google reCAPTCHA v3</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha.api-key-source">
+  <source>reCAPTCHA admin console</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-enterprise">
+  <source>Google reCAPTCHA Enterprise</source>
+</trans-unit>
+<trans-unit id="captcha.providers.recaptcha-enterprise.api-key-source">
+  <source>Google Cloud Console</source>
+</trans-unit>
+<trans-unit id="captcha.providers.hcaptcha">
+  <source>hCaptcha</source>
+</trans-unit>
+<trans-unit id="captcha.providers.hcaptcha.api-key-source">
+  <source>hCaptcha dashboard</source>
+</trans-unit>
+<trans-unit id="captcha.providers.turnstile">
+  <source>Cloudflare Turnstile</source>
+</trans-unit>
+<trans-unit id="captcha.providers.turnstile.api-key-source">
+  <source>Cloudflare dashboard</source>
+</trans-unit>
+<trans-unit id="captcha.providers.custom">
+  <source>Custom</source>
+</trans-unit>
+<trans-unit id="s3fdf499bd9e14a92">
+  <source>Type an email address...</source>
+</trans-unit>
+<trans-unit id="captcha.public-key.description">
+  <source>The public key is used by authentik to render the CAPTCHA widget.</source>
+  <note from="lit-localize">Description for CAPTCHA public key field.</note>
+</trans-unit>
+<trans-unit id="captcha.secret-key.description">
+  <source>The secret key allows communication between authentik and the CAPTCHA provider to validate user responses.</source>
+  <note from="lit-localize">Description for CAPTCHA secret key field.</note>
+</trans-unit>
+<trans-unit id="ak-secret-text-input.actions.modify">
+  <source>Modify</source>
+  <note from="lit-localize">Help text for secret input field to indicate that clicking will allow changing the value.</note>
+</trans-unit>
+<trans-unit id="captcha.provider-link">
+  <source>API keys can be obtained from the
+                        <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}&#10;                                &gt;${formatAPISource()}&lt;/a&#10;                            &gt;.`}"/></source>
+  <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
+</trans-unit>
+<trans-unit id="s87f858ca3c8e5579">
+  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
+</trans-unit>
+<trans-unit id="s3934affe32f6a454">
+  <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
+</trans-unit>
+<trans-unit id="s8b68948382758d57">
+  <source><x id="0" equiv-text="${availableCount}"/> items marked to add.</source>
+</trans-unit>
+<trans-unit id="s3a482e34c3713e41">
+  <source><x id="0" equiv-text="${selectedTotal}"/> item selected.</source>
+</trans-unit>
+<trans-unit id="s726a7342e18dc660">
+  <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
+</trans-unit>
+<trans-unit id="s403a360d48a11d5f">
+  <source><x id="0" equiv-text="${selectedCount}"/> item marked to remove.</source>
+</trans-unit>
+<trans-unit id="s2e92b61847f32e72">
+  <source><x id="0" equiv-text="${selectedCount}"/> items marked to remove.</source>
+</trans-unit>
+<trans-unit id="s7468188f0c6d8a22">
+  <source>Flow used when authorizing this this.instance?.</source>
+</trans-unit>
+<trans-unit id="sa5d4a82c5daae3de">
+  <source>Reply URL</source>
+</trans-unit>
+<trans-unit id="s7953f5ca7564d098">
+  <source>Flow used when logging out of this this.instance?.</source>
+</trans-unit>
+<trans-unit id="s2c5e9b1b859bdba6">
+  <source>Certificate used to sign outgoing Responses going to the Service this.instance?.</source>
+</trans-unit>
+<trans-unit id="s513e09d45feee5dd">
+  <source>Update WS-Federation Provider</source>
+</trans-unit>
+<trans-unit id="s02d3bec9a0ff82bd">
+  <source>WS-Federation Configuration</source>
+</trans-unit>
+<trans-unit id="s7eeab4c954cfed12">
+  <source>WS-Federation URL</source>
+</trans-unit>
+<trans-unit id="sb001338b056bf9d5">
+  <source>Realm (wtrealm)</source>
+</trans-unit>
+<trans-unit id="s7ac77ffc2d88bc94">
+  <source>WS-Federation Metadata</source>
+</trans-unit>
+<trans-unit id="s36b4b8f51a90009a">
+  <source>Example WS-Federation attributes</source>
+</trans-unit>
+<trans-unit id="scde666c4a777dd66">
+  <source>Group Filter</source>
+</trans-unit>
+<trans-unit id="s5bbedc6d1d078553">
+  <source>Groups to be synced. If empty, all groups will be synced.</source>
+</trans-unit>
+<trans-unit id="s93aad5cd9b47f65f">
+  <source>Custom Attributes</source>
+</trans-unit>
+<trans-unit id="s254696510e45f3bb">
+  <source>No custom attributes defined.</source>
+</trans-unit>
+<trans-unit id="sb94beab52540d2b7">
+  <source>The CAPTCHA challenge failed to load.</source>
+</trans-unit>
+<trans-unit id="s217a96c47caaf73d">
+  <source>Could not find a suitable CAPTCHA provider.</source>
+</trans-unit>
+<trans-unit id="sdf2794b96386c868">
+  <source>Copy time-based one-time password secret</source>
+</trans-unit>
+<trans-unit id="sc78d16417878afd0">
+  <source>Copy Secret</source>
+</trans-unit>
+<trans-unit id="s7886195e5cfb6d41">
+  <source>Update settings</source>
+</trans-unit>
+<trans-unit id="s2df814c26d5c5e56">
+  <source>ED25519</source>
+</trans-unit>
+<trans-unit id="sa31350da8b357fa4">
+  <source>ED448</source>
+</trans-unit>
+<trans-unit id="s088efc814570fa2c">
+  <source>Enrollment Token</source>
+</trans-unit>
+<trans-unit id="s0ce6e3aa4e7c81a0">
+  <source>New Token</source>
+</trans-unit>
+<trans-unit id="s1bb47213a314465b">
+  <source>Create link</source>
+</trans-unit>
+<trans-unit id="s776c1b64a71fba39">
+  <source>To email a recovery link, set an email address for this user.</source>
+</trans-unit>
+<trans-unit id="s8899399356b8ed1a">
+  <source>To create a recovery link, set a recovery flow for the current brand.</source>
+</trans-unit>
+<trans-unit id="s68be8f284274370a">
+  <source>Recovery link</source>
+</trans-unit>
+<trans-unit id="s2e318e4a2934eef9">
+  <source>Successfully queued email.</source>
+</trans-unit>
+<trans-unit id="s9121335709cfac7a">
+  <source>Token duration</source>
+</trans-unit>
+<trans-unit id="s4530f2951a6633e2">
+  <source>If a recovery token already exists, its duration is updated.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.success.message.entity">
+  <source><x id="0" equiv-text="${entityLabel}"/> copied to clipboard.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.success.generic">
+  <source>Copied to clipboard.</source>
+</trans-unit>
+<trans-unit id="clipboard.write.failure.description">
+  <source>Clipboard not available. Please copy the value manually.</source>
+</trans-unit>
+<trans-unit id="se7385f882e2b8b7d">
+  <source>An unknown error occurred while retrieving the token.</source>
+</trans-unit>
+<trans-unit id="totp.config">
+  <source>TOTP Config</source>
+</trans-unit>
+<trans-unit id="totp.config.clipboard.description">
+  <source>Paste this URL into your authenticator app to set up a time-based one-time password.</source>
+</trans-unit>
+<trans-unit id="totp.secret">
+  <source>TOTP Secret</source>
+</trans-unit>
+<trans-unit id="totp.secret.clipboard.description">
+  <source>Paste this secret into your authenticator app to set up a time-based one-time password.</source>
+</trans-unit>
+<trans-unit id="s2157b29f47940266">
+  <source>Type a unique identifier for this token...</source>
+</trans-unit>
+<trans-unit id="s0950c703759a8746">
+  <source>Type a description for this token...</source>
+</trans-unit>
+<trans-unit id="sd02d96c6930f31db">
+  <source>Create App Password</source>
+</trans-unit>
+<trans-unit id="scf325f1039d7c82f">
+  <source>New App Password</source>
+</trans-unit>
+<trans-unit id="saa02cc40143c291e">
+  <source>Sidebar left (frame background)</source>
+</trans-unit>
+<trans-unit id="s7606cffc63e1b0a1">
+  <source>Sidebar right (frame background)</source>
+</trans-unit>
+<trans-unit id="s92e22f9319fdb85d">
+  <source>Configuration warning</source>
+</trans-unit>
+<trans-unit id="s304ca1e922bd3278">
+  <source>Lifecycle Rules</source>
+</trans-unit>
+<trans-unit id="scd223a9aac742fcf">
+  <source>Lifecycle</source>
+</trans-unit>
+<trans-unit id="sa9ebf2b039449d6c">
+  <source>Object Lifecycle Management is in preview.</source>
+</trans-unit>
+<trans-unit id="s2b858c5186f8f2fd">
+  <source>Select a group...</source>
+</trans-unit>
+<trans-unit id="s5e0fb3d421bb57cc">
+  <source>Select a role...</source>
+</trans-unit>
+<trans-unit id="s8e5d1a84bd559a27">
+  <source>Select an object...</source>
+</trans-unit>
+<trans-unit id="s69e44328a5b45aa2">
+  <source>Rule Name</source>
+</trans-unit>
+<trans-unit id="se319064a2f20deba">
+  <source>Type a name for this lifecycle rule...</source>
+</trans-unit>
+<trans-unit id="sb46d3613edb66558">
+  <source>Interval</source>
+</trans-unit>
+<trans-unit id="s19feda58eae87c66">
+  <source>The interval between opening new reviews for matching objects.</source>
+</trans-unit>
+<trans-unit id="s760c656016171d08">
+  <source>Grace period</source>
+</trans-unit>
+<trans-unit id="s48a53c24fbbc8444">
+  <source>The duration of time before an open review is considered overdue.</source>
+</trans-unit>
+<trans-unit id="s1b5d2f91633b74d6">
+  <source>Reviewer groups</source>
+</trans-unit>
+<trans-unit id="s94c5d9fea467cdbb">
+  <source>Min reviewers</source>
+</trans-unit>
+<trans-unit id="s693370c05900a1c6">
+  <source>Number of users from the selected reviewer groups that must approve the review.</source>
+</trans-unit>
+<trans-unit id="s20c950d20c8aec84">
+  <source>Min reviewers is per-group</source>
+</trans-unit>
+<trans-unit id="se4f63fe867f1714a">
+  <source>If checked, approving a review will require at least that many users from _each_ of the selected groups. When disabled, the value is a total across all groups.</source>
+</trans-unit>
+<trans-unit id="s74906f78877111cb">
+  <source>Reviewers</source>
+</trans-unit>
+<trans-unit id="sb42871a38d8b61ee">
+  <source>Object type</source>
+</trans-unit>
+<trans-unit id="sd530d226f68ec351">
+  <source>When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.</source>
+</trans-unit>
+<trans-unit id="sea85769d2d8f3ea8">
+  <source>Available Users</source>
+</trans-unit>
+<trans-unit id="s6251a3b1bbd7b124">
+  <source>Selected Users</source>
+</trans-unit>
+<trans-unit id="s3899116cda378dcb">
+  <source>A review will require approval from each of the users selected here in addition to group members as per above settings.</source>
+</trans-unit>
+<trans-unit id="s56511df6b44ad5cc">
+  <source>Notification transports</source>
+</trans-unit>
+<trans-unit id="s6273aa020677fe75">
+  <source>Select which transports should be used to notify the user.</source>
+</trans-unit>
+<trans-unit id="s78e31a199ca08cd9">
+  <source>Object Lifecycle Rules</source>
+</trans-unit>
+<trans-unit id="s24cc4e5aa6446401">
+  <source>Schedule periodic reviews for objects in authentik.</source>
+</trans-unit>
+<trans-unit id="s468f705986fff045">
+  <source>Lifecycle rule(s)</source>
+</trans-unit>
+<trans-unit id="s73705b0f657e9866">
+  <source>Update Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="safae3d983f6cc576">
+  <source>Create Object Lifecycle Rule</source>
+</trans-unit>
+<trans-unit id="s9279704dfc98cdf9">
+  <source>No reviews yet.</source>
+</trans-unit>
+<trans-unit id="s08400d94769ba771">
+  <source>Reviewed on</source>
+</trans-unit>
+<trans-unit id="sb89da38bc0c0b3fa">
+  <source>Reviewer</source>
+</trans-unit>
+<trans-unit id="s6686fcc6d2c8f0bd">
+  <source>Note</source>
+</trans-unit>
+<trans-unit id="s5754eb43287dd6e5">
+  <source>No review iteration found for this object.</source>
+</trans-unit>
+<trans-unit id="s68ea8ed25680242f">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="sd9e03fcf99724085">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="sbbaa87f8826a0756">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="s79ef398b6e3e2c44">
+  <source>At least <x id="0" equiv-text="${minReviewers}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+</trans-unit>
+<trans-unit id="s33d20c1a2e0bf773">
+  <source>Review opened on</source>
+</trans-unit>
+<trans-unit id="s5e053bb69bf930b7">
+  <source>Grace period till</source>
+</trans-unit>
+<trans-unit id="s310b639f39d731b0">
+  <source>Next review date</source>
+</trans-unit>
+<trans-unit id="s3daaf5e7f16e2c52">
+  <source>Latest review for this object</source>
+</trans-unit>
+<trans-unit id="s3be348f8aeeb6a64">
+  <source>Review state</source>
+</trans-unit>
+<trans-unit id="s30c9ff051aa083b0">
+  <source>Required reviewers</source>
+</trans-unit>
+<trans-unit id="scdef09f44b68b189">
+  <source>Confirm Review</source>
+</trans-unit>
+<trans-unit id="sa89492933e1813ab">
+  <source>Confirm this object has been reviewed</source>
+</trans-unit>
+<trans-unit id="s7f3437809d931336">
+  <source>Reviews</source>
+</trans-unit>
+<trans-unit id="sc33f0df01dc32300">
+  <source>Review Notes</source>
+</trans-unit>
+<trans-unit id="s86316abdd9054708">
+  <source>Type optional notes to include in this review...</source>
+</trans-unit>
+<trans-unit id="s2430fb91fa928ae0">
+  <source>Open Reviews</source>
+</trans-unit>
+<trans-unit id="s35d1f3a355ed1084">
+  <source>See all currently open reviews.</source>
+</trans-unit>
+<trans-unit id="s71230441c759c9b1">
+  <source>Only show reviews where I am a reviewer</source>
+</trans-unit>
+<trans-unit id="sce6a3502c71baa60">
+  <source>Opened</source>
+</trans-unit>
+<trans-unit id="sea8d30456c79058a">
+  <source>Grace period ends</source>
+</trans-unit>
+<trans-unit id="se6203ef69ff63548">
+  <source>Pending review</source>
+</trans-unit>
+<trans-unit id="sb89d8d8bc0c08e98">
+  <source>Reviewed</source>
+</trans-unit>
+<trans-unit id="sc68080ce046320cb">
+  <source>Overdue</source>
+</trans-unit>
+<trans-unit id="sa30c4d3b566b6b1a">
+  <source>Canceled</source>
+</trans-unit>
+<trans-unit id="s804ab712b1add3d3">
+  <source>An unknown error occurred while submitting the form.</source>
 </trans-unit>
 </body>
 </file>

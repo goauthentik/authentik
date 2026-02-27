@@ -132,11 +132,11 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 	var wg sync.WaitGroup
 	errChan := make(chan error, numGoroutines*numQueries)
 
-	for i := 0; i < numGoroutines; i++ {
+	for i := range numGoroutines {
 		wg.Add(1)
 		go func(goroutineID int) {
 			defer wg.Done()
-			for j := 0; j < numQueries; j++ {
+			for range numQueries {
 				var result int
 				err := db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
 				if err != nil {

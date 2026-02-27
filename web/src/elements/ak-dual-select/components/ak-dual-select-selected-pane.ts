@@ -11,7 +11,6 @@ import { map } from "lit/directives/map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
@@ -33,16 +32,17 @@ const hostAttributes = [
  * It is not expected that the `ak-dual-select-selected-move-changed` will be used; instead, the
  * attribute will be read by the parent when a control is clicked.
  *
+ * @prop {DualSelectPair[]} selected - The full list of key/value pairs that are currently
  */
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
+    static styles = [PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
     //#region Properties
 
     /* The array of key/value pairs that are in the selected list. ALL of them. */
     @property({ type: Array })
-    readonly selected: DualSelectPair[] = [];
+    public selected: DualSelectPair[] = [];
 
     //#endregion
 

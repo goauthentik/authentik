@@ -39,7 +39,7 @@ class PolicyBindingModelForeignKey(PrimaryKeyRelatedField):
             return self.get_queryset().get_subclass(pk=data)
         except ObjectDoesNotExist:
             self.fail("does_not_exist", pk_value=data)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             self.fail("incorrect_type", data_type=type(data).__name__)
 
     def to_representation(self, value):

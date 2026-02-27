@@ -11,7 +11,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -164,7 +164,7 @@ class WebAuthnDevice(SerializerModel, Device):
         verbose_name_plural = _("WebAuthn Devices")
 
 
-class WebAuthnDeviceType(SerializerModel):
+class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
     """WebAuthn device type, used to restrict which device types are allowed"""
 
     aaguid = models.UUIDField(primary_key=True, unique=True)

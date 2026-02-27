@@ -13,6 +13,11 @@ import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+/**
+ * Device Access Group Form
+ *
+ * @prop {string} instancePk - The primary key of the instance to load.
+ */
 @customElement("ak-endpoints-device-access-groups-form")
 export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAccessGroup, string>) {
     loadInstance(pk: string): Promise<DeviceAccessGroup> {

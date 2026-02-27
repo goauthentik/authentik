@@ -98,7 +98,7 @@ export class GroupForm extends ModelForm<Group, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
                 required

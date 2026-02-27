@@ -7,8 +7,9 @@ import Styles from "./AuthenticatorValidateStage.css";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { BaseStage } from "#flow/stages/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
+import type { StageHost, SubmitOptions } from "#flow/types";
 
 import {
     AuthenticatorValidationChallenge,
@@ -30,7 +31,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 interface DevicePickerProps {
     icon?: string;
@@ -47,8 +47,8 @@ const createDevicePickerPropMap = () =>
         },
         [DeviceClassesEnum.Webauthn]: {
             icon: "fa-mobile-alt",
-            label: msg("Authenticator"),
-            description: msg("Use a security key to prove your identity."),
+            label: msg("Security key"),
+            description: msg("Use a Passkey or security key to prove your identity."),
         },
         [DeviceClassesEnum.Totp]: {
             icon: "fa-clock",
@@ -61,7 +61,7 @@ const createDevicePickerPropMap = () =>
             description: msg("In case you lose access to your primary authenticators."),
         },
         [DeviceClassesEnum.Sms]: {
-            icon: "fa-mobile-alt",
+            icon: "fa-comment",
             label: msg("SMS"),
             description: msg("Tokens sent via SMS."),
         },
@@ -85,15 +85,7 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFForm,
-        PFFormControl,
-        PFTitle,
-        PFButton,
-        Styles,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFTitle, PFButton, Styles];
 
     flowSlug = "";
 
@@ -112,10 +104,10 @@ export class AuthenticatorValidateStage
     @state()
     _firstInitialized: boolean = false;
 
-    #selectedDeviceChallenge?: DeviceChallenge;
+    #selectedDeviceChallenge: DeviceChallenge | null = null;
 
     @state()
-    protected set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
+    protected set selectedDeviceChallenge(value: DeviceChallenge | null) {
         const previousChallenge = this.#selectedDeviceChallenge;
         this.#selectedDeviceChallenge = value;
 
@@ -123,7 +115,7 @@ export class AuthenticatorValidateStage
             return;
         }
 
-        const component = (this.challenge.component ||
+        const component = (this.challenge?.component ||
             "") as unknown as "ak-stage-authenticator-validate";
 
         value.lastUsed ??= new Date();
@@ -142,7 +134,7 @@ export class AuthenticatorValidateStage
         });
     }
 
-    protected get selectedDeviceChallenge(): DeviceChallenge | undefined {
+    protected get selectedDeviceChallenge(): DeviceChallenge | null {
         return this.#selectedDeviceChallenge;
     }
 
@@ -154,7 +146,7 @@ export class AuthenticatorValidateStage
     }
 
     public reset(): void {
-        this.selectedDeviceChallenge = undefined;
+        this.selectedDeviceChallenge = null;
     }
 
     willUpdate(_changed: PropertyValues<this>) {
@@ -253,7 +245,7 @@ export class AuthenticatorValidateStage
                     type="button"
                     @click=${() => {
                         this.submit({
-                            component: this.challenge.component || "",
+                            component: this.challenge?.component || "",
                             selectedStage: stage.pk,
                         });
                     }}
@@ -321,6 +313,8 @@ export class AuthenticatorValidateStage
         </ak-flow-card>`;
     }
 }
+
+export default AuthenticatorValidateStage;
 
 declare global {
     interface HTMLElementTagNameMap {

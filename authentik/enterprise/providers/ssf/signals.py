@@ -43,7 +43,7 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             "path": USER_PATH_PROVIDERS_SSF,
         },
     )
-    user.assign_perms_to_managed_role("add_stream", instance)
+    user.assign_perms_to_managed_role("authentik_providers_ssf.add_stream", instance)
     token, token_created = Token.objects.update_or_create(
         identifier=identifier,
         defaults={

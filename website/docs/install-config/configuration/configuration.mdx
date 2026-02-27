@@ -115,7 +115,7 @@ These settings control connection persistence and behavior, which is particularl
 
 ### Advanced Settings
 
-- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA` :ak-version[2024.12]
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`
 
     The name of the database schema for authentik to use. Defaults to `public`.
 
@@ -123,7 +123,7 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    Arbitrary `libpq` parameter keywords for the database connection. A list of parameter keywords can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
     - Parameters passed with this setting will override those passed with other settings.
     - These parameters are not applied to read replicas.
     - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
@@ -154,9 +154,9 @@ Additionally, you can set arbitrary connection parameters on all read replicas w
 
 - `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    Arbitrary `libpq` parameter keywords for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
     - Parameters passed with this setting will override those passed with other settings.
-    - Parameter key words should be formatted as a base64-encoded JSON dictionary.
+    - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
 
 ### Using a PostgreSQL Connection Pooler
 
@@ -327,6 +327,8 @@ Defaults to `minutes=15`.
 
 ### S3 storage backend settings
 
+For more information on S3 storage, see [S3 storage setup](../../sys-mgmt/ops/storage-s3.md).
+
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
 S3 region where the bucket has been created. May be omitted depending on which S3 provider you use.
@@ -427,9 +429,9 @@ Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) set
 
 #### `AUTHENTIK_STORAGE__MEDIA__S3__[...]`
 
-Overrides [`AUTHENTIK_STORAGE__FILE__[...]`](#file-storage-backend-settings) settings.
+Overrides [`AUTHENTIK_STORAGE__S3__[...]`](#s3-storage-backend-settings) settings.
 
-These settings affect where media files are stored. Those files include applications and sources icons. By default, they are stored on disk in the `/media` directory of the authentik container. S3 storage is also supported.
+These settings affect where media files are stored. Those files include applications and sources icons. By default, they use the same storage settings as the main storage configuration. S3 storage is also supported.
 
 ### Reports storage settings
 
@@ -589,7 +591,7 @@ Defaults to `50`.
 
 ### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
-Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
+Allows configuration of TLS Ciphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
 
@@ -599,7 +601,7 @@ Configure how long reputation scores should be saved for in seconds.
 
 Defaults to `86400`.
 
-### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
+### `AUTHENTIK_SESSION_STORAGE`
 
 :::info Deprecated
 This setting is removed as of version 2025.4. Sessions are now exclusively stored in the database. See our [2025.4 release notes](../../releases/2025.4#sessions-are-now-stored-in-the-database) for more information.
@@ -627,17 +629,33 @@ Defaults to 4.
 
 ### `AUTHENTIK_WEB__PATH`
 
-:::info
-Requires authentik 2024.8
-:::
-
-Configure the path under which authentik is serverd. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
+Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
 
-## System settings:ak-version[2024.2]
+### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 
-Additional settings are configurable using the Admin interface, under **System** > **Settings** or using the API.
+Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ_HEADER`
+
+Defaults to `5s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ`
+
+Defaults to `30s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_WRITE`
+
+Defaults to `60s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_IDLE`
+
+Defaults to `120s`
+
+## System settings
+
+Additional [system settings](../../sys-mgmt/settings.md) are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
 ## Custom python settings
 

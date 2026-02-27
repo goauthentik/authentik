@@ -1,9 +1,10 @@
 from queue import PriorityQueue
 
-import dramatiq
 from django.utils.module_loading import import_string
 from django_dramatiq_postgres.conf import Conf
+from dramatiq import set_broker
 from dramatiq.broker import Broker, MessageProxy, get_broker
+from dramatiq.middleware.middleware import Middleware
 from dramatiq.middleware.retries import Retries
 from dramatiq.results.middleware import Results
 from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
@@ -73,7 +74,7 @@ def use_test_broker():
         actor.broker.declare_actor(actor)
 
     for middleware_class, middleware_kwargs in Conf().middlewares:
-        middleware: dramatiq.middleware.middleware.Middleware = import_string(middleware_class)(
+        middleware: Middleware = import_string(middleware_class)(
             **middleware_kwargs,
         )
         if isinstance(middleware, Retries):
@@ -84,5 +85,6 @@ def use_test_broker():
                 **Conf().result_backend_kwargs,
             )
         broker.add_middleware(middleware)
+
     broker.start()
-    dramatiq.set_broker(broker)
+    set_broker(broker)

@@ -44,6 +44,10 @@ class MDMConfigResponseSerializer(PassiveSerializer):
 
 class AgentConnectorController(BaseController[AgentConnector]):
 
+    @staticmethod
+    def vendor_identifier() -> str:
+        return "goauthentik.io/platform"
+
     def supported_enrollment_methods(self):
         return []
 

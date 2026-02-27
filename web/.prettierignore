@@ -21,3 +21,4 @@ src/locales/
 
 ## Vendored files
 *.min.js
+*.min.css

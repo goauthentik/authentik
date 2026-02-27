@@ -7,16 +7,16 @@ from urllib.parse import parse_qs, urlparse
 from django.test import TestCase
 from lxml import etree
 
-from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
     RSA_SHA256,
     SAML_NAME_ID_FORMAT_EMAIL,
 )
+from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 
 
 class TestLogoutRequestProcessor(TestCase):
@@ -266,7 +266,7 @@ class TestLogoutRequestProcessor(TestCase):
             decoded_sig = base64.b64decode(signature)
             self.assertIsNotNone(decoded_sig)
             self.assertGreater(len(decoded_sig), 0)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self.fail("Signature is not valid base64")
 
     def test_signature_parameter_ordering(self):
@@ -471,5 +471,5 @@ class TestLogoutRequestProcessor(TestCase):
             decoded_sig = base64.b64decode(signature)
             self.assertIsNotNone(decoded_sig)
             self.assertGreater(len(decoded_sig), 0)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self.fail("Signature is not valid base64")

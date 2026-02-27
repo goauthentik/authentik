@@ -22,7 +22,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
@@ -32,7 +31,7 @@ export class EventViewPage extends AKElement {
     @state()
     event!: EventWithContext;
 
-    static styles: CSSResult[] = [PFBase, PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
+    static styles: CSSResult[] = [PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
 
     fetchEvent(eventUuid: string) {
         new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {

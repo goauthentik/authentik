@@ -8,7 +8,6 @@ import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum Level {
     Warning = "pf-m-warning",
@@ -65,7 +64,6 @@ export class AKAlert extends AKElement implements IAlert {
     public icon = "fa-exclamation-circle";
 
     static styles = [
-        PFBase,
         PFAlert,
         css`
             p {
@@ -88,11 +86,11 @@ export class AKAlert extends AKElement implements IAlert {
     }
 
     render() {
-        return html`<div class="${classMap(this.classmap)}">
+        return html`<div class="${classMap(this.classmap)}" part="container">
             <div class="pf-c-alert__icon">
                 <i aria-hidden="true" class="fas ${this.icon}"></i>
             </div>
-            <h4 role="presentation" class="pf-c-alert__title"><slot></slot></h4>
+            <div class="pf-c-alert__title"><slot></slot></div>
         </div>`;
     }
 }

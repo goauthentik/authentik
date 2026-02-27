@@ -5,8 +5,6 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ref, RefOrCallback } from "lit/directives/ref.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 /**
  * Finds the main content element within a given context.
  *
@@ -49,7 +47,6 @@ export function findMainContent(context: HTMLElement): HTMLElement | null {
 export class AKSkipToContent extends AKElement {
     static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
     static styles = [
-        PFBase,
         css`
             [part="show-on-focus"] {
                 position: absolute !important;

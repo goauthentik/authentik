@@ -11,7 +11,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { StageHost } from "#flow/stages/base";
+import type { StageHost } from "#flow/types";
 
 import {
     ChallengeTypes,
@@ -40,16 +40,19 @@ export class UserSettingsFlowExecutor
     @property()
     flowSlug = this.brand?.flowUserSettings;
 
-    private _challenge?: ChallengeTypes;
+    #challenge: ChallengeTypes | null = null;
 
     @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
-        this.requestUpdate();
+    set challenge(value: ChallengeTypes | null) {
+        const previousValue = this.#challenge;
+
+        this.#challenge = value;
+
+        this.requestUpdate("challenge", previousValue);
     }
 
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
+    get challenge(): ChallengeTypes | null {
+        return this.#challenge;
     }
 
     @property({ type: Boolean })

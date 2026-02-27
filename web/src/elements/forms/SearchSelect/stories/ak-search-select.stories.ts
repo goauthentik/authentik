@@ -5,8 +5,8 @@ import { sampleData } from "./sampleData.js";
 
 import { groupBy } from "#common/utils";
 
-import { SearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
-import { type ISearchSelectApi } from "#elements/forms/SearchSelect/ak-search-select-ez";
+import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import { type ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
 
 import { Meta } from "@storybook/web-components";
 
@@ -32,7 +32,7 @@ const getSamples = (query = "") => {
     return Promise.resolve(samples.filter((s) => check.test(s.name)));
 };
 
-const metadata: Meta<SearchSelect<Sample>> = {
+const metadata: Meta<ISearchSelect<Sample>> = {
     title: "Elements / Search Select / API Interface",
     component: "ak-search-select",
     parameters: {
@@ -73,7 +73,7 @@ export const Default = () =>
         html`<ak-search-select
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
-            .value=${(sample: Sample) => sample.pk}
+            .value=${(sample: Sample | null) => sample?.pk}
             @ak-change=${displayChange}
         ></ak-search-select>`,
     );
@@ -83,7 +83,7 @@ export const Grouped = () => {
         html`<ak-search-select
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
-            .value=${(sample: Sample) => sample.pk}
+            .value=${(sample: Sample | null) => sample?.pk}
             .groupBy=${(samples: Sample[]) =>
                 groupBy(samples, (sample: Sample) => sample.season[0] ?? "")}
             @ak-change=${displayChange}
@@ -92,7 +92,7 @@ export const Grouped = () => {
 };
 
 export const GroupedAndEz = () => {
-    const config: ISearchSelectApi<Sample> = {
+    const config: ISearchSelectConfig<Sample> = {
         fetchObjects: getSamples,
         renderElement: (sample: Sample) => sample.name,
         value: (sample: Sample | null) => sample?.pk ?? "",
@@ -114,7 +114,7 @@ export const SelectedAndBlankable = () => {
             blankable
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
-            .value=${(sample: Sample) => sample.pk}
+            .value=${(sample: Sample | null) => sample?.pk}
             .selected=${(sample: Sample) => sample.pk === "herbs"}
             @ak-change=${displayChange}
         ></ak-search-select>`,

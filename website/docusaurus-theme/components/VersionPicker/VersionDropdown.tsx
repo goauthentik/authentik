@@ -81,14 +81,14 @@ export const VersionDropdown = memo<VersionDropdownProps>((props) => {
                 {visibleReleases.map((releaseName, idx) => {
                     const semVer = normalizeReleaseName(releaseName);
 
-                    let label = semVer;
+                    let label = releaseName;
                     const frontmatter = frontMatterRecord[semVer];
 
                     if (frontmatter?.draft) {
                         return null;
                     }
 
-                    if (idx === 0 && !frontmatter?.beta) {
+                    if (idx === 0 && !frontmatter?.beta && semVer === releaseName) {
                         label += " (Current Release)";
                     }
 

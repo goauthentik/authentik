@@ -50,7 +50,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("SCIM User(s)")}
+            object-label=${msg("SCIM User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SCIMProviderUser) => {
                 return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersDestroy({

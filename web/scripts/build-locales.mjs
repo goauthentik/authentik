@@ -52,7 +52,7 @@ const EmittedLocalesDirectory = resolve(
 );
 
 const targetLocales = localizeRules.targetLocales.filter((localeCode) => {
-    return localeCode !== "pseudo-LOCALE";
+    return localeCode !== "en-XA";
 });
 
 //#endregion

@@ -8,6 +8,8 @@
  * support badges, and Authentik version badges.
  */
 
+import "./styles.css";
+
 import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
 
@@ -95,7 +97,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
     const badges: JSX.Element[] = [];
 
     if (authentik_version) {
-        badges.push(<VersionBadge semver={authentik_version} />);
+        badges.push(<VersionBadge semver={authentik_version} docID={id} />);
     }
 
     if (support_level) {

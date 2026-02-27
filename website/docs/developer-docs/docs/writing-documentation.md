@@ -34,10 +34,6 @@ Adhering to the following guidelines will help us get your PRs merged much easie
     - [docs templates](./templates/index.md)
     - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
 
-:::tip
-If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
-:::
-
 ## Setting up a docs development environment
 
 ### Prerequisites
@@ -83,7 +79,11 @@ Run the following command to install or update the build tools for both the tech
 make docs-install
 ```
 
-Installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+This command installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+
+:::tip
+If you have the [full development environment](../setup/full-dev-environment.mdx) installed you can run `make install` to get all of the latest build tools and dependencies, not just those for building documentation.
+:::
 
 ## Writing or modifying technical docs
 
@@ -116,7 +116,7 @@ Starts a local development server for the documentation site and opens a preview
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (https://integrations.goauthentik.io/).
 
-- For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+- For new integration documentation, please use the Integrations template in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 - For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 
@@ -161,7 +161,7 @@ sidebar_custom_props:
     termName: My Term
     tags:
         - Category Name
-    isAuthentikSpecific: true # Only for authentik-specific terms
+    authentikSpecific: true # Only for authentik-specific terms
     shortDescription: Brief one-line description.
     longDescription: Detailed explanation with context, use cases, and examples.
 ---
@@ -178,7 +178,7 @@ sidebar_custom_props:
     - Directory
     - Configuration
     - Protocols
-- **`isAuthentikSpecific`** (optional): Set to `true` for authentik-specific terms. This displays an "authentik specific" badge next to the term name to distinguish it from industry-standard terminology. Omit this field for industry-standard terms.
+- **`authentikSpecific`** (optional): Set to `true` for authentik-specific terms. This displays an "authentik specific" badge next to the term name to distinguish it from industry-standard terminology. Omit this field for industry-standard terms.
 - **`shortDescription`** (required): Concise one-line summary displayed in the main glossary view
 - **`longDescription`** (optional): Detailed explanation shown when users expand the term
 

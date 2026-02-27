@@ -34,11 +34,12 @@ packages/docusaurus-config              @goauthentik/frontend
 packages/esbuild-plugin-live-reload     @goauthentik/frontend
 packages/eslint-config                  @goauthentik/frontend
 packages/prettier-config                @goauthentik/frontend
+packages/logger-js                      @goauthentik/frontend
 packages/tsconfig                       @goauthentik/frontend
 # Web
 web/                                    @goauthentik/frontend
 # Locale
-locale/                                 @goauthentik/backend @goauthentik/frontend
+/locale/                                @goauthentik/backend @goauthentik/frontend
 web/xliff/                              @goauthentik/backend @goauthentik/frontend
 # Docs
 website/                                @goauthentik/docs

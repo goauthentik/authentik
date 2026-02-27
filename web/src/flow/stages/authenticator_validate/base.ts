@@ -1,4 +1,5 @@
-import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "#flow/stages/base";
+import { BaseStage } from "#flow/stages/base";
+import { StageChallengeLike } from "#flow/types";
 
 import { DeviceChallenge } from "@goauthentik/api";
 
@@ -12,27 +13,15 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export class BaseDeviceStage<
-    Tin extends FlowInfoChallenge & PendingUserChallenge,
-    Tout,
-> extends BaseStage<Tin, Tout> {
+export class BaseDeviceStage<Tin extends StageChallengeLike, Tout> extends BaseStage<Tin, Tout> {
     @property({ attribute: false })
     deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
     showBackButton = false;
 
-    static styles: CSSResult[] = [
-        PFBase,
-        PFLogin,
-        PFForm,
-        PFFormControl,
-        PFInputGroup,
-        PFTitle,
-        PFButton,
-    ];
+    static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFInputGroup, PFTitle, PFButton];
 
     submit(payload: Tin): Promise<boolean> {
         return this.host?.submit(payload) || Promise.resolve();

@@ -12,7 +12,7 @@ Note that authentik uses [debugpy](https://github.com/microsoft/debugpy), which 
 
 To enable the debugging server, set the environment variable `AUTHENTIK_DEBUGGER` to `true`. This will launch the debugging server (by default on port _9901_).
 
-With this setup in place, you can set Breakpoints in VS Code. To connect to the debugging server, run the command `> Debug: Start Debugging" in VS Code.
+With this setup in place, you can set Breakpoints in VS Code. To connect to the debugging server, run the command `> Debug: Start Debugging` in VS Code.
 
 ![](./debug_vscode.png)
 

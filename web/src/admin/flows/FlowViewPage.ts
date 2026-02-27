@@ -29,7 +29,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
@@ -40,7 +39,6 @@ export class FlowViewPage extends AKElement {
     flow!: Flow;
 
     static styles: CSSResult[] = [
-        PFBase,
         PFPage,
         PFDescriptionList,
         PFButton,
@@ -274,7 +272,7 @@ export class FlowViewPage extends AKElement {
                 >
                     <div class="pf-c-card">
                         <div class="pf-c-card__body">
-                            <ak-bound-stages-list .target=${this.flow.pk}> </ak-bound-stages-list>
+                            <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
                         </div>
                     </div>
                 </div>
@@ -300,6 +298,7 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"

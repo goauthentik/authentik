@@ -78,7 +78,7 @@ DefaultRoot /your/ftp/storage/dir
     # Replace this with the server-url:port of your LDAP outpost
     LDAPServer authentik.company:389
     # The LDAP Bind account must be specified here
-    LDAPBindDN cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io PASSWORDOFLDAPSERVICE
+    LDAPBindDN cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io PASSWORD_OF_LDAP_SERVICE
     # The second parameter is optional
     #  In this case I am restricting access to the group ftpusers
     #  Instead you could also create bind policies in your created authentik application

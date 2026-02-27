@@ -14,6 +14,7 @@ class SCIMRequestException(TransientSyncException):
     _message: str | None
 
     def __init__(self, response: Response | None = None, message: str | None = None) -> None:
+        super().__init__(response)
         self._response = response
         self._message = message
 

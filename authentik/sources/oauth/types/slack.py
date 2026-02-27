@@ -51,7 +51,8 @@ class SlackOAuthClient(OAuth2Client):
             token["id"] = authed_user.get("id")
 
         # Slack returns "user", but API expects Bearer
-        token["token_type"] = "Bearer"  # nosec B105 - not a password, OAuth token type
+        # not a password, OAuth token type
+        token["token_type"] = "Bearer"  # nosec
 
         return token
 

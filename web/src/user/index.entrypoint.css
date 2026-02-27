@@ -1,31 +1,18 @@
-.pf-c-drawer__panel {
-    z-index: var(--pf-global--ZIndex--md);
-}
-
-.pf-c-page__main,
-.pf-c-drawer__content,
-.pf-c-page__drawer {
-    z-index: auto !important;
-    background-color: transparent !important;
+.pf-c-page {
+    --pf-c-page__header--BackgroundColor: transparent;
+    --pf-c-page--BackgroundColor: transparent !important;
+    --pf-c-page__main-section--BackgroundColor: transparent !important;
+    --ak-user-interface--slant-m-light: var(--pf-global--BackgroundColor--100);
+    --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--200);
 }
 
 .pf-c-page__header {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    color: black !important;
-
     .pf-c-button {
         --pf-c-button--m-secondary--Color: var(--pf-global--primary-color--100);
         --pf-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--100);
         --pf-c-button--m-secondary--active--Color: var(--pf-global--primary-color--100);
         --pf-c-button--m-secondary--focus--Color: var(--pf-global--primary-color--100);
     }
-}
-
-.pf-c-page {
-    background-color: transparent !important;
-    --ak-user-interface--slant-m-light: var(--pf-global--BackgroundColor--100);
-    --ak-user-interface--slant-m-dark: var(--pf-global--BackgroundColor--200);
 }
 
 .display-none {
@@ -46,7 +33,7 @@
     color: #2b9af3;
 }
 
-.background-wrapper {
+[part="background-wrapper"] {
     height: 100dvh;
     width: 100%;
     position: fixed;
@@ -56,7 +43,7 @@
     background-color: var(--ak-user-interface--slant-m-dark);
 }
 
-.background-default-slant {
+[part="background-default-slant"] {
     background-color: var(--ak-user-interface--slant-m-light);
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
     height: 50dvh;
@@ -70,4 +57,8 @@
 .pf-c-drawer__main {
     min-height: calc(100vh - 76px);
     max-height: calc(100vh - 76px);
+}
+
+.pf-c-drawer__panel {
+    background-color: transparent !important;
 }

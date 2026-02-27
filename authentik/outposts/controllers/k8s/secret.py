@@ -21,7 +21,7 @@ def b64string(source: str) -> str:
 class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
     """Kubernetes Secret Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api = CoreV1Api(controller.client)
 

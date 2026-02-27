@@ -63,7 +63,11 @@ func (ws *WebServer) configureProxy() {
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
-		rw.WriteHeader(200)
+		if ws.upstreamHealthcheck() {
+			rw.WriteHeader(200)
+		} else {
+			rw.WriteHeader(502)
+		}
 	}))
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.g.IsRunning() {
@@ -71,6 +75,7 @@ func (ws *WebServer) configureProxy() {
 			return
 		}
 		before := time.Now()
+
 		if ws.ProxyServer != nil && ws.ProxyServer.HandleHost(rw, r) {
 			elapsed := time.Since(before)
 			Requests.With(prometheus.Labels{
@@ -78,12 +83,14 @@ func (ws *WebServer) configureProxy() {
 			}).Observe(float64(elapsed) / float64(time.Second))
 			return
 		}
+
+		r.Body = http.MaxBytesReader(rw, r.Body, maxBodyBytes)
+		rp.ServeHTTP(rw, r)
+
 		elapsed := time.Since(before)
 		Requests.With(prometheus.Labels{
 			"dest": "core",
 		}).Observe(float64(elapsed) / float64(time.Second))
-		r.Body = http.MaxBytesReader(rw, r.Body, maxBodyBytes)
-		rp.ServeHTTP(rw, r)
 	}))
 }
 

@@ -58,7 +58,7 @@ To support the integration of Omada Controller with authentik, you need to creat
     - **Expression**:
 
     ```python
-    omada_groups = [g.name for g in user.ak_groups.all() if g.name.startswith("Omada-")]
+    omada_groups = [g.name for g in user.groups.all() if g.name.startswith("Omada-")]
 
     yield omada_groups[0] if omada_groups else None
     ```
@@ -114,7 +114,7 @@ Omada can't handle a user being in multiple groups/roles. Therefore, ensure that
                     - `surname`
                     - `omada_usergroup_name`
                     - `username`
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -146,7 +146,7 @@ You can generate the relay state value using one of the following methods:
 <Tabs
   defaultValue="linuxmac"
   values={[
-    {label: 'Linux and MacOS', value: 'linuxmac'},
+    {label: 'Linux and macOS', value: 'linuxmac'},
     {label: 'Windows', value: 'windows'},
   ]}>
   <TabItem value="linuxmac">

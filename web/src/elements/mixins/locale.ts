@@ -1,4 +1,4 @@
-import { TargetLocale } from "#common/ui/locale/definitions";
+import { SourceLanguageTag, TargetLanguageTag } from "#common/ui/locale/definitions";
 
 import { createMixin } from "#elements/types";
 
@@ -16,9 +16,7 @@ export const kAKLocale = Symbol("kAKLocale");
  * @see {@linkcode LocaleMixin}
  * @see {@linkcode WithLocale}
  */
-export const LocaleContext = createContext<LocaleContextValue>(
-    Symbol.for("authentik-locale-context"),
-);
+export const LocaleContext = createContext<LocaleContextValue>(Symbol("authentik-locale-context"));
 
 export type LocaleContext = typeof LocaleContext;
 
@@ -34,12 +32,14 @@ export interface LocaleMixin {
      *
      * @internal
      */
-    readonly [kAKLocale]: Readonly<LocaleContextValue>;
+    readonly [kAKLocale]?: Readonly<LocaleContextValue>;
 
     /**
-     * The current locale code.
+     * The current locale language tag.
+     *
+     * @format BCP 47
      */
-    locale: TargetLocale;
+    activeLanguageTag: TargetLanguageTag;
 }
 
 /**
@@ -54,18 +54,31 @@ export const WithLocale = createMixin<LocaleMixin>(
         subscribe = true,
     }) => {
         abstract class LocaleProvider extends SuperClass implements LocaleMixin {
+            #contextWarning = false;
+
             @consume({
                 context: LocaleContext,
                 subscribe,
             })
-            public [kAKLocale]!: LocaleContextValue;
+            public [kAKLocale]?: LocaleContextValue;
 
-            public get locale(): TargetLocale {
-                return this[kAKLocale].getLocale() as TargetLocale;
+            public get activeLanguageTag(): TargetLanguageTag {
+                if (!this[kAKLocale]) {
+                    if (!this.#contextWarning) {
+                        console.warn(
+                            `[WithLocale] The locale context is not available on <${this.constructor.name}>. Did you forget to add the LocaleContextController?`,
+                        );
+                        this.#contextWarning = true;
+                    }
+
+                    return SourceLanguageTag;
+                }
+
+                return this[kAKLocale]?.getLocale() as TargetLanguageTag;
             }
 
-            public set locale(value: TargetLocale) {
-                this[kAKLocale].setLocale(value);
+            public set activeLanguageTag(value: TargetLanguageTag) {
+                this[kAKLocale]?.setLocale(value);
             }
         }
 

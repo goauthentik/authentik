@@ -32,7 +32,7 @@ func (rs *RadiusServer) Handle_AccessRequest_PAP_Auth(r *RadiusRequest, username
 	if !passed {
 		return nil, errors.New("invalid_credentials")
 	}
-	access, _, err := fe.ApiClient().OutpostsApi.OutpostsRadiusAccessCheck(
+	access, _, err := fe.ApiClient().OutpostsAPI.OutpostsRadiusAccessCheck(
 		r.Context(), r.pi.providerId,
 	).AppSlug(r.pi.appSlug).Execute()
 	if err != nil {

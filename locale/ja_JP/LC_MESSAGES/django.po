@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-10 23:02+0000\n"
+"POT-Creation-Date: 2026-02-10 19:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/authentik/teams/119923/ja_JP/)\n"
@@ -31,9 +31,11 @@ msgid "File name cannot be empty"
 msgstr ""
 
 #: authentik/admin/files/validation.py
+#, python-format
 msgid ""
 "File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
-"hyphens (-), underscores (_), and forward slashes (/)"
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
 msgstr ""
 
 #: authentik/admin/files/validation.py
@@ -181,6 +183,34 @@ msgstr "ブランド"
 msgid "Brands"
 msgstr "ブランド"
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "ハッシュされたユーザー ID に基づく"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "ユーザー ID に基づく"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "ユーザー UUID に基づく"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "ユーザー名に基づく"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr "ユーザーのメールアドレスに基づいています。これはUPNによる方法よりも推奨されます。"
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"ユーザーの UPN に基づいて、ユーザーが 'upn' 属性を設定している場合のみ機能。異なる UPN "
+"とメールドメインがある場合のみこのメソッドを使用。"
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "ユーザーはアプリへのアクセス権がありません。"
@@ -212,6 +242,34 @@ msgid "No empty segments in user path allowed."
 msgstr "ユーザーパスに空の部分を含めることはできません。"
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr "これらの詳細を持つユーザー/グループは既に存在します"
 
@@ -222,6 +280,14 @@ msgstr "ユーザーを作成できません"
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
 msgstr "不明なエラーが発生しました"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "This field is required."
@@ -288,14 +354,6 @@ msgstr "パスワードをリセット"
 #: authentik/core/models.py
 msgid "Can impersonate other users"
 msgstr "他のユーザーになりすますことができます"
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr "ユーザーに権限を付与することができます"
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
-msgstr "ユーザーから権限を剥奪することができます"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
@@ -513,7 +571,9 @@ msgstr "ホームに戻る"
 msgid "Powered by authentik"
 msgstr "Powered by authentik"
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -536,6 +596,14 @@ msgstr "rsa"
 msgid "ecdsa"
 msgstr "ecdsa"
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr "Ed25519"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr "Ed448"
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr "RSA"
@@ -549,14 +617,6 @@ msgid "DSA"
 msgstr "DSA"
 
 #: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr "Ed25519"
-
-#: authentik/crypto/models.py
-msgid "Ed448"
-msgstr "Ed448"
-
-#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr "PEMでエンコードされた証明書データ"
 
@@ -565,6 +625,30 @@ msgid ""
 "Optional Private Key. If this is set, you can use this keypair for "
 "encryption."
 msgstr "オプションのプライベートキーです。これを設定すると、このキーペアを暗号化に使用できます。"
+
+#: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr ""
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
@@ -640,6 +724,16 @@ msgstr ""
 msgid "Apple Nonces"
 msgstr ""
 
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+
 #: authentik/endpoints/models.py
 msgid "Device"
 msgstr ""
@@ -695,6 +789,97 @@ msgstr ""
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
 msgstr "このオブジェクトの作成/更新にはエンタープライズ契約が必要です。"
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr "送信する追加ヘッダーを設定。マッピングはキーと値のペアの辞書を返す必要があります"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Only one type-wide rule for each object type is allowed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to validate lifecycle rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License"
@@ -812,6 +997,16 @@ msgstr "Google Workspaceプロバイダー用の直接オブジェクト（ユ�
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr "Google Workspace プロバイダー用の直接オブジェクト（ユーザー、グループ）の同期をディスパッチ。"
@@ -871,6 +1066,16 @@ msgid ""
 "Dispatch syncs for a direct object (user, group) for Microsoft Entra "
 "providers."
 msgstr "Microsoft Entra プロバイダー用の直接オブジェクト（ユーザー、グループ）の同期をディスパッチ。"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
@@ -934,6 +1139,21 @@ msgstr "SSFイベントをディスパッチ。"
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
 msgstr "SSFイベントを送信。"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "{app} にリダイレクトしています...。"
 
 #: authentik/enterprise/reports/models.py
 msgid "Data Export"
@@ -1058,12 +1278,6 @@ msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr "リクエストの本体をカスタマイズ。マッピングは JSON シリアライズ可能なデータを返す必要があります。"
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
-msgstr "送信する追加ヘッダーを設定。マッピングはキーと値のペアの辞書を返す必要があります"
 
 #: authentik/events/models.py
 msgid "Severity"
@@ -1793,34 +2007,6 @@ msgstr "完全な LDAP ディレクトリを検索"
 msgid "Invalid Regex Pattern: {url}"
 msgstr "無効な正規表現パターン: {url}"
 
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr "ハッシュされたユーザー ID に基づく"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr "ユーザー ID に基づく"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr "ユーザー UUID に基づく"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr "ユーザー名に基づく"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "ユーザーのメールアドレスに基づいています。これはUPNによる方法よりも推奨されます。"
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-"ユーザーの UPN に基づいて、ユーザーが 'upn' 属性を設定している場合のみ機能。異なる UPN "
-"とメールドメインがある場合のみこのメソッドを使用。"
-
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
 msgstr "機密"
@@ -2076,12 +2262,6 @@ msgstr "登録されたクライアントにバックチャネルログアウト
 msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr "シグナルを介してディスパッチされたバックチャネルログアウト通知を処理"
 
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
-msgstr "{app} にリダイレクトしています...。"
-
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr "無効なコード"
@@ -2270,6 +2450,10 @@ msgid ""
 "Response' must be selected."
 msgstr ""
 "署名キーペアが選択されている場合、'Sign assertion' と 'Sign Response' の少なくとも 1 つを選択する必要があります。"
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -2531,6 +2715,10 @@ msgid "Salesforce"
 msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM リクエストへの Base URL、通常は /v2 で終わります"
 
@@ -2591,6 +2779,14 @@ msgstr "SCIM プロバイダー用の直接オブジェクト（ユーザー、�
 #: authentik/providers/scim/tasks.py
 msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr "SCIM プロバイダー用の直接オブジェクト（ユーザー、グループ）の同期をディスパッチ。"
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
@@ -4062,6 +4258,10 @@ msgid "Identification Stages"
 msgstr "識別ステージ"
 
 #: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr ""
+
+#: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
 msgstr "認証に失敗しました。"
 
@@ -4471,6 +4671,14 @@ msgstr "デフォルトトークン期間"
 #: authentik/tenants/models.py
 msgid "Default token length"
 msgstr "デフォルト トークン長"
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Tenant"

@@ -154,3 +154,39 @@ func TestStateFromRequestDeletesStaleCookie(t *testing.T) {
 	}
 	assert.True(t, foundDeleteCookie, "Expected stale session cookie to be deleted")
 }
+
+func TestCreateStateWithStaleCookie(t *testing.T) {
+	a := newTestApplication()
+	_ = a.configureProxy()
+
+	// Create a request with a stale session cookie (simulates outpost restart or user change)
+	req, _ := http.NewRequest("GET", "https://ext.t.goauthentik.io/outpost.goauthentik.io/start", nil)
+
+	// Add a cookie for a non-existent session
+	nonExistentSessionID := uuid.New().String()
+	req.AddCookie(&http.Cookie{
+		Name:  a.SessionName(),
+		Value: "encoded_session_data_" + nonExistentSessionID,
+		Path:  "/",
+	})
+
+	rr := httptest.NewRecorder()
+
+	// Call createState which should succeed despite the stale cookie
+	state, err := a.createState(req, rr, "/redirect")
+
+	// Verify createState succeeded
+	assert.NoError(t, err)
+	assert.NotEmpty(t, state)
+
+	// Verify the response includes a Set-Cookie header to delete the stale cookie
+	cookies := rr.Result().Cookies()
+	var foundDeleteCookie bool
+	for _, cookie := range cookies {
+		if cookie.Name == a.SessionName() && cookie.MaxAge < 0 {
+			foundDeleteCookie = true
+			break
+		}
+	}
+	assert.True(t, foundDeleteCookie, "Expected stale session cookie to be deleted")
+}

@@ -1,5 +1,6 @@
 """Events API Views"""
 
+from collections import OrderedDict
 from datetime import timedelta
 
 import django_filters
@@ -136,7 +137,7 @@ class EventViewSet(
     filterset_class = EventsFilter
 
     def get_ql_fields(self):
-        from djangoql.schema import DateTimeField, StrField
+        from djangoql.schema import DateTimeField, IntField, StrField
 
         from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
 
@@ -145,9 +146,42 @@ class EventViewSet(
             StrField(Event, "event_uuid"),
             StrField(Event, "app", suggest_options=True),
             StrField(Event, "client_ip"),
-            JSONSearchField(Event, "user", suggest_nested=False),
-            JSONSearchField(Event, "brand", suggest_nested=False),
-            JSONSearchField(Event, "context", suggest_nested=False),
+            JSONSearchField(
+                Event,
+                "user",
+                fixed_structure=OrderedDict(
+                    pk=IntField(),
+                    username=StrField(),
+                    email=StrField(),
+                ),
+            ),
+            JSONSearchField(
+                Event,
+                "brand",
+                fixed_structure=OrderedDict(
+                    pk=StrField(),
+                    app=StrField(),
+                    name=StrField(),
+                    model_name=StrField(),
+                ),
+            ),
+            JSONSearchField(
+                Event,
+                "context",
+                fixed_structure=OrderedDict(
+                    http_request=JSONSearchField(
+                        Event,
+                        "context_http_request",
+                        fixed_structure=OrderedDict(
+                            args=JSONSearchField(Event, "context_http_request_args"),
+                            path=StrField(),
+                            method=StrField(),
+                            request_id=StrField(),
+                            user_agent=StrField(),
+                        ),
+                    ),
+                ),
+            ),
             DateTimeField(Event, "created", suggest_options=True),
         ]
 

@@ -10,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
  * Horizontal Form Element Container.
@@ -29,7 +28,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static styles: CSSResult[] = [
-        PFBase,
         PFForm,
         PFFormControl,
         css`

@@ -89,26 +89,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         interface = self.driver.find_element(By.CSS_SELECTOR, "ak-interface-user").shadow_root
 
-        interface_wait = WebDriverWait(interface, INTERFACE_TIMEOUT)
-
-        try:
-            interface_wait.until(
-                ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
-            )
-        except TimeoutException:
-            snippet = context.text.strip()[:1000].replace("\n", " ")
-            self.fail(
-                f"Timed out waiting for element text to appear at {self.driver.current_url}. "
-                f"Current content: {snippet or '<empty>'}"
-            )
-
-        interface_presentation = interface.find_element(
-            By.CSS_SELECTOR, "ak-interface-user-presentation"
-        ).shadow_root
-
-        user_settings = interface_presentation.find_element(
-            By.CSS_SELECTOR, "ak-user-settings"
-        ).shadow_root
+        user_settings = interface.find_element(By.CSS_SELECTOR, "ak-user-settings").shadow_root
 
         tab_panel = user_settings.find_element(By.CSS_SELECTOR, panel_content_selector).shadow_root
 

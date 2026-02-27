@@ -4,7 +4,7 @@ import { AKElement } from "#elements/Base";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
-import { html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 @customElement("ak-switch-input")
@@ -33,16 +33,34 @@ export class AkSwitchInput extends AKElement {
     required = false;
 
     @property({ type: String })
-    help = "";
+    help: string | TemplateResult = "";
+
+    /**
+     * For more complex help instructions, provide a template result.
+     */
+    @property({ type: Object })
+    public bighelp!: TemplateResult | TemplateResult[];
 
     @query("input.pf-c-switch__input[type=checkbox]")
     checkbox!: HTMLInputElement;
 
     #fieldID: string = IDGenerator.randomID();
 
+    protected renderHelp() {
+        const helpContent = typeof this.help === "string" ? this.help.trim() : this.help;
+
+        return [
+            helpContent
+                ? html`<p id="${this.#fieldID}-help" class="pf-c-form__helper-text">
+                      ${helpContent}
+                  </p>`
+                : nothing,
+            this.bighelp ? this.bighelp : nothing,
+        ];
+    }
+
     render() {
         const doCheck = this.checked ? this.checked : undefined;
-        const helpText = this.help.trim();
 
         return html` <ak-form-element-horizontal name=${this.name} ?required=${this.required}>
             <div slot="label" class="pf-c-form__group-label"></div>
@@ -62,9 +80,7 @@ export class AkSwitchInput extends AKElement {
                 </span>
                 <span class="pf-c-switch__label" id="${this.#fieldID}-label">${this.label}</span>
             </label>
-            ${helpText
-                ? html`<p id="${this.#fieldID}-help" class="pf-c-form__helper-text">${helpText}</p>`
-                : nothing}
+            ${this.renderHelp()}
         </ak-form-element-horizontal>`;
     }
 }
