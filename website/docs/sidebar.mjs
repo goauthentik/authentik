@@ -943,6 +943,7 @@ const items = [
                 items: [
                     "security/audits-and-certs/2023-06-cure53",
                     "security/audits-and-certs/2024-11-cobalt",
+                    "security/audits-and-certs/2025-09-includesec",
                 ],
             },
             {
