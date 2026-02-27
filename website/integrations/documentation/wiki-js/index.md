@@ -59,8 +59,8 @@ In Wiki.js, configure the authentication strategy with these settings:
 - Authorization Endpoint URL: https://authentik.company/application/o/authorize/
 - Token Endpoint URL: https://authentik.company/application/o/token/
 - User Info Endpoint URL: https://authentik.company/application/o/userinfo/
-- Issuer: https://authentik.company/application/o/wikijs/
-- Logout URL: https://authentik.company/application/o/wikijs/end-session/
+- Issuer: https://authentik.company/application/o/<slug>/
+- Logout URL: https://authentik.company/application/o/<slug>/end-session/
 - Allow self-registration: Enabled
 - Assign to group: The group to which new users logging in from authentik should be assigned.
 
