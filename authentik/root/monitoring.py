@@ -4,13 +4,11 @@ from hmac import compare_digest
 from pathlib import Path
 from tempfile import gettempdir
 
-from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
 from django.dispatch import Signal
 from django.http import HttpRequest, HttpResponse
 from django.views import View
-from django_prometheus.exports import ExportToDjangoView
 
 monitoring_set = Signal()
 
@@ -20,7 +18,7 @@ class MetricsView(View):
 
     def __init__(self, **kwargs):
         _tmp = Path(gettempdir())
-        with open(_tmp / "authentik-core-metrics.key") as _f:
+        with open(_tmp / "authentik-metrics-gunicorn.key") as _f:
             self.monitoring_key = _f.read()
 
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -28,10 +26,10 @@ class MetricsView(View):
         auth_header = request.META.get("HTTP_AUTHORIZATION", "")
         auth_type, _, given_credentials = auth_header.partition(" ")
         authed = auth_type == "Bearer" and compare_digest(given_credentials, self.monitoring_key)
-        if not authed and not settings.DEBUG:
+        if not authed:
             return HttpResponse(status=401)
         monitoring_set.send_robust(self)
-        return ExportToDjangoView(request)
+        return HttpResponse(status=204)
 
 
 class LiveView(View):

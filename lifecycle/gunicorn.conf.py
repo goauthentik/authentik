@@ -1,6 +1,8 @@
 """Gunicorn config"""
 
 import os
+import platform
+import signal
 from hashlib import sha512
 from pathlib import Path
 from tempfile import gettempdir
@@ -17,7 +19,6 @@ from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
-from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -28,15 +29,13 @@ if TYPE_CHECKING:
 
 setup()
 
-wait_for_db()
-
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
 worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 
 os.makedirs(worker_tmp_dir, exist_ok=True)
 
-bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
+bind = f"unix://{str(_tmp.joinpath('authentik-gunicorn.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
@@ -47,10 +46,22 @@ max_requests_jitter = 50
 
 logconfig_dict = get_logger_config()
 
-default_workers = 2
-
-workers = CONFIG.get_int("web.workers", default_workers)
+workers = CONFIG.get_int("web.workers", 2)
 threads = CONFIG.get_int("web.threads", 4)
+
+# libpq can try Kerberos/GSS on macOS, which is not fork-safe in our Gunicorn worker model.
+# Disable GSS negotiation for local/dev PostgreSQL connections on Darwin.
+if platform.system() == "Darwin":
+    os.environ.setdefault("PGGSSENCMODE", "disable")
+    # Avoid macOS SystemConfiguration proxy lookups (_scproxy) in forked workers.
+    # urllib/requests may consult these APIs and can crash in child workers.
+    os.environ.setdefault("NO_PROXY", "*")
+    os.environ.setdefault("no_proxy", "*")
+
+
+def when_ready(server: "Arbiter"):  # noqa: UP037
+    # Notify rust process that we are ready
+    os.kill(os.getppid(), signal.SIGUSR1)
 
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037

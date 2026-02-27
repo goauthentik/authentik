@@ -14,12 +14,12 @@ class TestRoot(TransactionTestCase):
     def setUp(self):
         _tmp = Path(gettempdir())
         self.token = token_urlsafe(32)
-        with open(_tmp / "authentik-core-metrics.key", "w") as _f:
+        with open(_tmp / "authentik-metrics-gunicorn.key", "w") as _f:
             _f.write(self.token)
 
     def tearDown(self):
         _tmp = Path(gettempdir())
-        (_tmp / "authentik-core-metrics.key").unlink()
+        (_tmp / "authentik-metrics-gunicorn.key").unlink()
 
     def test_monitoring_error(self):
         """Test monitoring without any credentials"""

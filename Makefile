@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-PY_SOURCES = authentik packages tests scripts lifecycle .github
+PY_SOURCES = authentik crates packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
@@ -23,6 +23,7 @@ BREW_LDFLAGS :=
 BREW_CPPFLAGS :=
 BREW_PKG_CONFIG_PATH :=
 
+CARGO := cargo
 UV := uv
 
 # For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
@@ -80,6 +81,7 @@ test: ## Run the server tests and produce a coverage report (locally)
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	$(UV) run black $(PY_SOURCES)
 	$(UV) run ruff check --fix $(PY_SOURCES)
+	$(CARGO) +nightly fmt
 
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
@@ -105,11 +107,12 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
-run-server:  ## Run the main authentik server process
-	$(UV) run ak server
+run:  ## Run the authentik server and worker, without auto reloading
+	$(UV) run ak allinone
 
-run-worker:  ## Run the main authentik worker process
-	$(UV) run ak worker
+run-watch:  ## Run the authentik server and worker, with auto reloading
+	$(UV) run
+	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak allinone
 
 core-i18n-extract:
 	$(UV) run ak makemessages \

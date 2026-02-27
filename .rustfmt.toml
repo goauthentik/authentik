@@ -1,0 +1,16 @@
+comment_width = 100
+format_code_in_doc_comments = true
+format_strings = true
+group_imports = "StdExternalCrate"
+hex_literal_case = "Lower"
+imports_granularity = "Crate"
+max_width = 100
+newline_style = "Unix"
+normalize_comments = true
+normalize_doc_attributes = true
+reorder_impl_items = true
+style_edition = "2024"
+use_field_init_shorthand = true
+use_try_shorthand = true
+where_single_line = true
+wrap_comments = true

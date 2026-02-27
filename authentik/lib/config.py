@@ -342,10 +342,10 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         "default": {
             "ENGINE": "psqlextra.backend",
             "HOST": config.get("postgresql.host"),
-            "NAME": config.get("postgresql.name"),
+            "PORT": config.get("postgresql.port"),
             "USER": config.get("postgresql.user"),
             "PASSWORD": config.get("postgresql.password"),
-            "PORT": config.get("postgresql.port"),
+            "NAME": config.get("postgresql.name"),
             "OPTIONS": {
                 "sslmode": config.get("postgresql.sslmode"),
                 "sslrootcert": config.get("postgresql.sslrootcert"),
@@ -423,4 +423,5 @@ if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.get(argv[-1]))
+        for arg in argv[1:]:
+            print(CONFIG.get(arg))

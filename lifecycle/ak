@@ -1,10 +1,6 @@
-#!/usr/bin/env -S bash
-set -e -o pipefail
-MODE_FILE="${TMPDIR}/authentik-mode"
+#!/usr/bin/env bash
 
-if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
-    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
-fi
+set -e -o pipefail
 
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >/dev/stderr
@@ -15,10 +11,18 @@ function wait_for_db {
     log "Bootstrap completed"
 }
 
-function check_if_root {
+function run_authentik {
+    if [[ -x "$(command -v authentik)" ]]; then
+        echo authentik "$@"
+    else
+        echo cargo run -- "$@"
+    fi
+}
+
+function check_if_root_and_run {
     if [[ $EUID -ne 0 ]]; then
         log "Not running as root, disabling permission fixes"
-        exec $1
+        exec $(run_authentik "$@")
         return
     fi
     SOCKET="/var/run/docker.sock"
@@ -26,36 +30,19 @@ function check_if_root {
     if [[ -e "$SOCKET" ]]; then
         # Get group ID of the docker socket, so we can create a matching group and
         # add ourselves to it
-        DOCKER_GID=$(stat -c '%g' $SOCKET)
+        DOCKER_GID="$(stat -c "%g" "${SOCKET}")"
         # Ensure group for the id exists
-        getent group $DOCKER_GID || groupadd -f -g $DOCKER_GID docker
-        usermod -a -G $DOCKER_GID authentik
+        getent group "${DOCKER_GID}" || groupadd -f -g "${DOCKER_GID}" docker
+        usermod -a -G "${DOCKER_GID}" authentik
         # since the name of the group might not be docker, we need to lookup the group id
-        GROUP_NAME=$(getent group $DOCKER_GID | sed 's/:/\n/g' | head -1)
+        GROUP_NAME=$(getent group "${DOCKER_GID}" | sed 's/:/\n/g' | head -1)
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of certs and media
     chown -R authentik:authentik /data /certs "${PROMETHEUS_MULTIPROC_DIR}"
     chmod ug+rwx /data
     chmod ug+rx /certs
-    exec chpst -u authentik:$GROUP env HOME=/authentik $1
-}
-
-function run_authentik {
-    if [[ -x "$(command -v authentik)" ]]; then
-        exec authentik $@
-    else
-        exec go run -v ./cmd/server/ $@
-    fi
-}
-
-function set_mode {
-    echo $1 >$MODE_FILE
-    trap cleanup EXIT
-}
-
-function cleanup {
-    rm -f ${MODE_FILE}
+    exec chpst -u authentik:"${GROUP}" env HOME=/authentik $(run_authentik "$@")
 }
 
 function prepare_debug {
@@ -72,38 +59,31 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
+if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
+    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
+fi
 mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
 
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
 fi
 
-if [[ "$1" == "server" ]]; then
-    set_mode "server"
-    run_authentik
-elif [[ "$1" == "worker" ]]; then
-    set_mode "worker"
-    shift
-    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
-    # sync, so that we can sure the first start actually has working bootstrap
-    # credentials
-    if [[ -n "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || -n "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
-        python -m manage apply_blueprint system/bootstrap.yaml || true
-    fi
-    check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
-elif [[ "$1" == "bash" ]]; then
-    /bin/bash
-elif [[ "$1" == "test-all" ]]; then
-    prepare_debug
-    chmod 777 /root
-    check_if_root "python -m manage test authentik"
-elif [[ "$1" == "healthcheck" ]]; then
-    run_authentik healthcheck $(cat $MODE_FILE)
+if [[ "$1" == "bash" ]]; then
+    exec /usr/bin/env -S bash "$@"
 elif [[ "$1" == "dump_config" ]]; then
-    shift
-    exec python -m authentik.lib.config $@
+    shift 1
+    exec python -m authentik.lib.config "$@"
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity
+elif [[ "$1" == "test-all" ]]; then
+    wait_for_db
+    prepare_debug
+    chmod 777 /root
+    check_if_root_and_run manage test authentik
+elif [[ "$1" == "server" ]] || [[ "$1" == "worker" ]] || [[ "$1" == "proxy" ]] || [[ "$1" == "manage" ]]; then
+    wait_for_db
+    check_if_root_and_run "$@"
 else
+    wait_for_db
     exec python -m manage "$@"
 fi

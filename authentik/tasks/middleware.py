@@ -193,142 +193,15 @@ class DescriptionMiddleware(Middleware):
         return {"description"}
 
 
-class _healthcheck_handler(BaseHTTPRequestHandler):
-    def log_request(self, code="-", size="-"):
-        HEALTHCHECK_LOGGER.info(
-            self.path,
-            method=self.command,
-            status=code,
-        )
-
-    def log_error(self, format, *args):
-        HEALTHCHECK_LOGGER.warning(format, *args)
-
-    def do_HEAD(self):
-        try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
-            self.send_response(200)
-        except DB_ERRORS:  # pragma: no cover
-            self.send_response(503)
-        self.send_header("Content-Type", "text/plain; charset=utf-8")
-        self.send_header("Content-Length", "0")
-        self.end_headers()
-
-    do_GET = do_HEAD
-
-
-class WorkerHealthcheckMiddleware(Middleware):
-    thread: HTTPServerThread | None
-
-    def after_worker_boot(self, broker: Broker, worker: Worker):
-        host, _, port = CONFIG.get("listen.http").rpartition(":")
-
-        try:
-            port = int(port)
-        except ValueError:
-            LOGGER.error(f"Invalid port entered: {port}")
-
-        self.thread = HTTPServerThread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
-        self.thread.start()
-
-    def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        server = self.thread.server
-        if server:
-            server.shutdown()
-        LOGGER.debug("Stopping WorkerHealthcheckMiddleware")
-        self.thread.join()
-
-    @staticmethod
-    def run(addr: str, port: int):
-        setthreadtitle("authentik Worker Healthcheck server")
-        try:
-            server = HTTPServer((addr, port), _healthcheck_handler)
-            thread = cast(HTTPServerThread, current_thread())
-            thread.server = server
-            server.serve_forever()
-        except OSError as exc:
-            get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
-                "Port is already in use, not starting healthcheck server",
-                exc=exc,
-            )
-
-
-class WorkerStatusMiddleware(Middleware):
-    thread: Thread | None
-    thread_event: TEvent | None
-
-    def after_worker_boot(self, broker: Broker, worker: Worker):
-        self.thread_event = TEvent()
-        self.thread = Thread(target=WorkerStatusMiddleware.run, args=(self.thread_event,))
-        self.thread.start()
-
-    def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        self.thread_event.set()
-        LOGGER.debug("Stopping WorkerStatusMiddleware")
-        self.thread.join()
-
-    @staticmethod
-    def run(event: TEvent):
-        setthreadtitle("authentik Worker status")
-        with transaction.atomic():
-            hostname = socket.gethostname()
-            WorkerStatus.objects.filter(hostname=hostname).delete()
-            status, _ = WorkerStatus.objects.update_or_create(
-                hostname=hostname,
-                version=authentik_full_version(),
-            )
-        while not event.is_set():
-            try:
-                WorkerStatusMiddleware.keep(event, status)
-            except DB_ERRORS:  # pragma: no cover
-                event.wait(10)
-                try:
-                    connections.close_all()
-                except DB_ERRORS:
-                    pass
-
-    @staticmethod
-    def keep(event: TEvent, status: WorkerStatus):
-        lock_id = f"goauthentik.io/worker/status/{status.pk}"
-        with pglock.advisory(lock_id, side_effect=pglock.Raise):
-            while not event.is_set():
-                old_last_seen = status.last_seen
-                status.last_seen = now()
-                if old_last_seen != status.last_seen:
-                    status.save(update_fields=("last_seen",))
-                event.wait(30)
-
-
-class _MetricsHandler(BaseMetricsHandler):
-    def do_GET(self) -> None:
-        monitoring_set.send_robust(self)
-        return super().do_GET()
-
-
 class MetricsMiddleware(BaseMetricsMiddleware):
-    thread: HTTPServerThread | None
-    handler_class = _MetricsHandler
-
     @property
-    def forks(self) -> list[Callable[[], None]]:
+    def forks(self):
         return []
 
-    def after_worker_boot(self, broker: Broker, worker: Worker):
-        addr, _, port = CONFIG.get("listen.metrics").rpartition(":")
+    def before_worker_boot(self, broker: Broker, worker: Any) -> None:
+        from prometheus_client import values
+        from prometheus_client.values import MultiProcessValue
 
-        try:
-            port = int(port)
-        except ValueError:
-            LOGGER.error(f"Invalid port entered: {port}")
-        self.thread = HTTPServerThread(target=MetricsMiddleware.run, args=(addr, port))
-        self.thread.start()
+        values.ValueClass = MultiProcessValue(lambda: worker.worker_id)
 
-    def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        server = self.thread.server
-        if server:
-            server.shutdown()
-        LOGGER.debug("Stopping MetricsMiddleware")
-        self.thread.join()
+        return super().before_worker_boot(broker, worker)

@@ -178,6 +178,7 @@ skip = [
   "./gen-go-api",             # Generated Go API
   "./data",                   # Media files
   "./media",                  # Legacy media files
+  "./target",                 # Rust compilation artifacts
   "./schemas/**",             # XML Schemas
   "./target",                 # Rust compilation artifacts
   "**vendored**",             # Vendored files

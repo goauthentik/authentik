@@ -1,0 +1,214 @@
+[workspace]
+members = [".", "website/scripts/docsmg"]
+resolver = "3"
+
+[workspace.package]
+authors = ["Jens Langhammer"]
+edition = "2024"
+readme = "README.md"
+homepage = "https://goauthentik.io"
+repository = "https://github.com/goauthentik/authentik.git"
+license-file = "LICENSE"
+publish = false
+
+[workspace.dependencies]
+arc-swap = "1.8.2"
+argh = "0.1.14"
+async-trait = "0.1.89"
+aws-lc-rs = { version = "1.16.0", features = ["fips"] }
+axum = { version = "0.8.8", features = ["http2", "macros", "ws"] }
+axum-server = { version = "0.8.0", features = ["tls-rustls-no-provider"] }
+bytes = "1.11.1"
+client-ip = { version = "0.2.1", features = ["forwarded-header"] }
+color-eyre = "0.6.5"
+config = { version = "0.15.19", default-features = false, features = [
+  "yaml",
+  "async",
+] }
+console-subscriber = "0.5.0"
+eyre = "0.6.12"
+forwarded-header-value = "0.1.1"
+futures = "0.3.32"
+glob = "0.3.3"
+jsonwebtoken = { version = "10.3.0", default-features = false, features = [
+  "aws_lc_rs",
+] }
+http-body-util = "0.1.3"
+hyper = "1.8.1"
+hyper-unix-socket = "0.3.0"
+hyper-util = "0.1.20"
+ipnet = { version = "2.11.0", features = ["serde"] }
+metrics = "0.24.3"
+metrics-exporter-prometheus = { version = "0.18.1", default-features = false }
+nix = { version = "0.31.1", features = ["signal"] }
+notify = "8.2.0"
+pem = "3.0.6"
+pin-project-lite = "0.2.16"
+prometheus-client = "0.24.0"
+pyo3 = "0.27.2"
+percent-encoding = "2.3.2"
+rand = "0.10.0"
+rcgen = { version = "0.14.7", default-features = false, features = [
+  "aws_lc_rs",
+  "fips",
+] }
+rustls = { version = "0.23.36", features = ["fips"] }
+rustls-pemfile = "2.2.0"
+sentry = { version = "0.46.2", default-features = false, features = [
+  "backtrace",
+  "contexts",
+  "debug-images",
+  "panic",
+  "rustls",
+  "reqwest",
+  "tower",
+  "tracing",
+] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+serde_yaml_ng = "0.10.0"
+sqlx = { version = "0.8.6", default-features = false, features = [
+  "runtime-tokio",
+  "tls-rustls-aws-lc-rs",
+  "postgres",
+  "derive",
+  "macros",
+  "uuid",
+  "chrono",
+  "ipnet",
+  "json",
+] }
+tempfile = "3.25.0"
+thiserror = "2.0.18"
+time = "0.3.47"
+tokio = { version = "1.49.0", features = ["full"] }
+tokio-rustls = "0.26.4"
+tokio-tungstenite = "0.28.0"
+tokio-util = "0.7.18"
+tower = "0.5.3"
+tower-http = { version = "0.6.8", features = [
+  "compression-br",
+  "compression-deflate",
+  "compression-gzip",
+  "compression-zstd",
+  "fs",
+  "trace",
+] }
+tower-service = "0.3.3"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.22", features = ["env-filter", "json"] }
+url = "2.5.8"
+uuid = { version = "1.21.0", features = ["v4"] }
+
+# Because of the async runtime, we really want panics to cause an abort, otherwise
+# the binary can keep on running as a ghost
+[profile.dev]
+panic = "abort"
+[profile.dev.package.backtrace]
+opt-level = 3
+
+[profile.release]
+lto = true
+panic = "abort"
+debug = 2
+
+[workspace.lints.rust]
+semicolon_in_expressions_from_macros = "warn"
+unreachable_pub = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
+
+[workspace.lints.rustdoc]
+unescaped_backticks = "warn"
+
+[workspace.lints.clippy]
+allow_attributes = "warn"
+allow_attributes_without_reason = "warn"
+branches_sharing_code = "warn"
+cloned_instead_of_copied = "warn"
+dbg_macro = "warn"
+disallowed_types = "warn"
+empty_line_after_outer_attr = "warn"
+ignore_without_reason = "warn"
+inefficient_to_string = "warn"
+macro_use_imports = "warn"
+map_flatten = "warn"
+missing_enforced_import_renames = "warn"
+mut_mut = "warn"
+nonstandard_macro_braces = "warn"
+semicolon_if_nothing_returned = "warn"
+str_to_string = "warn"
+todo = "warn"
+unreadable_literal = "warn"
+unseparated_literal_suffix = "warn"
+unwrap_used = "warn"
+
+[package]
+name = "authentik"
+version = "0.0.0"
+authors.workspace = true
+edition.workspace = true
+readme.workspace = true
+homepage.workspace = true
+repository.workspace = true
+license-file.workspace = true
+publish.workspace = true
+
+[features]
+default = ["core", "proxy"]
+proxy = []
+core = ["proxy", "dep:sqlx", "dep:pyo3"]
+
+[dependencies]
+arc-swap.workspace = true
+argh.workspace = true
+async-trait.workspace = true
+aws-lc-rs.workspace = true
+axum-server.workspace = true
+axum.workspace = true
+client-ip.workspace = true
+color-eyre.workspace = true
+config.workspace = true
+console-subscriber.workspace = true
+eyre.workspace = true
+forwarded-header-value.workspace = true
+futures.workspace = true
+glob.workspace = true
+http-body-util.workspace = true
+hyper-unix-socket.workspace = true
+hyper-util.workspace = true
+hyper.workspace = true
+ipnet.workspace = true
+jsonwebtoken.workspace = true
+metrics.workspace = true
+metrics-exporter-prometheus.workspace = true
+nix.workspace = true
+notify.workspace = true
+pem.workspace = true
+percent-encoding.workspace = true
+pin-project-lite.workspace = true
+pyo3 = { workspace = true, optional = true }
+rand.workspace = true
+rcgen.workspace = true
+rustls.workspace = true
+rustls-pemfile.workspace = true
+sentry.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx = { workspace = true, optional = true }
+tempfile.workspace = true
+time.workspace = true
+thiserror.workspace = true
+tokio-rustls.workspace = true
+tokio-tungstenite.workspace = true
+tokio-util.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tower.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+url.workspace = true
+uuid.workspace = true
+
+[lints]
+workspace = true

@@ -17,6 +17,7 @@ TESTING_QUEUE = "testing"
 class TestWorker(Worker):
     def __init__(self, broker: Broker):
         super().__init__(broker=broker)
+        self.worker_id = 1000
         self.work_queue = PriorityQueue()
         self.consumers = {
             TESTING_QUEUE: _ConsumerThread(
