@@ -68,7 +68,7 @@ _Fix:_ We [improved](https://github.com/goauthentik/authentik/pull/18076) the Ap
 _Issue:_ Our container build process used Dockerfiles containing unpinned tags, allowing a possible supply chain attack from an attacker with control of
 the referenced repository who could repoint the tag to a different image.
 
-_Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17795) to use hashes for dockerfile `FROM` calls.
+_Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17795) to use hashes for Dockerfile `FROM` calls.
 
 ### L2: User Accounts Enumerable
 
