@@ -107,9 +107,20 @@ if __name__ == "__main__":
 
     django.setup()
 
+    from django.core.management import execute_from_command_line
+
     if worker_id == INITIAL_WORKER_ID:
         from lifecycle.migrate import run_migrations
 
         run_migrations()
+
+        if (
+            "AUTHENTIK_BOOTSTRAP_PASSWORD" in os.environ
+            or "AUTHENTIK_BOOTSTRAP_TOKEN" in os.environ
+        ):
+            try:
+                execute_from_command_line(["", "apply_blueprint", "system/bootstrap.yaml"])
+            except Exception as exc:
+                sys.stderr.write(f"Failed to apply bootstrap blueprint: {exc}")
 
     main(worker_id)

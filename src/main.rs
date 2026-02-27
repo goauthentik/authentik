@@ -1,7 +1,12 @@
+use std::process::ExitCode;
+use std::process::exit;
+use std::{ffi::CString, process::ExitStatus};
+
+use nix::unistd::execvp;
 use std::str::FromStr;
 
 use ::tracing::{error, info, trace};
-use argh::FromArgs;
+use argh::{DynamicSubCommand, FromArgs, SubCommands};
 use eyre::{Result, eyre};
 
 use crate::{arbiter::Tasks, config::ConfigManager, mode::Mode};
@@ -23,11 +28,6 @@ mod tracing;
 mod worker;
 
 #[derive(Debug, FromArgs, PartialEq)]
-/// Run the authentik server and worker.
-#[argh(subcommand, name = "allinone")]
-pub(crate) struct AllInOne {}
-
-#[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
 struct Cli {
     #[argh(subcommand)]
@@ -45,6 +45,21 @@ enum Command {
     Worker(worker::Cli),
     #[cfg(feature = "proxy")]
     Proxy(proxy::Cli),
+    #[cfg(feature = "core")]
+    Manage(Manage),
+}
+
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run the authentik server and worker.
+#[argh(subcommand, name = "allinone")]
+struct AllInOne {}
+
+#[derive(Debug, FromArgs, PartialEq)]
+/// authentik django's management command
+#[argh(subcommand, name = "manage")]
+struct Manage {
+    #[argh(positional, greedy)]
+    args: Vec<String>,
 }
 
 fn install_sentry() -> sentry::ClientInitGuard {
@@ -70,14 +85,6 @@ fn main() -> Result<()> {
     let tracing_crude = tracing::install_crude();
     info!(version = env!("CARGO_PKG_VERSION"), "authentik is starting");
 
-    trace!("installing error formatting");
-    color_eyre::install()?;
-
-    trace!("installing rustls crypto provider");
-    rustls::crypto::aws_lc_rs::default_provider()
-        .install_default()
-        .expect("Failed to install rustls provider");
-
     let cli: Cli = argh::from_env();
 
     match &cli.command {
@@ -89,7 +96,27 @@ fn main() -> Result<()> {
         Command::Worker(_) => Mode::set(Mode::Worker),
         #[cfg(feature = "proxy")]
         Command::Proxy(_) => Mode::set(Mode::Proxy),
+        #[cfg(feature = "core")]
+        Command::Manage(args) => {
+            let mut process = std::process::Command::new("python")
+                .args(["-m", "manage"])
+                .args(&args.args)
+                .spawn()?;
+            let status = process.wait()?;
+            if let Some(code) = status.code() {
+                exit(code);
+            }
+            return Ok(());
+        }
     };
+
+    trace!("installing error formatting");
+    color_eyre::install()?;
+
+    trace!("installing rustls crypto provider");
+    rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .expect("Failed to install rustls provider");
 
     #[cfg(feature = "core")]
     if Mode::is_core() {
@@ -154,6 +181,8 @@ fn main() -> Result<()> {
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(_args) => todo!(),
+                #[cfg(feature = "core")]
+                Command::Manage(_) => unreachable!(),
             };
 
             let errors = tasks.run().await;

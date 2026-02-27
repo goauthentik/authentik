@@ -107,11 +107,12 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm i && $(UV) run npm run aws-cfn
 
-run-server:  ## Run the main authentik server process
-	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak server
+run:  ## Run the authentik server and worker, without auto reloading
+	$(UV) run ak allinone
 
-run-worker:  ## Run the main authentik worker process
-	$(UV) run ak worker
+run-watch:  ## Run the authentik server and worker, with auto reloading
+	$(UV) run
+	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak allinone
 
 core-i18n-extract:
 	$(UV) run ak makemessages \

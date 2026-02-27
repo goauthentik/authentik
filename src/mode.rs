@@ -3,6 +3,7 @@ use std::sync::atomic::{AtomicU8, Ordering};
 static MODE: AtomicU8 = AtomicU8::new(0);
 
 #[derive(PartialEq)]
+#[repr(u8)]
 pub(crate) enum Mode {
     #[cfg(feature = "core")]
     AllInOne = 0,
