@@ -8665,10 +8665,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>You may close this page now.</source>
   <target>Puedes cerrar esta página ahora.</target>
 </trans-unit>
-<trans-unit id="sf8c76d5fb408de7b">
-  <source>You're about to be redirect to the following URL.</source>
-  <target>Estás a punto de ser redirigido a la siguiente URL.</target>
-</trans-unit>
 <trans-unit id="s197420b40df164f8">
   <source>Follow redirect</source>
   <target>Seguir la redirección</target>
@@ -10350,6 +10346,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+</trans-unit>
+<trans-unit id="s6e858c4c4c3b6b76">
+  <source>You're about to be redirected to the following URL.</source>
 </trans-unit>
 </body>
 </file>

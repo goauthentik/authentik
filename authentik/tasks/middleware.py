@@ -1,29 +1,37 @@
 import socket
+from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
-from time import sleep
+from threading import Event as TEvent
+from threading import Thread, current_thread
 from typing import Any, cast
 
 import pglock
-from django.db import OperationalError, connections
+from django.db import OperationalError, connections, transaction
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
 )
-from django_dramatiq_postgres.middleware import HTTPServer
+from django_dramatiq_postgres.middleware import (
+    HTTPServer,
+    HTTPServerThread,
+)
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
 from django_dramatiq_postgres.middleware import (
     _MetricsHandler as BaseMetricsHandler,
 )
+from dramatiq import Worker
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from psycopg.errors import Error
+from setproctitle import setthreadtitle
 from structlog.stdlib import get_logger
 
 from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 from authentik.lib.sentry import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
 from authentik.root.monitoring import monitoring_set

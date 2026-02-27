@@ -158,6 +158,10 @@ web:
   workers: 2
   threads: 4
   path: /
+  timeout_http_read_header: 5s
+  timeout_http_read: 30s
+  timeout_http_write: 60s
+  timeout_http_idle: 120s
 
 worker:
   processes: 1

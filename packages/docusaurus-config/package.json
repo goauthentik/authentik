@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.4.0",
+    "version": "2.5.1",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -33,21 +33,21 @@
         "@docusaurus/theme-common": "3.9.2",
         "@docusaurus/theme-search-algolia": "^3.9.2",
         "@docusaurus/types": "^3.9.2",
-        "@eslint/js": "^9.39.1",
+        "@eslint/js": "^9.39.3",
         "@goauthentik/eslint-config": "../eslint-config",
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.0.0",
-        "@types/react": "^19.2.7",
+        "@types/node": "^25.3.0",
+        "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "@typescript-eslint/eslint-plugin": "^8.47.0",
-        "@typescript-eslint/parser": "^8.47.0",
-        "eslint": "^9.39.1",
-        "pino": "^10.1.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
+        "eslint": "^9.39.3",
+        "pino": "^10.3.1",
         "prettier": "^3.8.1",
         "prettier-plugin-packagejson": "^3.0.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.49.0"
+        "typescript-eslint": "^8.56.1"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.9.2",
@@ -68,7 +68,7 @@
     ],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.10.0"
+        "npm": ">=11.10.1"
     },
     "devEngines": {
         "runtime": {
@@ -78,7 +78,7 @@
         },
         "packageManager": {
             "name": "npm",
-            "version": "11.10.1",
+            "version": ">=11.10.1",
             "onFail": "warn"
         }
     },

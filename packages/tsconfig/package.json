@@ -1,8 +1,13 @@
 {
     "name": "@goauthentik/tsconfig",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "description": "authentik's base TypeScript configuration.",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/tsconfig"
+    },
     "scripts": {
         "build": ""
     },
@@ -10,17 +15,24 @@
     "type": "module",
     "engines": {
         "node": ">=24",
-        "npm": ">=11.6.2"
+        "npm": ">=11.10.1"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "warn"
+        },
+        "packageManager": {
+            "name": "npm",
+            "version": ">=11.10.1",
+            "onFail": "warn"
+        }
     },
     "keywords": [
         "tsconfig",
         "typescript"
     ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/goauthentik/authentik.git",
-        "directory": "packages/tsconfig"
-    },
     "publishConfig": {
         "access": "public"
     }
