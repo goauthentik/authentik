@@ -8743,7 +8743,7 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <target>Recuérdame en este dispositivo</target>
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
-  <source>Continue with <x id="0" equiv-text="${source.name}"/></source>
+  <source>Continue with <x id="0" equiv-text="${name}"/></source>
 </trans-unit>
 <trans-unit id="sc4eedb434536bdb4">
   <source>Need an account?</source>
@@ -8767,11 +8767,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 <trans-unit id="s091d5407b5b32e84">
   <source>Or</source>
   <target>O</target>
-</trans-unit>
-<trans-unit id="s670ad066cc0e50a3">
-  <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-  <target>Inicia sesión para continuar a
-        <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</target>
 </trans-unit>
 <trans-unit id="se5fd752dbbc3cd28">
   <source>Use a security key</source>
@@ -10349,6 +10344,9 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
   <source>You're about to be redirected to the following URL.</source>
+</trans-unit>
+<trans-unit id="sd5d2b94a1ccba1a9">
+  <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
 </trans-unit>
 </body>
 </file>

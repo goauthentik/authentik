@@ -70,13 +70,13 @@
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": "24",
-            "onFail": "ignore"
+            "version": ">=24",
+            "onFail": "warn"
         },
         "packageManager": {
             "name": "npm",
-            "version": "11.10.1",
-            "onFail": "ignore"
+            "version": ">=11.10.1",
+            "onFail": "warn"
         }
     },
     "prettier": "@goauthentik/prettier-config",
