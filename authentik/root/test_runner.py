@@ -1,6 +1,5 @@
 """Integrate ./manage.py test with pytest"""
 
-import faulthandler
 import os
 from argparse import ArgumentParser
 from unittest import TestCase

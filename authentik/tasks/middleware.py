@@ -1,7 +1,7 @@
 import socket
 from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
-from threading import Thread, current_thread, currentThread
+from threading import Thread, current_thread
 from time import sleep
 from typing import Any, cast
 
