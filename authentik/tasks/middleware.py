@@ -1,8 +1,8 @@
 import socket
 from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
+from threading import Event as TEvent
 from threading import Thread, current_thread
-from time import sleep
 from typing import Any, cast
 
 import pglock
@@ -254,18 +254,20 @@ class WorkerHealthcheckMiddleware(Middleware):
 
 class WorkerStatusMiddleware(Middleware):
     thread: Thread | None
+    thread_event: TEvent | None
 
     def after_worker_boot(self, broker: Broker, worker: Worker):
-        self.thread = Thread(target=WorkerStatusMiddleware.run)
+        self.thread_event = TEvent()
+        self.thread = Thread(target=WorkerStatusMiddleware.run, args=(self.thread_event))
         self.thread.start()
 
     def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        self.thread.running = False
+        self.thread_event.set()
         LOGGER.debug("Stopping WorkerStatusMiddleware")
         self.thread.join()
 
     @staticmethod
-    def run():
+    def run(event: TEvent):
         setthreadtitle("authentik Worker status")
         with transaction.atomic():
             hostname = socket.gethostname()
@@ -274,26 +276,26 @@ class WorkerStatusMiddleware(Middleware):
                 hostname=hostname,
                 version=authentik_full_version(),
             )
-        while getattr(current_thread(), "running", True):
+        while not event.is_set():
             try:
-                WorkerStatusMiddleware.keep(status)
+                WorkerStatusMiddleware.keep(event, status)
             except DB_ERRORS:  # pragma: no cover
-                sleep(10)
+                event.wait(10)
                 try:
                     connections.close_all()
                 except DB_ERRORS:
                     pass
 
     @staticmethod
-    def keep(status: WorkerStatus):
+    def keep(event: TEvent, status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
-            while getattr(current_thread(), "running", True):
+            while not event.is_set():
                 old_last_seen = status.last_seen
                 status.last_seen = now()
                 if old_last_seen != status.last_seen:
                     status.save(update_fields=("last_seen",))
-                sleep(30)
+                event.wait(30)
 
 
 class _MetricsHandler(BaseMetricsHandler):
