@@ -78,7 +78,7 @@ def generate_key_id_legacy(key_data: str) -> str:
     """Generate Key ID using MD5 (legacy format for backwards compatibility)."""
     if not key_data:
         return ""
-    return md5(key_data.encode("utf-8")).hexdigest()  # nosec
+    return md5(key_data.encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
 
 
 class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
