@@ -209,5 +209,9 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
         .build_task()
         .name(&format!("{}::watch_workers", module_path!()))
         .spawn(watch_workers(arbiter, workers))?;
+
+    // TODO: start healthcheck server
+    // TODO: start workerstatus task
+
     Ok(())
 }

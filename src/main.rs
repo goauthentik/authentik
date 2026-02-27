@@ -1,13 +1,13 @@
-use std::process::ExitCode;
-use std::process::exit;
-use std::{ffi::CString, process::ExitStatus};
-
-use nix::unistd::execvp;
-use std::str::FromStr;
+use std::{
+    ffi::CString,
+    process::{ExitCode, ExitStatus, exit},
+    str::FromStr,
+};
 
 use ::tracing::{error, info, trace};
 use argh::{DynamicSubCommand, FromArgs, SubCommands};
 use eyre::{Result, eyre};
+use nix::unistd::execvp;
 
 use crate::{arbiter::Tasks, config::ConfigManager, mode::Mode};
 
