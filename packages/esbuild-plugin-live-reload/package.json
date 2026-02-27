@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.5.0",
+    "version": "1.6.1",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -43,25 +43,25 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.1",
+        "@eslint/js": "^9.39.3",
         "@goauthentik/eslint-config": "../eslint-config",
         "@goauthentik/prettier-config": "../prettier-config",
         "@goauthentik/tsconfig": "../tsconfig",
-        "@types/node": "^25.0.0",
-        "@typescript-eslint/eslint-plugin": "^8.49.0",
-        "@typescript-eslint/parser": "^8.49.0",
-        "esbuild": "^0.27.1",
-        "eslint": "^9.39.1",
-        "pino": "^10.1.0",
+        "@types/node": "^25.3.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
+        "esbuild": "^0.27.3",
+        "eslint": "^9.39.3",
+        "pino": "^10.3.1",
         "prettier": "^3.8.1",
         "prettier-plugin-packagejson": "^3.0.0",
         "typedoc": "^0.28.15",
         "typedoc-plugin-markdown": "^4.9.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.49.0"
+        "typescript-eslint": "^8.56.1"
     },
     "peerDependencies": {
-        "esbuild": "^0.27.0"
+        "esbuild": "^0.27.3"
     },
     "files": [
         "./index.js",
@@ -72,7 +72,7 @@
     ],
     "engines": {
         "node": ">=24",
-        "npm": ">=11.6.2"
+        "npm": ">=11.10.1"
     },
     "devEngines": {
         "runtime": {
@@ -82,7 +82,7 @@
         },
         "packageManager": {
             "name": "npm",
-            "version": "11.10.1",
+            "version": ">=11.10.1",
             "onFail": "warn"
         }
     },
