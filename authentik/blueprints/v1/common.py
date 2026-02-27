@@ -264,8 +264,12 @@ class Env(YAMLTag):
             self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return getenv(self.key) or self.default
-
+        env = getenv(self.key)
+        if env is None:
+            env = self.default
+            if isinstance(env, YAMLTag):
+                env = env.resolve(entry, blueprint)
+        return env
 
 class File(YAMLTag):
     """Lookup file with optional default"""
