@@ -264,12 +264,11 @@ class Env(YAMLTag):
             self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        env = getenv(self.key)
-        if env is None:
-            env = self.default
-            if isinstance(env, YAMLTag):
-                env = env.resolve(entry, blueprint)
-        return env
+        if env := getenv(self.key):
+            return env
+        if isinstance(self.default, YAMLTag):
+            return self.default.resolve(entry, blueprint)
+        return self.default
 
 
 class File(YAMLTag):
