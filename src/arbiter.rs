@@ -162,16 +162,15 @@ pub(crate) struct Arbiter {
     /// Watcher of config change events
     config_changed_tx: watch::Sender<()>,
     _config_changed_rx: watch::Receiver<()>,
-    /// Watcher for gunicorn ready event
-    gunicorn_ready_tx: watch::Sender<()>,
-    _gunicorn_ready_rx: watch::Receiver<()>,
+
+    /// Token set when gunicorn is marked ready
+    gunicorn_ready: CancellationToken,
 }
 
 impl Arbiter {
     fn new(tasks: &mut JoinSet<Result<()>>) -> Result<Self> {
         let (signals_tx, signals_rx) = broadcast::channel(10);
         let (config_changed_tx, _config_changed_rx) = watch::channel(());
-        let (gunicorn_ready_tx, _gunicorn_ready_rx) = watch::channel(());
         let arbiter = Self {
             fast_shutdown: CancellationToken::new(),
             graceful_shutdown: CancellationToken::new(),
@@ -183,8 +182,8 @@ impl Arbiter {
             signals_tx,
             config_changed_tx,
             _config_changed_rx,
-            gunicorn_ready_tx,
-            _gunicorn_ready_rx,
+
+            gunicorn_ready: CancellationToken::new(),
         };
 
         let streams = SignalStreams::new()?;
@@ -262,14 +261,13 @@ impl Arbiter {
         self.config_changed_tx.subscribe()
     }
 
-    /// Send a value on the gunicorn ready watch channel
-    pub(crate) fn gunicorn_ready_send(&self, value: ()) -> Result<()> {
-        self.gunicorn_ready_tx.send(value)?;
-        Ok(())
+    /// Future that will complete when the application needs to shutdown gracefully.
+    pub(crate) fn gunicorn_ready(&self) -> WaitForCancellationFuture<'_> {
+        self.gunicorn_ready.cancelled()
     }
 
-    /// Create a new [`watch::Receiver`] to listen for gunicorn ready event.
-    pub(crate) fn gunicorn_ready_subscribe(&self) -> watch::Receiver<()> {
-        self.gunicorn_ready_tx.subscribe()
+    /// Mark gunicorn as ready
+    pub(crate) fn mark_gunicorn_ready(&self) {
+        self.gunicorn_ready.cancel();
     }
 }

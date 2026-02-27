@@ -1,12 +1,8 @@
-use std::{
-    sync::{Arc, atomic::Ordering},
-    time::Duration,
-};
+use std::{sync::atomic::Ordering, time::Duration};
 
-use arc_swap::{ArcSwap, ArcSwapOption};
 use argh::FromArgs;
 use axum::{Router, body::Body, extract::Request, routing::any};
-use axum_server::{Handle, tls_rustls::RustlsConfig};
+use axum_server::Handle;
 use eyre::{Result, eyre};
 use tokio::{signal::unix::SignalKind, sync::broadcast::error::RecvError, time::Instant};
 use tower::ServiceExt;
@@ -40,7 +36,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                         if signal == SignalKind::user_defined1() {
                             info!("gunicorn notified us ready, marked ready for operation");
                             GUNICORN_READY.store(true, Ordering::Relaxed);
-                            arbiter.gunicorn_ready_send(())?;
+                            arbiter.mark_gunicorn_ready();
                         }
                     },
                     Err(RecvError::Lagged(_)) => continue,
@@ -56,7 +52,7 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                 if Gunicorn::is_socket_ready().await {
                     info!("gunicorn socket is accepting connections, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
-                    arbiter.gunicorn_ready_send(())?;
+                    arbiter.mark_gunicorn_ready();
                 }
             },
             _ = tokio::time::sleep(Duration::from_secs(5)) => {

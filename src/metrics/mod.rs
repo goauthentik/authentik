@@ -1,13 +1,13 @@
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 
-#[cfg(feature = "core")]
-use crate::server::core;
 use axum::{Router, routing::any};
 use axum_server::Handle;
 use eyre::Result;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use tracing::info;
 
+#[cfg(feature = "core")]
+use crate::server::core;
 use crate::{
     arbiter::{Arbiter, Tasks},
     config,
@@ -36,9 +36,9 @@ impl AppState {
         }
         #[cfg(feature = "core")]
         {
+            use std::{fs::Permissions, os::unix::fs::PermissionsExt};
+
             use rand::distr::SampleString;
-            use std::fs::Permissions;
-            use std::os::unix::fs::PermissionsExt;
 
             let metrics_key = rand::distr::Alphanumeric.sample_string(&mut rand::rng(), 64);
             let metrics_file = tempfile::Builder::new()

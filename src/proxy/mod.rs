@@ -7,8 +7,9 @@ use axum::extract::Request;
 pub(crate) struct Cli {}
 
 pub(crate) mod tls {
-    use rustls::{server::ClientHello, sign::CertifiedKey};
     use std::sync::Arc;
+
+    use rustls::{server::ClientHello, sign::CertifiedKey};
 
     #[derive(Debug)]
     pub(crate) struct CertResolver {}

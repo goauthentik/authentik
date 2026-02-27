@@ -51,7 +51,7 @@ pub(super) fn install() -> Result<()> {
 
 pub(super) fn install_crude() -> tracing::dispatcher::DefaultGuard {
     let filter_layer = EnvFilter::builder()
-        .parse("trace,console_subscriber=info,runtime=info,tokio=info")
+        .parse("trace,console_subscriber=info,runtime=info,tokio=info,tungstenite=info")
         .expect("infallible");
     let subscriber = tracing_subscriber::registry().with(filter_layer).with(
         fmt::layer()

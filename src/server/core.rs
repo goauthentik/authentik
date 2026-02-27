@@ -421,273 +421,140 @@ mod websockets {
 }
 
 pub(crate) mod tls {
-    use arc_swap::ArcSwap;
+    use std::{
+        collections::{HashMap, hash_map::Entry},
+        io::BufReader,
+        sync::Arc,
+    };
+
     use eyre::{Result, eyre};
     use rustls::{
         RootCertStore,
         crypto::CryptoProvider,
         pki_types::{CertificateDer, PrivateKeyDer},
-        server::{ClientHello, WebPkiClientVerifier, danger::ClientCertVerifier},
+        server::ClientHello,
         sign::CertifiedKey,
     };
     use rustls_pemfile::{certs, private_key};
-    use std::ops::Deref;
-    use std::{
-        collections::{HashMap, hash_map::Entry},
-        io::BufReader,
-        sync::Arc,
-        time::Duration,
-    };
-    use tokio::sync::{Mutex, RwLock};
-    use tracing::{debug, warn};
 
-    use crate::{
-        arbiter::{Arbiter, Tasks},
-        db,
-    };
+    use crate::db;
 
     #[derive(Debug)]
-    pub(crate) struct CertResolver {}
+    struct Brand {
+        domain: String,
+        default: bool,
+        web_certificate: Arc<CertifiedKey>,
+    }
+
+    #[derive(Debug)]
+    pub(crate) struct CertResolver {
+        brands: Vec<Brand>,
+    }
 
     impl CertResolver {
-        pub(crate) fn resolve(&self, _client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
-            None
+        pub(crate) fn resolve(&self, client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
+            let server_name = client_hello.server_name()?;
+            let mut best = None;
+
+            for brand in &self.brands {
+                if best.is_none() && brand.default {
+                    best = Some(Arc::clone(&brand.web_certificate));
+                }
+                if server_name == brand.domain
+                    || server_name.ends_with(&format!(".{}", brand.domain))
+                {
+                    best = Some(Arc::clone(&brand.web_certificate));
+                }
+            }
+
+            best
         }
     }
 
-    // #[derive(Debug)]
-    // struct Certificate {
-    //     certificate_data: String,
-    //     key_data: String,
-    // }
-    //
-    // #[derive(Debug)]
-    // struct Brand {
-    //     domain: String,
-    //     default: bool,
-    //     web_certificate: Option<Arc<CertifiedKey>>,
-    //     client_certificates: Vec<Certificate>,
-    // }
-    //
-    // #[derive(Debug)]
-    // pub(crate) struct CertificateManager {
-    //     brands: ArcSwap<Vec<Brand>>,
-    //     client_verifier: ArcSwap<Arc<dyn ClientCertVerifier>>,
-    //     roots: Arc<RwLock<RootCertStore>>,
-    // }
-    //
-    // async fn fetch_brands() -> Result<Vec<Brand>> {
-    //     #[derive(sqlx::FromRow)]
-    //     struct BrandRow {
-    //         brand_uuid: uuid::Uuid,
-    //         domain: String,
-    //         default: bool,
-    //         web_cert_data: Option<String>,
-    //         web_cert_key: Option<String>,
-    //         client_cert_data: Option<String>,
-    //         client_cert_key: Option<String>,
-    //     }
-    //
-    //     let rows = sqlx::query_as::<_, BrandRow>(
-    //         "
-    //         SELECT
-    //             b.brand_uuid,
-    //             b.domain,
-    //             b.default,
-    //             wc.certificate_data AS web_cert_data,
-    //             wc.key_data AS web_cert_key,
-    //             cc.certificate_data AS client_cert_data,
-    //             cc.key_data AS client_cert_key
-    //         FROM authentik_brands_brand b
-    //         LEFT JOIN authentik_crypto_certificatekeypair wc
-    //             ON wc.kp_uuid = b.web_certificate_id
-    //         LEFT JOIN authentik_brands_brand_client_certificates bcc
-    //             ON bcc.brand_id = b.brand_uuid
-    //         LEFT JOIN authentik_crypto_certificatekeypair cc
-    //             ON cc.kp_uuid = bcc.certificatekeypair_id
-    //     ",
-    //     )
-    //     .fetch_all(db::get())
-    //     .await?;
-    //
-    //     let mut brands = HashMap::new();
-    //
-    //     for row in rows {
-    //         let BrandRow {
-    //             brand_uuid,
-    //             domain,
-    //             default,
-    //             web_cert_data,
-    //             web_cert_key,
-    //             client_cert_data,
-    //             client_cert_key,
-    //         } = row;
-    //         let brand = match brands.entry(brand_uuid) {
-    //             Entry::Occupied(e) => e.into_mut(),
-    //             Entry::Vacant(e) => e.insert(Brand {
-    //                 domain,
-    //                 default,
-    //                 web_certificate: match (web_cert_data, web_cert_key) {
-    //                     (Some(certificate_data), Some(key_data)) => {
-    //                         let cert_chain: Vec<CertificateDer<'static>> =
-    //                             certs(&mut BufReader::new(certificate_data.as_bytes()))
-    //                                 .collect::<Result<Vec<_>, _>>()?;
-    //                         let key_der: PrivateKeyDer<'static> =
-    //                             private_key(&mut BufReader::new(key_data.as_bytes()))?
-    //                                 .ok_or(eyre!("no private key found"))?;
-    //                         let provider = CryptoProvider::get_default()
-    //                             .expect("no rustls provider installed");
-    //                         Some(Arc::new(CertifiedKey::new(
-    //                             cert_chain,
-    //                             provider.key_provider.load_private_key(key_der)?,
-    //                         )))
-    //                     }
-    //                     _ => None,
-    //                 },
-    //                 client_certificates: vec![],
-    //             }),
-    //         };
-    //
-    //         if let (Some(certificate_data), Some(key_data)) = (client_cert_data, client_cert_key) {
-    //             brand.client_certificates.push(Certificate {
-    //                 certificate_data,
-    //                 key_data,
-    //             });
-    //         }
-    //     }
-    //
-    //     Ok(brands.into_values().collect())
-    // }
-    //
-    // async fn watch_brands(arbiter: Arbiter, manager: Arc<CertificateManager>) -> Result<()> {
-    //     tokio::select! {
-    //         _ = db::wait_for_required_tables() => {},
-    //         _ = arbiter.shutdown() => return Ok(()),
-    //     };
-    //
-    //     loop {
-    //         debug!("refreshing brands certificates");
-    //         tokio::select! {
-    //             res = fetch_brands() => match res {
-    //                 Ok(brands) => manager.brands.store(Arc::new(brands)),
-    //                 Err(err) => warn!("error fetching brands, retrying in 1 minute: {err:?}"),
-    //             },
-    //             _ = arbiter.shutdown() => return Ok(()),
-    //         }
-    //
-    //         tokio::select! {
-    //             _ = tokio::time::sleep(Duration::from_secs(60)) => {},
-    //             _ = arbiter.shutdown() => return Ok(()),
-    //         }
-    //     }
-    // }
-    //
-    // pub(crate) async fn init(tasks: &mut Tasks) -> Result<Arc<CertificateManager>> {
-    //     let arbiter = tasks.arbiter();
-    //     let manager = Arc::new(CertificateManager::new()?);
-    //     tasks
-    //         .build_task()
-    //         .name(&format!("{}::watch_brands", module_path!(),))
-    //         .spawn(watch_brands(arbiter, manager.clone()))?;
-    //
-    //     Ok(manager)
-    // }
-    //
-    // impl CertificateManager {
-    //     fn new() -> Result<Self> {
-    //         Ok(Self {
-    //             brands: ArcSwap::from_pointee(Vec::new()),
-    //             client_verifier: ArcSwap::from_pointee(
-    //                 WebPkiClientVerifier::builder(Arc::new(RootCertStore::empty()))
-    //                     .allow_unauthenticated()
-    //                     .build()?,
-    //             ),
-    //             roots: ArcSwap::from_pointee(RootCertStore::empty()),
-    //         })
-    //     }
-    //
-    //     pub(crate) fn resolve(&self, client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
-    //         let server_name = client_hello.server_name()?;
-    //         let mut best = None;
-    //
-    //         for brand in self.brands.load().deref().iter() {
-    //             if let Some(cert) = &brand.web_certificate {
-    //                 if best.is_none() && brand.default {
-    //                     best = Some(Arc::clone(cert));
-    //                 }
-    //                 if server_name == brand.domain
-    //                     || server_name.ends_with(&format!(".{}", brand.domain))
-    //                 {
-    //                     best = Some(Arc::clone(cert));
-    //                 }
-    //             }
-    //         }
-    //
-    //         best
-    //     }
-    // }
-    //
-    // impl ClientCertVerifier for CertificateManager {
-    //     fn root_hint_subjects(&self) -> &[rustls::DistinguishedName] {
-    //         &self.roots.blocking_read().subjects()
-    //         // let hints = self
-    //         //     .client_verifier
-    //         //     .load_full()
-    //         //     .root_hint_subjects()
-    //         //     .to_owned();
-    //         // hints
-    //     }
-    //
-    //     fn verify_client_cert(
-    //         &self,
-    //         end_entity: &CertificateDer<'_>,
-    //         intermediates: &[CertificateDer<'_>],
-    //         now: rustls::pki_types::UnixTime,
-    //     ) -> std::result::Result<rustls::server::danger::ClientCertVerified, rustls::Error>
-    //     {
-    //         self.client_verifier
-    //             .load()
-    //             .verify_client_cert(end_entity, intermediates, now)
-    //     }
-    //
-    //     fn verify_tls12_signature(
-    //         &self,
-    //         message: &[u8],
-    //         cert: &CertificateDer<'_>,
-    //         dss: &rustls::DigitallySignedStruct,
-    //     ) -> std::result::Result<rustls::client::danger::HandshakeSignatureValid, rustls::Error>
-    //     {
-    //         self.client_verifier
-    //             .load()
-    //             .verify_tls12_signature(message, cert, dss)
-    //     }
-    //
-    //     fn verify_tls13_signature(
-    //         &self,
-    //         message: &[u8],
-    //         cert: &CertificateDer<'_>,
-    //         dss: &rustls::DigitallySignedStruct,
-    //     ) -> std::result::Result<rustls::client::danger::HandshakeSignatureValid, rustls::Error>
-    //     {
-    //         self.client_verifier
-    //             .load()
-    //             .verify_tls13_signature(message, cert, dss)
-    //     }
-    //
-    //     fn supported_verify_schemes(&self) -> Vec<rustls::SignatureScheme> {
-    //         self.client_verifier.load().supported_verify_schemes()
-    //     }
-    //
-    //     fn offer_client_auth(&self) -> bool {
-    //         self.client_verifier.load().offer_client_auth()
-    //     }
-    //
-    //     fn client_auth_mandatory(&self) -> bool {
-    //         self.client_verifier.load().client_auth_mandatory()
-    //     }
-    //
-    //     fn requires_raw_public_keys(&self) -> bool {
-    //         self.client_verifier.load().requires_raw_public_keys()
-    //     }
-    // }
+    pub(crate) async fn make_cert_managers() -> Result<(CertResolver, RootCertStore)> {
+        #[derive(sqlx::FromRow)]
+        struct BrandRow {
+            brand_uuid: uuid::Uuid,
+            domain: String,
+            default: bool,
+            web_cert_data: Option<String>,
+            web_cert_key: Option<String>,
+            client_cert_data: Option<String>,
+        }
+
+        let rows = sqlx::query_as::<_, BrandRow>(
+            "
+            SELECT
+                b.brand_uuid,
+                b.domain,
+                b.default,
+                wc.certificate_data AS web_cert_data,
+                wc.key_data AS web_cert_key,
+                cc.certificate_data AS client_cert_data
+            FROM authentik_brands_brand b
+            LEFT JOIN authentik_crypto_certificatekeypair wc
+                ON wc.kp_uuid = b.web_certificate_id
+            LEFT JOIN authentik_brands_brand_client_certificates bcc
+                ON bcc.brand_id = b.brand_uuid
+            LEFT JOIN authentik_crypto_certificatekeypair cc
+                ON cc.kp_uuid = bcc.certificatekeypair_id
+        ",
+        )
+        .fetch_all(db::get())
+        .await?;
+
+        let mut roots = RootCertStore::empty();
+        let mut brands = HashMap::new();
+
+        for row in rows {
+            let BrandRow {
+                brand_uuid,
+                domain,
+                default,
+                web_cert_data,
+                web_cert_key,
+                client_cert_data,
+            } = row;
+
+            if let (Some(certificate_data), Some(key_data)) = (web_cert_data, web_cert_key)
+                && let Entry::Vacant(e) = brands.entry(brand_uuid)
+            {
+                let brand = Brand {
+                    domain,
+                    default,
+                    web_certificate: {
+                        let cert_chain: Vec<CertificateDer<'static>> =
+                            certs(&mut BufReader::new(certificate_data.as_bytes()))
+                                .collect::<Result<Vec<_>, _>>()?;
+                        let key_der: PrivateKeyDer<'static> =
+                            private_key(&mut BufReader::new(key_data.as_bytes()))?
+                                .ok_or(eyre!("no private key found"))?;
+                        let provider =
+                            CryptoProvider::get_default().expect("no rustls provider installed");
+                        Arc::new(CertifiedKey::new(
+                            cert_chain,
+                            provider.key_provider.load_private_key(key_der)?,
+                        ))
+                    },
+                };
+                e.insert(brand);
+            };
+
+            if let Some(certificate_data) = client_cert_data {
+                let cert_chain: Vec<CertificateDer<'static>> =
+                    certs(&mut BufReader::new(certificate_data.as_bytes()))
+                        .collect::<Result<Vec<_>, _>>()?;
+                for cert in cert_chain {
+                    roots.add(cert)?;
+                }
+            }
+        }
+
+        Ok((
+            CertResolver {
+                brands: brands.into_values().collect(),
+            },
+            roots,
+        ))
+    }
 }

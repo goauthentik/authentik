@@ -12,8 +12,10 @@ pub(super) async fn metrics_handler(State(state): State<Arc<AppState>>) -> Resul
 
     #[cfg(feature = "core")]
     if mode::get() == mode::Mode::Server {
-        use axum::http::Request;
-        use axum::http::header::{AUTHORIZATION, HOST};
+        use axum::http::{
+            Request,
+            header::{AUTHORIZATION, HOST},
+        };
 
         state
             .core_client
