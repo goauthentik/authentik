@@ -1,86 +1,119 @@
 """Tests for inheritance helpers."""
 
-from django.test import TestCase
+from contextlib import contextmanager
 
-from authentik.core.models import Provider
-from authentik.core.tests.utils import create_test_flow
-from authentik.lib.generators import generate_id
+from django.db import connection, models
+from django.test import TransactionTestCase
+from django.test.utils import isolate_apps
+
 from authentik.lib.utils.inheritance import get_deepest_child
-from authentik.providers.ldap.models import LDAPProvider
-from authentik.providers.oauth2.models import OAuth2Provider
-from authentik.providers.proxy.models import ProxyProvider
 
 
-class TestInheritanceUtils(TestCase):
+@contextmanager
+def temporary_inheritance_models():
+    """Create a temporary multi-table inheritance graph for testing."""
+    with isolate_apps("authentik.lib.tests"):
+
+        class GrandParent(models.Model):
+            class Meta:
+                app_label = "tests"
+
+            def __str__(self) -> str:
+                return f"GrandParent({self.pk})"
+
+        class Parent(GrandParent):
+            class Meta:
+                app_label = "tests"
+
+            def __str__(self) -> str:
+                return f"Parent({self.pk})"
+
+        class Child(Parent):
+            class Meta:
+                app_label = "tests"
+
+            def __str__(self) -> str:
+                return f"Child({self.pk})"
+
+        class GrandChild(Child):
+            class Meta:
+                app_label = "tests"
+
+            def __str__(self) -> str:
+                return f"GrandChild({self.pk})"
+
+        with connection.schema_editor() as schema_editor:
+            schema_editor.create_model(GrandParent)
+            schema_editor.create_model(Parent)
+            schema_editor.create_model(Child)
+            schema_editor.create_model(GrandChild)
+
+        try:
+            yield GrandParent, Parent, Child, GrandChild
+        finally:
+            with connection.schema_editor() as schema_editor:
+                schema_editor.delete_model(GrandChild)
+                schema_editor.delete_model(Child)
+                schema_editor.delete_model(Parent)
+                schema_editor.delete_model(GrandParent)
+
+
+class TestInheritanceUtils(TransactionTestCase):
     """Tests for helper functions in authentik.lib.utils.inheritance."""
 
-    def _get_provider_with_all_subclasses(self, provider_pk):
-        qs = Provider.objects.all()
-        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            qs = qs.select_related(subclass)
-        return qs.get(pk=provider_pk)
-
     def test_get_deepest_child_grandparent_to_parent(self):
-        """Provider -> OAuth2Provider (non-leaf subclass)."""
-        oauth2 = OAuth2Provider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-        )
-        provider = Provider.objects.select_related("oauth2provider").get(pk=oauth2.pk)
+        """GrandParent -> Parent."""
+        with temporary_inheritance_models() as (GrandParent, Parent, _Child, _GrandChild):
+            parent = Parent.objects.create()
+            grandparent = GrandParent.objects.get(pk=parent.pk)
 
-        resolved = get_deepest_child(provider)
+            resolved = get_deepest_child(grandparent)
 
-        self.assertIsInstance(resolved, OAuth2Provider)
-        self.assertEqual(resolved.pk, oauth2.pk)
+            self.assertIsInstance(resolved, Parent)
+            self.assertEqual(resolved.pk, parent.pk)
 
-    def test_get_deepest_child_grandparent_to_leaf(self):
-        """Provider -> LDAPProvider (single-level leaf subclass)."""
-        ldap = LDAPProvider.objects.create(name=generate_id())
-        provider = Provider.objects.select_related("ldapprovider").get(pk=ldap.pk)
+    def test_get_deepest_child_grandparent_to_child(self):
+        """GrandParent -> Child."""
+        with temporary_inheritance_models() as (GrandParent, _Parent, Child, _GrandChild):
+            child = Child.objects.create()
+            grandparent = GrandParent.objects.get(pk=child.pk)
 
-        resolved = get_deepest_child(provider)
+            resolved = get_deepest_child(grandparent)
 
-        self.assertIsInstance(resolved, LDAPProvider)
-        self.assertEqual(resolved.pk, ldap.pk)
+            self.assertIsInstance(resolved, Child)
+            self.assertEqual(resolved.pk, child.pk)
 
     def test_get_deepest_child_grandparent_to_grandchild(self):
-        """Provider -> OAuth2Provider -> ProxyProvider."""
-        proxy = ProxyProvider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-            external_host=f"https://{generate_id()}.goauthentik.io",
-        )
-        provider = Provider.objects.select_related("oauth2provider__proxyprovider").get(pk=proxy.pk)
+        """GrandParent -> GrandChild."""
+        with temporary_inheritance_models() as (GrandParent, _Parent, _Child, GrandChild):
+            grandchild = GrandChild.objects.create()
+            grandparent = GrandParent.objects.get(pk=grandchild.pk)
 
-        resolved = get_deepest_child(provider)
+            resolved = get_deepest_child(grandparent)
 
-        self.assertIsInstance(resolved, ProxyProvider)
-        self.assertEqual(resolved.pk, proxy.pk)
+            self.assertIsInstance(resolved, GrandChild)
+            self.assertEqual(resolved.pk, grandchild.pk)
 
     def test_get_deepest_child_parent_to_child(self):
-        """OAuth2Provider -> ProxyProvider (start from non-root)."""
-        proxy = ProxyProvider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-            external_host=f"https://{generate_id()}.goauthentik.io",
-        )
-        parent = OAuth2Provider.objects.select_related("proxyprovider").get(pk=proxy.pk)
+        """Parent -> Child (start from non-root)."""
+        with temporary_inheritance_models() as (_GrandParent, Parent, Child, _GrandChild):
+            child = Child.objects.create()
+            parent = Parent.objects.get(pk=child.pk)
 
-        resolved = get_deepest_child(parent)
+            resolved = get_deepest_child(parent)
 
-        self.assertIsInstance(resolved, ProxyProvider)
-        self.assertEqual(resolved.pk, proxy.pk)
+            self.assertIsInstance(resolved, Child)
+            self.assertEqual(resolved.pk, child.pk)
 
     def test_get_deepest_child_no_queries_with_preloaded_relations(self):
-        """When all subclass relations are preloaded, no additional queries are needed."""
-        proxy = ProxyProvider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-            external_host=f"https://{generate_id()}.goauthentik.io",
-        )
-        provider = self._get_provider_with_all_subclasses(proxy.pk)
+        """No extra queries when the inheritance chain is fully select_related."""
+        with temporary_inheritance_models() as (GrandParent, _Parent, _Child, GrandChild):
+            grandchild = GrandChild.objects.create()
+            grandparent = GrandParent.objects.select_related("parent__child__grandchild").get(
+                pk=grandchild.pk
+            )
 
-        with self.assertNumQueries(0):
-            resolved = get_deepest_child(provider)
+            with self.assertNumQueries(0):
+                resolved = get_deepest_child(grandparent)
 
-        self.assertIsInstance(resolved, ProxyProvider)
+            self.assertIsInstance(resolved, GrandChild)
