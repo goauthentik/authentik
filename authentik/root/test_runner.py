@@ -188,7 +188,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             try:
                 pytest.main(self.args)
                 self.task_broker.close()
-                faulthandler.dump_traceback()
-            except Exception as e:  # noqa
-                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+            except Exception as exc:  # noqa
+                self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

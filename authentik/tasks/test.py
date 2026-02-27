@@ -44,7 +44,7 @@ class TestWorker(Worker):
         self.broker.emit_after("process_boot")
 
     def process_message(self, message: MessageProxy):
-        self.work_queue.put(message)
+        self.work_queue.put((0, message))
         self.consumers[TESTING_QUEUE].consumer.in_processing.add(message.message_id)
         self._worker.process_message(message)
 
@@ -56,7 +56,7 @@ class TestBroker(PostgresBroker):
         self.worker = TestWorker(broker=self)
 
     def close(self):
-        self.worker.stop()
+        self.emit_before("worker_shutdown", self)
         return super().close()
 
     def enqueue(self, *args, **kwargs):

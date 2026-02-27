@@ -235,7 +235,7 @@ class WorkerHealthcheckMiddleware(Middleware):
         server: HTTPServer | None = getattr(self.thread, "server", None)
         if server:
             server.shutdown()
-        print("Stopping WorkerHealthcheckMiddleware")
+        LOGGER.debug("Stopping WorkerHealthcheckMiddleware")
         self.thread.join()
 
     @staticmethod
@@ -261,7 +261,7 @@ class WorkerStatusMiddleware(Middleware):
 
     def before_worker_shutdown(self, broker: Broker, worker: Worker):
         self.thread.running = False
-        print("Stopping WorkerStatusMiddleware")
+        LOGGER.debug("Stopping WorkerStatusMiddleware")
         self.thread.join()
 
     @staticmethod
@@ -288,7 +288,7 @@ class WorkerStatusMiddleware(Middleware):
     def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
-            while True:
+            while getattr(current_thread(), "running", True):
                 old_last_seen = status.last_seen
                 status.last_seen = now()
                 if old_last_seen != status.last_seen:
@@ -323,5 +323,5 @@ class MetricsMiddleware(BaseMetricsMiddleware):
         server: HTTPServer | None = getattr(self.thread, "server", None)
         if server:
             server.shutdown()
-        print("Stopping MetricsMiddleware")
+        LOGGER.debug("Stopping MetricsMiddleware")
         self.thread.join()
