@@ -1,4 +1,4 @@
-use std::{collections::HashMap, net::SocketAddr, path::PathBuf};
+use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize, path::PathBuf};
 
 use ipnet::IpNet;
 use serde::{Deserialize, Serialize};
@@ -114,8 +114,7 @@ pub(crate) struct WebConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) struct WorkerConfig {
-    pub(crate) processes: u32,
-    pub(crate) threads: u32,
+    pub(crate) processes: NonZeroUsize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -20,7 +20,7 @@ mod plain;
 mod r#static;
 mod tls;
 
-#[derive(Debug, FromArgs, PartialEq)]
+#[derive(Debug, Default, FromArgs, PartialEq)]
 /// Run the authentik server.
 #[argh(subcommand, name = "server")]
 pub(super) struct Cli {}

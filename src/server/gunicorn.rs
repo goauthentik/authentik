@@ -13,8 +13,8 @@ use tracing::{info, trace, warn};
 
 pub(super) static GUNICORN_READY: AtomicBool = AtomicBool::new(false);
 
-pub(super) fn gunicorn_socket_path() -> PathBuf {
-    env::temp_dir().join("authentik-core.sock")
+pub(super) fn socket_path() -> PathBuf {
+    env::temp_dir().join("authentik-gunicorn.sock")
 }
 
 pub(super) struct Gunicorn(Child);
@@ -29,6 +29,7 @@ impl Gunicorn {
                     "./lifecycle/gunicorn.conf.py",
                     "authentik.root.asgi:application",
                 ])
+                .kill_on_drop(true)
                 .stdout(Stdio::inherit())
                 .stderr(Stdio::inherit())
                 .spawn()?,
@@ -73,7 +74,7 @@ impl Gunicorn {
     }
 
     pub(crate) async fn is_socket_ready() -> bool {
-        let result = UnixStream::connect(gunicorn_socket_path()).await;
+        let result = UnixStream::connect(socket_path()).await;
         trace!("checking if gunicorn is ready: {result:?}");
         result.is_ok()
     }

@@ -4,10 +4,9 @@ use axum::{Router, routing::any};
 use axum_server::Handle;
 use eyre::Result;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
-use tracing::info;
+use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
+use tracing::{Level, info};
 
-#[cfg(feature = "core")]
-use crate::server::core;
 use crate::{
     arbiter::{Arbiter, Tasks},
     config,
@@ -17,8 +16,6 @@ mod handlers;
 
 struct AppState {
     prometheus: PrometheusHandle,
-    #[cfg(feature = "core")]
-    core_client: core::CoreClient,
     #[cfg(feature = "core")]
     metrics_key: String,
     #[cfg(feature = "core")]
@@ -42,7 +39,7 @@ impl AppState {
 
             let metrics_key = rand::distr::Alphanumeric.sample_string(&mut rand::rng(), 64);
             let metrics_file = tempfile::Builder::new()
-                .prefix("authentik-core-metrics")
+                .prefix("authentik-metrics-gunicorn")
                 .suffix(".key")
                 .rand_bytes(0)
                 .permissions(Permissions::from_mode(0o600))
@@ -50,7 +47,6 @@ impl AppState {
             tokio::fs::write(&metrics_file, &metrics_key).await?;
             Ok(Self {
                 prometheus,
-                core_client: core::build_client(),
                 metrics_key,
                 _metrics_file: metrics_file,
             })
@@ -72,6 +68,14 @@ async fn run_upkeep(arbiter: Arbiter, state: Arc<AppState>) -> Result<()> {
 fn build_router(state: Arc<AppState>) -> Router {
     Router::new()
         .fallback(any(handlers::metrics_handler))
+        .layer(
+            // TODO: refine this, probably extract it to its own thing to be used with the proxy
+            // outpost
+            TraceLayer::new_for_http()
+                .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
+                .on_request(DefaultOnRequest::new().level(Level::INFO))
+                .on_response(DefaultOnResponse::new().level(Level::INFO)),
+        )
         .with_state(state)
 }
 

@@ -189,7 +189,7 @@ async fn forward_request(
 
 pub(crate) fn build_client() -> CoreClient {
     let config = config::get();
-    let connector = UnixSocketConnector::new(super::gunicorn::gunicorn_socket_path());
+    let connector = UnixSocketConnector::new(super::gunicorn::socket_path());
     Client::builder(TokioExecutor::new())
         .pool_idle_timeout(Duration::from_secs(60))
         .pool_max_idle_per_host(config.web.workers * config.web.threads)
@@ -218,7 +218,7 @@ pub(super) async fn build_router() -> Router {
         .merge(super::r#static::build_router().await)
         .layer(
             // TODO: refine this, probably extract it to its own thing to be used with the proxy
-            // outpost
+            // outpost and metrics server
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
                 .on_request(DefaultOnRequest::new().level(Level::INFO))
@@ -251,7 +251,7 @@ mod websockets {
 
     use crate::{
         axum::error::{AppError, Result},
-        server::gunicorn::gunicorn_socket_path,
+        server::gunicorn,
     };
 
     pub(super) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
@@ -327,7 +327,7 @@ mod websockets {
         let client_ws = WebSocketStream::from_raw_socket(io, Role::Server, None).await;
 
         let upstream_ws = {
-            let stream = UnixStream::connect(gunicorn_socket_path()).await?;
+            let stream = UnixStream::connect(gunicorn::socket_path()).await?;
             let (ws_stream, _) = client_async(ws_request, stream).await?;
             ws_stream
         };

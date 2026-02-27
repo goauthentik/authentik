@@ -4,7 +4,6 @@ from hmac import compare_digest
 from pathlib import Path
 from tempfile import gettempdir
 
-from django.conf import settings
 from django.db import connections
 from django.db.utils import OperationalError
 from django.dispatch import Signal
@@ -19,7 +18,7 @@ class MetricsView(View):
 
     def __init__(self, **kwargs):
         _tmp = Path(gettempdir())
-        with open(_tmp / "authentik-core-metrics.key") as _f:
+        with open(_tmp / "authentik-metrics-gunicorn.key") as _f:
             self.monitoring_key = _f.read()
 
     def get(self, request: HttpRequest) -> HttpResponse:

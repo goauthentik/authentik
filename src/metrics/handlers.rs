@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{body::Body, extract::State, http::StatusCode, response::Response};
 
 #[cfg(feature = "core")]
-use crate::mode;
+use crate::mode::Mode;
 use crate::{axum::error::Result, metrics::AppState};
 
 pub(super) async fn metrics_handler(State(state): State<Arc<AppState>>) -> Result<Response> {
@@ -11,23 +11,32 @@ pub(super) async fn metrics_handler(State(state): State<Arc<AppState>>) -> Resul
     state.prometheus.render_to_write(&mut metrics)?;
 
     #[cfg(feature = "core")]
-    if mode::get() == mode::Mode::Server {
+    if [Mode::Server, Mode::Worker].contains(&Mode::get()) {
         use axum::http::{
             Request,
             header::{AUTHORIZATION, HOST},
         };
 
-        state
-            .core_client
-            .request(
-                Request::builder()
-                    .method("GET")
-                    .uri("http://localhost:8000/-/metrics/")
-                    .header(HOST, "localhost")
-                    .header(AUTHORIZATION, format!("Bearer {}", state.metrics_key))
-                    .body(Body::from(""))?,
-            )
-            .await?;
+        if [Mode::AllInOne, Mode::Server].contains(&Mode::get()) {
+            let req = Request::builder()
+                .method("GET")
+                .uri("http://localhost:8000/-/metrics/")
+                .header(HOST, "localhost")
+                .header(AUTHORIZATION, format!("Bearer {}", state.metrics_key))
+                .body(Body::from(""));
+            if let Ok(req) = req {
+                let _ = crate::server::core::build_client().request(req).await;
+            }
+        } else if [Mode::Worker].contains(&Mode::get()) {
+            let req = Request::builder()
+                .method("GET")
+                .uri("http://localhost:8000/-/metrics/")
+                .header(HOST, "localhost")
+                .body(Body::from(""));
+            if let Ok(req) = req {
+                let _ = crate::worker::build_client().request(req).await;
+            }
+        }
         metrics.extend(tokio::task::spawn_blocking(python::get_python_metrics).await??);
     }
 

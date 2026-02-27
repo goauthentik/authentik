@@ -92,7 +92,9 @@ elif [[ "$1" == "worker" ]]; then
     if [[ -n "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || -n "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
         python -m manage apply_blueprint system/bootstrap.yaml || true
     fi
-    check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
+    # TODO: fix this
+    # check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
+    run_authentik worker
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then

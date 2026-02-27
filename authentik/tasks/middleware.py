@@ -185,96 +185,15 @@ class DescriptionMiddleware(Middleware):
         return {"description"}
 
 
-class _healthcheck_handler(BaseHTTPRequestHandler):
-    def log_request(self, code="-", size="-"):
-        HEALTHCHECK_LOGGER.info(
-            self.path,
-            method=self.command,
-            status=code,
-        )
-
-    def log_error(self, format, *args):
-        HEALTHCHECK_LOGGER.warning(format, *args)
-
-    def do_HEAD(self):
-        try:
-            for db_conn in connections.all():
-                # Force connection reload
-                db_conn.connect()
-                _ = db_conn.cursor()
-            self.send_response(200)
-        except DB_ERRORS:  # pragma: no cover
-            self.send_response(503)
-        self.send_header("Content-Type", "text/plain; charset=utf-8")
-        self.send_header("Content-Length", "0")
-        self.end_headers()
-
-    do_GET = do_HEAD
-
-
-class WorkerHealthcheckMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_healthcheck
-
-        return [worker_healthcheck]
-
-    @staticmethod
-    def run(addr: str, port: int):
-        try:
-            httpd = HTTPServer((addr, port), _healthcheck_handler)
-            httpd.serve_forever()
-        except OSError as exc:
-            get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
-                "Port is already in use, not starting healthcheck server",
-                exc=exc,
-            )
-
-
-class WorkerStatusMiddleware(Middleware):
-    @property
-    def forks(self):
-        from authentik.tasks.forks import worker_status
-
-        return [worker_status]
-
-    @staticmethod
-    def run():
-        status = WorkerStatus.objects.create(
-            hostname=socket.gethostname(),
-            version=authentik_full_version(),
-        )
-        while True:
-            try:
-                WorkerStatusMiddleware.keep(status)
-            except DB_ERRORS:  # pragma: no cover
-                sleep(10)
-                try:
-                    connections.close_all()
-                except DB_ERRORS:
-                    pass
-
-    @staticmethod
-    def keep(status: WorkerStatus):
-        lock_id = f"goauthentik.io/worker/status/{status.pk}"
-        with pglock.advisory(lock_id, side_effect=pglock.Raise):
-            while True:
-                status.last_seen = now()
-                status.save(update_fields=("last_seen",))
-                sleep(30)
-
-
-class _MetricsHandler(BaseMetricsHandler):
-    def do_GET(self) -> None:
-        monitoring_set.send_robust(self)
-        return super().do_GET()
-
-
 class MetricsMiddleware(BaseMetricsMiddleware):
-    handler_class = _MetricsHandler
-
     @property
     def forks(self):
-        from authentik.tasks.forks import worker_metrics
+        return []
 
-        return [worker_metrics]
+    def before_worker_boot(self, broker: Broker, worker: Any) -> None:
+        from prometheus_client import values
+        from prometheus_client.values import MultiProcessValue
+
+        values.ValueClass = MultiProcessValue(lambda: worker.worker_id)
+
+        return super().before_worker_boot(broker, worker)

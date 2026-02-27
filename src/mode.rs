@@ -5,27 +5,39 @@ static MODE: AtomicU8 = AtomicU8::new(0);
 #[derive(PartialEq)]
 pub(crate) enum Mode {
     #[cfg(feature = "core")]
-    Server = 0,
+    AllInOne = 0,
+    #[cfg(feature = "core")]
+    Server = 1,
+    #[cfg(feature = "core")]
+    Worker = 2,
     #[cfg(feature = "proxy")]
-    Proxy = 2,
+    Proxy = 3,
 }
 
-impl From<u8> for Mode {
-    fn from(value: u8) -> Self {
-        match value {
+impl Mode {
+    pub(crate) fn get() -> Self {
+        match MODE.load(Ordering::Relaxed) {
             #[cfg(feature = "core")]
-            0 => Self::Server,
+            0 => Self::AllInOne,
+            #[cfg(feature = "core")]
+            1 => Self::Server,
+            #[cfg(feature = "core")]
+            2 => Self::Worker,
             #[cfg(feature = "proxy")]
-            2 => Self::Proxy,
+            3 => Self::Proxy,
             _ => unreachable!(),
         }
     }
-}
 
-pub(crate) fn get() -> Mode {
-    MODE.load(Ordering::Relaxed).into()
-}
+    pub(crate) fn set(mode: Self) {
+        MODE.store(mode as u8, Ordering::SeqCst);
+    }
 
-pub(crate) fn set(mode: Mode) {
-    MODE.store(mode as u8, Ordering::SeqCst);
+    pub(crate) fn is_core() -> bool {
+        match Self::get() {
+            #[cfg(feature = "core")]
+            Self::AllInOne | Self::Server | Self::Worker => true,
+            _ => false,
+        }
+    }
 }

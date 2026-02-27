@@ -4,7 +4,7 @@ use ::tracing::{error, info, trace};
 use argh::FromArgs;
 use eyre::{Result, eyre};
 
-use crate::{arbiter::Tasks, config::ConfigManager};
+use crate::{arbiter::Tasks, config::ConfigManager, mode::Mode};
 
 mod arbiter;
 mod axum;
@@ -19,6 +19,13 @@ mod proxy;
 mod server;
 mod tokio;
 mod tracing;
+#[cfg(feature = "core")]
+mod worker;
+
+#[derive(Debug, FromArgs, PartialEq)]
+/// Run the authentik server and worker.
+#[argh(subcommand, name = "allinone")]
+pub(crate) struct AllInOne {}
 
 #[derive(Debug, FromArgs, PartialEq)]
 /// The authentication glue you need
@@ -31,7 +38,11 @@ struct Cli {
 #[argh(subcommand)]
 enum Command {
     #[cfg(feature = "core")]
+    AllInOne(AllInOne),
+    #[cfg(feature = "core")]
     Server(server::Cli),
+    #[cfg(feature = "core")]
+    Worker(worker::Cli),
     #[cfg(feature = "proxy")]
     Proxy(proxy::Cli),
 }
@@ -71,13 +82,17 @@ fn main() -> Result<()> {
 
     match &cli.command {
         #[cfg(feature = "core")]
-        Command::Server(_) => mode::set(mode::Mode::Server),
+        Command::AllInOne(_) => Mode::set(Mode::AllInOne),
+        #[cfg(feature = "core")]
+        Command::Server(_) => Mode::set(Mode::Server),
+        #[cfg(feature = "core")]
+        Command::Worker(_) => Mode::set(Mode::Worker),
         #[cfg(feature = "proxy")]
-        Command::Proxy(_) => mode::set(mode::Mode::Proxy),
+        Command::Proxy(_) => Mode::set(Mode::Proxy),
     };
 
     #[cfg(feature = "core")]
-    if mode::get() == mode::Mode::Server {
+    if Mode::is_core() {
         if std::env::var("PROMETHEUS_MULTIPROC_DIR").is_err() {
             let mut dir = std::env::temp_dir();
             dir.push("authentik_prometheus_tmp");
@@ -119,14 +134,23 @@ fn main() -> Result<()> {
             metrics::run(&mut tasks).await?;
 
             #[cfg(feature = "core")]
-            if mode::get() == mode::Mode::Server {
+            if Mode::is_core() {
                 db::init(&mut tasks).await?;
             }
 
             match cli.command {
                 #[cfg(feature = "core")]
+                Command::AllInOne(_) => {
+                    server::run(Default::default(), &mut tasks).await?;
+                    worker::run(Default::default(), &mut tasks).await?;
+                }
+                #[cfg(feature = "core")]
                 Command::Server(args) => {
                     server::run(args, &mut tasks).await?;
+                }
+                #[cfg(feature = "core")]
+                Command::Worker(args) => {
+                    worker::run(args, &mut tasks).await?;
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(_args) => todo!(),

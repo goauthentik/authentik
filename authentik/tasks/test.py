@@ -16,6 +16,7 @@ from authentik.tasks.middleware import MetricsMiddleware
 class TestWorker(Worker):
     def __init__(self, queue_name: str, broker: Broker):
         super().__init__(broker=broker)
+        self.worker_id = 1000
         self.work_queue = PriorityQueue()
         self.consumers = {
             queue_name: _ConsumerThread(

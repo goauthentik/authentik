@@ -35,7 +35,7 @@ worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 
 os.makedirs(worker_tmp_dir, exist_ok=True)
 
-bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
+bind = f"unix://{str(_tmp.joinpath('authentik-gunicorn.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
@@ -60,6 +60,7 @@ if platform.system() == "Darwin":
 
 
 def when_ready(server: "Arbiter"):  # noqa: UP037
+    # Notify rust process that we are ready
     os.kill(os.getppid(), signal.SIGUSR1)
 
 
