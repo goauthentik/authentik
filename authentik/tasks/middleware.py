@@ -11,7 +11,10 @@ from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
 )
-from django_dramatiq_postgres.middleware import HTTPServer
+from django_dramatiq_postgres.middleware import (
+    HTTPServer,
+    HTTPServerThread,
+)
 from django_dramatiq_postgres.middleware import (
     MetricsMiddleware as BaseMetricsMiddleware,
 )
@@ -218,7 +221,7 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
 
 
 class WorkerHealthcheckMiddleware(Middleware):
-    thread: Thread | None
+    thread: HTTPServerThread | None
 
     def after_worker_boot(self, broker: Broker, worker: Worker):
         host, _, port = CONFIG.get("listen.http").rpartition(":")
@@ -228,11 +231,11 @@ class WorkerHealthcheckMiddleware(Middleware):
         except ValueError:
             LOGGER.error(f"Invalid port entered: {port}")
 
-        self.thread = Thread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
+        self.thread = HTTPServerThread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
         self.thread.start()
 
     def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        server: HTTPServer | None = getattr(self.thread, "server", None)
+        server = self.thread.server
         if server:
             server.shutdown()
         LOGGER.debug("Stopping WorkerHealthcheckMiddleware")
@@ -243,7 +246,8 @@ class WorkerHealthcheckMiddleware(Middleware):
         setthreadtitle("authentik Worker Healthcheck server")
         try:
             server = HTTPServer((addr, port), _healthcheck_handler)
-            current_thread().server = server
+            thread = cast(HTTPServerThread, current_thread())
+            thread.server = server
             server.serve_forever()
         except OSError as exc:
             get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
@@ -305,7 +309,7 @@ class _MetricsHandler(BaseMetricsHandler):
 
 
 class MetricsMiddleware(BaseMetricsMiddleware):
-    thread: Thread | None
+    thread: HTTPServerThread | None
     handler_class = _MetricsHandler
 
     def forks(self) -> list[Callable[[], None]]:
@@ -318,11 +322,11 @@ class MetricsMiddleware(BaseMetricsMiddleware):
             port = int(port)
         except ValueError:
             LOGGER.error(f"Invalid port entered: {port}")
-        self.thread = Thread(target=MetricsMiddleware.run, args=(addr, port))
+        self.thread = HTTPServerThread(target=MetricsMiddleware.run, args=(addr, port))
         self.thread.start()
 
     def before_worker_shutdown(self, broker: Broker, worker: Worker):
-        server: HTTPServer | None = getattr(self.thread, "server", None)
+        server = self.thread.server
         if server:
             server.shutdown()
         LOGGER.debug("Stopping MetricsMiddleware")
