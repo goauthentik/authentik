@@ -83,3 +83,4 @@ def use_test_broker():
         broker.add_middleware(middleware)
 
     set_broker(broker)
+    return broker

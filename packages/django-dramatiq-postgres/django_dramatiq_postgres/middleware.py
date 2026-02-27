@@ -5,6 +5,7 @@ from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer as BaseHTTPServer
 from ipaddress import IPv6Address, ip_address
+from threading import current_thread
 from typing import TYPE_CHECKING, Any, cast
 
 from django.db import DatabaseError, close_old_connections, connections
@@ -353,6 +354,7 @@ class MetricsMiddleware(Middleware):
     def run(cls, addr: str, port: int) -> None:
         try:
             server = HTTPServer((addr, port), cls.handler_class)
+            current_thread().server = server
             server.serve_forever()
         except OSError:
             get_logger(__name__, type(MetricsMiddleware)).warning(

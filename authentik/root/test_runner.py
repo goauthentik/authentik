@@ -1,5 +1,6 @@
 """Integrate ./manage.py test with pytest"""
 
+import faulthandler
 import os
 from argparse import ArgumentParser
 from unittest import TestCase
@@ -89,7 +90,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         sentry_init()
         self.logger.debug("Test environment configured")
 
-        use_test_broker()
+        self.task_broker = use_test_broker()
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
@@ -185,7 +186,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                return pytest.main(self.args)
+                pytest.main(self.args)
+                self.task_broker.close()
+                faulthandler.dump_traceback()
             except Exception as e:  # noqa
                 self.logger.error("Error running tests", error=str(e), test_files=self.args)
                 return 1

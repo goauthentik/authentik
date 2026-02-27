@@ -1,7 +1,7 @@
 import socket
 from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler
-from threading import Thread
+from threading import Thread, current_thread, currentThread
 from time import sleep
 from typing import Any, cast
 
@@ -231,12 +231,20 @@ class WorkerHealthcheckMiddleware(Middleware):
         self.thread = Thread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
         self.thread.start()
 
+    def before_worker_shutdown(self, broker: Broker, worker: Worker):
+        server: HTTPServer | None = getattr(self.thread, "server", None)
+        if server:
+            server.shutdown()
+        print("Stopping WorkerHealthcheckMiddleware")
+        self.thread.join()
+
     @staticmethod
     def run(addr: str, port: int):
         setthreadtitle("authentik Worker Healthcheck server")
         try:
-            httpd = HTTPServer((addr, port), _healthcheck_handler)
-            httpd.serve_forever()
+            server = HTTPServer((addr, port), _healthcheck_handler)
+            current_thread().server = server
+            server.serve_forever()
         except OSError as exc:
             get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
                 "Port is already in use, not starting healthcheck server",
@@ -251,6 +259,11 @@ class WorkerStatusMiddleware(Middleware):
         self.thread = Thread(target=WorkerStatusMiddleware.run)
         self.thread.start()
 
+    def before_worker_shutdown(self, broker: Broker, worker: Worker):
+        self.thread.running = False
+        print("Stopping WorkerStatusMiddleware")
+        self.thread.join()
+
     @staticmethod
     def run():
         setthreadtitle("authentik Worker status")
@@ -261,7 +274,7 @@ class WorkerStatusMiddleware(Middleware):
                 hostname=hostname,
                 version=authentik_full_version(),
             )
-        while True:
+        while getattr(current_thread(), "running", True):
             try:
                 WorkerStatusMiddleware.keep(status)
             except DB_ERRORS:  # pragma: no cover
@@ -305,3 +318,10 @@ class MetricsMiddleware(BaseMetricsMiddleware):
             LOGGER.error(f"Invalid port entered: {port}")
         self.thread = Thread(target=MetricsMiddleware.run, args=(addr, port))
         self.thread.start()
+
+    def before_worker_shutdown(self, broker: Broker, worker: Worker):
+        server: HTTPServer | None = getattr(self.thread, "server", None)
+        if server:
+            server.shutdown()
+        print("Stopping MetricsMiddleware")
+        self.thread.join()
