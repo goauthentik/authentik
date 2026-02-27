@@ -4,6 +4,8 @@ import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
 
+import { light } from "#elements/directives/light";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -245,18 +247,20 @@ export class IdentificationStage extends BaseStage<
         username: EmptyString,
         autocomplete: string,
     ) {
-        return html`<input
-            id=${id}
-            type=${type}
-            name="uidField"
-            placeholder=${label}
-            autofocus
-            autocomplete=${autocomplete}
-            spellcheck="false"
-            class="pf-c-form-control"
-            value=${username ?? ""}
-            required
-        />`;
+        return light(
+            html`<input
+                id=${id}
+                type=${type}
+                name="uidField"
+                placeholder=${label}
+                autofocus
+                autocomplete=${autocomplete}
+                spellcheck="false"
+                class="pf-c-form-control"
+                value=${username ?? ""}
+                required
+            />`,
+        );
     }
 
     protected renderPasswordFields(challenge: IdentificationChallenge) {

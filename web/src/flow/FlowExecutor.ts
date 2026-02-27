@@ -15,6 +15,7 @@ import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { listen } from "#elements/decorators/listen";
+import { light } from "#elements/directives/light";
 import { Interface } from "#elements/Interface";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -60,6 +61,7 @@ import { html as staticHTML, unsafeStatic } from "lit/static-html.js";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
@@ -95,6 +97,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         PFLogin,
         PFDrawer,
         PFButton,
+        PFFormControl,
         PFTitle,
         PFList,
         PFBackgroundImage,
@@ -366,7 +369,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 .exhaustive(),
         );
 
-        return staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`;
+        return light(staticHTML`<${unsafeStatic(tag)} ${props}></${unsafeStatic(tag)}>`);
     }
 
     protected renderChallengeError(error: unknown): SlottedTemplateResult {
