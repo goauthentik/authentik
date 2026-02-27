@@ -271,6 +271,7 @@ class Env(YAMLTag):
                 env = env.resolve(entry, blueprint)
         return env
 
+
 class File(YAMLTag):
     """Lookup file with optional default"""
 
