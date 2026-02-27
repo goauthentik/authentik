@@ -82,7 +82,7 @@ _Improvement:_ We [replaced](https://github.com/goauthentik/authentik/pull/18883
 
 _Issue:_ authentik called OpenSSL based on its binary name without specifying an absolute path, which could lead to path hijacking.
 
-_Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17856) to use the full path to openssl.
+_Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17856) the OpenSSL call to use the absolute binary path.
 
 ### L4: [Server] [Proxy] Potential Slowloris DoS (Internal: Low) - Closed
 
