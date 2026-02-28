@@ -1,4 +1,3 @@
-import { groupByFirstLetter, type Grouped } from "../../components/LearningCenter/utils";
 import {
     applyLearningCenterFilters,
     type DifficultyLevel,
@@ -28,14 +27,8 @@ export interface UseLearningCenterFilterResult {
     selectedDifficulty: DifficultyLevel | null;
     /** Set difficulty filter */
     setDifficulty: (difficulty: DifficultyLevel | null) => void;
-    /** Currently selected learning path tag */
-    selectedLearningPath: string | null;
-    /** Set learning path filter */
-    setLearningPath: (pathTag: string | null) => void;
     /** Resources after applying all filters */
     filteredResources: LearningCenterResource[];
-    /** Resources grouped by first letter (for alphabetical navigation) */
-    resourcesByAlphabet: Grouped<LearningCenterResource>;
     /** All available categories extracted from resources */
     availableCategories: string[];
     /** All available difficulty levels extracted from resources */
@@ -53,7 +46,6 @@ export function useLearningCenterFilter(
     const [debouncedFilter, setDebouncedFilter] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | null>(null);
-    const [selectedLearningPath, setSelectedLearningPath] = useState<string | null>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     // Debounce the filter value for performance
@@ -75,15 +67,8 @@ export function useLearningCenterFilter(
             query: debouncedFilter,
             selectedCategories,
             selectedDifficulty,
-            selectedLearningPath,
         });
-    }, [debouncedFilter, selectedCategories, selectedDifficulty, selectedLearningPath, resources]);
-
-    // Pre-computed grouping for alphabetical navigation
-    const resourcesByAlphabet = useMemo(
-        () => groupByFirstLetter(filteredResources),
-        [filteredResources],
-    );
+    }, [debouncedFilter, selectedCategories, selectedDifficulty, resources]);
 
     // Extract all unique values from resources
     const availableCategories = useMemo(() => extractAvailableCategories(resources), [resources]);
@@ -93,14 +78,10 @@ export function useLearningCenterFilter(
     );
 
     const setFilter = useCallback((value: string) => {
-        if (value.trim()) {
-            setSelectedLearningPath(null);
-        }
         setFilterValue(value);
     }, []);
 
     const toggleCategory = useCallback((category: string) => {
-        setSelectedLearningPath(null);
         setSelectedCategories((prev) => {
             if (prev.includes(category)) return prev.filter((c) => c !== category);
             return [...prev, category];
@@ -108,18 +89,7 @@ export function useLearningCenterFilter(
     }, []);
 
     const setDifficulty = useCallback((difficulty: DifficultyLevel | null) => {
-        setSelectedLearningPath(null);
         setSelectedDifficulty(difficulty);
-    }, []);
-
-    const setLearningPath = useCallback((pathTag: string | null) => {
-        setSelectedLearningPath(pathTag);
-        if (pathTag !== null) {
-            setSelectedCategories([]);
-            setSelectedDifficulty(null);
-            setFilterValue("");
-            setDebouncedFilter("");
-        }
     }, []);
 
     const clearFilter = useCallback(() => setFilterValue(""), []);
@@ -133,10 +103,7 @@ export function useLearningCenterFilter(
         toggleCategory,
         selectedDifficulty,
         setDifficulty,
-        selectedLearningPath,
-        setLearningPath,
         filteredResources,
-        resourcesByAlphabet,
         availableCategories,
         availableDifficulties,
     };

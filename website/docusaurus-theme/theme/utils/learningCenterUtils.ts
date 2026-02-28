@@ -1,22 +1,16 @@
 import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
 
-export interface LearningCenterItem {
-    id?: string;
-    docId?: string;
-    href?: string;
-    type?: string;
-    label?: string;
-}
-
 /**
  * Difficulty levels for learning resources
  */
-export type DifficultyLevel = "beginner" | "intermediate" | "advanced";
+export const DIFFICULTY_LEVELS = ["beginner", "intermediate", "advanced"] as const;
+export type DifficultyLevel = (typeof DIFFICULTY_LEVELS)[number];
 
 /**
  * Types of learning resources
  */
-export type ResourceType = "tutorial" | "guide" | "reference" | "video" | "example";
+export const RESOURCE_TYPES = ["tutorial", "guide", "reference", "video", "example"] as const;
+export type ResourceType = (typeof RESOURCE_TYPES)[number];
 
 /**
  * Standardized resource interface used by LearningCenterHelper and DocCardList
@@ -49,11 +43,27 @@ export function isLearningCenterPath(pathname: string): boolean {
     return /\/learning-center(\/|$)/.test(pathname);
 }
 
+function isLearningCenterIndexDocId(docId: string): boolean {
+    return docId.endsWith("learning-center/index") || docId === "core/learning-center/index";
+}
+
+function isLearningCenterPathDocId(docId: string): boolean {
+    return docId.includes("/learning-center/path/") || docId.includes("/learning-center/paths/");
+}
+
+function isLearningCenterIndexHref(href: string): boolean {
+    return href.endsWith("/learning-center") || href.endsWith("/learning-center/");
+}
+
+function isLearningCenterPathHref(href: string): boolean {
+    return href.includes("/learning-center/path/") || href.includes("/learning-center/paths/");
+}
+
 /**
  * Determines if a sidebar item is a learning center article (leaf item only).
  * This is used for resource extraction in DocCardList.
  */
-export function isLearningCenterItem(item: PropSidebarItem | LearningCenterItem): boolean {
+export function isLearningCenterItem(item: PropSidebarItem): boolean {
     // Only check link items
     if (item.type !== "link") {
         return false;
@@ -64,9 +74,8 @@ export function isLearningCenterItem(item: PropSidebarItem | LearningCenterItem)
         const docId = item.docId || "";
         if (
             docId.includes("learning-center") &&
-            !docId.endsWith("learning-center/index") &&
-            !docId.includes("/learning-center/path/") &&
-            !docId.includes("/learning-center/paths/")
+            !isLearningCenterIndexDocId(docId) &&
+            !isLearningCenterPathDocId(docId)
         ) {
             return true;
         }
@@ -77,10 +86,8 @@ export function isLearningCenterItem(item: PropSidebarItem | LearningCenterItem)
         const href = item.href || "";
         if (
             href.includes("/learning-center/") &&
-            !href.includes("/learning-center/path/") &&
-            !href.includes("/learning-center/paths/") &&
-            !href.endsWith("/learning-center") &&
-            !href.endsWith("/learning-center/")
+            !isLearningCenterPathHref(href) &&
+            !isLearningCenterIndexHref(href)
         ) {
             return true;
         }
@@ -100,10 +107,7 @@ function isLearningCenterMainCategory(item: PropSidebarItem): boolean {
         const link = item.link as { type?: string; id?: string };
         if (link.type === "doc" && link.id) {
             // Check if the link ID ends with learning-center/index
-            if (
-                link.id.endsWith("learning-center/index") ||
-                link.id === "core/learning-center/index"
-            ) {
+            if (isLearningCenterIndexDocId(link.id)) {
                 return true;
             }
         }
@@ -124,9 +128,9 @@ function isLearningCenterMainCategory(item: PropSidebarItem): boolean {
  * - Learning center sub-categories (category-a, category-b, etc.)
  * But NOT the main Learning Center link/category itself.
  */
-export function shouldFilterFromSidebar(item: PropSidebarItem | LearningCenterItem): boolean {
+export function shouldFilterFromSidebar(item: PropSidebarItem): boolean {
     // Never filter the main Learning Center category (the one with index link)
-    if (isLearningCenterMainCategory(item as PropSidebarItem)) {
+    if (isLearningCenterMainCategory(item)) {
         return false;
     }
 
@@ -136,7 +140,7 @@ export function shouldFilterFromSidebar(item: PropSidebarItem | LearningCenterIt
             const docId = item.docId || "";
             // Filter articles within learning-center sub-directories (e.g., learning-center/category-a/article-a)
             // but NOT the index (learning-center/index)
-            if (docId.includes("learning-center/") && !docId.endsWith("learning-center/index")) {
+            if (docId.includes("learning-center/") && !isLearningCenterIndexDocId(docId)) {
                 return true;
             }
         }
@@ -209,13 +213,20 @@ export function extractLearningPathsFromProps(
     return safeStringArrayExtract(props.tags);
 }
 
+function isDifficultyLevel(value: unknown): value is DifficultyLevel {
+    return typeof value === "string" && DIFFICULTY_LEVELS.includes(value as DifficultyLevel);
+}
+
+function isResourceType(value: unknown): value is ResourceType {
+    return typeof value === "string" && RESOURCE_TYPES.includes(value as ResourceType);
+}
+
 /**
  * Safely extracts difficulty level from potentially undefined/mixed-type object property
  */
 export function safeDifficultyExtract(value: unknown): DifficultyLevel {
-    const validDifficulties: DifficultyLevel[] = ["beginner", "intermediate", "advanced"];
-    if (typeof value === "string" && validDifficulties.includes(value as DifficultyLevel)) {
-        return value as DifficultyLevel;
+    if (isDifficultyLevel(value)) {
+        return value;
     }
     return "beginner";
 }
@@ -224,9 +235,8 @@ export function safeDifficultyExtract(value: unknown): DifficultyLevel {
  * Safely extracts resource type from potentially undefined/mixed-type object property
  */
 export function safeResourceTypeExtract(value: unknown): ResourceType {
-    const validTypes: ResourceType[] = ["tutorial", "guide", "reference", "video", "example"];
-    if (typeof value === "string" && validTypes.includes(value as ResourceType)) {
-        return value as ResourceType;
+    if (isResourceType(value)) {
+        return value;
     }
     return "tutorial";
 }
@@ -244,9 +254,8 @@ export const extractAvailableCategories = (
 export const extractAvailableDifficulties = (
     resources: readonly LearningCenterResource[],
 ): DifficultyLevel[] => {
-    const order: DifficultyLevel[] = ["beginner", "intermediate", "advanced"];
     const available = new Set(resources.map((r) => r.difficulty));
-    return order.filter((d) => available.has(d));
+    return DIFFICULTY_LEVELS.filter((difficulty) => available.has(difficulty));
 };
 
 /**
@@ -255,9 +264,8 @@ export const extractAvailableDifficulties = (
 export const extractAvailableResourceTypes = (
     resources: readonly LearningCenterResource[],
 ): ResourceType[] => {
-    const order: ResourceType[] = ["tutorial", "guide", "reference", "video", "example"];
     const available = new Set(resources.map((r) => r.resourceType));
-    return order.filter((t) => available.has(t));
+    return RESOURCE_TYPES.filter((type) => available.has(type));
 };
 
 /**
@@ -302,15 +310,16 @@ export function applyLearningCenterFilters(
 
     let result = [...resources];
 
-    if (query) {
-        const lowerQuery = query.toLowerCase();
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (normalizedQuery) {
         result = result.filter(
             (resource) =>
-                resource.resourceName.toLowerCase().includes(lowerQuery) ||
-                resource.shortDescription.toLowerCase().includes(lowerQuery) ||
+                resource.resourceName.toLowerCase().includes(normalizedQuery) ||
+                resource.shortDescription.toLowerCase().includes(normalizedQuery) ||
                 (resource.longDescription &&
-                    resource.longDescription.toLowerCase().includes(lowerQuery)) ||
-                resource.category.toLowerCase().includes(lowerQuery),
+                    resource.longDescription.toLowerCase().includes(normalizedQuery)) ||
+                resource.category.toLowerCase().includes(normalizedQuery),
         );
     }
 

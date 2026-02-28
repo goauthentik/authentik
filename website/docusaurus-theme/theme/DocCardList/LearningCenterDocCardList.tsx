@@ -26,6 +26,53 @@ interface LearningCenterDocCardListProps {
     className?: string;
 }
 
+const LEARNING_PATH_ROUTE_REGEX = /\/learning-center\/path\/([^/]+)/;
+const DIFFICULTY_ORDER: Record<DifficultyLevel, number> = {
+    beginner: 0,
+    intermediate: 1,
+    advanced: 2,
+};
+
+function getLearningPathFromPathname(pathname: string): string | null {
+    const match = pathname.match(LEARNING_PATH_ROUTE_REGEX);
+    return match?.[1] ? decodeURIComponent(match[1]) : null;
+}
+
+function sortLearningPathResources(resources: LearningCenterResource[]): LearningCenterResource[] {
+    return resources.toSorted((a, b) => {
+        const difficultyDiff = DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty];
+        if (difficultyDiff !== 0) {
+            return difficultyDiff;
+        }
+
+        const categoryDiff = a.category.localeCompare(b.category);
+        if (categoryDiff !== 0) {
+            return categoryDiff;
+        }
+
+        return a.resourceName.localeCompare(b.resourceName);
+    });
+}
+
+function groupResourcesByCategory(
+    resources: LearningCenterResource[],
+): Array<[string, LearningCenterResource[]]> {
+    const byCategory = new Map<string, LearningCenterResource[]>();
+    resources.forEach((resource) => {
+        const category = resource.category || "General";
+        const grouped = byCategory.get(category) ?? [];
+        grouped.push(resource);
+        byCategory.set(category, grouped);
+    });
+
+    return Array.from(byCategory.entries())
+        .toSorted(([a], [b]) => a.localeCompare(b))
+        .map(([category, grouped]) => [
+            category,
+            grouped.toSorted((a, b) => a.resourceName.localeCompare(b.resourceName)),
+        ]);
+}
+
 /**
  * Component for rendering learning center resources with search, filtering,
  * and dedicated learning-path pages.
@@ -35,10 +82,7 @@ export default function LearningCenterDocCardList({
     className,
 }: LearningCenterDocCardListProps): ReactNode {
     const pathname = useLocation()?.pathname ?? "";
-    const learningPathFromRoute = useMemo(() => {
-        const match = pathname.match(/\/learning-center\/path\/([^/]+)/);
-        return match?.[1] ? decodeURIComponent(match[1]) : null;
-    }, [pathname]);
+    const learningPathFromRoute = useMemo(() => getLearningPathFromPathname(pathname), [pathname]);
 
     const uniqueResourcePool = useMemo(() => dedupeResourcePool(resourcePool), [resourcePool]);
     const resourceCache = useMemo(
@@ -63,28 +107,11 @@ export default function LearningCenterDocCardList({
         if (!learningPathFromRoute) {
             return [];
         }
-
-        const difficultyOrder: Record<DifficultyLevel, number> = {
-            beginner: 0,
-            intermediate: 1,
-            advanced: 2,
-        };
-
-        return applyLearningCenterFilters(learningResources, {
-            selectedLearningPath: learningPathFromRoute,
-        }).toSorted((a, b) => {
-            const difficultyDiff = difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
-            if (difficultyDiff !== 0) {
-                return difficultyDiff;
-            }
-
-            const categoryDiff = a.category.localeCompare(b.category);
-            if (categoryDiff !== 0) {
-                return categoryDiff;
-            }
-
-            return a.resourceName.localeCompare(b.resourceName);
-        });
+        return sortLearningPathResources(
+            applyLearningCenterFilters(learningResources, {
+                selectedLearningPath: learningPathFromRoute,
+            }),
+        );
     }, [learningResources, learningPathFromRoute]);
 
     const learningPathTitle = activeLearningPath?.title || "Learning Path";
@@ -97,24 +124,11 @@ export default function LearningCenterDocCardList({
 
     const renderResources = useCallback(
         (filteredResources: LearningCenterResource[], searchFilter: string) => {
-            const resourcesByCategory = filteredResources.reduce(
-                (acc, resource) => {
-                    const category = resource.category || "General";
-                    if (!acc[category]) {
-                        acc[category] = [];
-                    }
-                    acc[category].push(resource);
-                    return acc;
-                },
-                {} as Record<string, LearningCenterResource[]>,
-            );
-
-            const sortedCategories = Object.keys(resourcesByCategory).sort();
+            const resourcesByCategory = groupResourcesByCategory(filteredResources);
 
             return (
                 <div className={styles.resourceList}>
-                    {sortedCategories.map((category) => {
-                        const categoryResources = resourcesByCategory[category] ?? [];
+                    {resourcesByCategory.map(([category, categoryResources]) => {
                         return (
                             <div key={category} className={styles.section}>
                                 <h2 className={styles.sectionTitle}>{category}</h2>
