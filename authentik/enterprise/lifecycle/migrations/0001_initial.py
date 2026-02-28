@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0057_remove_user_groups_remove_user_user_permissions_and_more"),
-        ("authentik_events", "0016_alter_event_action"),
+        ("authentik_events", "0015_alter_event_action_choices"),
         ("contenttypes", "0002_remove_content_type_name"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
