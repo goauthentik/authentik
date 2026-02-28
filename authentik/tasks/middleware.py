@@ -223,7 +223,7 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
 class WorkerHealthcheckMiddleware(Middleware):
     thread: HTTPServerThread | None
 
-    def after_worker_boot(self, broker: Broker, worker: Worker):
+    def __init__(self):
         host, _, port = CONFIG.get("listen.http").rpartition(":")
 
         try:
@@ -231,7 +231,12 @@ class WorkerHealthcheckMiddleware(Middleware):
         except ValueError:
             LOGGER.error(f"Invalid port entered: {port}")
 
-        self.thread = HTTPServerThread(target=WorkerHealthcheckMiddleware.run, args=(host, port))
+        self.host, self.port = host, port
+
+    def after_worker_boot(self, broker: Broker, worker: Worker):
+        self.thread = HTTPServerThread(
+            target=WorkerHealthcheckMiddleware.run, args=(self.host, self.port)
+        )
         self.thread.start()
 
     def before_worker_shutdown(self, broker: Broker, worker: Worker):
