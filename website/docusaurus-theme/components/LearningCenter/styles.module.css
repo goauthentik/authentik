@@ -79,6 +79,11 @@
     cursor: pointer;
 }
 
+.learningPathCardLink:hover,
+.learningPathCardLink:focus-visible {
+    text-decoration: none;
+}
+
 .learningPathCard {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -117,6 +122,7 @@
 .learningPathCardLink:hover .learningPathCardTitle,
 .learningPathCardLink:focus-visible .learningPathCardTitle {
     color: var(--ifm-color-primary-dark);
+    text-decoration: underline;
 }
 
 .learningPathCardDescription {
