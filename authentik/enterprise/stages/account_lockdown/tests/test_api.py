@@ -100,7 +100,9 @@ class TestUsersAccountLockdownAPI(APITestCase):
 
     def test_account_lockdown_collision_with_existing_token_identifier(self):
         """Test lockdown still succeeds when a normal token collides on identifier."""
-        deterministic_identifier = slugify(f"ak-flow-lockdown-{self.user.uid}")
+        deterministic_identifier = slugify(
+            f"ak-flow-lockdown-{self.lockdown_flow.slug}-{self.admin.uid}-{self.user.uid}"
+        )
         Token.objects.create(identifier=deterministic_identifier, user=self.user)
         self.client.force_login(self.admin)
 
@@ -117,6 +119,43 @@ class TestUsersAccountLockdownAPI(APITestCase):
         self.assertIsNotNone(token_key)
         token = FlowToken.objects.get(key=token_key)
         self.assertNotEqual(token.identifier, deterministic_identifier)
+
+    def test_account_lockdown_uses_independent_tokens_per_actor(self):
+        """Test concurrent responders get independent flow URLs for the same target."""
+        admin_two = create_test_admin_user()
+
+        self.client.force_login(self.admin)
+        first_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk},
+            format="json",
+        )
+        self.assertEqual(first_response.status_code, 200)
+        first_body = loads(first_response.content)
+        first_token_key = parse_qs(urlparse(first_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(first_token_key)
+
+        self.client.force_login(admin_two)
+        second_response = self.client.post(
+            reverse("authentik_api:user-account-lockdown"),
+            data={"user": self.user.pk},
+            format="json",
+        )
+        self.assertEqual(second_response.status_code, 200)
+        second_body = loads(second_response.content)
+        second_token_key = parse_qs(urlparse(second_body["flow_url"]).query).get(
+            "flow_token", [None]
+        )[0]
+        self.assertIsNotNone(second_token_key)
+
+        self.assertNotEqual(first_token_key, second_token_key)
+
+        first_token = FlowToken.objects.get(key=first_token_key)
+        second_token = FlowToken.objects.get(key=second_token_key)
+        self.assertEqual(first_token.user_id, self.admin.pk)
+        self.assertEqual(second_token.user_id, admin_two.pk)
 
     def test_account_lockdown_no_flow_configured(self):
         """Test account lockdown when no flow is configured"""
@@ -334,7 +373,9 @@ class TestUsersAccountLockdownBulkAPI(APITestCase):
         """Test bulk lockdown still succeeds when a normal token collides on identifier."""
         user_ids = ",".join(str(user_id) for user_id in sorted({self.user1.pk, self.user2.pk}))
         digest = sha256(user_ids.encode("utf-8")).hexdigest()[:12]
-        deterministic_identifier = slugify(f"ak-flow-lockdown-bulk-{digest}")
+        deterministic_identifier = slugify(
+            f"ak-flow-lockdown-bulk-{self.lockdown_flow.slug}-{self.admin.uid}-{digest}"
+        )
         Token.objects.create(identifier=deterministic_identifier, user=self.user1)
         self.client.force_login(self.admin)
 

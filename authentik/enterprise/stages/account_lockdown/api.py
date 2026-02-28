@@ -119,6 +119,10 @@ class UserBulkAccountLockdownSerializer(PassiveSerializer):
 class UserAccountLockdownMixin:
     """Enterprise account-lockdown API actions for UserViewSet."""
 
+    def _get_identifier_scope(self, request: Request, flow) -> str:
+        """Scope deterministic identifiers by actor and flow."""
+        return slugify(f"{flow.slug}-{request.user.uid}")
+
     def _create_flow_url_from_plan(
         self,
         request: Request,
@@ -193,12 +197,13 @@ class UserAccountLockdownMixin:
             # Keep policy evaluation and audit attribution on the actor, not the target.
             PLAN_CONTEXT_PENDING_USER: request.user,
         }
+        identifier_scope = self._get_identifier_scope(request, flow)
 
         return self._create_flow_url_from_plan(
             request,
             flow=flow,
             plan_context=plan_context,
-            identifier=slugify(f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-{user.uid}"),
+            identifier=slugify(f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-{identifier_scope}-{user.uid}"),
         )
 
     def _create_lockdown_flow_url_bulk(self, request: Request, users: list[User]) -> str | None:
@@ -215,6 +220,7 @@ class UserAccountLockdownMixin:
         # Hash the sorted target set so the same users produce the same token regardless of order.
         user_ids = ",".join(str(user_id) for user_id in sorted({user.pk for user in users}))
         digest = sha256(user_ids.encode("utf-8")).hexdigest()[:12]
+        identifier_scope = self._get_identifier_scope(request, flow)
         return self._create_flow_url_from_plan(
             request,
             flow=flow,
@@ -224,7 +230,9 @@ class UserAccountLockdownMixin:
                 # Keep policy evaluation and audit attribution on the actor.
                 PLAN_CONTEXT_PENDING_USER: request.user,
             },
-            identifier=slugify(f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-bulk-{digest}"),
+            identifier=slugify(
+                f"{LOCKDOWN_FLOW_TOKEN_IDENTIFIER_PREFIX}-bulk-{identifier_scope}-{digest}"
+            ),
         )
 
     @extend_schema(
