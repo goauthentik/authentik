@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Forgejo
 
-> Forgejo is a self-hosted lightweight software forge. Easy to install and low maintenance, it just does the job.
+> Forgejo is a lightweight, self‑hosted alternative to GitHub/GitLab, with a strong emphasis on community governance and open development.
 >
 > -- https://forgejo.org/
 
@@ -29,14 +29,13 @@ To support the integration of Forgejo with authentik, you need to create an appl
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://<forgejo.company>/user/oauth2/authentik/callback`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://<forgejo.company>/user/oauth2/authentik/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -53,15 +52,11 @@ To support the integration of Forgejo with authentik, you need to create an appl
     - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Additional Scopes**: `email profile`
 
-![](./forgejo1.png)
-
 4. Click **Add Authentication Source**.
 
-### Claims for authorization management (optional)
+### Configure permissions _(optional)_
 
-:::info
-This step is _optional_ and shows how to set claims to control the permissions of users in Forgejo by adding them to groups.
-:::
+Optionally, groups and property mappings can be created to manage user permissions in Forgejo.
 
 #### Create groups
 
@@ -71,8 +66,8 @@ The following groups will be created:
 - `gitadmin`: Forgejo users with administrative permissions.
 - `gitrestricted`: restricted Forgejo users.
 
-:::info
-Users who are in none of these groups will not be able to log in to Forgejo.
+:::info Group membership is required
+Users who are not part of any defined group will be denied login access. In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
 :::
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -82,10 +77,6 @@ Users who are in none of these groups will not be able to log in to Forgejo.
 5. Click the name of a newly created group and navigate to the **Users** tab.
 6. Click **Add existing user**, select the user/s that need Forgejo access and click **Add**.
 7. Repeat steps 5 and 6 for the two additional groups.
-
-:::info
-You can add users to the groups at any point.
-:::
 
 #### Create custom property mapping
 
@@ -138,14 +129,9 @@ For this to function, the Forgejo `ENABLE_AUTO_REGISTRATION: true` variable must
     - **Group Claim value for restricted users.** (Optional - requires claim name to be set): `restricted`
 4. Click **Update Authentication Source**.
 
-:::info
-Users who are not part of any defined group will be denied login access.
-In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
-:::
-
 ## Configuration verification
 
-To verify that authentik is correctly set up with Forgejo, log out and then log back in using the **Sign in with authentik** button.
+To verify that authentik is correctly set up with Forgejo, log out and then log back in using the **Sign in with authentik** button. You should be redirected to authentik, and once authenticated, you should then be signed in to Forgejo.
 
 ## Resources
 
