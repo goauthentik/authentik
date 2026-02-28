@@ -188,6 +188,131 @@ sidebar_custom_props:
 - Keep `shortDescription` to one sentence
 - In `longDescription`, you can use multiple paragraphs separated by blank lines
 
+## Developing the Learning Center
+
+The [authentik Learning Center](/core/learning-center/) provides tutorials, guides, and resources to help users learn authentik.
+
+The current Learning Center UX has two distinct entry points:
+
+- **Learning paths**: curated tracks that open a dedicated path page (for focused, immersive reading).
+- **Browse by filters**: search, category, and experience-level filtering on the main Learning Center page.
+
+Learning paths are defined in:
+
+- `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts`
+
+### Adding a new learning resource
+
+1. Identify or create the appropriate category directory in `website/docs/core/learning-center/` (e.g., `getting-started/`, `authentication/`).
+
+2. Create a new `.mdx` file in the category directory (e.g., `my-tutorial.mdx`).
+
+3. Add frontmatter with Learning Center metadata:
+
+```mdx
+---
+title: My Tutorial Title
+sidebar_custom_props:
+    resourceName: My Tutorial Title
+    category: Getting Started
+    learningPaths:
+        - getting-started
+        - fundamentals-flows
+    shortDescription: Brief one-line description shown on the card.
+    longDescription: Optional detailed description for additional context.
+    difficulty: beginner
+    resourceType: tutorial
+    estimatedTime: 15 min
+---
+
+Your tutorial content goes here...
+```
+
+4. Write the tutorial content below the frontmatter. This content appears when users click through to the resource page.
+
+### Learning Center metadata fields
+
+- **`resourceName`** (recommended): Display name shown on resource cards. Defaults to the sidebar label if omitted.
+- **`category`** (recommended): Grouping/category label. Should match the parent `_category_.json` `label`. Defaults to `General`.
+- **`learningPaths`** (recommended): Array of learning path tags. Values must match `filterTag` entries in `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts`.
+- **`tags`** (legacy fallback): Supported for backward compatibility, but prefer `learningPaths` for all new content.
+- **`shortDescription`** (recommended): Concise summary displayed on resource cards.
+- **`longDescription`** (optional): Extended description for additional context.
+- **`difficulty`** (optional): One of `beginner`, `intermediate`, or `advanced`. Defaults to `beginner`.
+- **`resourceType`** (optional): One of `tutorial`, `guide`, `reference`, `video`, or `example`. Defaults to `tutorial`.
+- **`estimatedTime`** (optional): Approximate time to complete (for example, `15 min`, `1 hour`).
+
+### Adding a new learning path
+
+To create a new learning path end-to-end:
+
+1. Add a path definition in `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts` with:
+    - `title`
+    - `description`
+    - `filterTag`
+    - `difficulty`
+2. Add a dedicated path page at `website/docs/core/learning-center/path/<filterTag>.mdx`.
+3. Tag relevant resources by adding `<filterTag>` in each resource's `sidebar_custom_props.learningPaths` array.
+
+Path page template:
+
+```mdx
+---
+title: My Learning Path
+slug: /core/learning-center/path/my-learning-path
+hide_table_of_contents: true
+hide_title: true
+---
+
+import DocCardList from "@theme/DocCardList";
+
+<DocCardList />
+```
+
+Notes:
+
+- Path pages under `website/docs/core/learning-center/path/` are container pages. They should not include article metadata like `sidebar_custom_props`.
+- The path category label is defined in `website/docs/core/learning-center/path/_category_.json`.
+- Use the URL format `/core/learning-center/path/<filterTag>/` so the custom Learning Center path renderer can resolve the track correctly.
+
+### Adding a new category
+
+1. Create a new directory in `website/docs/core/learning-center/` (e.g., `my-category/`).
+
+2. Add a `_category_.json` file to define the category metadata:
+
+```json
+{
+    "label": "My Category",
+    "position": 4,
+    "description": "A detailed description of this category explaining what types of resources it contains and who it's intended for. This description is displayed when users select the category filter."
+}
+```
+
+3. Register the category in `website/docusaurus-theme/theme/utils/learningCenter/categoryDescriptions.ts` to enable the description display.
+
+4. Add resource files (`.mdx`) to the category directory.
+
+### Category metadata fields
+
+- **`label`** (required): The display name of the category shown in filter buttons and resource cards
+- **`position`** (required): The sort order of the category (lower numbers appear first)
+- **`description`** (required): A detailed description (2-4 sentences) explaining the category's contents and intended audience. This is displayed when users filter by the category.
+
+### Difficulty levels
+
+- **Beginner**: No prior authentik experience required
+- **Intermediate**: Basic authentik familiarity assumed
+- **Advanced**: Deep knowledge of authentik required
+
+### Resource types
+
+- **Tutorial**: Step-by-step walkthrough with hands-on exercises
+- **Guide**: Comprehensive topic coverage and best practices
+- **Reference**: Quick lookup information and specifications
+- **Video**: Video content (link to external video)
+- **Example**: Code samples and configuration examples
+
 ## Page routing and URLs
 
 Every documentation page you see on our website starts as a simple Markdown file in our repository. When you create or edit these files, our build system automatically transforms them into web pages with predictable URLs.
