@@ -5,7 +5,7 @@ import {
     safeResourceTypeExtract,
     safeStringArrayExtract,
     safeStringExtract,
-} from "../../utils/learningCenterUtils";
+} from "../../utils/learningCenter/utils";
 import type { ResourceCache, SidebarDocLike, SidebarItemMap } from "./types";
 
 import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";

@@ -1,5 +1,5 @@
 import styles from "../../../components/LearningCenter/styles.module.css";
-import { getDifficultyLabel } from "../../utils/learningCenterUtils";
+import { getDifficultyLabel } from "../../utils/learningCenter/utils";
 import type { ResourceCache, SidebarDocLike } from "./types";
 
 import Link from "@docusaurus/Link";

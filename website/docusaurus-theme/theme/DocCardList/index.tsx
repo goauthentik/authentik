@@ -1,9 +1,9 @@
 // Shared utilities and types
 import { type GlossaryItem, isGlossaryItem, isGlossaryPath } from "../utils/glossaryUtils";
-import { isLearningCenterItem, isLearningCenterPath } from "../utils/learningCenterUtils";
+import { isLearningCenterItem, isLearningCenterPath } from "../utils/learningCenter/utils";
 import ErrorBoundary from "./ErrorBoundary";
 import GlossaryDocCardList from "./GlossaryDocCardList";
-import LearningCenterDocCardList from "./LearningCenterDocCardList";
+import LearningCenterDocCardList from "./learningCenter/LearningCenterDocCardList";
 import styles from "./styles.module.css";
 
 // Docusaurus core imports

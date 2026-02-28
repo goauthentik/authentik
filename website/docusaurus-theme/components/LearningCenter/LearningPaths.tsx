@@ -1,7 +1,7 @@
 import {
     getDifficultyLabel,
     type LearningCenterResource,
-} from "../../theme/utils/learningCenterUtils";
+} from "../../theme/utils/learningCenter/utils";
 import type { LearningPathDef } from "./learningPathsConfig";
 import styles from "./styles.module.css";
 

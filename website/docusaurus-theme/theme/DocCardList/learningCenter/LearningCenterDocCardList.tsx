@@ -1,21 +1,21 @@
-import { LEARNING_PATHS } from "../../components/LearningCenter/learningPathsConfig";
-import styles from "../../components/LearningCenter/styles.module.css";
+import { LEARNING_PATHS } from "../../../components/LearningCenter/learningPathsConfig";
+import styles from "../../../components/LearningCenter/styles.module.css";
 import {
     applyLearningCenterFilters,
     type DifficultyLevel,
     type LearningCenterResource,
-} from "../utils/learningCenterUtils";
-import ErrorBoundary from "./ErrorBoundary";
-import LearningPathExperience from "./learningCenter/LearningPathExperience";
-import ResourceCard from "./learningCenter/ResourceCard";
+} from "../../utils/learningCenter/utils";
+import ErrorBoundary from "../ErrorBoundary";
+import LearningCenterHelper from "./LearningCenterHelper";
+import LearningPathExperience from "./LearningPathExperience";
+import ResourceCard from "./ResourceCard";
 import {
     buildLearningResources,
     buildResourceCache,
     buildSidebarItemMap,
     dedupeResourcePool,
-} from "./learningCenter/resourceData";
-import type { SidebarDocLike } from "./learningCenter/types";
-import LearningCenterHelper from "./LearningCenterHelper";
+} from "./resourceData";
+import type { SidebarDocLike } from "./types";
 
 import { useLocation } from "@docusaurus/router";
 import type { ReactNode } from "react";

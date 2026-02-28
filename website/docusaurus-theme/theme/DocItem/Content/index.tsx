@@ -20,7 +20,7 @@ import {
     extractLearningPathsFromProps,
     safeDifficultyExtract,
     safeStringExtract,
-} from "#theme/utils/learningCenterUtils.ts";
+} from "#theme/utils/learningCenter/utils.ts";
 
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";

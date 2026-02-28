@@ -1,11 +1,11 @@
-import CategoryNav from "../../components/LearningCenter/CategoryNav";
-import DifficultyFilter from "../../components/LearningCenter/DifficultyFilter";
-import FilterInput from "../../components/LearningCenter/FilterInput";
-import LearningPaths from "../../components/LearningCenter/LearningPaths";
-import type { LearningPathDef } from "../../components/LearningCenter/learningPathsConfig";
-import styles from "../../components/LearningCenter/styles.module.css";
-import { getCategoryDescription } from "../utils/categoryDescriptions";
-import type { LearningCenterResource } from "../utils/learningCenterUtils";
+import CategoryNav from "../../../components/LearningCenter/CategoryNav";
+import DifficultyFilter from "../../../components/LearningCenter/DifficultyFilter";
+import FilterInput from "../../../components/LearningCenter/FilterInput";
+import LearningPaths from "../../../components/LearningCenter/LearningPaths";
+import type { LearningPathDef } from "../../../components/LearningCenter/learningPathsConfig";
+import styles from "../../../components/LearningCenter/styles.module.css";
+import { getCategoryDescription } from "../../utils/learningCenter/categoryDescriptions";
+import type { LearningCenterResource } from "../../utils/learningCenter/utils";
 import { useLearningCenterFilter } from "./useLearningCenterFilter";
 
 import clsx from "clsx";

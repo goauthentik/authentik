@@ -289,7 +289,7 @@ Notes:
 }
 ```
 
-3. Register the category in `website/docusaurus-theme/theme/utils/categoryDescriptions.ts` to enable the description display.
+3. Register the category in `website/docusaurus-theme/theme/utils/learningCenter/categoryDescriptions.ts` to enable the description display.
 
 4. Add resource files (`.mdx`) to the category directory.
 

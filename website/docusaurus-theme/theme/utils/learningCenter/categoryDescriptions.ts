@@ -5,9 +5,9 @@
  * Keep this list in sync when adding new learning-center categories.
  */
 
-import categoryA from "../../../docs/core/learning-center/category-a/_category_.json";
-import categoryB from "../../../docs/core/learning-center/category-b/_category_.json";
-import categoryC from "../../../docs/core/learning-center/category-c/_category_.json";
+import categoryA from "../../../../docs/core/learning-center/category-a/_category_.json";
+import categoryB from "../../../../docs/core/learning-center/category-b/_category_.json";
+import categoryC from "../../../../docs/core/learning-center/category-c/_category_.json";
 
 export interface CategoryMetadata {
     label: string;
