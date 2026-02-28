@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -18,6 +19,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import (
+    RESERVED_TOKEN_IDENTIFIER_PREFIXES,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
     Token,
@@ -47,6 +49,18 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             if user.pk != self.instance.user_id:
                 raise ValidationError("User cannot be changed")
         return user
+
+    def validate_identifier(self, identifier: str) -> str:
+        """Prevent regular users from using reserved internal identifier namespaces."""
+        request: Request = self.context.get("request")
+        if request and not request.user.is_superuser:
+            lower_identifier = identifier.lower()
+            if any(
+                lower_identifier.startswith(prefix)
+                for prefix in RESERVED_TOKEN_IDENTIFIER_PREFIXES
+            ):
+                raise ValidationError(_("Identifier prefix is reserved for internal tokens."))
+        return identifier
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""

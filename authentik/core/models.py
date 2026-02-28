@@ -1167,6 +1167,9 @@ class TokenIntents(models.TextChoices):
     INTENT_APP_PASSWORD = "app_password"  # nosec
 
 
+RESERVED_TOKEN_IDENTIFIER_PREFIXES = ("ak-flow-",)
+
+
 class Token(SerializerModel, ManagedModel, ExpiringModel):
     """Token used to authenticate the User for API Access or confirm another Stage like Email."""
 
