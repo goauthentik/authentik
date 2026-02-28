@@ -1,3 +1,4 @@
+import platform
 import sys
 from argparse import Namespace
 from multiprocessing import set_start_method
@@ -70,7 +71,10 @@ class Command(BaseCommand):
             args.pid_file = pid_file
 
         args.verbose = verbosity - 1
-        set_start_method("fork")
+        # > On macOS [...] the fork start method should be considered unsafe
+        # https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods
+        if not platform.system() == "Darwin":
+            set_start_method("fork")
         connections.close_all()
         sys.exit(main(args))  # type: ignore[no-untyped-call]
 
