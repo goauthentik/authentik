@@ -72,14 +72,6 @@ class TestSPInitiatedSLOViews(TestCase):
             destination="https://idp.example.com/sls",
         )
 
-    def _encode_logout_response_redirect(self):
-        """Generate a valid encoded LogoutResponse for redirect binding."""
-        return self._response_processor.encode_redirect()
-
-    def _encode_logout_response_post(self):
-        """Generate a valid encoded LogoutResponse for POST binding."""
-        return self._response_processor.encode_post()
-
     def test_redirect_view_handles_logout_request(self):
         """Test that redirect view properly handles a logout request"""
         # Generate encoded logout request
@@ -119,7 +111,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_redirect(),
+                "SAMLResponse": self._response_processor.encode_redirect(),
                 "RelayState": relay_state,
             },
         )
@@ -142,7 +134,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_redirect(),
+                "SAMLResponse": self._response_processor.encode_redirect(),
                 "RelayState": relay_state,
             },
         )
@@ -165,7 +157,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_redirect(),
+                "SAMLResponse": self._response_processor.encode_redirect(),
             },
         )
         # Create a flow plan with the return URL
@@ -188,7 +180,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_redirect(),
+                "SAMLResponse": self._response_processor.encode_redirect(),
             },
         )
         request.session = {}
@@ -256,7 +248,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.post(
             f"/slo/post/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_post(),
+                "SAMLResponse": self._response_processor.encode_post(),
                 "RelayState": relay_state,
             },
         )
@@ -279,7 +271,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.post(
             f"/slo/post/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_post(),
+                "SAMLResponse": self._response_processor.encode_post(),
             },
         )
         # Create a flow plan with the return URL
@@ -441,7 +433,7 @@ class TestSPInitiatedSLOViews(TestCase):
         request = self.factory.get(
             f"/slo/redirect/{self.application.slug}/",
             {
-                "SAMLResponse": self._encode_logout_response_redirect(),
+                "SAMLResponse": self._response_processor.encode_redirect(),
                 "RelayState": "/some/invalid/path",  # Use a path that starts with /
             },
         )

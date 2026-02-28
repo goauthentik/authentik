@@ -12,11 +12,6 @@ from authentik.common.saml.constants import (
 from authentik.common.saml.exceptions import CannotHandleAssertion
 from authentik.lib.xml import lxml_from_string
 
-ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
-    "Verification Certificate configured, but message is not signed."
-)
-ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
-
 
 def verify_enveloped_signature(raw_xml: bytes, verification_kp, xpath: str):
     """Verify an enveloped XML signature.
@@ -31,7 +26,9 @@ def verify_enveloped_signature(raw_xml: bytes, verification_kp, xpath: str):
     signature_nodes = root.xpath(xpath, namespaces=NS_MAP)
 
     if len(signature_nodes) < 1:
-        raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+        raise CannotHandleAssertion(
+            "Verification Certificate configured, but message is not signed."
+        )
 
     signature_node = signature_nodes[0]
 
@@ -45,7 +42,7 @@ def verify_enveloped_signature(raw_xml: bytes, verification_kp, xpath: str):
         ctx.key = key
         ctx.verify(signature_node)
     except xmlsec.Error as exc:
-        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        raise CannotHandleAssertion("Failed to verify signature") from exc
 
 
 def verify_detached_signature(
@@ -67,7 +64,9 @@ def verify_detached_signature(
         verification_kp: CertificateKeyPair with certificate_data
     """
     if not (signature and sig_alg):
-        raise CannotHandleAssertion(ERROR_SIGNATURE_REQUIRED_BUT_ABSENT)
+        raise CannotHandleAssertion(
+            "Verification Certificate configured, but message is not signed."
+        )
 
     querystring = f"{saml_param_name}={quote_plus(saml_value)}&"
     if relay_state is not None:
@@ -91,4 +90,4 @@ def verify_detached_signature(
             b64decode(signature),
         )
     except xmlsec.Error as exc:
-        raise CannotHandleAssertion(ERROR_FAILED_TO_VERIFY) from exc
+        raise CannotHandleAssertion("Failed to verify signature") from exc

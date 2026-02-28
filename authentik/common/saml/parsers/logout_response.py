@@ -10,8 +10,6 @@ from defusedxml import ElementTree
 from authentik.common.saml.constants import NS_SAML_ASSERTION, NS_SAML_PROTOCOL, SAML_STATUS_SUCCESS
 from authentik.common.saml.exceptions import CannotHandleAssertion
 
-ERROR_CANNOT_DECODE_RESPONSE = "Cannot decode SAML response."
-
 
 @dataclass(slots=True)
 class LogoutResponse:
@@ -62,7 +60,7 @@ class LogoutResponseParser:
         try:
             decoded_xml = b64decode(saml_response.encode())
         except UnicodeDecodeError, binascii.Error:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
+            raise CannotHandleAssertion("Cannot decode SAML response.") from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def parse_detached(self, saml_response: str, relay_state: str | None = None) -> LogoutResponse:
@@ -74,7 +72,7 @@ class LogoutResponseParser:
             except zlib.error:
                 decoded_xml = decoded_data.decode("utf-8")
         except UnicodeDecodeError, binascii.Error, zlib.error:
-            raise CannotHandleAssertion(ERROR_CANNOT_DECODE_RESPONSE) from None
+            raise CannotHandleAssertion("Cannot decode SAML response.") from None
         return self._parse_xml(decoded_xml, relay_state)
 
     def verify_status(self, response: LogoutResponse):
