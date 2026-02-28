@@ -2,7 +2,7 @@ import type {
     DifficultyLevel,
     LearningCenterResource,
     ResourceType,
-} from "../../utils/learningCenterUtils";
+} from "../../utils/learningCenter/utils";
 
 import type { PropSidebarItem } from "@docusaurus/plugin-content-docs";
 

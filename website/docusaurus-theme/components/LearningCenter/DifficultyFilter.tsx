@@ -1,4 +1,4 @@
-import { type DifficultyLevel, getDifficultyLabel } from "../../theme/utils/learningCenterUtils";
+import { type DifficultyLevel, getDifficultyLabel } from "../../theme/utils/learningCenter/utils";
 import styles from "./styles.module.css";
 
 import clsx from "clsx";

@@ -4,7 +4,7 @@ import {
     extractAvailableCategories,
     extractAvailableDifficulties,
     type LearningCenterResource,
-} from "../utils/learningCenterUtils";
+} from "../../utils/learningCenter/utils";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 

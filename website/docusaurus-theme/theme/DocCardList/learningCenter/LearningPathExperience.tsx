@@ -3,7 +3,7 @@ import {
     type DifficultyLevel,
     getDifficultyLabel,
     type LearningCenterResource,
-} from "../../utils/learningCenterUtils";
+} from "../../utils/learningCenter/utils";
 import ResourceCard from "./ResourceCard";
 import type { ResourceCache, SidebarItemMap } from "./types";
 

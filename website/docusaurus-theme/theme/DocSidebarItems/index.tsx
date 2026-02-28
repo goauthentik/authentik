@@ -1,7 +1,7 @@
 import "./styles.css";
 
 import { isGlossaryItem } from "../utils/glossaryUtils";
-import { shouldFilterFromSidebar as shouldFilterLearningCenterItem } from "../utils/learningCenterUtils";
+import { shouldFilterFromSidebar as shouldFilterLearningCenterItem } from "../utils/learningCenter/utils";
 
 import { VersionPicker } from "#components/VersionPicker/index.tsx";
 

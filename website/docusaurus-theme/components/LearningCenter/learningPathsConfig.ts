@@ -1,4 +1,4 @@
-import type { DifficultyLevel } from "../../theme/utils/learningCenterUtils";
+import type { DifficultyLevel } from "../../theme/utils/learningCenter/utils";
 
 export interface LearningPathDef {
     title: string;

@@ -2,7 +2,7 @@
  * Renders learning center resource frontmatter as nicely formatted content.
  */
 
-import { type DifficultyLevel, getDifficultyLabel } from "../../utils/learningCenterUtils";
+import { type DifficultyLevel, getDifficultyLabel } from "../../utils/learningCenter/utils";
 import styles from "./LearningCenterContent.module.css";
 
 import React from "react";
