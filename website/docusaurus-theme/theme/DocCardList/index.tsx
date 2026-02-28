@@ -24,6 +24,7 @@ const EMPTY_SIDEBAR_ITEMS: PropSidebarItem[] = [];
 
 // Type aliases for clarity
 type SidebarDocLike = Extract<PropSidebarItem, { type: "link" }>;
+const EMPTY_LINK_ITEMS: SidebarDocLike[] = [];
 
 interface DocsSidebarContext {
     items: PropSidebarItem[];
@@ -57,6 +58,29 @@ function getStableKey(item: GlossaryItem | PropSidebarItem, idx: number): string
 }
 
 /**
+ * Recursively collect sidebar link items matching a predicate.
+ */
+function collectSidebarLinks(
+    items: readonly PropSidebarItem[],
+    match: (item: PropSidebarItem) => boolean,
+): SidebarDocLike[] {
+    const collected: SidebarDocLike[] = [];
+
+    const process = (item: PropSidebarItem) => {
+        if (item.type === "link" && match(item)) {
+            collected.push(item as SidebarDocLike);
+            return;
+        }
+        if (item.type === "category" && item.items) {
+            item.items.forEach(process);
+        }
+    };
+
+    items.forEach(process);
+    return collected;
+}
+
+/**
  * Standard documentation card item for non-glossary content
  */
 function DocCardListItem({ item }: { item: React.ComponentProps<typeof DocCard>["item"] }) {
@@ -83,62 +107,27 @@ export default function DocCardList(props: Props): ReactNode {
     const docsSidebar = useDocsSidebarSafe();
     const fullSidebarItems = docsSidebar?.items ?? EMPTY_SIDEBAR_ITEMS;
 
-    // Extract glossary terms from sidebar structure (always computed, but only used for glossary pages)
+    // Extract glossary terms from sidebar structure when on glossary pages.
     const glossaryPool = useMemo<SidebarDocLike[]>(() => {
-        const terms: SidebarDocLike[] = [];
+        if (!isGlossary) {
+            return EMPTY_LINK_ITEMS;
+        }
+        return collectSidebarLinks(siblings, isGlossaryItem);
+    }, [isGlossary, siblings]);
 
-        // Recursively process sidebar items to find glossary terms
-        const processItem = (item: PropSidebarItem) => {
-            if (isGlossaryItem(item) && item.type === "link") {
-                terms.push(item as SidebarDocLike);
-            } else if (item.type === "category" && item.items) {
-                item.items.forEach(processItem);
-            }
-        };
-
-        siblings.forEach(processItem);
-        return terms;
-    }, [siblings]);
-
-    // Extract learning center resources from sidebar structure
+    // Extract learning center resources from sidebar structure when on learning center pages.
     const resourcePool = useMemo<SidebarDocLike[]>(() => {
-        const resources: SidebarDocLike[] = [];
-        const seen = new Set<string>();
-
-        // Recursively process sidebar items to find learning center resources
-        const processItem = (item: PropSidebarItem) => {
-            if (item.type === "link") {
-                if (isLearningCenterItem(item)) {
-                    const resourceItem = item as SidebarDocLike;
-                    const key =
-                        resourceItem.docId ||
-                        resourceItem.href ||
-                        ("label" in resourceItem && typeof resourceItem.label === "string"
-                            ? resourceItem.label
-                            : "");
-                    if (!key || seen.has(key)) {
-                        return;
-                    }
-                    seen.add(key);
-                    resources.push(resourceItem);
-                }
-            } else if (item.type === "category" && item.items) {
-                item.items.forEach(processItem);
-            }
-        };
+        if (!isLearningCenter) {
+            return EMPTY_LINK_ITEMS;
+        }
 
         // On learning-path detail pages, current siblings can be limited to the
         // "path" category only. Use full sidebar tree for complete resource extraction.
-        const allItems =
-            isLearningCenter && fullSidebarItems.length > 0
-                ? fullSidebarItems
-                : (items ?? siblings);
-        allItems.forEach(processItem);
-
-        return resources;
+        const allItems = fullSidebarItems.length > 0 ? fullSidebarItems : (items ?? siblings);
+        return collectSidebarLinks(allItems, isLearningCenterItem);
     }, [fullSidebarItems, isLearningCenter, items, siblings]);
 
-    // Standard documentation card items (always computed, but only used for non-specialized pages)
+    // Standard documentation card items for non-specialized pages.
     const baseItems = useMemo(() => filterDocCardListItems(items ?? siblings), [items, siblings]);
 
     // For glossary pages, delegate to specialized GlossaryDocCardList component

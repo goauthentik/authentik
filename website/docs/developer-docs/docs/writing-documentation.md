@@ -207,7 +207,7 @@ Learning paths are defined in:
 
 2. Create a new `.mdx` file in the category directory (e.g., `my-tutorial.mdx`).
 
-3. Add frontmatter with the required metadata:
+3. Add frontmatter with Learning Center metadata:
 
 ```mdx
 ---
@@ -232,19 +232,15 @@ Your tutorial content goes here...
 
 ### Learning Center metadata fields
 
-- **`resourceName`** (required): The display name shown on resource cards
-- **`category`** (required): The category for grouping (must match the `_category_.json` label in the parent directory)
-- **`learningPaths`** (required): Array of learning path tags. Values must match `filterTag` entries in `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts`. Current examples:
-    - `getting-started`
-    - `users-sources`
-    - `security`
-    - `providers-protocols`
-    - `fundamentals-flows`
-- **`shortDescription`** (required): Concise summary displayed on resource cards
-- **`longDescription`** (optional): Extended description for additional context
-- **`difficulty`** (required): One of `beginner`, `intermediate`, or `advanced`
-- **`resourceType`** (required): One of `tutorial`, `guide`, `reference`, `video`, or `example`
-- **`estimatedTime`** (optional): Approximate time to complete (e.g., "15 min", "1 hour")
+- **`resourceName`** (recommended): Display name shown on resource cards. Defaults to the sidebar label if omitted.
+- **`category`** (recommended): Grouping/category label. Should match the parent `_category_.json` `label`. Defaults to `General`.
+- **`learningPaths`** (recommended): Array of learning path tags. Values must match `filterTag` entries in `website/docusaurus-theme/components/LearningCenter/learningPathsConfig.ts`.
+- **`tags`** (legacy fallback): Supported for backward compatibility, but prefer `learningPaths` for all new content.
+- **`shortDescription`** (recommended): Concise summary displayed on resource cards.
+- **`longDescription`** (optional): Extended description for additional context.
+- **`difficulty`** (optional): One of `beginner`, `intermediate`, or `advanced`. Defaults to `beginner`.
+- **`resourceType`** (optional): One of `tutorial`, `guide`, `reference`, `video`, or `example`. Defaults to `tutorial`.
+- **`estimatedTime`** (optional): Approximate time to complete (for example, `15 min`, `1 hour`).
 
 ### Adding a new learning path
 
@@ -277,6 +273,7 @@ Notes:
 
 - Path pages under `website/docs/core/learning-center/path/` are container pages. They should not include article metadata like `sidebar_custom_props`.
 - The path category label is defined in `website/docs/core/learning-center/path/_category_.json`.
+- Use the URL format `/core/learning-center/path/<filterTag>/` so the custom Learning Center path renderer can resolve the track correctly.
 
 ### Adding a new category
 

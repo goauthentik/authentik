@@ -1,6 +1,8 @@
 /**
  * Category descriptions loaded from _category_.json files.
  * Import category metadata and export descriptions for use in components.
+ *
+ * Keep this list in sync when adding new learning-center categories.
  */
 
 import categoryA from "../../../docs/core/learning-center/category-a/_category_.json";
@@ -17,11 +19,12 @@ export interface CategoryMetadata {
  * Map of category names to their metadata from _category_.json files.
  * Add new categories here as they are created.
  */
-const categoryMetadata: Record<string, CategoryMetadata> = {
-    "Customize your instance": categoryA as CategoryMetadata,
-    "Manage Users, Groups, & Sources": categoryB as CategoryMetadata,
-    "Troubleshooting": categoryC as CategoryMetadata,
-};
+const categoryMetadata: Record<string, CategoryMetadata> = Object.fromEntries(
+    [categoryA, categoryB, categoryC].map((category) => {
+        const metadata = category as CategoryMetadata;
+        return [metadata.label, metadata];
+    }),
+);
 
 /**
  * Get the description for a category by its slug.

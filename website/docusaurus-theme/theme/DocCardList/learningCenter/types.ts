@@ -23,6 +23,6 @@ export interface ResourceCacheEntry {
 
 export type ResourceCache = Record<string, ResourceCacheEntry>;
 
-export type SidebarItemMap = Map<SidebarDocLike["docId"], SidebarDocLike>;
+export type SidebarItemMap = Map<string, SidebarDocLike & { docId: string }>;
 
 export type LearningResourceList = LearningCenterResource[];

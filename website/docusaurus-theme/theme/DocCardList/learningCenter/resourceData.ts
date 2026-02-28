@@ -70,7 +70,11 @@ export function buildResourceCache(uniqueResourcePool: SidebarDocLike[]): Resour
  * Builds O(1) lookup map for sidebar items by docId.
  */
 export function buildSidebarItemMap(uniqueResourcePool: SidebarDocLike[]): SidebarItemMap {
-    return new Map(uniqueResourcePool.map((item) => [item.docId, item]));
+    return new Map(
+        uniqueResourcePool
+            .filter((item): item is SidebarDocLike & { docId: string } => Boolean(item.docId))
+            .map((item) => [item.docId, item]),
+    );
 }
 
 /**

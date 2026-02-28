@@ -2,11 +2,10 @@
  * Renders learning center resource frontmatter as nicely formatted content.
  */
 
+import { type DifficultyLevel, getDifficultyLabel } from "../../utils/learningCenterUtils";
 import styles from "./LearningCenterContent.module.css";
 
 import React from "react";
-
-export type DifficultyLevel = "beginner" | "intermediate" | "advanced";
 
 export interface LearningCenterContentProps {
     learningPaths?: string[];
@@ -14,12 +13,6 @@ export interface LearningCenterContentProps {
     difficulty: DifficultyLevel;
     estimatedTime?: string;
 }
-
-const difficultyLabels: Record<DifficultyLevel, string> = {
-    beginner: "Beginner",
-    intermediate: "Intermediate",
-    advanced: "Advanced",
-};
 
 const ClockIcon: React.FC = () => (
     <svg
@@ -49,7 +42,7 @@ export const LearningCenterContent: React.FC<LearningCenterContentProps> = ({
         <div className={styles.learningCenterContent}>
             <div className={styles.meta}>
                 <span className={`${styles.difficultyBadge} ${styles[difficulty]}`}>
-                    {difficultyLabels[difficulty]}
+                    {getDifficultyLabel(difficulty)}
                 </span>
                 {estimatedTime ? (
                     <span className={styles.timeBadge}>
