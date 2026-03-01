@@ -6643,6 +6643,196 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/google_chrome/connectors/:
+    get:
+      operationId: endpoints_google_chrome_connectors_list
+      description: GoogleChromeConnector Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGoogleChromeConnectorList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: endpoints_google_chrome_connectors_create
+      description: GoogleChromeConnector Viewset
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleChromeConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleChromeConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/google_chrome/connectors/{connector_uuid}/:
+    get:
+      operationId: endpoints_google_chrome_connectors_retrieve
+      description: GoogleChromeConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Device Trust Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleChromeConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: endpoints_google_chrome_connectors_update
+      description: GoogleChromeConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Device Trust Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleChromeConnectorRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleChromeConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: endpoints_google_chrome_connectors_partial_update
+      description: GoogleChromeConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Device Trust Connector.
+        required: true
+      tags:
+      - endpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGoogleChromeConnectorRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleChromeConnector'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: endpoints_google_chrome_connectors_destroy
+      description: GoogleChromeConnector Viewset
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Device Trust Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /endpoints/google_chrome/connectors/{connector_uuid}/used_by/:
+    get:
+      operationId: endpoints_google_chrome_connectors_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connector_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Google Device Trust Connector.
+        required: true
+      tags:
+      - endpoints
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /enterprise/license/:
     get:
       operationId: enterprise_license_list
@@ -20825,6 +21015,7 @@ paths:
           - authentik_endpoints_connectors_agent.agentdeviceuserbinding
           - authentik_endpoints_connectors_agent.enrollmenttoken
           - authentik_endpoints_connectors_fleet.fleetconnector
+          - authentik_endpoints_connectors_google_chrome.googlechromeconnector
           - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
@@ -34085,6 +34276,7 @@ components:
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
+      - authentik.enterprise.endpoints.connectors.google_chrome
       - authentik.enterprise.lifecycle
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -39587,6 +39779,67 @@ components:
       - rejected
       - running
       - warning
+    GoogleChromeConnector:
+      type: object
+      description: GoogleChromeConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        enabled:
+          type: boolean
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        credentials:
+          type: object
+          additionalProperties: {}
+        chrome_url:
+          type: string
+          nullable: true
+          description: Full URL to be used in Google Workspace configuration
+          readOnly: true
+      required:
+      - chrome_url
+      - component
+      - credentials
+      - meta_model_name
+      - name
+      - verbose_name
+      - verbose_name_plural
+    GoogleChromeConnectorRequest:
+      type: object
+      description: GoogleChromeConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        credentials:
+          type: object
+          additionalProperties: {}
+      required:
+      - credentials
+      - name
     GoogleEndpointDevice:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -42921,6 +43174,7 @@ components:
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_endpoints_connectors_fleet.fleetconnector
+      - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
@@ -44153,7 +44407,6 @@ components:
         arch:
           type: string
       required:
-      - arch
       - family
     OperatingSystemRequest:
       type: object
@@ -44179,7 +44432,6 @@ components:
           type: string
           minLength: 1
       required:
-      - arch
       - family
     OutgoingSyncDeleteAction:
       enum:
@@ -44999,6 +45251,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GeoIPPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedGoogleChromeConnectorList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleChromeConnector'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -48116,6 +48383,21 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
+    PatchedGoogleChromeConnectorRequest:
+      type: object
+      description: GoogleChromeConnector Serializer
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+        credentials:
+          type: object
+          additionalProperties: {}
     PatchedGoogleEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -57764,6 +58046,7 @@ components:
       - goauthentik.io/@merged
       - goauthentik.io/platform
       - fleetdm.com
+      - chrome.google.com
       type: string
     Version:
       type: object
