@@ -26,7 +26,6 @@ import (
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
@@ -294,22 +293,16 @@ func (a *Application) Stop() {
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.endpoint.EndSessionEndpoint
-	s, err := a.sessions.Get(r, a.SessionName())
-	if err != nil {
+	cc := a.getClaimsFromSession(rw, r)
+	if cc == nil {
 		a.redirectToStart(rw, r)
 		return
 	}
-	c, exists := s.Values[constants.SessionClaims]
-	if c == nil && !exists {
-		a.redirectToStart(rw, r)
-		return
-	}
-	cc := c.(types.Claims)
 	uv := url.Values{
 		"id_token_hint": []string{cc.RawToken},
 	}
 	redirect += "?" + uv.Encode()
-	err = a.Logout(r.Context(), func(c types.Claims) bool {
+	err := a.Logout(r.Context(), func(c types.Claims) bool {
 		return c.Sub == cc.Sub
 	})
 	if err != nil {
