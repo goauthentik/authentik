@@ -47,7 +47,7 @@ export class ConnectorViewPage extends AKElement {
                 return html`<ak-endpoints-connector-fleet-view
                     connectorID=${ifDefined(this.connector.connectorUuid)}
                 ></ak-endpoints-connector-fleet-view>`;
-            case "ak-stage-authenticator-endpoint-gdtc-form":
+            case "ak-endpoints-connector-gdtc-form":
                 return html`<ak-endpoints-connector-google-chrome-view
                     connectorID=${ifDefined(this.connector.connectorUuid)}
                 ></ak-endpoints-connector-google-chrome-view>`;

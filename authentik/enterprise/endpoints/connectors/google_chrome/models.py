@@ -59,7 +59,7 @@ class GoogleChromeConnector(Connector):
 
     @property
     def component(self) -> str:
-        return "ak-stage-authenticator-endpoint-gdtc-form"
+        return "ak-endpoints-connector-gdtc-form"
 
     def __str__(self) -> str:
         return f"Google Device Trust Connector {self.name}"

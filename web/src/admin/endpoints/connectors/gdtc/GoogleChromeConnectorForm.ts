@@ -14,7 +14,7 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-@customElement("ak-stage-authenticator-endpoint-gdtc-form")
+@customElement("ak-endpoints-connector-gdtc-form")
 export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, string> {
     loadInstance(pk: string): Promise<GoogleChromeConnector> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsGoogleChromeConnectorsRetrieve({
@@ -75,6 +75,6 @@ export class GoogleChromeConnectorForm extends ModelForm<GoogleChromeConnector, 
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-stage-authenticator-endpoint-gdtc-form": GoogleChromeConnectorForm;
+        "ak-endpoints-connector-gdtc-form": GoogleChromeConnectorForm;
     }
 }
