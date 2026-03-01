@@ -20,7 +20,8 @@ from authentik.lib.tests.utils import load_fixture
 class TestGoogleChromeConnector(APITestCase):
     def setUp(self):
         self.connector = GoogleChromeConnector.objects.create(
-            name=generate_id(), credentials={},
+            name=generate_id(),
+            credentials={},
         )
         self.factory = RequestFactory()
         self.api_key = generate_id()
