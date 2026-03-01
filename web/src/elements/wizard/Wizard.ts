@@ -69,8 +69,31 @@ export class Wizard extends ModalButton {
     /**
      * Actions to display at the end of the wizard.
      */
+    private _actions: WizardAction[] = [];
+
     @property({ attribute: false })
-    public actions: WizardAction[] = [];
+    public get actions(): WizardAction[] {
+        return this._actions;
+    }
+
+    public set actions(value: WizardAction[]) {
+        const oldValue = this._actions;
+        this._actions = value;
+
+        if (this._actions.length > 0) {
+            if (!this.querySelector(`[slot="ak-wizard-page-action"]`)) {
+                const actionPage = document.createElement("ak-wizard-page-action");
+                actionPage.slot = "ak-wizard-page-action";
+                actionPage.dataset.wizardmanaged = "true";
+                this.appendChild(actionPage);
+            }
+            if (!this.steps.includes("ak-wizard-page-action")) {
+                this.steps = [...this.steps, "ak-wizard-page-action"];
+            }
+        }
+
+        this.requestUpdate("actions", oldValue);
+    }
 
     @property({ attribute: false })
     public finalHandler?: () => Promise<void>;
@@ -152,12 +175,7 @@ export class Wizard extends ModalButton {
             ? this.steps.indexOf(this.activeStepElement.slot)
             : 0;
 
-        let lastPage = activeStepIndex === this.steps.length - 1;
-
-        if (lastPage && !this.steps.includes("ak-wizard-page-action") && this.actions.length > 0) {
-            this.steps = this.steps.concat("ak-wizard-page-action");
-            lastPage = activeStepIndex === this.steps.length - 1;
-        }
+        const lastPage = activeStepIndex === this.steps.length - 1;
 
         return {
             firstPage,
@@ -246,6 +264,9 @@ export class Wizard extends ModalButton {
 
                 if (!completedStep) return;
 
+                // Re-gather steps as they might have changed in nextCallback
+                const { lastPage } = this.#gatherSteps();
+
                 if (lastPage) {
                     await this.finalHandler?.();
                     this.#reset();
@@ -254,6 +275,7 @@ export class Wizard extends ModalButton {
                 }
             }
 
+            const { activeStepIndex } = this.#gatherSteps();
             const nextPage = this.getStepElementByIndex(activeStepIndex + 1);
 
             if (nextPage) {
