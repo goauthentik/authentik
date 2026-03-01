@@ -39809,7 +39809,13 @@ components:
         credentials:
           type: object
           additionalProperties: {}
+        chrome_url:
+          type: string
+          nullable: true
+          description: Full URL to be used in Google Workspace configuration
+          readOnly: true
       required:
+      - chrome_url
       - component
       - credentials
       - meta_model_name
