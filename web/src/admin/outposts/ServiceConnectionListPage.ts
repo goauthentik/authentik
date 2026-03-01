@@ -143,7 +143,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Outpost integration(s)")}
+            object-label=${msg("Outpost integration(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ServiceConnection) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllUsedByList({

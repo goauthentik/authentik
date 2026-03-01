@@ -5,6 +5,7 @@ import uuid
 from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
 from hashlib import sha256
+from hmac import compare_digest
 from typing import Any
 from urllib.parse import urlparse
 
@@ -206,7 +207,9 @@ def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
     provider, client_id, client_secret = provider_from_request(request)
     if not provider:
         return None
-    if client_id != provider.client_id or client_secret != provider.client_secret:
+    if not compare_digest(client_id, provider.client_id) or not compare_digest(
+        client_secret, provider.client_secret
+    ):
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None
     CTX_AUTH_VIA.set("oauth_client_secret")

@@ -1,11 +1,11 @@
 ---
-title: Github
+title: GitHub
 tags:
     - source
     - github
 ---
 
-Allows users to authenticate using their Github credentials by configuring GitHub as a federated identity provider via OAuth2.
+Allows users to authenticate using their GitHub credentials by configuring GitHub as a federated identity provider via OAuth2.
 
 ## Preparation
 
@@ -14,11 +14,11 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `www.my.company` is the Homepage URL for your site
 
-## Github configuration
+## GitHub configuration
 
-To integrate GitHub with authentik you will need to create an OAuth application in the Discord Developer Portal.
+To integrate GitHub with authentik, you need to create an OAuth application in GitHub Developer Settings.
 
-1. Log in to the GitHub and open the [Developer Settings](https://github.com/settings/developers) menu.
+1. Log in to GitHub and open the [Developer Settings](https://github.com/settings/developers) menu.
 2. Create an OAuth app by clicking on the **Register a new application** button and set the following values:
     - **Application Name**: `authentik`
     - **Homepage URL**: `www.my.company`
@@ -29,7 +29,7 @@ To integrate GitHub with authentik you will need to create an OAuth application 
 
 ## authentik configuration
 
-To support the integration of GitHub with authentik, you need to create an GitHub OAuth source in authentik.
+To support the integration of GitHub with authentik, you need to create a GitHub OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
@@ -57,7 +57,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 Ensure that the GitHub OAuth source in **Federation & Social login** has the additional `read:org` scope added under **Protocol settings** > **Scopes**.
 :::
 
-To check if the user is member of an organization, you can use the following policy on your flows.
+To check if the user is a member of an organization, you can use the following policy on your flows.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Policies**.
@@ -70,7 +70,7 @@ from authentik.sources.oauth.models import OAuthSource
 # Set this value
 accepted_org = "your_organization"
 
-# Ensure flow is only run during oauth logins via Github
+# Ensure flow is only run during OAuth logins via GitHub
 if not isinstance(context['source'], OAuthSource) or context["source"].provider_type != "github":
     return True
 
@@ -81,7 +81,7 @@ access_token = connection.access_token
 # We also access the user info authentik already retrieved, to get the correct username
 github_username = context["oauth_userinfo"]
 
-# Github does not include Organisations in the userinfo endpoint, so we have to call another URL
+# GitHub does not include organizations in the userinfo endpoint, so we have to call another URL
 orgs_response = requests.get(
     "https://api.github.com/user/orgs",
     auth=(github_username["login"], access_token),
@@ -111,7 +111,7 @@ return user_matched
 8. Select the policy that you previously created and click **Create**.
 9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
-If a user is not member of the chosen organization, they will see this message:
+If a user is not a member of the chosen organization, they will see this message:
 
 ![](./github_org_membership.png)
 

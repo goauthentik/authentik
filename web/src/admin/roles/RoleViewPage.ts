@@ -1,6 +1,7 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/groups/RelatedUserList";
 import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/roles/RoleForm";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -11,11 +12,17 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
-import { RbacApi, RbacPermissionsAssignedByRolesListModelEnum, Role } from "@goauthentik/api";
+import {
+    ContentTypeEnum,
+    RbacApi,
+    RbacPermissionsAssignedByRolesListModelEnum,
+    Role,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing, PropertyValues } from "lit";
@@ -30,7 +37,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-role-view")
-export class RoleViewPage extends AKElement {
+export class RoleViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set roleId(id: string) {
         new RbacApi(DEFAULT_CONFIG)
@@ -141,6 +148,7 @@ export class RoleViewPage extends AKElement {
                     </div>
                 </section>
                 <ak-rbac-object-permission-page
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
@@ -149,6 +157,18 @@ export class RoleViewPage extends AKElement {
                     model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikRbacRole}
                     objectPk=${this.targetRole.pk}
                 ></ak-rbac-object-permission-page>
+                ${this.hasEnterpriseLicense
+                    ? html`<ak-object-lifecycle-page
+                          class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          role="tabpanel"
+                          tabindex="0"
+                          slot="page-lifecycle"
+                          id="page-lifecycle"
+                          aria-label="${msg("Lifecycle")}"
+                          model=${ContentTypeEnum.AuthentikRbacRole}
+                          object-pk=${this.targetRole.pk}
+                      ></ak-object-lifecycle-page>`
+                    : nothing}
             </ak-tabs>
         </main>`;
     }

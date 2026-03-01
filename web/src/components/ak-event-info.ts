@@ -230,8 +230,9 @@ export class EventInfo extends AKElement {
             case EventActions.PolicyExecution:
                 return this.renderPolicyExecution();
 
+            case EventActions.ConfigurationWarning:
             case EventActions.ConfigurationError:
-                return this.renderConfigurationError();
+                return this.renderConfigurationEvent();
 
             case EventActions.UpdateAvailable:
                 return this.renderUpdateAvailable();
@@ -517,7 +518,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderConfigurationError() {
+    renderConfigurationEvent() {
         return html`<div class="pf-c-card__title">${this.event.context.message}</div>
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }

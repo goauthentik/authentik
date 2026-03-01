@@ -142,7 +142,7 @@ class SyncTasks:
         except TransientSyncException:
             return
         paginator = Paginator(
-            provider.get_object_qs(_object_type).filter(**filter),
+            provider.get_object_qs(_object_type, **filter),
             provider.sync_page_size,
         )
         if client.can_discover:
@@ -227,13 +227,10 @@ class SyncTasks:
             return
         client = provider.client_for_model(instance.__class__)
         # Check if the object is allowed within the provider's restrictions
-        queryset = provider.get_object_qs(instance.__class__)
-        if not queryset:
-            return
-
+        queryset = provider.get_object_qs(instance.__class__, pk=instance.pk)
         # The queryset we get from the provider must include the instance we've got given
         # otherwise ignore this provider
-        if not queryset.filter(pk=instance.pk).exists():
+        if not queryset or not queryset.exists():
             return
 
         try:
@@ -351,10 +348,10 @@ class SyncTasks:
             return
 
         # Check if the object is allowed within the provider's restrictions
-        queryset: QuerySet = provider.get_object_qs(Group)
+        queryset: QuerySet = provider.get_object_qs(Group, pk=group_pk)
         # The queryset we get from the provider must include the instance we've got given
         # otherwise ignore this provider
-        if not queryset.filter(pk=group_pk).exists():
+        if not queryset or not queryset.filter().exists():
             return
 
         client = provider.client_for_model(Group)

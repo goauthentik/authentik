@@ -56,7 +56,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Stage binding(s)")}
+            object-label=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
@@ -89,7 +89,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html` <ak-forms-modal>
                     ${StrictUnsafe<CustomFormElementTagName>(item.stageObj?.component, {
                         slot: "form",
-                        instancePk: item.pk,
+                        instancePk: item.stageObj?.pk,
                         actionLabel: msg("Update"),
                         headline: msg(str`Update ${item.stageObj?.verboseName}`, {
                             id: "form.headline.update",

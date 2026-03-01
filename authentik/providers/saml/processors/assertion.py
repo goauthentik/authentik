@@ -11,6 +11,19 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement, _Element  # nosec
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.constants import (
+    DIGEST_ALGORITHM_TRANSLATION_MAP,
+    NS_MAP,
+    NS_SAML_ASSERTION,
+    NS_SAML_PROTOCOL,
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_PERSISTENT,
+    SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
+    SAML_NAME_ID_FORMAT_WINDOWS,
+    SAML_NAME_ID_FORMAT_X509,
+    SIGN_ALGORITHM_TRANSFORM_MAP,
+)
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -25,19 +38,6 @@ from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
     UnsupportedNameIDFormat,
-)
-from authentik.sources.saml.processors.constants import (
-    DIGEST_ALGORITHM_TRANSLATION_MAP,
-    NS_MAP,
-    NS_SAML_ASSERTION,
-    NS_SAML_PROTOCOL,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PERSISTENT,
-    SAML_NAME_ID_FORMAT_TRANSIENT,
-    SAML_NAME_ID_FORMAT_UNSPECIFIED,
-    SAML_NAME_ID_FORMAT_WINDOWS,
-    SAML_NAME_ID_FORMAT_X509,
-    SIGN_ALGORITHM_TRANSFORM_MAP,
 )
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -434,14 +434,16 @@ class AssertionProcessor:
     def build_response(self) -> str:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
-        if self.provider.signing_kp:
-            if self.provider.sign_assertion:
-                assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-                self._sign(assertion)
-            if self.provider.sign_response:
-                response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
-                self._sign(response)
+        # Sign assertion first (before encryption)
+        if self.provider.signing_kp and self.provider.sign_assertion:
+            assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+            self._sign(assertion)
+        # Encrypt assertion (this replaces Assertion with EncryptedAssertion)
         if self.provider.encryption_kp:
             assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
             self._encrypt(assertion, root_response)
+        # Sign response AFTER encryption so signature covers the encrypted content
+        if self.provider.signing_kp and self.provider.sign_response:
+            response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
+            self._sign(response)
         return etree.tostring(root_response).decode("utf-8")  # nosec

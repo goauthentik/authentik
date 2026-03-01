@@ -72,6 +72,39 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+    def test_success_with_status_message_and_detail(self):
+        """Test success with StatusMessage and StatusDetail present (should not raise error)"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success_with_message.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(sfm.user_properties["username"], "jens@goauthentik.io")
+
+    def test_error_with_message_and_detail(self):
+        """Test error status with StatusMessage and StatusDetail includes both in error"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_error_with_detail.xml").encode()
+                ).decode()
+            },
+        )
+
+        with self.assertRaises(ValueError) as ctx:
+            ResponseProcessor(self.source, request).parse()
+        # Should contain both detail and message
+        self.assertIn("User account is disabled", str(ctx.exception))
+        self.assertIn("Authentication failed", str(ctx.exception))
+
     def test_encrypted_correct(self):
         """Test encrypted"""
         key = load_fixture("fixtures/encrypted-key.pem")
@@ -130,6 +163,31 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
+
+    def test_verification_assertion_duplicate(self):
+        """Test verifying signature inside assertion, where the response has another assertion
+        before our signed assertion"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        self.source.signed_response = False
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_signed_assertion_dup.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        self.assertNotEqual(parser._get_name_id().text, "bad")
+        self.assertEqual(parser._get_name_id().text, "_ce3d2948b4cf20146dee0a0b3dd6f69b6cf86f62d7")
 
     def test_verification_response(self):
         """Test verifying signature inside response"""

@@ -5,9 +5,11 @@ from urllib.parse import parse_qs, urlparse
 
 from django.test import RequestFactory
 from django.urls import reverse
+from django.utils import translation
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.oauth.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.events.models import Event, EventAction
@@ -16,7 +18,6 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.oauth2.constants import SCOPE_OFFLINE_ACCESS, SCOPE_OPENID, TOKEN_TYPE
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -690,18 +691,21 @@ class TestAuthorize(OAuthTestCase):
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
         self.client.logout()
-        response = self.client.get(
-            reverse("authentik_providers_oauth2:authorize"),
-            data={
-                "response_type": "code",
-                "client_id": "test",
-                "state": state,
-                "redirect_uri": "foo://localhost",
-                "ui_locales": "invalid fr",
-            },
-        )
-        parsed = parse_qs(urlparse(response.url).query)
-        self.assertEqual(parsed["locale"], ["fr"])
+        try:
+            response = self.client.get(
+                reverse("authentik_providers_oauth2:authorize"),
+                data={
+                    "response_type": "code",
+                    "client_id": "test",
+                    "state": state,
+                    "redirect_uri": "foo://localhost",
+                    "ui_locales": "invalid fr",
+                },
+            )
+            parsed = parse_qs(urlparse(response.url).query)
+            self.assertEqual(parsed["locale"], ["fr"])
+        finally:
+            translation.deactivate()
 
     @apply_blueprint("default/flow-default-authentication-flow.yaml")
     def test_ui_locales_invalid(self):

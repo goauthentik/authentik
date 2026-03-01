@@ -27,6 +27,19 @@ export interface SummarizedSyncStatus {
     label: string;
 }
 
+const emptyResponse = {
+    pagination: {
+        next: 0,
+        previous: 0,
+        count: 0,
+        current: 1,
+        totalPages: 1,
+        startIndex: 1,
+        endIndex: 0,
+    },
+    results: [],
+};
+
 @customElement("ak-admin-status-chart-sync")
 export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
     public override ariaLabel = msg("Synchronization status chart");
@@ -51,7 +64,9 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         fetchSyncStatus: (element: T) => Promise<SyncStatus>,
         label: string,
     ): Promise<SummarizedSyncStatus> {
-        const objects = await listObjects();
+        const objects = await listObjects().catch(() => {
+            return emptyResponse;
+        });
         const metrics: { [key: string]: number } = {
             healthy: 0,
             failed: 0,

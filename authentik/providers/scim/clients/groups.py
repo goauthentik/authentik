@@ -4,6 +4,7 @@ from itertools import batched
 from typing import Any
 
 from django.db import transaction
+from django.utils.http import urlencode
 from orjson import dumps
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
@@ -94,20 +95,40 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
         scim_group = self.to_schema(group, None)
-        response = self._request(
-            "POST",
-            "/Groups",
-            json=scim_group.model_dump(
-                mode="json",
-                exclude_unset=True,
-            ),
-        )
-        scim_id = response.get("id")
-        if not scim_id or scim_id == "":
-            raise StopSync("SCIM Response with missing or invalid `id`")
-        connection = SCIMProviderGroup.objects.create(
-            provider=self.provider, group=group, scim_id=scim_id, attributes=response
-        )
+        connection = None
+        with transaction.atomic():
+            try:
+                response = self._request(
+                    "POST",
+                    "/Groups",
+                    json=scim_group.model_dump(
+                        mode="json",
+                        exclude_unset=True,
+                    ),
+                )
+            except ObjectExistsSyncException as exc:
+                if not self._config.filter.supported:
+                    raise exc
+                groups = self._request(
+                    "GET",
+                    f"/Groups?{urlencode({'filter': f'displayName eq \"{group.name}\"'})}",
+                )
+                groups_res = groups.get("Resources", [])
+                if len(groups_res) < 1:
+                    raise exc
+                connection = SCIMProviderGroup.objects.create(
+                    provider=self.provider,
+                    group=group,
+                    scim_id=groups_res[0]["id"],
+                    attributes=groups_res[0],
+                )
+            else:
+                scim_id = response.get("id")
+                if not scim_id or scim_id == "":
+                    raise StopSync("SCIM Response with missing or invalid `id`")
+                connection = SCIMProviderGroup.objects.create(
+                    provider=self.provider, group=group, scim_id=scim_id, attributes=response
+                )
         users = list(group.users.order_by("id").values_list("id", flat=True))
         self._patch_add_users(connection, users)
         return connection

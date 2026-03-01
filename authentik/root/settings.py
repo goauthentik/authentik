@@ -84,7 +84,6 @@ TENANT_APPS = [
     "authentik.crypto",
     "authentik.endpoints",
     "authentik.endpoints.connectors.agent",
-    "authentik.enterprise",
     "authentik.events",
     "authentik.admin.files",
     "authentik.flows",
@@ -148,6 +147,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
+GUARDIAN_GROUP_MODEL = "authentik_core.Group"
 GUARDIAN_ROLE_MODEL = "authentik_rbac.Role"
 
 SPECTACULAR_SETTINGS = {
@@ -190,7 +190,6 @@ SPECTACULAR_SETTINGS = {
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "DeviceFactsOSFamily": "authentik.endpoints.facts.OSFamily",
         "StageModeEnum": "authentik.endpoints.models.StageMode",
-        "LicenseSummaryStatusEnum": "authentik.enterprise.models.LicenseUsageStatus",
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
@@ -544,6 +543,15 @@ def _update_settings(app_path: str) -> None:
                 globals()[_attr] = getattr(settings_module, _attr)
     except ImportError:
         pass
+
+
+# Attempt to load enterprise app, if available
+try:
+    importlib.import_module("authentik.enterprise.apps")
+    CONFIG.log("info", "Enabled authentik enterprise")
+    TENANT_APPS.insert(TENANT_APPS.index("authentik.events"), "authentik.enterprise")
+except ImportError:
+    pass
 
 
 if DEBUG:

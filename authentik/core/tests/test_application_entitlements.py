@@ -38,7 +38,7 @@ class TestApplicationEntitlements(APITestCase):
     def test_group(self):
         """Test direct group"""
         group = Group.objects.create(name=generate_id())
-        self.user.ak_groups.add(group)
+        self.user.groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=group, order=0)
         ents = self.user.app_entitlements(self.app)
@@ -50,7 +50,7 @@ class TestApplicationEntitlements(APITestCase):
         parent = Group.objects.create(name=generate_id())
         group = Group.objects.create(name=generate_id())
         group.parents.add(parent)
-        self.user.ak_groups.add(group)
+        self.user.groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=parent, order=0)
         ents = self.user.app_entitlements(self.app)

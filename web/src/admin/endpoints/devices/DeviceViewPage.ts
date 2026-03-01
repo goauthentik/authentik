@@ -1,3 +1,4 @@
+import "#components/ak-object-attributes-card";
 import "#components/ak-status-label";
 import "#admin/endpoints/devices/BoundDeviceUsersList";
 import "#admin/endpoints/devices/facts/DeviceProcessTable";
@@ -215,6 +216,12 @@ export class DeviceViewPage extends AKElement {
                         .target=${this.device.pbmUuid}
                     ></ak-bound-device-users-list>
                 </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <ak-object-attributes-card
+                    .objectAttributes=${this.device.attributes}
+                    .excludeNotes=${false}
+                ></ak-object-attributes-card>
             </div>
         </div>`;
     }

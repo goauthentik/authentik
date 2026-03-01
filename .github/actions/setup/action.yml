@@ -22,7 +22,7 @@ runs:
         sudo rm -rf /usr/local/lib/android
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # v5
+      uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -44,7 +44,7 @@ runs:
         registry-url: 'https://registry.npmjs.org'
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
-      uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v5
+      uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v5
       with:
         go-version-file: "go.mod"
     - name: Setup docker cache
@@ -58,7 +58,7 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/compose.yml up -d
-        cd web && npm i
+        cd web && npm ci
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}

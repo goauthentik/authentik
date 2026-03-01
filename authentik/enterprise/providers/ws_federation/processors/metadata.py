@@ -1,6 +1,7 @@
 from django.urls import reverse
 from lxml.etree import SubElement, _Element  # nosec
 
+from authentik.common.saml.constants import NS_SAML_METADATA
 from authentik.enterprise.providers.ws_federation.processors.constants import (
     NS_ADDRESSING,
     NS_MAP,
@@ -8,7 +9,6 @@ from authentik.enterprise.providers.ws_federation.processors.constants import (
     NS_WSI,
 )
 from authentik.providers.saml.processors.metadata import MetadataProcessor as BaseMetadataProcessor
-from authentik.sources.saml.processors.constants import NS_SAML_METADATA
 
 
 class MetadataProcessor(BaseMetadataProcessor):

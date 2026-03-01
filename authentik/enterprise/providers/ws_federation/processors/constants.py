@@ -1,4 +1,4 @@
-from authentik.sources.saml.processors.constants import NS_MAP as _map
+from authentik.common.saml.constants import NS_MAP as _map
 
 WS_FED_ACTION_SIGN_IN = "wsignin1.0"
 WS_FED_ACTION_SIGN_OUT = "wsignout1.0"

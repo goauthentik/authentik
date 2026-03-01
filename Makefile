@@ -5,7 +5,6 @@ SHELL := /usr/bin/env bash
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
@@ -50,6 +49,14 @@ ifeq ($(UNAME_S),Darwin)
 	endif
 endif
 
+NPM_VERSION :=
+UV_EXISTS := $(shell command -v uv 2> /dev/null)
+ifdef UV_EXISTS
+	NPM_VERSION := $(shell $(UV) run python -m scripts.generate_semver)
+else
+	NPM_VERSION = $(shell python -m scripts.generate_semver)
+endif
+
 all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
@@ -77,7 +84,7 @@ lint-fix: lint-codespell  ## Lint and automatically fix errors in the python sou
 lint-codespell:  ## Reports spelling errors.
 	$(UV) run codespell -w
 
-lint: ci-bandit ## Lint the python and golang sources
+lint: ci-bandit ci-mypy ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
@@ -141,11 +148,11 @@ bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
 ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
 endif
-	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' pyproject.toml
-	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
+	$(eval current_version := $(shell cat ${PWD}/internal/constants/VERSION))
+	$(SED_INPLACE) 's/^version = ".*"/version = "$(version)"/' ${PWD}/pyproject.toml
+	$(SED_INPLACE) 's/^VERSION = ".*"/VERSION = "$(version)"/' ${PWD}/authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
-	npm version --no-git-tag-version --allow-same-version $(version)
-	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	$(SED_INPLACE) "s/\"${current_version}\"/\"$(version)\"/" ${PWD}/package.json ${PWD}/package-lock.json ${PWD}/web/package.json ${PWD}/web/package-lock.json
 	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
@@ -161,12 +168,22 @@ gen-build:  ## Extract the schema from the database
 gen-compose:
 	$(UV) run scripts/generate_compose.py
 
-gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
-	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+gen-changelog:  ## (Release) generate the changelog based from the commits since the last version
+# These are best-effort guesses based on commit messages
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	$(eval current_commit := $(shell git rev-parse HEAD))
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${current_commit} > merged_to_current
+	git log --pretty=format:"- %s" $(shell git merge-base ${last_version} ${current_commit})...${last_version} > merged_to_last
+	grep -Eo 'cherry-pick (#\d+)' merged_to_last | cut -d ' ' -f 2 | sed 's/.*/(&)$$/' > cherry_picked_to_last
+	grep -vf cherry_picked_to_last merged_to_current | sort > changelog.md
+	rm merged_to_current
+	rm merged_to_last
+	rm cherry_picked_to_last
 	npx prettier --write changelog.md
 
-gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
-	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > schema-old.yml
+gen-diff:  ## (Release) generate the changelog diff between the current schema and the last version
+	$(eval last_version := $(shell git tag --list 'version/*' --sort 'version:refname' | grep -vE 'rc\d+$$' | tail -1))
+	git show ${last_version}:schema.yml > schema-old.yml
 	docker compose -f scripts/api/compose.yml run --rm --user "${UID}:${GID}" diff \
 		--markdown \
 		/local/diff.md \

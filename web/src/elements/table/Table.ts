@@ -10,6 +10,7 @@ import "#elements/timestamp/ak-timestamp";
 import { BaseTableListRequest, TableLike } from "./shared.js";
 import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
+import { type PaginatedResponse } from "#common/api/responses";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { GroupResult } from "#common/utils";
@@ -26,8 +27,6 @@ import { isInteractiveElement } from "#elements/utils/interactivity";
 import { isEventTargetingListener } from "#elements/utils/pointer";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
-
-import { Pagination } from "@goauthentik/api";
 
 import { kebabCase } from "change-case";
 
@@ -50,12 +49,7 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 export * from "./shared.js";
 export * from "./TableColumn.js";
 
-export interface PaginatedResponse<T> {
-    pagination: Pagination;
-    autocomplete?: { [key: string]: string };
-
-    results: Array<T>;
-}
+export type { PaginatedResponse };
 
 export function hasPrimaryKey<T extends string | number = string | number>(
     item: object,
@@ -90,7 +84,13 @@ export abstract class Table<T extends object>
 
     //#region Abstract members
 
+    /**
+     * The API endpoint to fetch data from.
+     *
+     * @abstract
+     */
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+
     /**
      * The columns to display in the table.
      *
@@ -365,7 +365,7 @@ export abstract class Table<T extends object>
     /**
      * Fetch data from the API endpoint.
      *
-     * @see {@linkcode Table.apiEndpoint}
+     * @see {@linkcode apiEndpoint}
      * @todo Make this protected.
      */
     public async fetch(): Promise<void> {
@@ -753,7 +753,7 @@ export abstract class Table<T extends object>
 
     //#region Toolbar
 
-    protected renderToolbar(): TemplateResult {
+    protected renderToolbar(): SlottedTemplateResult {
         return html`${this.renderObjectCreate()}
             <ak-spinner-button .callAction=${this.#refreshListener} class="pf-m-secondary">
                 ${msg("Refresh")}</ak-spinner-button

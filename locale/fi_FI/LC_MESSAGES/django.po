@@ -5,25 +5,72 @@
 # 
 # Translators:
 # Marc Schmitt, 2025
-# Ville Ranki, 2025
-# Jani Hast, 2025
-# MarkoTukiainen, 2025
 # Skyler Mäntysaari, 2025
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2025
+# Viima Veteläinen, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 15:07+0000\n"
-"PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Skyler Mäntysaari, 2025\n"
-"Language-Team: Finnish (https://app.transifex.com/authentik/teams/119923/fi/)\n"
+"POT-Creation-Date: 2026-02-10 19:27+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Viima Veteläinen, 2026\n"
+"Language-Team: Finnish (Finland) (https://app.transifex.com/authentik/teams/119923/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr "Tiedoston koko ({file.size}B) ylittää suurimman sallitun. "
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot be empty"
+msgstr "Tiedoston nimi ei voi olla tyhjä"
+
+#: authentik/admin/files/validation.py
+#, python-format
+msgid ""
+"File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
+msgstr ""
+"Tiedostonimi saa sisältää vain kirjaimia (a-z, A-Z), numeroita (0-9), "
+"pisteitä (.), viivoja (-), alaviivoja (_), kauttaviivoja (/), ja korvautuvan"
+" tekstin %(theme)s teemakohtaisille tiedostoille"
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot contain duplicate /"
+msgstr "Tiedoston nimi ei voi sisältää useaa /"
+
+#: authentik/admin/files/validation.py
+msgid "Absolute paths are not allowed"
+msgstr "Absoluuttiset polut eivät ole sallittuja"
+
+#: authentik/admin/files/validation.py
+msgid "Parent directory references ('..') are not allowed"
+msgstr "Viittaukset ylätason hakemistoon ('..') eivät ole sallittuja"
+
+#: authentik/admin/files/validation.py
+msgid "Paths cannot start with '.'"
+msgstr "Polut eivät voi alkaa merkillä '.'"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr ""
+"Tiedoston nimi on liian pitkä (enintään {MAX_FILE_NAME_LENGTH} merkkiä)"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr ""
+"Polun osa liian pitkä (korkeintaan {MAX_PATH_COMPONENT_LENGTH} merkkiä)"
 
 #: authentik/admin/models.py
 msgid "Version history"
@@ -150,6 +197,37 @@ msgstr "Brändi"
 msgid "Brands"
 msgstr "Brändit"
 
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "Tiivistetyn käyttäjän ID:n perusteella"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "Käyttäjän ID:n perusteella"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "Käyttäjän UUID:n perusteella"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "Käyttäjätunnuksen perusteella"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr ""
+"Käyttäjän sähköpostiosoitteen perusteella. Tätä suositellaan ennemmin kuin "
+"UPN-menetelmän käyttöä."
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"Käyttäjän UPNn perusteella. Toimii ainoastaan, jos käyttäjällä on "
+"'upn'-attribuutti asetettu. Käytä tätä ainoastaan, jos sinulla on eri "
+"verkkotunnus UPN:ssä ja sähköpostissa."
+
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "Käyttäjällä ei ole pääsyä sovellukseen."
@@ -159,10 +237,6 @@ msgstr "Käyttäjällä ei ole pääsyä sovellukseen."
 msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 "Polkutunniste '{slug}' on varattu, eikä sitä voi käyttää sovelluksissa."
-
-#: authentik/core/api/groups.py
-msgid "Cannot set group as parent of itself."
-msgstr "Ryhmää ei voi asettaa itsensä ylätasoksi."
 
 #: authentik/core/api/providers.py
 msgid ""
@@ -188,6 +262,34 @@ msgid "No empty segments in user path allowed."
 msgstr "Tyhjiä segmenttejä käyttäjäpolussa ei sallita."
 
 #: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr "Sisäisen palvelukäyttäjän tyyppiä ei voi vaihtaa."
+
+#: authentik/core/api/users.py
+msgid "Setting a user to internal service account is not allowed."
+msgstr "Käyttäjän tyypiksi ei voi asettaa sisäistä palvelukäyttäjää."
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr "Sisäisiä palvelukäyttäjiä ei voi muokata"
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr "suodatin: JSON:in parsiminen epäonnistui"
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr "suodatin: arvon tulee olla avain:arvo mäppäys"
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr "Palautusprosessia ei ole valittu."
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr "Palautusprosessi ei päde käyttäjään"
+
+#: authentik/core/api/users.py
 msgid "A user/group with these details already exists"
 msgstr "Käyttäjä/ryhmä näillä tiedoilla on jo olemassa"
 
@@ -198,6 +300,14 @@ msgstr "Käyttäjän luonti ei onnistunut"
 #: authentik/core/api/users.py
 msgid "Unknown error occurred"
 msgstr "Tapahtui tuntematon virhe"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr "Käyttäjällä ei ole sähköpostiosoitetta."
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr "Sähköpostivaihetta ei löydetty."
 
 #: authentik/core/api/users.py
 msgid "This field is required."
@@ -236,11 +346,19 @@ msgid "Disable superuser status"
 msgstr "Ota pääkäyttäjä-tila pois käytöstä"
 
 #: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr "Käyttäjän näytettävä nimi"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
-#: authentik/providers/saml/models.py authentik/rbac/models.py
+#: authentik/providers/saml/models.py
 msgid "User"
 msgstr "Käyttäjä"
 
@@ -256,14 +374,6 @@ msgstr "Nollaa salasana"
 #: authentik/core/models.py
 msgid "Can impersonate other users"
 msgstr "Voi esiintyä toisina käyttäjinä"
-
-#: authentik/core/models.py
-msgid "Can assign permissions to users"
-msgstr "Voi antaa käyttöoikeuksia toisille käyttäjille"
-
-#: authentik/core/models.py
-msgid "Can unassign permissions from users"
-msgstr "Voi poistaa käyttöoikeuksia toisilta käyttäjiltä"
 
 #: authentik/core/models.py
 msgid "Can preview user data sent to providers"
@@ -387,6 +497,8 @@ msgid ""
 "When enabled, this source will be displayed as a prominent button on the "
 "login page, instead of a small icon."
 msgstr ""
+"Kun käytössä, lähde näytetään silmiinpistävänä nappina kirjautumissivulla, "
+"pienen kuvakkeen sijaan."
 
 #: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
@@ -501,7 +613,9 @@ msgstr "Siirry etusivulle"
 msgid "Powered by authentik"
 msgstr "Käyttää authtentikiä"
 
-#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
 #: authentik/providers/saml/views/sso.py
 #, python-format
@@ -524,6 +638,14 @@ msgstr "rsa"
 msgid "ecdsa"
 msgstr "ecdsa"
 
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr "Ed25519"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr "Ed448"
+
 #: authentik/crypto/models.py
 msgid "RSA"
 msgstr "RSA"
@@ -535,14 +657,6 @@ msgstr "Elliptinen käyrä"
 #: authentik/crypto/models.py
 msgid "DSA"
 msgstr "DSA"
-
-#: authentik/crypto/models.py
-msgid "Ed25519"
-msgstr "Ed25519"
-
-#: authentik/crypto/models.py
-msgid "Ed448"
-msgstr "Ed448"
 
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
@@ -557,6 +671,30 @@ msgstr ""
 "avainparia salaukseen."
 
 #: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr "Avaimen algoritmin tyyppi tunnistettu varmenteen julkisesta avaimesta"
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr "Varmenteen vanhenemispäivä"
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr "Varmenteen subjekti RFC4514 merkkijonona"
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr "Varmenteen SHA256 sormenjälki"
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr "Varmenteen SHA1 sormenjälki"
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr ""
+
+#: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
 msgstr "Sertifikaatti-avainpari"
 
@@ -564,13 +702,21 @@ msgstr "Sertifikaatti-avainpari"
 msgid "Certificate-Key Pairs"
 msgstr "Sertifikaatti-avainparit"
 
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr ""
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
+msgstr ""
+
 #: authentik/crypto/tasks.py
 msgid "Discover, import and update certificates from the filesystem."
 msgstr "Havaitse, tuo ja päivitä sertifikaatteja levyjärjestelmästä."
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Selected platform not supported"
-msgstr ""
+msgstr "Valittu alusta ei ole tuettu"
 
 #: authentik/endpoints/connectors/agent/api/connectors.py
 msgid "Token is expired"
@@ -622,13 +768,23 @@ msgstr ""
 msgid "Apple Nonces"
 msgstr ""
 
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr ""
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+
 #: authentik/endpoints/models.py
 msgid "Device"
 msgstr "Laite"
 
 #: authentik/endpoints/models.py
 msgid "Devices"
-msgstr ""
+msgstr "Laitteet"
 
 #: authentik/endpoints/models.py
 msgid "Device User binding"
@@ -662,6 +818,14 @@ msgstr ""
 msgid "Device access groups"
 msgstr ""
 
+#: authentik/endpoints/models.py
+msgid "Endpoint Stage"
+msgstr ""
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stages"
+msgstr ""
+
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
 msgstr ""
@@ -669,6 +833,99 @@ msgstr ""
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
 msgstr "Tämän objektin luontiin/päivittämiseen tarvitaan Enterprise-versiota."
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Määritä lähetettäviä lisäotsikkotietoja. Kytkennän tulisi palauttaa avain-"
+"arvopareja."
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr ""
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Object does not exist"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/api/rules.py
+msgid "Only one type-wide rule for each object type is allowed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Reviewed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Overdue"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid "Access review is due for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Dispatch tasks to validate lifecycle rules."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Apply lifecycle rule."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License"
@@ -792,6 +1049,16 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/tasks.py
 msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
 "Dispatch syncs for a direct object (user, group) for Google Workspace "
 "providers."
 msgstr ""
@@ -863,6 +1130,16 @@ msgstr ""
 "Microsoft Entra -palveluntarjoajille."
 
 #: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid "Sync a related object (memberships) for Microsoft Entra provider."
 msgstr ""
 "Sykronoi liittyvä objekti (jäsenyydet) Microsoft Entra -palveluntarjoajalla."
@@ -927,6 +1204,42 @@ msgstr "Lähetä SSF-tapahtumia."
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
 msgstr "Lähetä SSF-tapahtuma."
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "Ohjataan sovellukseen {app}..."
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr ""
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr "Lataa"
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
@@ -1038,14 +1351,6 @@ msgid ""
 msgstr ""
 "Mukauta pyynnön sisältöä. Kytkennän tulisi palauttaa JSON-serialisoitavaa "
 "dataa."
-
-#: authentik/events/models.py
-msgid ""
-"Configure additional headers to be sent. Mapping should return a dictionary "
-"of key-value pairs"
-msgstr ""
-"Määritä lähetettäviä lisäotsikkotietoja. Kytkennän tulisi palauttaa avain-"
-"arvopareja."
 
 #: authentik/events/models.py
 msgid "Severity"
@@ -1321,11 +1626,15 @@ msgstr "Prosessin tunnisteet"
 
 #: authentik/flows/templates/if/flow.html
 msgid "Site footer"
-msgstr ""
+msgstr "Sivuston alatunniste"
 
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "Virheellinen seuraava URL"
+
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Controls the number of objects synced in a single task"
@@ -1821,37 +2130,6 @@ msgstr "Hae koko LDAP-hakemistosta"
 msgid "Invalid Regex Pattern: {url}"
 msgstr "Virheellinen regex-kaava: {url}"
 
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the Hashed User ID"
-msgstr "Tiivistetyn käyttäjän ID:n perusteella"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user ID"
-msgstr "Käyttäjän ID:n perusteella"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on user UUID"
-msgstr "Käyttäjän UUID:n perusteella"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the username"
-msgstr "Käyttäjätunnuksen perusteella"
-
-#: authentik/providers/oauth2/constants.py
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr ""
-"Käyttäjän sähköpostiosoitteen perusteella. Tätä suositellaan ennemmin kuin "
-"UPN-menetelmän käyttöä."
-
-#: authentik/providers/oauth2/constants.py
-msgid ""
-"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
-"this method only if you have different UPN and Mail domains."
-msgstr ""
-"Käyttäjän UPNn perusteella. Toimii ainoastaan, jos käyttäjällä on "
-"'upn'-attribuutti asetettu. Käytä tätä ainoastaan, jos sinulla on eri "
-"verkkotunnus UPN:ssä ja sähköpostissa."
-
 #: authentik/providers/oauth2/models.py
 msgid "Confidential"
 msgstr "Luottamuksellinen"
@@ -2132,12 +2410,6 @@ msgstr ""
 "Käsittele taustakanavan uloskirjautumisnotifikaatiot, jotka on lähetetty "
 "signaalilla"
 
-#: authentik/providers/oauth2/views/authorize.py
-#: authentik/providers/saml/views/flows.py
-#, python-brace-format
-msgid "Redirecting to {app}..."
-msgstr "Ohjataan sovellukseen {app}..."
-
 #: authentik/providers/oauth2/views/device_init.py
 msgid "Invalid code"
 msgstr "Virheellinen koodi"
@@ -2345,6 +2617,10 @@ msgid ""
 msgstr ""
 "Kun allekirjoitusavainpari on valittu, ainakin yksi vaihtoehdoista "
 "'Allekirjoita väite' ja 'Allekirjoita vastaus' täytyy olla valittuna."
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr ""
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
@@ -2633,6 +2909,10 @@ msgid "Salesforce"
 msgstr "Salesforce"
 
 #: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "URL-osoitteen perusosa SCIM-pyyntöjä varten, päättyy yleensä /v2"
 
@@ -2656,6 +2936,12 @@ msgstr "SCIM-yhteensopivuustila"
 msgid "Alter authentik behavior for vendor-specific SCIM implementations."
 msgstr ""
 "Muuta authentikin toimintaa valmistajakohtaisten SCIM-toteutusten osalta."
+
+#: authentik/providers/scim/models.py
+msgid ""
+"Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
+"disable."
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -2692,6 +2978,14 @@ msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
 msgstr ""
 "Käynnistä suoraan kytketyn objektin (käyttäjä, ryhmä) synkronoinnit SCIM-"
 "palveluntarjoajille."
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr ""
 
 #: authentik/providers/scim/tasks.py
 msgid "Sync a related object (memberships) for SCIM provider."
@@ -2746,6 +3040,14 @@ msgstr "Voi katsoa järjestelmäasetuksia"
 #: authentik/rbac/models.py
 msgid "Can edit system settings"
 msgstr "Voi muokata järjestelmäasetuksia"
+
+#: authentik/rbac/models.py
+msgid "Can view media files"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can manage media files"
+msgstr ""
 
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
@@ -2998,6 +3300,10 @@ msgstr ""
 " mutta joita ei enää löydy lähteestä."
 
 #: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP-lähde"
 
@@ -3192,6 +3498,14 @@ msgid "Discord OAuth Sources"
 msgstr "Discord OAuth-lähteet"
 
 #: authentik/sources/oauth/models.py
+msgid "Slack OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
 msgstr "Patreon OAuth-lähde"
 
@@ -3254,6 +3568,14 @@ msgstr "Reddit OAuth-lähde"
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Sources"
 msgstr "Reddit OAuth-lähteet"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
@@ -3490,6 +3812,10 @@ msgstr "SCIM-lähteen ominaisuuskytkentä"
 msgid "SCIM Source Property Mappings"
 msgstr "SCIM-lähteen ominaisuuskytkennät"
 
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr "Tämä Telegram-tili on jo yhdistetty toiseen käyttäjään."
+
 #: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
 msgid "Telegram bot username"
 msgstr "Telegram-botin käyttäjänimi"
@@ -3534,11 +3860,11 @@ msgstr "Ryhmän Telegram-lähteen yhteys"
 msgid "Group Telegram Source Connections"
 msgstr "Ryhmän Telegram-lähteen yhteydet"
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Authentication date is too old"
 msgstr "Todennuspäivämäärä on liian vanha"
 
-#: authentik/sources/telegram/stage.py
+#: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
 msgstr "Virheellinen tiiviste"
 
@@ -4219,6 +4545,10 @@ msgid "Identification Stages"
 msgstr "Tunnistautumisvaiheet"
 
 #: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr ""
+
+#: authentik/stages/identification/stage.py
 msgid "Failed to authenticate."
 msgstr "Todentaminen epäonnistui."
 
@@ -4664,6 +4994,15 @@ msgid "Default token length"
 msgstr "Tunnisteen oletuspituus"
 
 #: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr ""
+"Sivun oletusarvoinen koko API-vastauksissa, jos kokoa ei erikseen pyydetty."
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr "Sivun enimmäiskoko"
+
+#: authentik/tenants/models.py
 msgid "Tenant"
 msgstr "Haltija"
 
@@ -4678,6 +5017,10 @@ msgstr "Verkkotunnus"
 #: authentik/tenants/models.py
 msgid "Domains"
 msgstr "Verkkotunnukset"
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
+msgstr ""
 
 #: packages/django-channels-postgres/django_channels_postgres/models.py
 msgid "Group channel"
