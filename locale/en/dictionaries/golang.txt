@@ -1,0 +1,21 @@
+# Golang-specific terms
+gounicorn
+pems
+connm
+Debugf
+Infof
+Warnf
+layeh
+Warningf
+goldap
+goauthentikio
+singlevg
+accsp
+uapisp
+GORMDB
+golangci
+gorm
+gorm
+gorm*
+logger
+

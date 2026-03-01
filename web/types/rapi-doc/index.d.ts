@@ -2,7 +2,7 @@ declare module "rapidoc" {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     type Booleanish = "true" | "false";
 
-    // cSpell:disable
+    // spellchecker:disable
     /**
      * Web Component based Swagger & OpenAPI Spec Viewer
      *
@@ -73,7 +73,7 @@ declare module "rapidoc" {
      * @attr {string} api-key-value - Value of the API key (can be overwritten from UI).
      * @attr {"omit" | "same-origin" | "include"} fetch-credentials - Credentials mode for cross-domain calls.
      */
-    // cSpell:enable
+    // spellchecker:enable
     class RapiDoc extends HTMLElement {
         /**
          * Programmatically load a spec.

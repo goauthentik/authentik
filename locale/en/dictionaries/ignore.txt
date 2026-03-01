@@ -1,0 +1,25 @@
+# Ignored terms that should not be suggested by the spell checker.
+aaguids
+ASGI
+asgi
+azuread
+Azuread
+buildx
+goauthentik
+lxml
+pässwörd
+phlebotinum
+qewr
+quox
+reinject
+tmpfs
+trixie
+XFCC
+xghcr
+xoxb
+xoxe
+xoxp
+foo
+bar
+baz
+qux
