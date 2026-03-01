@@ -1,5 +1,6 @@
 """authentik flows app config"""
 
+from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -27,6 +28,7 @@ class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others
 
     default = False
     visibility = "public"
+    description = _("Refresh other tabs after successful authentication")
 
 
 class AuthentikFlowsConfig(ManagedAppConfig):

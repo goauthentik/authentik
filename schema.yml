@@ -36801,13 +36801,22 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
@@ -50457,13 +50466,22 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
@@ -55156,13 +55174,22 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
@@ -55234,13 +55261,22 @@ components:
         flags:
           type: object
           properties:
+            core_default_app_access:
+              type: boolean
+              description: Configure if applications without any policy/group/user
+                bindings should be accessible to any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
+              description: Include additional information in audit logs, may incur
+                a performance penalty.
             policies_buffered_access_view:
               type: boolean
+              description: Allow concurrent authorization requests to be buffered.
             flows_refresh_others:
               type: boolean
+              description: Refresh other tabs after successful authentication
           required:
+          - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
           - policies_buffered_access_view
