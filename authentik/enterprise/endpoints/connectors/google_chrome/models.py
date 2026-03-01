@@ -62,8 +62,8 @@ class GoogleChromeConnector(Connector):
         return "ak-stage-authenticator-endpoint-gdtc-form"
 
     def __str__(self) -> str:
-        return f"Endpoint Authenticator Google Device Trust Connector Stage {self.name}"
+        return f"Google Device Trust Connector {self.name}"
 
     class Meta:
-        verbose_name = _("Endpoint Authenticator Google Device Trust Connector Stage")
-        verbose_name_plural = _("Endpoint Authenticator Google Device Trust Connector Stages")
+        verbose_name = _("Google Device Trust Connector")
+        verbose_name_plural = _("Google Device Trust Connectors")

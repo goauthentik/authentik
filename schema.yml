@@ -6702,8 +6702,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
+        description: A UUID string identifying this Google Device Trust Connector.
         required: true
       tags:
       - endpoints
@@ -6729,8 +6728,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
+        description: A UUID string identifying this Google Device Trust Connector.
         required: true
       tags:
       - endpoints
@@ -6762,8 +6760,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
+        description: A UUID string identifying this Google Device Trust Connector.
         required: true
       tags:
       - endpoints
@@ -6794,8 +6791,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
+        description: A UUID string identifying this Google Device Trust Connector.
         required: true
       tags:
       - endpoints
@@ -6818,8 +6814,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Endpoint Authenticator Google
-          Device Trust Connector Stage.
+        description: A UUID string identifying this Google Device Trust Connector.
         required: true
       tags:
       - endpoints

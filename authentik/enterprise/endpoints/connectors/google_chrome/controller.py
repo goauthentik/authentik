@@ -109,7 +109,7 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
                 }
             ),
             "vendor": {
-                "chrome.google.com": {
+                self.vendor_identifier(): {
                     "agent_version": raw_signals["browserVersion"],
                     "raw": raw_signals,
                 },

@@ -1,5 +1,6 @@
 import "#admin/endpoints/connectors/agent/AgentConnectorViewPage";
 import "#admin/endpoints/connectors/fleet/FleetConnectorViewPage";
+import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
@@ -46,6 +47,10 @@ export class ConnectorViewPage extends AKElement {
                 return html`<ak-endpoints-connector-fleet-view
                     connectorID=${ifDefined(this.connector.connectorUuid)}
                 ></ak-endpoints-connector-fleet-view>`;
+            case "ak-stage-authenticator-endpoint-gdtc-form":
+                return html`<ak-endpoints-connector-google-chrome-view
+                    connectorID=${ifDefined(this.connector.connectorUuid)}
+                ></ak-endpoints-connector-google-chrome-view>`;
             default:
                 return html`<p>Invalid connector type ${this.connector?.component}</p>`;
         }
