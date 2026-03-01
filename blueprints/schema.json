@@ -9970,6 +9970,13 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
+                },
+                "allowed_provider_tokens": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Allowed provider tokens"
                 }
             },
             "required": []

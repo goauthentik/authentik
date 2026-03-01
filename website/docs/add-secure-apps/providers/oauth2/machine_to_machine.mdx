@@ -152,6 +152,13 @@ Other information that's available in the policy expression context:
 
 If you're authorizing with a JWT, then `request.context["oauth_jwt"]` is available which is the parsed JWT as a dictionary.
 
+## authentik-issued Tokens:ak-version[2026.2]
+
+Token introspection of tokens issued by other OAuth2 providers is disabled by default. To allow this, you can configure which provider's
+tokens can be used at the introspection endpoint.
+
+You can do this in the "Cross-Provider Token Auth" section in the provider configuration.
+
 ## Troubleshooting
 
 ### More detailed error information
@@ -164,7 +171,10 @@ However, more detailed error information can be obtained from the [authentik ser
 
 To use the OAuth introspection endpoint to obtain more information on a token, you must first authenticate to it.
 
-You are only able to introspect a token from the same provider that was used to authenticate, or you must exchange the token for a token from the provider as described above.
+You are only able to introspect a token:
+ - from the same provider that was used to authenticate, or
+ - from a provider listed in "Cross-Provider Token Auth" in the provider configuration, or
+ - you must exchange the token for a token from the provider as described above
 
 ### Event logging
 
