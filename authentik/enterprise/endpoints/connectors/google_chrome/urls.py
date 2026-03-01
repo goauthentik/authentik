@@ -3,7 +3,7 @@
 from django.urls import path
 
 from authentik.enterprise.endpoints.connectors.google_chrome.api import GoogleChromeConnectorViewSet
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.views.dtc import (
+from authentik.enterprise.endpoints.connectors.google_chrome.views.dtc import (
     GoogleChromeDeviceTrustConnector,
 )
 

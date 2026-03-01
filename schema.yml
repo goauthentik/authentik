@@ -44407,7 +44407,6 @@ components:
         arch:
           type: string
       required:
-      - arch
       - family
     OperatingSystemRequest:
       type: object
@@ -44433,7 +44432,6 @@ components:
           type: string
           minLength: 1
       required:
-      - arch
       - family
     OutgoingSyncDeleteAction:
       enum:

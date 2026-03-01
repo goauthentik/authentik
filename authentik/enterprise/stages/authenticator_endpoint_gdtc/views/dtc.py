@@ -9,6 +9,11 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from googleapiclient.discovery import build
 
+from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
+    HEADER_ACCESS_CHALLENGE,
+    HEADER_ACCESS_CHALLENGE_RESPONSE,
+    HEADER_DEVICE_TRUST,
+)
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     AuthenticatorEndpointGDTCStage,
     EndpointDevice,
@@ -18,15 +23,6 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_login.stage import PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE
-
-# Header we get from chrome that initiates verified access
-HEADER_DEVICE_TRUST = "X-Device-Trust"
-# Header we send to the client with the challenge
-HEADER_ACCESS_CHALLENGE = "X-Verified-Access-Challenge"
-# Header we get back from the client that we verify with google
-HEADER_ACCESS_CHALLENGE_RESPONSE = "X-Verified-Access-Challenge-Response"
-# Header value for x-device-trust that initiates the flow
-DEVICE_TRUST_VERIFIED_ACCESS = "VerifiedAccess"
 
 PLAN_CONTEXT_METHOD_ARGS_ENDPOINTS = "endpoints"
 

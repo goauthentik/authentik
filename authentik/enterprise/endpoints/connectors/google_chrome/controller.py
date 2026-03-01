@@ -1,6 +1,6 @@
 from json import dumps, loads
 
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 from googleapiclient.discovery import build
 
@@ -42,10 +42,10 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
     def supported_enrollment_methods(self) -> list[EnrollmentMethods]:
         return [EnrollmentMethods.AUTOMATIC_USER]
 
-    def generate_challenge(self) -> HttpResponseRedirect:
+    def generate_challenge(self, request: HttpRequest) -> HttpResponseRedirect:
         challenge = self.google_client.challenge().generate().execute()
         res = HttpResponseRedirect(
-            self.request.build_absolute_uri(
+            request.build_absolute_uri(
                 reverse("authentik_endpoints_connectors_google_chrome:chrome")
             )
         )
