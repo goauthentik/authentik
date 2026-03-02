@@ -11,7 +11,7 @@ pub(super) async fn metrics_handler(State(state): State<Arc<AppState>>) -> Resul
     state.prometheus.render_to_write(&mut metrics)?;
 
     #[cfg(feature = "core")]
-    if [Mode::Server, Mode::Worker].contains(&Mode::get()) {
+    if Mode::is_core() {
         use axum::http::{
             Request,
             header::{AUTHORIZATION, HOST},

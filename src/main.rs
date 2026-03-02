@@ -1,4 +1,8 @@
-use std::{process::exit, str::FromStr};
+use std::{
+    process::exit,
+    str::FromStr,
+    sync::atomic::{AtomicUsize, Ordering},
+};
 
 use ::tracing::{error, info, trace};
 use argh::FromArgs;
@@ -137,6 +141,11 @@ fn main() -> Result<()> {
     }
 
     ::tokio::runtime::Builder::new_multi_thread()
+        .thread_name_fn(|| {
+            static ATOMIC_ID: AtomicUsize = AtomicUsize::new(0);
+            let id = ATOMIC_ID.fetch_add(1, Ordering::SeqCst);
+            format!("tokio-{id}")
+        })
         .enable_all()
         .build()?
         .block_on(async {

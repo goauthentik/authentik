@@ -1,10 +1,10 @@
-use eyre::Result;
 use std::{
     env,
-    fmt::Display,
     path::PathBuf,
     sync::atomic::{AtomicU8, Ordering},
 };
+
+use eyre::Result;
 
 static MODE: AtomicU8 = AtomicU8::new(0);
 
@@ -25,7 +25,7 @@ pub(crate) enum Mode {
     Proxy = 3,
 }
 
-impl Display for Mode {
+impl std::fmt::Display for Mode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             #[cfg(feature = "core")]
