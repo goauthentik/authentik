@@ -2,6 +2,7 @@ import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
 import { globalAK } from "#common/global";
+import { isLaunchUrlValid } from "#common/utils";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -54,7 +55,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                           </a>
                       `
                     : nothing}
-                ${challenge.applicationLaunchUrl && challenge.applicationName
+                ${isLaunchUrlValid(challenge.applicationLaunchUrl) && challenge.applicationName
                     ? html`
                           <a
                               href="${challenge.applicationLaunchUrl}"
