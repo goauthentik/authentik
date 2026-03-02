@@ -11,6 +11,7 @@
 @import "./base/globals.css";
 @import "./base/common.css";
 @import "./base/placeholder.css";
+@import "./base/modal.css";
 @import "#styles/locales/ja/globals.css";
 @import "#styles/locales/ko/globals.css";
 @import "#styles/locales/zh/globals.css";
