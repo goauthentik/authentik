@@ -53,6 +53,10 @@ export const providerTypePriority: ProviderModelNameEnum[] = [
 
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
+    protected createRenderRoot(): HTMLElement | DocumentFragment {
+        return this;
+    }
+
     @state()
     protected wizard: ApplicationWizardState = freshWizardState();
 
