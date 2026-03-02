@@ -426,12 +426,14 @@ class FindObject(Find):
 class Condition(YAMLTag):
     """Convert all values to a single boolean"""
 
-    mode: Literal["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
+    mode: Literal["EQ", "NEQ", "AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
     args: list[Any]
 
     _COMPARATORS = {
         # Using all and any here instead of from operator import iand, ior
         # to improve performance
+        "EQ": lambda args: all(x == args[0] for x in args),
+        "NEQ": lambda args: not all(x == args[0] for x in args),
         "AND": all,
         "NAND": lambda args: not all(args),
         "OR": any,
