@@ -1,13 +1,8 @@
-use std::{
-    ffi::CString,
-    process::{ExitCode, ExitStatus, exit},
-    str::FromStr,
-};
+use std::{process::exit, str::FromStr};
 
 use ::tracing::{error, info, trace};
-use argh::{DynamicSubCommand, FromArgs, SubCommands};
+use argh::FromArgs;
 use eyre::{Result, eyre};
-use nix::unistd::execvp;
 
 use crate::{arbiter::Tasks, config::ConfigManager, mode::Mode};
 

@@ -80,7 +80,7 @@ elif [[ "$1" == "test-all" ]]; then
     prepare_debug
     chmod 777 /root
     check_if_root_and_run manage test authentik
-elif [[ "$1" == "server" ]] || [[ "$1" == "worker" ]] || [[ "$1" == "proxy" ]] || [[ "$1" == "manage" ]]; then
+elif [[ "$1" == "allinone" ]] || [[ "$1" == "server" ]] || [[ "$1" == "worker" ]] || [[ "$1" == "proxy" ]] || [[ "$1" == "manage" ]]; then
     wait_for_db
     check_if_root_and_run "$@"
 else

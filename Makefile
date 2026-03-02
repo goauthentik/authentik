@@ -111,7 +111,6 @@ run:  ## Run the authentik server and worker, without auto reloading
 	$(UV) run ak allinone
 
 run-watch:  ## Run the authentik server and worker, with auto reloading
-	$(UV) run
 	$(UV) run watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- ak allinone
 
 core-i18n-extract:
