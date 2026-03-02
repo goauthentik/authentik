@@ -207,6 +207,15 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		}
 	}
 
+	// search_path may already be present via pgx/libpq inherited defaults (e.g. service files).
+	// Always remove it from startup RuntimeParams; apply it via AfterConnect instead.
+	if inheritedSearchPath, hasInheritedSearchPath := connConfig.RuntimeParams["search_path"]; hasInheritedSearchPath {
+		if effectiveSearchPath == "" {
+			effectiveSearchPath = inheritedSearchPath
+		}
+		delete(connConfig.RuntimeParams, "search_path")
+	}
+
 	// Set search_path after connection startup to avoid startup-parameter issues with PgBouncer.
 	if effectiveSearchPath != "" {
 		connConfig.AfterConnect = func(ctx context.Context, pgConn *pgconn.PgConn) error {
