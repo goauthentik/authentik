@@ -8978,7 +8978,7 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
   /lifecycle/iterations/latest/{content_type}/{object_id}/:
     get:
-      operationId: lifecycle_iterations_latest_retrieve
+      operationId: lifecycle_iterations_list_latest
       description: |-
         Mixin to validate that a valid enterprise license
         exists before allowing to save the object
@@ -8995,6 +8995,12 @@ paths:
           type: string
           pattern: ^[^/]+$
         required: true
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: user_is_reviewer
+        schema:
+          type: boolean
       tags:
       - lifecycle
       security:
@@ -9004,7 +9010,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LifecycleIteration'
+                type: array
+                items:
+                  $ref: '#/components/schemas/LifecycleIteration'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -42476,35 +42484,24 @@ components:
           items:
             $ref: '#/components/schemas/Review'
           readOnly: true
+        rule:
+          allOf:
+          - $ref: '#/components/schemas/RelatedRule'
+          readOnly: true
         user_can_review:
           type: boolean
-          readOnly: true
-        reviewer_groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewerGroup'
-          readOnly: true
-        min_reviewers:
-          type: integer
-          readOnly: true
-        reviewers:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReviewerUser'
           readOnly: true
       required:
       - content_type
       - grace_period_end
       - id
-      - min_reviewers
       - next_review_date
       - object_admin_url
       - object_id
       - object_verbose
       - opened_on
-      - reviewer_groups
-      - reviewers
       - reviews
+      - rule
       - state
       - user_can_review
     LifecycleIterationRequest:
@@ -53252,6 +53249,35 @@ components:
       - group_uuid
       - name
       - pk
+    RelatedRule:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        reviewer_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewerGroup'
+          readOnly: true
+        min_reviewers:
+          type: integer
+          readOnly: true
+        reviewers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewerUser'
+          readOnly: true
+      required:
+      - min_reviewers
+      - name
+      - reviewer_groups
+      - reviewers
     Reputation:
       type: object
       description: Reputation Serializer

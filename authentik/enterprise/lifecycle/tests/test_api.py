@@ -231,7 +231,7 @@ class TestIterationAPI(APITestCase):
 
         response = self.client.get(
             reverse(
-                "authentik_api:lifecycleiteration-latest-iteration",
+                "authentik_api:lifecycleiteration-latest-iterations",
                 kwargs={
                     "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                     "object_id": str(self.app.pk),
@@ -239,19 +239,20 @@ class TestIterationAPI(APITestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["object_id"], str(self.app.pk))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["object_id"], str(self.app.pk))
 
     def test_latest_iteration_not_found(self):
         response = self.client.get(
             reverse(
-                "authentik_api:lifecycleiteration-latest-iteration",
+                "authentik_api:lifecycleiteration-latest-iterations",
                 kwargs={
                     "content_type": f"{self.content_type.app_label}.{self.content_type.model}",
                     "object_id": "00000000-0000-0000-0000-000000000000",
                 },
             )
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data, [])
 
     def test_iteration_includes_user_can_review(self):
         rule = LifecycleRule.objects.create(
