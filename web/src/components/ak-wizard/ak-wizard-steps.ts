@@ -7,7 +7,7 @@ import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
 
 import { Context, ContextProvider } from "@lit/context";
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 /**
@@ -25,6 +25,14 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
+    public static styles = [
+        css`
+            :host {
+                display: block;
+            }
+        `,
+    ];
+
     @property({ type: String, attribute: true })
     public currentStep?: string;
 
@@ -97,6 +105,10 @@ export class WizardStepsManager extends AKElement {
 
     @bound
     onSlotchange(ev: Event) {
+        console.debug(
+            "Slot change detected in WizardStepsManager; recalculating slots and step labels.",
+            ev,
+        );
         ev.stopPropagation();
         this.findSlots();
         this.findSlot(this.currentStep);
