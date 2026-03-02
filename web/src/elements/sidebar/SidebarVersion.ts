@@ -2,7 +2,6 @@ import { globalAK } from "#common/global";
 import { DefaultBrand } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
-import { ModalButton } from "#elements/buttons/ModalButton";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithVersion } from "#elements/mixins/version";
 
@@ -17,13 +16,6 @@ import { customElement } from "lit/decorators.js";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
-
-/**
- * @deprecated Remove after native modals.
- */
-interface AboutDialogParent extends AKElement {
-    aboutModal?: ModalButton;
-}
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
