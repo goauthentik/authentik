@@ -1,6 +1,16 @@
-use std::sync::atomic::{AtomicU8, Ordering};
+use eyre::Result;
+use std::{
+    env,
+    fmt::Display,
+    path::PathBuf,
+    sync::atomic::{AtomicU8, Ordering},
+};
 
 static MODE: AtomicU8 = AtomicU8::new(0);
+
+fn mode_path() -> PathBuf {
+    env::temp_dir().join("authentik-mode")
+}
 
 #[derive(PartialEq)]
 #[repr(u8)]
@@ -13,6 +23,21 @@ pub(crate) enum Mode {
     Worker = 2,
     #[cfg(feature = "proxy")]
     Proxy = 3,
+}
+
+impl Display for Mode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            #[cfg(feature = "core")]
+            Self::AllInOne => write!(f, "allinone"),
+            #[cfg(feature = "core")]
+            Self::Server => write!(f, "server"),
+            #[cfg(feature = "core")]
+            Self::Worker => write!(f, "worker"),
+            #[cfg(feature = "proxy")]
+            Self::Proxy => write!(f, "proxy"),
+        }
+    }
 }
 
 impl Mode {
@@ -30,8 +55,10 @@ impl Mode {
         }
     }
 
-    pub(crate) fn set(mode: Self) {
+    pub(crate) fn set(mode: Self) -> Result<()> {
+        std::fs::write(mode_path(), mode.to_string())?;
         MODE.store(mode as u8, Ordering::SeqCst);
+        Ok(())
     }
 
     pub(crate) fn is_core() -> bool {

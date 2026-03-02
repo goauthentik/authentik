@@ -84,13 +84,13 @@ fn main() -> Result<()> {
 
     match &cli.command {
         #[cfg(feature = "core")]
-        Command::AllInOne(_) => Mode::set(Mode::AllInOne),
+        Command::AllInOne(_) => Mode::set(Mode::AllInOne)?,
         #[cfg(feature = "core")]
-        Command::Server(_) => Mode::set(Mode::Server),
+        Command::Server(_) => Mode::set(Mode::Server)?,
         #[cfg(feature = "core")]
-        Command::Worker(_) => Mode::set(Mode::Worker),
+        Command::Worker(_) => Mode::set(Mode::Worker)?,
         #[cfg(feature = "proxy")]
-        Command::Proxy(_) => Mode::set(Mode::Proxy),
+        Command::Proxy(_) => Mode::set(Mode::Proxy)?,
         #[cfg(feature = "core")]
         Command::Manage(args) => {
             let mut process = std::process::Command::new("python")
