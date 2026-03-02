@@ -15,6 +15,7 @@ import type {
     ChallengeTypes,
     ConsentChallenge,
     CurrentBrand,
+    FlowChallengeResponseRequest,
     PasswordChallenge,
     SessionEndChallenge,
     UserLoginChallenge,
@@ -58,6 +59,19 @@ export interface SubmitOptions {
     invisible: boolean;
 }
 
+// Make the "component" field optional, since the Executor controls what component type is being
+// manipulated.
+type PartialComponent<T> = T extends { component: infer C } & infer Rest
+    ? { component?: C } & Omit<Rest, "component">
+    : never;
+
+export type FlowChallengeResponseRequestBody = PartialComponent<FlowChallengeResponseRequest>;
+
+export interface SubmitRequest {
+    payload: FlowChallengeResponseRequestBody;
+    options: SubmitOptions;
+}
+
 export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
@@ -74,6 +88,12 @@ export interface IBaseStage<Tin extends StageChallengeLike, Tout = never>
     challenge: Tin | null;
     submitForm: (event?: SubmitEvent, defaults?: Tout) => Promise<boolean>;
     reset?(): void;
+}
+
+export interface ExecutorMessage {
+    source?: string;
+    context?: string;
+    message: string;
 }
 
 export type BaseStageConstructor<
