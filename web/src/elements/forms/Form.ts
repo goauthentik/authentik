@@ -239,11 +239,11 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     @property({ type: String })
     public autocomplete?: Exclude<AutoFillBase, "">;
 
-    @property({ type: String })
-    public headline?: string;
+    @property({ type: String, useDefault: true })
+    public headline?: string | null = null;
 
-    @property({ type: String, attribute: "action-label" })
-    public actionLabel?: string;
+    @property({ type: String, attribute: "action-label", useDefault: true })
+    public actionLabel: string | null = null;
 
     //#endregion
 
@@ -253,6 +253,9 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     @state()
     protected nonFieldErrors: readonly string[] | null = null;
+
+    protected entitySingular?: string;
+    protected entityPlural?: string;
 
     static styles: CSSResult[] = [
         PFCard,
@@ -315,6 +318,20 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
             description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
             level: MessageLevel.error,
         };
+    }
+
+    /**
+     * An overridable method for formatting the form headline.
+     */
+    protected formatHeadline(headline = this.headline): string {
+        return headline || "";
+    }
+
+    /**
+     * An overridable method for formatting the submit button label.
+     */
+    protected formatSubmitLabel(actionLabel = this.actionLabel): string {
+        return actionLabel || msg("Submit");
     }
 
     //#region Public methods
@@ -512,20 +529,22 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * An overridable method for rendering the form heading.
+     * An overridable method for rendering the form header.
      *
      * @remarks
      * If this form is slotted, such as in a modal, this method will not render anything,
-     * allowing the slot parent to provide the heading in a more visually appropriate manner.
+     * allowing the slot parent to provide the header in a more visually appropriate manner.
      */
-    protected renderHeading(): SlottedTemplateResult {
-        return guard([this.assignedSlot, this.headline], () => {
-            if (this.assignedSlot) {
+    public renderHeader(force?: boolean): SlottedTemplateResult {
+        const { assignedSlot, headline } = this;
+
+        return guard([force, assignedSlot, headline], () => {
+            if (!force && assignedSlot && !assignedSlot.name) {
                 return nothing;
             }
 
             return html`<header>
-                <h1 class="pf-c-title pf-m-2xl">${this.headline}</h1>
+                <h1 class="pf-c-title pf-m-2xl">${this.formatHeadline(headline)}</h1>
             </header>`;
         });
     }
@@ -537,23 +556,33 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * If this form is slotted, such as in a modal, this method will not render anything,
      * allowing the slot parent to provide the actions in a more visually appropriate manner.
      */
-    protected renderActions(): SlottedTemplateResult {
-        return guard([this.assignedSlot], () => {
-            if (this.assignedSlot) {
+    public renderActions(force?: boolean): SlottedTemplateResult {
+        const { assignedSlot, actionLabel } = this;
+
+        return guard([force, assignedSlot, actionLabel], () => {
+            if (!force && assignedSlot && !assignedSlot.name) {
                 return nothing;
             }
 
             return html`<fieldset part="form-actions" class="pf-c-card__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <button
-                    type="submit"
-                    form="form"
+                    type="button"
                     class="pf-c-button pf-m-primary"
+                    @click=${(event: Event) => {
+                        this.submit(
+                            new SubmitEvent("submit", {
+                                submitter: event.currentTarget as HTMLButtonElement,
+                                cancelable: true,
+                                bubbles: true,
+                                composed: true,
+                            }),
+                        );
+                    }}
                     part="submit-button"
-                    formmethod="dialog"
                     aria-description=${msg("Submit action")}
                 >
-                    ${this.actionLabel || msg("Submit")}
+                    ${this.formatSubmitLabel(actionLabel)}
                 </button>
             </fieldset>`;
         });
@@ -563,8 +592,12 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
      * An overridable method for rendering the form when it is visible.
      */
     protected renderVisible(): SlottedTemplateResult {
-        return html`${this.renderHeading()}${this.renderNonFieldErrors()}
-        ${this.renderFormWrapper()}${this.renderActions()}`;
+        return [
+            this.renderHeader(),
+            this.renderNonFieldErrors(),
+            this.renderFormWrapper(),
+            this.renderActions(),
+        ];
     }
 
     protected override render(): SlottedTemplateResult {

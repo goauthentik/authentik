@@ -1,5 +1,10 @@
 import { globalAK } from "#common/global";
-import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
+import {
+    createCSSResult,
+    createStyleSheetUnsafe,
+    setAdoptedStyleSheets,
+    StyleRoot,
+} from "#common/stylesheets";
 import { applyUITheme, ResolvedUITheme, resolveUITheme, ThemeChangeEvent } from "#common/theme";
 
 import AKBase from "#styles/authentik/base.css" with { type: "bundled-text" };
@@ -34,7 +39,22 @@ export class AKElement extends LitElement implements AKElementProps {
 
     public static styles?: Array<CSSResult | CSSModule>;
 
+    /**
+     * Host styles are styles that are applied to the element's render root,
+     * but are not scoped to the element itself.
+     *
+     * @remarks
+     *
+     * This is useful if the element is a wrapper around a third-party component
+     * that requires styles to be applied to the host, such as Patternfly's modals.
+     */
+    public static hostStyles?: Array<CSSResult | CSSModule>;
+
+    private static hostStyleSheets: CSSStyleSheet[] | null = null;
+
     protected static override finalizeStyles(styles: CSSResultGroup = []): CSSResultOrNative[] {
+        this.hostStyleSheets = this.hostStyles ? this.hostStyles.map(createStyleSheetUnsafe) : null;
+
         const elementStyles = [
             $PFBase,
             // Route around TSC`s known-to-fail typechecking of `.flat(Infinity)`. Removes types.
@@ -102,10 +122,35 @@ export class AKElement extends LitElement implements AKElementProps {
 
             this.activeTheme = preferredColorScheme;
         }
+
+        const rootNode = this.getRootNode();
+
+        if (rootNode instanceof ShadowRoot) {
+            const { hostStyleSheets } = this.constructor as typeof AKElement;
+
+            if (hostStyleSheets) {
+                setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
+                    return [...currentStyleSheets, ...hostStyleSheets];
+                });
+            }
+        }
     }
 
     public override disconnectedCallback(): void {
         this.#themeAbortController?.abort();
+
+        const rootNode = this.getRootNode();
+
+        if (rootNode instanceof ShadowRoot) {
+            const { hostStyleSheets } = this.constructor as typeof AKElement;
+
+            if (hostStyleSheets) {
+                setAdoptedStyleSheets(rootNode, (currentStyleSheets) => {
+                    return currentStyleSheets.filter((sheet) => !hostStyleSheets.includes(sheet));
+                });
+            }
+        }
+
         super.disconnectedCallback();
     }
 
