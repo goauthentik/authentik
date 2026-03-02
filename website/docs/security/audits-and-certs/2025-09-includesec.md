@@ -1,8 +1,8 @@
 # 2025-09 IncludeSec pentest
 
-In September of 2025, we had a pentest conducted by [Include Security](https://includesecurity.com). This resulted in a number of code improvements to our application, though no CVEs.
+In September of 2025, we had a pentest conducted by [Include Security](https://includesecurity.com). This resulted in a number of code improvements to our application, however did not result in any assigned CVEs.
 
-> IncludeSec performed a security assessment of Authentik Security's Web Apps, APIs, Deployment Config, Servers, & ETL. The assessment team performed a 8 day effort spanning from September 4, 2025 – September 15, 2025, using a Standard Grey Box assessment methodology.
+> IncludeSec performed a security assessment of Authentik Security's Web Apps, APIs, Deployment Config, Servers, & ETL. The assessment team performed a 8 day effort spanning from September 4 through September 15, 2025, using a Standard Grey Box assessment methodology.
 
 View the full report of our original [test](https://goauthentik.io/resources/includesec-Q3-2025-Multi-Report.pdf) and the [retest results](https://goauthentik.io/resources/includesec-Q3-2025-Multi-Remediation-Report.pdf), completed in January/February 2026.
 
@@ -10,11 +10,11 @@ View the full report of our original [test](https://goauthentik.io/resources/inc
 
 Below is a table summarizing the findings from the report, along with IncludeSec's risk labeling and our contextual categorization of these risks. As IncludeSec states, "It is common and encouraged that all clients recategorize findings based on their internal business risk tolerances."
 
-| Finding | IncludeSec Risk | Status           | authentik categorization |
+| Finding | IncludeSec Risk | Status           | authentik Risk Categorization |
 | ------- | --------------- | ---------------- | ------------------------ |
-| H1      | High            | Risk Accepted    | None (intended)          |
+| H1      | High            | Risk Accepted    | Expected behavior          |
 | H2      | High            | Closed           | Low                      |
-| H3      | High            | Risk Accepted    | None (intended)          |
+| H3      | High            | Risk Accepted    | Expected behavior          |
 | M1      | Medium          | Fixed in 2025.12 | Low                      |
 | M2      | Medium          | Closed           | Low                      |
 | L1      | Low             | Closed           | Low                      |
@@ -26,7 +26,7 @@ During the time of this test, we also separately addressed a number of community
 
 ## Responses to specific findings
 
-From the audit, this is the complete list of findings, with information about how we addressed each.
+This is the complete list of findings from the audit, with information about how we addressed each.
 
 ### H1: Blueprint Import Allows Arbitrary Modification of Application Objects (Internal: None)
 
@@ -36,7 +36,7 @@ _Improvement:_ We added a [warning banner](https://github.com/goauthentik/authen
 
 ### H2: TOTP Brute-Force Vulnerability (Internal: Low) - Closed
 
-_Issue:_ TOTP could in theory be brute forced for login given knowledge of a target user's password, enough time, and no WAF/altering on high amounts of requests.
+_Issue:_ TOTP could in theory be brute-forced for login given knowledge of a target user's password, enough time, and no WAF/altering on high amounts of requests.
 
 _Improvement:_ We added stricter rate limiting to the infrastructure used for testing.
 
@@ -48,9 +48,9 @@ _Issue:_ The authentik application allowed execution of arbitrary Python code wi
 
 _Response:_ By design, prompt inputs can be configured to have placeholder values based on Python expressions, inheriting the behavior from expression policies. Our hardening docs already cover this as well.
 
-### M1: Anti-Brute-Force Mechanisms Bypassed via Race conditions
+### M1: Anti-Brute Force Mechanisms Bypassed via Race conditions
 
-_Issue:_ The anti-brute-force mechanism could be bypassed by triggering a race condition using the default-authentication-flow given enough time and no WAF/other filtering in place.
+_Issue:_ The anti-brute force mechanism could be bypassed by triggering a race condition using the `default-authentication-flow`, given enough time and no WAF/other filtering in place.
 
 _Improvement:_ In 2025.12, we [replaced](https://github.com/goauthentik/authentik/pull/18643) session-based login attempt retries to rely instead on the reputation scores.
 
@@ -58,7 +58,7 @@ Once again, in addition to using authentik's built-in methods to reduce the abil
 
 ### M2: Password Hashes Disclosed via Application Launch URL (Internal: Low) - Closed
 
-_Issue:_ authentik disclosed hashes of user passwords to a privileged user when accessing a specially crafted launch URL for a custom Application.
+_Issue:_ authentik disclosed salted user password hashes to a privileged user when accessing a specially crafted launch URL for a custom Application.
 
 _Fix:_ We [improved](https://github.com/goauthentik/authentik/pull/18076) the Application launch URL format.
 
@@ -66,13 +66,13 @@ _Fix:_ We [improved](https://github.com/goauthentik/authentik/pull/18076) the Ap
 
 _Issue:_ Our container build process used Dockerfiles containing unpinned tags, allowing a possible supply chain attack from an attacker with control of the referenced repository who could repoint the tag to a different image.
 
-_Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17795) to use hashes for Dockerfile `FROM` calls.
+_Fix:_ We [updated](https://github.com/goauthentik/authentik/pull/17795) to use image digests for Dockerfile `FROM` calls.
 
 ### L2: User Accounts Enumerable
 
 _Issue:_ In the small test environment, the application's response time varied based on whether the supplied account was associated with a valid user, allowing potential account enumeration.
 
-In practice, network/proxy/etc latency in a production environment would most likely make this infeasible.
+In real-world production environments with typical network latency and reverse proxies, the timing variance would likely be obscured.
 
 _Improvement:_ We [replaced](https://github.com/goauthentik/authentik/pull/18883) a randomized call to `sleep` with `make_password`, which better emulates checking the password of a user.
 
