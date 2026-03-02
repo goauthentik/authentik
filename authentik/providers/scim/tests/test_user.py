@@ -568,7 +568,7 @@ class SCIMUserTests(TestCase):
             },
         )
         mock.get(
-            "https://localhost/Users?startIndex=",
+            "https://localhost/Users?startIndex=2",
             json={
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
                 "totalResults": 2,

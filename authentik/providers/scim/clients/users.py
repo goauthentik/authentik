@@ -130,7 +130,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 seen_items += 1
             if seen_items >= expected_items:
                 break
-            res = self._request("GET", f"/Users?startIndex={seen_items}")
+            res = self._request("GET", f"/Users?startIndex={seen_items+1}")
 
     def _discover_user_single(self, user: dict):
         scim_user = SCIMUserSchema.model_validate(user)
