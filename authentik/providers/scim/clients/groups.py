@@ -30,6 +30,7 @@ from authentik.providers.scim.clients.schema import (
     PatchRequest,
 )
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
+from authentik.providers.scim.clients.schema import User as SCIMUserSchema
 from authentik.providers.scim.models import (
     SCIMCompatibilityMode,
     SCIMMapping,
@@ -297,21 +298,34 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "User count mismatch, not all users in the group are synced to SCIM yet.",
                 group=group,
             )
-        # Get current group status
-        current_group = SCIMGroupSchema.model_validate(
-            self._request("GET", f"/Groups/{scim_group.scim_id}")
-        )
+        current_group_members = []
+        match self.provider.compatibility_mode:
+            case SCIMCompatibilityMode.AWS:
+                current_group_members, nextCursor = self._get_aws_group_members_paged(
+                    scim_group.scim_id, ""
+                )
+                while nextCursor:
+                    rsp, nextCursor = self._get_aws_group_members_paged(
+                        scim_group.scim_id, nextCursor
+                    )
+                    current_group_members += rsp
+            case _:
+                current_group = SCIMGroupSchema.model_validate(
+                    self._request("GET", f"/Groups/{scim_group.scim_id}")
+                )
+                if current_group.members is not None:
+                    for i in current_group.members:
+                        current_group_members.append(i.value)
         users_to_add = []
         users_to_remove = []
         # Check users currently in group and if they shouldn't be in the group and remove them
-        for user in current_group.members or []:
-            if user.value not in users_should:
-                users_to_remove.append(user.value)
+        for user in current_group_members:
+            if user not in users_should:
+                users_to_remove.append(user)
         # Check users that should be in the group and add them
-        if current_group.members is not None:
-            for user in users_should:
-                if len([x for x in current_group.members if x.value == user]) < 1:
-                    users_to_add.append(user)
+        for user in users_should:
+            if len([x for x in current_group_members if x == user]) < 1:
+                users_to_add.append(user)
         # Only send request if we need to make changes
         if len(users_to_add) < 1 and len(users_to_remove) < 1:
             return
@@ -357,6 +371,20 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 for x in user_ids
             ],
         )
+
+    def _get_aws_group_members_paged(self, group_id: str, cursor: str):
+        current_group_members = []
+        rsp = self._request(
+            "GET",
+            "/Users",
+            params={
+                "cursor": cursor,
+                "filter": f'groups.value eq "{group_id}"',
+            },
+        )
+        for u in rsp["Resources"]:
+            current_group_members.append(SCIMUserSchema.model_validate(u).id)
+        return current_group_members, rsp.get("nextCursor")
 
     def _patch_remove_users(self, scim_group: SCIMProviderGroup, users_set: set[int]):
         """Remove users in users_set from group"""
