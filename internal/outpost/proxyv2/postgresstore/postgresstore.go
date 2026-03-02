@@ -187,21 +187,7 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 	if connConfig.RuntimeParams == nil {
 		connConfig.RuntimeParams = make(map[string]string)
 	}
-
-	// Set search_path after connection startup to avoid startup-parameter issues with PgBouncer.
-	if cfg.DefaultSchema != "" {
-		connConfig.AfterConnect = func(ctx context.Context, pgConn *pgconn.PgConn) error {
-			result := pgConn.ExecParams(
-				ctx,
-				"select pg_catalog.set_config('search_path', $1, false)",
-				[][]byte{[]byte(cfg.DefaultSchema)},
-				nil,
-				nil,
-				nil,
-			).Read()
-			return result.Err
-		}
-	}
+	effectiveSearchPath := cfg.DefaultSchema
 
 	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
@@ -209,9 +195,30 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse connection options: %w", err)
 		}
+		// Handle search_path outside of startup RuntimeParams for PgBouncer compatibility.
+		// ConnOptions should still override DefaultSchema when both are set.
+		if connOptionsSearchPath, ok := connOpts["search_path"]; ok {
+			effectiveSearchPath = connOptionsSearchPath
+			delete(connOpts, "search_path")
+		}
 
 		if err := applyConnOptions(connConfig, connOpts); err != nil {
 			return nil, fmt.Errorf("failed to apply connection options: %w", err)
+		}
+	}
+
+	// Set search_path after connection startup to avoid startup-parameter issues with PgBouncer.
+	if effectiveSearchPath != "" {
+		connConfig.AfterConnect = func(ctx context.Context, pgConn *pgconn.PgConn) error {
+			result := pgConn.ExecParams(
+				ctx,
+				"select pg_catalog.set_config('search_path', $1, false)",
+				[][]byte{[]byte(effectiveSearchPath)},
+				nil,
+				nil,
+				nil,
+			).Read()
+			return result.Err
 		}
 	}
 
