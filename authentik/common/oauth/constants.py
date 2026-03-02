@@ -22,6 +22,8 @@ PROMPT_LOGIN = "login"
 
 PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS = "goauthentik.io/providers/oauth2/iframe_sessions"
 
+OAUTH2_BINDING = "redirect"
+
 SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
@@ -36,6 +38,9 @@ PKCE_METHOD_S256 = "S256"
 TOKEN_TYPE = "Bearer"  # nosec
 
 SCOPE_AUTHENTIK_API = "goauthentik.io/api"
+
+# URI schemes that are forbidden for redirect URIs
+FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 # Read/write full user (including email)
 SCOPE_GITHUB_USER = "user"

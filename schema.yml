@@ -52894,6 +52894,10 @@ components:
           $ref: '#/components/schemas/MatchingModeEnum'
         url:
           type: string
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authorization
       required:
       - matching_mode
       - url
@@ -52906,9 +52910,18 @@ components:
         url:
           type: string
           minLength: 1
+        redirect_uri_type:
+          allOf:
+          - $ref: '#/components/schemas/RedirectUriTypeEnum'
+          default: authorization
       required:
       - matching_mode
       - url
+    RedirectUriTypeEnum:
+      enum:
+      - authorization
+      - logout
+      type: string
     RelatedGroup:
       type: object
       description: Stripped down group serializer to show relevant children/parents

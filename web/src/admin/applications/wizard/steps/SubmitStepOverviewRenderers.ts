@@ -16,6 +16,7 @@ import {
     RACProvider,
     RadiusProvider,
     RedirectURI,
+    RedirectUriTypeEnum,
     SAMLProvider,
     SCIMProvider,
 } from "@goauthentik/api";
@@ -83,7 +84,10 @@ function formatRedirectUris(uris: RedirectURI[] = []) {
                           ${uri.url}
                           (${uri.matchingMode === MatchingModeEnum.Strict
                               ? msg("strict")
-                              : msg("regexp")})
+                              : msg("regexp")},
+                          ${uri.redirectUriType === RedirectUriTypeEnum.Logout
+                              ? msg("post logout")
+                              : msg("authorization")})
                       </li>`,
               )}
           </ul>`

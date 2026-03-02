@@ -18,6 +18,7 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
+    FORBIDDEN_URI_SCHEMES,
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
     PROMPT_CONSENT,
@@ -60,6 +61,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    RedirectURIType,
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
@@ -78,7 +80,6 @@ PLAN_CONTEXT_PARAMS = "goauthentik.io/providers/oauth2/params"
 SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
-FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}
 
 
 @dataclass(slots=True)
@@ -191,7 +192,7 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
@@ -199,10 +200,14 @@ class OAuthAuthorizationParams:
         if len(allowed_redirect_urls) < 1:
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
             self.provider.redirect_uris = [
-                RedirectURI(RedirectURIMatchingMode.STRICT, self.redirect_uri)
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT,
+                    self.redirect_uri,
+                    RedirectURIType.AUTHORIZATION,
+                )
             ]
             self.provider.save()
-            allowed_redirect_urls = self.provider.redirect_uris
+            allowed_redirect_urls = self.provider.authorization_redirect_uris
 
         match_found = False
         for allowed in allowed_redirect_urls:

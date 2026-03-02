@@ -1,13 +1,13 @@
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
-
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
-from authentik.common.oauth.constants import PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS
+from authentik.common.oauth.constants import (
+    OAUTH2_BINDING,
+    PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
+)
 from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.models import in_memory_stage
-from authentik.outposts.tasks import hash_session_key
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -16,6 +16,7 @@ from authentik.providers.oauth2.models import (
     RefreshToken,
 )
 from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
+from authentik.providers.oauth2.utils import build_frontchannel_logout_url
 from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
 
@@ -51,43 +52,22 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
         LOGGER.debug("No sessions requiring IFrame frontchannel logout")
         return
 
+    session_key = auth_session.session.session_key if auth_session.session else None
     oidc_sessions = []
 
     for token in oidc_access_tokens:
-        # Parse the logout URI and add query parameters
-        parsed_url = urlparse(token.provider.logout_uri)
-
-        query_params = {}
-        query_params["iss"] = token.provider.get_issuer(request)
-        if auth_session.session:
-            query_params["sid"] = hash_session_key(auth_session.session.session_key)
-
-        # Combine existing query params with new ones
-        if parsed_url.query:
-            existing_params = parse_qs(parsed_url.query, keep_blank_values=True)
-            for key, value in existing_params.items():
-                if key not in query_params:
-                    query_params[key] = value[0] if len(value) == 1 else value
-
-        # Build the final URL with query parameters
-        logout_url = urlunparse(
-            (
-                parsed_url.scheme,
-                parsed_url.netloc,
-                parsed_url.path,
-                parsed_url.params,
-                urlencode(query_params),
-                parsed_url.fragment,
+        logout_url = build_frontchannel_logout_url(token.provider, request, session_key)
+        if logout_url:
+            oidc_sessions.append(
+                {
+                    "url": logout_url,
+                    "provider_name": token.provider.name,
+                    "binding": OAUTH2_BINDING,
+                    "provider_type": (
+                        f"{token.provider._meta.app_label}.{token.provider._meta.model_name}"
+                    ),
+                }
             )
-        )
-
-        logout_data = {
-            "url": logout_url,
-            "provider_name": token.provider.name,
-            "binding": "redirect",
-            "provider_type": "oidc",
-        }
-        oidc_sessions.append(logout_data)
 
     if oidc_sessions:
         executor.plan.context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = oidc_sessions

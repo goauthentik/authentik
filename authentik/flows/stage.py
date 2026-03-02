@@ -15,7 +15,7 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import Application, User
+from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -28,9 +28,14 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_PENDING_USER,
+    PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI,
+)
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
@@ -299,8 +304,66 @@ class SessionEndStage(ChallengeStageView):
     """Stage inserted when a flow is used as invalidation flow. By default shows actions
     that the user is likely to take after signing out of a provider."""
 
-    def get_challenge(self, *args, **kwargs) -> Challenge:
+    def _invalidate_provider_token(self, application: Application) -> None:
+        """Invalidate tokens for a specific provider.
+
+        Used for RP-initiated logout where the user stays logged into authentik
+        but their tokens for the specific provider are revoked.
+        """
+
+        if not application or not application.provider_id:
+            return
+
+        try:
+            provider = OAuth2Provider.objects.get(pk=application.provider_id)
+        except OAuth2Provider.DoesNotExist:
+            return
+
         if not self.request.user.is_authenticated:
+            return
+
+        auth_session = AuthenticatedSession.from_request(self.request, self.request.user)
+        if not auth_session:
+            return
+
+        # Delete access tokens for this provider and session
+        AccessToken.objects.filter(
+            user=self.request.user,
+            provider=provider,
+            session=auth_session,
+        ).delete()
+
+        self.logger.debug(
+            "Invalidated tokens for provider",
+            provider=provider.name,
+        )
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        # Check for OIDC post_logout_redirect_uri in context
+        post_logout_redirect_uri = self.executor.plan.context.get(
+            PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+        )
+
+        if post_logout_redirect_uri:
+            # Invalidate tokens for the provider
+            application: Application | None = self.executor.plan.context.get(
+                PLAN_CONTEXT_APPLICATION
+            )
+            if application and self.request.user.is_authenticated:
+                self._invalidate_provider_token(application)
+
+            self.logger.debug(
+                "SessionEndStage redirecting to post_logout_redirect_uri",
+                redirect_url=post_logout_redirect_uri,
+            )
+            return RedirectChallenge(
+                data={
+                    "to": post_logout_redirect_uri,
+                },
+            )
+
+        if not self.request.user.is_authenticated:
+            # User is logged out with no redirect URI - go to default
             return RedirectChallenge(
                 data={
                     "to": reverse("authentik_core:root-redirect"),
