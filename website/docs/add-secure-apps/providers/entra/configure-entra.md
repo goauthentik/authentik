@@ -9,6 +9,14 @@ Your Entra ID tenant must be configured before you [create a Entra ID provider](
 
 This involves creating an app registration, generating a secret, and configuring the required API permissions.
 
+:::warning Email domains
+When the default `authentik default Microsoft Entra Mapping: User` property mapping is used, authentik checks whether each user's email domain is verified in your Entra ID tenant.
+
+In which case, you must configure each user's email domain as a [verified custom domain in Entra ID](https://learn.microsoft.com/en-us/entra/identity/users/domains-manage#add-custom-domain-names-to-your-microsoft-entra-organization); otherwise, provisioning fails. The tenant's default `onmicrosoft.com` domain (e.g., `@<tenant name>.onmicrosoft.com`), is considered a verified domain.
+
+Alternatively, if you need to provision users with email domains that you don't control, refer to [Email handling](./create-entra-provider.md#email-handling) for more information.
+:::
+
 ## Configuring you Entra ID tenant
 
 1. Log in to the [Entra ID admin center](https://entra.microsoft.com).
@@ -30,7 +38,6 @@ This involves creating an app registration, generating a secret, and configuring
     - `Group.Create`
     - `Group.ReadWrite.All`
     - `GroupMember.ReadWrite.All`
-    - `User.Read`
     - `User.ReadWrite.All`
 12. Click **Add permissions**.
 13. Under **Configured permissions**, click **Grant admin consent for default directory**.
