@@ -280,6 +280,15 @@ class OpenIDConnectOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("OpenID OAuth Sources")
 
 
+class ADFSOAuthSource(CreatableType, OAuthSource):
+    """Login using a Active Directory Federation Services provider."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("ADFS OAuth Source")
+        verbose_name_plural = _("ADFS OAuth Sources")
+
+
 class AppleOAuthSource(CreatableType, OAuthSource):
     """Social Login using Apple."""
 
