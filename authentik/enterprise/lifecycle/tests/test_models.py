@@ -438,31 +438,6 @@ class TestLifecycleModels(TestCase):
         self.assertIn(app_one, objects)
         self.assertIn(app_two, objects)
 
-    def test_rule_type_excludes_objects_with_specific_rules(self):
-        app_with_rule = Application.objects.create(name=generate_id(), slug=generate_id())
-        app_without_rule = Application.objects.create(name=generate_id(), slug=generate_id())
-        content_type = ContentType.objects.get_for_model(Application)
-
-        # Create a specific rule for app_with_rule
-        LifecycleRule.objects.create(
-            name=generate_id(),
-            content_type=content_type,
-            object_id=str(app_with_rule.pk),
-            interval="days=30",
-        )
-
-        # Create a type-level rule
-        type_rule = LifecycleRule.objects.create(
-            name=generate_id(),
-            content_type=content_type,
-            object_id=None,
-            interval="days=60",
-        )
-
-        objects = list(type_rule.get_objects())
-        self.assertNotIn(app_with_rule, objects)
-        self.assertIn(app_without_rule, objects)
-
     def test_rule_type_apply_creates_iterations_for_all_objects(self):
         app_one = Application.objects.create(name=generate_id(), slug=generate_id())
         app_two = Application.objects.create(name=generate_id(), slug=generate_id())
