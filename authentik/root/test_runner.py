@@ -185,8 +185,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
             try:
-                pytest.main(self.args)
+                ret = pytest.main(self.args)
                 self.task_broker.close()
+                return ret
             except Exception as exc:  # noqa
                 self.logger.error("Error running tests", exc=exc, test_files=self.args)
                 return 1

@@ -10,6 +10,7 @@ from dramatiq.results.middleware import Results
 from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
 
 from authentik.tasks.broker import PostgresBroker
+from authentik.tasks.middleware import WorkerHealthcheckMiddleware
 
 TESTING_QUEUE = "testing"
 
@@ -81,6 +82,8 @@ def use_test_broker():
         middleware: Middleware = import_string(middleware_class)(
             **middleware_kwargs,
         )
+        if isinstance(middleware, WorkerHealthcheckMiddleware):
+            middleware.port = 9102
         if isinstance(middleware, Retries):
             middleware.max_retries = 0
         if isinstance(middleware, Results):
