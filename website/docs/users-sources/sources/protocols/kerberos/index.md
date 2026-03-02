@@ -155,4 +155,4 @@ if localpart == "username":
 
 You can start authentik with the `KRB5_TRACE=/dev/stderr` environment variable for Kerberos to print errors in the logs.
 
-Reverse proxy caching can occasionally interfere with the Kerberos authentication flow. Specifically, the reverse proxy may cache the second 401 Unauthorized response, which includes the WWW-Authenticate header required for the client’s Kerberos negotiation, instead of forwarding it to Authentik. This behavior disrupts the authentication handshake. To resolve such issues, disable response caching on the reverse proxy for routes involved in Kerberos authentication.
+Reverse proxy caching can break the Kerberos authentication flow because, during negotiation, the server sends a second `401 Unauthorized` response containing the `WWW-Authenticate` header that the client needs to continue the handshake; if the reverse proxy caches that `401` instead of forwarding it to authentik, the authentication process fails, so response caching should be disabled on any reverse proxy routes involved in Kerberos authentication.
