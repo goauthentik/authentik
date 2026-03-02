@@ -1,15 +1,11 @@
 ---
-title: Google Chrome Device Trust Authenticator Stage
-authentik_version: "2024.10"
+title: Google Chrome connector
+tags: [device compliance, compliance, connectors, google, chrome, device, trust]
+authentik_version: "2026.5"
 authentik_enterprise: true
-support_level: deprecated
 ---
 
-:::warning Deprecated
-This stage has been deprecated and is being replaced by the [Google Chrome connector](../../../../endpoint-devices/device-compliance/connectors/google-chrome.md) functionality included in the [Endpoint Devices](../../../../endpoint-devices/index.mdx) feature set.
-:::
-
-With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
+With this connector, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
 
 Support for the Chrome Enterprise Device Trust connector allows organizations to integrate Chrome browsers and ChromeOS devices with authentik as the Identity Provider (IdP), to strengthen their overall security posture.
 
@@ -18,7 +14,7 @@ Device Trust is particularly important in environments with many different devic
 With Device Trust you can enable "context-aware" access policies; for example a policy might require that a device has all security patches installed.
 
 :::info
-This stage only works with Google Chrome, as it relies on the [Chrome Verified Access API](https://developers.google.com/chrome/verified-access).
+This connector only works with Google Chrome, as it relies on the [Chrome Verified Access API](https://developers.google.com/chrome/verified-access).
 :::
 
 ## Configuration
@@ -29,7 +25,7 @@ The main steps to set up your Google workspace are as follows:
     - [Create a Google cloud project](#create-a-google-cloud-project)
     - [Create a service account](#create-a-service-account)
     - [Set credentials for the service account](#set-credentials-for-the-service-account)
-    - [Create the stage](#create-the-stage)
+    - [Create the connector](#create-the-connector)
 
 For detailed instructions, refer to Google documentation.
 
@@ -59,7 +55,7 @@ For detailed instructions, refer to Google documentation.
 2. Click the **Keys** tab at top of the page, the click **Add Key > Create new key**.
 3. In the Create box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
-   Later, when you create the stage in authentik, you will add this key in the **Credentials** field.
+   Later, when you create the connector in authentik, you will add this key in the **Credentials** field.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
 5. Log in to the Admin Console, and then navigate to **Chrome browser > Connectors**.
 6. Click on **New Provider Configuration**.
@@ -68,11 +64,11 @@ For detailed instructions, refer to Google documentation.
 9. Enter the URL: https://authentik.company/endpoint/gdtc/chrome/
 10. Under Service accounts, enter the full name of the service account created above, for example `authentik-gdtc-docs@authentik-enterprise-dev.iam.gserviceaccount.com`.
 
-### Create the stage
+### Create the connector
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows > Stages**.
-3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** box, define the following fields:
+2. Navigate to **Endpoint Devices** > **Connectors** and click **Create**.
+3. Select **Google Device Trust Connector** as the connector type, click **Next**, and configure the following settings::
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 
     - **Google Verified Access API**
@@ -80,4 +76,4 @@ For detailed instructions, refer to Google documentation.
 
 4. Click **Finish**.
 
-After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the user's browser.
+After creating the connector, it can be used in the [Endpoint Stage](../../../add-secure-apps/flows-stages/stages/endpoint/index.md).
