@@ -85,6 +85,6 @@ To support the integration of TrueCommand with authentik, you need to create an 
 - SAML Identity Provider URL: `Paste the Metadata URL from your clipboard.`
 - Click _Save_, then click _Configure_ again then select _Start the SAML service_, then click _Save_ to start the service.
 
-## Additional Resources
+## Resources
 
 - https://www.truenas.com/docs/truecommand/administration/settings/samlad/

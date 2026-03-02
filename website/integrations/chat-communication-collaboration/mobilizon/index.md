@@ -68,6 +68,6 @@ config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
 
 Restart mobilizon.service
 
-## Additional Resources
+## Resources
 
 - https://docs.mobilizon.org/3.%20System%20administration/configure/auth/#oauth

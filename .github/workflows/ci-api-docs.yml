@@ -55,7 +55,7 @@ jobs:
         env:
           NODE_ENV: production
         run: npm run build -w api
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v4
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v4
         with:
           name: api-docs
           path: website/api/build
@@ -67,7 +67,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v5
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v5
         with:
           name: api-docs
           path: website/api/build

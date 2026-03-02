@@ -99,6 +99,6 @@ If your usernames in authentik and WriteFreely are different, you might need to 
 
 To link the accounts, first log into Writefreely with local credentials, and then navigate to **Customize -->Account Settings**. In the option "Linked Accounts", click on "authentik".
 
-## Additional Resources
+## Resources
 
 - https://writefreely.org/docs/latest/admin/config

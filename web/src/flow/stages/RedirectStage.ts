@@ -8,7 +8,7 @@ import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/ap
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -18,9 +18,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
-    @property({ type: Boolean })
-    promptUser = false;
-
     @state()
     startedRedirect = false;
 
@@ -39,6 +36,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     getURL(): string {
         return new URL(this.challenge?.to || "", document.baseURI).toString();
+    }
+
+    // The current implementation expects the button and the stage to share the same DOM context,
+    // and the same rootNode. If that changes, this will need to be updated.
+    get promptUser() {
+        return !!(this.getRootNode() as Element | undefined)?.querySelector(
+            "ak-flow-inspector-button",
+        )?.open;
     }
 
     updated(changed: PropertyValues<this>): void {
@@ -97,7 +102,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
                 <fieldset class="pf-c-form__group pf-m-action">
