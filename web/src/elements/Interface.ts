@@ -38,7 +38,7 @@ export abstract class Interface extends AKElement {
         this.addController(new BrandingContextController(this, brand), BrandingContext);
         this.addController(new ModalOrchestrationController());
 
-        this.dataset.testId = "interface-root";
+        this.id = "interface-root";
     }
 
     public override addController(
