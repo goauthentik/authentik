@@ -8,6 +8,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -108,6 +109,22 @@ export abstract class ModelForm<
             this.instance = instance;
         });
     };
+
+    protected override formatSubmitLabel(): string {
+        return this.#instancePk ? msg("Update") : msg("Create");
+    }
+
+    protected override formatHeadline(): string {
+        const verb = this.#instancePk ? msg("Edit") : msg("New");
+        const noun = this.entitySingular;
+
+        if (!noun) return verb;
+
+        return msg(str`${verb} ${noun}`, {
+            id: "model-form.headline",
+            desc: "The headline for a form that creates or updates a model instance.",
+        });
+    }
 
     public override reset(): void {
         super.reset();

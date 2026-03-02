@@ -6,7 +6,7 @@ import { globalAK } from "#common/global";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { AKModal } from "#elements/modals/ak-modal";
-import { renderModal } from "#elements/modals/utils";
+import { renderDialog } from "#elements/modals/utils";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
@@ -101,7 +101,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
 
         const modal = ownerDocument.createElement(tagName);
 
-        return renderModal(modal, {
+        return renderDialog(modal, {
             ownerDocument,
         });
     };

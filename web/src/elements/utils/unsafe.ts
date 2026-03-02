@@ -31,7 +31,9 @@ export function assertAKRegisteredElement(
  * Type predicate to determine if a given {@linkcode CustomElementConstructor}
  * extends {@linkcode AKElement}.
  */
-export function isAKElementConstructor(input: CustomElementConstructor): input is typeof AKElement {
+export function isAKElementConstructor(
+    input: CustomElementConstructor | (() => SlottedTemplateResult),
+): input is typeof AKElement {
     return Object.prototype.isPrototypeOf.call(AKElement, input);
 }
 

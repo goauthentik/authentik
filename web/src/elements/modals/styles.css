@@ -6,12 +6,12 @@
 
 :host > .pf-c-button {
     position: absolute;
-    top: var(--ak-modal--c-button--Top);
-    right: var(--ak-modal--c-button--Right);
+    top: var(--ak-c-modal--c-button--Top);
+    right: var(--ak-c-modal--c-button--Right);
 }
 
 :host > .pf-c-button + * {
-    margin-right: var(--ak-modal--c-button--sibling--MarginRight);
+    margin-right: var(--ak-c-modal--c-button--sibling--MarginRight);
 }
 
 /* #endregion */

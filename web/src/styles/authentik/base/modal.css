@@ -28,14 +28,19 @@
     box-shadow: var(--ak-c-modal--BoxShadow);
 
     border-color: var(--pf-global--BackgroundColor--150);
+
+    &:focus-visible {
+        outline: none;
+    }
 }
+
 /* #endregion */
 
 /* #region Transitions */
 
 .ak-c-modal {
-    --ak-c-modal--TransitionDuration--fast: 150ms;
-    --ak-c-modal--TransitionDuration--slow: 350ms;
+    --ak-c-modal--TransitionDuration--fast: 50ms;
+    --ak-c-modal--TransitionDuration--slow: 100ms;
 
     interpolate-size: allow-keywords;
 
@@ -79,8 +84,8 @@
 
     @media screen and (prefers-reduced-motion: reduce) {
         /* A small duration is still needed to smoothly handle display changes. */
-        --ak-c-modal--TransitionDuration--fast: 50ms;
-        --ak-c-modal--TransitionDuration--slow: 100ms;
+        --ak-c-modal--TransitionDuration--fast: 25ms;
+        --ak-c-modal--TransitionDuration--slow: 50ms;
     }
 }
 
@@ -97,9 +102,9 @@
 /* #region Buttons */
 
 .ak-c-modal {
-    --ak-c-modal-button--Top: calc(var(--pf-global--spacer--lg));
-    --ak-c-modal-button--Right: var(--pf-global--spacer--md);
-    --ak-c-modal-button--sibling--MarginRight: calc(
+    --ak-c-modal--c-button--Top: var(--pf-global--spacer--lg);
+    --ak-c-modal--c-button--Right: var(--pf-global--spacer--md);
+    --ak-c-modal--c-button--sibling--MarginRight: calc(
         var(--pf-global--spacer--xl) + var(--pf-global--spacer--sm)
     );
 }
