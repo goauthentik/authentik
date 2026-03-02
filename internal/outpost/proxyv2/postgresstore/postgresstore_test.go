@@ -700,7 +700,7 @@ func TestBuildConnConfig(t *testing.T) {
 				DefaultSchema: "custom_schema",
 			},
 			validate: func(t *testing.T, cc *pgx.ConnConfig) {
-				assert.Equal(t, "custom_schema", cc.RuntimeParams["search_path"])
+				assert.NotNil(t, cc.AfterConnect)
 			},
 		},
 		{
@@ -756,7 +756,7 @@ func TestBuildConnConfig(t *testing.T) {
 				assert.Equal(t, "admin", cc.User)
 				assert.Equal(t, "my super secret password!@#", cc.Password)
 				assert.Equal(t, "production", cc.Database)
-				assert.Equal(t, "app_schema", cc.RuntimeParams["search_path"])
+				assert.NotNil(t, cc.AfterConnect)
 				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
 			},
 		},
@@ -863,7 +863,7 @@ func TestBuildConnConfig_WithSSLCertificates(t *testing.T) {
 				assert.Equal(t, "db.example.com", cc.TLSConfig.ServerName)
 				assert.NotNil(t, cc.TLSConfig.RootCAs)
 				assert.Len(t, cc.TLSConfig.Certificates, 1)
-				assert.Equal(t, "app_schema", cc.RuntimeParams["search_path"])
+				assert.NotNil(t, cc.AfterConnect)
 				assert.Equal(t, "authentik", cc.RuntimeParams["application_name"])
 			},
 		},

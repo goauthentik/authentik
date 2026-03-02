@@ -188,6 +188,21 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		connConfig.RuntimeParams = make(map[string]string)
 	}
 
+	// Set search_path after connection startup to avoid startup-parameter issues with PgBouncer.
+	if cfg.DefaultSchema != "" {
+		connConfig.AfterConnect = func(ctx context.Context, pgConn *pgconn.PgConn) error {
+			result := pgConn.ExecParams(
+				ctx,
+				"select pg_catalog.set_config('search_path', $1, false)",
+				[][]byte{[]byte(cfg.DefaultSchema)},
+				nil,
+				nil,
+				nil,
+			).Read()
+			return result.Err
+		}
+	}
+
 	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
 		connOpts, err := parseConnOptions(cfg.ConnOptions)
@@ -331,9 +346,6 @@ func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.
 	pool, err := NewRefreshableConnPool(dsn, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create connection pool: %w", err)
-	}
-	if cfg.DefaultSchema != "" {
-		pool.SearchPath = cfg.DefaultSchema
 	}
 
 	// Create GORM DB using the refreshable connection pool
