@@ -9,9 +9,19 @@ import { isAKElementConstructor } from "#elements/utils/unsafe";
 
 import { html, render } from "lit";
 
-function resolveDialogContainer(
-    ownerDocument: Document,
-    parentElement?: HTMLElement | string,
+/**
+ * Resolves the container element for a dialog, given an optional parent element or selector.
+ *
+ * If the parent element is not provided or cannot be resolved, the document body is returned.
+ *
+ * @param ownerDocument The document to query for the parent element. Defaults to the global document.
+ * @param parentElement An optional HTMLElement or selector string to use as the dialog container.
+ *
+ * @returns The resolved container HTMLElement for the dialog.
+ */
+export function resolveDialogContainer(
+    ownerDocument: Document = document,
+    parentElement?: HTMLElement | string | null,
 ): HTMLElement {
     if (parentElement instanceof HTMLElement) {
         return parentElement;
@@ -30,7 +40,7 @@ function resolveDialogContainer(
 
 export interface RenderDialogInit {
     ownerDocument?: Document;
-    parentElement?: HTMLElement | string;
+    parentElement?: HTMLElement | string | null;
     closedBy?: ClosedBy;
     classList?: string[];
     signal?: AbortSignal;
@@ -49,7 +59,7 @@ export function renderDialog(
     {
         ownerDocument = document,
         signal,
-        parentElement = '[data-test-id="interface-root"]',
+        parentElement = ownerDocument.getElementById("interface-root"),
         closedBy = "any",
         classList = [],
     }: RenderDialogInit = {},
