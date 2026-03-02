@@ -2,9 +2,14 @@
  * @file Modal rendering utilities.
  */
 
-import { render } from "lit";
+import "#elements/modals/ak-modal";
 
-function resolveModalContainer(
+import { SlottedTemplateResult } from "#elements/types";
+import { isAKElementConstructor } from "#elements/utils/unsafe";
+
+import { html, render } from "lit";
+
+function resolveDialogContainer(
     ownerDocument: Document,
     parentElement?: HTMLElement | string,
 ): HTMLElement {
@@ -23,7 +28,7 @@ function resolveModalContainer(
     return ownerDocument.body;
 }
 
-export interface RenderModalInit {
+export interface RenderDialogInit {
     ownerDocument?: Document;
     parentElement?: HTMLElement | string;
     closedBy?: ClosedBy;
@@ -32,14 +37,14 @@ export interface RenderModalInit {
 }
 
 /**
- * Renders a modal dialog with the given template.
+ * Renders a dialog with the given template.
  *
- * @param renderable The template to render inside the modal.
- * @param init Initialization options for the modal.
+ * @param renderable The template to render inside the dialog.
+ * @param init Initialization options for the dialog.
  *
- * @returns A promise that resolves when the modal is closed.
+ * @returns A promise that resolves when the dialog is closed.
  */
-export function renderModal(
+export function renderDialog(
     renderable: unknown,
     {
         ownerDocument = document,
@@ -47,7 +52,7 @@ export function renderModal(
         parentElement = '[data-test-id="interface-root"]',
         closedBy = "any",
         classList = [],
-    }: RenderModalInit = {},
+    }: RenderDialogInit = {},
 ): Promise<void> {
     const dialog = ownerDocument.createElement("dialog");
     dialog.classList.add("ak-c-modal", ...classList);
@@ -55,7 +60,7 @@ export function renderModal(
 
     const resolvers = Promise.withResolvers<void>();
 
-    const container = resolveModalContainer(ownerDocument, parentElement);
+    const container = resolveDialogContainer(ownerDocument, parentElement);
     const shadowRoot = container.shadowRoot ?? container;
 
     shadowRoot.appendChild(dialog);
@@ -73,4 +78,35 @@ export function renderModal(
     render(renderable, dialog);
 
     return resolvers.promise;
+}
+
+/**
+ * Renders a modal dialog with the given template.
+ *
+ * @param renderable The template to render inside the modal.
+ * @param init Initialization options for the modal.
+ * @returns A promise that resolves when the modal is closed.
+ */
+export function renderModal(renderable: unknown, init?: RenderDialogInit): Promise<void> {
+    return renderDialog(html`<ak-modal>${renderable}</ak-modal>`, init);
+}
+
+export type ModalChildRenderer = () => SlottedTemplateResult;
+
+/**
+ * A utility function that takes either a {@linkcode CustomElementConstructor}
+ * or a {@linkcode ModalChildRenderer} and returns a function that renders the corresponding modal dialog.
+ *
+ * @param input The input to render as a modal dialog, either a custom element constructor or a function that returns a template result.
+ * @param init Initialization options for the modal dialog.
+ */
+export function asModal(
+    input: CustomElementConstructor | (() => SlottedTemplateResult),
+    init?: RenderDialogInit,
+) {
+    return () => {
+        const child = isAKElementConstructor(input) ? new input() : (input as ModalChildRenderer)();
+
+        renderModal(child, init);
+    };
 }

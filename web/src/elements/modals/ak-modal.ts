@@ -1,14 +1,16 @@
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
+import { Form } from "#elements/forms/Form";
 import Styles from "#elements/modals/styles.css";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { CSSResult, html, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -19,7 +21,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-export abstract class AKModal extends AKElement {
+@customElement("ak-modal")
+export class AKModal extends AKElement {
     public static styles: CSSResult[] = [
         PFButton,
         PFForm,
@@ -39,15 +42,8 @@ export abstract class AKModal extends AKElement {
 
     //#region Properties
 
-    #headline: string | null = null;
-
-    public get headline(): string | null {
-        return this.#headline;
-    }
-
-    public set headline(value: string | null) {
-        this.#headline = value;
-    }
+    @property({ type: String, useDefault: true })
+    public headline: string | null = null;
 
     @property({ type: String, useDefault: true })
     public cancelText = msg("Close");
@@ -70,6 +66,11 @@ export abstract class AKModal extends AKElement {
 
     @property({ type: String })
     public size: PFSize = PFSize.Large;
+
+    protected defaultSlot: HTMLSlotElement;
+
+    @state()
+    protected form: Form | null = null;
 
     //#endregion
 
@@ -270,6 +271,8 @@ export abstract class AKModal extends AKElement {
 
         this.renderContent = this.render.bind(this);
         this.render = this.renderInternal;
+
+        this.defaultSlot = this.ownerDocument.createElement("slot");
     }
 
     public override connectedCallback(): void {
@@ -290,10 +293,13 @@ export abstract class AKModal extends AKElement {
 
         this.parentElement.dataset.akModal = tagName;
         this.parentElement.classList.add("ak-c-modal", this.size);
+        // eslint-disable-next-line wc/no-self-class
         this.classList.add("ak-c-modal__content");
 
         this.parentElement.addEventListener("cancel", this.cancelListener);
         this.parentElement.addEventListener("click", this.backdropClickListener, { passive: true });
+
+        this.addEventListener(AKFormSubmittedEvent.eventName, this.closeListener);
 
         this.show();
     }
@@ -305,20 +311,49 @@ export abstract class AKModal extends AKElement {
         this.#hostResizeObserver = null;
     }
 
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        const assignedElements = this.defaultSlot.assignedElements({ flatten: true });
+
+        const form =
+            assignedElements.find((element): element is Form => element instanceof Form) ?? null;
+
+        if (form && form !== this.form) {
+            this.form = form;
+            this.form.viewportCheck = false;
+        }
+    }
+
     //#endregion
 
     //#region Render
 
+    /**
+     * An overridable method that determines whether the modal content should be rendered.
+     *
+     * By default, the modal content is only rendered when the modal is open,
+     * to avoid unnecessary rendering and potential issues with elements that
+     * require being in the DOM to function properly (e.g., autofocus).
+     */
     protected shouldRenderModalContent(): boolean {
         return this.open;
     }
 
+    /**
+     * The internal render method, including the close button and header, which are common to all modals.
+     */
     protected renderInternal() {
         if (!this.shouldRenderModalContent()) {
             return super.render();
         }
 
-        return [this.renderCloseButton(), this.renderHeader(), this.renderContent()];
+        return [
+            this.renderCloseButton(),
+            this.renderHeader(),
+            this.renderContent(),
+            this.renderActions(),
+        ];
     }
 
     protected renderCloseButton(): SlottedTemplateResult {
@@ -341,20 +376,47 @@ export abstract class AKModal extends AKElement {
      * @abstract
      */
     protected renderHeader(): SlottedTemplateResult {
-        const heading = this.headline;
+        const { headline, form } = this;
+        const hasHeaderSlot = this.hasSlotted("header");
 
-        return guard(
-            [heading],
-            () =>
-                html`<header class="pf-c-modal__header">
-                    <div class="ak-c-modal__title">
-                        <h1 class="ak-c-modal__title-text" id="modal-title">
-                            ${this.headline}
-                            <slot name="header"></slot>
-                        </h1>
-                    </div>
-                </header>`,
-        );
+        return guard([headline, hasHeaderSlot, form], () => {
+            if (!headline && !hasHeaderSlot && !form) {
+                return null;
+            }
+
+            return html`<header class="ak-c-modal__header">
+                <div class="ak-c-modal__title">
+                    <h1 class="ak-c-modal__title-text" id="modal-title">
+                        ${this.headline}
+                        <slot name="header"></slot>
+                        ${form ? form.renderHeader(true) : null}
+                    </h1>
+                </div>
+            </header>`;
+        });
+    }
+
+    /**
+     * Render the modal actions.
+     *
+     * This method may be overridden to customize the modal actions.
+     *
+     * @protected
+     * @abstract
+     */
+    protected renderActions(): SlottedTemplateResult {
+        const { form } = this;
+        const hasActionsSlot = this.hasSlotted("actions");
+        return guard([hasActionsSlot, form], () => {
+            if (!hasActionsSlot && !form) {
+                return null;
+            }
+
+            return html`<footer class="ak-c-modal__footer">
+                <slot name="actions"></slot>
+                ${form ? form.renderActions(true) : null}
+            </footer>`;
+        });
     }
 
     /**
@@ -365,11 +427,9 @@ export abstract class AKModal extends AKElement {
      * @protected
      * @abstract
      */
-    protected abstract render(): unknown;
-
-    // protected render(): unknown {
-    //     return html`<slot></slot>`;
-    // }
+    protected render(): unknown {
+        return html`<div class="ak-c-modal__body">${this.defaultSlot}</div>`;
+    }
 
     //#endregion
 }

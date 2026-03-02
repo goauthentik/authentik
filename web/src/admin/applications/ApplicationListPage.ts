@@ -5,17 +5,21 @@ import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/modals/ak-modal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "./ApplicationWizardHint.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { asModal, renderModal } from "#elements/modals/utils";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
+
+import { ApplicationForm } from "#admin/applications/ApplicationForm";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
@@ -68,6 +72,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
+
+    #openEditModal(event: Event) {
+        const pk = (event.currentTarget as HTMLElement).dataset.pk;
+
+        renderModal(html`<ak-application-form .instancePk=${pk}></ak-application-form>`);
+    }
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
@@ -133,21 +143,16 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Application")}</span>
-                    <ak-application-form slot="form" .instancePk=${item.slug}>
-                    </ak-application-form>
-                    <button
-                        slot="trigger"
-                        class="pf-c-button pf-m-plain"
-                        aria-label=${msg(str`Edit "${item.name}"`)}
-                    >
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    aria-label=${msg(str`Edit "${item.name}"`)}
+                    data-pk=${item.slug}
+                    @click=${this.#openEditModal}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 ${item.launchUrl
                     ? html`<a
                           href=${item.launchUrl}
@@ -174,12 +179,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     ${msg("Create with Provider")}
                 </button>
             </ak-application-wizard>
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Application")}</span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>`;
+            <button class="pf-c-button pf-m-primary" @click=${asModal(ApplicationForm)}>
+                ${msg("Create")}
+            </button>`;
     }
 
     renderToolbar(): TemplateResult {
