@@ -102,6 +102,8 @@ class EventAction(models.TextChoices):
     IMPERSONATION_STARTED = "impersonation_started"
     IMPERSONATION_ENDED = "impersonation_ended"
 
+    ACCOUNT_LOCKDOWN_TRIGGERED = "account_lockdown_triggered"
+
     FLOW_EXECUTION = "flow_execution"
     POLICY_EXECUTION = "policy_execution"
     POLICY_EXCEPTION = "policy_exception"

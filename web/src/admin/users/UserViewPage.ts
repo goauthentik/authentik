@@ -29,11 +29,14 @@ import "#elements/ak-mdx/ak-mdx";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 
 import { AKElement } from "#elements/Base";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { Timestamp } from "#elements/table/shared";
 
@@ -65,7 +68,9 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 @customElement("ak-user-view")
-export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))) {
+export class UserViewPage extends WithLicenseSummary(
+    WithBrandConfig(WithCapabilitiesConfig(WithSession(AKElement))),
+) {
     @property({ type: Number })
     set userId(id: number) {
         new CoreApi(DEFAULT_CONFIG)
@@ -144,6 +149,7 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
     renderActionButtons(user: User) {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.currentUser?.pk;
+        const canTriggerLockdown = this.hasEnterpriseLicense && user.pk !== this.currentUser?.pk;
 
         return html`<div class="ak-button-collection">
             <ak-forms-modal>
@@ -177,6 +183,31 @@ export class UserViewPage extends WithBrandConfig(WithCapabilitiesConfig(WithSes
                     </pf-tooltip>
                 </button>
             </ak-user-active-form>
+            ${canTriggerLockdown
+                ? html`
+                      <button
+                          class="pf-c-button pf-m-danger pf-m-block"
+                          @click=${async () => {
+                              try {
+                                  const response = await new CoreApi(
+                                      DEFAULT_CONFIG,
+                                  ).coreUsersAccountLockdownCreate({
+                                      userAccountLockdownRequest: {
+                                          user: user.pk,
+                                      },
+                                  });
+                                  if (response.flowUrl) {
+                                      window.location.assign(response.flowUrl);
+                                  }
+                              } catch (error) {
+                                  parseAPIResponseError(error).then(showAPIErrorMessage);
+                              }
+                          }}
+                      >
+                          ${msg("Account Lockdown")}
+                      </button>
+                  `
+                : nothing}
             ${canImpersonate
                 ? html`
                       <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">

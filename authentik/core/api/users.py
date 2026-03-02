@@ -506,6 +506,9 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance(
+        "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
+    ),
     ConditionalInheritance("authentik.enterprise.reports.api.reports.ExportMixin"),
     UsedByMixin,
     ModelViewSet,

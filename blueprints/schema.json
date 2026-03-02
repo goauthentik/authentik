@@ -1184,6 +1184,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_stages_account_lockdown.accountlockdownstage"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                         },
                         "id": {
@@ -5060,6 +5100,11 @@
                     "format": "uuid",
                     "title": "Flow device code"
                 },
+                "flow_lockdown": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow lockdown"
+                },
                 "default_application": {
                     "type": "string",
                     "format": "uuid",
@@ -6033,6 +6078,10 @@
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
                             "authentik_sources_telegram.view_usertelegramsourceconnection",
+                            "authentik_stages_account_lockdown.add_accountlockdownstage",
+                            "authentik_stages_account_lockdown.change_accountlockdownstage",
+                            "authentik_stages_account_lockdown.delete_accountlockdownstage",
+                            "authentik_stages_account_lockdown.view_accountlockdownstage",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -7641,6 +7690,81 @@
                 }
             }
         },
+        "model_authentik_stages_account_lockdown.accountlockdownstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "deactivate_user": {
+                    "type": "boolean",
+                    "title": "Deactivate user",
+                    "description": "Deactivate the user account (set is_active to False)"
+                },
+                "set_unusable_password": {
+                    "type": "boolean",
+                    "title": "Set unusable password",
+                    "description": "Set an unusable password for the user"
+                },
+                "delete_sessions": {
+                    "type": "boolean",
+                    "title": "Delete sessions",
+                    "description": "Delete all active sessions for the user"
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens",
+                    "description": "Revoke all tokens for the user (API, app password, recovery, verification)"
+                },
+                "self_service_message_title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Self service message title",
+                    "description": "Title shown to users after self-service lockdown"
+                },
+                "self_service_message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Self service message",
+                    "description": "HTML message shown to users after self-service lockdown. Supports HTML formatting."
+                },
+                "self_service_completion_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Self service completion flow",
+                    "description": "Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_account_lockdown.accountlockdownstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_accountlockdownstage",
+                            "change_accountlockdownstage",
+                            "delete_accountlockdownstage",
+                            "view_accountlockdownstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage": {
             "type": "object",
             "properties": {
@@ -7838,6 +7962,7 @@
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
+                        "account_lockdown_triggered",
                         "flow_execution",
                         "policy_execution",
                         "policy_exception",
@@ -7960,6 +8085,7 @@
                                 "source_linked",
                                 "impersonation_started",
                                 "impersonation_ended",
+                                "account_lockdown_triggered",
                                 "flow_execution",
                                 "policy_execution",
                                 "policy_exception",
@@ -8713,6 +8839,7 @@
                         "source_linked",
                         "impersonation_started",
                         "impersonation_ended",
+                        "account_lockdown_triggered",
                         "flow_execution",
                         "policy_execution",
                         "policy_exception",
@@ -8829,6 +8956,7 @@
                         "authentik.enterprise.providers.ws_federation",
                         "authentik.enterprise.reports",
                         "authentik.enterprise.search",
+                        "authentik.enterprise.stages.account_lockdown",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source"
@@ -8960,6 +9088,7 @@
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_providers_ws_federation.wsfederationprovider",
                         "authentik_reports.dataexport",
+                        "authentik_stages_account_lockdown.accountlockdownstage",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage"
@@ -11625,6 +11754,10 @@
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
                             "authentik_sources_telegram.view_usertelegramsourceconnection",
+                            "authentik_stages_account_lockdown.add_accountlockdownstage",
+                            "authentik_stages_account_lockdown.change_accountlockdownstage",
+                            "authentik_stages_account_lockdown.delete_accountlockdownstage",
+                            "authentik_stages_account_lockdown.view_accountlockdownstage",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -15455,6 +15588,9 @@
                         "separator",
                         "hidden",
                         "static",
+                        "alert_info",
+                        "alert_warning",
+                        "alert_danger",
                         "ak-locale"
                     ],
                     "title": "Type"

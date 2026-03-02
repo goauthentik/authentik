@@ -272,6 +272,21 @@ export class BrandForm extends ModelForm<Brand, string> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account lockdown flow")}
+                        name="flowLockdown"
+                    >
+                        <ak-flow-search
+                            placeholder=${msg("Select an account lockdown flow...")}
+                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowLockdown}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user triggers account lockdown (e.g. in case of compromise). Should contain an Account Lockdown stage.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Other global settings")} ">

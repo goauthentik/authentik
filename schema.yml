@@ -3175,6 +3175,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_lockdown
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_recovery
         schema:
           type: string
@@ -4562,6 +4567,66 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/account_lockdown/:
+    post:
+      operationId: core_users_account_lockdown_create
+      description: |-
+        Trigger account lockdown for a user.
+
+        If no user is specified, locks the current user (self-service).
+        When targeting another user, admin permissions are required.
+
+        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
+        to redirect to.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccountLockdownRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownFlowResponse'
+          description: ''
+        '400':
+          description: No lockdown flow configured or invalid target
+        '403':
+          description: Permission denied (when targeting another user)
+  /core/users/account_lockdown_bulk/:
+    post:
+      operationId: core_users_account_lockdown_bulk_create
+      description: |-
+        Trigger account lockdown for multiple users.
+
+        A lockdown flow must be configured on the brand. Returns a flow URL for the frontend
+        to redirect to.
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserBulkAccountLockdownRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownBulkFlowResponse'
+          description: ''
+        '400':
+          description: No lockdown flow configured
+        '403':
+          description: Permission denied
   /core/users/export/:
     post:
       operationId: core_users_export_create
@@ -6912,6 +6977,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - configuration_warning
@@ -7178,6 +7244,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - configuration_warning
@@ -7310,6 +7377,7 @@ paths:
           items:
             type: string
             enum:
+            - account_lockdown_triggered
             - authorize_application
             - configuration_error
             - configuration_warning
@@ -11251,6 +11319,7 @@ paths:
           type: string
           nullable: true
           enum:
+          - account_lockdown_triggered
           - authorize_application
           - configuration_error
           - configuration_warning
@@ -20896,6 +20965,7 @@ paths:
           - authentik_sources_telegram.telegramsource
           - authentik_sources_telegram.telegramsourcepropertymapping
           - authentik_sources_telegram.usertelegramsourceconnection
+          - authentik_stages_account_lockdown.accountlockdownstage
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_email.authenticatoremailstage
@@ -26890,6 +26960,230 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/account_lockdown/:
+    get:
+      operationId: stages_account_lockdown_list
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: query
+        name: deactivate_user
+        schema:
+          type: boolean
+      - in: query
+        name: delete_sessions
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: revoke_tokens
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: self_service_completion_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: self_service_message
+        schema:
+          type: string
+      - in: query
+        name: self_service_message_title
+        schema:
+          type: string
+      - in: query
+        name: set_unusable_password
+        schema:
+          type: boolean
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAccountLockdownStageList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_account_lockdown_create
+      description: AccountLockdownStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountLockdownStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/account_lockdown/{stage_uuid}/:
+    get:
+      operationId: stages_account_lockdown_retrieve
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_account_lockdown_update
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountLockdownStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_account_lockdown_partial_update
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAccountLockdownStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountLockdownStage'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_account_lockdown_destroy
+      description: AccountLockdownStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/account_lockdown/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_account_lockdown_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Account Lockdown Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -31323,6 +31617,9 @@ paths:
           type: string
           enum:
           - ak-locale
+          - alert_danger
+          - alert_info
+          - alert_warning
           - checkbox
           - date
           - date-time
@@ -33758,6 +34055,125 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AccountLockdownBulkFlowResponse:
+      type: object
+      properties:
+        flow_url:
+          type: string
+          description: URL to redirect to for lockdown flow
+      required:
+      - flow_url
+    AccountLockdownFlowResponse:
+      type: object
+      properties:
+        flow_url:
+          type: string
+          description: URL to redirect to for lockdown flow
+      required:
+      - flow_url
+    AccountLockdownStage:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+          readOnly: true
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification)
+        self_service_message_title:
+          type: string
+          description: Title shown to users after self-service lockdown
+        self_service_message:
+          type: string
+          description: HTML message shown to users after self-service lockdown. Supports
+            HTML formatting.
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
+      required:
+      - component
+      - flow_set
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AccountLockdownStageRequest:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification)
+        self_service_message_title:
+          type: string
+          minLength: 1
+          description: Title shown to users after self-service lockdown
+        self_service_message:
+          type: string
+          minLength: 1
+          description: HTML message shown to users after self-service lockdown. Supports
+            HTML formatting.
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
+      required:
+      - name
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -34095,6 +34511,7 @@ components:
       - authentik.enterprise.providers.ws_federation
       - authentik.enterprise.reports
       - authentik.enterprise.search
+      - authentik.enterprise.stages.account_lockdown
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
@@ -35745,6 +36162,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_lockdown:
+          type: string
+          format: uuid
+          nullable: true
         default_application:
           type: string
           format: uuid
@@ -35814,6 +36235,10 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        flow_lockdown:
           type: string
           format: uuid
           nullable: true
@@ -36794,6 +37219,8 @@ components:
         flow_user_settings:
           type: string
         flow_device_code:
+          type: string
+        flow_lockdown:
           type: string
         default_locale:
           type: string
@@ -38441,6 +38868,7 @@ components:
       - source_linked
       - impersonation_started
       - impersonation_ended
+      - account_lockdown_triggered
       - flow_execution
       - policy_execution
       - policy_exception
@@ -42932,6 +43360,7 @@ components:
       - authentik_providers_ssf.ssfprovider
       - authentik_providers_ws_federation.wsfederationprovider
       - authentik_reports.dataexport
+      - authentik_stages_account_lockdown.accountlockdownstage
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
@@ -44363,6 +44792,21 @@ components:
       - plain
       - S256
       type: string
+    PaginatedAccountLockdownStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountLockdownStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedAgentConnectorList:
       type: object
       properties:
@@ -47098,6 +47542,41 @@ components:
       required:
       - backends
       - name
+    PatchedAccountLockdownStageRequest:
+      type: object
+      description: AccountLockdownStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        deactivate_user:
+          type: boolean
+          description: Deactivate the user account (set is_active to False)
+        set_unusable_password:
+          type: boolean
+          description: Set an unusable password for the user
+        delete_sessions:
+          type: boolean
+          description: Delete all active sessions for the user
+        revoke_tokens:
+          type: boolean
+          description: Revoke all tokens for the user (API, app password, recovery,
+            verification)
+        self_service_message_title:
+          type: string
+          minLength: 1
+          description: Title shown to users after self-service lockdown
+        self_service_message:
+          type: string
+          minLength: 1
+          description: HTML message shown to users after self-service lockdown. Supports
+            HTML formatting.
+        self_service_completion_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to redirect users to after self-service lockdown. This
+            flow should not require authentication since the user's session is deleted.
     PatchedAgentConnectorRequest:
       type: object
       properties:
@@ -47506,6 +47985,10 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        flow_lockdown:
           type: string
           format: uuid
           nullable: true
@@ -51747,6 +52230,9 @@ components:
       - separator
       - hidden
       - static
+      - alert_info
+      - alert_warning
+      - alert_danger
       - ak-locale
       type: string
     PropertyMapping:
@@ -56748,6 +57234,14 @@ components:
       - uid
       - username
       - uuid
+    UserAccountLockdownRequest:
+      type: object
+      description: Payload to trigger account lockdown for a user
+      properties:
+        user:
+          type: integer
+          nullable: true
+          description: User to lock. If omitted, locks the current user (self-service).
     UserAccountRequest:
       type: object
       description: Account adding/removing operations
@@ -56769,6 +57263,17 @@ components:
       - username
       - email
       type: string
+    UserBulkAccountLockdownRequest:
+      type: object
+      description: Payload to trigger account lockdown for multiple users
+      properties:
+        users:
+          type: array
+          items:
+            type: integer
+          description: Users to lock
+      required:
+      - users
     UserConsent:
       type: object
       description: UserConsent Serializer

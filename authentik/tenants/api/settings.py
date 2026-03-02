@@ -18,7 +18,6 @@ from authentik.tenants.models import Tenant
 
 
 class FlagJSONField(JSONDictField):
-
     def run_validators(self, value: dict):
         super().run_validators(value)
         for flag in Flag.available():
