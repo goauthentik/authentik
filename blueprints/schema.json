@@ -5514,6 +5514,7 @@
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
+                            "authentik_core.add_proxysource",
                             "authentik_core.add_source",
                             "authentik_core.add_token",
                             "authentik_core.add_user",
@@ -5528,6 +5529,7 @@
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
+                            "authentik_core.change_proxysource",
                             "authentik_core.change_source",
                             "authentik_core.change_token",
                             "authentik_core.change_user",
@@ -5541,6 +5543,7 @@
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
+                            "authentik_core.delete_proxysource",
                             "authentik_core.delete_source",
                             "authentik_core.delete_token",
                             "authentik_core.delete_user",
@@ -5561,6 +5564,7 @@
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
+                            "authentik_core.view_proxysource",
                             "authentik_core.view_source",
                             "authentik_core.view_token",
                             "authentik_core.view_token_key",
@@ -8166,6 +8170,16 @@
                     "type": "boolean",
                     "title": "Send once",
                     "description": "Only send notification once, for example when sending a webhook into a chat channel."
+                },
+                "hyperlink_base_url": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "uri",
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "title": "Hyperlink base url"
                 }
             },
             "required": []
@@ -11106,6 +11120,7 @@
                             "authentik_core.add_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.add_provider",
+                            "authentik_core.add_proxysource",
                             "authentik_core.add_source",
                             "authentik_core.add_token",
                             "authentik_core.add_user",
@@ -11120,6 +11135,7 @@
                             "authentik_core.change_groupsourceconnection",
                             "authentik_core.change_propertymapping",
                             "authentik_core.change_provider",
+                            "authentik_core.change_proxysource",
                             "authentik_core.change_source",
                             "authentik_core.change_token",
                             "authentik_core.change_user",
@@ -11133,6 +11149,7 @@
                             "authentik_core.delete_groupsourceconnection",
                             "authentik_core.delete_propertymapping",
                             "authentik_core.delete_provider",
+                            "authentik_core.delete_proxysource",
                             "authentik_core.delete_source",
                             "authentik_core.delete_token",
                             "authentik_core.delete_user",
@@ -11153,6 +11170,7 @@
                             "authentik_core.view_groupsourceconnection",
                             "authentik_core.view_propertymapping",
                             "authentik_core.view_provider",
+                            "authentik_core.view_proxysource",
                             "authentik_core.view_source",
                             "authentik_core.view_token",
                             "authentik_core.view_token_key",

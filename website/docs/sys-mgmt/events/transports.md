@@ -78,3 +78,8 @@ This sends a request using the Slack-specific format. This is also compatible wi
 2. Click **Create** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
 
 3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create**.
+
+#### Hyperlink base URLs
+
+Some transports that send notifications outside authentik (e.g. email) may require setting _Hyperlink base URL_ field.
+Set this field to the base URL of your authentik instance you want the notification recipients to use for accessing authentik.

@@ -234,6 +234,20 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     })}
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
+                label=${msg("Hyperlink base URL")}
+                name="hyperlinkBaseUrl"
+            >
+                <input
+                    type="text"
+                    value=${this.instance?.hyperlinkBaseUrl || ""}
+                    class="pf-c-form-control"
+                    ?hidden=${!this.showEmail}
+                    ?required=${this.showEmail}
+                />
+            </ak-form-element-horizontal>
         `;
     }
 }

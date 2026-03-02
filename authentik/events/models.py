@@ -6,6 +6,7 @@ from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
 from typing import Any
+from urllib.parse import urljoin
 from uuid import uuid4
 
 from asgiref.sync import async_to_sync
@@ -349,6 +350,8 @@ class NotificationTransport(TasksModel, SerializerModel):
         ),
     )
 
+    hyperlink_base_url = models.URLField(null=True)
+
     def send(self, notification: Notification) -> list[str]:
         """Send notification to user, called from async task"""
         if self.mode == TransportMode.LOCAL:
@@ -509,7 +512,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         if notification.hyperlink:
             context["link"] = {
-                "target": notification.hyperlink,
+                "target": urljoin(self.hyperlink_base_url, notification.hyperlink),
                 "label": notification.hyperlink_label,
             }
         if notification.event:
