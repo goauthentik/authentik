@@ -52,7 +52,7 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
         res[HEADER_ACCESS_CHALLENGE] = dumps(challenge)
         return res
 
-    def validate_challenge(self, response: str):
+    def validate_challenge(self, response: str) -> Device:
         response = VerifyChallengeResponseResult(
             self.google_client.challenge().verify(body=loads(response)).execute()
         )
@@ -70,6 +70,7 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
             connector=self.connector,
         )
         conn.create_snapshot(self.convert_data(signals))
+        return device
 
     def convert_os_family(self, family) -> OSFamily:
         match family:

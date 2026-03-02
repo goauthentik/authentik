@@ -13,7 +13,7 @@ from authentik.enterprise.endpoints.connectors.google_chrome.controller import (
     GoogleChromeController,
 )
 from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
-from authentik.flows.planner import FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_DEVICE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 
 
@@ -39,5 +39,8 @@ class GoogleChromeDeviceTrustConnector(View):
         if x_device_trust == "VerifiedAccess" and x_access_challenge_response is None:
             return self.controller.generate_challenge(request)
         if x_access_challenge_response:
-            self.controller.validate_challenge(x_access_challenge_response)
+            device = self.controller.validate_challenge(x_access_challenge_response)
+            flow_plan = self.get_flow_plan()
+            flow_plan.context[PLAN_CONTEXT_DEVICE] = device
+            self.request.session[SESSION_KEY_PLAN] = flow_plan
         return TemplateResponse(request, "endpoints/google_chrome/dtc.html")
