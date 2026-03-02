@@ -1357,6 +1357,83 @@ func TestBuildConnConfig_WithBase64EncodedConnOptions(t *testing.T) {
 	}
 }
 
+// Verifies DefaultSchema is applied via AfterConnect and never via startup RuntimeParams.
+func TestBuildConnConfig_SearchPath_DefaultSchema(t *testing.T) {
+	cfg := config.PostgreSQLConfig{
+		Host:          "localhost",
+		Port:          "5432",
+		User:          "authentik",
+		Name:          "authentik",
+		DefaultSchema: "default_schema",
+	}
+
+	connConfig, err := BuildConnConfig(cfg)
+	require.NoError(t, err)
+	require.NotNil(t, connConfig.AfterConnect)
+	_, hasSearchPath := connConfig.RuntimeParams["search_path"]
+	assert.False(t, hasSearchPath, "search_path should not appear in RuntimeParams")
+}
+
+// Verifies ConnOptions search_path is applied via AfterConnect and excluded from startup RuntimeParams.
+func TestBuildConnConfig_SearchPath_ConnOptions(t *testing.T) {
+	cfg := config.PostgreSQLConfig{
+		Host:        "localhost",
+		Port:        "5432",
+		User:        "authentik",
+		Name:        "authentik",
+		ConnOptions: base64.StdEncoding.EncodeToString([]byte(`{"search_path":"connopt_schema"}`)),
+	}
+
+	connConfig, err := BuildConnConfig(cfg)
+	require.NoError(t, err)
+	require.NotNil(t, connConfig.AfterConnect)
+	_, hasSearchPath := connConfig.RuntimeParams["search_path"]
+	assert.False(t, hasSearchPath, "search_path should not appear in RuntimeParams")
+}
+
+// Verifies ConnOptions search_path overrides DefaultSchema while keeping other conn options behavior.
+func TestBuildConnConfig_SearchPath_ConnOptionsOverrideDefault(t *testing.T) {
+	cfg := config.PostgreSQLConfig{
+		Host:          "localhost",
+		Port:          "5432",
+		User:          "authentik",
+		Name:          "authentik",
+		DefaultSchema: "default_schema",
+		ConnOptions:   base64.StdEncoding.EncodeToString([]byte(`{"search_path":"override_schema","application_name":"authentik-proxy"}`)),
+	}
+
+	connConfig, err := BuildConnConfig(cfg)
+	require.NoError(t, err)
+	require.NotNil(t, connConfig.AfterConnect)
+	assert.Equal(t, "authentik-proxy", connConfig.RuntimeParams["application_name"])
+	_, hasSearchPath := connConfig.RuntimeParams["search_path"]
+	assert.False(t, hasSearchPath, "search_path should not appear in RuntimeParams")
+}
+
+// Verifies inherited search_path from pgx/libpq defaults is removed from startup RuntimeParams.
+func TestBuildConnConfig_SearchPath_InheritedServiceSetting(t *testing.T) {
+	serviceFile := filepath.Join(t.TempDir(), "pg_service.conf")
+	err := os.WriteFile(serviceFile, []byte("[authentik-test]\nsearch_path=service_schema\n"), 0o600)
+	require.NoError(t, err)
+
+	t.Setenv("PGSERVICE", "authentik-test")
+	t.Setenv("PGSERVICEFILE", serviceFile)
+
+	cfg := config.PostgreSQLConfig{
+		Host: "localhost",
+		Port: "5432",
+		User: "authentik",
+		Name: "authentik",
+	}
+
+	connConfig, err := BuildConnConfig(cfg)
+	require.NoError(t, err)
+	require.NotNil(t, connConfig.AfterConnect)
+
+	_, hasSearchPath := connConfig.RuntimeParams["search_path"]
+	assert.False(t, hasSearchPath, "search_path should not appear in RuntimeParams")
+}
+
 // TestBuildConnConfig_TargetSessionAttrs demonstrates how target_session_attrs
 // should be properly handled using pgx's ValidateConnect callback
 func TestBuildConnConfig_TargetSessionAttrs(t *testing.T) {
