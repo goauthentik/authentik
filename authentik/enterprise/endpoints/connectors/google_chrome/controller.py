@@ -73,18 +73,13 @@ class GoogleChromeController(BaseController[GoogleChromeConnector]):
         return device
 
     def convert_os_family(self, family) -> OSFamily:
-        match family:
-            case "CHROME_OS":
-                return OSFamily.linux
-            case "CHROMIUM_OS":
-                return OSFamily.linux
-            case "WINDOWS":
-                return OSFamily.windows
-            case "MAC_OS_X":
-                return OSFamily.macOS
-            case "LINUX":
-                return OSFamily.linux
-        return OSFamily.other
+        return {
+            "CHROME_OS": OSFamily.linux,
+            "CHROMIUM_OS": OSFamily.linux,
+            "WINDOWS": OSFamily.windows,
+            "MAC_OS_X": OSFamily.macOS,
+            "LINUX": OSFamily.linux,
+        }.get(family, OSFamily.other)
 
     def convert_data(self, raw_signals: DeviceSignals):
         data = {
