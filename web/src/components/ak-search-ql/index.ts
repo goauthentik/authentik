@@ -1,11 +1,11 @@
 import "#elements/buttons/Dropdown";
 
 import { StripHTMLTrustPolicy } from "#common/purify";
-import { rootInterface } from "#common/theme";
 
 import { FormAssociated, FormAssociatedElement } from "#elements/forms/form-associated-element";
 import { PaginatedResponse } from "#elements/table/Table";
 import { ifPresent } from "#elements/utils/attributes";
+import { resolveInterface } from "#elements/utils/render-roots";
 
 import Styles from "#components/ak-search-ql/styles.css";
 
@@ -143,8 +143,7 @@ export class QLSearch extends FormAssociatedElement<string> implements FormAssoc
     public override connectedCallback() {
         super.connectedCallback();
 
-        this.#scrollContainer =
-            rootInterface<LitElement>().renderRoot.querySelector("#main-content");
+        this.#scrollContainer = resolveInterface().renderRoot.querySelector("#main-content");
 
         this.#scrollContainer?.addEventListener("scroll", this.#updateDropdownPosition, {
             passive: true,
