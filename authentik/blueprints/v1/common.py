@@ -73,39 +73,9 @@ class BlueprintEntryPermission:
     role: str | YAMLTag | None = field(default=None)
 
 
-@dataclass
-class BlueprintEntry:
-    """Single entry of a blueprint"""
-
-    model: str | YAMLTag
-    state: BlueprintEntryDesiredState | YAMLTag = field(default=BlueprintEntryDesiredState.PRESENT)
-    conditions: list[Any] = field(default_factory=list)
-    identifiers: dict[str, Any] = field(default_factory=dict)
-    attrs: dict[str, Any] | None = field(default_factory=dict)
-    permissions: list[BlueprintEntryPermission] = field(default_factory=list)
-
-    id: str | None = None
-
-    _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
-
+class BlueprintTagResolverMixin:
     def __post_init__(self, *args, **kwargs) -> None:
         self.__tag_contexts: list[YAMLTagContext] = []
-
-    @staticmethod
-    def from_model(model: SerializerModel, *extra_identifier_names: str) -> BlueprintEntry:
-        """Convert a SerializerModel instance to a blueprint Entry"""
-        identifiers = {
-            "pk": model.pk,
-        }
-        all_attrs = get_attrs(model)
-
-        for extra_identifier_name in extra_identifier_names:
-            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name, None)
-        return BlueprintEntry(
-            identifiers=identifiers,
-            model=f"{model._meta.app_label}.{model._meta.model_name}",
-            attrs=all_attrs,
-        )
 
     def get_tag_context(
         self,
@@ -148,6 +118,38 @@ class BlueprintEntry:
 
         return val
 
+
+@dataclass
+class BlueprintEntry(BlueprintTagResolverMixin):
+    """Single entry of a blueprint"""
+
+    model: str | YAMLTag
+    state: BlueprintEntryDesiredState | YAMLTag = field(default=BlueprintEntryDesiredState.PRESENT)
+    conditions: list[Any] = field(default_factory=list)
+    identifiers: dict[str, Any] = field(default_factory=dict)
+    attrs: dict[str, Any] | None = field(default_factory=dict)
+    permissions: list[BlueprintEntryPermission] = field(default_factory=list)
+
+    id: str | None = None
+
+    _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
+
+    @staticmethod
+    def from_model(model: SerializerModel, *extra_identifier_names: str) -> BlueprintEntry:
+        """Convert a SerializerModel instance to a blueprint Entry"""
+        identifiers = {
+            "pk": model.pk,
+        }
+        all_attrs = get_attrs(model)
+
+        for extra_identifier_name in extra_identifier_names:
+            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name, None)
+        return BlueprintEntry(
+            identifiers=identifiers,
+            model=f"{model._meta.app_label}.{model._meta.model_name}",
+            attrs=all_attrs,
+        )
+
     def get_attrs(self, blueprint: Blueprint) -> dict[str, Any]:
         """Get attributes of this entry, with all yaml tags resolved"""
         return self.tag_resolver(self.attrs, blueprint)
@@ -187,21 +189,45 @@ class BlueprintMetadata:
 
 
 @dataclass
-class Blueprint:
+class Blueprint(BlueprintTagResolverMixin):
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: list[BlueprintEntry] | dict[str, list[BlueprintEntry]] = field(default_factory=list)
+    entries: (
+        YAMLTag
+        | list[BlueprintEntry | YAMLTag]
+        | dict[str, YAMLTag | list[BlueprintEntry | YAMLTag]]
+    ) = field(default_factory=list)
     context: dict = field(default_factory=dict)
 
     metadata: BlueprintMetadata | None = field(default=None)
 
-    def iter_entries(self) -> Iterable[BlueprintEntry]:
-        if isinstance(self.entries, dict):
-            for _section, entries in self.entries.items():
-                yield from entries
+    def _iter_entries(self, entries) -> Iterable[BlueprintEntry]:
+        if isinstance(entries, dict):
+            for _, entry_group in entries.items():
+                yield from self._iter_entries(entry_group)
+        # If a YAMLTag is the root element - resolve it
+        elif isinstance(entries, YAMLTag):
+            yield from self._iter_entries(self.tag_resolver(entries, self))
+        elif isinstance(entries, (list, tuple)):
+            for entry in entries:
+                # If the entry root is a YAMLTag - resolve it
+                if isinstance(entry, YAMLTag):
+                    entry = self.tag_resolver(entry, self)  # noqa: PLW2901
+                # If the entry is not a BlueprintEntry it must be (part of) a
+                # resolved YAMLTag. Turn it back into a BlueprintEntry
+                if not isinstance(entry, BlueprintEntry):
+                    try:
+                        entry = BlueprintEntry(**entry)  # noqa: PLW2901
+                    except TypeError as exc:
+                        raise EntryInvalidError from exc
+                yield entry
         else:
-            yield from self.entries
+            raise EntryInvalidError(f"Invalid entry: Expected a sequence got `{entries}`")
+
+    def iter_entries(self) -> Iterable[BlueprintEntry]:
+        """Return a sequence of entries"""
+        return self._iter_entries(self.entries)
 
 
 class YAMLTag:
