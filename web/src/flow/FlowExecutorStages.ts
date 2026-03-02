@@ -94,3 +94,5 @@ export const StageEntries: readonly StageEntry[] = [
     ["xak-flow-frame", "challenge"],
     ["xak-flow-redirect", "ak-stage-redirect"],
 ]
+
+export default StageEntries;

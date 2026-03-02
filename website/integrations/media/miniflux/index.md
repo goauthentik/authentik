@@ -41,7 +41,7 @@ To support the integration of Miniflux with authentik, you need to create an app
 
 ## Miniflux configuration
 
-Add the following environment variables to your Miniflux configuration. Make sure to fill in the client ID, client secret, and OpenID Connect well-known URL from your authentik instance.
+Add the following environment variables to your Miniflux configuration. Replace the placeholders with values from your authentik instance.
 
 ```sh
 OAUTH2_PROVIDER=oidc
@@ -51,6 +51,8 @@ OAUTH2_REDIRECT_URL=https://miniflux.company/oauth2/oidc/callback
 OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company/application/o/<application_slug>/
 OAUTH2_USER_CREATION=1
 ```
+
+Replace `<application_slug>` with the authentik application slug created earlier.
 
 :::info
 The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC_DISCOVERY_ENDPOINT`.
@@ -64,4 +66,4 @@ Existing Miniflux accounts must first be linked to a matching authentik account.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Miniflux, log out of Miniflux, locate the "Sign in with OpenID Connect" button on the login page, click on it, and ensure you can successfully log in using Single Sign-On.
+To confirm that authentik is properly configured with Miniflux, log out of Miniflux, then use the "Sign in with OpenID Connect" button on the login page and verify that Single Sign-On succeeds.
