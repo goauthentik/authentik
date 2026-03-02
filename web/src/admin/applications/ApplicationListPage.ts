@@ -20,13 +20,14 @@ import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { ApplicationForm } from "#admin/applications/ApplicationForm";
+import { AkApplicationWizard } from "#admin/applications/wizard/ak-application-wizard";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
 import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -73,11 +74,25 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
+    public override firstUpdated(changed: PropertyValues<this>): void {
+        super.firstUpdated(changed);
+
+        if (getURLParam("createWizard", false)) {
+            this.#openCreateWizard();
+        } else if (getURLParam("createForm", false)) {
+            this.#openCreateModal();
+        }
+    }
+
     #openEditModal(event: Event) {
         const pk = (event.currentTarget as HTMLElement).dataset.pk;
 
         renderModal(html`<ak-application-form .instancePk=${pk}></ak-application-form>`);
     }
+
+    #openCreateWizard = AkApplicationWizard.open;
+
+    #openCreateModal = asModal(ApplicationForm);
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
@@ -170,16 +185,10 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
-                <button
-                    slot="trigger"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="start-application-wizard"
-                >
-                    ${msg("Create with Provider")}
-                </button>
-            </ak-application-wizard>
-            <button class="pf-c-button pf-m-primary" @click=${asModal(ApplicationForm)}>
+        return html`<button class="pf-c-button pf-m-primary" @click=${this.#openCreateWizard}>
+                ${msg("Create with Provider")}
+            </button>
+            <button class="pf-c-button pf-m-primary" @click=${this.#openCreateModal}>
                 ${msg("Create")}
             </button>`;
     }
