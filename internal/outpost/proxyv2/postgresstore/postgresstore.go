@@ -188,10 +188,6 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		connConfig.RuntimeParams = make(map[string]string)
 	}
 
-	if cfg.DefaultSchema != "" {
-		connConfig.RuntimeParams["search_path"] = cfg.DefaultSchema
-	}
-
 	// Parse and apply connection options if specified
 	if cfg.ConnOptions != "" {
 		connOpts, err := parseConnOptions(cfg.ConnOptions)
@@ -335,6 +331,9 @@ func SetupGORMWithRefreshablePool(cfg config.PostgreSQLConfig, gormConfig *gorm.
 	pool, err := NewRefreshableConnPool(dsn, gormConfig, maxIdleConns, maxOpenConns, connMaxLifetime)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create connection pool: %w", err)
+	}
+	if cfg.DefaultSchema != "" {
+		pool.SearchPath = cfg.DefaultSchema
 	}
 
 	// Create GORM DB using the refreshable connection pool

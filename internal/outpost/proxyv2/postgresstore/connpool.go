@@ -25,6 +25,8 @@ type RefreshableConnPool struct {
 	currentDSN string
 	gormConfig *gorm.Config
 
+	SearchPath string
+
 	// Connection pool settings (stored for reapplication after reconnection)
 	maxIdleConns    int
 	maxOpenConns    int
@@ -56,6 +58,10 @@ func NewRefreshableConnPool(initialDSN string, gormConfig *gorm.Config, maxIdleC
 		connMaxLifetime: connMaxLifetime,
 	}
 
+	if err := pool.setSearchPath(context.Background(), db); err != nil {
+		return nil, err
+	}
+
 	return pool, nil
 }
 
@@ -74,6 +80,17 @@ func isAuthError(err error) bool {
 	}
 
 	return false
+}
+
+func (p *RefreshableConnPool) setSearchPath(ctx context.Context, db *sql.DB) error {
+	if p.SearchPath == "" {
+		return nil
+	}
+	if _, err := db.ExecContext(ctx, "SET search_path = %s", p.SearchPath); err != nil {
+		p.log.WithError(err).Error("Failed to set search_path")
+		return err
+	}
+	return nil
 }
 
 // refreshCredentials checks if credentials have changed and reconnects if needed
@@ -120,6 +137,11 @@ func (p *RefreshableConnPool) refreshCredentials(ctx context.Context) error {
 	newDB.SetMaxIdleConns(p.maxIdleConns)
 	newDB.SetMaxOpenConns(p.maxOpenConns)
 	newDB.SetConnMaxLifetime(p.connMaxLifetime)
+
+	if err := p.setSearchPath(ctx, newDB); err != nil {
+		_ = newDB.Close()
+		return err
+	}
 
 	// Verify the connection works BEFORE closing old connection
 	if err := newDB.PingContext(ctx); err != nil {
