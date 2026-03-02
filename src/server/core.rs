@@ -427,7 +427,7 @@ pub(crate) mod tls {
         sync::Arc,
     };
 
-    use eyre::{Result, eyre};
+    use eyre::{Report, Result, eyre};
     use rustls::{
         RootCertStore,
         crypto::CryptoProvider,
@@ -503,52 +503,57 @@ pub(crate) mod tls {
         .fetch_all(db::get())
         .await?;
 
-        let mut roots = RootCertStore::empty();
-        let mut brands = HashMap::new();
+        let (brands, roots) = tokio::task::spawn_blocking(|| {
+            let mut brands = HashMap::new();
+            let mut roots = RootCertStore::empty();
 
-        for row in rows {
-            let BrandRow {
-                brand_uuid,
-                domain,
-                default,
-                web_cert_data,
-                web_cert_key,
-                client_cert_data,
-            } = row;
-
-            if let (Some(certificate_data), Some(key_data)) = (web_cert_data, web_cert_key)
-                && let Entry::Vacant(e) = brands.entry(brand_uuid)
-            {
-                let brand = Brand {
+            for row in rows {
+                let BrandRow {
+                    brand_uuid,
                     domain,
                     default,
-                    web_certificate: {
-                        let cert_chain: Vec<CertificateDer<'static>> =
-                            certs(&mut BufReader::new(certificate_data.as_bytes()))
-                                .collect::<Result<Vec<_>, _>>()?;
-                        let key_der: PrivateKeyDer<'static> =
-                            private_key(&mut BufReader::new(key_data.as_bytes()))?
-                                .ok_or(eyre!("no private key found"))?;
-                        let provider =
-                            CryptoProvider::get_default().expect("no rustls provider installed");
-                        Arc::new(CertifiedKey::new(
-                            cert_chain,
-                            provider.key_provider.load_private_key(key_der)?,
-                        ))
-                    },
-                };
-                e.insert(brand);
-            };
+                    web_cert_data,
+                    web_cert_key,
+                    client_cert_data,
+                } = row;
 
-            if let Some(certificate_data) = client_cert_data {
-                let cert_chain: Vec<CertificateDer<'static>> =
-                    certs(&mut BufReader::new(certificate_data.as_bytes()))
-                        .collect::<Result<Vec<_>, _>>()?;
-                for cert in cert_chain {
-                    roots.add(cert)?;
+                if let (Some(certificate_data), Some(key_data)) = (web_cert_data, web_cert_key)
+                    && let Entry::Vacant(e) = brands.entry(brand_uuid)
+                {
+                    let brand = Brand {
+                        domain,
+                        default,
+                        web_certificate: {
+                            let cert_chain: Vec<CertificateDer<'static>> =
+                                certs(&mut BufReader::new(certificate_data.as_bytes()))
+                                    .collect::<Result<Vec<_>, _>>()?;
+                            let key_der: PrivateKeyDer<'static> =
+                                private_key(&mut BufReader::new(key_data.as_bytes()))?
+                                    .ok_or(eyre!("no private key found"))?;
+                            let provider = CryptoProvider::get_default()
+                                .expect("no rustls provider installed");
+                            Arc::new(CertifiedKey::new(
+                                cert_chain,
+                                provider.key_provider.load_private_key(key_der)?,
+                            ))
+                        },
+                    };
+                    e.insert(brand);
+                };
+
+                if let Some(certificate_data) = client_cert_data {
+                    let cert_chain: Vec<CertificateDer<'static>> =
+                        certs(&mut BufReader::new(certificate_data.as_bytes()))
+                            .collect::<Result<Vec<_>, _>>()?;
+                    for cert in cert_chain {
+                        roots.add(cert)?;
+                    }
                 }
             }
-        }
+
+            Ok::<_, Report>((brands, roots))
+        })
+        .await??;
 
         Ok((
             CertResolver {
