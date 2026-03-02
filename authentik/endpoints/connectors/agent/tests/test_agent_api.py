@@ -58,6 +58,18 @@ class TestAgentAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_enroll_ephemeral(self):
+        identifier = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:agentconnector-enroll"),
+            data={"device_serial": identifier, "device_name": "bar", "ephemeral": True},
+            HTTP_AUTHORIZATION=f"Bearer {self.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        device = Device.objects.filter(identifier=identifier).first()
+        self.assertIsNotNone(device)
+        self.assertTrue(device.expiring)
+
     def test_enroll_token_delete(self):
         response = self.client.post(
             reverse("authentik_api:agentconnector-enroll"),

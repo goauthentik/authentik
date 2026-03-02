@@ -32,6 +32,10 @@ class AgentConnector(Connector):
         validators=[timedelta_string_validator],
     )
 
+    ephemeral_device_expiry = models.TextField(
+        default="hours=2", validators=[timedelta_string_validator]
+    )
+
     auth_session_duration = models.TextField(
         default="hours=8", validators=[timedelta_string_validator]
     )
