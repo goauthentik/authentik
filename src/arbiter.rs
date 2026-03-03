@@ -79,7 +79,7 @@ async fn watch_signals(
                 info!("signal TERM received");
                 arbiter.do_graceful_shutdown().await;
             },
-            _ = arbiter.shutdown() => {
+            () = arbiter.shutdown() => {
                 info!("stopping signals watcher");
                 return Ok(());
             }
@@ -120,7 +120,7 @@ impl Tasks {
             arbiter.do_graceful_shutdown().await;
 
             match result {
-                Ok(Ok(_)) => {}
+                Ok(Ok(())) => {}
                 Ok(Err(err)) => {
                     arbiter.do_fast_shutdown().await;
                     errors.push(err);
@@ -133,7 +133,7 @@ impl Tasks {
 
             while let Some(result) = tasks.join_next().await {
                 match result {
-                    Ok(Ok(_)) => {}
+                    Ok(Ok(())) => {}
                     Ok(Err(err)) => errors.push(err),
                     Err(err) => errors.push(Report::new(err)),
                 }
@@ -220,11 +220,7 @@ impl Arbiter {
     /// Shutdown the application immediately.
     async fn do_fast_shutdown(&self) {
         info!("arbiter has been told to shutdown immediately");
-        self.handles
-            .lock()
-            .await
-            .iter()
-            .for_each(|handle| handle.shutdown());
+        self.handles.lock().await.iter().for_each(Handle::shutdown);
         info!("all webservers have been shutdown, shutting down the other tasks immediately");
         self.fast_shutdown.cancel();
         self.shutdown.cancel();

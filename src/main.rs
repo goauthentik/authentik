@@ -109,7 +109,7 @@ fn main() -> Result<()> {
             }
             return Ok(());
         }
-    };
+    }
 
     trace!("installing error formatting");
     color_eyre::install()?;
@@ -174,8 +174,8 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    server::run(Default::default(), &mut tasks).await?;
-                    worker::run(Default::default(), &mut tasks).await?;
+                    server::run(server::Cli::default(), &mut tasks).await?;
+                    worker::run(worker::Cli::default(), &mut tasks).await?;
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
@@ -186,19 +186,20 @@ fn main() -> Result<()> {
                     worker::run(args, &mut tasks).await?;
                 }
                 #[cfg(feature = "proxy")]
+                #[expect(clippy::todo, reason = "WIP")]
                 Command::Proxy(_args) => todo!(),
                 #[cfg(feature = "core")]
                 Command::Manage(_) => unreachable!(),
-            };
+            }
 
             let errors = tasks.run().await;
 
-            if !errors.is_empty() {
-                error!("authentik encountered errors: {:?}", errors);
-                Err(eyre!("Errors encountered: {:?}", errors))
-            } else {
+            if errors.is_empty() {
                 info!("authentik exiting");
                 Ok(())
+            } else {
+                error!("authentik encountered errors: {:?}", errors);
+                Err(eyre!("Errors encountered: {:?}", errors))
             }
         })
 }

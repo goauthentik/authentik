@@ -141,6 +141,7 @@ str_to_string = "warn"
 todo = "warn"
 unreadable_literal = "warn"
 unseparated_literal_suffix = "warn"
+unused_async = "warn"
 unwrap_used = "warn"
 
 [package]

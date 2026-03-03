@@ -93,7 +93,7 @@ where S: AsyncRead + Unpin
                         header: Some(header),
                     });
                 }
-                Err(Error::BufferTooShort) => continue,
+                Err(Error::BufferTooShort) => {}
                 // Something went wrong parsing the PROXY protocol. We assume that we weren't meant
                 // to parse it, and that this is just a regular stream without the PROXY protocol.
                 Err(_) => {
@@ -150,7 +150,9 @@ where S: AsyncBufRead
     fn consume(self: Pin<&mut Self>, amt: usize) {
         let this = self.project();
 
-        if !this.remaining.is_empty() {
+        if this.remaining.is_empty() {
+            this.stream.consume(amt);
+        } else {
             let len = this.remaining.len();
             if amt <= len {
                 this.remaining.drain(..amt);
@@ -158,8 +160,6 @@ where S: AsyncBufRead
                 this.remaining.drain(..len);
                 this.stream.consume(amt - len);
             }
-        } else {
-            this.stream.consume(amt);
         }
     }
 }

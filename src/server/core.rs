@@ -197,7 +197,7 @@ pub(crate) fn build_client() -> CoreClient {
         .build(connector)
 }
 
-async fn build_proxy_router() -> Router {
+fn build_proxy_router() -> Router {
     let client = build_client();
 
     Router::new().fallback(forward_request).with_state(client)
@@ -213,9 +213,9 @@ async fn powered_by_middleware(request: Request, next: Next) -> Response {
 }
 
 // TODO: subpath
-pub(super) async fn build_router() -> Router {
+pub(super) fn build_router() -> Router {
     Router::new()
-        .merge(super::r#static::build_router().await)
+        .merge(super::r#static::build_router())
         .layer(
             // TODO: refine this, probably extract it to its own thing to be used with the proxy
             // outpost and metrics server
@@ -224,7 +224,7 @@ pub(super) async fn build_router() -> Router {
                 .on_request(DefaultOnRequest::new().level(Level::INFO))
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         )
-        .merge(build_proxy_router().await)
+        .merge(build_proxy_router())
         .layer(from_fn(powered_by_middleware))
 }
 
@@ -258,17 +258,15 @@ mod websockets {
         let has_upgrade = headers
             .get(UPGRADE)
             .and_then(|v| v.to_str().ok())
-            .map(|v| v.eq_ignore_ascii_case("websocket"))
-            .unwrap_or(false);
+            .is_some_and(|v| v.eq_ignore_ascii_case("websocket"));
 
         let has_connection = headers
             .get(CONNECTION)
             .and_then(|v| v.to_str().ok())
-            .map(|v| {
+            .is_some_and(|v| {
                 v.split(',')
                     .any(|part| part.trim().eq_ignore_ascii_case("upgrade"))
-            })
-            .unwrap_or(false);
+            });
 
         let has_websocket_key = headers.contains_key(SEC_WEBSOCKET_KEY);
         let has_websocket_version = headers.contains_key(SEC_WEBSOCKET_VERSION);
@@ -277,13 +275,12 @@ mod websockets {
     }
 
     pub(super) async fn handle_websocket_upgrade(request: Request) -> Result<Response> {
-        let ws_key = match request
+        let Some(ws_key) = request
             .headers()
             .get(SEC_WEBSOCKET_KEY)
             .and_then(|key| key.to_str().ok())
-        {
-            Some(key) => key,
-            None => return Ok((StatusCode::BAD_REQUEST, "").into_response()),
+        else {
+            return Ok((StatusCode::BAD_REQUEST, "").into_response());
         };
 
         let ws_accept = derive_accept_key(ws_key.as_bytes());
@@ -351,10 +348,10 @@ mod websockets {
                             break;
                         }
                     }
-                    msg @ Message::Binary(_)
-                    | msg @ Message::Text(_)
-                    | msg @ Message::Ping(_)
-                    | msg @ Message::Pong(_) => {
+                    msg @ (Message::Binary(_)
+                    | Message::Text(_)
+                    | Message::Ping(_)
+                    | Message::Pong(_)) => {
                         if !client_closed {
                             upstream_sender.send(msg).await?;
                         }
@@ -382,10 +379,10 @@ mod websockets {
                             break;
                         }
                     }
-                    msg @ Message::Binary(_)
-                    | msg @ Message::Text(_)
-                    | msg @ Message::Ping(_)
-                    | msg @ Message::Pong(_) => {
+                    msg @ (Message::Binary(_)
+                    | Message::Text(_)
+                    | Message::Ping(_)
+                    | Message::Pong(_)) => {
                         if !upstream_closed {
                             client_sender.send(msg).await?;
                         }

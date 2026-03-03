@@ -42,7 +42,7 @@ impl Gunicorn {
             "sending shutdown signal to gunicorn"
         );
         if let Some(id) = self.0.id() {
-            kill(Pid::from_raw(id as i32), signal)?;
+            kill(Pid::from_raw(id.cast_signed()), signal)?;
         }
         self.0.wait().await?;
         Ok(())
@@ -58,7 +58,7 @@ impl Gunicorn {
         self.shutdown(Signal::SIGINT).await
     }
 
-    pub(super) async fn is_alive(&mut self) -> bool {
+    pub(super) fn is_alive(&mut self) -> bool {
         let try_wait = self.0.try_wait();
         match try_wait {
             Ok(Some(code)) => {

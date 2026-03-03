@@ -39,14 +39,14 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                             arbiter.mark_gunicorn_ready();
                         }
                     },
-                    Err(RecvError::Lagged(_)) => continue,
+                    Err(RecvError::Lagged(_)) => {},
                     Err(RecvError::Closed) => {
                         warn!("error receiving signals");
                         return Err(RecvError::Closed.into());
                     }
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(1)), if !GUNICORN_READY.load(Ordering::Relaxed) => {
+            () = tokio::time::sleep(Duration::from_secs(1)), if !GUNICORN_READY.load(Ordering::Relaxed) => {
                 // On some platforms the SIGUSR1 can be missed.
                 // Fall back to probing the gunicorn unix socket and mark ready once it accepts connections.
                 if Gunicorn::is_socket_ready().await {
@@ -55,16 +55,16 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
                     arbiter.mark_gunicorn_ready();
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(5)) => {
-                if !gunicorn.is_alive().await {
+            () = tokio::time::sleep(Duration::from_secs(5)) => {
+                if !gunicorn.is_alive() {
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }
             },
-            _ = arbiter.fast_shutdown() => {
+            () = arbiter.fast_shutdown() => {
                 gunicorn.fast_shutdown().await?;
                 return Ok(());
             },
-            _ = arbiter.graceful_shutdown() => {
+            () = arbiter.graceful_shutdown() => {
                 gunicorn.graceful_shutdown().await?;
                 return Ok(());
             },
@@ -72,8 +72,8 @@ async fn watch_gunicorn(arbiter: Arbiter, mut gunicorn: Gunicorn) -> Result<()> 
     }
 }
 
-async fn build_router() -> Router {
-    let core_router = core::build_router().await;
+fn build_router() -> Router {
+    let core_router = core::build_router();
     let proxy_router: Option<Router> = None;
 
     Router::new().fallback(any(|request: Request<Body>| async move {
@@ -105,7 +105,7 @@ pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
 
     let gunicorn = Gunicorn::new()?;
 
-    let router = build_router().await;
+    let router = build_router();
     let tls_config = tls::make_initial_tls_config()?;
 
     tasks

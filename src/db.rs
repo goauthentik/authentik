@@ -14,7 +14,7 @@ use crate::{
 
 static DB: OnceLock<PgPool> = OnceLock::new();
 
-async fn get_connect_opts() -> Result<PgConnectOptions> {
+fn get_connect_opts() -> Result<PgConnectOptions> {
     let config = config::get();
     let mut opts = PgConnectOptions::new()
         // TODO: get this from the mode
@@ -54,9 +54,9 @@ async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
                 }
                 trace!("config change recevied, refreshing database connection options");
                 let db = get();
-                db.set_connect_options(get_connect_opts().await?);
+                db.set_connect_options(get_connect_opts()?);
             },
-            _ = arbiter.shutdown() => break,
+            () = arbiter.shutdown() => break,
         }
     }
 
@@ -66,7 +66,7 @@ async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
 
 pub(crate) async fn init(tasks: &mut Tasks) -> Result<()> {
     info!("initializing database pool");
-    let options = get_connect_opts().await?;
+    let options = get_connect_opts()?;
     let config = config::get();
 
     let pool_options = PgPoolOptions::new()

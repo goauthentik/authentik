@@ -57,10 +57,10 @@ impl AppState {
 async fn run_upkeep(arbiter: Arbiter, state: Arc<AppState>) -> Result<()> {
     loop {
         tokio::select! {
-            _ = tokio::time::sleep(Duration::from_secs(5)) => {
+            () = tokio::time::sleep(Duration::from_secs(5)) => {
                 state.prometheus.run_upkeep();
             },
-            _ = arbiter.shutdown() => return Ok(())
+            () = arbiter.shutdown() => return Ok(())
         }
     }
 }

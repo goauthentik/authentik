@@ -67,8 +67,8 @@ async fn make_tls_config(fallback: Arc<CertifiedKey>) -> Result<ServerConfig> {
 
 pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> Result<()> {
     tokio::select! {
-        _ = arbiter.gunicorn_ready() => {},
-        _ = arbiter.shutdown() => return Ok(()),
+        () = arbiter.gunicorn_ready() => {},
+        () = arbiter.shutdown() => return Ok(()),
     }
 
     let fallback = Arc::new(self_signed::generate_certifiedkey(&PKCS_ECDSA_P256_SHA256)?);
@@ -85,8 +85,8 @@ pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> 
         }
 
         tokio::select! {
-            _ = tokio::time::sleep(Duration::from_secs(60)) => {},
-            _ = arbiter.shutdown() => return Ok(()),
+            () = tokio::time::sleep(Duration::from_secs(60)) => {},
+            () = arbiter.shutdown() => return Ok(()),
         }
     }
 }
@@ -129,7 +129,7 @@ mod self_signed {
     pub(super) fn generate(alg: &'static SignatureAlgorithm) -> Result<(Certificate, KeyPair)> {
         let signing_key = KeyPair::generate_for(alg)?;
 
-        let mut params: CertificateParams = Default::default();
+        let mut params = CertificateParams::default();
         params.not_before = time::OffsetDateTime::now_utc();
         params.not_after = time::OffsetDateTime::now_utc() + time::Duration::days(365);
         params.distinguished_name = {

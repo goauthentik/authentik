@@ -114,7 +114,7 @@ pub(crate) async fn make_cert_managers() -> Result<(CertResolver, RootCertStore)
                     },
                 };
                 e.insert(brand);
-            };
+            }
 
             if let Some(certificate_data) = client_cert_data {
                 let cert_chain: Vec<CertificateDer<'static>> =

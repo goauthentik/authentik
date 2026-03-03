@@ -71,7 +71,7 @@ impl Worker {
             "sending shutdown signal to worker"
         );
         if let Some(id) = self.0.id() {
-            kill(Pid::from_raw(id as i32), signal)?;
+            kill(Pid::from_raw(id.cast_signed()), signal)?;
         }
         self.0.wait().await?;
         Ok(())
@@ -87,7 +87,7 @@ impl Worker {
         self.shutdown(Signal::SIGINT).await
     }
 
-    async fn is_alive(&mut self) -> bool {
+    fn is_alive(&mut self) -> bool {
         let try_wait = self.0.try_wait();
         match try_wait {
             Ok(Some(code)) => {
@@ -125,7 +125,7 @@ impl Workers {
             results.push(worker.graceful_shutdown().await);
         }
 
-        results.into_iter().find(|r| r.is_err()).unwrap_or(Ok(()))
+        results.into_iter().find(Result::is_err).unwrap_or(Ok(()))
     }
 
     async fn fast_shutdown(&mut self) -> Result<()> {
@@ -134,12 +134,12 @@ impl Workers {
             results.push(worker.fast_shutdown().await);
         }
 
-        results.into_iter().find(|r| r.is_err()).unwrap_or(Ok(()))
+        results.into_iter().find(Result::is_err).unwrap_or(Ok(()))
     }
 
-    async fn are_alive(&mut self) -> bool {
+    fn are_alive(&mut self) -> bool {
         for worker in &mut self.0 {
-            if !worker.is_alive().await {
+            if !worker.is_alive() {
                 return false;
             }
         }
@@ -167,14 +167,14 @@ async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
                             workers.start_other_workers()?;
                         }
                     },
-                    Err(RecvError::Lagged(_)) => continue,
+                    Err(RecvError::Lagged(_)) => {},
                     Err(RecvError::Closed) => {
                         warn!("error receiving signals");
                         return Err(RecvError::Closed.into());
                     }
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(1)), if !INITIAL_WORKER_READY.load(Ordering::Relaxed) => {
+            () = tokio::time::sleep(Duration::from_secs(1)), if !INITIAL_WORKER_READY.load(Ordering::Relaxed) => {
                 // On some platforms the SIGUSR1 can be missed.
                 // Fall back to probing the worker unix socket and mark ready once it accepts connections.
                 if Workers::is_socket_ready().await {
@@ -183,16 +183,16 @@ async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
                     workers.start_other_workers()?;
                 }
             },
-            _ = tokio::time::sleep(Duration::from_secs(5)) => {
-                if !workers.are_alive().await {
+            () = tokio::time::sleep(Duration::from_secs(5)) => {
+                if !workers.are_alive() {
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }
             },
-            _ = arbiter.fast_shutdown() => {
+            () = arbiter.fast_shutdown() => {
                 workers.fast_shutdown().await?;
                 return Ok(());
             },
-            _ = arbiter.graceful_shutdown() => {
+            () = arbiter.graceful_shutdown() => {
                 workers.graceful_shutdown().await?;
                 return Ok(());
             },
@@ -200,6 +200,7 @@ async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
     }
 }
 
+#[expect(clippy::unused_async, reason = "WIP")]
 pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
     let arbiter = tasks.arbiter();
 

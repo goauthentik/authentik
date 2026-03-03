@@ -45,8 +45,8 @@ fn config_paths() -> Vec<PathBuf> {
             }
         } else {
             let env_paths = vec![
-                path.join(format!("{}.yml", environment)),
-                path.join(format!("{}.env.yml", environment)),
+                path.join(format!("{environment}.yml")),
+                path.join(format!("{environment}.env.yml")),
             ];
             for env_path in env_paths {
                 if let Ok(metadata) = fs::metadata(&env_path)
@@ -207,7 +207,7 @@ async fn watch_config(arbiter: Arbiter, watch_paths: Vec<PathBuf>) -> Result<()>
                     }
                 }
             },
-            _ = arbiter.shutdown() => break,
+            () = arbiter.shutdown() => break,
         }
     }
 

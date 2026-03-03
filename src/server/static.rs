@@ -43,9 +43,8 @@ fn is_storage_token_valid(usage: &str, secret_key: &str, request: &Request) -> b
         Err(_) => return false,
     };
 
-    let token_header = match decode_header(&token_string) {
-        Ok(header) => header,
-        Err(_) => return false,
+    let Ok(token_header) = decode_header(&token_string) else {
+        return false;
     };
 
     // Must match what we use in authentik/admin/files/backends/file.py
@@ -59,7 +58,7 @@ fn is_storage_token_valid(usage: &str, secret_key: &str, request: &Request) -> b
     let key_hex_digest = key_digest
         .as_ref()
         .iter()
-        .map(|b| format!("{:02x}", b))
+        .map(|b| format!("{b:02x}"))
         .collect::<String>();
 
     let mut validation = Validation::new(token_header.alg);
@@ -85,14 +84,12 @@ fn is_storage_token_valid(usage: &str, secret_key: &str, request: &Request) -> b
         return false;
     }
 
-    let claim_path = match claims.path {
-        Some(path) => path,
-        None => return false,
+    let Some(claim_path) = claims.path else {
+        return false;
     };
     // Decode path before comparison so encoded URL segments cannot bypass path binding.
-    let request_path = match percent_decode_str(request.uri().path()).decode_utf8() {
-        Ok(path) => path,
-        Err(_) => return false,
+    let Ok(request_path) = percent_decode_str(request.uri().path()).decode_utf8() else {
+        return false;
     };
     let request_path = request_path.trim_start_matches('/');
     let expected_path = format!("{usage}/{request_path}");
@@ -151,7 +148,7 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
     response
 }
 
-pub(crate) async fn build_router() -> Router {
+pub(crate) fn build_router() -> Router {
     let config = config::get();
 
     let mut router = Router::new().layer(middleware::from_fn(static_header_middleware));

@@ -1,4 +1,5 @@
 use std::{
+    borrow::Cow,
     net::{Ipv4Addr, Ipv6Addr, SocketAddr},
     str::{FromStr, from_utf8},
 };
@@ -88,7 +89,7 @@ fn decode_inner(buf: &[u8]) -> Result<(Header<'_>, usize), Error> {
         _ => return Err(Error::Invalid),
     }
 
-    Ok((Header(addrs, Default::default()), pos))
+    Ok((Header(addrs, Cow::default()), pos))
 }
 
 /// Decode a version 1 PROXY header from a buffer.
