@@ -10,7 +10,7 @@
     right: var(--ak-c-modal--c-button--Right);
 }
 
-:host > .pf-c-button + * {
+:host > .pf-c-button + .ak-c-modal__header {
     margin-right: var(--ak-c-modal--c-button--sibling--MarginRight);
 }
 

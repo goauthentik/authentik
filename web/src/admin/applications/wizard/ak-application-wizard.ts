@@ -1,7 +1,7 @@
 import "./ak-application-wizard-main.js";
 
 import { AKModal } from "#elements/modals/ak-modal";
-import { renderDialog } from "#elements/modals/utils";
+import { asInvoker } from "#elements/modals/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { WizardCloseEvent } from "#components/ak-wizard/events";
@@ -20,22 +20,7 @@ export class AkApplicationWizard extends AKModal {
         `,
     ];
 
-    public static open = (event?: Event) => {
-        const ownerDocument =
-            event?.target instanceof HTMLElement ? event.target.ownerDocument : document;
-
-        const tagName = window.customElements.getName(AkApplicationWizard);
-
-        if (!tagName) {
-            throw new TypeError("Custom element is not defined");
-        }
-
-        const modal = ownerDocument.createElement(tagName);
-
-        return renderDialog(modal, {
-            ownerDocument,
-        });
-    };
+    public static open = asInvoker(AkApplicationWizard);
 
     constructor() {
         super();
