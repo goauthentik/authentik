@@ -4,6 +4,7 @@
 
 import "#elements/modals/ak-modal";
 
+import { AKModal } from "#elements/modals/ak-modal";
 import { SlottedTemplateResult } from "#elements/types";
 import { isAKElementConstructor } from "#elements/utils/unsafe";
 
@@ -110,12 +111,16 @@ export type ModalChildRenderer = () => SlottedTemplateResult;
  * @param input The input to render as a modal dialog, either a custom element constructor or a function that returns a template result.
  * @param init Initialization options for the modal dialog.
  */
-export function asModal(
+export function asInvoker(
     input: CustomElementConstructor | (() => SlottedTemplateResult),
     init?: RenderDialogInit,
 ) {
     return () => {
         const child = isAKElementConstructor(input) ? new input() : (input as ModalChildRenderer)();
+
+        if (child instanceof AKModal) {
+            return renderDialog(child, init);
+        }
 
         renderModal(child, init);
     };
