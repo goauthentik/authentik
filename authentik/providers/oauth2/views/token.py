@@ -33,6 +33,7 @@ from authentik.common.oauth.constants import (
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
 )
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -146,6 +147,7 @@ class TokenParams:
         ):
             user = self.user if self.user else get_anonymous_user()
             engine = PolicyEngine(app, user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             # Don't cache as for client_credentials flows the user will not be set
             # so we'll get generic cache results
             engine.use_cache = False
