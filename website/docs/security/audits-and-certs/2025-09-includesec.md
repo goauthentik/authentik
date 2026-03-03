@@ -30,7 +30,7 @@ This is the complete list of findings from the audit, with information about how
 
 ### H1: Blueprint Import Allows Arbitrary Modification of Application Objects (Internal: None)
 
-_Issue:_ This is intended functionality. It is 'exploitable' when importing blueprints from untrusted sources without reviewing the blueprint beforehand. Flow imports are technically blueprint imports, which by design can be used to create any object within authentik.
+_Issue:_ This is intended functionality. This behavior reflects the privileged design of blueprint imports. It is 'exploitable' when importing blueprints from untrusted sources without reviewing the blueprint beforehand. Flow imports are technically blueprint imports, which by design can be used to create any object within authentik.
 
 _Improvement:_ We added a [warning banner](https://github.com/goauthentik/authentik/pull/19288) with 2025.12 to flow imports.
 
