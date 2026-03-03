@@ -18,8 +18,7 @@ use tracing::{debug, info, warn};
 use crate::{
     arbiter::Arbiter,
     axum::accept::{proxy_protocol::ProxyProtocolAcceptor, tls::TlsAcceptor},
-    proxy,
-    server::core,
+    brands, proxy,
 };
 
 pub(super) async fn run_server_tls(
@@ -50,7 +49,7 @@ pub(super) fn make_initial_tls_config() -> Result<RustlsConfig> {
 }
 
 async fn make_tls_config(fallback: Arc<CertifiedKey>) -> Result<ServerConfig> {
-    let (core_resolver, roots) = core::tls::make_cert_managers().await?;
+    let (core_resolver, roots) = brands::tls::make_cert_managers().await?;
     let cert_resolver = CertResolver {
         core_resolver,
         proxy_resolver: None,
@@ -94,7 +93,7 @@ pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> 
 
 #[derive(Debug)]
 struct CertResolver {
-    core_resolver: core::tls::CertResolver,
+    core_resolver: brands::tls::CertResolver,
     proxy_resolver: Option<proxy::tls::CertResolver>,
     fallback: Arc<CertifiedKey>,
 }

@@ -1,12 +1,12 @@
 use std::{
     convert::Infallible,
-    net::{IpAddr, SocketAddr},
+    net::{IpAddr, Ipv6Addr, SocketAddr},
 };
 
 use axum::{
     Extension, RequestPartsExt,
-    extract::{ConnectInfo, FromRequestParts, OptionalFromRequestParts},
-    http::{StatusCode, request::Parts},
+    extract::{ConnectInfo, FromRequestParts},
+    http::request::Parts,
 };
 use tracing::instrument;
 
@@ -20,28 +20,10 @@ pub(crate) struct ClientIP(pub IpAddr);
 impl<S> FromRequestParts<S> for ClientIP
 where S: Send + Sync
 {
-    type Rejection = (StatusCode, &'static str);
-
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        parts
-            .extract::<Option<ClientIP>>()
-            .await
-            .ok()
-            .flatten()
-            .ok_or((StatusCode::BAD_REQUEST, "No client IP found in request"))
-    }
-}
-
-impl<S> OptionalFromRequestParts<S> for ClientIP
-where S: Send + Sync
-{
     type Rejection = Infallible;
 
     #[instrument(skip_all)]
-    async fn from_request_parts(
-        parts: &mut Parts,
-        _state: &S,
-    ) -> Result<Option<Self>, Self::Rejection> {
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
         let is_trusted = parts
             .extract::<TrustedProxy>()
             .await
@@ -50,15 +32,15 @@ where S: Send + Sync
 
         if is_trusted {
             if let Ok(ip) = client_ip::rightmost_x_forwarded_for(&parts.headers) {
-                return Ok(Some(Self(ip)));
+                return Ok(Self(ip));
             }
 
             if let Ok(ip) = client_ip::x_real_ip(&parts.headers) {
-                return Ok(Some(Self(ip)));
+                return Ok(Self(ip));
             }
 
             if let Ok(ip) = client_ip::rightmost_forwarded(&parts.headers) {
-                return Ok(Some(Self(ip)));
+                return Ok(Self(ip));
             }
 
             if let Ok(Extension(proxy_protocol_state)) =
@@ -66,15 +48,17 @@ where S: Send + Sync
                 && let Some(header) = &proxy_protocol_state.header
                 && let Some(addr) = header.proxied_address()
             {
-                return Ok(Some(Self(addr.source.ip())));
+                return Ok(Self(addr.source.ip()));
             }
         }
 
         if let Ok(ConnectInfo(addr)) = parts.extract::<ConnectInfo<SocketAddr>>().await {
-            return Ok(Some(Self(addr.ip())));
+            Ok(Self(addr.ip()))
+        } else {
+            // No connect info means we received a request via a Unix socket, hence localhost
+            // as default
+            Ok(Self(Ipv6Addr::LOCALHOST.into()))
         }
-
-        Ok(None)
     }
 }
 
@@ -95,19 +79,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
-        assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
-            Ipv4Addr::new(192, 0, 2, 42),
-        );
+        assert_eq!(client_ip.0, Ipv4Addr::new(192, 0, 2, 42),);
     }
 
     #[tokio::test]
@@ -119,19 +96,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
-        assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
-            Ipv4Addr::new(192, 0, 2, 42),
-        );
+        assert_eq!(client_ip.0, Ipv4Addr::new(192, 0, 2, 42),);
     }
 
     #[tokio::test]
@@ -143,19 +113,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
-        assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
-            Ipv4Addr::new(192, 0, 2, 42),
-        );
+        assert_eq!(client_ip.0, Ipv4Addr::new(192, 0, 2, 42),);
     }
 
     #[tokio::test]
@@ -170,19 +133,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
-        assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
-            Ipv4Addr::new(192, 0, 2, 42),
-        );
+        assert_eq!(client_ip.0, Ipv4Addr::new(192, 0, 2, 42),);
     }
 
     #[tokio::test]
@@ -194,14 +150,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_none());
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
+
+        assert_eq!(client_ip.0, Ipv6Addr::LOCALHOST);
     }
 
     #[tokio::test]
@@ -216,19 +170,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
-        assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
-            Ipv4Addr::new(192, 0, 2, 1),
-        );
+        assert_eq!(client_ip.0, Ipv4Addr::new(192, 0, 2, 1),);
     }
 
     #[tokio::test]
@@ -238,14 +185,12 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result =
+        let client_ip =
             <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
-                .await;
-        assert!(result.is_err());
-        assert_eq!(
-            result.expect_err("Should fail when no client IP found").0,
-            StatusCode::BAD_REQUEST,
-        );
+                .await
+                .expect("Client IP extract is infallible");
+
+        assert_eq!(client_ip.0, Ipv6Addr::LOCALHOST);
     }
 
     #[tokio::test]
@@ -257,17 +202,13 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
         assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
+            client_ip.0,
             Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0x42),
         );
     }
@@ -281,19 +222,11 @@ mod tests {
             .body(Body::empty())
             .expect("Failed to create request");
 
-        let result = <Option<ClientIP> as FromRequestParts<()>>::from_request_parts(
-            &mut req.into_parts().0,
-            &(),
-        )
-        .await;
+        let client_ip =
+            <ClientIP as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &())
+                .await
+                .expect("Client IP extract is infallible");
 
-        assert!(result.is_ok());
-        let client_ip = result.expect("Client IP extraction should succeed");
-        assert!(client_ip.is_some());
-        // Should use rightmost IP
-        assert_eq!(
-            client_ip.expect("Client IP should be Some").0,
-            Ipv4Addr::new(192, 0, 2, 3),
-        );
+        assert_eq!(client_ip.0, Ipv4Addr::new(192, 0, 2, 3),);
     }
 }

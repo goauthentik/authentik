@@ -12,6 +12,8 @@ use crate::{arbiter::Tasks, config::ConfigManager, mode::Mode};
 
 mod arbiter;
 mod axum;
+#[cfg(feature = "core")]
+mod brands;
 mod config;
 #[cfg(feature = "core")]
 mod db;

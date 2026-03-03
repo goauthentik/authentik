@@ -2,9 +2,8 @@ use std::convert::Infallible;
 
 use axum::{
     RequestPartsExt,
-    extract::{FromRequestParts, OptionalFromRequestParts},
+    extract::FromRequestParts,
     http::{
-        StatusCode,
         header::{FORWARDED, HOST},
         request::Parts,
     },
@@ -22,28 +21,10 @@ pub(crate) struct Host(pub String);
 impl<S> FromRequestParts<S> for Host
 where S: Send + Sync
 {
-    type Rejection = (StatusCode, &'static str);
-
-    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
-        parts
-            .extract::<Option<Self>>()
-            .await
-            .ok()
-            .flatten()
-            .ok_or((StatusCode::BAD_REQUEST, "No host found in request"))
-    }
-}
-
-impl<S> OptionalFromRequestParts<S> for Host
-where S: Send + Sync
-{
     type Rejection = Infallible;
 
     #[instrument(skip_all)]
-    async fn from_request_parts(
-        parts: &mut Parts,
-        _state: &S,
-    ) -> Result<Option<Self>, Self::Rejection> {
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self, Self::Rejection> {
         let is_trusted = parts
             .extract::<TrustedProxy>()
             .await
@@ -56,7 +37,7 @@ where S: Send + Sync
                 .get(X_FORWARDED_HOST)
                 .and_then(|host| host.to_str().ok())
             {
-                return Ok(Some(Self(host.to_owned())));
+                return Ok(Self(host.to_owned()));
             }
 
             if let Some(forwarded) = parts.headers.get(FORWARDED)
@@ -65,21 +46,23 @@ where S: Send + Sync
             {
                 for stanza in forwarded.iter() {
                     if let Some(forwarded_host) = &stanza.forwarded_host {
-                        return Ok(Some(Self(forwarded_host.to_owned())));
+                        return Ok(Self(forwarded_host.to_owned()));
                     }
                 }
             }
         }
 
         if let Some(host) = parts.headers.get(HOST).and_then(|host| host.to_str().ok()) {
-            return Ok(Some(Self(host.to_owned())));
+            return Ok(Self(host.to_owned()));
         }
 
         if let Some(host) = parts.uri.host() {
-            return Ok(Some(Self(host.to_owned())));
+            Ok(Self(host.to_owned()))
+        } else {
+            // No connect info means we probably received a request via a Unix socket, hence
+            // localhost as default
+            Ok(Self("localhost".to_owned()))
         }
-
-        Ok(None)
     }
 }
 
@@ -231,11 +214,8 @@ mod tests {
         let result =
             <Host as FromRequestParts<()>>::from_request_parts(&mut req.into_parts().0, &()).await;
 
-        assert!(result.is_err());
-        assert_eq!(
-            result.expect_err("Should fail when no host found").0,
-            StatusCode::BAD_REQUEST,
-        );
+        assert!(result.is_ok());
+        assert_eq!(result.expect("Host extract should succeed").0, "localhost",);
     }
 
     #[tokio::test]
