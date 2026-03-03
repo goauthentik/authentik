@@ -11,16 +11,16 @@ View the full report of our original [test](https://goauthentik.io/resources/inc
 Below is a table summarizing the findings from the report, along with IncludeSec's risk labeling and our contextual categorization of these risks. As IncludeSec states, "It is common and encouraged that all clients recategorize findings based on their internal business risk tolerances."
 
 | Finding | IncludeSec Risk | Status           | authentik Risk Categorization |
-| ------- | --------------- | ---------------- | ------------------------ |
-| H1      | High            | Risk Accepted    | Expected behavior          |
-| H2      | High            | Closed           | Low                      |
-| H3      | High            | Risk Accepted    | Expected behavior          |
-| M1      | Medium          | Fixed in 2025.12 | Low                      |
-| M2      | Medium          | Closed           | Low                      |
-| L1      | Low             | Closed           | Low                      |
-| L2      | Low             | Closed           | Low                      |
-| L3      | Low             | Closed           | None (not exploitable)   |
-| L4      | Low             | Closed           | Low                      |
+| ------- | --------------- | ---------------- | ----------------------------- |
+| H1      | High            | Risk Accepted    | Expected behavior             |
+| H2      | High            | Closed           | Low                           |
+| H3      | High            | Risk Accepted    | Expected behavior             |
+| M1      | Medium          | Fixed in 2025.12 | Low                           |
+| M2      | Medium          | Closed           | Low                           |
+| L1      | Low             | Closed           | Low                           |
+| L2      | Low             | Closed           | Low                           |
+| L3      | Low             | Closed           | None (not exploitable)        |
+| L4      | Low             | Closed           | Low                           |
 
 During the time of this test, we also separately addressed a number of community-reported CVEs as reported in our security pages.
 
@@ -46,7 +46,7 @@ In addition to using authentik's built-in methods to reduce the ability for atta
 
 _Issue:_ The authentik application allowed execution of arbitrary Python code with the same privileges as the application's system user. This behavior extended to prompt stages.
 
-_Response:_ By design, prompt inputs can be configured to have placeholder values based on Python expressions, inheriting the behavior from expression policies. Our hardening docs already cover this as well.
+_Response:_ By design, prompt inputs can be configured to have placeholder values based on Python expressions, inheriting the behavior from expression policies. Our [hardening docs](https://docs.goauthentik.io/security/security-hardening/) already cover this topic.
 
 ### M1: Anti-Brute Force Mechanisms Bypassed via Race conditions
 
