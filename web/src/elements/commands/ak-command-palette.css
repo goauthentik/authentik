@@ -1,0 +1,12 @@
+:host {
+    display: block;
+    min-height: min(10rem, 20dvh);
+}
+
+#command-input {
+    display: block;
+    width: 100%;
+    font-size: var(--pf-global--FontSize--2xl);
+    padding: var(--pf-global--spacer--form-element);
+    border: none;
+}

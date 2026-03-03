@@ -1,5 +1,6 @@
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
+import "#elements/commands/ak-command-palette";
 import "#elements/messages/MessageContainer";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
@@ -153,61 +154,62 @@ export class AdminInterface extends WithCapabilitiesConfig(
         };
 
         return html`<div class="pf-c-page">
-            <ak-page-navbar>
-                <button
-                    slot="toggle"
-                    aria-controls="global-nav"
-                    class="pf-c-button pf-m-plain"
-                    @click=${this.toggleSidebar}
-                    aria-label=${this.sidebarOpen
-                        ? msg("Collapse navigation")
-                        : msg("Expand navigation")}
-                    aria-expanded=${this.sidebarOpen ? "true" : "false"}
-                >
-                    <i aria-hidden="true" class="fas fa-bars"></i>
-                </button>
+                <ak-page-navbar>
+                    <button
+                        slot="toggle"
+                        aria-controls="global-nav"
+                        class="pf-c-button pf-m-plain"
+                        @click=${this.toggleSidebar}
+                        aria-label=${this.sidebarOpen
+                            ? msg("Collapse navigation")
+                            : msg("Expand navigation")}
+                        aria-expanded=${this.sidebarOpen ? "true" : "false"}
+                    >
+                        <i aria-hidden="true" class="fas fa-bars"></i>
+                    </button>
 
-                <ak-version-banner></ak-version-banner>
-                <ak-enterprise-status interface="admin"></ak-enterprise-status>
-            </ak-page-navbar>
+                    <ak-version-banner></ak-version-banner>
+                    <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                </ak-page-navbar>
 
-            <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                >${renderSidebarItems(createAdminSidebarEntries())}
-                ${this.can(CapabilitiesEnum.IsEnterprise)
-                    ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
-                    : nothing}
-            </ak-sidebar>
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                    >${renderSidebarItems(createAdminSidebarEntries())}
+                    ${this.can(CapabilitiesEnum.IsEnterprise)
+                        ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
+                        : nothing}
+                </ak-sidebar>
 
-            <div class="pf-c-page__drawer">
-                <div class="pf-c-drawer ${classMap(drawerClasses)}">
-                    <div class="pf-c-drawer__main">
-                        <div class="pf-c-drawer__content">
-                            <div class="pf-c-drawer__body">
-                                <ak-router-outlet
-                                    role="presentation"
-                                    class="pf-c-page__main"
-                                    tabindex="-1"
-                                    id="main-content"
-                                    default-url="/administration/overview"
-                                    .routes=${ROUTES}
-                                    @ak-route-change=${this.routeChangeListener}
-                                >
-                                </ak-router-outlet>
+                <div class="pf-c-page__drawer">
+                    <div class="pf-c-drawer ${classMap(drawerClasses)}">
+                        <div class="pf-c-drawer__main">
+                            <div class="pf-c-drawer__content">
+                                <div class="pf-c-drawer__body">
+                                    <ak-router-outlet
+                                        role="presentation"
+                                        class="pf-c-page__main"
+                                        tabindex="-1"
+                                        id="main-content"
+                                        default-url="/administration/overview"
+                                        .routes=${ROUTES}
+                                        @ak-route-change=${this.routeChangeListener}
+                                    >
+                                    </ak-router-outlet>
+                                </div>
                             </div>
+                            ${renderNotificationDrawerPanel(this.drawer)}
                         </div>
-                        ${renderNotificationDrawerPanel(this.drawer)}
                     </div>
-                </div>
 
-                <div
-                    class="pf-c-page__sidebar-backdrop"
-                    aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
-                    @click=${this.toggleSidebar}
-                    role="button"
-                    tabindex="0"
-                ></div>
+                    <div
+                        class="pf-c-page__sidebar-backdrop"
+                        aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
+                        @click=${this.toggleSidebar}
+                        role="button"
+                        tabindex="0"
+                    ></div>
+                </div>
             </div>
-        </div>`;
+            <ak-command-palette></ak-command-palette> `;
     }
 
     //#endregion
