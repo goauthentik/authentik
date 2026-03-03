@@ -213,3 +213,13 @@ source_docs/
 ### Docker ###
 tests/openid_conformance/exports/*.zip
 compose.override.yml
+
+### LLMs and "coding assistants" ###
+.claude
+.codex
+.gemini
+.cursor
+AGENTS.md
+CLAUDE.md
+QWEN.md
+
