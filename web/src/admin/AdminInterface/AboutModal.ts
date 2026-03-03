@@ -6,7 +6,7 @@ import { globalAK } from "#common/global";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { AKModal } from "#elements/modals/ak-modal";
-import { renderDialog } from "#elements/modals/utils";
+import { asInvoker } from "#elements/modals/utils";
 import { ThemedImage } from "#elements/utils/images";
 
 import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
@@ -89,22 +89,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
         `,
     ];
 
-    public static open = (event?: Event) => {
-        const ownerDocument =
-            event?.target instanceof HTMLElement ? event.target.ownerDocument : document;
-
-        const tagName = window.customElements.getName(AboutModal);
-
-        if (!tagName) {
-            throw new TypeError("Custom element is not defined");
-        }
-
-        const modal = ownerDocument.createElement(tagName);
-
-        return renderDialog(modal, {
-            ownerDocument,
-        });
-    };
+    public static open = asInvoker(AboutModal);
 
     protected override renderCloseButton() {
         return null;

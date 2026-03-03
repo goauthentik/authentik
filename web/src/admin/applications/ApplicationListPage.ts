@@ -12,7 +12,7 @@ import "./ApplicationWizardHint.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { asModal, renderModal } from "#elements/modals/utils";
+import { asInvoker, renderModal } from "#elements/modals/utils";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -92,7 +92,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     #openCreateWizard = AkApplicationWizard.open;
 
-    #openCreateModal = asModal(ApplicationForm);
+    #openCreateModal = asInvoker(ApplicationForm);
 
     protected columns: TableColumn[] = [
         ["", undefined, msg("Application Icon")],
