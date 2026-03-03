@@ -36803,14 +36803,11 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
-          - policies_buffered_access_view
           readOnly: true
       required:
       - branding_custom_css
@@ -50459,14 +50456,11 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
-          - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -55158,14 +55152,11 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
-          - policies_buffered_access_view
       required:
       - flags
     SettingsRequest:
@@ -55236,14 +55227,11 @@ components:
           properties:
             enterprise_audit_include_expanded_diff:
               type: boolean
-            policies_buffered_access_view:
-              type: boolean
             flows_refresh_others:
               type: boolean
           required:
           - enterprise_audit_include_expanded_diff
           - flows_refresh_others
-          - policies_buffered_access_view
       required:
       - flags
     SeverityEnum:
