@@ -17,6 +17,13 @@ import (
 	"goauthentik.io/internal/utils"
 )
 
+var (
+	manageCmd    string = "./manage.py"
+	gunicornCmd  string = "gunicorn"
+	gunicornConf string = "./lifecycle/gunicorn.conf.py"
+	pidDir       string = ""
+)
+
 type GoUnicorn struct {
 	Healthcheck      func() bool
 	healthyCallbacks []func()
@@ -58,16 +65,16 @@ func New(healthcheck func() bool) *GoUnicorn {
 }
 
 func (g *GoUnicorn) initCmd() {
-	command := "./manage.py"
+	command := manageCmd
 	args := []string{"dev_server"}
 	if !config.Get().Debug {
-		pidFile, err := os.CreateTemp("", "authentik-gunicorn.*.pid")
+		pidFile, err := os.CreateTemp(pidDir, "authentik-gunicorn.*.pid")
 		if err != nil {
 			panic(fmt.Errorf("failed to create temporary pid file: %v", err))
 		}
 		g.pidFile = pidFile.Name()
-		command = "gunicorn"
-		args = []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
+		command = gunicornCmd
+		args = []string{"-c", gunicornConf, "authentik.root.asgi:application"}
 		if g.pidFile != "" {
 			args = append(args, "--pid", g.pidFile)
 		}
