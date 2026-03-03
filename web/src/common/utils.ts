@@ -82,7 +82,9 @@ const isHttp = (url: string) => isHttpRe.test(url);
 const isAuthentikSpecial = (url: string) => isAuthentikSpecialRe.test(url);
 
 export function isLaunchUrlValid(url: string | null | undefined): url is string {
-    return Boolean(typeof url === "string" &&
+    return Boolean(
+        typeof url === "string" &&
         url &&
-        (isHttp(url) || isNotFullUrl(url) || isAuthentikSpecial(url)));
+        (isHttp(url) || isNotFullUrl(url) || isAuthentikSpecial(url)),
+    );
 }
