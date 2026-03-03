@@ -23,6 +23,16 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-modal")
 export class AKModal extends AKElement {
+    static shadowRootOptions: ShadowRootInit = {
+        ...AKElement.shadowRootOptions,
+        delegatesFocus: true,
+    };
+
+    /**
+     * Whether the modal should open the parent dialog element when it is connected to the DOM.
+     */
+    static openOnConnect = true;
+
     public static styles: CSSResult[] = [
         PFButton,
         PFForm,
@@ -34,7 +44,7 @@ export class AKModal extends AKElement {
         Styles,
     ];
 
-    #hostResizeObserver: ResizeObserver | null = null;
+    #hostResizeObserver: ResizeObserver;
 
     protected logger: Logger;
 
@@ -44,9 +54,6 @@ export class AKModal extends AKElement {
 
     @property({ type: String, useDefault: true })
     public headline: string | null = null;
-
-    @property({ type: String, useDefault: true })
-    public cancelText = msg("Close");
 
     /**
      * Whether the parent dialog element is currently open.
@@ -118,7 +125,7 @@ export class AKModal extends AKElement {
             { once: true, passive: true },
         );
 
-        dialogElement.classList.remove("fade-in");
+        dialogElement.classList.remove("fade-in", "fade-in-complete");
     }
 
     //#endregion
@@ -141,6 +148,36 @@ export class AKModal extends AKElement {
      */
     #expectedSizes = new WeakMap();
 
+    protected synchronizeHeight: ResizeObserverCallback = ([entry]) => {
+        this.#heightSyncFrameID = requestAnimationFrame(() => {
+            const expectedSize = this.#expectedSizes.get(entry.target);
+
+            if (entry.contentRect.height === expectedSize) {
+                return;
+            }
+
+            if (!this.parentElement) {
+                return;
+            }
+
+            this.parentElement.style.height = entry.contentRect.height + "px";
+            this.#expectedSizes.set(entry.target, entry.contentRect.height);
+        });
+    };
+
+    #heightResetAnimationFrameID = -1;
+
+    protected resetHeight = () => {
+        cancelAnimationFrame(this.#heightResetAnimationFrameID);
+        cancelAnimationFrame(this.#heightSyncFrameID);
+
+        this.#heightResetAnimationFrameID = requestAnimationFrame(() => {
+            if (this.parentElement) {
+                this.parentElement.style.height = "";
+            }
+        });
+    };
+
     protected fadeInListener = async (event: TransitionEvent) => {
         this.logger.debug("fade-in complete", event);
 
@@ -157,37 +194,10 @@ export class AKModal extends AKElement {
 
         dialogElement.style.height = dialogElement.clientHeight + "px";
 
-        const synchronizeHeight: ResizeObserverCallback = ([entry]) => {
-            this.#heightSyncFrameID = requestAnimationFrame(() => {
-                const expectedSize = this.#expectedSizes.get(entry.target);
-                if (entry.contentRect.height === expectedSize) {
-                    return;
-                }
-
-                dialogElement.style.height = entry.contentRect.height + "px";
-                this.#expectedSizes.set(entry.target, entry.contentRect.height);
-            });
-        };
-
-        this.#hostResizeObserver = new ResizeObserver(synchronizeHeight);
-
         this.#hostResizeObserver.observe(this);
 
-        window.addEventListener("resize", this.#resetHeightListener, {
+        window.addEventListener("resize", this.resetHeight, {
             passive: true,
-        });
-    };
-
-    #heightResetAnimationFrameID = -1;
-
-    #resetHeightListener = () => {
-        cancelAnimationFrame(this.#heightResetAnimationFrameID);
-        cancelAnimationFrame(this.#heightSyncFrameID);
-
-        this.#heightResetAnimationFrameID = requestAnimationFrame(() => {
-            if (this.parentElement) {
-                this.parentElement.style.height = "";
-            }
         });
     };
 
@@ -206,12 +216,14 @@ export class AKModal extends AKElement {
 
         this.#closing = true;
 
-        window.removeEventListener("resize", this.#resetHeightListener);
-
-        this.#hostResizeObserver?.disconnect();
-        this.#hostResizeObserver = null;
-
         this.parentElement?.close(returnValue);
+
+        requestAnimationFrame(() => {
+            this.#closing = false;
+            this.#hostResizeObserver.unobserve(this);
+            window.removeEventListener("resize", this.resetHeight);
+            this.resetHeight();
+        });
     }
 
     /**
@@ -272,6 +284,8 @@ export class AKModal extends AKElement {
         this.renderContent = this.render.bind(this);
         this.render = this.renderInternal;
 
+        this.#hostResizeObserver = new ResizeObserver(this.synchronizeHeight);
+
         this.defaultSlot = this.ownerDocument.createElement("slot");
     }
 
@@ -301,14 +315,18 @@ export class AKModal extends AKElement {
 
         this.addEventListener(AKFormSubmittedEvent.eventName, this.closeListener);
 
-        this.show();
+        const { openOnConnect } = this.constructor as typeof AKModal;
+
+        if (openOnConnect) {
+            this.show();
+        }
     }
 
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        this.#hostResizeObserver?.disconnect();
-        this.#hostResizeObserver = null;
+        this.#hostResizeObserver.disconnect();
+        window.removeEventListener("resize", this.resetHeight);
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
@@ -432,4 +450,10 @@ export class AKModal extends AKElement {
     }
 
     //#endregion
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-modal": AKModal;
+    }
 }

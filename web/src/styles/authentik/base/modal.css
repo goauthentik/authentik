@@ -78,10 +78,6 @@
         height: calc-size(max-content, size);
     }
 
-    &.fade-in-complete:not(:has(.ak-c-modal__content:hover)) {
-        --ak-c-modal__backdrop--BackdropFilter: blur(1px);
-    }
-
     @media screen and (prefers-reduced-motion: reduce) {
         /* A small duration is still needed to smoothly handle display changes. */
         --ak-c-modal--TransitionDuration--fast: 25ms;
