@@ -1,13 +1,21 @@
 import { CURRENT_CLASS, EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import {
+    CommandPaletteState,
+    PaletteCommandAction,
+    PaletteCommandDefinition,
+} from "#elements/commands/shared";
+import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
 import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { ifPresent } from "#elements/utils/attributes";
 import { isFocusable } from "#elements/utils/focus";
 
-import { msg } from "@lit/localize";
-import { CSSResult, html, LitElement, TemplateResult } from "lit";
+import { capitalCase } from "change-case";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -30,9 +38,16 @@ export class Tabs extends AKElement {
 
     @state()
     protected tabs: ReadonlyMap<string, Element> = new Map();
+    /**
+     * Whether the tab is visible in the viewport.
+     */
+    @intersectionObserver()
+    public visible = false;
 
     #focusTargetRef = createRef<HTMLSlotElement>();
     #observer: MutationObserver | null = null;
+
+    #commands = new CommandPaletteState<string>();
 
     #updateTabs = (): void => {
         this.tabs = new Map(
@@ -40,6 +55,42 @@ export class Tabs extends AKElement {
                 return [element.getAttribute("slot") || "", element];
             }),
         );
+
+        requestAnimationFrame(this.#updateCommands);
+    };
+
+    #updateCommands = (): void => {
+        const commands: PaletteCommandDefinition<string>[] = [];
+
+        if (!this.visible) {
+            this.#commands.clear();
+            return;
+        }
+
+        const group = msg(str`Landmark: ${capitalCase(this.pageIdentifier)}`);
+        const prefix = msg("Switch to tab", { id: "command-palette.switch-to-tab" });
+
+        const action: PaletteCommandAction<string> = (slotName) => {
+            this.activateTab(slotName);
+        };
+
+        for (const [slotName, tabPanel] of this.tabs) {
+            if (this.activeTabName === slotName) {
+                continue;
+            }
+
+            const label = tabPanel.getAttribute("aria-label") || slotName;
+
+            commands.push({
+                label,
+                action,
+                group,
+                prefix,
+                details: slotName,
+            });
+        }
+
+        this.#commands.set(commands);
     };
 
     public override connectedCallback(): void {
@@ -78,7 +129,16 @@ export class Tabs extends AKElement {
 
     public override disconnectedCallback(): void {
         this.#observer?.disconnect();
+        this.#commands.clear();
         super.disconnectedCallback();
+    }
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+
+        if (changedProperties.has("visible")) {
+            this.#updateCommands();
+        }
     }
 
     public findActiveTabPanel(): Element | null {

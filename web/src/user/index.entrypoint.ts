@@ -182,7 +182,8 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+            ${this.commandPalette}`;
     }
 }
 

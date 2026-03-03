@@ -127,8 +127,8 @@
 /* #region Footer */
 
 fieldset.ak-c-modal__footer {
-    --ak-legend-padding-inline-base: var(--pf-global--spacer--md);
-    padding-block: calc(var(--ak-legend-padding-inline-base) / 2);
+    --ak-fieldset__legend--PaddingInlineBase: var(--pf-global--spacer--md);
+    padding-block: calc(var(--ak-fieldset__legend--PaddingInlineBase) / 2);
     border-inline: none;
     border-block-end: none;
 

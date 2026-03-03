@@ -3,11 +3,11 @@
     margin-block-end: var(--pf-global--spacer--md);
 
     @media not (prefers-contrast: more) {
-        --ak-legend-margin-inline-start: calc(
-            var(--pf-c-card--child--PaddingLeft) - var(--ak-legend-padding-inline-base)
+        --ak-fieldset__legend--MarginInlineStart: calc(
+            var(--pf-c-card--child--PaddingLeft) - var(--ak-fieldset__legend--PaddingInlineBase)
         );
         --ak-legend-margin-inline-end: calc(
-            var(--pf-c-card--child--PaddingRight) - var(--ak-legend-padding-inline-base)
+            var(--pf-c-card--child--PaddingRight) - var(--ak-fieldset__legend--PaddingInlineBase)
         );
 
         border-width: 0;
