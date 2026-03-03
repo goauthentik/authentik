@@ -195,12 +195,9 @@ func BuildConnConfig(cfg config.PostgreSQLConfig) (*pgx.ConnConfig, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse connection options: %w", err)
 		}
-		// Handle search_path outside of startup RuntimeParams for PgBouncer compatibility.
-		// ConnOptions should still override DefaultSchema when both are set.
-		if connOptionsSearchPath, ok := connOpts["search_path"]; ok {
-			effectiveSearchPath = connOptionsSearchPath
-			delete(connOpts, "search_path")
-		}
+		// search_path from ConnOptions is not supported here; Django controls schema selection.
+		// Always remove it so it cannot end up in startup RuntimeParams via applyConnOptions.
+		delete(connOpts, "search_path")
 
 		if err := applyConnOptions(connConfig, connOpts); err != nil {
 			return nil, fmt.Errorf("failed to apply connection options: %w", err)

@@ -1374,7 +1374,7 @@ func TestBuildConnConfig_SearchPath_DefaultSchema(t *testing.T) {
 	assert.False(t, hasSearchPath, "search_path should not appear in RuntimeParams")
 }
 
-// Verifies ConnOptions search_path is applied via AfterConnect and excluded from startup RuntimeParams.
+// Verifies ConnOptions search_path is ignored and excluded from startup RuntimeParams.
 func TestBuildConnConfig_SearchPath_ConnOptions(t *testing.T) {
 	cfg := config.PostgreSQLConfig{
 		Host:        "localhost",
@@ -1386,13 +1386,13 @@ func TestBuildConnConfig_SearchPath_ConnOptions(t *testing.T) {
 
 	connConfig, err := BuildConnConfig(cfg)
 	require.NoError(t, err)
-	require.NotNil(t, connConfig.AfterConnect)
+	assert.Nil(t, connConfig.AfterConnect)
 	_, hasSearchPath := connConfig.RuntimeParams["search_path"]
 	assert.False(t, hasSearchPath, "search_path should not appear in RuntimeParams")
 }
 
-// Verifies ConnOptions search_path overrides DefaultSchema while keeping other conn options behavior.
-func TestBuildConnConfig_SearchPath_ConnOptionsOverrideDefault(t *testing.T) {
+// Verifies ConnOptions search_path does not override DefaultSchema and other conn options still apply.
+func TestBuildConnConfig_SearchPath_ConnOptionsIgnoredWhenDefaultSchemaSet(t *testing.T) {
 	cfg := config.PostgreSQLConfig{
 		Host:          "localhost",
 		Port:          "5432",
