@@ -4,6 +4,7 @@ from itertools import batched
 from typing import Any
 
 from django.db import transaction
+from django.db.models import Q
 from django.utils.http import urlencode
 from orjson import dumps
 from pydantic import ValidationError
@@ -379,4 +380,30 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 )
                 for x in user_ids
             ],
+        )
+
+    def discover(self):
+        res = self._request("GET", "/Groups")
+        seen_items = 0
+        expected_items = int(res["totalResults"])
+        while True:
+            for group in res["Resources"]:
+                self._discover_group_single(group)
+                seen_items += 1
+            if seen_items >= expected_items:
+                break
+            res = self._request("GET", f"/Groups?startIndex={seen_items + 1}")
+
+    def _discover_group_single(self, group: dict):
+        scim_group = SCIMGroupSchema.model_validate(group)
+        if SCIMProviderGroup.objects.filter(scim_id=scim_group.id, provider=self.provider).exists():
+            return
+        ak_group = Group.objects.filter(name=scim_group.displayName).first()
+        if not ak_group:
+            return
+        SCIMProviderGroup.objects.create(
+            provider=self.provider,
+            group=ak_group,
+            scim_id=scim_group.id,
+            attributes=group,
         )
