@@ -9,6 +9,7 @@ import "#flow/sources/telegram/TelegramLogin";
 import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
+import "#flow/tabs/broadcast";
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
@@ -31,6 +32,7 @@ import { ThemedImage } from "#elements/utils/images";
 
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -189,6 +191,28 @@ export class FlowExecutor
             }
             if (msg.message === "submit") {
                 this.submit({} as FlowChallengeResponseRequest);
+            }
+        });
+
+        window.addEventListener("ak-multitab-continue", () => {
+            document.title = "continued";
+            if (
+                this.challenge?.component === "ak-stage-identification" &&
+                this.challenge.applicationPreLaunch &&
+                this.challenge.applicationPreLaunch !== "blank://blank"
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(this.challenge.applicationPreLaunch);
+                return;
+            }
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(url);
             }
         });
     }
