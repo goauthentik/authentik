@@ -185,7 +185,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                                 [WebAuthnHintEnum.SecurityKey, msg("Security Key (e.g. YubiKey)")],
                                 [
                                     WebAuthnHintEnum.ClientDevice,
-                                    msg("This Device (e.g. Touch ID, Windows Hello)"),
+                                    msg("Client Device (e.g. Touch ID, Windows Hello)"),
                                 ],
                                 [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
                             ]}
