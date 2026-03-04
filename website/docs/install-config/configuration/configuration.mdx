@@ -357,6 +357,14 @@ Valid values are `auto` and `path`.
 
 Defaults to `auto`.
 
+#### `AUTHENTIK_STORAGE__S3__SIGNATURE_VERSION`
+
+Configure the signing method used for S3 requests.
+
+Defaults to `s3v4`.
+
+Set to `s3` for legacy S3-compatible providers that do not support signature v4.
+
 #### `AUTHENTIK_STORAGE__S3__SESSION_PROFILE`
 
 Profile to use when using AWS SDK authentication.
@@ -632,6 +640,26 @@ Defaults to 4.
 Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
+
+### `AUTHENTIK_WEB__TIMEOUT_HTTP`
+
+Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ_HEADER`
+
+Defaults to `5s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_READ`
+
+Defaults to `30s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_WRITE`
+
+Defaults to `60s`
+
+- `AUTHENTIK_WEB__TIMEOUT_HTTP_IDLE`
+
+Defaults to `120s`
 
 ## System settings
 

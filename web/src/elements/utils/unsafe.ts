@@ -43,17 +43,21 @@ export const Prefix = {
 
 export type Prefix = (typeof Prefix)[keyof typeof Prefix];
 
+type WrappedPropertyDeclaration = PropertyDeclaration<unknown, unknown> & { wrapped?: boolean };
+
 /**
  * Given a Lit property declaration, determine the appropriate prefix for rendering the property as either a property or an attribute, based on the declaration's type and attribute configuration.
  *
  * @param propDeclaration The Lit property declaration to analyze.
  * @returns The determined prefix for rendering the property.
  */
-function resolvePrefix<T extends PropertyDeclaration<unknown, unknown>>(
-    propDeclaration: T,
-): Prefix {
+function resolvePrefix<T extends WrappedPropertyDeclaration>(propDeclaration: T): Prefix {
     if (!propDeclaration.attribute) {
         return Prefix.Property;
+    }
+
+    if ("wrapped" in propDeclaration && propDeclaration.wrapped && !propDeclaration.type) {
+        return Prefix.Attribute;
     }
 
     switch (propDeclaration.type) {
@@ -71,7 +75,7 @@ function resolvePrefix<T extends PropertyDeclaration<unknown, unknown>>(
  * determine the appropriate name to use for rendering the property,
  * taking into account any custom attribute name specified in the declaration.
  */
-function resolvePropertyName<T extends PropertyDeclaration<unknown, unknown>>(
+function resolvePropertyName<T extends WrappedPropertyDeclaration>(
     propDeclaration: T,
     prefix: Prefix,
     key: string,
@@ -148,9 +152,7 @@ export function StrictUnsafe<T extends string>(
             if (propDeclaration) {
                 const prefix = resolvePrefix(propDeclaration);
                 const name = resolvePropertyName(propDeclaration, prefix, propName);
-
                 filteredProps[`${prefix}${name}`] = propValue;
-
                 continue;
             }
 
