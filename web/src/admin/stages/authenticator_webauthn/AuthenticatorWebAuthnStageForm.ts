@@ -182,10 +182,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         <ak-checkbox-group
                             name="hints"
                             .options=${[
-                                [WebAuthnHintEnum.SecurityKey, msg("Security Key (e.g. YubiKey)")],
+                                [WebAuthnHintEnum.SecurityKey, msg("Security key (e.g. YubiKey)")],
                                 [
                                     WebAuthnHintEnum.ClientDevice,
-                                    msg("Client Device (e.g. Touch ID, Windows Hello)"),
+                                    msg("Client device (e.g. Touch ID, Windows Hello)"),
                                 ],
                                 [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
                             ]}
