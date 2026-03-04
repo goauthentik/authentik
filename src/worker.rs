@@ -2,9 +2,13 @@ use std::{
     env,
     path::PathBuf,
     process::Stdio,
-    sync::atomic::{AtomicBool, Ordering},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
     time::Duration,
 };
+use tokio::sync::Mutex;
 
 use argh::FromArgs;
 use axum::body::Body;
@@ -36,29 +40,18 @@ pub(crate) struct Cli {}
 const INITIAL_WORKER_ID: usize = 1000;
 static INITIAL_WORKER_READY: AtomicBool = AtomicBool::new(false);
 
-type WorkerClient = Client<UnixSocketConnector<PathBuf>, Body>;
-
-fn socket_path() -> PathBuf {
-    env::temp_dir().join("authentik-worker.sock")
-}
-
-pub(crate) fn build_client() -> WorkerClient {
-    let connector = UnixSocketConnector::new(socket_path());
-    Client::builder(TokioExecutor::new())
-        .pool_idle_timeout(Duration::from_secs(60))
-        .set_host(false)
-        .build(connector)
-}
-
 struct Worker(Child);
 
 impl Worker {
-    fn new(worker_id: usize) -> Result<Self> {
+    fn new(worker_id: usize, socket_path: Option<&str>) -> Result<Self> {
         info!(worker_id, "Starting worker");
+        let mut cmd = Command::new("python");
+        cmd.args(["-m", "lifecycle.worker_process", &worker_id.to_string()]);
+        if let Some(socket_path) = socket_path {
+            cmd.arg(socket_path);
+        }
         Ok(Self(
-            Command::new("python")
-                .args(["-m", "lifecycle.worker_process", &worker_id.to_string()])
-                .kill_on_drop(true)
+            cmd.kill_on_drop(true)
                 .stdout(Stdio::inherit())
                 .stderr(Stdio::inherit())
                 .spawn()?,
@@ -103,42 +96,62 @@ impl Worker {
     }
 }
 
-struct Workers(Vec<Worker>);
+pub(crate) struct Workers {
+    workers: Mutex<Vec<Worker>>,
+    socket_path: PathBuf,
+    pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
+}
 
 impl Workers {
-    fn new() -> Result<Self> {
+    fn new(socket_path: PathBuf) -> Result<Self> {
         let mut workers = Vec::with_capacity(config::get().worker.processes.get());
-        workers.push(Worker::new(INITIAL_WORKER_ID)?);
-        Ok(Self(workers))
+        workers.push(Worker::new(
+            INITIAL_WORKER_ID,
+            Some(&format!("{}", &socket_path.display())),
+        )?);
+
+        let client = Client::builder(TokioExecutor::new())
+            .pool_idle_timeout(Duration::from_secs(60))
+            .set_host(false)
+            .build(UnixSocketConnector::new(socket_path.clone()));
+
+        Ok(Self {
+            workers: Mutex::new(workers),
+            socket_path,
+            client,
+        })
     }
 
-    fn start_other_workers(&mut self) -> Result<()> {
+    async fn start_other_workers(&self) -> Result<()> {
         for i in 1..config::get().worker.processes.get() {
-            self.0.push(Worker::new(INITIAL_WORKER_ID + i)?);
+            self.workers
+                .lock()
+                .await
+                .push(Worker::new(INITIAL_WORKER_ID + i, None)?);
         }
         Ok(())
     }
 
-    async fn graceful_shutdown(&mut self) -> Result<()> {
-        let mut results = Vec::with_capacity(self.0.capacity());
-        for worker in &mut self.0 {
+    async fn graceful_shutdown(&self) -> Result<()> {
+        let mut results = Vec::with_capacity(self.workers.lock().await.capacity());
+        for worker in self.workers.lock().await.iter_mut() {
             results.push(worker.graceful_shutdown().await);
         }
 
         results.into_iter().find(Result::is_err).unwrap_or(Ok(()))
     }
 
-    async fn fast_shutdown(&mut self) -> Result<()> {
-        let mut results = Vec::with_capacity(self.0.capacity());
-        for worker in &mut self.0 {
+    async fn fast_shutdown(&self) -> Result<()> {
+        let mut results = Vec::with_capacity(self.workers.lock().await.capacity());
+        for worker in self.workers.lock().await.iter_mut() {
             results.push(worker.fast_shutdown().await);
         }
 
         results.into_iter().find(Result::is_err).unwrap_or(Ok(()))
     }
 
-    fn are_alive(&mut self) -> bool {
-        for worker in &mut self.0 {
+    pub(crate) async fn are_alive(&self) -> bool {
+        for worker in self.workers.lock().await.iter_mut() {
             if !worker.is_alive() {
                 return false;
             }
@@ -146,14 +159,14 @@ impl Workers {
         true
     }
 
-    async fn is_socket_ready() -> bool {
-        let result = UnixStream::connect(socket_path()).await;
+    async fn is_socket_ready(&self) -> bool {
+        let result = UnixStream::connect(&self.socket_path).await;
         trace!("checking if worker socket is ready: {result:?}");
         result.is_ok()
     }
 }
 
-async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
+async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
     info!("starting worker watcher");
     let mut signals_rx = arbiter.signals_subscribe();
     loop {
@@ -164,7 +177,7 @@ async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
                         if signal == SignalKind::user_defined2() {
                             info!("worker notified us ready, marked ready for operation");
                             INITIAL_WORKER_READY.store(true, Ordering::Relaxed);
-                            workers.start_other_workers()?;
+                            workers.start_other_workers().await?;
                         }
                     },
                     Err(RecvError::Lagged(_)) => {},
@@ -177,14 +190,14 @@ async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
             () = tokio::time::sleep(Duration::from_secs(1)), if !INITIAL_WORKER_READY.load(Ordering::Relaxed) => {
                 // On some platforms the SIGUSR1 can be missed.
                 // Fall back to probing the worker unix socket and mark ready once it accepts connections.
-                if Workers::is_socket_ready().await {
+                if workers.is_socket_ready().await {
                     info!("worker socket is accepting connections, marked ready for operation");
                     INITIAL_WORKER_READY.store(true, Ordering::Relaxed);
-                    workers.start_other_workers()?;
+                    workers.start_other_workers().await?;
                 }
             },
             () = tokio::time::sleep(Duration::from_secs(5)) => {
-                if !workers.are_alive() {
+                if !workers.are_alive().await {
                     return Err(eyre!("gunicorn has exited unexpectedly"));
                 }
             },
@@ -201,18 +214,18 @@ async fn watch_workers(arbiter: Arbiter, mut workers: Workers) -> Result<()> {
 }
 
 #[expect(clippy::unused_async, reason = "WIP")]
-pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<()> {
+pub(super) async fn run(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Workers>> {
     let arbiter = tasks.arbiter();
 
-    let workers = Workers::new()?;
+    let workers = Arc::new(Workers::new(env::temp_dir().join("authentik-worker.sock"))?);
 
     tasks
         .build_task()
         .name(&format!("{}::watch_workers", module_path!()))
-        .spawn(watch_workers(arbiter, workers))?;
+        .spawn(watch_workers(arbiter, workers.clone()))?;
 
     // TODO: start healthcheck server
     // TODO: start workerstatus task
 
-    Ok(())
+    Ok(workers)
 }

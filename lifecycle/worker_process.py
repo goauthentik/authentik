@@ -5,7 +5,6 @@ import signal
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socket import AF_UNIX
-from tempfile import gettempdir
 from threading import Event, Thread
 from typing import Any
 
@@ -35,8 +34,7 @@ class UnixSocketServer(HTTPServer):
     address_family = AF_UNIX
 
 
-def main(worker_id: int):
-    socket_path = os.path.join(gettempdir(), "authentik-worker.sock")
+def main(worker_id: int, socket_path: str | None):
     shutdown = Event()
     srv = None
 
@@ -44,7 +42,8 @@ def main(worker_id: int):
         nonlocal srv
         if srv is not None:
             srv.shutdown()
-            os.remove(socket_path)
+            if socket_path:
+                os.remove(socket_path)
         sys.exit(0)
 
     def graceful_shutdown(signum, frame):
@@ -71,7 +70,7 @@ def main(worker_id: int):
     worker.start()
     logger.info("Worker process is ready for action.")
 
-    if worker_id == INITIAL_WORKER_ID:
+    if socket_path:
         srv = UnixSocketServer(socket_path, HttpHandler)
         Thread(target=srv.serve_forever).start()
 
@@ -83,7 +82,8 @@ def main(worker_id: int):
     logger.info("Shutting down worker...")
     if srv is not None:
         srv.shutdown()
-        os.remove(socket_path)
+        if socket_path:
+            os.remove(socket_path)
     # 5 secs if debug, 5 mins otherwise
     worker.stop(timeout=5_000 if CONFIG.get_bool("debug") else 600_000)
     broker.close()
@@ -91,11 +91,12 @@ def main(worker_id: int):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("USAGE: worker_process <worker_id>")
+    if len(sys.argv) not in [2, 3]:
+        print("USAGE: worker_process <worker_id> [SOCKET_PATH]")
         sys.exit(1)
 
     worker_id = int(sys.argv[1])
+    socket_path = sys.argv[2] if len(sys.argv) == 3 else None
 
     from authentik.root.setup import setup
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
 
     from django.core.management import execute_from_command_line
 
-    if worker_id == INITIAL_WORKER_ID:
+    if socket_path:
         from lifecycle.migrate import run_migrations
 
         run_migrations()
@@ -123,4 +124,4 @@ if __name__ == "__main__":
             except Exception as exc:
                 sys.stderr.write(f"Failed to apply bootstrap blueprint: {exc}")
 
-    main(worker_id)
+    main(worker_id, socket_path)

@@ -35,8 +35,6 @@ worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 
 os.makedirs(worker_tmp_dir, exist_ok=True)
 
-bind = f"unix://{str(_tmp.joinpath('authentik-gunicorn.sock'))}"
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 preload_app = True

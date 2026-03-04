@@ -1,5 +1,6 @@
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 
+use arc_swap::ArcSwapOption;
 use axum::{Router, routing::any};
 use axum_server::Handle;
 use eyre::Result;
@@ -11,50 +12,35 @@ use crate::{
     arbiter::{Arbiter, Tasks},
     config,
 };
+#[cfg(feature = "core")]
+use crate::{server::Server, worker::Workers};
 
 mod handlers;
 
-struct AppState {
+pub(crate) struct Metrics {
     prometheus: PrometheusHandle,
     #[cfg(feature = "core")]
-    metrics_key: String,
+    pub(crate) server: ArcSwapOption<Server>,
     #[cfg(feature = "core")]
-    _metrics_file: tempfile::NamedTempFile,
+    pub(crate) workers: ArcSwapOption<Workers>,
 }
 
-impl AppState {
-    async fn new() -> Result<Self> {
+impl Metrics {
+    fn new() -> Result<Self> {
         let prometheus = PrometheusBuilder::new()
             .with_recommended_naming(true)
             .install_recorder()?;
-        #[cfg(not(feature = "core"))]
-        {
-            Ok(Self { prometheus })
-        }
-        #[cfg(feature = "core")]
-        {
-            use std::{fs::Permissions, os::unix::fs::PermissionsExt};
-
-            use rand::distr::SampleString;
-
-            let metrics_key = rand::distr::Alphanumeric.sample_string(&mut rand::rng(), 64);
-            let metrics_file = tempfile::Builder::new()
-                .prefix("authentik-metrics-gunicorn")
-                .suffix(".key")
-                .rand_bytes(0)
-                .permissions(Permissions::from_mode(0o600))
-                .tempfile()?;
-            tokio::fs::write(&metrics_file, &metrics_key).await?;
-            Ok(Self {
-                prometheus,
-                metrics_key,
-                _metrics_file: metrics_file,
-            })
-        }
+        Ok(Self {
+            prometheus,
+            #[cfg(feature = "core")]
+            server: ArcSwapOption::empty(),
+            #[cfg(feature = "core")]
+            workers: ArcSwapOption::empty(),
+        })
     }
 }
 
-async fn run_upkeep(arbiter: Arbiter, state: Arc<AppState>) -> Result<()> {
+async fn run_upkeep(arbiter: Arbiter, state: Arc<Metrics>) -> Result<()> {
     loop {
         tokio::select! {
             () = tokio::time::sleep(Duration::from_secs(5)) => {
@@ -65,7 +51,7 @@ async fn run_upkeep(arbiter: Arbiter, state: Arc<AppState>) -> Result<()> {
     }
 }
 
-fn build_router(state: Arc<AppState>) -> Router {
+fn build_router(state: Arc<Metrics>) -> Router {
     Router::new()
         .fallback(any(handlers::metrics_handler))
         .layer(
@@ -89,15 +75,15 @@ async fn run_server(router: Router, addr: SocketAddr, handle: Handle<SocketAddr>
     Ok(())
 }
 
-pub(super) async fn run(tasks: &mut Tasks) -> Result<()> {
+pub(super) async fn run(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
     let arbiter = tasks.arbiter();
-    let state = Arc::new(AppState::new().await?);
-    let router = build_router(state.clone());
+    let metrics = Arc::new(Metrics::new()?);
+    let router = build_router(metrics.clone());
 
     tasks
         .build_task()
         .name(&format!("{}::metrics::run_upkeep", module_path!(),))
-        .spawn(run_upkeep(arbiter.clone(), state.clone()))?;
+        .spawn(run_upkeep(arbiter.clone(), metrics.clone()))?;
 
     for addr in config::get().listen.metrics.iter().copied() {
         let handle = Handle::new();
@@ -112,5 +98,5 @@ pub(super) async fn run(tasks: &mut Tasks) -> Result<()> {
             .spawn(run_server(router.clone(), addr, handle))?;
     }
 
-    Ok(())
+    Ok(metrics)
 }

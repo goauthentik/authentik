@@ -1,8 +1,4 @@
-use std::{
-    path::PathBuf,
-    sync::{LazyLock, atomic::Ordering},
-    time::Duration,
-};
+use std::sync::{Arc, LazyLock, atomic::Ordering};
 
 use axum::{
     Extension, Router,
@@ -13,11 +9,10 @@ use axum::{
         header::{ACCEPT, CONTENT_TYPE, HOST, RETRY_AFTER},
     },
     middleware::{Next, from_fn},
-    response::Response,
+    response::{IntoResponse, Response},
+    routing::any,
 };
 use http_body_util::BodyExt;
-use hyper_unix_socket::UnixSocketConnector;
-use hyper_util::{client::legacy::Client, rt::TokioExecutor};
 use serde_json::json;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::Level;
@@ -28,14 +23,12 @@ use crate::{
         error::Result,
         extract::{client_ip::ClientIP, host::Host, scheme::Scheme, trusted_proxy::TrustedProxy},
     },
-    config,
+    db,
     server::{
+        GUNICORN_READY, Server,
         core::websockets::{handle_websocket_upgrade, is_websocket_upgrade},
-        gunicorn::GUNICORN_READY,
     },
 };
-
-pub(crate) type CoreClient = Client<UnixSocketConnector<PathBuf>, Body>;
 
 static STARTUP_RESPONSE_JSON: LazyLock<Response<String>> = LazyLock::new(|| {
     Response::builder()
@@ -105,7 +98,7 @@ async fn forward_request(
     ClientIP(client_ip): ClientIP,
     Host(host): Host,
     Scheme(scheme): Scheme,
-    State(client): State<CoreClient>,
+    State(server): State<Arc<Server>>,
     TrustedProxy(trusted_proxy): TrustedProxy,
     tls_state: Option<Extension<TlsState>>,
     mut request: Request,
@@ -154,7 +147,7 @@ async fn forward_request(
         .insert(X_FORWARDED_PROTO, HeaderValue::from_str(scheme.as_ref())?);
 
     if is_websocket_upgrade(request.headers()) {
-        return handle_websocket_upgrade(request).await;
+        return handle_websocket_upgrade(request, server).await;
     }
 
     if let Some(tls_state) = tls_state
@@ -175,7 +168,7 @@ async fn forward_request(
             .insert("X_FORWARDED_CLIENT_CERT", HeaderValue::from_str(&xfcc)?);
     }
 
-    match client.request(request).await {
+    match server.client.request(request).await {
         Ok(res) => {
             let (parts, body) = res.into_parts();
             Ok(Response::from_parts(
@@ -187,20 +180,8 @@ async fn forward_request(
     }
 }
 
-pub(crate) fn build_client() -> CoreClient {
-    let config = config::get();
-    let connector = UnixSocketConnector::new(super::gunicorn::socket_path());
-    Client::builder(TokioExecutor::new())
-        .pool_idle_timeout(Duration::from_secs(60))
-        .pool_max_idle_per_host(config.web.workers * config.web.threads)
-        .set_host(false)
-        .build(connector)
-}
-
-fn build_proxy_router() -> Router {
-    let client = build_client();
-
-    Router::new().fallback(forward_request).with_state(client)
+fn build_gunicorn_router(server: Arc<Server>) -> Router {
+    Router::new().fallback(forward_request).with_state(server)
 }
 
 async fn powered_by_middleware(request: Request, next: Next) -> Response {
@@ -212,9 +193,38 @@ async fn powered_by_middleware(request: Request, next: Next) -> Response {
     response
 }
 
+async fn health_ready(State(server): State<Arc<Server>>) -> impl IntoResponse {
+    #[expect(clippy::if_same_then_else, reason = "For easier reading")]
+    if !server.is_alive().await {
+        StatusCode::SERVICE_UNAVAILABLE
+    } else if sqlx::query("SELECT 1").execute(db::get()).await.is_err() {
+        StatusCode::SERVICE_UNAVAILABLE
+    } else if let Some(workers) = server.workers.load_full()
+        && !workers.are_alive().await
+    {
+        StatusCode::SERVICE_UNAVAILABLE
+    } else {
+        let req = Request::builder()
+            .method("GET")
+            .uri("http://localhost:8000/-/health/ready/")
+            .header(HOST, "localhost")
+            .body(Body::from(""));
+        if let Ok(req) = req
+            && let Ok(res) = server.client.request(req).await
+        {
+            res.status()
+        } else {
+            StatusCode::SERVICE_UNAVAILABLE
+        }
+    }
+}
+
 // TODO: subpath
-pub(super) fn build_router() -> Router {
+pub(super) fn build_router(server: Arc<Server>) -> Router {
     Router::new()
+        .route("/-/metrics/", any((StatusCode::NOT_FOUND, "not found")))
+        .route("/-/health/ready/", any(health_ready))
+        .with_state(server.clone())
         .merge(super::r#static::build_router())
         .layer(
             // TODO: refine this, probably extract it to its own thing to be used with the proxy
@@ -224,11 +234,13 @@ pub(super) fn build_router() -> Router {
                 .on_request(DefaultOnRequest::new().level(Level::INFO))
                 .on_response(DefaultOnResponse::new().level(Level::INFO)),
         )
-        .merge(build_proxy_router())
+        .merge(build_gunicorn_router(server))
         .layer(from_fn(powered_by_middleware))
 }
 
 mod websockets {
+    use std::sync::Arc;
+
     use axum::{
         body::Body,
         extract::Request,
@@ -251,7 +263,7 @@ mod websockets {
 
     use crate::{
         axum::error::{AppError, Result},
-        server::gunicorn,
+        server::Server,
     };
 
     pub(super) fn is_websocket_upgrade(headers: &HeaderMap<HeaderValue>) -> bool {
@@ -274,7 +286,10 @@ mod websockets {
         has_upgrade && has_connection && has_websocket_key && has_websocket_version
     }
 
-    pub(super) async fn handle_websocket_upgrade(request: Request) -> Result<Response> {
+    pub(super) async fn handle_websocket_upgrade(
+        request: Request,
+        server: Arc<Server>,
+    ) -> Result<Response> {
         let Some(ws_key) = request
             .headers()
             .get(SEC_WEBSOCKET_KEY)
@@ -307,7 +322,7 @@ mod websockets {
             .body(Body::empty())?;
 
         tokio::spawn(async move {
-            if let Err(err) = handle_websocket_connection(request, ws_request).await {
+            if let Err(err) = handle_websocket_connection(request, server, ws_request).await {
                 warn!("WebSocket connection error: {}", err.0);
             }
         });
@@ -317,6 +332,7 @@ mod websockets {
 
     async fn handle_websocket_connection(
         request: Request,
+        server: Arc<Server>,
         ws_request: tokio_tungstenite::tungstenite::handshake::client::Request,
     ) -> Result<()> {
         let upgraded = hyper::upgrade::on(request).await?;
@@ -324,7 +340,7 @@ mod websockets {
         let client_ws = WebSocketStream::from_raw_socket(io, Role::Server, None).await;
 
         let upstream_ws = {
-            let stream = UnixStream::connect(gunicorn::socket_path()).await?;
+            let stream = UnixStream::connect(&server.socket_path).await?;
             let (ws_stream, _) = client_async(ws_request, stream).await?;
             ws_stream
         };

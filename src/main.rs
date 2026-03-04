@@ -164,7 +164,7 @@ fn main() -> Result<()> {
                 None
             };
 
-            metrics::run(&mut tasks).await?;
+            let metrics = metrics::run(&mut tasks).await?;
 
             #[cfg(feature = "core")]
             if Mode::is_core() {
@@ -174,16 +174,21 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    server::run(server::Cli::default(), &mut tasks).await?;
-                    worker::run(worker::Cli::default(), &mut tasks).await?;
+                    let workers = worker::run(worker::Cli::default(), &mut tasks).await?;
+                    metrics.workers.store(Some(workers.clone()));
+                    let server = server::run(server::Cli::default(), &mut tasks).await?;
+                    server.workers.store(Some(workers));
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    server::run(args, &mut tasks).await?;
+                    let server = server::run(args, &mut tasks).await?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
-                    worker::run(args, &mut tasks).await?;
+                    let workers = worker::run(args, &mut tasks).await?;
+                    metrics.workers.store(Some(workers));
                 }
                 #[cfg(feature = "proxy")]
                 #[expect(clippy::todo, reason = "WIP")]
