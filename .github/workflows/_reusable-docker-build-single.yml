@@ -67,7 +67,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v5
         with:
           node-version-file: web/package.json
           cache: "npm"
