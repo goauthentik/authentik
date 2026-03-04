@@ -4,6 +4,7 @@ from typing import Any
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -228,6 +229,26 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
                     obj.pop("raw_dn", None)
                     all_objects[class_name].append(obj)
         return Response(data=all_objects)
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={201: OpenApiTypes.NONE},
+    )
+    @action(
+        methods=["POST"],
+        detail=True,
+        pagination_class=None,
+        url_path="sync",
+        filter_backends=[ObjectFilter],
+    )
+    def sync_trigger(self, request: Request, slug: str) -> Response:
+        """Trigger sync for an LDAP source"""
+        source: LDAPSource = self.get_object()
+        for schedule in source.schedules.all():
+            if schedule.actor_name == ldap_sync.actor_name:
+                schedule.send()
+                break
+        return Response(status=201)
 
 
 class LDAPSourcePropertyMappingSerializer(PropertyMappingSerializer):
