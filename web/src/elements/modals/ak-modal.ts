@@ -10,6 +10,7 @@ import { ConsoleLogger, Logger } from "#logger/browser";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, PropertyValues } from "lit";
+import { createRef } from "lit-html/directives/ref.js";
 import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -46,11 +47,18 @@ export class AKModal extends AKElement {
 
     #hostResizeObserver: ResizeObserver;
 
+    //#region Protected Properties
+
     protected logger: Logger;
+
+    /**
+     * An optional Lit ref which can automatically synchronize the modal's height with the element's height.
+     */
+    protected scrollContainerRef = createRef<HTMLElement>();
 
     declare parentElement: HTMLDialogElement | null;
 
-    //#region Properties
+    //#region Public Properties
 
     @property({ type: String, useDefault: true })
     public headline: string | null = null;
@@ -146,22 +154,29 @@ export class AKModal extends AKElement {
      * A map of observed elements to their expected sizes,
      * used to prevent unnecessary height synchronizations.
      */
-    #expectedSizes = new WeakMap();
+    #expectedSizes = new WeakMap<Element, number>();
+
+    protected lastScrollHeight = 0;
 
     protected synchronizeHeight: ResizeObserverCallback = ([entry]) => {
         this.#heightSyncFrameID = requestAnimationFrame(() => {
+            const dialogElement = this.parentElement;
+
+            if (!dialogElement || !dialogElement.open) {
+                return;
+            }
+
             const expectedSize = this.#expectedSizes.get(entry.target);
+            const blockSize = Math.ceil(entry.borderBoxSize[0].blockSize);
+            const desiredSize = Math.max(entry.target.scrollHeight, blockSize);
 
-            if (entry.contentRect.height === expectedSize) {
+            if (desiredSize === expectedSize) {
                 return;
             }
 
-            if (!this.parentElement) {
-                return;
-            }
+            dialogElement.style.height = desiredSize + "px";
 
-            this.parentElement.style.height = entry.contentRect.height + "px";
-            this.#expectedSizes.set(entry.target, entry.contentRect.height);
+            this.#expectedSizes.set(entry.target, desiredSize);
         });
     };
 
@@ -175,6 +190,13 @@ export class AKModal extends AKElement {
             if (this.parentElement) {
                 this.parentElement.style.height = "";
             }
+
+            this.#heightResetAnimationFrameID = requestAnimationFrame(() => {
+                const scrollContainer = this.scrollContainerRef.value || this;
+                const scrollHeight = scrollContainer.scrollHeight;
+
+                this.lastScrollHeight = scrollHeight;
+            });
         });
     };
 
@@ -194,7 +216,9 @@ export class AKModal extends AKElement {
 
         dialogElement.style.height = dialogElement.clientHeight + "px";
 
-        this.#hostResizeObserver.observe(this);
+        const scrollContainer = this.scrollContainerRef.value || this;
+
+        this.#hostResizeObserver.observe(scrollContainer);
 
         window.addEventListener("resize", this.resetHeight, {
             passive: true,
@@ -340,6 +364,19 @@ export class AKModal extends AKElement {
         if (form && form !== this.form) {
             this.form = form;
             this.form.viewportCheck = false;
+        }
+
+        const dialogElement = this.parentElement;
+
+        if (dialogElement && dialogElement.open) {
+            requestAnimationFrame(() => {
+                const scrollContainer = this.scrollContainerRef.value || this;
+                const scrollHeight = scrollContainer.scrollHeight;
+
+                if (scrollHeight !== this.lastScrollHeight) {
+                    this.resetHeight();
+                }
+            });
         }
     }
 
