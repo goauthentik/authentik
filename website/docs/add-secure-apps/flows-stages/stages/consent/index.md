@@ -12,7 +12,7 @@ This stage can be used to leverage an external OAuth source, and allow users log
 
 ## Considerations
 
-gggg
+TODO
 
 ## Consent stage workflow
 
@@ -22,14 +22,7 @@ insert mermaid diagram here
 
 How to create it, the three modes, etc. (this is how you can set it to expire)...
 
-you have to create an Expression policy to bind to the stage
-
-Questions for Jens:
-
-- doesn't one have to create a policy to go with the stage, to define the exact words that appear on the Consent stage UI? Our default auth flow does not seem to use an expression policy...
-- but how is the policy then attached to the ... stage? Or is it automatically attached to the flow, because in the Expression it says `context['flow_plan']...`
-- I am trying to make my new Flow (Tana consent) to work exactly like our default one, but.. I don't understand the policy bit.
-- I really wish that Flows and Stages was above Customization in our UI
+you have to create an Expression policy to bind to the stage (go to the Flow, go to Stage bindings tab, click on carot beside the stage to expand it, then bind the policy there. (Note to users about the policy is bound to the stage WITHIN this flow... not to the Stage as a whole!!))
 
 This stage has three modes:
 
