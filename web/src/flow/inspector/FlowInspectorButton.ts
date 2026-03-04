@@ -33,7 +33,7 @@ export class FlowInspectorButton extends WithCapabilitiesConfig(AKElement) {
     public override connectedCallback() {
         super.connectedCallback();
         const inspector = new URLSearchParams(window.location.search).get("inspector");
-        this.available = this.can(CapabilitiesEnum.CanDebug) || !!inspector;
+        this.available = this.can(CapabilitiesEnum.CanDebug) || typeof inspector === "string";
         this.open = inspector === "" || inspector === "open";
     }
 
