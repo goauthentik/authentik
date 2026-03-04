@@ -3,12 +3,17 @@ import "#elements/LoadingOverlay";
 import "#elements/locale/ak-locale-select";
 import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
+<<<<<<< HEAD
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/sources/telegram/TelegramLogin";
 import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
+=======
+import "#flow/inspector/FlowInspectorButton";
+import "#flow/tabs/broadcast";
+>>>>>>> 6245809ea (web/flows: continuous login (#19862))
 
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
@@ -29,8 +34,16 @@ import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
+<<<<<<< HEAD
 import { AKFlowAdvanceEvent, AKFlowInspectorChangeEvent } from "#flow/events";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+=======
+import { AKFlowAdvanceEvent } from "#flow/events";
+import { StageMapping } from "#flow/FlowExecutorStageFactory";
+import { BaseStage } from "#flow/stages/base";
+import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
+import type { StageHost, SubmitOptions } from "#flow/types";
+>>>>>>> 6245809ea (web/flows: continuous login (#19862))
 
 import { ConsoleLogger } from "#logger/browser";
 
@@ -189,6 +202,28 @@ export class FlowExecutor
             }
             if (msg.message === "submit") {
                 this.submit({} as FlowChallengeResponseRequest);
+            }
+        });
+
+        window.addEventListener("ak-multitab-continue", () => {
+            document.title = "continued";
+            if (
+                this.challenge?.component === "ak-stage-identification" &&
+                this.challenge.applicationPreLaunch &&
+                this.challenge.applicationPreLaunch !== "blank://blank"
+            ) {
+                multiTabOrchestrateLeave();
+                window.location.assign(this.challenge.applicationPreLaunch);
+                return;
+            }
+            const qs = new URLSearchParams(window.location.search);
+            const next = qs.get("next");
+            if (next) {
+                const url = new URL(next, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    multiTabOrchestrateLeave();
+                }
+                window.location.assign(url);
             }
         });
     }
