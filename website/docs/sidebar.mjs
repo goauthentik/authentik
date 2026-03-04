@@ -50,7 +50,12 @@ const items = [
             type: "doc",
             id: "enterprise/index",
         },
-        items: ["enterprise/get-started", "enterprise/manage-enterprise", "enterprise/entsupport"],
+        items: [
+            "enterprise/get-started",
+            "enterprise/enterprise-features",
+            "enterprise/manage-enterprise",
+            "enterprise/enterprise-support",
+        ],
     },
     {
         //#endregion
@@ -943,6 +948,7 @@ const items = [
                 items: [
                     "security/audits-and-certs/2023-06-cure53",
                     "security/audits-and-certs/2024-11-cobalt",
+                    "security/audits-and-certs/2025-09-includesec",
                 ],
             },
             {

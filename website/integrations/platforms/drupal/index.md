@@ -66,7 +66,7 @@ If you are developing Drupal locally with DDEV and authentik is also running loc
 
 TODO
 
-## Additional Resources
+## Resources
 
 - [Drupal OpenID Connect Module Documentation](https://www.drupal.org/project/openid_connect)
 - [Drupal User Account Settings Documentation](https://www.drupal.org/docs/user_guide/en/user-registration.html)

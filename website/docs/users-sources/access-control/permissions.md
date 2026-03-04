@@ -32,7 +32,7 @@ Additionally, authentik employs _initial permissions_ to streamline the process 
 
 ### Global permissions
 
-Global permissions define coarse-grained access control. For example, a role with a global permission of "Can change Flow" can change any [flow](../../add-secure-apps/flows-stages/flow/index.md). Some permissions only make sense as global permissions, e.g. the permission to add a specific object type or whether a user [`Can view admin interface`](./manage_permissions.md#assign-can-view-admin-interface-permissions).
+Global permissions define coarse-grained access control. For example, a role with a global permission of "Can change Flow" can change any [flow](../../add-secure-apps/flows-stages/flow/index.md). Some permissions only make sense as global permissions, e.g. the permission to add a specific object type or whether a user [`Can access admin interface`](./manage_permissions.md#assign-can-access-admin-interface-permissions).
 
 ### Object permissions
 

@@ -235,15 +235,16 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
         try:
             while True:
                 message_id, message = await q.get()
-                if message is None:
-                    async with await self.connection() as conn:
-                        async with conn.cursor() as cursor:
+                async with await self.connection() as conn:
+                    async with conn.cursor() as cursor:
+                        if message is None:
                             await cursor.execute(
                                 sql.SQL("""
-                                    SELECT {table}.{message}
+                                    DELETE
                                     FROM {table}
                                     WHERE {table}.{id} = %s
-                                    """).format(
+                                    RETURNING {table}.{message}
+                                """).format(
                                     table=sql.Identifier(MESSAGE_TABLE),
                                     id=sql.Identifier("id"),
                                     message=sql.Identifier("message"),
@@ -254,6 +255,18 @@ class PostgresChannelLoopLayer(BaseChannelLayer):
                             if row is None:
                                 continue
                             message = row[0]
+                        else:
+                            await cursor.execute(
+                                sql.SQL("""
+                                    DELETE
+                                    FROM {table}
+                                    WHERE {table}.{id} = %s
+                                """).format(
+                                    table=sql.Identifier(MESSAGE_TABLE),
+                                    id=sql.Identifier("id"),
+                                ),
+                                (message_id,),
+                            )
                 break
         except asyncio.CancelledError, TimeoutError, GeneratorExit:
             # We assume here that the reason we are cancelled is because the consumer
