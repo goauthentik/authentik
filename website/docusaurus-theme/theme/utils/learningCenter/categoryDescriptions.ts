@@ -5,9 +5,7 @@
  * Keep this list in sync when adding new learning-center categories.
  */
 
-import categoryA from "../../../../docs/core/learning-center/category-a/_category_.json";
-import categoryB from "../../../../docs/core/learning-center/category-b/_category_.json";
-import categoryC from "../../../../docs/core/learning-center/category-c/_category_.json";
+import customizeYourInstance from "../../../../docs/core/learning-center/customize-your-instance/_category_.json";
 
 export interface CategoryMetadata {
     label: string;
@@ -20,7 +18,7 @@ export interface CategoryMetadata {
  * Add new categories here as they are created.
  */
 const categoryMetadata: Record<string, CategoryMetadata> = Object.fromEntries(
-    [categoryA, categoryB, categoryC].map((category) => {
+    [customizeYourInstance].map((category) => {
         const metadata = category as CategoryMetadata;
         return [metadata.label, metadata];
     }),
