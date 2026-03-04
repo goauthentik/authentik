@@ -31,6 +31,15 @@ const packageStaticDirectory = resolve(__dirname, "static");
 const redirectsFile = resolve(packageStaticDirectory, "_redirects");
 const redirects = await parse(redirectsFile);
 const redirectsIndex = new RewriteIndex(redirects);
+const googleAnalyticsPresetOptions =
+    process.env.NODE_ENV === "production"
+        ? {
+              googleAnalytics: {
+                  trackingID: "G-9MVR9WZFZH",
+                  anonymizeIP: true,
+              },
+          }
+        : {};
 
 //#region Copy static files
 
@@ -72,10 +81,7 @@ export default createDocusaurusConfig({
             "@docusaurus/preset-classic",
 
             /** @type {PresetOptions} */ ({
-                googleAnalytics: {
-                    trackingID: "G-9MVR9WZFZH",
-                    anonymizeIP: true,
-                },
+                ...googleAnalyticsPresetOptions,
                 theme: {
                     customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
                 },

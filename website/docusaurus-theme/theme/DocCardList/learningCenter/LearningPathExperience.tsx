@@ -1,4 +1,5 @@
-import styles from "../../../components/LearningCenter/styles.module.css";
+import commonStyles from "../../../components/LearningCenter/styling/common.module.css";
+import pathStyles from "../../../components/LearningCenter/styling/pathExperience.module.css";
 import {
     type DifficultyLevel,
     getDifficultyLabel,
@@ -36,27 +37,27 @@ export function LearningPathExperience({
     hasValidPath,
 }: LearningPathExperienceProps) {
     return (
-        <div className={clsx(styles.learningPathExperience, className)}>
-            <Link className={styles.pathBackLink} to="/core/learning-center/">
+        <div className={clsx(pathStyles.learningPathExperience, className)}>
+            <Link className={pathStyles.pathBackLink} to="/core/learning-center/">
                 Back to Learning Center
             </Link>
 
-            <section className={styles.pathHero}>
-                <p className={styles.pathHeroEyebrow}>Learning Path</p>
-                <h1 className={styles.pathHeroTitle}>{title}</h1>
-                <p className={styles.pathHeroDescription}>{description}</p>
-                <div className={styles.pathHeroMeta}>
+            <section className={pathStyles.pathHero}>
+                <p className={pathStyles.pathHeroEyebrow}>Learning Path</p>
+                <h1 className={pathStyles.pathHeroTitle}>{title}</h1>
+                <p className={pathStyles.pathHeroDescription}>{description}</p>
+                <div className={pathStyles.pathHeroMeta}>
                     {difficulty ? (
                         <span
                             className={clsx(
-                                styles.pathHeroMetaItem,
-                                styles[`pathHeroMetaItemDifficulty-${difficulty}`],
+                                pathStyles.pathHeroMetaItem,
+                                pathStyles[`pathHeroMetaItemDifficulty-${difficulty}`],
                             )}
                         >
                             {getDifficultyLabel(difficulty)}
                         </span>
                     ) : null}
-                    <span className={styles.pathHeroMetaItem}>
+                    <span className={pathStyles.pathHeroMetaItem}>
                         {resources.length} article{resources.length !== 1 ? "s" : ""}
                     </span>
                 </div>
@@ -70,9 +71,9 @@ export function LearningPathExperience({
             ) : null}
 
             {resources.length > 0 ? (
-                <section className={styles.pathCurriculumSection}>
-                    <h2 className={styles.pathCurriculumTitle}>Path Curriculum</h2>
-                    <div className={styles.resourceGrid}>
+                <section className={pathStyles.pathCurriculumSection}>
+                    <h2 className={pathStyles.pathCurriculumTitle}>Path Curriculum</h2>
+                    <div className={commonStyles.resourceGrid}>
                         {resources.map((resource, index) => {
                             const sidebarItem = sidebarItemMap.get(resource.id);
                             return sidebarItem ? (

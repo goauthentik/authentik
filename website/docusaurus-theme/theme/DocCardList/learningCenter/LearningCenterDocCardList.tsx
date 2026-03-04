@@ -1,14 +1,16 @@
 import { LEARNING_PATHS } from "../../../components/LearningCenter/learningPathsConfig";
-import styles from "../../../components/LearningCenter/styles.module.css";
+import commonStyles from "../../../components/LearningCenter/styling/common.module.css";
 import {
     applyLearningCenterFilters,
     type DifficultyLevel,
     type LearningCenterResource,
 } from "../../utils/learningCenter/utils";
 import ErrorBoundary from "../ErrorBoundary";
+import ResourceSectionList from "./components/ResourceSectionList";
 import LearningCenterHelper from "./LearningCenterHelper";
+import LearningCenterLanding from "./LearningCenterLanding";
 import LearningPathExperience from "./LearningPathExperience";
-import ResourceCard from "./ResourceCard";
+import { consumeLearningCenterNavigationState } from "./navigationState";
 import {
     buildLearningResources,
     buildResourceCache,
@@ -18,6 +20,7 @@ import {
 import type { SidebarDocLike } from "./types";
 
 import { useLocation } from "@docusaurus/router";
+import clsx from "clsx";
 import type { ReactNode } from "react";
 import { useCallback, useMemo } from "react";
 
@@ -27,6 +30,8 @@ interface LearningCenterDocCardListProps {
 }
 
 const LEARNING_PATH_ROUTE_REGEX = /\/learning-center\/path\/([^/]+)/;
+const LEARNING_CENTER_ARTICLES_ROUTE_REGEX = /\/learning-center\/articles\/?$/;
+const LEARNING_CENTER_INDEX_ROUTE_REGEX = /\/learning-center\/?$/;
 const DIFFICULTY_ORDER: Record<DifficultyLevel, number> = {
     beginner: 0,
     intermediate: 1,
@@ -54,25 +59,6 @@ function sortLearningPathResources(resources: LearningCenterResource[]): Learnin
     });
 }
 
-function groupResourcesByCategory(
-    resources: LearningCenterResource[],
-): Array<[string, LearningCenterResource[]]> {
-    const byCategory = new Map<string, LearningCenterResource[]>();
-    resources.forEach((resource) => {
-        const category = resource.category || "General";
-        const grouped = byCategory.get(category) ?? [];
-        grouped.push(resource);
-        byCategory.set(category, grouped);
-    });
-
-    return Array.from(byCategory.entries())
-        .toSorted(([a], [b]) => a.localeCompare(b))
-        .map(([category, grouped]) => [
-            category,
-            grouped.toSorted((a, b) => a.resourceName.localeCompare(b.resourceName)),
-        ]);
-}
-
 /**
  * Component for rendering learning center resources with search, filtering,
  * and dedicated learning-path pages.
@@ -81,8 +67,21 @@ export default function LearningCenterDocCardList({
     resourcePool,
     className,
 }: LearningCenterDocCardListProps): ReactNode {
-    const pathname = useLocation()?.pathname ?? "";
+    const location = useLocation();
+    const pathname = location?.pathname ?? "";
     const learningPathFromRoute = useMemo(() => getLearningPathFromPathname(pathname), [pathname]);
+    const isLearningCenterArticlesPage = useMemo(
+        () => LEARNING_CENTER_ARTICLES_ROUTE_REGEX.test(pathname),
+        [pathname],
+    );
+    const isLearningCenterIndexPage = useMemo(
+        () => LEARNING_CENTER_INDEX_ROUTE_REGEX.test(pathname),
+        [pathname],
+    );
+    const initialNavigationState = useMemo(
+        () => (isLearningCenterArticlesPage ? consumeLearningCenterNavigationState() : {}),
+        [isLearningCenterArticlesPage],
+    );
 
     const uniqueResourcePool = useMemo(() => dedupeResourcePool(resourcePool), [resourcePool]);
     const resourceCache = useMemo(
@@ -121,34 +120,27 @@ export default function LearningCenterDocCardList({
     const learningPathDifficulty = activeLearningPath?.difficulty;
     const isLearningPathPage = Boolean(learningPathFromRoute);
     const hasValidLearningPath = Boolean(activeLearningPath);
+    const articlesPageResources = useMemo(() => {
+        if (!isLearningCenterArticlesPage) {
+            return [];
+        }
+
+        return applyLearningCenterFilters(learningResources, {
+            query: initialNavigationState.filter,
+            selectedCategories: initialNavigationState.categories,
+            selectedDifficulty: initialNavigationState.difficulty,
+        });
+    }, [isLearningCenterArticlesPage, learningResources, initialNavigationState]);
 
     const renderResources = useCallback(
         (filteredResources: LearningCenterResource[], searchFilter: string) => {
-            const resourcesByCategory = groupResourcesByCategory(filteredResources);
-
             return (
-                <div className={styles.resourceList}>
-                    {resourcesByCategory.map(([category, categoryResources]) => {
-                        return (
-                            <div key={category} className={styles.section}>
-                                <h2 className={styles.sectionTitle}>{category}</h2>
-                                <div className={styles.resourceGrid}>
-                                    {categoryResources.map((resource) => {
-                                        const sidebarItem = sidebarItemMap.get(resource.id);
-                                        return sidebarItem ? (
-                                            <ResourceCard
-                                                key={resource.id}
-                                                item={sidebarItem}
-                                                resourceCache={resourceCache}
-                                                searchFilter={searchFilter}
-                                            />
-                                        ) : null;
-                                    })}
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                <ResourceSectionList
+                    resources={filteredResources}
+                    sidebarItemMap={sidebarItemMap}
+                    resourceCache={resourceCache}
+                    searchFilter={searchFilter}
+                />
             );
         },
         [sidebarItemMap, resourceCache],
@@ -177,12 +169,17 @@ export default function LearningCenterDocCardList({
                     resourceCache={resourceCache}
                     hasValidPath={hasValidLearningPath}
                 />
-            ) : (
-                <LearningCenterHelper
+            ) : isLearningCenterIndexPage ? (
+                <LearningCenterLanding
                     resources={learningResources}
-                    className={className}
                     learningPaths={LEARNING_PATHS}
-                >
+                />
+            ) : isLearningCenterArticlesPage ? (
+                <div className={clsx(commonStyles.learningCenter, className)}>
+                    {renderResources(articlesPageResources, initialNavigationState.filter ?? "")}
+                </div>
+            ) : (
+                <LearningCenterHelper resources={learningResources} className={className}>
                     {renderResources}
                 </LearningCenterHelper>
             )}

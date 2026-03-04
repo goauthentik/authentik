@@ -1,5 +1,6 @@
 import {
     applyLearningCenterFilters,
+    DIFFICULTY_LEVELS,
     type DifficultyLevel,
     extractAvailableCategories,
     extractAvailableDifficulties,
@@ -35,17 +36,53 @@ export interface UseLearningCenterFilterResult {
     availableDifficulties: DifficultyLevel[];
 }
 
+export interface UseLearningCenterFilterOptions {
+    initialFilter?: string;
+    initialCategories?: string[];
+    initialDifficulty?: DifficultyLevel | null;
+}
+
+function sanitizeInitialCategories(
+    resources: LearningCenterResource[],
+    initialCategories: string[] | undefined,
+): string[] {
+    if (!initialCategories || initialCategories.length === 0) {
+        return [];
+    }
+
+    const availableCategories = new Set(resources.map((resource) => resource.category));
+    return Array.from(
+        new Set(initialCategories.filter((category) => availableCategories.has(category))),
+    );
+}
+
+function sanitizeInitialDifficulty(
+    initialDifficulty: DifficultyLevel | null | undefined,
+): DifficultyLevel | null {
+    if (!initialDifficulty) {
+        return null;
+    }
+    return DIFFICULTY_LEVELS.includes(initialDifficulty) ? initialDifficulty : null;
+}
+
 /**
  * Custom hook that manages learning center filtering state and logic.
  * Handles text search, category filtering, tag filtering, and difficulty filtering.
  */
 export function useLearningCenterFilter(
     resources: LearningCenterResource[],
+    options: UseLearningCenterFilterOptions = {},
 ): UseLearningCenterFilterResult {
-    const [filter, setFilterValue] = useState("");
-    const [debouncedFilter, setDebouncedFilter] = useState("");
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | null>(null);
+    const [filter, setFilterValue] = useState(() => options.initialFilter?.trim() ?? "");
+    const [debouncedFilter, setDebouncedFilter] = useState(
+        () => options.initialFilter?.trim() ?? "",
+    );
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
+        sanitizeInitialCategories(resources, options.initialCategories),
+    );
+    const [selectedDifficulty, setSelectedDifficulty] = useState<DifficultyLevel | null>(() =>
+        sanitizeInitialDifficulty(options.initialDifficulty),
+    );
     const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     // Debounce the filter value for performance

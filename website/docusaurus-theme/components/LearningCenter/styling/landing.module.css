@@ -1,0 +1,90 @@
+.discoveryIntro {
+    margin: 0 0 1.2rem;
+}
+
+.discoveryTitle {
+    margin: 0;
+    font-size: var(--lc-type-display);
+    line-height: 1.25;
+    color: var(--ifm-heading-color);
+}
+
+.discoveryDescription {
+    margin: 0.45rem 0 0;
+    font-size: var(--lc-type-body);
+    line-height: 1.55;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.discoveryKicker {
+    margin: 0 0 0.35rem;
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.discoveryPrimary {
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 14px;
+    padding: 0.85rem 1rem 0.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(
+        170deg,
+        var(--ifm-color-emphasis-100) 0%,
+        var(--ifm-background-color) 65%
+    );
+}
+
+.discoveryAlternatives {
+    margin-bottom: 1rem;
+}
+
+.discoveryOptionCard {
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    background: var(--ifm-color-emphasis-100);
+}
+
+.discoveryOptionTitle {
+    margin: 0 0 0.4rem;
+    color: var(--ifm-color-emphasis-800);
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.discoverySubTitle {
+    margin: 0;
+    color: var(--ifm-color-emphasis-800);
+    font-size: var(--lc-type-section-title);
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.discoveryMethodBody {
+    margin: 0 0 0.45rem;
+    color: var(--ifm-color-emphasis-700);
+    font-size: var(--lc-type-body);
+    line-height: 1.45;
+}
+
+.discoveryInlineCta {
+    margin: 0.55rem 0 0;
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.92rem;
+}
+
+.allArticlesLinkInline {
+    font-weight: 700;
+    color: var(--ifm-color-primary);
+    text-decoration: none;
+}
+
+.allArticlesLinkInline:hover,
+.allArticlesLinkInline:focus-visible {
+    color: var(--ifm-color-primary-dark);
+    text-decoration: underline;
+}

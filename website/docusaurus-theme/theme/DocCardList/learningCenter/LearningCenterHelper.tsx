@@ -1,11 +1,11 @@
 import CategoryNav from "../../../components/LearningCenter/CategoryNav";
 import DifficultyFilter from "../../../components/LearningCenter/DifficultyFilter";
 import FilterInput from "../../../components/LearningCenter/FilterInput";
-import LearningPaths from "../../../components/LearningCenter/LearningPaths";
-import type { LearningPathDef } from "../../../components/LearningCenter/learningPathsConfig";
-import styles from "../../../components/LearningCenter/styles.module.css";
-import { getCategoryDescription } from "../../utils/learningCenter/categoryDescriptions";
-import type { LearningCenterResource } from "../../utils/learningCenter/utils";
+import commonStyles from "../../../components/LearningCenter/styling/common.module.css";
+import filterStyles from "../../../components/LearningCenter/styling/filters.module.css";
+import type { DifficultyLevel, LearningCenterResource } from "../../utils/learningCenter/utils";
+import CategoryDescriptions from "./components/CategoryDescriptions";
+import NoResults from "./components/NoResults";
 import { useLearningCenterFilter } from "./useLearningCenterFilter";
 
 import clsx from "clsx";
@@ -21,36 +21,12 @@ export interface LearningCenterHelperProps {
     children: (filteredResources: LearningCenterResource[], searchFilter: string) => ReactNode;
     /** Optional CSS class name for styling */
     className?: string;
-    /** Optional array of featured learning paths to display at the top */
-    learningPaths?: LearningPathDef[];
-}
-
-/**
- * Displayed when no resources match the current filter criteria.
- */
-function NoResults() {
-    return (
-        <div className={styles.noResults}>
-            <p>No resources match your filter criteria.</p>
-        </div>
-    );
-}
-
-/**
- * Displays descriptions for selected categories.
- */
-function CategoryDescriptions({ selectedCategories }: { selectedCategories: string[] }) {
-    if (selectedCategories.length === 0) return null;
-
-    return (
-        <div className={styles.categoryDescriptions}>
-            {selectedCategories.map((category) => (
-                <p key={category} className={styles.categoryDescriptionText}>
-                    <strong>{category}</strong>: {getCategoryDescription(category)}
-                </p>
-            ))}
-        </div>
-    );
+    /** Initial text filter state, typically from URL query params */
+    initialFilter?: string;
+    /** Initial category filter state, typically from URL query params */
+    initialCategories?: string[];
+    /** Initial difficulty filter state, typically from URL query params */
+    initialDifficulty?: DifficultyLevel | null;
 }
 
 /**
@@ -61,7 +37,9 @@ export function LearningCenterHelper({
     resources,
     children,
     className,
-    learningPaths,
+    initialFilter,
+    initialCategories,
+    initialDifficulty,
 }: LearningCenterHelperProps): ReactNode {
     const {
         filter,
@@ -75,20 +53,15 @@ export function LearningCenterHelper({
         filteredResources,
         availableCategories,
         availableDifficulties,
-    } = useLearningCenterFilter(resources);
-    const hasLearningPaths = Boolean(learningPaths && learningPaths.length > 0);
+    } = useLearningCenterFilter(resources, {
+        initialFilter,
+        initialCategories,
+        initialDifficulty,
+    });
 
     return (
-        <div className={clsx(styles.learningCenter, className)}>
-            {hasLearningPaths ? (
-                <LearningPaths paths={learningPaths ?? []} resources={resources} />
-            ) : null}
-
-            <div className={styles.filterModeDivider} role="separator" aria-label="Browse filters">
-                <span className={styles.filterModeDividerText}>Browse by filters</span>
-            </div>
-
-            <section className={styles.filterModeSection} aria-label="Browse by filters">
+        <div className={clsx(commonStyles.learningCenter, className)}>
+            <section className={filterStyles.filterModeSection} aria-label="Browse by filters">
                 <FilterInput value={filter} onChange={setFilter} onClear={clearFilter} />
 
                 {availableCategories.length > 1 && (
@@ -110,7 +83,7 @@ export function LearningCenterHelper({
 
             <CategoryDescriptions selectedCategories={selectedCategories} />
 
-            <div className={styles.resourceList}>
+            <div className={commonStyles.resourceList}>
                 {filteredResources.length > 0 ? (
                     children(filteredResources, debouncedFilter)
                 ) : (

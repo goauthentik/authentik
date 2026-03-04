@@ -51,12 +51,25 @@ function isLearningCenterPathDocId(docId: string): boolean {
     return docId.includes("/learning-center/path/") || docId.includes("/learning-center/paths/");
 }
 
+function isLearningCenterArticlesDocId(docId: string): boolean {
+    return (
+        docId.endsWith("learning-center/articles") ||
+        docId.endsWith("learning-center/articles/index")
+    );
+}
+
 function isLearningCenterIndexHref(href: string): boolean {
     return href.endsWith("/learning-center") || href.endsWith("/learning-center/");
 }
 
 function isLearningCenterPathHref(href: string): boolean {
     return href.includes("/learning-center/path/") || href.includes("/learning-center/paths/");
+}
+
+function isLearningCenterArticlesHref(href: string): boolean {
+    return (
+        href.endsWith("/learning-center/articles") || href.endsWith("/learning-center/articles/")
+    );
 }
 
 /**
@@ -75,7 +88,8 @@ export function isLearningCenterItem(item: PropSidebarItem): boolean {
         if (
             docId.includes("learning-center") &&
             !isLearningCenterIndexDocId(docId) &&
-            !isLearningCenterPathDocId(docId)
+            !isLearningCenterPathDocId(docId) &&
+            !isLearningCenterArticlesDocId(docId)
         ) {
             return true;
         }
@@ -87,7 +101,8 @@ export function isLearningCenterItem(item: PropSidebarItem): boolean {
         if (
             href.includes("/learning-center/") &&
             !isLearningCenterPathHref(href) &&
-            !isLearningCenterIndexHref(href)
+            !isLearningCenterIndexHref(href) &&
+            !isLearningCenterArticlesHref(href)
         ) {
             return true;
         }
@@ -196,7 +211,6 @@ export function safeStringArrayExtract(value: unknown): string[] {
 
 /**
  * Extracts learning path values from metadata.
- * `learningPaths` is canonical; `tags` remains a backward-compatible fallback.
  */
 export function extractLearningPathsFromProps(
     props: Record<string, unknown> | undefined,
@@ -204,13 +218,7 @@ export function extractLearningPathsFromProps(
     if (!props) {
         return [];
     }
-
-    const learningPaths = safeStringArrayExtract(props.learningPaths);
-    if (learningPaths.length > 0) {
-        return learningPaths;
-    }
-
-    return safeStringArrayExtract(props.tags);
+    return safeStringArrayExtract(props.learningPaths);
 }
 
 function isDifficultyLevel(value: unknown): value is DifficultyLevel {

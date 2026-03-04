@@ -1,4 +1,4 @@
-import styles from "../../../components/LearningCenter/styles.module.css";
+import styles from "../../../components/LearningCenter/styling/resourceCard.module.css";
 import { getDifficultyLabel } from "../../utils/learningCenter/utils";
 import type { ResourceCache, SidebarDocLike } from "./types";
 

@@ -1,146 +1,121 @@
 ---
 title: "Tutorial Template"
+sidebar_custom_props:
+    resourceName: "[Tutorial title]"
+    category: "[Category label]"
+    learningPaths:
+        - "[filterTag from learningPathsConfig.ts]"
+    shortDescription: "[One-line summary shown on cards]"
+    difficulty: beginner
+    resourceType: tutorial
+    estimatedTime: 20 min
 ---
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-# Tutorial: [Title of the Tutorial]
+# Tutorial: [Tutorial title]
+
+Write a task-focused tutorial that a reader can complete from start to finish without guessing.
+
+:::info
+Before publishing, replace all placeholder values in frontmatter and body text.
+:::
 
 ## Overview
 
-[A brief introduction explaining what this tutorial will cover and what the user will achieve by following it. Keep this to 2-3 sentences. Include why this task is valuable or important.]
+[Explain what the reader will achieve, why this task matters, and what success looks like in 2-3 sentences.]
 
-**Difficulty Level**: [Beginner/Intermediate/Advanced]
-**Time to Complete**: [Approximate time, e.g., 15-30 minutes]
+## Goals
 
-## Stated Goals
-
-- Clearly define the outcome: [One-sentence description of what the user will achieve]
-- Success criteria:
-    - [Measurable signal #1]
-    - [Measurable signal #2]
-
-### Example Use Case
-
-As a [role, e.g., administrator], I need to [task, e.g., configure SSO for a new app] so that [benefit, e.g., users can sign in with their existing credentials and reduce support tickets]. This tutorial walks through [key action(s), e.g., creating the provider, mapping claims, and testing the flow] to achieve that outcome.
-
-## What You'll Learn
-
-[List of specific skills or knowledge points that the user will learn, linking to the relevant docs if available]
-
-- [Specific skill or knowledge point #1]
-- [Specific skill or knowledge point #2]
-- [Specific skill or knowledge point #3]
-- [Specific skill or knowledge point #4]
+- [Primary outcome in one sentence]
+- [Success signal #1]
+- [Success signal #2]
 
 ## Prerequisites
 
-Before starting this tutorial, ensure that you have:
+- [Required authentik version]
+- [Required role/permissions]
+- [Required external systems or credentials]
+- [Required baseline configuration]
 
-- A working authentik installation (version X.Y.Z or higher)
-- [Any specific configuration requirements]
-- [Required permissions/access]
-- [External tools or services needed]
-- [Any required API keys or credentials]
+## Step 1: [First major task]
 
-## Step 1: [First Major Task]
+[Briefly explain the purpose of this step.]
 
-[Brief description of what will be accomplished in this step and why it's important]
+1. **[Action]**: [Instruction].
+2. **[Action]**: [Instruction].
+3. **[Action]**: [Instruction].
 
-1. **[Action]**: [Clear, action-oriented instruction with specific UI elements in bold]
-2. **[Action]**: [Clear, action-oriented instruction]
-3. **[Action]**: [Clear, action-oriented instruction]
-
-[Optional: Include a screenshot of the relevant UI with annotations if helpful]
-
-:::tip
-[Optional tip that might help users avoid common mistakes or provide additional context]
+:::info
+[Optional implementation detail, tip, or context that helps avoid mistakes.]
 :::
 
-## Step 2: [Second Major Task]
+## Step 2: [Second major task]
 
-[Brief description of what will be accomplished in this step]
+[Briefly explain the purpose of this step.]
 
 <Tabs groupId="deployment-type">
     <TabItem value="docker" label="Docker" default>
-        `docker exec -it authentik /bin/bash`
+
+```shell
+docker exec -it authentik /bin/bash
+```
+
     </TabItem>
     <TabItem value="kubernetes" label="Kubernetes">
-        `kubectl exec -it deployment/authentik -- /bin/bash`
+
+```shell
+kubectl exec -it deployment/authentik -- /bin/bash
+```
+
     </TabItem>
+
 </Tabs>
 
-[Additional instructions for this step]
+1. **[Action]**: [Instruction].
+2. **[Action]**: [Instruction].
+3. **[Action]**: [Instruction].
 
-1. **[Action]**: [Clear instruction]
-2. **[Action]**: [Clear instruction]
-3. **[Action]**: [Clear instruction]
-
-### Configuration Example
+### Example configuration
 
 ```yaml showLineNumbers title="example.yaml"
-# Example configuration with comments explaining each part
-apiVersion: v1
-kind: ConfigMap
-metadata:
-    name: example-config # Give your config a descriptive name
-data:
-    # These settings control how the feature behaves
-    key: value # This setting enables X functionality
-    another_key: another_value # This controls Y behavior
+# Include only fields that matter to this tutorial.
+key: value
 ```
 
 :::warning
-[Important warning about potential issues or security considerations]
+[Call out actions that can cause interruptions, downtime, or unexpected behavior.]
 :::
 
-## Step 3: [Testing Your Configuration]
+## Step 3: Verify the result
 
-[Brief description of how to verify that everything is working correctly]
+1. **Navigate to**: [Location].
+2. **Confirm that**: [Expected UI or output].
+3. **Validate by**: [Real test action].
 
-1. **Navigate to**: [Specific location in authentik]
-2. **Check that**: [Expected result is visible]
-3. **Test by**: [Specific action that confirms functionality]
-
-[Describe what success looks like, including any expected outputs or behaviors]
+[Describe the exact expected end state.]
 
 ## Troubleshooting
 
-| Issue             | Possible Cause               | Solution                  |
-| ----------------- | ---------------------------- | ------------------------- |
-| [Common issue #1] | [What typically causes this] | [Detailed solution steps] |
-| [Common issue #2] | [What typically causes this] | [Detailed solution steps] |
-| [Common issue #3] | [What typically causes this] | [Detailed solution steps] |
+| Issue      | Likely cause | Resolution          |
+| ---------- | ------------ | ------------------- |
+| [Issue #1] | [Cause]      | [Action to resolve] |
+| [Issue #2] | [Cause]      | [Action to resolve] |
+| [Issue #3] | [Cause]      | [Action to resolve] |
 
-### Common Error Messages
+## Security considerations
 
-If you encounter these error messages, here's how to resolve them:
+- [Security consideration #1].
+- [Security consideration #2].
+- [Security consideration #3].
 
-- **"Error message text"**: [Explanation and solution]
-- **"Another error message"**: [Explanation and solution]
+:::danger
+[Use only when an action can cause irreversible impact, such as data loss.]
+:::
 
-## Security Considerations
+## Next steps
 
-[Optional section for tutorials that involve security-sensitive configurations]
-
-When implementing this solution, keep these security best practices in mind:
-
-- [Security recommendation #1]
-- [Security recommendation #2]
-- [Security recommendation #3]
-
-## Next Steps
-
-Now that you've completed this tutorial, you might want to:
-
-- [Related tutorial or task with link if available]
-- [Related tutorial or task with link if available]
-- [Related tutorial or task with link if available]
-
-## Additional Resources
-
-- [Link to relevant documentation]
-- [Link to community forum discussions]
-- [Link to related tutorials]
-- [Link to GitHub examples or repositories]
+- [Related tutorial or guide].
+- [Related conceptual documentation].
+- [Related reference documentation].

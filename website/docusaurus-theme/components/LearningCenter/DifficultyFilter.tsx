@@ -1,5 +1,5 @@
 import { type DifficultyLevel, getDifficultyLabel } from "../../theme/utils/learningCenter/utils";
-import styles from "./styles.module.css";
+import styles from "./styling/filters.module.css";
 
 import clsx from "clsx";
 import React from "react";

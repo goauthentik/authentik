@@ -1,4 +1,4 @@
-import styles from "./styles.module.css";
+import styles from "./styling/filters.module.css";
 
 import React from "react";
 

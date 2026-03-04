@@ -3,7 +3,7 @@ import {
     type LearningCenterResource,
 } from "../../theme/utils/learningCenter/utils";
 import type { LearningPathDef } from "./learningPathsConfig";
-import styles from "./styles.module.css";
+import styles from "./styling/learningPaths.module.css";
 
 import Link from "@docusaurus/Link";
 import clsx from "clsx";
@@ -14,6 +14,10 @@ export interface LearningPathsProps {
     paths: LearningPathDef[];
     /** All available resources to calculate article counts */
     resources: LearningCenterResource[];
+    /** Optional title override for this section */
+    title?: string;
+    /** Hide section title when wrapped by another heading */
+    hideTitle?: boolean;
 }
 
 /**
@@ -21,7 +25,12 @@ export interface LearningPathsProps {
  * Shows curated paths with difficulty levels and dynamically calculated article counts.
  * Clicking a path opens a dedicated page for that learning track.
  */
-export const LearningPaths: React.FC<LearningPathsProps> = ({ paths, resources }) => {
+export const LearningPaths: React.FC<LearningPathsProps> = ({
+    paths,
+    resources,
+    title = "Learning paths",
+    hideTitle = false,
+}) => {
     const articleCountsByPath = useMemo(() => {
         const counts = new Map<string, number>();
         resources.forEach((resource) => {
@@ -36,9 +45,11 @@ export const LearningPaths: React.FC<LearningPathsProps> = ({ paths, resources }
 
     return (
         <div className={styles.learningPathsSection}>
-            <div className={styles.learningPathsHeader}>
-                <h2 className={styles.learningPathsTitle}>Learning paths</h2>
-            </div>
+            {!hideTitle ? (
+                <div className={styles.learningPathsHeader}>
+                    <h2 className={styles.learningPathsTitle}>{title}</h2>
+                </div>
+            ) : null}
             <div className={styles.learningPathsList} role="list" aria-label="Learning paths">
                 {paths.map((path) => {
                     const articleCount = articleCountsByPath.get(path.filterTag) ?? 0;

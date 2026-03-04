@@ -1,0 +1,107 @@
+.learningPathExperience {
+    margin-bottom: 1.5rem;
+}
+
+.pathBackLink {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 0.9rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ifm-color-primary);
+}
+
+.pathBackLink:hover {
+    color: var(--ifm-color-primary-dark);
+    text-decoration: underline;
+}
+
+.pathHero {
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 16px;
+    padding: 1.4rem;
+    margin-bottom: 1.2rem;
+    background: linear-gradient(
+        170deg,
+        var(--ifm-color-emphasis-100) 0%,
+        var(--ifm-background-color) 70%
+    );
+}
+
+.pathHeroEyebrow {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ifm-color-primary);
+}
+
+.pathHeroTitle {
+    margin: 0.35rem 0 0;
+    color: var(--ifm-heading-color);
+    font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+    line-height: 1.2;
+}
+
+.pathHeroDescription {
+    margin: 0.75rem 0 0;
+    max-width: 72ch;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.pathHeroMeta {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.pathHeroMetaItem {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    background: var(--ifm-background-color);
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.84rem;
+    font-weight: 600;
+    user-select: none;
+}
+
+.pathHeroMetaItemDifficulty-beginner {
+    color: var(--lc-difficulty-beginner);
+    border-color: color-mix(in srgb, var(--lc-difficulty-beginner) 45%, transparent);
+    background: transparent;
+}
+
+.pathHeroMetaItemDifficulty-intermediate {
+    color: var(--lc-difficulty-intermediate);
+    border-color: color-mix(in srgb, var(--lc-difficulty-intermediate) 45%, transparent);
+    background: transparent;
+}
+
+.pathHeroMetaItemDifficulty-advanced {
+    color: var(--lc-difficulty-advanced);
+    border-color: color-mix(in srgb, var(--lc-difficulty-advanced) 45%, transparent);
+    background: transparent;
+}
+
+.pathCurriculumSection {
+    margin-top: 1rem;
+}
+
+.pathCurriculumTitle {
+    margin: 0 0 1rem;
+    color: var(--ifm-heading-color);
+}
+
+@media (max-width: 768px) {
+    .pathHero {
+        padding: 1rem;
+    }
+}
