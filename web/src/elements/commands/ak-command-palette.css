@@ -1,12 +1,25 @@
-:host {
+ak-command-palette {
     display: block;
-    min-height: min(10rem, 20dvh);
 }
 
-#command-input {
-    display: block;
-    width: 100%;
-    font-size: var(--pf-global--FontSize--2xl);
-    padding: var(--pf-global--spacer--form-element);
-    border: none;
+.ak-c-modal:has(ak-command-palette-modal) {
+    overflow: visible;
+    --ak-c-modal--MarginBlockStart: 35dvh;
+    --ak-c-modal__backdrop--active--BackdropFilter: blur(0);
+    --ak-c-modal__backdrop--active--BackgroundColor: hsla(0, 0%, 0%, 0.25);
+
+    --ak-c-command-palette--Translucency: 25%;
+    --ak-c-command-palette--BackdropFilter: blur(4px);
+
+    border-radius: var(--pf-global--BorderRadius--sm);
+    backdrop-filter: var(--ak-c-command-palette--BackdropFilter);
+    background-color: color-mix(
+        var(--ak-c-modal--BackgroundColor),
+        transparent var(--ak-c-command-palette--Translucency)
+    );
+
+    @media (prefers-reduced-transparency: reduce) {
+        --ak-c-command-palette--Translucency: 0%;
+        --ak-c-command-palette--BackdropFilter: blur(0);
+    }
 }

@@ -1,0 +1,106 @@
+:host {
+    --ak-c-command-palette--PaddingBlock: calc(1em * var(--pf-global--LineHeight--sm));
+    --ak-c-command-palette--PaddingInline: calc(2 * var(--pf-global--spacer--form-element));
+
+    --ak-c-command-palette--Translucency: 25%;
+
+    --ak-c-command-palette__item--BackgroundColor: transparent;
+
+    --ak-c-command-palette__item--Color: var(--pf-global--BackgroundColor--200);
+
+    --ak-c-command-palette__item--hover--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
+        --pf-global--BackgroundColor--100
+    );
+
+    @media (prefers-reduced-transparency: reduce) {
+        --ak-c-command-palette--Translucency: 0%;
+    }
+}
+
+:host([theme="dark"]) {
+    --ak-c-command-palette__item--selected--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --ak-c-command-palette__item--hover--BackgroundColor: var(--pf-global--BackgroundColor--300);
+
+    --ak-c-command-palette__item--hover-selected--BackgroundColor: var(
+        --pf-global--BackgroundColor--400
+    );
+}
+
+:host {
+    display: block;
+    min-height: min(10rem, 20dvh);
+    padding: var(--pf-global--spacer--sm);
+}
+
+.command-field {
+    border-bottom: 0.5px solid var(--pf-global--BorderColor--200);
+    margin-block-end: var(--pf-global--spacer--sm);
+}
+
+#command-input {
+    display: block;
+    width: 100%;
+    font-size: var(--pf-global--FontSize--2xl);
+    padding-block: var(--pf-global--spacer--form-element);
+    padding-inline-start: calc(var(--ak-c-command-palette--PaddingInline) * 3);
+    padding-inline-end: var(--ak-c-command-palette--PaddingInline);
+    border: none;
+
+    outline: none;
+}
+
+.command-item {
+    &.selected {
+        --ak-c-command-palette__item--BackgroundColor: var(
+            --ak-c-command-palette__item--selected--BackgroundColor
+        );
+        --ak-c-command-palette__item--hover--BackgroundColor: var(
+            --ak-c-command-palette__item--hover-selected--BackgroundColor
+        );
+        --ak-c-command-palette__item--AccentColor: var(--pf-global--primary-color--100);
+    }
+
+    .pf-c-button {
+        --pf-c-button--PaddingTop: var(--pf-global--spacer--md);
+        --pf-c-button--PaddingBottom: var(--pf-global--spacer--md);
+        border-inline-start: 3px solid var(--ak-c-command-palette__item--AccentColor, transparent);
+
+        background-color: color-mix(
+            var(--ak-c-command-palette__item--BackgroundColor),
+            transparent var(--ak-c-command-palette--Translucency)
+        );
+        width: 100%;
+        border-radius: 0;
+        text-align: start;
+
+        &:hover {
+            background-color: color-mix(
+                var(--ak-c-command-palette__item--hover--BackgroundColor),
+                transparent var(--ak-c-command-palette--Translucency)
+            );
+        }
+    }
+}
+
+[part="label"] {
+    cursor: pointer;
+    position: absolute;
+    inset-block-start: var(--ak-c-command-palette--PaddingBlock);
+    inset-inline-start: var(--ak-c-command-palette--PaddingInline);
+    z-index: 1;
+    pointer-events: none;
+
+    color: var(--pf-global--Color--100);
+    z-index: 1;
+    pointer-events: none;
+
+    .icon {
+        display: block;
+        height: var(--pf-global--icon--FontSize--lg);
+        fill: currentColor;
+    }
+}
+.command-item__label {
+}

@@ -209,7 +209,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                     ></div>
                 </div>
             </div>
-            <ak-command-palette></ak-command-palette> `;
+            <ak-command-palette></ak-command-palette>`;
     }
 
     //#endregion
