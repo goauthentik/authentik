@@ -13,9 +13,9 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 
 import { msg } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
+import { ref } from "lit-html/directives/ref.js";
 import { styleMap } from "lit-html/directives/style-map.js";
-import { customElement } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
 
@@ -62,8 +62,9 @@ async function fetchAboutDetails(): Promise<AboutEntry[]> {
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     static hostStyles = [
         css`
-            :host {
+            .ak-c-modal:has(ak-about-modal) {
                 --ak-c-modal--BackgroundColor: var(--pf-global--palette--black-900);
+                --ak-c-modal--BorderColor: var(--pf-global--palette--black-600);
             }
         `,
     ];
@@ -91,6 +92,22 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
 
     public static open = asInvoker(AboutModal);
 
+    @state()
+    protected entries: AboutEntry[] | null = null;
+
+    public refresh() {
+        return fetchAboutDetails().then((entries) => {
+            this.entries = entries;
+        });
+    }
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+        this.refresh();
+    }
+
+    //#region Renderers
+
     protected override renderCloseButton() {
         return null;
     }
@@ -103,6 +120,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
         }
 
         return html`<div
+            ${ref(this.scrollContainerRef)}
             class="pf-c-about-modal-box"
             style=${styleMap({
                 "--pf-c-about-modal-box__hero--sm--BackgroundImage": `url(${DEFAULT_BRAND_IMAGE})`,
@@ -135,21 +153,26 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             <div class="pf-c-about-modal-box__content">
                 <div class="pf-c-about-modal-box__body">
                     <div class="pf-c-content">
-                        ${until(
-                            fetchAboutDetails().then((entries) => {
-                                return html`<dl>
-                                    ${entries.map(([label, value]) => {
-                                        return html`<dt>${label}</dt>
-                                            <dd>${value}</dd>`;
-                                    })}
-                                </dl>`;
-                            }),
-                            html`<ak-empty-state loading></ak-empty-state>`,
-                        )}
+                        ${this.entries
+                            ? html`<dl>
+                                  ${this.entries.map(([label, value]) => {
+                                      return html`<dt>${label}</dt>
+                                          <dd>${value}</dd>`;
+                                  })}
+                              </dl>`
+                            : html`<ak-empty-state loading></ak-empty-state>`}
                     </div>
                 </div>
                 <p class="pf-c-about-modal-box__strapline"></p>
             </div>
         </div>`;
+    }
+
+    //#endregion
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-about-modal": AboutModal;
     }
 }
