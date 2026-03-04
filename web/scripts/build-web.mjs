@@ -10,7 +10,7 @@ import * as path from "node:path";
 /**
  * @file ESBuild script for building the authentik web UI.
  *
- * @import { BuildOptions } from "esbuild";
+ * @import { BuildOptions, Plugin } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
@@ -56,7 +56,7 @@ const entryPoints = Object.values(EntryPoint);
 const entryPointsDescription = entryPointNames.join("\n\t");
 
 /**
- * @type {Readonly<BuildOptions["plugins"]>}
+ * @type {Plugin[]}
  */
 const BASE_ESBUILD_PLUGINS = [
     {
@@ -98,6 +98,9 @@ const BASE_ESBUILD_PLUGINS = [
     }),
 ];
 
+/**
+ * @type {BuildOptions}
+ */
 const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
@@ -136,7 +139,7 @@ const BASE_ESBUILD_OPTIONS = {
  * Creates an ESBuild options, extending the base options with the given overrides.
  *
  * @param {BuildOptions["entryPoints"]} entryPoints
- * @param {BuildOptions["plugins"]} plugins
+ * @param {Plugin[]} plugIns
  * @returns {BuildOptions}
  */
 export function createESBuildOptions(entryPoints, plugIns = []) {
