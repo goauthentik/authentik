@@ -130,6 +130,18 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
         hints = [PublicKeyCredentialHint(h) for h in stage.hints] or None
 
+        # For compatibility with older user agents that don't support hints,
+        # auto-infer authenticatorAttachment from hints when not explicitly set.
+        # https://w3c.github.io/webauthn/#enum-hints
+        if hints and not authenticator_attachment:
+            hint_values = set(stage.hints)
+            cross_platform = {"security-key", "hybrid"}
+            platform = {"client-device"}
+            if hint_values <= cross_platform:
+                authenticator_attachment = AuthenticatorAttachment.CROSS_PLATFORM
+            elif hint_values <= platform:
+                authenticator_attachment = AuthenticatorAttachment.PLATFORM
+
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.brand.branding_title,
