@@ -50,7 +50,7 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
  * @param {EnvRecord} input
  * @param {Prefix} [prefix='import.meta.env.']
  *
- * @returns {{[K in keyof EnvRecord as `${Prefix}${K}`]: JSONify<EnvRecord[K]>}}
+ * @returns {{[K in keyof EnvRecord & string as `${Prefix}${K}`]: JSONify<EnvRecord[K]>}}
  */
 export function serializeEnvironmentVars(
     input,
