@@ -2,12 +2,16 @@
 
 .ak-c-modal {
     --ak-c-modal--BackgroundColor: var(--pf-global--BackgroundColor--100);
-    --ak-c-modal__backdrop--BackgroundColor: transparent;
-    --ak-c-modal__backdrop--BackdropFilter: blur(0);
     --ak-c-modal--BoxShadow: var(--pf-global--BoxShadow--xl);
     --ak-c-modal--ZIndex: var(--pf-global--ZIndex--xl);
     --ak-c-modal--Width: 100%;
     --ak-c-modal--MaxWidth: calc(100% - var(--pf-global--spacer--xl));
+    --ak-c-modal--MarginBlockStart: 10dvh;
+    --ak-c-modal--BorderColor: var(--pf-global--BackgroundColor--150);
+    --ak-c-modal__backdrop--BackgroundColor: transparent;
+    --ak-c-modal__backdrop--BackdropFilter: blur(0);
+    --ak-c-modal__backdrop--active--BackgroundColor: hsla(0, 0%, 0%, 0.5);
+    --ak-c-modal__backdrop--active--BackdropFilter: blur(2px);
 }
 
 /* #endregion */
@@ -27,7 +31,7 @@
     background-color: var(--ak-c-modal--BackgroundColor);
     box-shadow: var(--ak-c-modal--BoxShadow);
 
-    border-color: var(--pf-global--BackgroundColor--150);
+    border-color: var(--ak-c-modal--BorderColor);
 
     &:focus-visible {
         outline: none;
@@ -39,8 +43,9 @@
 /* #region Transitions */
 
 .ak-c-modal {
-    --ak-c-modal--TransitionDuration--fast: 50ms;
-    --ak-c-modal--TransitionDuration--slow: 100ms;
+    --ak-c-modal--TransitionDuration--fast: 100ms;
+    --ak-c-modal--TransitionDuration--slow: 150ms;
+    margin-block-start: var(--ak-c-modal--MarginBlockStart);
 
     interpolate-size: allow-keywords;
 
@@ -71,8 +76,10 @@
     }
 
     &.fade-in {
-        --ak-c-modal__backdrop--BackdropFilter: blur(2px);
-        --ak-c-modal__backdrop--BackgroundColor: hsla(0, 0%, 0%, 0.5);
+        --ak-c-modal__backdrop--BackdropFilter: var(--ak-c-modal__backdrop--active--BackdropFilter);
+        --ak-c-modal__backdrop--BackgroundColor: var(
+            --ak-c-modal__backdrop--active--BackgroundColor
+        );
 
         opacity: 1;
         height: calc-size(max-content, size);
