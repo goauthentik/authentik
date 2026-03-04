@@ -1,4 +1,5 @@
 import "#components/ak-number-input";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
@@ -22,6 +23,7 @@ import {
     ResidentKeyRequirementEnum,
     StagesApi,
     UserVerificationEnum,
+    WebAuthnHintEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -49,6 +51,14 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
             authenticatorWebAuthnStageRequest: data,
         });
+    }
+
+    isHintSelected(field: WebAuthnHintEnum): boolean {
+        return (
+            (this.instance?.hints || []).filter((isField) => {
+                return field === isField;
+            }).length > 0
+        );
     }
 
     protected override renderForm(): TemplateResult {
@@ -167,6 +177,29 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .value=${this.instance?.authenticatorAttachment}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Hints")} name="hints">
+                        <ak-checkbox-group
+                            name="hints"
+                            .options=${[
+                                [WebAuthnHintEnum.SecurityKey, msg("Security Key (e.g. YubiKey)")],
+                                [
+                                    WebAuthnHintEnum.ClientDevice,
+                                    msg("This Device (e.g. Touch ID, Windows Hello)"),
+                                ],
+                                [WebAuthnHintEnum.Hybrid, msg("Hybrid (e.g. QR code, phone)")],
+                            ]}
+                            .value=${[
+                                WebAuthnHintEnum.SecurityKey,
+                                WebAuthnHintEnum.ClientDevice,
+                                WebAuthnHintEnum.Hybrid,
+                            ].filter((hint) => this.isHintSelected(hint))}
+                        ></ak-checkbox-group>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. These are advisory and may be ignored by browsers.",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-number-input
                         label=${msg("Maximum registration attempts")}
