@@ -174,7 +174,7 @@ jobs:
         if: "${{ inputs.release_reason == 'feature' }}"
         run: |
           changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}"
-          reason="{{ inputs.release_reason }}"
+          reason="${{ inputs.release_reason }}"
           jq \
             --arg version "${{ inputs.version }}" \
             --arg changelog "See ${changelog_url}" \
@@ -186,7 +186,7 @@ jobs:
         if: "${{ inputs.release_reason != 'feature' }}"
         run: |
           changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version}} | sed 's/\.//g')"
-          reason="{{ inputs.release_reason }}"
+          reason="${{ inputs.release_reason }}"
           jq \
             --arg version "${{ inputs.version }}" \
             --arg changelog "See ${changelog_url}" \
