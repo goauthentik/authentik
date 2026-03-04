@@ -16,6 +16,7 @@ from webauthn.helpers.structs import (
     AuthenticatorAttachment,
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
+    PublicKeyCredentialHint,
     ResidentKeyRequirement,
     UserVerificationRequirement,
 )
@@ -127,6 +128,8 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         if authenticator_attachment:
             authenticator_attachment = AuthenticatorAttachment(str(authenticator_attachment))
 
+        hints = [PublicKeyCredentialHint(h) for h in stage.hints] or None
+
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
             rp_name=self.request.brand.branding_title,
@@ -139,6 +142,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 authenticator_attachment=authenticator_attachment,
             ),
             attestation=AttestationConveyancePreference.DIRECT,
+            hints=hints,
         )
 
         self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
